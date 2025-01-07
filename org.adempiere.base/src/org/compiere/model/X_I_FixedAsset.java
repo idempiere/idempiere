@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for I_FixedAsset
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_FixedAsset")
-public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent 
+public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_FixedAsset (Properties ctx, int I_FixedAsset_ID, String trxName)
@@ -81,6 +81,52 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_FixedAsset (Properties ctx, String I_FixedAsset_UU, String trxName)
+    {
+      super (ctx, I_FixedAsset_UU, trxName);
+      /** if (I_FixedAsset_UU == null)
+        {
+			setA_Asset_Cost (Env.ZERO);
+// 0
+			setA_Remaining_Period (0);
+// 0
+			setAssetAmtEntered (Env.ZERO);
+// 0
+			setAssetPeriodDepreciationAmt (Env.ZERO);
+// 0
+			setAssetSourceAmt (Env.ZERO);
+// 0
+			setDocAction (null);
+// 'CO'
+			setI_IsImported (false);
+// 'N'
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_FixedAsset (Properties ctx, String I_FixedAsset_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_FixedAsset_UU, trxName, virtualColumns);
+      /** if (I_FixedAsset_UU == null)
+        {
+			setA_Asset_Cost (Env.ZERO);
+// 0
+			setA_Remaining_Period (0);
+// 0
+			setAssetAmtEntered (Env.ZERO);
+// 0
+			setAssetPeriodDepreciationAmt (Env.ZERO);
+// 0
+			setAssetSourceAmt (Env.ZERO);
+// 0
+			setDocAction (null);
+// 'CO'
+			setI_IsImported (false);
+// 'N'
+        } */
+    }
+
     /** Load Constructor */
     public X_I_FixedAsset (Properties ctx, ResultSet rs, String trxName)
     {
@@ -88,7 +134,7 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -791,10 +837,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -933,10 +979,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -955,10 +1001,10 @@ public class X_I_FixedAsset extends PO implements I_I_FixedAsset, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -173,7 +173,7 @@ public class MStorageOnHandTestIsolated extends AbstractTestCase {
 			count = query.setParameters(product3.get_ID()).count();
 			assertEquals(1, count);
 			
-			MPInstance instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_M_StorageCleanup, 0);
+			MPInstance instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_M_StorageCleanup, 0, 0, null);
 			instance.saveEx();
 			MPInstancePara para = new MPInstancePara(instance, 10);
 			para.setParameterName("C_DocType_ID");

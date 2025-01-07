@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionReward
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionReward")
-public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Persistent 
+public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PromotionReward (Properties ctx, int M_PromotionReward_ID, String trxName)
@@ -68,6 +68,40 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_PromotionReward (Properties ctx, String M_PromotionReward_UU, String trxName)
+    {
+      super (ctx, M_PromotionReward_UU, trxName);
+      /** if (M_PromotionReward_UU == null)
+        {
+			setC_Charge_ID (0);
+			setIsForAllDistribution (false);
+// N
+			setM_Promotion_ID (0);
+			setM_PromotionReward_ID (0);
+			setRewardType (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM M_PromotionReward WHERE M_Promotion_ID=@M_Promotion_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionReward (Properties ctx, String M_PromotionReward_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionReward_UU, trxName, virtualColumns);
+      /** if (M_PromotionReward_UU == null)
+        {
+			setC_Charge_ID (0);
+			setIsForAllDistribution (false);
+// N
+			setM_Promotion_ID (0);
+			setM_PromotionReward_ID (0);
+			setRewardType (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM M_PromotionReward WHERE M_Promotion_ID=@M_Promotion_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_M_PromotionReward (Properties ctx, ResultSet rs, String trxName)
     {
@@ -75,7 +109,7 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -180,10 +214,10 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	public boolean isForAllDistribution()
 	{
 		Object oo = get_Value(COLUMNNAME_IsForAllDistribution);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -203,10 +237,10 @@ public class X_M_PromotionReward extends PO implements I_M_PromotionReward, I_Pe
 	public boolean isSameDistribution()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameDistribution);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

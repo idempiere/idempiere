@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningLevel
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_DunningLevel")
-public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persistent 
+public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_DunningLevel (Properties ctx, int C_DunningLevel_ID, String trxName)
@@ -81,6 +81,52 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_DunningLevel (Properties ctx, String C_DunningLevel_UU, String trxName)
+    {
+      super (ctx, C_DunningLevel_UU, trxName);
+      /** if (C_DunningLevel_UU == null)
+        {
+			setC_Dunning_ID (0);
+			setC_DunningLevel_ID (0);
+			setChargeFee (false);
+			setChargeInterest (false);
+			setDaysAfterDue (Env.ZERO);
+			setDaysBetweenDunning (0);
+			setIsSetCreditStop (false);
+			setIsSetPaymentTerm (false);
+			setIsShowAllDue (false);
+			setIsShowNotDue (false);
+			setIsStatement (false);
+// N
+			setName (null);
+			setPrintName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DunningLevel (Properties ctx, String C_DunningLevel_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DunningLevel_UU, trxName, virtualColumns);
+      /** if (C_DunningLevel_UU == null)
+        {
+			setC_Dunning_ID (0);
+			setC_DunningLevel_ID (0);
+			setChargeFee (false);
+			setChargeInterest (false);
+			setDaysAfterDue (Env.ZERO);
+			setDaysBetweenDunning (0);
+			setIsSetCreditStop (false);
+			setIsSetPaymentTerm (false);
+			setIsShowAllDue (false);
+			setIsShowNotDue (false);
+			setIsStatement (false);
+// N
+			setName (null);
+			setPrintName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_DunningLevel (Properties ctx, ResultSet rs, String trxName)
     {
@@ -88,7 +134,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -187,10 +233,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public boolean isChargeFee()
 	{
 		Object oo = get_Value(COLUMNNAME_ChargeFee);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -210,10 +256,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public boolean isChargeInterest()
 	{
 		Object oo = get_Value(COLUMNNAME_ChargeInterest);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -408,10 +454,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public boolean isSetCreditStop()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSetCreditStop);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -431,10 +477,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public boolean isSetPaymentTerm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSetPaymentTerm);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -454,10 +500,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public boolean isShowAllDue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowAllDue);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -477,10 +523,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public boolean isShowNotDue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowNotDue);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -500,10 +546,10 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	public boolean isStatement()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStatement);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -528,7 +574,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

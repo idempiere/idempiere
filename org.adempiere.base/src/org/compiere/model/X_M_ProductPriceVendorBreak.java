@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPriceVendorBreak
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductPriceVendorBreak")
-public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceVendorBreak, I_Persistent 
+public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceVendorBreak, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ProductPriceVendorBreak (Properties ctx, int M_ProductPriceVendorBreak_ID, String trxName)
@@ -66,6 +66,38 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ProductPriceVendorBreak (Properties ctx, String M_ProductPriceVendorBreak_UU, String trxName)
+    {
+      super (ctx, M_ProductPriceVendorBreak_UU, trxName);
+      /** if (M_ProductPriceVendorBreak_UU == null)
+        {
+			setBreakValue (Env.ZERO);
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setM_ProductPriceVendorBreak_ID (0);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setPriceStd (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductPriceVendorBreak (Properties ctx, String M_ProductPriceVendorBreak_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductPriceVendorBreak_UU, trxName, virtualColumns);
+      /** if (M_ProductPriceVendorBreak_UU == null)
+        {
+			setBreakValue (Env.ZERO);
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setM_ProductPriceVendorBreak_ID (0);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setPriceStd (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ProductPriceVendorBreak (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +105,7 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

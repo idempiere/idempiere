@@ -36,7 +36,7 @@ import org.compiere.util.Util;
 public class MBPBankAccount extends X_C_BP_BankAccount
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6826961806519015878L;
 
@@ -44,7 +44,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	 * 	Get Accounts Of BPartner
 	 *	@param ctx context
 	 *	@param C_BPartner_ID bpartner
-	 *	@return
+	 *	@return array of MBPBankAccount
 	 */
 	public static MBPBankAccount[] getOfBPartner (Properties ctx, int C_BPartner_ID)
 	{
@@ -63,7 +63,19 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MBPBankAccount.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BP_BankAccount_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MBPBankAccount(Properties ctx, String C_BP_BankAccount_UU, String trxName) {
+        super(ctx, C_BP_BankAccount_UU, trxName);
+		if (Util.isEmpty(C_BP_BankAccount_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Constructor
 	 *	@param ctx context
 	 *	@param C_BP_BankAccount_ID BP bank account
@@ -73,11 +85,16 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	{
 		super (ctx, C_BP_BankAccount_ID, trxName);
 		if (C_BP_BankAccount_ID == 0)
-		{
-			setIsACH (false);
-			setBPBankAcctUse(BPBANKACCTUSE_Both);
-		}
+			setInitialDefaults();
 	}	//	MBP_BankAccount
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsACH (false);
+		setBPBankAcctUse(BPBANKACCTUSE_Both);
+	}
 
 	/**
 	 * 	Constructor
@@ -115,7 +132,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	}	//	MBP_BankAccount
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MBPBankAccount(MBPBankAccount copy) 
@@ -124,7 +141,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -134,7 +151,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -151,7 +168,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 
 	/**
 	 * 	Is Direct Deposit
-	 *	@return true if dd
+	 *	@return true if account is for direct deposit
 	 */
 	public boolean isDirectDeposit()
 	{
@@ -165,7 +182,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	
 	/**
 	 * 	Is Direct Debit
-	 *	@return true if dd
+	 *	@return true if account is for direct debit
 	 */
 	public boolean isDirectDebit()
 	{
@@ -176,8 +193,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 			return true;
 		return (s.equals(BPBANKACCTUSE_Both) || s.equals(BPBANKACCTUSE_DirectDebit));
 	}	//	isDirectDebit
-	
-	
+		
 	/**
 	 * 	Get Bank
 	 *	@return bank
@@ -194,7 +210,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	
 	/**
 	 * 	Get Routing No
-	 *	@return routing No
+	 *	@return bank routing No
 	 */
 	public String getRoutingNo() 
 	{
@@ -207,7 +223,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 
 	/**
 	 * 	Get SwiftCode
-	 *	@return SwiftCode
+	 *	@return bank Swift Code
 	 */
 	public String getSwiftCode() 
 	{
@@ -222,6 +238,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
 		//	maintain routing on bank level
@@ -259,6 +276,7 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 	 *	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MBP_BankAccount[")

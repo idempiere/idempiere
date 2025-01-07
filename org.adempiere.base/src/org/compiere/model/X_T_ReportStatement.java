@@ -22,25 +22,25 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for T_ReportStatement
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_ReportStatement")
-public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Persistent 
+public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_T_ReportStatement (Properties ctx, int T_ReportStatement_ID, String trxName)
+    public X_T_ReportStatement (Properties ctx, String T_ReportStatement_UU, String trxName)
     {
-      super (ctx, T_ReportStatement_ID, trxName);
-      /** if (T_ReportStatement_ID == 0)
+      super (ctx, T_ReportStatement_UU, trxName);
+      /** if (T_ReportStatement_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
@@ -50,10 +50,10 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
     }
 
     /** Standard Constructor */
-    public X_T_ReportStatement (Properties ctx, int T_ReportStatement_ID, String trxName, String ... virtualColumns)
+    public X_T_ReportStatement (Properties ctx, String T_ReportStatement_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, T_ReportStatement_ID, trxName, virtualColumns);
-      /** if (T_ReportStatement_ID == 0)
+      super (ctx, T_ReportStatement_UU, trxName, virtualColumns);
+      /** if (T_ReportStatement_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
@@ -69,7 +69,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -86,7 +86,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_ReportStatement[")
-        .append(get_ID()).append(",Name=").append(getName()).append("]");
+        .append(get_UUID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -267,12 +267,12 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), getName());
+        return new ValueNamePair(get_UUID(), getName());
     }
 
 	/** Set Quantity.

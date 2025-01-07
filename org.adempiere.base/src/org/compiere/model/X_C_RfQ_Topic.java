@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_Topic
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQ_Topic")
-public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent 
+public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_RfQ_Topic (Properties ctx, int C_RfQ_Topic_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_RfQ_Topic (Properties ctx, String C_RfQ_Topic_UU, String trxName)
+    {
+      super (ctx, C_RfQ_Topic_UU, trxName);
+      /** if (C_RfQ_Topic_UU == null)
+        {
+			setC_RfQ_Topic_ID (0);
+			setIsSelfService (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQ_Topic (Properties ctx, String C_RfQ_Topic_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQ_Topic_UU, trxName, virtualColumns);
+      /** if (C_RfQ_Topic_UU == null)
+        {
+			setC_RfQ_Topic_ID (0);
+			setIsSelfService (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_RfQ_Topic (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -180,10 +204,10 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -208,7 +232,7 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

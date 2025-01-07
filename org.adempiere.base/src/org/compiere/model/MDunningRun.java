@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  *	Dunning Run Model
@@ -37,9 +38,21 @@ import org.compiere.util.DB;
 public class MDunningRun extends X_C_DunningRun
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6858939271415643483L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_DunningRun_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDunningRun(Properties ctx, String C_DunningRun_UU, String trxName) {
+        super(ctx, C_DunningRun_UU, trxName);
+		if (Util.isEmpty(C_DunningRun_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -51,11 +64,16 @@ public class MDunningRun extends X_C_DunningRun
 	{
 		super (ctx, C_DunningRun_ID, trxName);
 		if (C_DunningRun_ID == 0)
-		{
-			setDunningDate (new Timestamp(System.currentTimeMillis()));
-			setProcessed (false);
-		}	
+			setInitialDefaults();
 	}	//	MDunningRun
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDunningDate (new Timestamp(System.currentTimeMillis()));
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -110,7 +128,7 @@ public class MDunningRun extends X_C_DunningRun
 	
 	/**
 	 * 	Get Entries
-	 * 	@param requery requery
+	 * 	@param requery true to requery
 	 *	@return entries
 	 */
 	public MDunningRunEntry[] getEntries (boolean requery)
@@ -120,8 +138,8 @@ public class MDunningRun extends X_C_DunningRun
 	
 	/**
 	 * 	Get Entries
-	 * 	@param requery requery requery
-	 *  @param onlyInvoices only invoices
+	 * 	@param requery true to requery
+	 *  @param onlyInvoices true for entries with invoice only
 	 *	@return entries
 	 */
 	public MDunningRunEntry[] getEntries (boolean requery, boolean onlyInvoices)
@@ -162,7 +180,7 @@ public class MDunningRun extends X_C_DunningRun
 	
 	/**
 	 * 	Delete all Entries
-	 * 	@param force delete also processed records
+	 * 	@param force true to delete also processed records
 	 *	@return true if deleted
 	 */
 	public boolean deleteEntries(boolean force)

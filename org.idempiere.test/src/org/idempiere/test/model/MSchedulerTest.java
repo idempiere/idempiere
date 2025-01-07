@@ -33,9 +33,9 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.MSchedule;
 import org.compiere.model.MScheduler;
-import org.compiere.model.PO;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -59,18 +59,16 @@ public class MSchedulerTest extends AbstractTestCase {
 		MSchedule schedule = null;
 		MClientInfo clientInfo = MClientInfo.getCopy(Env.getCtx(), getAD_Client_ID(), null);
 		String currentTimeZone = clientInfo.getTimeZone();
+		MOrgInfo orgInfo = MOrgInfo.getCopy(Env.getCtx(), getAD_Org_ID(), null);
+		String currentTimeZoneOrg = orgInfo.getTimeZone();
+		
 		try {
 			schedule = new MSchedule(Env.getCtx(), 0, null);
 			schedule.setName("Every Day at 5 pm Test");
 			schedule.setScheduleType(MSchedule.SCHEDULETYPE_CronSchedulingPattern);
 			schedule.setIsSystemSchedule(false);
 			schedule.setCronPattern("0 17 * * *");
-			try {
-				PO.setCrossTenantSafe();
-				schedule.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			schedule.saveCrossTenantSafeEx();
 			
 			//get jvm timezone
 			//this test assume jvm and db server is using the same default time zone
@@ -102,18 +100,43 @@ public class MSchedulerTest extends AbstractTestCase {
 			cal2.set(Calendar.SECOND, 0);
 			cal2.set(Calendar.MILLISECOND, 0);
 			
+			//get timezone with +3 hour offset
+			ids = TimeZone.getAvailableIDs(tz1.getRawOffset()+(3*60*60*1000));
+			TimeZone tz3 = TimeZone.getTimeZone(ids[0]);
+			Calendar cal3 = Calendar.getInstance();
+			cal3.setTimeZone(tz3);
+			cal3.setTimeInMillis(System.currentTimeMillis());
+			hour = cal3.get(Calendar.HOUR_OF_DAY);
+			if (hour >= 17) {
+				cal3.add(Calendar.DAY_OF_MONTH, 1);
+			}
+			cal3.set(Calendar.HOUR_OF_DAY, 17);
+			cal3.set(Calendar.MINUTE, 0);
+			cal3.set(Calendar.SECOND, 0);
+			cal3.set(Calendar.MILLISECOND, 0);
+			
 			//formatter for comparison
 			DateTimeFormatter formatter1 = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 			formatter1 = formatter1.withZone(tz1.toZoneId());
 			DateTimeFormatter formatter2 = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 			formatter2 = formatter2.withZone(tz2.toZoneId());
+			DateTimeFormatter formatter3 = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+			formatter3 = formatter3.withZone(tz3.toZoneId());
 			
 			//test with default time zone
 			if (!Util.isEmpty(currentTimeZone, true)) {
 				clientInfo.setTimeZone(null);
 				clientInfo.saveEx();
 				CacheMgt.get().reset();
-			}			
+			}
+			
+			//test with default time zone
+			if (!Util.isEmpty(currentTimeZoneOrg, true)) {
+				orgInfo.setTimeZone(null);
+				orgInfo.saveEx();
+				CacheMgt.get().reset();
+			}
+			
 			MScheduler scheduler1 = new MScheduler(Env.getCtx(), 0, getTrxName());
 			scheduler1.setAD_Process_ID(121); //Open Orders Process Id
 			scheduler1.setAD_Schedule_ID(schedule.get_ID());
@@ -125,7 +148,7 @@ public class MSchedulerTest extends AbstractTestCase {
 			assertEquals(formatter1.format(cal1.getTime().toInstant()), formatter1.format(ts1.toInstant()), "Un-expected date next run");
 			assertFalse(cal2.getTimeInMillis() == ts1.getTime(), "Un-expected date next run");
 			
-			//test with default + 2hour time zone
+			//test with default + 2hour time zone (defined in tenant)
 			clientInfo.setTimeZone(tz2.toZoneId().getId());
 			clientInfo.saveEx();
 			CacheMgt.get().reset();
@@ -140,6 +163,23 @@ public class MSchedulerTest extends AbstractTestCase {
 			Timestamp ts2 = scheduler2.getDateNextRun();
 			assertEquals(formatter2.format(cal2.getTime().toInstant()), formatter2.format(ts2.toInstant()), "Un-expected date next run");
 			assertFalse(cal1.getTimeInMillis() == ts2.getTime(), "Un-expected date next run");
+			
+			//test with default + 3hour time zone (defined in org)
+			orgInfo.setTimeZone(tz3.toZoneId().getId());
+			orgInfo.saveEx();
+			CacheMgt.get().reset();
+			
+			MScheduler scheduler3 = new MScheduler(Env.getCtx(), 0, getTrxName());
+			scheduler3.setAD_Process_ID(121);
+			scheduler3.setAD_Schedule_ID(schedule.get_ID());
+			scheduler3.setName("Cron Scheduler Test 3");
+			scheduler3.setSupervisor_ID(100);
+			scheduler3.saveEx();
+			
+			Timestamp ts3 = scheduler3.getDateNextRun();
+			assertEquals(formatter3.format(cal3.getTime().toInstant()), formatter3.format(ts3.toInstant()), "Un-expected date next run");
+			assertFalse(cal1.getTimeInMillis() == ts3.getTime(), "Un-expected date next run");
+			
 		} finally {
 			rollback();
 			if (schedule != null && schedule.get_ID() > 0)
@@ -147,6 +187,12 @@ public class MSchedulerTest extends AbstractTestCase {
 			clientInfo.setTimeZone(currentTimeZone);
 			if (clientInfo.is_Changed()) {
 				clientInfo.saveEx();
+				CacheMgt.get().reset();
+			}
+			
+			orgInfo.setTimeZone(currentTimeZoneOrg);
+			if (orgInfo.is_Changed()) {
+				orgInfo.saveEx();
 				CacheMgt.get().reset();
 			}
 		}

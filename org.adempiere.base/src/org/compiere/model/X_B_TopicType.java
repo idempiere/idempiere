@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_TopicType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="B_TopicType")
-public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent 
+public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_B_TopicType (Properties ctx, int B_TopicType_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_B_TopicType (Properties ctx, String B_TopicType_UU, String trxName)
+    {
+      super (ctx, B_TopicType_UU, trxName);
+      /** if (B_TopicType_UU == null)
+        {
+			setAuctionType (null);
+			setB_TopicType_ID (0);
+			setM_PriceList_ID (0);
+			setM_Product_ID (0);
+			setM_ProductMember_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_TopicType (Properties ctx, String B_TopicType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_TopicType_UU, trxName, virtualColumns);
+      /** if (B_TopicType_UU == null)
+        {
+			setAuctionType (null);
+			setB_TopicType_ID (0);
+			setM_PriceList_ID (0);
+			setM_Product_ID (0);
+			setM_ProductMember_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_B_TopicType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -278,7 +308,7 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

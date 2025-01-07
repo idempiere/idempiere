@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PeriodControl
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_PeriodControl")
-public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persistent 
+public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_PeriodControl (Properties ctx, String C_PeriodControl_UU, String trxName)
+    {
+      super (ctx, C_PeriodControl_UU, trxName);
+      /** if (C_PeriodControl_UU == null)
+        {
+			setC_PeriodControl_ID (0);
+			setC_Period_ID (0);
+			setDocBaseType (null);
+			setPeriodAction (null);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PeriodControl (Properties ctx, String C_PeriodControl_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PeriodControl_UU, trxName, virtualColumns);
+      /** if (C_PeriodControl_UU == null)
+        {
+			setC_PeriodControl_ID (0);
+			setC_Period_ID (0);
+			setDocBaseType (null);
+			setPeriodAction (null);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_C_PeriodControl (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -113,7 +141,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_PeriodControl_ID()));
     }
@@ -248,6 +276,8 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	public static final int PERIODACTION_AD_Reference_ID=176;
 	/** Close Period = C */
 	public static final String PERIODACTION_ClosePeriod = "C";
+	/** Document Close Period = D */
+	public static final String PERIODACTION_DocumentClosePeriod = "D";
 	/** &lt;No Action&gt; = N */
 	public static final String PERIODACTION_NoAction = "N";
 	/** Open Period = O */
@@ -275,6 +305,8 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	public static final int PERIODSTATUS_AD_Reference_ID=177;
 	/** Closed = C */
 	public static final String PERIODSTATUS_Closed = "C";
+	/** Document closed = D */
+	public static final String PERIODSTATUS_DocumentClosed = "D";
 	/** Never opened = N */
 	public static final String PERIODSTATUS_NeverOpened = "N";
 	/** Open = O */
@@ -311,10 +343,10 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
  *	Dunning Model
  *	
@@ -29,9 +28,19 @@ import java.util.Properties;
 public class MDunning extends X_C_Dunning
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3844081441218291895L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Dunning_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDunning(Properties ctx, String C_Dunning_UU, String trxName) {
+        super(ctx, C_Dunning_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -55,6 +64,12 @@ public class MDunning extends X_C_Dunning
 		super(ctx, rs, trxName);
 	}	//	MDunning
 
+	/**
+	 * @param ctx
+	 * @param C_Dunning_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MDunning(Properties ctx, int C_Dunning_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_Dunning_ID, trxName, virtualColumns);
 	}

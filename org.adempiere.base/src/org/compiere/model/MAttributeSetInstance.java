@@ -36,23 +36,22 @@ import org.compiere.util.TimeUtil;
  *	@author Jorg Janke
  *	@version $Id: MAttributeSetInstance.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  *
- * @author Teo Sarca, www.arhipac.ro
+ *  @author Teo Sarca, www.arhipac.ro
  *			<li>BF [ 2675699 ] MAttributeSetInstance.create should create Lot/Serial/Guaran
  */
 public class MAttributeSetInstance extends X_M_AttributeSetInstance
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7870720973216607658L;
 
-
 	/**
-	 * 	Get Attribute Set Instance from ID or Product
+	 * 	Get Attribute Set Instance from M_AttributeSetInstance_ID or create new MAttributeSetInstance for M_Product_ID
 	 *	@param ctx context
-	 * 	@param M_AttributeSetInstance_ID id or 0
-	 * 	@param M_Product_ID required if id is 0
-	 * 	@return Attribute Set Instance or null if error
+	 * 	@param M_AttributeSetInstance_ID M_AttributeSetInstance_ID or 0
+	 * 	@param M_Product_ID required if M_AttributeSetInstance_ID is 0
+	 * 	@return Attribute Set Instance or null
 	 */
 	public static MAttributeSetInstance get (Properties ctx, 
 		int M_AttributeSetInstance_ID, int M_Product_ID)
@@ -64,7 +63,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("From M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
 			return new MAttributeSetInstance (ctx, M_AttributeSetInstance_ID, null);
 		}
-		//	Get new from Product
+		//	Create new MAttributeSetInstance from Product
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("From M_Product_ID=" + M_Product_ID);
 		if (M_Product_ID == 0)
 			return null;
@@ -100,9 +99,18 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	}	//	get
 
 	private static CLogger		s_log = CLogger.getCLogger (MAttributeSetInstance.class);
-
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_AttributeSetInstance_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAttributeSetInstance(Properties ctx, String M_AttributeSetInstance_UU, String trxName) {
+        super(ctx, M_AttributeSetInstance_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_AttributeSetInstance_ID id
@@ -111,9 +119,6 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	public MAttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName)
 	{
 		super (ctx, M_AttributeSetInstance_ID, trxName);
-		if (M_AttributeSetInstance_ID == 0)
-		{
-		}
 	}	//	MAttributeSetInstance
 
 	/**
@@ -158,7 +163,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 
 	/**
 	 * 	Get Attribute Set
-	 *	@return Attrbute Set or null
+	 *	@return Attribute Set or null
 	 */
 	public MAttributeSet getMAttributeSet()
 	{
@@ -168,12 +173,14 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	}	//	getMAttributeSet
 
 	/**
-	 * 	Set Description.
-	 * 	- Product Values
-	 * 	- Instance Values
-	 * 	- SerNo	= #123
-	 *  - Lot 	= \u00ab123\u00bb
-	 *  - GuaranteeDate	= 10/25/2003
+	 *  <pre>
+	 *  Set Description.
+	 *  - Product Values
+	 *  - Instance Values
+	 *  - SerNo = #123
+	 *  - Lot   = \u00ab123\u00bb
+	 *  - GuaranteeDate = 10/25/2003
+	 *  </pre>
 	 */
 	public void setDescription()
 	{
@@ -239,7 +246,6 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 		setDescription (sb.toString());
 	}	//	setDescription
 
-
 	/**
 	 * 	Get Guarantee Date
 	 * 	@param getNew if true calculates/sets guarantee date
@@ -274,8 +280,8 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 
 	/**
 	 * 	Create Lot
-	 * 	@param M_Product_ID product used if new
-	 *	@return lot info
+	 * 	@param M_Product_ID product
+	 *	@return KeyNamePair(M_Lot_ID,Name)
 	 */
 	public KeyNamePair createLot (int M_Product_ID)
 	{
@@ -293,7 +299,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	}	//	createLot
 	
 	/**
-	 * 	To to find lot and set Lot/ID
+	 * 	To find lot and set Lot/ID
 	 *	@param Lot lot
 	 *	@param M_Product_ID product
 	 */
@@ -307,9 +313,9 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	}	//	setLot
 
 	/**
-	 * 	Exclude Lot creation
-	 *	@param AD_Column_ID column
-	 *	@param isSOTrx SO
+	 * 	Check is Lot creation excluded for a table
+	 *	@param AD_Column_ID column of table to check
+	 *	@param isSOTrx true for sales transaction, false otherwise
 	 *	@return true if excluded
 	 */
 	public boolean isExcludeLot (int AD_Column_ID, boolean isSOTrx)
@@ -340,9 +346,9 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	}	//	getSerNo
 
 	/**
-	 *	Exclude SerNo creation
-	 *	@param AD_Column_ID column
-	 *	@param isSOTrx SO
+	 *	Check is SerNo creation excluded for a table
+	 *	@param AD_Column_ID column of table to check
+	 *	@param isSOTrx true for sales transaction, false otherwise
 	 *	@return true if excluded
 	 */
 	public boolean isExcludeSerNo (int AD_Column_ID, boolean isSOTrx)
@@ -409,7 +415,7 @@ public class MAttributeSetInstance extends X_M_AttributeSetInstance
 	
 	/**
 	 * AutoGenerate and save a new ASI for given product.
-	 * Automatically creates Lot#
+	 * Automatically creates Lot#.
 	 * @param ctx
 	 * @param product
 	 * @param trxName

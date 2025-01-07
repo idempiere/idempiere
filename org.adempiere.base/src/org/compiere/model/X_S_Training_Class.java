@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training_Class
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="S_Training_Class")
-public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Persistent 
+public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName)
@@ -62,6 +62,34 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_S_Training_Class (Properties ctx, String S_Training_Class_UU, String trxName)
+    {
+      super (ctx, S_Training_Class_UU, trxName);
+      /** if (S_Training_Class_UU == null)
+        {
+			setEndDate (new Timestamp( System.currentTimeMillis() ));
+			setM_Product_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+			setS_Training_Class_ID (0);
+			setS_Training_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_Training_Class (Properties ctx, String S_Training_Class_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_Training_Class_UU, trxName, virtualColumns);
+      /** if (S_Training_Class_UU == null)
+        {
+			setEndDate (new Timestamp( System.currentTimeMillis() ));
+			setM_Product_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+			setS_Training_Class_ID (0);
+			setS_Training_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_S_Training_Class (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +97,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -153,7 +181,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getStartDate()));
     }

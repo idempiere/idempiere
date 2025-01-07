@@ -24,13 +24,14 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Work Flow Commitment Block
  *	
  *  @author Jorg Janke
  *  @version $Id: MWFBlock.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
+ *  @deprecated not fully implemented, marked as inactive in dictionary
  */
+@Deprecated
 public class MWFBlock extends X_AD_WF_Block implements ImmutablePOSupport
 {
 	/**
@@ -73,6 +74,16 @@ public class MWFBlock extends X_AD_WF_Block implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MWFBlock>	s_cache	= new ImmutableIntPOCache<Integer,MWFBlock>(Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_Block_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFBlock(Properties ctx, String AD_WF_Block_UU, String trxName) {
+        super(ctx, AD_WF_Block_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

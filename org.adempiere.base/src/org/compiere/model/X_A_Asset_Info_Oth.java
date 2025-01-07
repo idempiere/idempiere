@@ -19,19 +19,19 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for A_Asset_Info_Oth
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Info_Oth")
-public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Persistent 
+public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Oth (Properties ctx, int A_Asset_Info_Oth_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Info_Oth (Properties ctx, String A_Asset_Info_Oth_UU, String trxName)
+    {
+      super (ctx, A_Asset_Info_Oth_UU, trxName);
+      /** if (A_Asset_Info_Oth_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Oth_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Info_Oth (Properties ctx, String A_Asset_Info_Oth_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Info_Oth_UU, trxName, virtualColumns);
+      /** if (A_Asset_Info_Oth_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Oth_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Info_Oth (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -79,7 +101,7 @@ public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_A_Asset_Info_Oth[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -126,12 +148,12 @@ public class X_A_Asset_Info_Oth extends PO implements I_A_Asset_Info_Oth, I_Pers
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Info_Oth_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getA_Asset_Info_Oth_ID()));
     }
 
 	/** Set A_Asset_Info_Oth_UU.

@@ -19,14 +19,14 @@ import org.compiere.model.MQuery;
 import org.compiere.model.PO;
 
 /**
- * 
+ * Interface for zoom target provider.
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194 ] Advanced Zoom and
  *         RelationTypes
  */
 public interface IZoomProvider {
 
 	/**
-	 * 
+	 * Discover zoom targets for po
 	 * @param po
 	 *            the po we need zoom targets for
 	 * @return a list of zoom targets. The {@link MQuery#getRecordCount()} of

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ToolBarButton
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ToolBarButton")
-public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Persistent 
+public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -77,6 +77,50 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ToolBarButton (Properties ctx, String AD_ToolBarButton_UU, String trxName)
+    {
+      super (ctx, AD_ToolBarButton_UU, trxName);
+      /** if (AD_ToolBarButton_UU == null)
+        {
+			setAction (null);
+// W
+			setAD_ToolBarButton_ID (0);
+			setComponentName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAddSeparator (false);
+// N
+			setIsAdvancedButton (false);
+// N
+			setIsCustomization (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ToolBarButton (Properties ctx, String AD_ToolBarButton_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ToolBarButton_UU, trxName, virtualColumns);
+      /** if (AD_ToolBarButton_UU == null)
+        {
+			setAction (null);
+// W
+			setAD_ToolBarButton_ID (0);
+			setComponentName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAddSeparator (false);
+// N
+			setIsAdvancedButton (false);
+// N
+			setIsCustomization (false);
+// N
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ToolBarButton (Properties ctx, ResultSet rs, String trxName)
     {
@@ -84,7 +128,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -329,10 +373,10 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	public boolean isAddSeparator()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAddSeparator);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -352,10 +396,10 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	public boolean isAdvancedButton()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAdvancedButton);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -375,10 +419,10 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	public boolean isCustomization()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCustomization);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -397,10 +441,10 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	public boolean isShowMore()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowMore);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -463,7 +507,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

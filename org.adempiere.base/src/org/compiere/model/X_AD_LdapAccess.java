@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LdapAccess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_LdapAccess")
-public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent 
+public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_LdapAccess (Properties ctx, int AD_LdapAccess_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_LdapAccess (Properties ctx, String AD_LdapAccess_UU, String trxName)
+    {
+      super (ctx, AD_LdapAccess_UU, trxName);
+      /** if (AD_LdapAccess_UU == null)
+        {
+			setAD_LdapAccess_ID (0);
+			setAD_LdapProcessor_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LdapAccess (Properties ctx, String AD_LdapAccess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LdapAccess_UU, trxName, virtualColumns);
+      /** if (AD_LdapAccess_UU == null)
+        {
+			setAD_LdapAccess_ID (0);
+			setAD_LdapProcessor_ID (0);
+			setIsError (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_LdapAccess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -181,7 +205,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_User_ID()));
     }
@@ -216,10 +240,10 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

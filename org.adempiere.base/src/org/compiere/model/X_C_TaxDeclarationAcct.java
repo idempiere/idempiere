@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationAcct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDeclarationAcct")
-public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct, I_Persistent 
+public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationAcct (Properties ctx, int C_TaxDeclarationAcct_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_TaxDeclarationAcct (Properties ctx, String C_TaxDeclarationAcct_UU, String trxName)
+    {
+      super (ctx, C_TaxDeclarationAcct_UU, trxName);
+      /** if (C_TaxDeclarationAcct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_TaxDeclarationAcct_ID (0);
+			setC_TaxDeclaration_ID (0);
+			setFact_Acct_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDeclarationAcct (Properties ctx, String C_TaxDeclarationAcct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDeclarationAcct_UU, trxName, virtualColumns);
+      /** if (C_TaxDeclarationAcct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_TaxDeclarationAcct_ID (0);
+			setC_TaxDeclaration_ID (0);
+			setFact_Acct_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_TaxDeclarationAcct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

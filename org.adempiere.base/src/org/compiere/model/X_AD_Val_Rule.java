@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Val_Rule
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Val_Rule")
-public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent 
+public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Val_Rule (Properties ctx, String AD_Val_Rule_UU, String trxName)
+    {
+      super (ctx, AD_Val_Rule_UU, trxName);
+      /** if (AD_Val_Rule_UU == null)
+        {
+			setAD_Val_Rule_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Val_Rule (Properties ctx, String AD_Val_Rule_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Val_Rule_UU, trxName, virtualColumns);
+      /** if (AD_Val_Rule_UU == null)
+        {
+			setAD_Val_Rule_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Val_Rule (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -196,7 +224,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

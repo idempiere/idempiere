@@ -104,6 +104,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		appendChild(div);
 		Label nameLabel = new Label();
 		nameLabel.setText(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Name) + ": ");
+		nameLabel.setTooltiptext(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description));
 		String nameColorStyle = "";
 		int Name_PrintColor_ID = m_documentStatus.getName_PrintColor_ID();
 		if (Name_PrintColor_ID > 0) {

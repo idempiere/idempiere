@@ -32,17 +32,26 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+
 /**
- *
+ * Freight category model
  * @author Daniel Tamm
  */
 public class MFreightCategory extends X_M_FreightCategory {
-
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4790439008800915010L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_FreightCategory_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MFreightCategory(Properties ctx, String M_FreightCategory_UU, String trxName) {
+        super(ctx, M_FreightCategory_UU, trxName);
+    }
 
 	/**
      * Default constructor 
@@ -65,8 +74,7 @@ public class MFreightCategory extends X_M_FreightCategory {
     public MFreightCategory(Properties ctx, ResultSet rs, String trxName) {
         super(ctx, rs, trxName);
     }
-    
-    
+        
     /**
      * Reads a freight category from database based on the value (key) of the category.
      * No cache is used.

@@ -47,9 +47,9 @@ import io.github.classgraph.ClassGraph.ScanResultProcessor;
 import io.github.classgraph.ClassInfo;
 
 /**
- * 
+ * Abstract base class for annotation driven implementation of {@link IColumnCalloutFactory}.<br/>
+ * Subclass would override the {@link #getPackages()} method to provide the packages for {@link Callout} annotation scanning and discovery.
  * @author hengsin
- *
  */
 public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBasedFactory implements IColumnCalloutFactory {
 
@@ -98,6 +98,12 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 		return callouts.toArray(new IColumnCallout[0]);
 	}
 
+	/**
+	 * Create new callout instance using reflection and add it to the callouts list
+	 * @param callouts
+	 * @param classLoader
+	 * @param calloutClassNames
+	 */
 	private void newCalloutInstance(List<IColumnCallout> callouts, ClassLoader classLoader,
 			List<String> calloutClassNames) {
 		for(String calloutClass : calloutClassNames) {
@@ -136,6 +142,11 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 	 */
 	protected abstract String[] getPackages();
 	
+	/**
+	 * Perform annotation scanning upon activation of component
+	 * @param context
+	 * @throws ClassNotFoundException
+	 */
 	@Activate
 	public void activate(ComponentContext context) throws ClassNotFoundException {
 		long start = System.currentTimeMillis();
@@ -179,6 +190,11 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 		graph.scanAsync(getExecutorService(), getMaxThreads(), scanResultProcessor, getScanFailureHandler());
 	}
 
+	/**
+	 * Process class annotation and register column callout.
+	 * @param className
+	 * @param annotationInfo
+	 */
 	private void processAnnotation(String className, AnnotationInfo annotationInfo) {
 		//not sure why but sometime ClassGraph return Object[] instead of the expected String[]
 		Object[] tableNames = (Object[]) annotationInfo.getParameterValues().getValue("tableName");
@@ -232,6 +248,12 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 		}
 	}
 
+	/**
+	 * add callout for column names
+	 * @param className
+	 * @param columnNames
+	 * @param columnNameMap
+	 */
 	private void addCallout(String className, Object[] columnNames, Map<String, List<String>> columnNameMap) {
 		for (Object columnName : columnNames) {
 			List<String> callouts = columnNameMap.get(columnName);
@@ -243,6 +265,11 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 		}
 	}
 
+	/**
+	 * add global callout (for all columns) 
+	 * @param className
+	 * @param columnNameMap
+	 */
 	private void addCallout(String className, Map<String, List<String>> columnNameMap) {
 		List<String> callouts = columnNameMap.get("*");
 		if (callouts == null ) {

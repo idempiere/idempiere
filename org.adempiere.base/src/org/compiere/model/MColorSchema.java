@@ -28,7 +28,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- * 	Performance Color Schema
+ * 	Color Schema for Performance Measurement
  *	
  *  @author Jorg Janke
  *  @version $Id: MColorSchema.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
@@ -36,7 +36,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3730457542399382168L;
 
@@ -76,7 +76,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	}	//	getColor
 
 	/**
-	 * 	Get MColorSchema from Cache
+	 * 	Get MColorSchema from Cache (Immutable)
 	 *	@param PA_ColorSchema_ID id
 	 *	@return MColorSchema
 	 */
@@ -86,7 +86,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get MColorSchema from Cache
+	 * 	Get MColorSchema from Cache (Immutable)
 	 *	@param ctx context
 	 *	@param PA_ColorSchema_ID id
 	 *	@return MColorSchema
@@ -131,6 +131,16 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MColorSchema> s_cache 
 		= new ImmutableIntPOCache<Integer, MColorSchema> (Table_Name, 20);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_ColorSchema_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MColorSchema(Properties ctx, String PA_ColorSchema_UU, String trxName) {
+        super(ctx, PA_ColorSchema_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -154,7 +164,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	}	//	MColorSchema
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MColorSchema(MColorSchema copy) 
@@ -163,7 +173,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -173,7 +183,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -186,7 +196,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	
 	/**
 	 * 	Set Default.
-	 * 	Red (50) - Yellow (100) - Green
+	 * 	Red (50) - Yellow (100) - Green (101 - 9999)
 	 */
 	public void setDefault()
 	{
@@ -204,6 +214,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getMark1Percent() > getMark2Percent())
@@ -217,8 +228,8 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	}	//	beforeSave
 	
 	/**
-	 * 	Get Color
-	 *	@param percent percent
+	 * 	Get color for percent
+	 *	@param percent percentage
 	 *	@return color
 	 */
 	public Color getColor (int percent)
@@ -254,6 +265,7 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MColorSchema[");

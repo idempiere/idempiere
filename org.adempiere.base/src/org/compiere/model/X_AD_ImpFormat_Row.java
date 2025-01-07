@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImpFormat_Row
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ImpFormat_Row")
-public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Persistent 
+public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat_Row (Properties ctx, int AD_ImpFormat_Row_ID, String trxName)
@@ -71,6 +71,44 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ImpFormat_Row (Properties ctx, String AD_ImpFormat_Row_UU, String trxName)
+    {
+      super (ctx, AD_ImpFormat_Row_UU, trxName);
+      /** if (AD_ImpFormat_Row_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_ImpFormat_ID (0);
+			setAD_ImpFormat_Row_ID (0);
+			setDataType (null);
+			setDecimalPoint (null);
+// .
+			setDivideBy100 (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_ImpFormat_Row WHERE AD_ImpFormat_ID=@AD_ImpFormat_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ImpFormat_Row (Properties ctx, String AD_ImpFormat_Row_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ImpFormat_Row_UU, trxName, virtualColumns);
+      /** if (AD_ImpFormat_Row_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_ImpFormat_ID (0);
+			setAD_ImpFormat_Row_ID (0);
+			setDataType (null);
+			setDecimalPoint (null);
+// .
+			setDivideBy100 (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_ImpFormat_Row WHERE AD_ImpFormat_ID=@AD_ImpFormat_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ImpFormat_Row (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +116,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -295,10 +333,10 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	public boolean isDivideBy100()
 	{
 		Object oo = get_Value(COLUMNNAME_DivideBy100);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -357,7 +395,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

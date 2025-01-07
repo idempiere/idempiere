@@ -25,11 +25,12 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Warehouse Locator Object
+ *	Warehouse Locator Model
  *
  *  @author 	Jorg Janke
  *  @author victor.perez@e-evolution.com
@@ -39,12 +40,12 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MLocator extends X_M_Locator implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 539879105479299988L;
 
 	/**
-	 * 	Get oldest Default Locator of warehouse with locator
+	 * 	Get oldest Default Locator of warehouse for M_Locator_ID
 	 *	@param ctx context
 	 *	@param M_Locator_ID locator
 	 *	@return locator or null
@@ -82,8 +83,7 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	}	//	getDefault
 	
 	/**
-	 *  FR  [ 1966333 ]
-	 * 	Get oldest Default Locator of warehouse with locator
+	 * 	Get highest priority default Locator of warehouse (smaller PriorityNo is of higher priority)
 	 *  @param warehouse
 	 *	@return locator or null
 	 */
@@ -117,21 +117,30 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 		return retValue;
 	}	//	getDefault
 	
-	
+	/**
+	 * Get the Locator with the combination or create new one (if user has permission)
+	 * @param ctx
+	 * @param M_Warehouse_ID
+	 * @param Value
+	 * @param X
+	 * @param Y
+	 * @param Z
+	 * @return locator (or null if no existing locator and user has no insert permission on MLocator)
+	 */
 	 public static MLocator get (Properties ctx, int M_Warehouse_ID, String Value,
 			 String X, String Y, String Z) {
 		 return get (ctx, M_Warehouse_ID, Value, X, Y, Z, 0);
 	 }
 
 	 /**
-	 * 	Get the Locator with the combination or create new one (when user has permission)
+	 * 	Get the Locator with the combination or create new one (if user has permission)
 	 *	@param ctx Context
 	 *	@param M_Warehouse_ID warehouse
 	 *	@param Value value
 	 *	@param X x
 	 *	@param Y y
 	 *	@param Z z
-	 * 	@return locator (or null when no insert permission on MLocator)
+	 * 	@return locator (or null if no existing locator and user has no insert permission on MLocator)
 	 */
 	 public static MLocator get (Properties ctx, int M_Warehouse_ID, String Value,
 		 String X, String Y, String Z, int M_LocatorType_ID)
@@ -236,9 +245,20 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	 
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MLocator.class);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Locator_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLocator(Properties ctx, String M_Locator_UU, String trxName) {
+        super(ctx, M_Locator_UU, trxName);
+		if (Util.isEmpty(M_Locator_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Locator Constructor
 	 *	@param ctx Context
 	 *	@param M_Locator_ID id
@@ -248,11 +268,16 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	{
 		super (ctx, M_Locator_ID, trxName);
 		if (M_Locator_ID == 0)
-		{
-			setIsDefault (false);
-			setPriorityNo (50);
-		}
+			setInitialDefaults();
 	}	//	MLocator
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+		setPriorityNo (50);
+	}
 
 	/**
 	 * 	New Locator Constructor with XYZ=000
@@ -280,7 +305,7 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	}	//	MLocator
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MLocator(MLocator copy) 
@@ -289,7 +314,7 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -299,7 +324,7 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -348,9 +373,9 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	}	//	getWarehouseName
 
 	/**
-	 * 	Can Locator Store Product
+	 * 	No op, always return true
 	 *	@param M_Product_ID id
-	 *	@return true if can be stored
+	 *	@return No op, always return true
 	 */
 	public boolean isCanStoreProduct (int M_Product_ID)
 	{

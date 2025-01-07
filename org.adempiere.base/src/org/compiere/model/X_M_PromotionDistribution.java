@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionDistribution
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionDistribution")
-public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistribution, I_Persistent 
+public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistribution, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName)
@@ -70,6 +70,42 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_PromotionDistribution (Properties ctx, String M_PromotionDistribution_UU, String trxName)
+    {
+      super (ctx, M_PromotionDistribution_UU, trxName);
+      /** if (M_PromotionDistribution_UU == null)
+        {
+			setDistributionType (null);
+			setM_PromotionDistribution_ID (0);
+			setM_Promotion_ID (0);
+			setM_PromotionLine_ID (0);
+			setOperation (null);
+			setQty (Env.ZERO);
+// 0
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM M_PromotionDistribution WHERE M_Promotion_ID=@M_Promotion_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionDistribution (Properties ctx, String M_PromotionDistribution_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionDistribution_UU, trxName, virtualColumns);
+      /** if (M_PromotionDistribution_UU == null)
+        {
+			setDistributionType (null);
+			setM_PromotionDistribution_ID (0);
+			setM_Promotion_ID (0);
+			setM_PromotionLine_ID (0);
+			setOperation (null);
+			setQty (Env.ZERO);
+// 0
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM M_PromotionDistribution WHERE M_Promotion_ID=@M_Promotion_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_M_PromotionDistribution (Properties ctx, ResultSet rs, String trxName)
     {
@@ -77,7 +113,7 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

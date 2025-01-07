@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for I_BankStatement
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_BankStatement")
-public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persistent 
+public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_BankStatement (Properties ctx, int I_BankStatement_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_BankStatement (Properties ctx, String I_BankStatement_UU, String trxName)
+    {
+      super (ctx, I_BankStatement_UU, trxName);
+      /** if (I_BankStatement_UU == null)
+        {
+			setI_BankStatement_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_BankStatement (Properties ctx, String I_BankStatement_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_BankStatement_UU, trxName, virtualColumns);
+      /** if (I_BankStatement_UU == null)
+        {
+			setI_BankStatement_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_BankStatement (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -717,10 +739,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -791,10 +813,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public boolean isReversal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReversal);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -912,10 +934,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -934,10 +956,10 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

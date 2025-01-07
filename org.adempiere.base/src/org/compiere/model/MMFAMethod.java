@@ -22,7 +22,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz (sponsored by FH)                                     *
  **********************************************************************/
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -39,9 +38,19 @@ import org.compiere.util.CCache;
  */
 public class MMFAMethod extends X_MFA_Method {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7954271872310037840L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param MFA_Method_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMFAMethod(Properties ctx, String MFA_Method_UU, String trxName) {
+        super(ctx, MFA_Method_UU, trxName);
+    }
 
 	/**
 	 * Read/Create empty MFA Method
@@ -66,8 +75,8 @@ public class MMFAMethod extends X_MFA_Method {
 	} // MMFAMethod
 
 	/**
-	 * 
-	 * @return {@link IMFAMechanism}
+	 * Get OSGi IMFAMechanism service 
+	 * @return {@link IMFAMechanism} service
 	 */
 	public IMFAMechanism getMFAMechanism() {
 		ServiceQuery query = new ServiceQuery();
@@ -84,9 +93,9 @@ public class MMFAMethod extends X_MFA_Method {
 	private static CCache<ServiceQuery, IServiceReferenceHolder<IMFAMechanism>> s_MFAMechanismReference = new CCache<>(null, "IMFAMechanism", 3, false);
 	
 	/**
-	 * 
+	 * Get OSGi IMFAMechanism service
 	 * @param query
-	 * @return {@link IMFAMechanism}
+	 * @return {@link IMFAMechanism} service
 	 */
 	public static IMFAMechanism getMFAMechanismService(ServiceQuery query) {
 		IMFAMechanism mechanism = null;

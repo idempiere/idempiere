@@ -32,7 +32,7 @@ import org.compiere.util.Env;
 public class MConversionType extends X_C_ConversionType
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7198388106444590667L;
 
@@ -74,7 +74,17 @@ public class MConversionType extends X_C_ConversionType
 	/**	Cache Client-ID					*/
 	private static CCache<Integer,Integer> s_cache = new CCache<Integer,Integer>(Table_Name, 4);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_ConversionType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MConversionType(Properties ctx, String C_ConversionType_UU, String trxName) {
+        super(ctx, C_ConversionType_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_ConversionType_ID id
@@ -97,7 +107,7 @@ public class MConversionType extends X_C_ConversionType
 	}	//	MConversionType
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MConversionType(MConversionType copy) 
@@ -106,7 +116,7 @@ public class MConversionType extends X_C_ConversionType
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -116,7 +126,7 @@ public class MConversionType extends X_C_ConversionType
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -127,6 +137,12 @@ public class MConversionType extends X_C_ConversionType
 		copyPO(copy);
 	}
 
+	/**
+	 * @param ctx
+	 * @param C_ConversionType_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MConversionType(Properties ctx, int C_ConversionType_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_ConversionType_ID, trxName, virtualColumns);
 	}

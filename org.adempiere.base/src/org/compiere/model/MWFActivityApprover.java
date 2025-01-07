@@ -8,6 +8,16 @@ public class MWFActivityApprover extends X_AD_WF_ActivityApprover {
 
     private static final long serialVersionUID = -7135169624317070006L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_ActivityApprover_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFActivityApprover(Properties ctx, String AD_WF_ActivityApprover_UU, String trxName) {
+        super(ctx, AD_WF_ActivityApprover_UU, trxName);
+    }
+
     public MWFActivityApprover(Properties ctx, int AD_WF_ActivityApprover_ID, String trxName) {
         super(ctx, AD_WF_ActivityApprover_ID, trxName);
     }

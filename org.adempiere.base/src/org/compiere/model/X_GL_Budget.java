@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Budget
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_Budget")
-public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent 
+public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_Budget (Properties ctx, int GL_Budget_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_Budget (Properties ctx, String GL_Budget_UU, String trxName)
+    {
+      super (ctx, GL_Budget_UU, trxName);
+      /** if (GL_Budget_UU == null)
+        {
+			setGL_Budget_ID (0);
+			setIsPrimary (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Budget (Properties ctx, String GL_Budget_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Budget_UU, trxName, virtualColumns);
+      /** if (GL_Budget_UU == null)
+        {
+			setGL_Budget_ID (0);
+			setIsPrimary (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_Budget (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -175,10 +199,10 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	public boolean isPrimary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrimary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -203,7 +227,7 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

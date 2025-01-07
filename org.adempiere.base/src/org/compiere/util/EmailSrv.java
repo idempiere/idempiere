@@ -57,14 +57,12 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAuthorizationAccount;
 
 /**
- * provide function for sent, receive email in imap protocol
- * current only support receive email, for sent email refer {@link org.compiere.util.EMail}
- * in case internet line is slow, handle error when analysis message by fetch message part when need can complicate.
- * consider to add flag fetch all message at one time (with retry when error).
- * after that, analysis offline message.
+ * Provide function for sent, receive email in imap protocol.<br/>
+ * Current only support receive email, for sent email refer {@link org.compiere.util.EMail}.<br/>
+ * In case internet line is slow, handling error during analysis of message by fetching message in part can have complication.<br/>
+ * Consider to add flag to fetch all message at one time (with retry when error) and after fetching, analysis fetched message offline.
  * http://www.oracle.com/technetwork/java/javamail/faq/index.html#imapserverbug    
  * @author hieplq base in RequestEMailProcessor
- *
  */
 public class EmailSrv {
 	protected transient static CLogger		log = CLogger.getCLogger (EmailSrv.class);
@@ -957,7 +955,7 @@ public class EmailSrv {
 		 */
 		public List<BodyPart> lsEmbedPart = new ArrayList<BodyPart>();
 		/**
-		 * list part unknow to process
+		 * list part unknown to process
 		 */
 		public List<Part> lsUnknowPart = new ArrayList<Part>();
 		

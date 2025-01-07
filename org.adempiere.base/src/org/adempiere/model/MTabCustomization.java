@@ -1,3 +1,27 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.model;
 
 import java.sql.ResultSet;
@@ -7,31 +31,49 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_Tab_Customization;
 import org.compiere.util.Util;
 
+/**
+ * Extended model class for AD_Tab_Customization
+ */
 public class MTabCustomization extends X_AD_Tab_Customization {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7401493734354775112L;
 
+	/**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Tab_Customization_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTabCustomization(Properties ctx, String AD_Tab_Customization_UU, String trxName) {
+        super(ctx, AD_Tab_Customization_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param AD_Tab_Customization_ID
+     * @param trxName
+     */
 	public MTabCustomization(Properties ctx, int AD_Tab_Customization_ID, String trxName) {
 		super(ctx, AD_Tab_Customization_ID, trxName);
-		if (AD_Tab_Customization_ID == 0)
-		{
-			setIsActive(true); 
-			
-		}		
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MTabCustomization(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 	
 	/**
-	 * 
 	 * @param ctx
 	 * @param AD_User_ID
 	 * @param AD_Tab_ID
 	 * @param trxName
+	 * @return MTabCustomization
 	 */
 	public static MTabCustomization get(Properties ctx, int AD_User_ID, int AD_Tab_ID, String trxName) {
 		return get(ctx, AD_User_ID, AD_Tab_ID, trxName, false);
@@ -43,7 +85,7 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	 * @param AD_Tab_ID
 	 * @param trxName
 	 * @param isQuickForm
-	 * @return
+	 * @return MTabCustomization
 	 */
 	public static MTabCustomization get(Properties ctx, int AD_User_ID, int AD_Tab_ID, String trxName, boolean isQuickForm) {
 		Query query = new Query(ctx, Table_Name, "AD_User_ID=? AND AD_Tab_ID=? AND IsQuickForm=?", trxName);

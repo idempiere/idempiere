@@ -28,7 +28,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
 /**
- * 	Enitity Type Model
+ * 	Entity Type Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MEntityType.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
@@ -44,7 +44,7 @@ import org.idempiere.cache.ImmutablePOCache;
 public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7160389442572466581L;
 
@@ -86,7 +86,17 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MEntityType.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_EntityType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MEntityType(Properties ctx, String AD_EntityType_UU, String trxName) {
+        super(ctx, AD_EntityType_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_EntityType_ID id
@@ -109,7 +119,7 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	}	//	MEntityType
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MEntityType(MEntityType copy) 
@@ -118,7 +128,7 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -128,7 +138,7 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -161,6 +171,7 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true if it can be saved
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (!newRecord)
@@ -195,6 +206,7 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	 * 	Before Delete
 	 *	@return true if it can be deleted
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		if (isSystemMaintained())	//	all pre-defined

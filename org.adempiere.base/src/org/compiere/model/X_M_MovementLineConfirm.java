@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementLineConfirm
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementLineConfirm")
-public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfirm, I_Persistent 
+public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfirm, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_MovementLineConfirm (Properties ctx, int M_MovementLineConfirm_ID, String trxName)
@@ -69,6 +69,40 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_MovementLineConfirm (Properties ctx, String M_MovementLineConfirm_UU, String trxName)
+    {
+      super (ctx, M_MovementLineConfirm_UU, trxName);
+      /** if (M_MovementLineConfirm_UU == null)
+        {
+			setConfirmedQty (Env.ZERO);
+			setDifferenceQty (Env.ZERO);
+			setM_MovementConfirm_ID (0);
+			setM_MovementLineConfirm_ID (0);
+			setM_MovementLine_ID (0);
+			setProcessed (false);
+			setScrappedQty (Env.ZERO);
+			setTargetQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MovementLineConfirm (Properties ctx, String M_MovementLineConfirm_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MovementLineConfirm_UU, trxName, virtualColumns);
+      /** if (M_MovementLineConfirm_UU == null)
+        {
+			setConfirmedQty (Env.ZERO);
+			setDifferenceQty (Env.ZERO);
+			setM_MovementConfirm_ID (0);
+			setM_MovementLineConfirm_ID (0);
+			setM_MovementLine_ID (0);
+			setProcessed (false);
+			setScrappedQty (Env.ZERO);
+			setTargetQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_MovementLineConfirm (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +110,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -210,7 +244,7 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_MovementConfirm_ID()));
     }
@@ -294,10 +328,10 @@ public class X_M_MovementLineConfirm extends PO implements I_M_MovementLineConfi
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

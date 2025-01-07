@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ClientShare
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ClientShare")
-public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persistent 
+public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ClientShare (Properties ctx, int AD_ClientShare_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ClientShare (Properties ctx, String AD_ClientShare_UU, String trxName)
+    {
+      super (ctx, AD_ClientShare_UU, trxName);
+      /** if (AD_ClientShare_UU == null)
+        {
+			setAD_ClientShare_ID (0);
+			setAD_Table_ID (0);
+			setName (null);
+			setShareType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ClientShare (Properties ctx, String AD_ClientShare_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ClientShare_UU, trxName, virtualColumns);
+      /** if (AD_ClientShare_UU == null)
+        {
+			setAD_ClientShare_ID (0);
+			setAD_Table_ID (0);
+			setName (null);
+			setShareType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ClientShare (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -187,7 +213,7 @@ public class X_AD_ClientShare extends PO implements I_AD_ClientShare, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

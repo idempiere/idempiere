@@ -24,22 +24,22 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_TrialBalance
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_TrialBalance")
-public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persistent 
+public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_T_TrialBalance (Properties ctx, int T_TrialBalance_ID, String trxName)
+    public X_T_TrialBalance (Properties ctx, String T_TrialBalance_UU, String trxName)
     {
-      super (ctx, T_TrialBalance_ID, trxName);
-      /** if (T_TrialBalance_ID == 0)
+      super (ctx, T_TrialBalance_UU, trxName);
+      /** if (T_TrialBalance_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setAmtAcctBalance (Env.ZERO);
@@ -53,10 +53,10 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
     }
 
     /** Standard Constructor */
-    public X_T_TrialBalance (Properties ctx, int T_TrialBalance_ID, String trxName, String ... virtualColumns)
+    public X_T_TrialBalance (Properties ctx, String T_TrialBalance_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, T_TrialBalance_ID, trxName, virtualColumns);
-      /** if (T_TrialBalance_ID == 0)
+      super (ctx, T_TrialBalance_UU, trxName, virtualColumns);
+      /** if (T_TrialBalance_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setAmtAcctBalance (Env.ZERO);
@@ -76,7 +76,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -93,7 +93,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_TrialBalance[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

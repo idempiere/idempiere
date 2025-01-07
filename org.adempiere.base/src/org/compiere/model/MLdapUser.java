@@ -16,7 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
-/*
+/**
  * MLdapUser, data object stores the user information such as userid,
  * password, organization and so on.
  */
@@ -37,7 +37,7 @@ public class MLdapUser
 	{
 	}
 	
-	/*
+	/**
 	 * Reset attributes
 	 */
 	public void reset()

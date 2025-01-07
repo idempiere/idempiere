@@ -30,6 +30,7 @@ import org.compiere.model.MAccountLookup;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.event.Event;
@@ -37,9 +38,9 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
- *
+ * Default editor for {@link DisplayType#Account}. <br/>
+ * Implemented with {@link Combinationbox} component and {@link WAccountDialog} dialog.
  * @author Low Heng Sin
- *
  */
 public class WAccountEditor extends WEditor implements ContextMenuListener
 {
@@ -112,7 +113,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	}
 	
 	/**
-	 *	Button - Start Dialog
+	 * Button - open {@link WAccountDialog}.
 	 */
 	public void cmd_button()
 	{
@@ -158,16 +159,16 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 				Clients.response(new AuScript(script));
 			}
 		});
-		//				
 	}	//	cmd_button
 
 	/**
-	 *	Text - try to find Alias or start Dialog
+	 * Process input text - try to find Alias or open Dialog
 	 */
 	public void cmd_text()
 	{
 		String text = getComponent().getText();
-		log.info("Text=" + text);
+		if (log.isLoggable(Level.INFO))
+			log.info("Text=" + text);
 		if (text == null || text.length() == 0 || text.equals("%"))
 		{
 			cmd_button();
@@ -224,8 +225,9 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		}
 		else
 			cmd_button();
-	}	//	actionPerformed
+	}	//	cmd_text
 
+	@Override
 	public void onEvent(Event event)
 	{
 		if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
@@ -238,17 +240,16 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
     }
 
-
 	@Override
 	public boolean isReadWrite() {
 		return getComponent().isEnabled();
 	}
-
 
 	@Override
 	public void setReadWrite(boolean readWrite) {

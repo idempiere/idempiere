@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoProcess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoProcess")
-public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persistent 
+public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -69,6 +69,42 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_InfoProcess (Properties ctx, String AD_InfoProcess_UU, String trxName)
+    {
+      super (ctx, AD_InfoProcess_UU, trxName);
+      /** if (AD_InfoProcess_UU == null)
+        {
+			setAD_InfoProcess_ID (0);
+			setAD_InfoProcess_UU (null);
+			setAD_Process_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setLayoutType (null);
+// B
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoProcess WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoProcess (Properties ctx, String AD_InfoProcess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoProcess_UU, trxName, virtualColumns);
+      /** if (AD_InfoProcess_UU == null)
+        {
+			setAD_InfoProcess_ID (0);
+			setAD_InfoProcess_UU (null);
+			setAD_Process_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setLayoutType (null);
+// B
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoProcess WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_InfoProcess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +112,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -220,7 +256,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Process_ID()));
     }

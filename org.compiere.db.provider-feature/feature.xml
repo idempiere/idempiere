@@ -2,7 +2,7 @@
 <feature
       id="org.compiere.db.provider.feature"
       label="Database Provider-feature"
-      version="10.0.0.qualifier"
+      version="11.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -26,6 +26,34 @@
 
    <plugin
          id="org.compiere.db.postgresql.provider"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.postgresql.jdbc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.zaxxer.HikariCP"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="wrapped.com.oracle.database.jdbc.ojdbc10"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.idempiere.tablepartition"
          download-size="0"
          install-size="0"
          version="0.0.0"

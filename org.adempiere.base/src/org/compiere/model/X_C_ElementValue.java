@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ElementValue
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ElementValue")
-public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persistent 
+public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ElementValue (Properties ctx, int C_ElementValue_ID, String trxName)
@@ -94,6 +94,66 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ElementValue (Properties ctx, String C_ElementValue_UU, String trxName)
+    {
+      super (ctx, C_ElementValue_UU, trxName);
+      /** if (C_ElementValue_UU == null)
+        {
+			setAccountSign (null);
+// N
+			setAccountType (null);
+// E
+			setC_Element_ID (0);
+			setC_ElementValue_ID (0);
+			setIsDetailBPartner (false);
+// N
+			setIsDetailProduct (false);
+// N
+			setIsSummary (false);
+			setName (null);
+			setPostActual (true);
+// Y
+			setPostBudget (true);
+// Y
+			setPostEncumbrance (true);
+// Y
+			setPostStatistical (true);
+// Y
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ElementValue (Properties ctx, String C_ElementValue_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ElementValue_UU, trxName, virtualColumns);
+      /** if (C_ElementValue_UU == null)
+        {
+			setAccountSign (null);
+// N
+			setAccountType (null);
+// E
+			setC_Element_ID (0);
+			setC_ElementValue_ID (0);
+			setIsDetailBPartner (false);
+// N
+			setIsDetailProduct (false);
+// N
+			setIsSummary (false);
+			setName (null);
+			setPostActual (true);
+// Y
+			setPostBudget (true);
+// Y
+			setPostEncumbrance (true);
+// Y
+			setPostStatistical (true);
+// Y
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ElementValue (Properties ctx, ResultSet rs, String trxName)
     {
@@ -101,7 +161,7 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -353,10 +413,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isBankAccount()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBankAccount);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -375,10 +435,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isDetailBPartner()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDetailBPartner);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -397,10 +457,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isDetailProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDetailProduct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -420,10 +480,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isDocControlled()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDocControlled);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -443,10 +503,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isForeignCurrency()
 	{
 		Object oo = get_Value(COLUMNNAME_IsForeignCurrency);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -466,10 +526,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -505,10 +565,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isPostActual()
 	{
 		Object oo = get_Value(COLUMNNAME_PostActual);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -528,10 +588,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isPostBudget()
 	{
 		Object oo = get_Value(COLUMNNAME_PostBudget);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -551,10 +611,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isPostEncumbrance()
 	{
 		Object oo = get_Value(COLUMNNAME_PostEncumbrance);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -574,10 +634,10 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public boolean isPostStatistical()
 	{
 		Object oo = get_Value(COLUMNNAME_PostStatistical);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -634,7 +694,7 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

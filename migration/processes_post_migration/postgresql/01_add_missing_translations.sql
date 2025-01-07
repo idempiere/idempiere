@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION add_missing_translations() RETURNS void as $func$
 DECLARE
+   suffix     VARCHAR (3);
    ins        VARCHAR (2000);
    sel        VARCHAR (2000);
    inssel     VARCHAR (4001);
@@ -12,19 +13,29 @@ BEGIN
                     SUBSTR (tablename, 1, LENGTH (tablename) - 4) as tablename
                FROM AD_TABLE
               WHERE tablename LIKE '%_Trl' AND isactive = 'Y'
-                    AND isview = 'N')
+                    AND isview = 'N'
+              ORDER BY tablename)
    LOOP
+      IF EXISTS (
+          SELECT 1
+              FROM AD_Column cl
+              JOIN AD_Table tb ON (cl.AD_Table_ID=tb.AD_Table_ID)
+              WHERE tb.TableName=t.tablename AND cl.IsKey='Y' AND cl.ColumnName LIKE '%_ID') THEN
+          suffix := '_id';
+      ELSE
+          suffix := '_uu';
+      END IF;
       ins :=
             'INSERT INTO '
          || t.tablename
          || '_TRL ('
          || 'ad_language,ad_client_id,ad_org_id,created,createdby,updated,updatedby,isactive,istranslated,'
          || t.tablename
-         || '_id';
+         || suffix;
       sel :=
             'SELECT l.ad_language,t.ad_client_id,t.ad_org_id,t.created,t.createdby,t.updated,t.updatedby,t.isactive,''N'' as istranslated,'
          || t.tablename
-         || '_id';
+         || suffix;
 
       SELECT ad_table_id
         INTO table_id
@@ -50,11 +61,11 @@ BEGIN
          || t.tablename
          || ' t, ad_language l WHERE l.issystemlanguage=''Y'' AND NOT EXISTS (SELECT 1 FROM '
          || t.tablename
-         || '_TRL b WHERE b.'
+         || '_Trl b WHERE b.'
          || t.tablename
-         || '_id=t.'
+         || suffix || '=t.'
          || t.tablename
-         || '_id AND b.AD_LANGUAGE=l.AD_LANGUAGE)';
+         || suffix || ' AND b.AD_LANGUAGE=l.AD_LANGUAGE)';
       inssel := TRIM (ins) || ' ' || TRIM (sel);
 
       EXECUTE inssel;

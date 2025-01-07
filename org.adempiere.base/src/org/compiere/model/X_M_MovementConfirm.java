@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementConfirm
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementConfirm")
-public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Persistent 
+public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_MovementConfirm (Properties ctx, int M_MovementConfirm_ID, String trxName)
@@ -69,6 +69,40 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_MovementConfirm (Properties ctx, String M_MovementConfirm_UU, String trxName)
+    {
+      super (ctx, M_MovementConfirm_UU, trxName);
+      /** if (M_MovementConfirm_UU == null)
+        {
+			setDocAction (null);
+			setDocStatus (null);
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setM_MovementConfirm_ID (0);
+			setM_Movement_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MovementConfirm (Properties ctx, String M_MovementConfirm_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MovementConfirm_UU, trxName, virtualColumns);
+      /** if (M_MovementConfirm_UU == null)
+        {
+			setDocAction (null);
+			setDocStatus (null);
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setM_MovementConfirm_ID (0);
+			setM_Movement_ID (0);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_MovementConfirm (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +110,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -241,7 +275,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -260,10 +294,10 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -376,10 +410,10 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -398,10 +432,10 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

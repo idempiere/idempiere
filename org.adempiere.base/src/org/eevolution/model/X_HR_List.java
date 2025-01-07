@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_List
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_List")
-public class X_HR_List extends PO implements I_HR_List, I_Persistent 
+public class X_HR_List extends PO implements I_HR_List, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_List (Properties ctx, int HR_List_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_List (Properties ctx, String HR_List_UU, String trxName)
+    {
+      super (ctx, HR_List_UU, trxName);
+      /** if (HR_List_UU == null)
+        {
+			setHR_List_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_List (Properties ctx, String HR_List_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_List_UU, trxName, virtualColumns);
+      /** if (HR_List_UU == null)
+        {
+			setHR_List_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_List (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -259,10 +281,10 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	public boolean isEmployee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmployee);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -287,7 +309,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

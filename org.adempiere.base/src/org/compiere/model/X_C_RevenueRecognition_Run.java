@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition_Run
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecognition_Run")
-public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecognition_Run, I_Persistent 
+public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecognition_Run, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Run (Properties ctx, int C_RevenueRecognition_Run_ID, String trxName)
@@ -60,6 +60,30 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_RevenueRecognition_Run (Properties ctx, String C_RevenueRecognition_Run_UU, String trxName)
+    {
+      super (ctx, C_RevenueRecognition_Run_UU, trxName);
+      /** if (C_RevenueRecognition_Run_UU == null)
+        {
+			setC_RevenueRecognition_Plan_ID (0);
+			setC_RevenueRecognition_Run_ID (0);
+			setRecognizedAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RevenueRecognition_Run (Properties ctx, String C_RevenueRecognition_Run_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RevenueRecognition_Run_UU, trxName, virtualColumns);
+      /** if (C_RevenueRecognition_Run_UU == null)
+        {
+			setC_RevenueRecognition_Plan_ID (0);
+			setC_RevenueRecognition_Run_ID (0);
+			setRecognizedAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_RevenueRecognition_Run (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +91,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -119,7 +143,7 @@ public class X_C_RevenueRecognition_Run extends PO implements I_C_RevenueRecogni
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_RevenueRecognition_Plan_ID()));
     }

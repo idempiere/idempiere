@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for ASP_Ref_List
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Ref_List")
-public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent 
+public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_ASP_Ref_List (Properties ctx, int ASP_Ref_List_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_ASP_Ref_List (Properties ctx, String ASP_Ref_List_UU, String trxName)
+    {
+      super (ctx, ASP_Ref_List_UU, trxName);
+      /** if (ASP_Ref_List_UU == null)
+        {
+			setAD_Reference_ID (0);
+			setAD_Ref_List_ID (0);
+			setASP_Level_ID (0);
+			setASP_Ref_List_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Ref_List (Properties ctx, String ASP_Ref_List_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Ref_List_UU, trxName, virtualColumns);
+      /** if (ASP_Ref_List_UU == null)
+        {
+			setAD_Reference_ID (0);
+			setAD_Ref_List_ID (0);
+			setASP_Level_ID (0);
+			setASP_Ref_List_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_ASP_Ref_List (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {

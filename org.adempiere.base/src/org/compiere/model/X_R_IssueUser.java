@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueUser
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueUser")
-public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent 
+public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_IssueUser (Properties ctx, int R_IssueUser_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_IssueUser (Properties ctx, String R_IssueUser_UU, String trxName)
+    {
+      super (ctx, R_IssueUser_UU, trxName);
+      /** if (R_IssueUser_UU == null)
+        {
+			setR_IssueUser_ID (0);
+			setUserName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_IssueUser (Properties ctx, String R_IssueUser_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_IssueUser_UU, trxName, virtualColumns);
+      /** if (R_IssueUser_UU == null)
+        {
+			setR_IssueUser_ID (0);
+			setUserName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_IssueUser (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -182,7 +204,7 @@ public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getUserName());
     }

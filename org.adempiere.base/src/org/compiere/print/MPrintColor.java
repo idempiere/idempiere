@@ -143,6 +143,18 @@ public class MPrintColor extends X_AD_PrintColor implements ImmutablePOSupport
 	}	//	get
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintColor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintColor(Properties ctx, String AD_PrintColor_UU, String trxName) {
+        super(ctx, AD_PrintColor_UU, trxName);
+		if (Util.isEmpty(AD_PrintColor_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *	Constructor
 	 *  @param ctx context
@@ -153,9 +165,16 @@ public class MPrintColor extends X_AD_PrintColor implements ImmutablePOSupport
 	{
 		super (ctx, AD_PrintColor_ID, trxName);
 		if (AD_PrintColor_ID == 0)
-			setIsDefault(false);
+			setInitialDefaults();
 	}	//	MPrintColor
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault(false);
+	}
+
 	public MPrintColor(Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);

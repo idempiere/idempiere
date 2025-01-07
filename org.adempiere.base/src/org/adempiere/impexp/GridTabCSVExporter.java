@@ -311,7 +311,10 @@ public class GridTabCSVExporter implements IGridTabExporter
 		}
 	}
 	
-	//add constraints to not allow certain tabs 
+	/**
+	 * @param gridTab
+	 * @return error message or null
+	 */
 	private String isValidTabToExport(GridTab gridTab){
 	    String result=null;
 	    
@@ -323,6 +326,13 @@ public class GridTabCSVExporter implements IGridTabExporter
 		return result;
 	}
 	
+	/**
+	 * @param currentDetRow current detail row number
+	 * @param tabMapDetails
+	 * @param headArray column headers
+	 * @param idxfld
+	 * @return Detail Row(Map{Column Header, Value})
+	 */
 	private Map<String, Object> resolveMasterDetailRow(int currentDetRow,Map<GridTab,GridField[]> tabMapDetails,List<String>headArray,int idxfld){
 		Map<String,Object> activeRow = new HashMap<String,Object>();
 		Object value = null;
@@ -410,6 +420,14 @@ public class GridTabCSVExporter implements IGridTabExporter
 	    return whereClau; 
 	}
 	
+	/**
+	 * @param gridTab
+	 * @param table
+	 * @param column
+	 * @param i row index
+	 * @param headName
+	 * @return column value
+	 */
 	private Object resolveValue(GridTab gridTab, MTable table, MColumn column, int i, String headName) {
 		Object value = null;
 		if (headName.indexOf("[") >= 0 && headName.endsWith("]")) {
@@ -437,6 +455,12 @@ public class GridTabCSVExporter implements IGridTabExporter
 		return value;
 	}
 	
+	/**
+	 * @param selectColumn
+	 * @param tableName
+	 * @param record_id
+	 * @return value of selectColumn
+	 */
 	private Object queryExecute(String selectColumn,String tableName,Object record_id){		
 		
 		StringBuilder select = new StringBuilder("SELECT ")
@@ -447,6 +471,11 @@ public class GridTabCSVExporter implements IGridTabExporter
 	    return DB.getSQLValueStringEx(null, select.toString(),record_id);
 	}
 	
+	/**
+	 * @param table
+	 * @param column
+	 * @return column header name
+	 */
 	private String resolveColumnName(MTable table, MColumn column) {
 		StringBuilder name = new StringBuilder(column.getColumnName());
 		if (DisplayType.isLookup(column.getAD_Reference_ID())) {
@@ -473,6 +502,11 @@ public class GridTabCSVExporter implements IGridTabExporter
 		return name.toString();
 	}
 	
+	/**
+	 * Resolve extra columns for displayType. Implemented for DisplayType.Location.   
+	 * @param displayType
+	 * @return list of extra columns to export
+	 */
 	private ArrayList<String> resolveSpecialColumnName(int displayType){
 		
 		ArrayList<String> specialColumnNames = new ArrayList<String>();
@@ -514,6 +548,11 @@ public class GridTabCSVExporter implements IGridTabExporter
 		return "application/csv";
 	}
 
+	/**
+	 * Get fields for export.
+	 * @param gridTab
+	 * @return fields for gridTab
+	 */
 	private GridField[] getFields (GridTab gridTab) {
 		GridTable tableModel = gridTab.getTableModel();
 		GridField[] tmpFields = tableModel.getFields();

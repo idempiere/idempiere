@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for QM_SpecificationLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="QM_SpecificationLine")
-public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine, I_Persistent 
+public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_QM_SpecificationLine (Properties ctx, int QM_SpecificationLine_ID, String trxName)
@@ -60,6 +60,32 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
         } */
     }
 
+    /** Standard Constructor */
+    public X_QM_SpecificationLine (Properties ctx, String QM_SpecificationLine_UU, String trxName)
+    {
+      super (ctx, QM_SpecificationLine_UU, trxName);
+      /** if (QM_SpecificationLine_UU == null)
+        {
+			setAndOr (null);
+			setM_Attribute_ID (0);
+			setOperation (null);
+			setQM_SpecificationLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_QM_SpecificationLine (Properties ctx, String QM_SpecificationLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, QM_SpecificationLine_UU, trxName, virtualColumns);
+      /** if (QM_SpecificationLine_UU == null)
+        {
+			setAndOr (null);
+			setM_Attribute_ID (0);
+			setOperation (null);
+			setQM_SpecificationLine_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_QM_SpecificationLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +93,7 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

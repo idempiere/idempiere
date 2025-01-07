@@ -20,19 +20,19 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for B_Buyer
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="B_Buyer")
-public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent 
+public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_B_Buyer (Properties ctx, int B_Buyer_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_B_Buyer (Properties ctx, String B_Buyer_UU, String trxName)
+    {
+      super (ctx, B_Buyer_UU, trxName);
+      /** if (B_Buyer_UU == null)
+        {
+			setAD_User_ID (0);
+			setName (null);
+			setValidTo (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_Buyer (Properties ctx, String B_Buyer_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_Buyer_UU, trxName, virtualColumns);
+      /** if (B_Buyer_UU == null)
+        {
+			setAD_User_ID (0);
+			setName (null);
+			setValidTo (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_B_Buyer (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -82,7 +106,7 @@ public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_B_Buyer[")
-        .append(get_ID()).append(",Name=").append(getName()).append("]");
+        .append(get_UUID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -161,12 +185,12 @@ public class X_B_Buyer extends PO implements I_B_Buyer, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), getName());
+        return new ValueNamePair(get_UUID(), getName());
     }
 
 	/** Set Valid to.

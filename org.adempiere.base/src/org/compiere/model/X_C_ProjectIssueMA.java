@@ -21,19 +21,19 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for C_ProjectIssueMA
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssueMA")
-public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Persistent 
+public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ProjectIssueMA (Properties ctx, int C_ProjectIssueMA_ID, String trxName)
@@ -59,6 +59,30 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ProjectIssueMA (Properties ctx, String C_ProjectIssueMA_UU, String trxName)
+    {
+      super (ctx, C_ProjectIssueMA_UU, trxName);
+      /** if (C_ProjectIssueMA_UU == null)
+        {
+			setC_ProjectIssue_ID (0);
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectIssueMA (Properties ctx, String C_ProjectIssueMA_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectIssueMA_UU, trxName, virtualColumns);
+      /** if (C_ProjectIssueMA_UU == null)
+        {
+			setC_ProjectIssue_ID (0);
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ProjectIssueMA (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +90,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -83,7 +107,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_ProjectIssueMA[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -115,12 +139,12 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_ProjectIssue_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getC_ProjectIssue_ID()));
     }
 
 	/** Set C_ProjectIssueMA_UU.

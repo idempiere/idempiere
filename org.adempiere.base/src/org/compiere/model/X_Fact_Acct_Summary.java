@@ -24,22 +24,22 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for Fact_Acct_Summary
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="Fact_Acct_Summary")
-public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Persistent 
+public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_Fact_Acct_Summary (Properties ctx, int Fact_Acct_Summary_ID, String trxName)
+    public X_Fact_Acct_Summary (Properties ctx, String Fact_Acct_Summary_UU, String trxName)
     {
-      super (ctx, Fact_Acct_Summary_ID, trxName);
-      /** if (Fact_Acct_Summary_ID == 0)
+      super (ctx, Fact_Acct_Summary_UU, trxName);
+      /** if (Fact_Acct_Summary_UU == null)
         {
 			setAccount_ID (0);
 			setAmtAcctCr (Env.ZERO);
@@ -53,10 +53,10 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
     }
 
     /** Standard Constructor */
-    public X_Fact_Acct_Summary (Properties ctx, int Fact_Acct_Summary_ID, String trxName, String ... virtualColumns)
+    public X_Fact_Acct_Summary (Properties ctx, String Fact_Acct_Summary_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, Fact_Acct_Summary_ID, trxName, virtualColumns);
-      /** if (Fact_Acct_Summary_ID == 0)
+      super (ctx, Fact_Acct_Summary_UU, trxName, virtualColumns);
+      /** if (Fact_Acct_Summary_UU == null)
         {
 			setAccount_ID (0);
 			setAmtAcctCr (Env.ZERO);
@@ -76,7 +76,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -93,7 +93,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_Fact_Acct_Summary[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -650,10 +650,10 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 	public boolean isPostingType()
 	{
 		Object oo = get_Value(COLUMNNAME_PostingType);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

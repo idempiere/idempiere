@@ -36,8 +36,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Thread safe PO cache. For thread safety, only PO with thread local context (po.getCtx() == Env.getCtx() and without trxName is keep in cache.
- * PO is mark immutable before being added to cache. If the pass in PO doesn't match the 2 condition, a copy of the PO is added to cache instead.
+ * Thread safe PO cache. For thread safety, only PO with thread local context (po.getCtx() == Env.getCtx() and without trxName is keep in cache.<br/>
+ * PO is mark immutable before being added to cache. If the pass in PO doesn't match the 2 condition, a copy of the PO is added to cache instead.<br/>
  * For get operation, if request is being make with non thread local context (ctx != Env.getCtx()) or with trxName, a copy of the PO from cache 
  * is return instead.
  * 
@@ -46,12 +46,11 @@ import org.compiere.util.Util;
 public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCache<K, V> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3342469152066078741L;
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -63,7 +62,6 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -74,7 +72,6 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -84,7 +81,6 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * 
 	 * @param name
 	 * @param initialCapacity
 	 */
@@ -93,7 +89,6 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -104,7 +99,6 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -118,7 +112,6 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -130,7 +123,6 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * 
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -145,8 +137,8 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 	}
 
 	/**
-	 * PO is mark immutable and add to cache if it is without trxName and with thread local context (i.e po.getCtx() == Env.getCtx()).
-	 * If neither of the condition is not true, a copy of the PO will be created and add to cache using the pass copyOperator or 
+	 * PO is mark immutable and add to cache if it is without trxName and with thread local context (i.e po.getCtx() == Env.getCtx()).<br/>
+	 * If either of the condition is not true, a copy of the PO will be created and add to cache using the pass in copyOperator or 
 	 * through copy constructor (through reflection) if copyOperator parameter is null (exception is throw if both copyOperator and
 	 * copy constructor is not available).
 	 * @param key
@@ -251,6 +243,17 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 		}
 	}
 
+	/**
+	 * Create a copy of value using copy constructor
+	 * @param ctx
+	 * @param value
+	 * @param trxName
+	 * @return copy of value or null
+	 * @throws NoSuchMethodException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@SuppressWarnings("unchecked")
 	private V copyOf(Properties ctx, V value, String trxName)
 			throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -263,6 +266,16 @@ public class ImmutablePOCache<K, V extends PO & ImmutablePOSupport> extends CCac
 		return null;
 	}
 	
+	/**
+	 * Create a copy of value using copy constructor
+	 * @param ctx
+	 * @param value
+	 * @return copy of value or null
+	 * @throws NoSuchMethodException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	@SuppressWarnings("unchecked")
 	private V copyOf(Properties ctx, V value)
 			throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {

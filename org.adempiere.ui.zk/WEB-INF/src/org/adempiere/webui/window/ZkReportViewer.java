@@ -16,19 +16,22 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
-import java.util.function.Supplier;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
@@ -43,13 +46,16 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
+import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -63,7 +69,6 @@ import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
-import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
@@ -76,6 +81,7 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -89,6 +95,7 @@ import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -97,8 +104,14 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.print.renderer.CSVReportRendererConfiguration;
+import org.idempiere.print.renderer.HTMLReportRendererConfiguration;
+import org.idempiere.print.renderer.PDFReportRendererConfiguration;
+import org.idempiere.print.renderer.XLSReportRendererConfiguration;
+import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
+import org.idempiere.ui.zk.report.IReportViewerRenderer;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
@@ -131,7 +144,7 @@ import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *	Print View Frame
+ *	Report Viewer.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Viewer.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
@@ -148,22 +161,19 @@ import org.zkoss.zul.impl.XulElement;
  * @author Low Heng Sin
  */
 public class ZkReportViewer extends Window implements EventListener<Event>, IReportViewerExportSource {
-
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6307014622485159910L;
-	
-	protected static final String CSV_OUTPUT_TYPE = "CSV";	
-	protected static final String HTML_OUTPUT_TYPE = "HTML";	
-	protected static final String PDF_OUTPUT_TYPE = "PDF";
-	protected static final String XLS_OUTPUT_TYPE = "XLS";	
-	protected static final String XLSX_OUTPUT_TYPE = "XLSX";
+	private static final long serialVersionUID = 3732290698059632847L;
+
+	protected static final String CSV_OUTPUT_TYPE = CSVReportRendererConfiguration.ID;
+	protected static final String HTML_OUTPUT_TYPE = HTMLReportRendererConfiguration.ID;	
+	protected static final String PDF_OUTPUT_TYPE = PDFReportRendererConfiguration.ID;
+	protected static final String XLS_OUTPUT_TYPE = XLSReportRendererConfiguration.ID;	
+	protected static final String XLSX_OUTPUT_TYPE = XLSXReportRendererConfiguration.ID;
 
 	/** Window No					*/
 	protected int                 m_WindowNo = -1;
-	private long prevKeyEventTime = 0;
-	private KeyEvent prevKeyEvent;
 	/**	Print Context				*/
 	private Properties			m_ctx;
 	/**	Setting Values				*/
@@ -197,6 +207,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private Listbox comboReport = new Listbox();
 	private Listitem previousSelected = new Listitem();
 	private WTableDirEditor wLanguage;
+	/** List box for preview type (pdf, html, etc) */
 	protected Listbox previewType = new Listbox();
 	
 	private ToolBarButton bRefresh = new ToolBarButton();
@@ -221,27 +232,23 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
-
-	private final ExportFormat[] exportFormats = new ExportFormat[] {
-		new ExportFormat(POSTSCRIPT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE),
-		new ExportFormat(XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXML"), XML_FILE_EXT, XML_MIME_TYPE),
-		new ExportFormat(PDF_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePDF"), PDF_FILE_EXT, PDF_MIME_TYPE),
-		new ExportFormat(HTML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileHTML"), HTML_FILE_EXT, HTML_MIME_TYPE),
-		new ExportFormat(TEXT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileTXT"), TEXT_FILE_EXT, TEXT_MIME_TYPE),
-		new ExportFormat(SSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), SSV_FILE_EXT, CSV_MIME_TYPE),
-		new ExportFormat(CSV_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), CSV_FILE_EXT, CSV_MIME_TYPE),
-		new ExportFormat(EXCEL_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), EXCEL_FILE_EXT, EXCEL_MIME_TYPE),
-		new ExportFormat(EXCEL_XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE)	
-	};
+	/** Row count label */
+	private Label rowCount;
 	
-	private final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
+	private final Map<ExportFormat, String> exportMap = new LinkedHashMap<>();
+	private final Map<String, IReportViewerRenderer> rendererMap = new TreeMap<>();
 
 	private Center center;
 
 	private FindWindow find;
 	/**
-	 * 	Static Layout
-	 * 	@throws Exception
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+
+	/**
+	 * @param re
+	 * @param title
 	 */
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
@@ -270,131 +277,37 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		initMediaSuppliers();
 	}
 
-	private String toMediaType(String contentType, String fileExtension) {
-		return contentType + ";" + fileExtension;
+	/**
+	 * @param contentType
+	 * @param fileExtension
+	 * @return renderer id
+	 */
+	private String toRendererId(String contentType, String fileExtension) {
+		for(Map.Entry<ExportFormat, String> entry : exportMap.entrySet()) {
+			if (entry.getKey().contentType.equals(contentType) && entry.getKey().extension.equals(fileExtension))
+				return entry.getValue();
+		}
+		return null;
 	}
 	
+	/**
+	 * Create media supplier for supported format (pdf, html, etc)
+	 */
 	private void initMediaSuppliers() {
-		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
-			try {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(m_reportEngine.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = FileUtil.createTempFile(prefix, "."+PDF_FILE_EXT, new File(path));
-				m_reportEngine.createPDF(file);
-				return new AMedia(file.getName(), PDF_FILE_EXT, PDF_MIME_TYPE, file, true);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
+		List<IReportViewerRenderer> renderers = Extensions.getReportViewerRenderers();
+		Collections.sort(renderers, new Comparator<IReportViewerRenderer>() {
+			@Override
+			public int compare(IReportViewerRenderer r1, IReportViewerRenderer r2) {
+				return r1.getExportLabel().compareTo(r2.getExportLabel());
 			}
 		});
-		
-		mediaSuppliers.put(toMediaType(HTML_MIME_TYPE, HTML_FILE_EXT), () -> {
-			try {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(m_reportEngine.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = FileUtil.createTempFile(prefix, "."+HTML_FILE_EXT, new File(path));
-				String contextPath = Executions.getCurrent().getContextPath();
-				m_reportEngine.createHTML(file, false, m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", getUuid()));
-				return new AMedia(file.getName(), HTML_FILE_EXT, HTML_MIME_TYPE, file, false);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
+		for(IReportViewerRenderer renderer : renderers) {
+			if (renderer.isExport()) { 
+				ExportFormat exportFormat = new ExportFormat(renderer.getExportLabel(), renderer.getFileExtension(), renderer.getContentType());
+				exportMap.put(exportFormat, renderer.getId());
 			}
-		});
-		
-		mediaSuppliers.put(toMediaType(EXCEL_MIME_TYPE, EXCEL_FILE_EXT), () -> {
-			try {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(m_reportEngine.getName());
-				if (prefix.length() < 3)
-					prefix += "_".repeat(3-prefix.length());
-				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = FileUtil.createTempFile(prefix, "."+EXCEL_FILE_EXT, new File(path));
-				m_reportEngine.createXLS(file, m_reportEngine.getPrintFormat().getLanguage());
-				return new AMedia(file.getName(), EXCEL_FILE_EXT, EXCEL_MIME_TYPE, file, true);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
-			}
-		});
-		
-		mediaSuppliers.put(toMediaType(CSV_MIME_TYPE, CSV_FILE_EXT), () -> {
-			try {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(m_reportEngine.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				}
-				File file = FileUtil.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
-				m_reportEngine.createCSV(file, ',', AEnv.getLanguage(Env.getCtx()));
-				return new AMedia(file.getName(), CSV_FILE_EXT, CSV_MIME_TYPE, file, false);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
-			}
-		});
-		
-		mediaSuppliers.put(toMediaType(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT), () -> {
-			try {
-				String path = System.getProperty("java.io.tmpdir");
-				String prefix = makePrefix(m_reportEngine.getName());
-				if (log.isLoggable(Level.FINE))
-				{
-					log.log(Level.FINE, "Path=" + path + " Prefix=" + prefix);
-				}
-				File file = FileUtil.createTempFile(prefix, "."+EXCEL_XML_FILE_EXT, new File(path));
-				m_reportEngine.createXLSX(file, m_reportEngine.getPrintFormat().getLanguage());
-				return new AMedia(file.getName(), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE, file, true);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
-			}
-		});
-		
-		mediaSuppliers.put(toMediaType(POSTSCRIPT_MIME_TYPE, POSTSCRIPT_FILE_EXT), () -> {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			m_reportEngine.createPS(baos);
-			byte[] data = baos.toByteArray();
-			return new AMedia(m_reportEngine.getName() + "."+POSTSCRIPT_FILE_EXT, POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE, data);
-		});
-		
-		mediaSuppliers.put(toMediaType(XML_MIME_TYPE, XML_FILE_EXT), () -> {
-			StringWriter sw = new StringWriter();							
-			m_reportEngine.createXML(sw);
-			String data = sw.getBuffer().toString();
-			return new AMedia(m_reportEngine.getName() + "."+XML_FILE_EXT, XML_FILE_EXT, XML_MIME_TYPE, data);
-		});
-		
-		mediaSuppliers.put(toMediaType(CSV_MIME_TYPE, SSV_FILE_EXT), () -> {
-			StringWriter sw = new StringWriter();							
-			m_reportEngine.createCSV(sw, ';', m_reportEngine.getPrintFormat().getLanguage());
-			String data = sw.getBuffer().toString();
-			return new AMedia(m_reportEngine.getName() + "."+SSV_FILE_EXT, SSV_FILE_EXT, CSV_MIME_TYPE, data);
-		});
-		
-		mediaSuppliers.put(toMediaType(TEXT_MIME_TYPE, TEXT_FILE_EXT), () -> {
-			StringWriter sw = new StringWriter();							
-			m_reportEngine.createCSV(sw, '\t', m_reportEngine.getPrintFormat().getLanguage());
-			String data = sw.getBuffer().toString();
-			return new AMedia(m_reportEngine.getName() + "."+TEXT_FILE_EXT, TEXT_FILE_EXT, TEXT_MIME_TYPE, data);
-		});
+			rendererMap.put(renderer.getId(), renderer);
+		}
 	}
 
 	@Override
@@ -407,6 +320,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				init();
 				dynInit();
 				SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+				addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			}
 			catch(Exception e)
 			{
@@ -422,10 +336,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 		cleanUp();
 	}
 
+	/**
+	 * Layout viewer
+	 */
 	private void init() {
 		Borderlayout layout = new Borderlayout();
 		layout.setWidth("100%");
@@ -439,14 +357,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		ZKUpdateUtil.setWidth(toolBar, "100%");
 		
 		previewType.setMold("select");
-		previewType.appendItem(HTML_OUTPUT_TYPE, HTML_OUTPUT_TYPE);
-		previewType.appendItem(PDF_OUTPUT_TYPE, PDF_OUTPUT_TYPE);
-		
-		if ( m_isCanExport )
-		{
-			previewType.appendItem(XLS_OUTPUT_TYPE, XLS_OUTPUT_TYPE);
-			previewType.appendItem(CSV_OUTPUT_TYPE, CSV_OUTPUT_TYPE);
-			previewType.appendItem(XLSX_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
+		for(String id : rendererMap.keySet()) {
+			IReportViewerRenderer renderer = rendererMap.get(id);
+			if (!renderer.isPreview(m_isCanExport))
+				continue;
+			previewType.appendItem(renderer.getPreviewLabel(), renderer.getId());
 		}
 		
 		toolBar.appendChild(previewType);		
@@ -454,41 +369,33 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		
 		toolBar.appendChild(new Separator("vertical"));
 		
-		int pTypeIndex = 0;
-		
+		String type = null;
 		if (m_reportEngine.getReportType() != null)
 		{
-			if (m_reportEngine.getReportType().equals(PDF_OUTPUT_TYPE))
-				pTypeIndex = 1;
-			else if (m_reportEngine.getReportType().equals(XLS_OUTPUT_TYPE) && m_isCanExport)
-				pTypeIndex = 2;
-			else if (m_reportEngine.getReportType().equals(CSV_OUTPUT_TYPE) && m_isCanExport)
-				pTypeIndex = 3;
-			else if (m_reportEngine.getReportType().equals(XLSX_OUTPUT_TYPE) && m_isCanExport)
-				pTypeIndex = 4;
+			type = m_reportEngine.getReportType();
 		}
 		else
 		{
     		//set default type
-    		String type = m_reportEngine.getPrintFormat().isForm()
+    		type = m_reportEngine.getPrintFormat().isForm()
     				// a42niem - provide explicit default and check on client/org specifics
     				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
-    				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
-    
-    		if (HTML_OUTPUT_TYPE.equals(type)) {
-    			pTypeIndex = 0;
-    		} else if (PDF_OUTPUT_TYPE.equals(type)) {
-    			pTypeIndex = 1;
-    		} else if (XLS_OUTPUT_TYPE.equals(type) && m_isCanExport) {
-    			pTypeIndex = 2;
-    		} else if (CSV_OUTPUT_TYPE.equals(type) && m_isCanExport) {
-    			pTypeIndex = 3;
-    		} else if (XLSX_OUTPUT_TYPE.equals(type) && m_isCanExport) {
-    			pTypeIndex = 4;
-    		}
+    				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));    
 		}
-		
-		previewType.setSelectedIndex(pTypeIndex);
+
+		int defaultIndex = -1;
+		for(int i = 0; i < previewType.getItemCount(); i++) {
+			ListItem item = previewType.getItemAtIndex(i);
+			if (item.getValue().equals(type)) {
+				previewType.setSelectedIndex(i);
+				break;
+			} else if (item.getValue().equals("PDF")) {
+				defaultIndex = i;
+			}
+		}
+		if (previewType.getSelectedIndex() < 0) {
+			previewType.setSelectedIndex(defaultIndex >= 0 ? defaultIndex : 0);
+		}
 		
 		Vlayout toolbarPopupLayout = null;
 		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
@@ -528,7 +435,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				{
 					toolBar.appendChild(wLanguage.getComponent());
 				}
-				wLanguage.setValue(m_reportEngine.getLanguageID());
+				// Init Language from Printformat
+				int languageID = 0;
+				if(m_reportEngine.getPrintFormat() != null && m_reportEngine.getPrintFormat().getLanguage() != null) {
+					MLanguage language = MLanguage.get(m_ctx, m_reportEngine.getPrintFormat().getLanguage());
+					if(language != null)
+						languageID = language.getAD_Language_ID();
+				}
+				if(m_reportEngine.getLanguageID() > 0)
+					languageID = m_reportEngine.getLanguageID();
+				wLanguage.setValue(languageID);
 				wLanguage.getComponent().addEventListener(Events.ON_SELECT, this);
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage());
@@ -781,9 +697,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		reportLink = new A();
 		reportLink.setTarget("_blank");
 		Div linkDiv = new Div();
-		linkDiv.setStyle("width:100%; height: 40px; padding-top: 4px; padding-bottom: 4px;");
+		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
-		south.appendChild(linkDiv);
+
+		rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+		rowCount.setStyle("float: right;");
+		linkDiv.appendChild(rowCount);
+		
+		south.appendChild(linkDiv);		
+		
 		//m_WindowNo
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)
@@ -844,6 +766,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		setTabOnCloseHandler();
 	}
 
+	/**
+	 * Set dummy onCloseHandler for parent tab
+	 */
 	private void setTabOnCloseHandler() {
 		Component parent = this.getParent();
 		while (parent != null) {
@@ -873,29 +798,25 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		return AD_Tab_ID;
 	}
 
+	/**
+	 * Render report
+	 */
 	private void renderReport() {
 		media = null;
 		Listitem selected = previewType.getSelectedItem();
-		if (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue())) {
-			new PDFRendererRunnable(this).run();
-		} else if (HTML_OUTPUT_TYPE.equals(selected.getValue())) {
-			new HTMLRendererRunnable(this).run();
-		} else if (XLS_OUTPUT_TYPE.equals(selected.getValue())) {			
-			new XLSRendererRunnable(this).run();
-		} else if (CSV_OUTPUT_TYPE.equals(selected.getValue())) {
-			new CSVRendererRunnable(this).run();
-		} else if (XLSX_OUTPUT_TYPE.equals(selected.getValue())) {			
-			new XLSXRendererRunnable(this).run();
-		}		
+		new RendererRunnable(this, selected.getValue()).run();
 	}
 	
+	/**
+	 * Call from renderer runnable to show report output
+	 */
 	private void onPreviewReport() {
 		if(media == null)
 			return;
 		try {
 			mediaVersion++;
 			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
-			String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+			String pdfJsUrl = AEnv.toPdfJsUrl(url);
 			HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
 			if (url.startsWith(request.getContextPath() + "/"))
 				url = url.substring((request.getContextPath() + "/").length());
@@ -979,10 +900,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
+	/**
+	 * Remove iframe
+	 */
 	private void detachIFrame() {
 		center.getChildren().clear();
 	}
 
+	/**
+	 * Add iframe to center
+	 */
 	private void attachIFrame() {
 		if (iframe != null && iframe.getPage() == null) {
 			center.getChildren().clear();
@@ -990,19 +917,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 
-	private String makePrefix(String name) {
-		StringBuilder prefix = new StringBuilder();
-		char[] nameArray = name.toCharArray();
-		for (char ch : nameArray) {
-			if (Character.isLetterOrDigit(ch)) {
-				prefix.append(ch);
-			} else {
-				prefix.append("_");
-			}
-		}
-		return prefix.toString();
-	}
-	
 	/**
 	 * 	Dynamic Init
 	 */
@@ -1014,10 +928,31 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
 
 		revalidate();
+		
+		if (Window.REPLACE.equals(getAttribute(Window.INSERT_POSITION_KEY))) {
+			if (m_reportEngine != null && m_reportEngine.getProcessInfo() != null) {
+				ProcessInfo pi = m_reportEngine.getProcessInfo();
+				checkProcessInfo(pi);
+			}
+		}
 	}	//	dynInit
+
+	/**
+	 * Open {@link ProcessInfoDialog} if pi has error or logs
+	 * @param pi
+	 */
+	private void checkProcessInfo(ProcessInfo pi) {
+		ProcessInfoUtil.setLogFromDB(pi);
+		if (pi.isError() || (pi.getLogs() != null && pi.getLogs().length > 0)) {
+			ProcessInfoDialog dialog = new ProcessInfoDialog(pi, false);
+			dialog.setAutoCloseAfterZoom(false);
+			dialog.setPage(this.getPage());
+			dialog.doHighlighted();
+		}
+	}
 	
 	/**
-	 * 	Fill ComboBox comboReport (report options)
+	 * 	Fill ComboBox comboReport with print formats available and option to create new print format.
 	 *  @param AD_PrintFormat_ID item to be selected
 	 */
 	private void fillComboReport(int AD_PrintFormat_ID)
@@ -1098,7 +1033,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	fillComboReport
 
 	/**
-	 * 	Revalidate settings after change of environment
+	 * Update title, status text and state of {@link #bWizard}
 	 */
 	private void revalidate()
 	{
@@ -1120,7 +1055,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	revalidate
 
 	/**
-	 * 	Dispose
+	 * Close viewer
 	 */
 	public void onClose()
 	{
@@ -1138,6 +1073,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	@Override
 	public void onEvent(Event event) throws Exception {				
 		if(event.getName().equals(Events.ON_CLICK) || event.getName().equals(Events.ON_SELECT)) 
 			actionPerformed(event);
@@ -1151,38 +1087,37 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			onRenderReportEvent();
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
-        	}
 		}
         else if (event.getTarget() instanceof ProcessModalDialog)
         {
-		if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
-		{
-			hideBusyMask();
-			ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
-			if (dialog.isCancel())
+			if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
 			{
-				if (getDesktop() != null)
-					clearTabOnCloseHandler();
+				hideBusyMask();
+				ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
+				if (dialog.isCancel())
+				{
+					if (getDesktop() != null)
+						clearTabOnCloseHandler();
+				}
+				ProcessInfo pi = dialog.getProcessInfo();
+				if (pi != null) 
+					checkProcessInfo(pi);
 			}
-		}
+        }
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
         }
 	}
 
+	/**
+	 * Open {@link WReportUploadDialog} to upload report to external destination
+	 */
 	private void cmd_upload() {
 		if (media == null)
 			return;
@@ -1193,23 +1128,29 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		AEnv.showWindow(winUploadFile);
 	}
 
+	/**
+	 * Handle key event
+	 * @param keyEvent
+	 */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
 			if (m_WindowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
 				keyEvent.stopPropagation();
 				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
 			}
 		}
 	}
 
+	/**
+	 * Handle onRenderReportEvent
+	 */
 	private void onRenderReportEvent() {
     	renderReport();
 	}
 
-	/**************************************************************************
-	 * 	Action Listener
+	/**
+	 * 	Handle event
 	 * 	@param e event
 	 */
 	public void actionPerformed (Event e)
@@ -1237,7 +1178,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		else if (e.getTarget() == bWizard)
 			cmd_Wizard();
 		else if (e.getTarget() == bRefresh)
-			cmd_report();
+			cmd_refresh();
 		else if (e.getTarget() == bReRun)
 			cmd_reRun();
 		//
@@ -1249,6 +1190,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			cmd_upload();
 	}	//	actionPerformed
 	
+	/**
+	 * Handle onSelect event from {@link #previewType}
+	 */
 	private void cmd_render() {
 		postRenderReportEvent();		
 	}
@@ -1274,7 +1218,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	executeDrill
 
 	/**
-	 * 	Open Window
+	 * 	Zoom to window
 	 *	@param query query
 	 */
 	private void cmd_window (MQuery query)
@@ -1308,7 +1252,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
 			from, to, subject, message, new FileDataSource(attachment),
 			m_WindowNo, m_reportEngine.getPrintInfo().getAD_Table_ID(),
-			m_reportEngine.getPrintInfo().getRecord_ID(), m_reportEngine.getPrintInfo());
+			m_reportEngine.getPrintInfo().getRecord_ID(),
+			m_reportEngine.getPrintInfo().getRecord_UU(),
+			m_reportEngine.getPrintInfo());
 
 		AEnv.showWindow(dialog);
 	}	//	cmd_sendMail
@@ -1356,11 +1302,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_attachment
 
 	/**
-	 * 	Export
+	 * Open {@link WReportExportDialog} to export report
 	 */
 	private void cmd_export()
 	{		
-		log.config("");
 		if (!m_isCanExport)
 		{
 			Dialog.error(m_WindowNo, "AccessCannotExport", getTitle());
@@ -1521,15 +1466,47 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_report
 
 	/**
-	 * Refresh With Parameters
+	 * Refresh with same parameters
+	 */
+	private void cmd_refresh() {
+		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		if(AD_Process_ID <= 0 || m_reportEngine.getPrintInfo().getRecord_ID() > 0)
+			this.cmd_report();
+		else
+			this.cmd_reRun(MProcess.SHOWHELP_RunSilently_TakeDefaults);
+	}
+	
+	/**
+	 * Rerun report
 	 */
 	private void cmd_reRun() {
+		this.cmd_reRun(null);
+	}
+	
+	/**
+	 * Rerun report
+	 * @param showHelp if SHOWHELP_RunSilently_TakeDefaults, re-run with same parameter (i.e just refresh)
+	 */
+	private void cmd_reRun(String showHelp) {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		if(AD_Process_ID <= 0)
 			return;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
+		pi.setLanguageID(m_reportEngine.getLanguageID());
+		pi.setReportType(m_reportEngine.getReportType());
+		pi.setSerializableObject(m_reportEngine.getPrintFormat());
 		pi.setReplaceTabContent();
-		setTabOnCloseHandler();
+		if(!Util.isEmpty(showHelp))
+			pi.setShowHelp(showHelp);
+		setTabOnCloseHandler();	
+		String predefined = (String) getAttribute(ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES);
+		if (!Util.isEmpty(predefined, true)) {
+			Env.setContext(Env.getCtx(), m_WindowNo, ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES, predefined);
+			Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefined);
+		}
+		if (getAttribute("IsSOTrx") != null) {
+			Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", getAttribute("IsSOTrx").toString());
+		}
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
@@ -1543,8 +1520,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			LayoutUtils.openOverlappedWindow(this, processModalDialog, "middle_center");
 		}
 		processModalDialog.focus();
-}	// cmd_reRun
+	}	// cmd_reRun
 	
+	/**
+	 * Set language to {@link #m_reportEngine}
+	 */
 	protected void setLanguage (){
 		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage != null && wLanguage.getValue() != null){
 			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);
@@ -1555,13 +1535,31 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 	}
 	
+	/**
+	 * Set preview type to {@link #m_reportEngine}
+	 */
+	protected void setPreviewType() {
+		String type = Objects.toString(previewType.getValue());
+		
+		// get default from SysConfig
+		if(type == null) {
+			type = m_reportEngine.getPrintFormat().isForm()
+				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx))
+				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,PDF_OUTPUT_TYPE,Env.getAD_Client_ID(m_ctx),Env.getAD_Org_ID(m_ctx));
+		}
+		m_reportEngine.setReportType(type);
+	}
+
+	/**
+	 * Echo {@link #ON_RENDER_REPORT_EVENT} event
+	 */
 	private void postRenderReportEvent() {
 		showBusyDialog();
 		setLanguage();
+		setPreviewType();
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
+		updateRowCount();
 	}
-
-
 
 	/**
 	 * 	Query Report
@@ -1679,7 +1677,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}	//	cmd_find
 
 	/**
-	 * 	Call Customize
+	 * Open print format window
 	 */
 	private void cmd_customize()
 	{
@@ -1688,7 +1686,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		AEnv.zoom(pfAD_Window_ID, MQuery.getEqualQuery("AD_PrintFormat_ID", AD_PrintFormat_ID));
 	}	//	cmd_customize
 	
-	/*IDEMPIERE -379*/
+	/**
+	 * IDEMPIERE-379 Report customization wizard
+	 */
 	private void cmd_Wizard()
 	{
 	    ADForm form = ADForm.openForm(SystemIDs.FORM_REPORT_WIZARD);
@@ -1726,6 +1726,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	private boolean ToolBarMenuRestictionLoaded = false;
+
+	/**
+	 * Hide not accessible toolbar
+	 * @param AD_Window_ID
+	 * @param AD_Process_ID
+	 */
 	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
 		if (ToolBarMenuRestictionLoaded)
 			return;
@@ -1824,22 +1830,31 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}, new Event("onClearTabOnCloseHandler"));
 	}
 
-	static class PDFRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
+	private static class RendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
+		private String rendererId;
 
-		public PDFRendererRunnable(ZkReportViewer viewer) {
-			super();
+		public RendererRunnable(ZkReportViewer viewer, String rendererId) {
 			this.viewer = viewer;
+			this.rendererId = rendererId;
+		}
+		
+		@Override
+		public void updateUI() {
+			viewer.onPreviewReport();
 		}
 
 		@Override
 		protected void doRun() {
 			try {
 				viewer.m_reportEngine.initName();
-				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
-					log.warning("Cannot archive Document");
-				viewer.createNewMedia(PDF_MIME_TYPE, PDF_FILE_EXT);
+				List<String> archiveList = Arrays.asList(PDF_OUTPUT_TYPE, HTML_OUTPUT_TYPE, XLS_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
+				if (archiveList.contains(rendererId)) {
+					if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
+						log.warning("Cannot archive Document");
+				}
+				viewer.createNewMedia(rendererId);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -1852,183 +1867,33 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				}
 			}
 		}
-
-		@Override
-		public void updateUI() {
-			viewer.onPreviewReport();
-		}
 		
 	}
 	
-	static class HTMLRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
-
-		private ZkReportViewer viewer;
-		public HTMLRendererRunnable(ZkReportViewer viewer) {
-			super();
-			this.viewer = viewer;
-			
-		}
-
-		@Override
-		protected void doRun() {
-			try {
-				viewer.m_reportEngine.initName();
-				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
-					log.warning("Cannot archive Document");
-				viewer.createNewMedia(HTML_MIME_TYPE, HTML_FILE_EXT);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
-			} finally {
-				Desktop desktop = AEnv.getDesktop();
-				if (desktop != null && desktop.isAlive()) {
-					new ServerPushTemplate(desktop).executeAsync(this);
-				}
-			}
-		}
-
-		@Override
-		public void updateUI() {
-			viewer.onPreviewReport();
-		}		
-	}
-	
-	static class XLSRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
-
-		private ZkReportViewer viewer;
-
-		public XLSRendererRunnable(ZkReportViewer viewer) {
-			super();
-			this.viewer = viewer;
-		}
-
-		@Override
-		protected void doRun() {
-			try {
-				viewer.m_reportEngine.initName();
-				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
-					log.warning("Cannot archive Document");
-				viewer.createNewMedia(EXCEL_MIME_TYPE, EXCEL_FILE_EXT);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
-			} finally {			
-				Desktop desktop = AEnv.getDesktop();
-				if (desktop != null && desktop.isAlive()) {
-					new ServerPushTemplate(desktop).executeAsync(this);
-				}
-			}
-		}
-
-		@Override
-		public void updateUI() {
-			viewer.onPreviewReport();
-		}
-		
-	}
-
-	static class CSVRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
-
-		private ZkReportViewer viewer;
-
-		public CSVRendererRunnable(ZkReportViewer viewer) {
-			super();
-			this.viewer = viewer;
-		}
-
-		@Override
-		protected void doRun() {
-			try {
-				viewer.m_reportEngine.initName();
-				viewer.createNewMedia(CSV_MIME_TYPE,CSV_FILE_EXT);
-			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
-			} finally {			
-				Desktop desktop = AEnv.getDesktop();
-				if (desktop != null && desktop.isAlive()) {
-					new ServerPushTemplate(desktop).executeAsync(this);
-				}
-			}
-		}
-
-		@Override
-		public void updateUI() {
-			viewer.onPreviewReport();
-		}
-		
-	}
-	
-	protected static class XLSXRendererRunnable extends ZkContextRunnable implements IServerPushCallback
-	{
-
-		private ZkReportViewer viewer;
-
-		public XLSXRendererRunnable(ZkReportViewer viewer)
-		{
-			super();
-			this.viewer = viewer;
-		}
-
-		@Override
-		protected void doRun()
-		{
-			try
-			{
-				viewer.m_reportEngine.initName();
-				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
-					log.warning("Cannot archive Document");
-				viewer.createNewMedia(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT);
-			}
-			catch (Exception e)
-			{
-				if (e instanceof RuntimeException)
-					throw (RuntimeException) e;
-				else
-					throw new RuntimeException(e);
-			}
-			finally
-			{
-				Desktop desktop = AEnv.getDesktop();
-				if (desktop != null && desktop.isAlive())
-				{
-					new ServerPushTemplate(desktop).executeAsync(this);
-				}
-			}
-		}
-
-		@Override
-		public void updateUI()
-		{
-			viewer.onPreviewReport();
-		}
-
-	}
-	
-	private void createNewMedia(String contentType, String fileExtension) {
+	private void createNewMedia(String rendererId) {
 		media = null;
-		media = getMedia(contentType, fileExtension);
+		media = getMedia(rendererId);
 	}
 	
 	@Override
 	public AMedia getMedia(String contentType, String fileExtension) {
-		if (media != null && media.getContentType().equals(contentType) && media.getFormat().equals(fileExtension))
-			return media;
+		IReportViewerRenderer renderer = rendererMap.get(toRendererId(contentType, fileExtension));
 		
-		Supplier<AMedia> supplier = mediaSuppliers.get(toMediaType(contentType, fileExtension));
-		return supplier != null ? supplier.get() : null;
+		if (renderer.isSameContentForExportAndPreview() && media != null 
+				&& media.getContentType().equals(contentType) && media.getFormat().equals(fileExtension))
+			return media;
+				
+		return renderer != null ? renderer.renderMedia(this, true) : null;
 	}
 
+	public AMedia getMedia(String rendererId) {
+		IReportViewerRenderer renderer = rendererMap.get(rendererId);
+		return renderer != null ? renderer.renderMedia(this, false) : null;
+	}
 	
 	@Override
 	public ExportFormat[] getExportFormats() {
-		return exportFormats;
+		return exportMap.keySet().toArray(new ExportFormat[0]);
 	}
 
 	@Override
@@ -2050,6 +1915,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	public String getReportName() {
 		return m_reportEngine.getName();
 	}
+
+	/**
+	 * Get report engine
+	 * @return report engine
+	 */
+	public ReportEngine getReportEngine() {
+		return m_reportEngine;
+	}
 	
 	private void setupFindwindow(FindWindow findWindow) {
 		findWindow.setTitle(null);
@@ -2060,5 +1933,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			ZKUpdateUtil.setHeight(findWindow, "60%");
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
+	}
+	
+	/**
+	 * Update Row Count label
+	 */
+	private void updateRowCount() {
+		if(rowCount != null)
+			rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
 	}
 }

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_BankAccount_Processor
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BankAccount_Processor")
-public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Processor, I_Persistent 
+public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Processor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName)
@@ -104,6 +104,76 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BankAccount_Processor (Properties ctx, String C_BankAccount_Processor_UU, String trxName)
+    {
+      super (ctx, C_BankAccount_Processor_UU, trxName);
+      /** if (C_BankAccount_Processor_UU == null)
+        {
+			setAcceptAMEX (false);
+// N
+			setAcceptATM (false);
+// N
+			setAcceptCheck (false);
+// N
+			setAcceptCorporate (false);
+// N
+			setAcceptDiners (false);
+// N
+			setAcceptDirectDebit (false);
+// N
+			setAcceptDirectDeposit (false);
+// N
+			setAcceptDiscover (false);
+// N
+			setAcceptMC (false);
+// N
+			setAcceptVisa (false);
+// N
+			setC_BankAccount_ID (0);
+			setC_PaymentProcessor_ID (0);
+			setPassword (null);
+			setRequireVV (false);
+// N
+			setUserID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankAccount_Processor (Properties ctx, String C_BankAccount_Processor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankAccount_Processor_UU, trxName, virtualColumns);
+      /** if (C_BankAccount_Processor_UU == null)
+        {
+			setAcceptAMEX (false);
+// N
+			setAcceptATM (false);
+// N
+			setAcceptCheck (false);
+// N
+			setAcceptCorporate (false);
+// N
+			setAcceptDiners (false);
+// N
+			setAcceptDirectDebit (false);
+// N
+			setAcceptDirectDeposit (false);
+// N
+			setAcceptDiscover (false);
+// N
+			setAcceptMC (false);
+// N
+			setAcceptVisa (false);
+// N
+			setC_BankAccount_ID (0);
+			setC_PaymentProcessor_ID (0);
+			setPassword (null);
+			setRequireVV (false);
+// N
+			setUserID (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BankAccount_Processor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -111,7 +181,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -128,7 +198,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_BankAccount_Processor[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -146,10 +216,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptAMEX()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptAMEX);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -169,10 +239,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptATM()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptATM);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -192,10 +262,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptCheck()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptCheck);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -215,10 +285,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptCorporate()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptCorporate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -238,10 +308,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptDiners()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDiners);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -261,10 +331,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptDirectDebit()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDirectDebit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -284,10 +354,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptDirectDeposit()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDirectDeposit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -307,10 +377,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptDiscover()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDiscover);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -330,10 +400,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptMC()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptMC);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -353,10 +423,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isAcceptVisa()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptVisa);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -473,10 +543,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptAMEX()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptAMEX);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -494,10 +564,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptATM()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptATM);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -515,10 +585,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptCheck()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptCheck);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -536,10 +606,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptCorporate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptCorporate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -557,10 +627,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptDiners()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDiners);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -578,10 +648,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptDirectDebit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDirectDebit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -599,10 +669,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptDirectDeposit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDirectDeposit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -620,10 +690,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptDiscover()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDiscover);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -641,10 +711,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptMC()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptMC);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -662,10 +732,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isPPAcceptVisa()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptVisa);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -736,10 +806,10 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	public boolean isRequireVV()
 	{
 		Object oo = get_Value(COLUMNNAME_RequireVV);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

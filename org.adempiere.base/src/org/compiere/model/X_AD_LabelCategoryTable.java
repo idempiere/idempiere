@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_LabelCategoryTable
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelCategoryTable")
-public class X_AD_LabelCategoryTable extends PO implements I_AD_LabelCategoryTable, I_Persistent 
+public class X_AD_LabelCategoryTable extends PO implements I_AD_LabelCategoryTable, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_LabelCategoryTable (Properties ctx, int AD_LabelCategoryTable_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_LabelCategoryTable extends PO implements I_AD_LabelCategoryTab
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_LabelCategoryTable (Properties ctx, String AD_LabelCategoryTable_UU, String trxName)
+    {
+      super (ctx, AD_LabelCategoryTable_UU, trxName);
+      /** if (AD_LabelCategoryTable_UU == null)
+        {
+			setAD_LabelCategory_ID (0);
+			setAD_Table_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelCategoryTable (Properties ctx, String AD_LabelCategoryTable_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LabelCategoryTable_UU, trxName, virtualColumns);
+      /** if (AD_LabelCategoryTable_UU == null)
+        {
+			setAD_LabelCategory_ID (0);
+			setAD_Table_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_LabelCategoryTable (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_LabelCategoryTable extends PO implements I_AD_LabelCategoryTab
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.server.feature"
       label="iDempiere Server-feature"
-      version="10.0.0.qualifier"
+      version="11.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -370,14 +370,6 @@
          unpack="false"/>
 
    <plugin
-         id="slf4j.jcl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.jdt.core"
          download-size="0"
          install-size="0"
@@ -652,4 +644,53 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.eclipse.jdt.core.compiler.batch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jakarta.annotation-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="io.github.classgraph.classgraph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.httpcomponents.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.httpcomponents.httpcore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="slf4j.jdk14"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+	<plugin
+         id="org.idempiere.ui.sso.oidc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 </feature>

@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.acct;
 
 import java.math.BigDecimal;
@@ -12,8 +33,8 @@ import org.compiere.model.MAssetDisposed;
 import org.compiere.model.MDocType;
 import org.compiere.util.Env;
 
-
 /**
+ * Posting for {@link MAssetDisposed} document. DOCBASETYPE_GLDocument.
  * @author Teo_Sarca, SC ARHIPAC SERVICE SRL
  */
 public class Doc_AssetDisposed extends Doc
@@ -28,19 +49,19 @@ public class Doc_AssetDisposed extends Doc
 		super(as, MAssetDisposed.class, rs, MDocType.DOCBASETYPE_GLDocument, trxName);
 	}
 
-	
+	@Override
 	protected String loadDocumentDetails()
 	{
 		return null;
 	}
 	
-	
+	@Override
 	public BigDecimal getBalance()
 	{
 		return Env.ZERO;
 	}
 
-	
+	@Override
 	public ArrayList<Fact> createFacts(MAcctSchema as)
 	{
 		MAssetDisposed assetDisp = (MAssetDisposed)getPO();
@@ -63,6 +84,11 @@ public class Doc_AssetDisposed extends Doc
 		return facts;
 	}
 	
+	/**
+	 * @param accountName
+	 * @param as
+	 * @return MAccount
+	 */
 	private MAccount getAccount(String accountName, MAcctSchema as)
 	{
 		MAssetDisposed assetDisp = (MAssetDisposed)getPO();

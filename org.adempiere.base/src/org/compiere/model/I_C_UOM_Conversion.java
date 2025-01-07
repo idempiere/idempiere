@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_UOM_Conversion
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_C_UOM_Conversion 
 {

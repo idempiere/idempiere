@@ -40,6 +40,7 @@ import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
@@ -69,25 +70,24 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Dialog to customize grid view (selected columns, column width, etc)
  * @author hengsin
  *
  */
 public class CustomizeGridViewPanel extends Panel
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6200912526954948898L;
 
+	/** AD_Field_ID:Width */
 	private Map<Integer, String> m_columnsWidth;
-	ArrayList<Integer> tableSeqs;
-	GridView gridPanel = null;
-	MTabCustomization m_tabcust;
+	protected ArrayList<Integer> tableSeqs;
+	protected GridView gridPanel = null;
+	protected MTabCustomization m_tabcust;
 
 	/**
-	 *	Sort Tab Constructor
-	 *
 	 * @param WindowNo Window No
 	 * @param AD_Tab_ID
 	 * @param AD_User_ID
@@ -136,9 +136,11 @@ public class CustomizeGridViewPanel extends Panel
 	private boolean uiCreated;
 	private boolean m_saved = false;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, true, false, false, false);
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
-/**
-	 * Static Layout
+	/**
+	 * Layout dialog
 	 * 
 	 * @throws Exception
 	 */
@@ -333,9 +335,16 @@ public class CustomizeGridViewPanel extends Panel
 	 * cancel form
 	 */
 	public void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		getParent().detach();
 	}
 	
+	/**
+	 * Load customization data
+	 */
 	public void loadData()
 	{
 		m_tabcust = MTabCustomization.get(Env.getCtx(), m_AD_User_ID, m_AD_Tab_ID, null);
@@ -427,7 +436,7 @@ public class CustomizeGridViewPanel extends Panel
 	/**
 	 * @param event
 	 */
-	void migrateValueAcrossLists (Event event)
+	protected void migrateValueAcrossLists (Event event)
 	{
 		Object source = event.getTarget();
 		if (source instanceof ListItem) {
@@ -443,7 +452,13 @@ public class CustomizeGridViewPanel extends Panel
 		migrateLists (listFrom,listTo,endIndex);	
 	}
 
-	void migrateLists (Listbox listFrom , Listbox listTo , int endIndex	)
+	/**
+	 * Move selected items from listFrom to listTo
+	 * @param listFrom
+	 * @param listTo
+	 * @param endIndex
+	 */
+	protected void migrateLists (Listbox listFrom , Listbox listTo , int endIndex	)
 	{
 		int index = 0;
 		SimpleListModel lmFrom = (SimpleListModel) listFrom.getModel();
@@ -470,10 +485,11 @@ public class CustomizeGridViewPanel extends Panel
 	}
 	
 	/**
-	 * 	Move within Yes List with Drag Event and Multiple Choice
-	 *	@param event event
+	 * 	Move selected items within Yes List
+	 *  @param endIndex
+	 *  @param selObjects
 	 */
-	void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
+	protected void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
 	{
 		int iniIndex =0;
 		Arrays.sort(selObjects.toArray());	
@@ -488,10 +504,10 @@ public class CustomizeGridViewPanel extends Panel
 	}
 
 	/**
-	 * 	Move within Yes List
+	 * 	Move selected items within Yes List
 	 *	@param event event
 	 */
-	void migrateValueWithinYesList (Event event)
+	protected void migrateValueWithinYesList (Event event)
 	{
 		Object[] selObjects = yesList.getSelectedItems().toArray();
 		
@@ -553,9 +569,13 @@ public class CustomizeGridViewPanel extends Panel
 		}
 	}	//	migrateValueWithinYesList
 
+	/**
+	 * Save changes
+	 */
 	public void saveData()
 	{
-		log.fine("");
+		if (log.isLoggable(Level.FINE))
+			log.fine("");
 		//	yesList
 		//int index = 0;
 		boolean ok = true;
@@ -671,7 +691,8 @@ public class CustomizeGridViewPanel extends Panel
 			return s;
 		}
 	}
-		/**
+	
+	/**
 	 * @author eslatis
 	 *
 	 */
@@ -679,7 +700,7 @@ public class CustomizeGridViewPanel extends Panel
 	{
 
 		/**
-		 * Creates a ADSortTab.DragListener.
+		 * Constructor
 		 */
 		public DragListener()
 		{
@@ -720,10 +741,16 @@ public class CustomizeGridViewPanel extends Panel
 		}
 	}
 
+	/**
+	 * @param b
+	 */
 	public void activate(boolean b) {
 		if (b && !uiCreated) createUI();
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	public void createUI() {
 		if (uiCreated) return;
 		try
@@ -738,14 +765,23 @@ public class CustomizeGridViewPanel extends Panel
 		uiCreated = true;
 	}
 
+	/**
+	 * Load data
+	 */
 	public void query() {
 		loadData();
 	}
 
+	/**
+	 * @return true if changes have been saved
+	 */
 	public boolean isSaved() {
 		return m_saved;
 	}
 
+	/**
+	 * @param gridPanel
+	 */
 	public void setGridPanel(GridView gridPanel){
 		this.gridPanel = gridPanel;
 	}

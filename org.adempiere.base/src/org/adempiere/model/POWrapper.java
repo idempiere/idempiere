@@ -25,8 +25,8 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 /**
- * Wrap a PO object to a given bean interface.
- * Example
+ * Wrap a PO object to a given interface.<br/>
+ * Example usage:
  * <pre>
  * public interface I_C_Invoice_Customized
  * {
@@ -46,6 +46,13 @@ import org.compiere.util.CLogger;
  */
 public class POWrapper implements InvocationHandler
 {
+	/**
+	 * Create wrapper of type cl for po
+	 * @param <T> iDempiere model interface type
+	 * @param po
+	 * @param cl iDempiere model interface class
+	 * @return wrapped instance
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T create(Object po, Class<T> cl)
 	{
@@ -60,6 +67,12 @@ public class POWrapper implements InvocationHandler
 		return (T)Proxy.newProxyInstance(cl.getClassLoader(), new Class<?>[]{cl}, new POWrapper((PO)po));
 	}
 	
+	/**
+	 * Get wrapped PO instance
+	 * @param <T>
+	 * @param model
+	 * @return the wrapped PO
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends PO> T getPO(Object model)
 	{
@@ -70,12 +83,17 @@ public class POWrapper implements InvocationHandler
 	private static final CLogger log = CLogger.getCLogger(POWrapper.class);
 	private final PO po;
 	
+	/**
+	 * Private constructor. Use the static create method to create a new instance of POWrapper.
+	 * @param po
+	 */
 	private POWrapper(PO po)
 	{
 		super();
 		this.po = po;
 	}
 
+	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 	{
 		String methodName = method.getName();
@@ -137,13 +155,16 @@ public class POWrapper implements InvocationHandler
 		}
 	}
 	
+	/**
+	 * @return wrapped PO instance
+	 */
 	public PO getPO()
 	{
 		return po;
 	}
 	
 	/**
-	 * Load object that is referenced by given property.
+	 * Load object that is referenced by given property.<br/>
 	 * Example: getReferencedObject("M_Product", method) should load the M_Product record
 	 * with ID given by M_Product_ID property name;
 	 * @param propertyName
@@ -180,6 +201,10 @@ public class POWrapper implements InvocationHandler
 		return child;
 	}
 	
+	/**
+	 * @param cl
+	 * @return true if cl is a model interface (for e.g I_C_Order) type
+	 */
 	private boolean isModelInterface(Class<?> cl)
 	{
 		try

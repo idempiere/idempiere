@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Fact_Acct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="Fact_Acct")
-public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent 
+public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_Fact_Acct (Properties ctx, int Fact_Acct_ID, String trxName)
@@ -84,6 +84,54 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_Fact_Acct (Properties ctx, String Fact_Acct_UU, String trxName)
+    {
+      super (ctx, Fact_Acct_UU, trxName);
+      /** if (Fact_Acct_UU == null)
+        {
+			setAccount_ID (0);
+			setAD_Table_ID (0);
+			setAmtAcctCr (Env.ZERO);
+			setAmtAcctDr (Env.ZERO);
+			setAmtSourceCr (Env.ZERO);
+			setAmtSourceDr (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setC_Currency_ID (0);
+			setC_Period_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setFact_Acct_ID (0);
+			setGL_Category_ID (0);
+			setPostingType (null);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Fact_Acct (Properties ctx, String Fact_Acct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Fact_Acct_UU, trxName, virtualColumns);
+      /** if (Fact_Acct_UU == null)
+        {
+			setAccount_ID (0);
+			setAD_Table_ID (0);
+			setAmtAcctCr (Env.ZERO);
+			setAmtAcctDr (Env.ZERO);
+			setAmtSourceCr (Env.ZERO);
+			setAmtSourceDr (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setC_Currency_ID (0);
+			setC_Period_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setFact_Acct_ID (0);
+			setGL_Category_ID (0);
+			setPostingType (null);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_Fact_Acct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -91,7 +139,7 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -774,7 +822,7 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getFact_Acct_ID()));
     }

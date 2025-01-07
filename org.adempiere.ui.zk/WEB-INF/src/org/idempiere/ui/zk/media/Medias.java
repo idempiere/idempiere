@@ -24,12 +24,21 @@
  **********************************************************************/
 package org.idempiere.ui.zk.media;
 
+import org.idempiere.print.renderer.CSVReportRendererConfiguration;
+import org.idempiere.print.renderer.HTMLReportRendererConfiguration;
+import org.idempiere.print.renderer.PDFReportRendererConfiguration;
+import org.idempiere.print.renderer.PSReportRendererConfiguration;
+import org.idempiere.print.renderer.SSVReportRendererConfiguration;
+import org.idempiere.print.renderer.TabDelimitedReportRendererConfiguration;
+import org.idempiere.print.renderer.XLSReportRendererConfiguration;
+import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
+import org.idempiere.print.renderer.XMLReportRendererConfiguration;
+
 import com.google.common.net.MediaType;
 
 /**
- * 
+ * Constants for media mime type and file extension
  * @author hengsin
- *
  */
 public final class Medias {
 
@@ -42,15 +51,15 @@ public final class Medias {
 	public static final String TEXT_MIME_TYPE = MediaType.PLAIN_TEXT_UTF_8.toString();
 	public static final String XML_MIME_TYPE = MediaType.XML_UTF_8.toString();
 	
-	public static final String CSV_FILE_EXT = "csv";
-	public static final String SSV_FILE_EXT = "ssv";
-	public static final String EXCEL_FILE_EXT = "xls";	
-	public static final String EXCEL_XML_FILE_EXT = "xlsx";
-	public static final String HTML_FILE_EXT = "html";
-	public static final String PDF_FILE_EXT = "pdf";
-	public static final String POSTSCRIPT_FILE_EXT = "ps";	
-	public static final String TEXT_FILE_EXT = "txt";
-	public static final String XML_FILE_EXT = "xml";
+	public static final String CSV_FILE_EXT = CSVReportRendererConfiguration.FILE_EXTENSION;
+	public static final String SSV_FILE_EXT = SSVReportRendererConfiguration.FILE_EXTENSION;
+	public static final String EXCEL_FILE_EXT = XLSReportRendererConfiguration.FILE_EXTENSION;	
+	public static final String EXCEL_XML_FILE_EXT = XLSXReportRendererConfiguration.FILE_EXTENSION;
+	public static final String HTML_FILE_EXT = HTMLReportRendererConfiguration.FILE_EXTENSION;
+	public static final String PDF_FILE_EXT = PDFReportRendererConfiguration.FILE_EXTENSION;
+	public static final String POSTSCRIPT_FILE_EXT = PSReportRendererConfiguration.FILE_EXTENSION;	
+	public static final String TEXT_FILE_EXT = TabDelimitedReportRendererConfiguration.FILE_EXTENSION;
+	public static final String XML_FILE_EXT = XMLReportRendererConfiguration.FILE_EXTENSION;
 	
 	private Medias() {
 	}

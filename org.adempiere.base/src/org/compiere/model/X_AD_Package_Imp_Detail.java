@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Package_Imp_Detail
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Imp_Detail")
-public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Detail, I_Persistent 
+public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Detail, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Detail (Properties ctx, int AD_Package_Imp_Detail_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Package_Imp_Detail (Properties ctx, String AD_Package_Imp_Detail_UU, String trxName)
+    {
+      super (ctx, AD_Package_Imp_Detail_UU, trxName);
+      /** if (AD_Package_Imp_Detail_UU == null)
+        {
+			setAD_Package_Imp_Detail_ID (0);
+			setAD_Package_Imp_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Imp_Detail (Properties ctx, String AD_Package_Imp_Detail_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Imp_Detail_UU, trxName, virtualColumns);
+      /** if (AD_Package_Imp_Detail_UU == null)
+        {
+			setAD_Package_Imp_Detail_ID (0);
+			setAD_Package_Imp_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Package_Imp_Detail (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -265,6 +289,21 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 		return ii.intValue();
 	}
 
+	/** Set Record UUID.
+		@param Record_UU Record UUID
+	*/
+	public void setRecord_UU (String Record_UU)
+	{
+		set_Value (COLUMNNAME_Record_UU, Record_UU);
+	}
+
+	/** Get Record UUID.
+		@return Record UUID	  */
+	public String getRecord_UU()
+	{
+		return (String)get_Value(COLUMNNAME_Record_UU);
+	}
+
 	/** Set Result.
 		@param Result Result of the action taken
 	*/
@@ -341,10 +380,10 @@ public class X_AD_Package_Imp_Detail extends PO implements I_AD_Package_Imp_Deta
 	public boolean isUninstall()
 	{
 		Object oo = get_Value(COLUMNNAME_Uninstall);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

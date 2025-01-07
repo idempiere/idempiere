@@ -10,13 +10,13 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
-		<revision>10.0.0-SNAPSHOT</revision>
-		<jdk.version>11</jdk.version>
-		<tycho.version>2.7.5</tycho.version>
+		<revision>11.0.0-SNAPSHOT</revision>
+		<jdk.version>17</jdk.version>
+		<tycho.version>4.0.4</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
-		<zk.version>9.6.3</zk.version>
+		<zk.version>9.6.4</zk.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
@@ -24,16 +24,17 @@
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version><!-- get from master, update when mave have update-->
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.23</idempiere-equinox-url>
-		<idempiere-equinox-repository-id>eclipse-2022-03</idempiere-equinox-repository-id>
+		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.27</idempiere-equinox-url>
+		<idempiere-equinox-repository-id>eclipse-2023-03</idempiere-equinox-repository-id>
 		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository</idempiere-orbit-url>
 		<idempiere-orbit-repository-id>orbit-2021-06-R20210602031627</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
-		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.test.feature.feature.group</extra.ui.install>
+		<extra.iu.install>org.eclipse.equinox.p2.director,org.idempiere.equinox.p2.director.feature.feature.group</extra.iu.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<skipClean>false</skipClean>
+    	<target.version>17</target.version>
 	</properties>
-
+	
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -130,7 +131,7 @@
 											target-platform-configuration
 										</artifactId>
 										<versionRange>
-											[2.7.0,)
+											[3.0.0,)
 										</versionRange>
 										<goals>
 											<goal>target-platform</goal>
@@ -149,7 +150,7 @@
 											tycho-compiler-plugin
 										</artifactId>
 										<versionRange>
-											[2.7.3,)
+											[3.0.0,)
 										</versionRange>
 										<goals>
 											<goal>
@@ -170,7 +171,7 @@
 											tycho-ds-plugin
 										</artifactId>
 										<versionRange>
-											[2.7.3,)
+											[3.0.0,)
 										</versionRange>
 										<goals>
 											<goal>
@@ -455,8 +456,9 @@
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho.version}</version>
                     <configuration>
-                    	<source>${jdk.version}</source>
-                    	<target>${jdk.version}</target>
+                    	<source>${target.version}</source>
+                    	<target>${target.version}</target>
+                    	<release>${target.version}</release>
 						<verbose>true</verbose>						
 					</configuration>
 				</plugin>
@@ -656,7 +658,7 @@
 				            <artifact>
 					            <groupId>org.idempiere</groupId>
 					            <artifactId>${idempiere.target}</artifactId>
-					            <version>10.0.0-SNAPSHOT</version>
+					            <version>11.0.0-SNAPSHOT</version>
 				            </artifact>
 			            </target>
 
@@ -681,7 +683,7 @@
 			            <executionEnvironmentDefault>JavaSE-${jdk.version}</executionEnvironmentDefault>
 			            <executionEnvironment>JavaSE-${jdk.version}</executionEnvironment>
 		            </configuration>
-		        </plugin>
+		        </plugin>		        
 		      </plugins>
 	        </build>
 		</profile>

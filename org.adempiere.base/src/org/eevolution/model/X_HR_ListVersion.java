@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListVersion
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_ListVersion")
-public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persistent 
+public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_ListVersion (Properties ctx, String HR_ListVersion_UU, String trxName)
+    {
+      super (ctx, HR_ListVersion_UU, trxName);
+      /** if (HR_ListVersion_UU == null)
+        {
+			setHR_List_ID (0);
+			setHR_ListVersion_ID (0);
+			setName (null);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+			setValidTo (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_ListVersion (Properties ctx, String HR_ListVersion_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_ListVersion_UU, trxName, virtualColumns);
+      /** if (HR_ListVersion_UU == null)
+        {
+			setHR_List_ID (0);
+			setHR_ListVersion_ID (0);
+			setName (null);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+			setValidTo (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_ListVersion (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -216,7 +244,7 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

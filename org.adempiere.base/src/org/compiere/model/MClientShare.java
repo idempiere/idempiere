@@ -27,7 +27,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- * 	Client Share Info
+ * 	Model for sharing of client data
  *	
  *  @author Jorg Janke
  *  @version $Id: MClientShare.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
@@ -35,15 +35,14 @@ import org.compiere.util.Env;
 public class MClientShare extends X_AD_ClientShare
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8104352403537353753L;
 
 	/**
-	 * 	Is Table Client Level Only
 	 *	@param AD_Client_ID client
 	 *	@param AD_Table_ID table
-	 *	@return true if client level only (default false)
+	 *	@return true if table share at client level (i.e accessible by all org within the same tenant)
 	 */
 	public static boolean isClientLevelOnly (int AD_Client_ID, int AD_Table_ID)
 	{
@@ -54,10 +53,9 @@ public class MClientShare extends X_AD_ClientShare
 	}	//	isClientLevel
 	
 	/**
-	 * 	Is Table Org Level Only
 	 *	@param AD_Client_ID client
 	 *	@param AD_Table_ID table
-	 *	@return true if Org level only (default false)
+	 *	@return true if table is share at org level (i.e org A can't access data of org B)
 	 */
 	public static boolean isOrgLevelOnly (int AD_Client_ID, int AD_Table_ID)
 	{
@@ -71,7 +69,7 @@ public class MClientShare extends X_AD_ClientShare
 	 * 	Is Table Shared for Client
 	 *	@param AD_Client_ID client
 	 *	@param AD_Table_ID table
-	 *	@return info or null
+	 *	@return true if table is share at client level
 	 */
 	private static Boolean isShared (int AD_Client_ID, int AD_Table_ID)
 	{
@@ -121,7 +119,17 @@ public class MClientShare extends X_AD_ClientShare
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MClientShare.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ClientShare_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MClientShare(Properties ctx, String AD_ClientShare_UU, String trxName) {
+        super(ctx, AD_ClientShare_UU, trxName);
+    }
+
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param AD_ClientShare_ID id
@@ -144,7 +152,7 @@ public class MClientShare extends X_AD_ClientShare
 	}	//	MClientShare
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MClientShare(MClientShare copy) 
@@ -153,7 +161,7 @@ public class MClientShare extends X_AD_ClientShare
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -163,7 +171,7 @@ public class MClientShare extends X_AD_ClientShare
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -222,6 +230,7 @@ public class MClientShare extends X_AD_ClientShare
 	 *	@param success success
 	 *	@return true
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -235,7 +244,7 @@ public class MClientShare extends X_AD_ClientShare
 	}	//	afterSave
 	
 	/**
-	 * 	Set Data To Level
+	 * 	Update AD_Org_ID of data to 0 if share type is client level only.
 	 * 	@return info
 	 */
 	public String setDataToLevel()
@@ -263,7 +272,7 @@ public class MClientShare extends X_AD_ClientShare
 	}	//	setDataToLevel
 
 	/**
-	 * 	List Child Tables
+	 * 	List Child Tables with ACCESSLEVEL_ClientPlusOrganization
 	 *	@return child tables
 	 */
 	public String listChildRecords()
@@ -286,7 +295,6 @@ public class MClientShare extends X_AD_ClientShare
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
-				//int AD_Table_ID = rs.getInt(1);
 				String TableName = rs.getString(2);
 				if (info.length() != 0)
 					info.append(", ");
@@ -312,6 +320,7 @@ public class MClientShare extends X_AD_ClientShare
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)

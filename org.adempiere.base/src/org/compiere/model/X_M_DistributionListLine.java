@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionListLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_DistributionListLine")
-public class X_M_DistributionListLine extends PO implements I_M_DistributionListLine, I_Persistent 
+public class X_M_DistributionListLine extends PO implements I_M_DistributionListLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_DistributionListLine (Properties ctx, int M_DistributionListLine_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_DistributionListLine (Properties ctx, String M_DistributionListLine_UU, String trxName)
+    {
+      super (ctx, M_DistributionListLine_UU, trxName);
+      /** if (M_DistributionListLine_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setM_DistributionList_ID (0);
+			setM_DistributionListLine_ID (0);
+			setMinQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DistributionListLine (Properties ctx, String M_DistributionListLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DistributionListLine_UU, trxName, virtualColumns);
+      /** if (M_DistributionListLine_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setM_DistributionList_ID (0);
+			setM_DistributionListLine_ID (0);
+			setMinQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_DistributionListLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -194,7 +222,7 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_DistributionList_ID()));
     }

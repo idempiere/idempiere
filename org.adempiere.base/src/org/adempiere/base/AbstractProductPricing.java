@@ -27,6 +27,9 @@ import org.compiere.model.I_M_RMALine;
 import org.compiere.model.I_M_RequisitionLine;
 import org.compiere.util.Env;
 
+/**
+ * Abstract base class for {@link IProductPricing} implementation
+ */
 public abstract class AbstractProductPricing implements IProductPricing {
 	
 	protected int 		  m_M_Product_ID;

@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_BOMLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_BOMLine")
-public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Persistent 
+public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName)
@@ -93,6 +93,62 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Order_BOMLine (Properties ctx, String PP_Order_BOMLine_UU, String trxName)
+    {
+      super (ctx, PP_Order_BOMLine_UU, trxName);
+      /** if (PP_Order_BOMLine_UU == null)
+        {
+			setC_UOM_ID (0);
+			setIsCritical (false);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_BOM_ID (0);
+			setPP_Order_BOMLine_ID (0);
+			setPP_Order_ID (0);
+			setQtyBatch (Env.ZERO);
+			setQtyBOM (Env.ZERO);
+			setQtyDelivered (Env.ZERO);
+			setQtyPost (Env.ZERO);
+			setQtyReject (Env.ZERO);
+			setQtyRequiered (Env.ZERO);
+			setQtyReserved (Env.ZERO);
+			setQtyScrap (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_BOMLine (Properties ctx, String PP_Order_BOMLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_BOMLine_UU, trxName, virtualColumns);
+      /** if (PP_Order_BOMLine_UU == null)
+        {
+			setC_UOM_ID (0);
+			setIsCritical (false);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_BOM_ID (0);
+			setPP_Order_BOMLine_ID (0);
+			setPP_Order_ID (0);
+			setQtyBatch (Env.ZERO);
+			setQtyBOM (Env.ZERO);
+			setQtyDelivered (Env.ZERO);
+			setQtyPost (Env.ZERO);
+			setQtyReject (Env.ZERO);
+			setQtyRequiered (Env.ZERO);
+			setQtyReserved (Env.ZERO);
+			setQtyScrap (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Order_BOMLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -100,7 +156,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -365,10 +421,10 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	public boolean isCritical()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCritical);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -388,10 +444,10 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	public boolean isQtyPercentage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQtyPercentage);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -575,7 +631,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_ID()));
     }

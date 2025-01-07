@@ -27,12 +27,25 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_Wlistbox_Customization;
 import org.compiere.util.Util;
 
+/**
+ * Extended model class for AD_Wlistbox_Customization
+ */
 public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -493650011622455985L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Wlistbox_Customization_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MWlistboxCustomization(Properties ctx, String AD_Wlistbox_Customization_UU, String trxName) {
+        super(ctx, AD_Wlistbox_Customization_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
@@ -68,7 +81,11 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 		return query.setClient_ID().setOnlyActiveRecords(true).setParameters(new Object[] { AD_User_ID, AD_WListboxName}).first();
 	}
 
-
+	/**
+	 * For each string element, remove the part starting from '='
+	 * @param CustomizationNew
+	 * @return modify list of string
+	 */
 	private static List<String> cleanCustomization (String[] CustomizationNew)
 	{
 		for (int i = 0; i < CustomizationNew.length; i++ )
@@ -78,6 +95,11 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 		return Arrays.asList(CustomizationNew); 
 	}	
 
+	/**
+	 * @param searchColumnName
+	 * @param columnList
+	 * @return matched index in columnList or -1 if no match found
+	 */
 	private static int columnIndex(String 				searchColumnName, 
 								   List<String> 	    columnList)
 	{
@@ -88,11 +110,11 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 				return i;
 			}
 		}
-	return -1;
+		return -1;
 	}
 
 	/**
-	 * Save the columnWidth of the columns of the WListBox 
+	 * Save columnWidth of WListBox columns to AD_Wlistbox_Customization  
 	 * @param ctx
 	 * @param AD_WListboxName
 	 * @param AD_User_ID

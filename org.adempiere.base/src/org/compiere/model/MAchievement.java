@@ -71,7 +71,17 @@ public class MAchievement extends X_PA_Achievement
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MAchievement.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_Achievement_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAchievement(Properties ctx, String PA_Achievement_UU, String trxName) {
+        super(ctx, PA_Achievement_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param PA_Achievement_ID id
@@ -109,6 +119,7 @@ public class MAchievement extends X_PA_Achievement
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isAchieved())
@@ -127,6 +138,7 @@ public class MAchievement extends X_PA_Achievement
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (success)
@@ -139,6 +151,7 @@ public class MAchievement extends X_PA_Achievement
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)
@@ -147,7 +160,7 @@ public class MAchievement extends X_PA_Achievement
 	}	//	afterDelete
 
 	/**
-	 * 	Update Goals with Achievement
+	 * 	Update measurement goals with achievement
 	 */
 	private void updateAchievementGoals()
 	{

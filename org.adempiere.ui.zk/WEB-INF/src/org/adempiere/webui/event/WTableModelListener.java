@@ -18,8 +18,7 @@
 package org.adempiere.webui.event;
 
 /**
- * WTableModelListener defines the interface for an object that listens
- * to changes in a WTableModel.
+ * Listener interface for {@link WTableModelEvent}
  * 
  * @author Andrew Kimball
  *
@@ -28,8 +27,8 @@ package org.adempiere.webui.event;
 public interface WTableModelListener
 {
     /**
-     * This fine grain notification tells listeners the exact range
-     * of cells, rows, or columns that changed.
+     * Notify listeners the exact range
+     * of cells, rows, or columns that have changed.
      * 
      * @param event	table model event 
      */

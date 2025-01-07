@@ -22,6 +22,7 @@ import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.compiere.model.GridField;
 import org.compiere.model.MChart;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.AfterSizeEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -31,7 +32,8 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 
 /**
- * This class is based on org.compiere.grid.ed.WImageEditor and WGraph written by Low Heng Sin.
+ * Default editor for {@link DisplayType#Chart}.<br/>
+ * A readonly editor that render chart from {@link MChart} model to {@link Panel} component.
  * @author Low Heng Sin
  * 
  * Modifications - chart display
@@ -78,6 +80,9 @@ public class WChartEditor extends WEditor
         init();        
     }
 
+    /**
+     * Re-render chart
+     */
     private void createChart() {
     	if (chartHeight > 0 && chartWidth > 0) {
 	        chartDiv.getChildren().clear();
@@ -96,22 +101,32 @@ public class WChartEditor extends WEditor
     	return (Panel) component;
     }
     
+    /**
+     * Init component
+     */
     private void init()
     {    	
     	Panelchildren pc = new Panelchildren();
 		getComponent().appendChild(pc);
 		pc.setSclass("chart-field");
 		chartDiv = new Div();
+		//chart is render in ON_AFTER_SIZE event
 		chartDiv.addEventListener(Events.ON_AFTER_SIZE, this);
 		pc.appendChild(chartDiv);
     }
 
+    /**
+     * @return {@link MChart#getName()}
+     */
 	@Override
     public String getDisplay()
     {
     	 return chartModel.get_Translation(MChart.COLUMNNAME_Name);
     }
 
+	/**
+     * Always return null
+     */
     @Override
     public Object getValue()
     {
@@ -124,23 +139,34 @@ public class WChartEditor extends WEditor
         return false;
     }
    
-    
+    /**
+     * No op.
+     */
     @Override
     public void setMandatory(boolean mandatory)
     {
         ;
     }
     
+    /**
+     * Always return true
+     */
     @Override
 	public boolean isReadWrite() {
 		return true;
 	}
 
+    /**
+     * No op.
+     */
 	@Override
 	public void setReadWrite(boolean readWrite) {
 		
 	}
 
+	/**
+	 * No op.
+	 */
 	@Override
     public void setValue(Object value)
     {
@@ -153,6 +179,7 @@ public class WChartEditor extends WEditor
         return LISTENER_EVENTS;
     }
 
+    @Override
 	public void onEvent(Event event) throws Exception 
 	{
 		if (event instanceof AfterSizeEvent && chartModel != null && chartModel.getAD_Chart_ID() > 0)
@@ -181,6 +208,9 @@ public class WChartEditor extends WEditor
 		}
 	}
 
+    /**
+     * Call {@link #createChart()} to re-render chart.
+     */
 	@Override
 	public void dynamicDisplay() {
 		super.dynamicDisplay();

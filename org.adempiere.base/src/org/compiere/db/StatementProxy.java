@@ -34,7 +34,6 @@ import org.compiere.util.Trx;
 import org.idempiere.db.util.AutoCommitConnectionBroker;
 
 /**
- *
  * Dynamic proxy for the CStatement interface
  * @author Low Heng Sin
  */
@@ -50,7 +49,12 @@ public class StatementProxy implements InvocationHandler {
 	protected transient Statement		p_stmt = null;
 	/**	Value Object					*/
 	protected CStatementVO				p_vo = null;
-	
+
+	/**
+	 * @param resultSetType
+	 * @param resultSetConcurrency
+	 * @param trxName
+	 */
 	public StatementProxy(int resultSetType, int resultSetConcurrency, String trxName) {
 		p_vo = new CStatementVO (resultSetType, resultSetConcurrency);
 		p_vo.setTrxName(trxName);
@@ -58,6 +62,9 @@ public class StatementProxy implements InvocationHandler {
 		init();
 	}
 	
+	/**
+	 * @param vo
+	 */
 	public StatementProxy(CStatementVO vo) {
 		p_vo = vo;
 		init();
@@ -66,6 +73,7 @@ public class StatementProxy implements InvocationHandler {
 	//for subclass
 	protected StatementProxy() {}
 	
+	@Override
 	public Object invoke(Object obj, Method method, Object[] args)
 			throws Throwable {
 		String name = method.getName();		
@@ -172,8 +180,8 @@ public class StatementProxy implements InvocationHandler {
 	}
 	
 	/**
-	 * 	Close
-	 * 	@throws SQLException
+	 * Close
+	 * @throws SQLException
 	 * @see java.sql.Statement#close()
 	 */
 	protected void close () throws SQLException
@@ -194,14 +202,15 @@ public class StatementProxy implements InvocationHandler {
 	}	//	close
 	
 	/**
-	 * 	Execute Query
-	 * 	@return ResultSet or RowSet
+	 * 	Execute the wrapped statement and return row set
+	 * 	@return RowSet
 	 * 	@throws SQLException
 	 *  @see java.sql.PreparedStatement#executeQuery()
 	 */
 	protected RowSet getRowSet()
 	{
-		log.finest("getRowSet");
+		if (log.isLoggable(Level.FINEST))
+			log.finest("getRowSet");
 		RowSet rowSet = null;
 		ResultSet rs = null;
 		try
@@ -222,10 +231,10 @@ public class StatementProxy implements InvocationHandler {
 			rowSet = null;
 		}
 		return rowSet;
-	}	//	local_getRowSet
+	}	//	getRowSet
 
 	/**
-	 * 	Commit (if local)
+	 * 	Commit (if local trx)
 	 *	@throws SQLException
 	 */
 	private void commit() throws SQLException

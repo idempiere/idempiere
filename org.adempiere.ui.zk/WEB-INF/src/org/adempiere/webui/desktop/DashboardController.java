@@ -46,6 +46,7 @@ import org.adempiere.webui.apps.graph.WPAWidget;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.model.ChartModel;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
@@ -63,6 +64,7 @@ import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MChart;
+import org.compiere.model.MColumn;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardContentAccess;
 import org.compiere.model.MDashboardPreference;
@@ -80,9 +82,9 @@ import org.compiere.model.MRole;
 import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -116,7 +118,6 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Toolbar;
@@ -433,32 +434,18 @@ public class DashboardController implements EventListener<Event> {
 	 * @param text
 	 */
 	private void renderHelpButton(Caption caption, String text) {
-		A help = new A();
-		help.setSclass("dashboard-content-help-icon");
-		help.setVisible(false);
+		A icon = new A();
+		icon.setSclass("dashboard-content-help-icon");
 		if (ThemeManager.isUseFontIconForImage())
-			help.setIconSclass("z-icon-Help");
+			icon.setIconSclass("z-icon-Help");
 		else
-			help.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
-		caption.appendChild(help);
-		Popup popup = new Popup();
-		popup.setPopup(popup);
+			icon.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+		caption.appendChild(icon);
+		Div popup = new Div();
 		Text t = new Text(text);
-		popup.setSclass("dashboard-content-help");
+		popup.setSclass("dashboard-content-help-popup");
 		popup.appendChild(t);
-		help.setTooltip(popup);
-		help.addEventListener(Events.ON_MOUSE_OVER, (Event event) -> {
-			popup.setPage(help.getPage());
-			popup.open(help, "after_start");
-			LayoutUtils.autoDetachOnClose(popup);
-		});
-		caption.addEventListener(Events.ON_MOUSE_OVER, (Event event) -> {
-			help.setVisible(true);
-		});
-		caption.addEventListener(Events.ON_MOUSE_OUT, (Event event) -> {
-			popup.detach();
-			help.setVisible(false);
-		});
+		caption.appendChild(popup);
 	}
 
 	/**
@@ -753,7 +740,7 @@ public class DashboardController implements EventListener<Event> {
 			HtmlBasedComponent parentComponent, List<Component> components, Component zulComponent, ServerPushTemplate spt) throws Exception {
 		// HTML content
         String htmlContent = dashboardContent.get_ID() > 0 ? dashboardContent.get_Translation(MDashboardContent.COLUMNNAME_HTML) : null;
-        if(htmlContent != null)
+        if(!Util.isEmpty(htmlContent))
         {
             StringBuilder result = new StringBuilder("<html><head>");
 
@@ -827,7 +814,8 @@ public class DashboardController implements EventListener<Event> {
 				{
 	    			addDrillAcrossEventListener(AD_Process_ID, parentComponent);
 					String processParameters = dashboardContent.getProcessParameters();
-	
+					ReportData reportData = generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath);
+					
 					Div layout = new Div();
 					layout.setHeight("100%");
 					layout.setStyle("display: flex;flex-direction: column;");
@@ -835,18 +823,19 @@ public class DashboardController implements EventListener<Event> {
 					Iframe iframe = new Iframe();
 					iframe.setSclass("dashboard-report-iframe");
 					iframe.setStyle("flex-grow: 1;");
-					iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath));
+					iframe.setContent(reportData.getContent());
 					if(iframe.getContent() != null)
 						layout.appendChild(iframe);
 					else
 						layout.appendChild(createFillMandatoryLabel(dashboardContent));
 	
 					Toolbar toolbar = new Toolbar();
+					LayoutUtils.addSclass("dashboard-report-toolbar", toolbar);
 					layout.appendChild(toolbar);
 					btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
 					toolbar.appendChild(btn);
 					
-					if(iframe.getContent() != null) {
+					if(iframe.getContent() != null && reportData.getRowCount() >= 0) {
 						btn = new ToolBarButton();
 						btn.setAttribute("AD_Process_ID", AD_Process_ID);
 						btn.setAttribute("ProcessParameters", processParameters);
@@ -863,9 +852,21 @@ public class DashboardController implements EventListener<Event> {
 					}
 					else
 						btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
-	
-					btn.addEventListener(Events.ON_CLICK, e -> iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath)));
-					toolbar.appendChild(btn);				
+					
+					toolbar.appendChild(btn);	
+
+					Label rowCountLabel = new Label(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {reportData.getRowCount()}));
+					if(reportData.getRowCount() >= 0) {
+						LayoutUtils.addSclass("rowcount-label", rowCountLabel);
+						toolbar.appendChild(rowCountLabel);
+					}
+					
+					btn.addEventListener(Events.ON_CLICK, e -> {
+						ReportData refreshedData = generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath);
+						iframe.setContent(refreshedData.getContent());
+						if(refreshedData.getRowCount() >= 0)
+							rowCountLabel.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {refreshedData.getRowCount()}));
+					});			
 				}
 				else
 				{
@@ -1130,6 +1131,13 @@ public class DashboardController implements EventListener<Event> {
 	    		//following 2 line needed for restore to size the panel correctly
 				ZKUpdateUtil.setHflex(panel, (String)panel.getAttribute(FLEX_GROW_ATTRIBUTE));
 				ZKUpdateUtil.setHeight(panel, "100%");
+				
+				//notify panel content component
+				if (panel.getPanelchildren() != null) {
+					panel.getPanelchildren().getChildren().forEach(child -> {
+						Executions.schedule(dashboardLayout.getDesktop(), e -> Events.postEvent(child, event), new Event("onPostRestore"));
+					});
+				}
 	    	}
 		}
 		else if(eventName.equals(Events.ON_CLICK))
@@ -1232,12 +1240,14 @@ public class DashboardController implements EventListener<Event> {
     				int PA_DashboardPreference_ID = Integer.parseInt(value.toString());
     				MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), PA_DashboardPreference_ID, null);
     				preference.setIsCollapsedByDefault(!panel.isOpen());
-    				try {
-    					PO.setCrossTenantSafe();
-    					if (!preference.save())
-    						logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
-    				} finally {
-    					PO.clearCrossTenantSafe();
+    				if (!preference.saveCrossTenantSafe())
+    					logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
+    			}
+    			
+    			//notify panel content component
+    			if (panel.getPanelchildren() != null) {
+    				for(Component c : panel.getPanelchildren().getChildren()) {
+    					Events.postEvent(c, event);
     				}
     			}
     		}
@@ -1559,7 +1569,7 @@ public class DashboardController implements EventListener<Event> {
 	/**
 	 * Strip &lt;html&gt;, &lt;body&gt; and &lt;head&gt; tag
 	 * @param htmlString
-	 * @param all true to escpae &lt; and &gt;
+	 * @param all true to escape &lt; and &gt;
 	 * @return stripped htmlString
 	 */
 	private String stripHtml(String htmlString, boolean all) {
@@ -1578,6 +1588,8 @@ public class DashboardController implements EventListener<Event> {
 		return htmlString;
 	}
 	
+	
+	
 	/**
 	 * Run report
 	 * @param AD_Process_ID
@@ -1591,10 +1603,7 @@ public class DashboardController implements EventListener<Event> {
 			 throw new IllegalArgumentException("Not a Report AD_Process_ID=" + process.getAD_Process_ID()
 				+ " - " + process.getName());
 		//	Process
-		int AD_Table_ID = 0;
-		int Record_ID = 0;
-		//
-		MPInstance pInstance = new MPInstance(Env.getCtx(), AD_Process_ID, Record_ID);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), AD_Process_ID, 0, 0, null);
 		if(AD_PrintFormat_ID > 0)
 			pInstance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
 		pInstance.setIsProcessing(true);
@@ -1603,8 +1612,7 @@ public class DashboardController implements EventListener<Event> {
 			if(!fillParameter(pInstance, parameters))
 				return null;
 			//
-			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
-				AD_Table_ID, Record_ID);
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
 			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
@@ -1635,14 +1643,47 @@ public class DashboardController implements EventListener<Event> {
 	 * @return {@link AMedia}
 	 * @throws Exception
 	 */
-	private AMedia generateReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters, Component component, String contextPath) throws Exception {
+	private ReportData generateReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters, Component component, String contextPath) throws Exception {
+		MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
+		File file = null;
+		if(process.getJasperReport() != null) {
+			file = runJasperReport(process, parameters);
+			return new ReportData(new AMedia(process.getName(), "html", "text/html", file, false), -1);
+		}
+			
 		ReportEngine re = runReport(AD_Process_ID, AD_PrintFormat_ID, parameters);
 		if(re == null)
 			return null;
-		File file = FileUtil.createTempFile(re.getName(), ".html");		
+		file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", 
 				component.getUuid(), String.valueOf(AD_Process_ID)));
-		return new AMedia(re.getName(), "html", "text/html", file, false);
+		return new ReportData(new AMedia(process.getName(), "html", "text/html", file, false), re.getPrintData() != null ? re.getPrintData().getRowCount(false) : 0);
+	}
+
+	private File runJasperReport(MProcess process, String parameters) {
+		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), 0, 0, null);
+		pInstance.setIsProcessing(true);
+		pInstance.saveEx();
+		try {
+			if(!fillParameter(pInstance, parameters))
+				return null;
+			//
+				
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), 0, 0);
+			pi.setExport(true);
+			pi.setExportFileExtension("html");
+			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
+		
+			//	Report
+			ServerProcessCtl.process(pi, null);
+			
+			return pi.getExportFile();
+		}catch(Exception ex) {
+			throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
+			+ " - " + process.getName());
+		}
 	}
 
 	/**
@@ -1692,7 +1733,7 @@ public class DashboardController implements EventListener<Event> {
 					 if (paramValue == null
 							 || (paramValue != null && paramValue.length() == 0))
 						 value = null;
-					 else if (paramValue.startsWith("@SQL=")) {
+					 else if (paramValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 						 String sql = paramValue.substring(5);
 						 sql = Env.parseContext(Env.getCtx(), 0, sql, false, false);	//	replace variables
 						 if (!Util.isEmpty(sql)) {
@@ -1924,6 +1965,42 @@ public class DashboardController implements EventListener<Event> {
 		for (IChartRendererService renderer : list) {
 			if (renderer.renderChart(chartPanel, width, height, model, showTitle))
 				break;
+		}
+	}
+	
+	/**
+	 * Holds information about the report: Report Content, Row Count
+	 */
+	public class ReportData {
+		/** Report content */
+		private AMedia content;
+		/** Report Row Count */
+		private int rowCount = 0;
+		
+		/**
+		 * Constructor
+		 * @param content
+		 * @param rowCount
+		 */
+		public ReportData(AMedia content, int rowCount) {
+			this.content = content;
+			this.rowCount = rowCount;
+		}
+
+		/**
+		 * Get report content
+		 * @return AMedia content
+		 */
+		public AMedia getContent() {
+			return content;
+		}
+
+		/**
+		 * Get report row count (function rows not included)
+		 * @return int row count
+		 */
+		public int getRowCount() {
+			return rowCount;
 		}
 	}
 }

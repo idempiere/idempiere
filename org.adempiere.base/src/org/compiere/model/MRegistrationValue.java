@@ -24,7 +24,9 @@ import java.util.Properties;
  *	
  *  @author Jorg Janke
  *  @version $Id: MRegistrationValue.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
+ *  @deprecated not fully implemented
  */
+@Deprecated
 public class MRegistrationValue extends X_A_RegistrationValue
 	implements Comparable<Object>
 {
@@ -32,6 +34,16 @@ public class MRegistrationValue extends X_A_RegistrationValue
 	 * 
 	 */
 	private static final long serialVersionUID = 3380153548447464552L;
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_RegistrationValue_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRegistrationValue(Properties ctx, String A_RegistrationValue_UU, String trxName) {
+        super(ctx, A_RegistrationValue_UU, trxName);
+    }
 
 	/**
 	 * 	Persistency Constructor

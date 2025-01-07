@@ -21,19 +21,19 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for T_Report
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_Report")
-public class X_T_Report extends PO implements I_T_Report, I_Persistent 
+public class X_T_Report extends PO implements I_T_Report, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_Report (Properties ctx, int T_Report_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_Report (Properties ctx, String T_Report_UU, String trxName)
+    {
+      super (ctx, T_Report_UU, trxName);
+      /** if (T_Report_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setFact_Acct_ID (0);
+			setPA_ReportLine_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_Report (Properties ctx, String T_Report_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_Report_UU, trxName, virtualColumns);
+      /** if (T_Report_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setFact_Acct_ID (0);
+			setPA_ReportLine_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_T_Report (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -85,7 +111,7 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_Report[")
-        .append(get_ID()).append(",Name=").append(getName()).append("]");
+        .append(get_UUID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -746,12 +772,12 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), getName());
+        return new ValueNamePair(get_UUID(), getName());
     }
 
 	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException

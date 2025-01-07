@@ -14,7 +14,6 @@ package org.adempiere.eclipse.equinox.http.servlet;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.security.*;
 import java.util.*;
 
 import javax.servlet.*;
@@ -29,13 +28,11 @@ public class ServletContextAdaptor implements ServletContext {
 
 	private ServletContext servletContext;
 	HttpContext httpContext;
-	private AccessControlContext acc;
 	private ProxyContext proxyContext;
 
-	public ServletContextAdaptor(ProxyContext proxyContext, ServletContext servletContext, HttpContext httpContext, AccessControlContext acc) {
+	public ServletContextAdaptor(ProxyContext proxyContext, ServletContext servletContext, HttpContext httpContext) {
 		this.servletContext = servletContext;
 		this.httpContext = httpContext;
-		this.acc = acc;
 		this.proxyContext = proxyContext;
 	}
 
@@ -88,16 +85,7 @@ public class ServletContextAdaptor implements ServletContext {
 	}
 
 	public URL getResource(final String name) {
-		try {
-			return (URL) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-				public Object run() throws Exception {
-					return httpContext.getResource(name);
-				}
-			}, acc);
-		} catch (PrivilegedActionException e) {
-			log(e.getException().getMessage(), e.getException());
-		}
-		return null;
+		return httpContext.getResource(name);
 	}
 
 	public InputStream getResourceAsStream(String name) {

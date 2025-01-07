@@ -24,13 +24,13 @@ import org.osgi.service.component.ComponentConstants;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
+ * Service locator implementation for OSGi service.
  * @author hengsin
- *
  */
 public class DynamicServiceLocator implements IServiceLocator {
 
 	/**
-	 * 
+	 * default constructor
 	 */
 	public DynamicServiceLocator() {
 	}
@@ -109,6 +109,13 @@ public class DynamicServiceLocator implements IServiceLocator {
 		return new DynamicServiceHolder<T>(tracker);
 	}
 
+	/**
+	 * Create service query filter
+	 * @param type
+	 * @param serviceId
+	 * @param query
+	 * @return Filter
+	 */
 	private Filter filter(Class<?> type, String serviceId, ServiceQuery query) {
 		StringBuilder builder = new StringBuilder("(&(objectclass=");
 		builder.append(type.getName()).append(")");

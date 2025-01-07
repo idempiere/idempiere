@@ -24,6 +24,8 @@
  **********************************************************************/
 package org.adempiere.webui;
 
+import static org.compiere.model.SystemIDs.FORM_ARCHIVEVIEWER;
+
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.form.WArchiveViewer;
@@ -31,8 +33,6 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MArchive;
-import org.compiere.model.MBPartner;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -57,30 +57,43 @@ public class WArchive implements EventListener<Event>
 	 * 	Constructor
 	 *	@param invoker button
 	 *	@param AD_Table_ID table
-	 *	@param Record_ID record
+	 *	@param Record_ID record ID
+	 *  @deprecated - use {@link #WArchive(Component, int, int, String)} instead
 	 */
 	public WArchive (Component invoker, int AD_Table_ID, int Record_ID)
 	{
-		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
+		this(invoker, AD_Table_ID, Record_ID, null);
+	}
+
+	/**
+	 * 	Constructor
+	 *	@param invoker button
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record ID
+	 *  @param Record_UU record UUID
+	 */
+	public WArchive (Component invoker, int AD_Table_ID, int Record_ID, String Record_UU)
+	{
+		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + ", Record_UU=" + Record_UU);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;
+		m_Record_UU = Record_UU;
 		getArchives(invoker);
 	}
 
 	/**	The Table						*/
 	private int			m_AD_Table_ID;
-	/** The Record						*/
+	/** The Record ID					*/
 	private int			m_Record_ID;
+	/** The Record UUID					*/
+	private String		m_Record_UU;
 	
 	/**	The Popup						*/
 	private Menupopup 	m_popup = new Menupopup();
 	private Menuitem 	m_reports = null;
 	private Menuitem 	m_reportsAll = null;
 	private Menuitem 	m_documents = null;	
-	
-	/** Where Clause					*/
-	protected StringBuffer 		m_where = null;
-	
+
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (WArchive.class);
 	
@@ -90,15 +103,7 @@ public class WArchive implements EventListener<Event>
 	 */
 	private void getArchives(Component invoker)
 	{
-		m_where = new StringBuffer();
-		m_where.append("(AD_Table_ID=").append(m_AD_Table_ID)
-			.append(" AND Record_ID=").append(m_Record_ID)
-			.append(")");
-		//	Get all for BP
-		if (m_AD_Table_ID == MBPartner.Table_ID)
-			m_where.append(" OR C_BPartner_ID=").append(m_Record_ID);
-		//
-		int[] counts = MArchive.getReportAndDocumentCountByRecordId(m_AD_Table_ID, m_Record_ID, null);
+		int[] counts = MArchive.getReportAndDocumentCountByRecordId(m_AD_Table_ID, m_Record_ID, m_Record_UU, null);
 		int reportCount = counts[0];
 		int documentCount = counts[1];
 		//
@@ -158,9 +163,9 @@ public class WArchive implements EventListener<Event>
 			WArchiveViewer av = (WArchiveViewer) form.getICustomForm();
 			av.setShowQuery(false);
 			if (e.getTarget() == m_documents)
-				av.query(false, m_AD_Table_ID, m_Record_ID);
+				av.query(false, m_AD_Table_ID, m_Record_ID, m_Record_UU);
 			else if (e.getTarget() == m_reports)
-				av.query(true, m_AD_Table_ID, m_Record_ID);
+				av.query(true, m_AD_Table_ID, m_Record_ID, m_Record_UU);
 			else	//	all Reports
 				av.query(true, m_AD_Table_ID, 0);
 			

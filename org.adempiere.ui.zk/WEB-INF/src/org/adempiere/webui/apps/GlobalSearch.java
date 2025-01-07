@@ -100,9 +100,13 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CHANGE, this);
 		bandbox.setCtrlKeys("#up#down");
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
+		bandbox.addEventListener(Events.ON_FOCUS, e -> {
+			if (!bandbox.isOpen())
+				bandbox.setOpen(true);
+		});
 		
 		Bandpopup popup = new Bandpopup();
-		ZKUpdateUtil.setWindowHeightX(popup, ClientInfo.get().desktopHeight-50);
+		ZKUpdateUtil.setWindowHeightX(popup, ClientInfo.get().desktopHeight-100);
 		bandbox.appendChild(popup);		
 		
 		tabbox = new Tabbox();
@@ -139,15 +143,18 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CHANGING.equals(event.getName())) {
-			//post ON_SEARCH_EVENT for ON_CHANGING from bandbox 
+			// Post ON_SEARCH_EVENT for ON_CHANGING from bandbox 
 			InputEvent inputEvent = (InputEvent) event;
-			String value = inputEvent.getValue();		
+			String value = inputEvent.getValue();
+			// Auto switch to Search with "/"
+			if (value != null && value.startsWith("/") && tabbox.getSelectedIndex()==0)
+				tabbox.setSelectedIndex(1);
 			bandbox.setAttribute(LAST_ONCHANGING_ATTR, value);
 			Events.postEvent(ON_SEARCH_EVENT, this, value);		
 		} else if (Events.ON_CHANGE.equals(event.getName())) {
 			bandbox.removeAttribute(LAST_ONCHANGING_ATTR);
         } else if (Events.ON_CTRL_KEY.equals(event.getName())) {
-        	//handle keyboard navigation for bandbox items
+        	// Handle keyboard navigation for bandbox items
         	KeyEvent ke = (KeyEvent) event;
         	if (ke.getKeyCode() == KeyEvent.UP) {
         		if (bandbox.getFirstChild().isVisible()) {
@@ -180,10 +187,12 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         	}
         } else if (event.getName().equals(ON_SEARCH_EVENT)) {
         	String value = (String) event.getData();
-        	if (tabbox.getSelectedIndex()==0)
+        	if (tabbox.getSelectedIndex()==0) {
+        		menuController.setHighlightText(value);
         		menuController.search(value);
-        	else
+        	} else {        		
         		docController.search(value);
+        	}
 			bandbox.focus();
         } else if (event.getName().equals(ON_CREATE_ECHO_EVENT)) {
         	//setup client side listener for enter key
@@ -246,5 +255,21 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	 */
 	public void onClientInfo() {
 		ZKUpdateUtil.setWindowHeightX(bandbox.getDropdown(), ClientInfo.get().desktopHeight-50);	
+	}
+
+	/**
+	 * Set place holder text for global search input box
+	 * @param placeHolder
+	 */
+	public void setPlaceHolderText(String placeHolder) {
+		bandbox.setPlaceholder(placeHolder);
+	}
+	
+	/**
+	 * Set tooltip text for global search input box
+	 * @param tooltipText
+	 */
+	public void setTooltipText(String tooltipText) {
+		bandbox.setTooltiptext(tooltipText);
 	}
 }

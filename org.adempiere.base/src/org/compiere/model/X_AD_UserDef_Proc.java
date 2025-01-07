@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Proc
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Proc")
-public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persistent 
+public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc (Properties ctx, int AD_UserDef_Proc_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_UserDef_Proc (Properties ctx, String AD_UserDef_Proc_UU, String trxName)
+    {
+      super (ctx, AD_UserDef_Proc_UU, trxName);
+      /** if (AD_UserDef_Proc_UU == null)
+        {
+			setAD_Process_ID (0);
+			setAD_UserDef_Proc_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Proc (Properties ctx, String AD_UserDef_Proc_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Proc_UU, trxName, virtualColumns);
+      /** if (AD_UserDef_Proc_UU == null)
+        {
+			setAD_Process_ID (0);
+			setAD_UserDef_Proc_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_UserDef_Proc (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -269,10 +291,10 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	public boolean isUserUpdateable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserUpdateable);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -297,7 +319,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

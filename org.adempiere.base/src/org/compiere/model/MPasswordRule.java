@@ -55,18 +55,26 @@ import org.passay.dictionary.WordListDictionary;
 import org.passay.dictionary.WordLists;
 import org.passay.dictionary.sort.ArraysSort;
 
-
 /**
  * @author juliana
- *
  */
 public class MPasswordRule extends X_AD_PasswordRule {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6778305268023192107L;
 
 	private static final String passay_prefix = "PASSAY_";
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PasswordRule_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPasswordRule(Properties ctx, String AD_PasswordRule_UU, String trxName) {
+        super(ctx, AD_PasswordRule_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
@@ -86,6 +94,11 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param trxName
+	 * @return password rule
+	 */
 	public static MPasswordRule getRules(Properties ctx, String trxName) {
 		 MClient system = MClient.get(ctx, 0);
 		 int pwdruleID = system.getAD_PasswordRule_ID();
@@ -112,6 +125,13 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		return true;
 	}
 
+	/**
+	 * Validate newPassword against system password rule. 
+	 * @param username
+	 * @param newPassword
+	 * @param passwordHistorys
+	 * @throws AdempiereException if newPassword fail password rule validation
+	 */
 	public void validate(String username, String newPassword, List<MPasswordHistory> passwordHistorys) throws AdempiereException {
 
 		ArrayList<Rule> ruleList =  new ArrayList<Rule>();
@@ -250,6 +270,9 @@ public class MPasswordRule extends X_AD_PasswordRule {
 		return format;
 	}
 
+	/**
+	 * @return MessageResolver
+	 */
 	private MessageResolver getCustomResolver() {
 		Properties props = null;
 		InputStream in = null;
@@ -278,6 +301,10 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			return new PropertiesMessageResolver(props);
 	}
 
+	/**
+	 * Generate new password
+	 * @return new password generated
+	 */
 	public String generate() {
 		CharacterCharacteristicsRule charRule = new CharacterCharacteristicsRule();
 		int numValidations = 0;

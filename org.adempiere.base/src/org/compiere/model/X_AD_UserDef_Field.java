@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Field
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Field")
-public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Persistent 
+public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Field (Properties ctx, int AD_UserDef_Field_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_UserDef_Field (Properties ctx, String AD_UserDef_Field_UU, String trxName)
+    {
+      super (ctx, AD_UserDef_Field_UU, trxName);
+      /** if (AD_UserDef_Field_UU == null)
+        {
+			setAD_Field_ID (0);
+			setAD_UserDef_Field_ID (0);
+			setAD_UserDef_Tab_ID (0);
+			setSeqNo (0);
+// 0
+			setSeqNoGrid (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Field (Properties ctx, String AD_UserDef_Field_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Field_UU, trxName, virtualColumns);
+      /** if (AD_UserDef_Field_UU == null)
+        {
+			setAD_Field_ID (0);
+			setAD_UserDef_Field_ID (0);
+			setAD_UserDef_Tab_ID (0);
+			setSeqNo (0);
+// 0
+			setSeqNoGrid (0);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_UserDef_Field (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -179,7 +211,7 @@ public class X_AD_UserDef_Field extends PO implements I_AD_UserDef_Field, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Field_ID()));
     }

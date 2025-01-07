@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_ReportView_Column
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReportView_Column")
-public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column, I_Persistent 
+public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Column (Properties ctx, int AD_ReportView_Column_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ReportView_Column (Properties ctx, String AD_ReportView_Column_UU, String trxName)
+    {
+      super (ctx, AD_ReportView_Column_UU, trxName);
+      /** if (AD_ReportView_Column_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_ReportView_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReportView_Column (Properties ctx, String AD_ReportView_Column_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReportView_Column_UU, trxName, virtualColumns);
+      /** if (AD_ReportView_Column_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_ReportView_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ReportView_Column (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_ReportView_Column[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

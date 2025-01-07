@@ -34,12 +34,15 @@
 		<module>org.idempiere.felix.webconsole</module>
 		<module>org.idempiere.hazelcast.service</module>
 		<module>org.idempiere.webservices</module>
+		<module>org.idempiere.webservices.resources</module>
 		<module>org.idempiere.webservices-feature</module>
 		<module>org.idempiere.zk.extra</module>
 		<module>org.idempiere.keikai</module>
 		<module>org.idempiere.printformat.editor</module>
 		<module>org.idempiere.zk.billboard</module>
 		<module>org.idempiere.zk.billboard.chart</module>
+		<module>org.idempiere.zk.datatable</module>
+		<module>org.idempiere.zk.pivot</module>
 		<module>org.adempiere.report.jasper-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>
@@ -56,11 +59,13 @@
 		<module>org.idempiere.zk-feature</module>
 		<module>org.idempiere.webservices.client-feature</module>
 		<module>org.idempiere.jetty.osgi.boot.fragment</module>
+		<module>org.idempiere.ui.sso.oidc</module>
+		<module>org.idempiere.tablepartition</module>
 		<module>org.idempiere.p2</module>
 		<module>org.idempiere.javadoc</module>
 		<module>org.idempiere.test-feature</module>
 		<module>org.idempiere.test</module>
-		<module>org.idempiere.p2.targetplatform</module>
+		<module>org.idempiere.p2.targetplatform</module>		
 	</modules>
 
 </project>

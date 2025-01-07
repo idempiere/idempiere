@@ -35,9 +35,8 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
-
 /**
- *	Workflow Process
+ *	Extended Workflow Process model for AD_WF_Process
  *	
  *  @author Jorg Janke
  *  @author Silvano Trinchero, www.freepath.it
@@ -47,9 +46,22 @@ import org.compiere.util.Util;
 public class MWFProcess extends X_AD_WF_Process
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5981488658756275526L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WF_Process_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MWFProcess(Properties ctx, String AD_WF_Process_UU, String trxName) {
+        super(ctx, AD_WF_Process_UU, trxName);
+		if (Util.isEmpty(AD_WF_Process_UU))
+			throw new IllegalArgumentException ("Cannot create new WF Process directly");
+		m_state = new StateEngine (getWFState());
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -149,7 +161,7 @@ public class MWFProcess extends X_AD_WF_Process
 	
 	/**
 	 * 	Get active Activities of Process
-	 *	@param requery if true requery
+	 *	@param requery true to reload from DB
 	 *	@param onlyActive only active activities
 	 *	@return array of activities
 	 */
@@ -160,7 +172,7 @@ public class MWFProcess extends X_AD_WF_Process
 	
 	/**
 	 * 	Get active Activities of Process
-	 *	@param requery if true requery
+	 *	@param requery true to reload from DB
 	 *	@param onlyActive only active activities
 	 *	@return array of activities
 	 */
@@ -247,9 +259,8 @@ public class MWFProcess extends X_AD_WF_Process
 				+ ", Current=" + getWFState());
 	}	//	setWFState
 
-	
-	/**************************************************************************
-	 * 	Check Status of Activities.
+	/**
+	 * 	Check Status of Activities.<br/>
 	 * 	- start new activity
 	 * 	@param trxName transaction
 	 * 	@param lastPO PO
@@ -314,7 +325,7 @@ public class MWFProcess extends X_AD_WF_Process
 			getPO();
 	}	//	checkActivities
 
-	/**************************************************************************
+	/**
 	 * 	Update process status based on status of activities.
 	 * 	@param trxName transaction
 	 */
@@ -381,6 +392,8 @@ public class MWFProcess extends X_AD_WF_Process
 	 * 	Start Next Activity
 	 *	@param last last activity
 	 *	@param activities all activities
+	 *  @param lastPO
+	 *  @param trxName
 	 *	@return true if there is a next activity
 	 */
 	private boolean startNext (MWFActivity last, MWFActivity[] activities, PO lastPO, String trxName)
@@ -411,7 +424,7 @@ public class MWFProcess extends X_AD_WF_Process
 			 */
 			if(MWFNode.JOINELEMENT_AND.equals(activity.getNode().getJoinElement()))
 			{
-				if(!isJoinElementANDProcessed(activity))
+				if(!isJoinElementAndProcessed(activity))
 				{
 					activity.delete(true, get_TrxName());
 					continue;
@@ -421,7 +434,6 @@ public class MWFProcess extends X_AD_WF_Process
 			activity.set_TrxName(trxName);
 			activity.run();
 			
-
 			//	only the first valid if XOR
 			if (MWFNode.SPLITELEMENT_XOR.equals(split))
 				return true;
@@ -429,13 +441,13 @@ public class MWFProcess extends X_AD_WF_Process
 		return true;
 	}	//	startNext
 
-	/*
+	/**
 	 * IDEMPIERE-3942
-	 *  Implement JoinElement AND Status
+	 * Implement JoinElement AND Status
+	 * @param activity
+	 * @return true if all parent activities processed
 	 */	
-	private boolean isJoinElementANDProcessed(MWFActivity activity) {
-
-
+	private boolean isJoinElementAndProcessed(MWFActivity activity) {
 		Query queryNodeNext = new Query(Env.getCtx(), MWFNodeNext.Table_Name, "AD_WF_Next_ID = ?", get_TrxName());
 		queryNodeNext.setParameters(activity.getAD_WF_Node_ID());
 		List<MWFNodeNext> nodeNexts = queryNodeNext.list();
@@ -450,10 +462,9 @@ public class MWFProcess extends X_AD_WF_Process
 					"AD_WF_Process_ID = ? AND AD_WF_Node_ID = ? ", get_TrxName());
 
 			Object params[] = { activity.getAD_WF_Process_ID(), nodeNext.getAD_WF_Node_ID() };
-
 			queryMWFActivity.setParameters(params);
-			List<MWFActivity> parentActivitys = queryMWFActivity.list();
-			for (MWFActivity parentActivity : parentActivitys) {
+			List<MWFActivity> parentActivities = queryMWFActivity.list();
+			for (MWFActivity parentActivity : parentActivities) {
 				totalActivities++;
 				if(!parentActivity.isProcessed())
 					return false;
@@ -466,7 +477,7 @@ public class MWFProcess extends X_AD_WF_Process
 		return true;
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Set Workflow Responsible.
 	 * 	Searches for a Invoker.
 	 */
@@ -483,10 +494,12 @@ public class MWFProcess extends X_AD_WF_Process
 
 	/**
 	 * 	Set User from 
-	 * 	- (1) Responsible
-	 *  - (2) Document Sales Rep
-	 *  - (3) Document UpdatedBy
-	 * 	- (4) Process invoker
+	 *  <ol>
+	 * 	  <li>Responsible
+	 *    <li>Document Sales Rep
+	 *    <li>Document UpdatedBy
+	 * 	  <li>Process invoker
+	 *  </ol>
 	 * 	@param User_ID process invoker
 	 */
 	private void setUser_ID (Integer User_ID)
@@ -541,8 +554,7 @@ public class MWFProcess extends X_AD_WF_Process
 		return m_wf;
 	}	//	getWorkflow
 	
-
-	/**************************************************************************
+	/**
 	 * 	Perform Action
 	 *	@param action StateEngine.ACTION_*
 	 *	@return true if valid
@@ -555,7 +567,7 @@ public class MWFProcess extends X_AD_WF_Process
 				+ ", CurrentState=" + getWFState());
 			return false;
 		}
-		log.fine(action); 
+		if (log.isLoggable(Level.FINE)) log.fine(action); 
 		//	Action is Valid
 		if (StateEngine.ACTION_Start.equals(action))
 			return startWork();
@@ -582,12 +594,6 @@ public class MWFProcess extends X_AD_WF_Process
 		{
 			//	Start first Activity with first Node
 			MWFActivity activity = new MWFActivity (this, AD_WF_Node_ID);
-			//
-			// Thread workerWF = new Thread(activity);
-			// workerWF.setName(activity.getAD_Workflow().getName() + " "
-			//		+ activity.getAD_Table().getName() + " "
-			//		+ activity.getRecord_ID());
-			// workerWF.start();
 			activity.run();
 
 		}
@@ -602,8 +608,7 @@ public class MWFProcess extends X_AD_WF_Process
 		return true;
 	}	//	performStart
 	
-
-	/**************************************************************************
+	/**
 	 * 	Get Persistent Object
 	 *	@return po
 	 */
@@ -620,7 +625,7 @@ public class MWFProcess extends X_AD_WF_Process
 	}	//	getPO
 
 	/**
-	 * 
+	 * Get process info
 	 * @return {@link ProcessInfo}
 	 */
 	public ProcessInfo getProcessInfo()
@@ -642,6 +647,7 @@ public class MWFProcess extends X_AD_WF_Process
 	 * 	Set Text Msg (add to existing)
 	 *	@param TextMsg msg
 	 */
+	@Override
 	public void setTextMsg (String TextMsg)
 	{
 		String oldText = getTextMsg();
@@ -702,7 +708,7 @@ public class MWFProcess extends X_AD_WF_Process
 	}	//	addTextMsg
 	
 	/**
-	 * 	Set Runtime (Error) Message
+	 * 	Set Process Execution (Error) Message
 	 *	@param msg message
 	 */
 	public void setProcessMsg (String msg)
@@ -713,7 +719,7 @@ public class MWFProcess extends X_AD_WF_Process
 	}	//	setProcessMsg
 	
 	/**
-	 * 	Get Runtime (Error) Message
+	 * 	Get Process Execution (Error) Message
 	 *	@return msg
 	 */
 	public String getProcessMsg()

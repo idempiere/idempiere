@@ -19,8 +19,12 @@ package org.compiere.install;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -84,9 +88,8 @@ public class TranslationHandler extends DefaultHandler
 	private int				m_updateCount = 0;
 
 	private static final CLogger	log = CLogger.getCLogger(TranslationHandler.class);
-
 	
-	/**************************************************************************
+	/**
 	 * 	Receive notification of the start of an element.
 	 *
 	 * 	@param uri namespace
@@ -95,10 +98,10 @@ public class TranslationHandler extends DefaultHandler
 	 * 	@param attributes attributes
 	 * 	@throws org.xml.sax.SAXException
 	 */
+	@Override
 	public void startElement (String uri, String localName, String qName, Attributes attributes)
 		throws org.xml.sax.SAXException
 	{
-	//	log.fine( "TranslationHandler.startElement", qName);	// + " - " + uri + " - " + localName);
 		if (qName.equals(Translation.XML_TAG) || qName.equals(Translation.XML_TAG2) || qName.equals(Translation.XML_TAG3))
 		{
 			m_AD_Language = attributes.getValue(Translation.XML_ATTRIBUTE_LANGUAGE);
@@ -115,13 +118,11 @@ public class TranslationHandler extends DefaultHandler
 			m_curID = attributes.getValue(Translation.XML_ROW_ATTRIBUTE_ID);
 			m_curUUID = attributes.getValue(Translation.XML_ROW_ATTRIBUTE_UUID);
 			m_trl = attributes.getValue(Translation.XML_ROW_ATTRIBUTE_TRANSLATED);
-		//	log.finest( "ID=" + m_curID);
 			m_sql = new StringBuffer();
 		}
 		else if (qName.equals(Translation.XML_VALUE_TAG))
 		{
 			m_curColumnName = attributes.getValue(Translation.XML_VALUE_ATTRIBUTE_COLUMN);
-		//	log.finest( "ColumnName=" + m_curColName);
 		}
 		else
 			log.severe ("UNKNOWN TAG: " + qName);
@@ -136,11 +137,11 @@ public class TranslationHandler extends DefaultHandler
 	 * 	@param length length
 	 * 	@throws SAXException
 	 */
+	@Override
 	public void characters (char ch[], int start, int length)
 		throws SAXException
 	{
 		m_curValue.append(ch, start, length);
-	//	Log.trace(Log.l6_Database+1, "TranslationHandler.characters", m_curValue.toString());
 	}	//	characters
 
 	/**
@@ -150,13 +151,13 @@ public class TranslationHandler extends DefaultHandler
 	 * 	@param qName qualified name
 	 * 	@throws SAXException
 	 */
+	@Override
 	public void endElement (String uri, String localName, String qName)
 		throws SAXException
 	{
-	//	Log.trace(Log.l6_Database+1, "TranslationHandler.endElement", qName);
 		if (qName.equals(Translation.XML_TAG) || qName.equals(Translation.XML_TAG2) || qName.equals(Translation.XML_TAG3))
 		{
-			
+			;
 		} else if (qName.equals(Translation.XML_ROW_TAG)) {
 			//	Set section
 			if (m_sql.length() > 0)
@@ -173,10 +174,15 @@ public class TranslationHandler extends DefaultHandler
 			//	Where section
 			m_sql.append(" WHERE ");
 			if (m_curUUID != null) {
-				StringBuilder sql = new StringBuilder("SELECT ").append(m_TableName).append("_ID").append(" FROM ").append(m_TableName)
-						.append(" WHERE ").append(m_TableName).append("_UU =?");
-				int ID = DB.getSQLValueEx(null, sql.toString(), m_curUUID);
-				m_sql.append(m_TableName).append("_ID=").append(ID);
+				MTable table = MTable.get(Env.getCtx(), m_TableName);
+				if (table.isIDKeyTable()) {
+					StringBuilder sql = new StringBuilder("SELECT ").append(m_TableName).append("_ID").append(" FROM ").append(m_TableName)
+							.append(" WHERE ").append(m_TableName).append("_UU =?");
+					int ID = DB.getSQLValueEx(null, sql.toString(), m_curUUID);
+					m_sql.append(m_TableName).append("_ID=").append(ID);
+				} else {
+					m_sql.append(PO.getUUIDColumnName(m_TableName)).append("=").append(DB.TO_STRING(m_curUUID));
+				}
 			} else {
 				m_sql.append(m_TableName).append("_ID=").append(m_curID);
 			}
@@ -188,16 +194,20 @@ public class TranslationHandler extends DefaultHandler
 			m_sql.insert(0, m_updateSQL);
 
 			//	Execute
-			int no = DB.executeUpdate(m_sql.toString(), m_trxName);
-			if (no == 1)
-			{
-				if (log.isLoggable(Level.FINE)) log.fine(m_sql.toString());
-				m_updateCount++;
+			try {
+				int no = DB.executeUpdateEx(m_sql.toString(), m_trxName);
+				if (no == 1)
+				{
+					if (log.isLoggable(Level.FINE)) log.fine(m_sql.toString());
+					m_updateCount++;
+				}
+				else if (no == 0)
+					log.warning ("Not Found - " + m_sql.toString());
+				else
+					log.severe ("Update Rows=" + no + " (Should be 1) - " + m_sql.toString());
+			} catch (Exception e) {
+				throw new AdempiereException("Error: " + e.getLocalizedMessage() + " ... executing " + m_sql, e);
 			}
-			else if (no == 0)
-				log.warning ("Not Found - " + m_sql.toString());
-			else
-				log.severe ("Update Rows=" + no + " (Should be 1) - " + m_sql.toString());
 		}
 		else if (qName.equals(Translation.XML_VALUE_TAG))
 		{
@@ -206,7 +216,6 @@ public class TranslationHandler extends DefaultHandler
 			m_sql.append(m_curColumnName).append("=").append(DB.TO_STRING(m_curValue.toString()));
 		}
 	}	//	endElement
-
 
 	/**
 	 * 	Get Number of updates

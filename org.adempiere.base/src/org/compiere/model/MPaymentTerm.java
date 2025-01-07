@@ -28,7 +28,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-
+import org.compiere.util.Util;
 
 /**
  *	Payment Term Model
@@ -42,9 +42,21 @@ import org.compiere.util.Msg;
 public class MPaymentTerm extends X_C_PaymentTerm
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -4506224598566445450L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaymentTerm_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPaymentTerm(Properties ctx, String C_PaymentTerm_UU, String trxName) {
+        super(ctx, C_PaymentTerm_UU, trxName);
+		if (Util.isEmpty(C_PaymentTerm_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -56,17 +68,23 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	{
 		super(ctx, C_PaymentTerm_ID, trxName);
 		if (C_PaymentTerm_ID == 0)
-		{
-			setAfterDelivery (false);
-			setNetDays (0);
-			setDiscount (Env.ZERO);
-			setDiscount2 (Env.ZERO);
-			setDiscountDays (0);
-			setDiscountDays2 (0);
-			setGraceDays (0);
-			setIsDueFixed (false);
-			setIsValid (false);
-		}	}	//	MPaymentTerm
+			setInitialDefaults();
+	}	//	MPaymentTerm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAfterDelivery (false);
+		setNetDays (0);
+		setDiscount (Env.ZERO);
+		setDiscount2 (Env.ZERO);
+		setDiscountDays (0);
+		setDiscountDays2 (0);
+		setGraceDays (0);
+		setIsDueFixed (false);
+		setIsValid (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -85,7 +103,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	/**
 	 * 	Get Payment Schedule
 	 * 	@param requery if true re-query
-	 *	@return array of schedule
+	 *	@return array of pay schedule
 	 */
 	public MPaySchedule[] getSchedule (boolean requery)
 	{
@@ -124,7 +142,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	}	//	getSchedule
 
 	/**
-	 * 	Validate Payment Term and Schedule
+	 * 	Validate Payment Term and Schedule. Update IsValid flag with validation result.
 	 *	@return Validation Message @OK@ or error
 	 */
 	public String validate()
@@ -162,8 +180,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		return "@Total@ = " + total + " - @Difference@ = " + Env.ONEHUNDRED.subtract(total); 
 	}	//	validate
 
-
-	/*************************************************************************
+	/**
 	 * 	Apply Payment Term to Invoice -
 	 *	@param C_Invoice_ID invoice
 	 *	@return true if payment schedule is valid
@@ -270,9 +287,8 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("C_Invoice_ID=" + C_Invoice_ID + " - #" + ipsList.size());
 	}	//	deleteInvoicePaySchedule
-
 	
-	/*************************************************************************
+	/**
 	 * 	Apply Payment Term to Order -
 	 *	@param C_Order_ID order
 	 *	@return true if payment schedule is valid
@@ -379,12 +395,12 @@ public class MPaymentTerm extends X_C_PaymentTerm
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("C_Order_ID=" + C_Order_ID + " - #" + opsList.size());
 	}	//	deleteOrderPaySchedule
-
 	
-	/**************************************************************************
+	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MPaymentTerm[");
@@ -399,6 +415,7 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isDueFixed())

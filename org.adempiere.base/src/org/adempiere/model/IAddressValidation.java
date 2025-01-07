@@ -20,8 +20,14 @@ import org.compiere.model.MAddressTransaction;
 /**
  * Address validation interface
  * @author Elaine
- *
  */
 public interface IAddressValidation {
+	/**
+	 * Perform online validation
+	 * @param ctx
+	 * @param addressTransaction
+	 * @param trxName
+	 * @return true if valid, false otherwise
+	 */
 	public boolean onlineValidate(Properties ctx, MAddressTransaction addressTransaction, String trxName);
 }

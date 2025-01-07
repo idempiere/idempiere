@@ -26,11 +26,14 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WMediaDialog;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
+ * Default editor for {@link DisplayType#Binary}.<br/>
+ * Implemented with {@link Button} component and {@link WMediaDialog} dialog.
  * @author Low Heng Sin
  */
 public class WBinaryEditor extends WEditor
@@ -41,8 +44,10 @@ public class WBinaryEditor extends WEditor
 	private static final CLogger log = CLogger.getCLogger(WBinaryEditor.class);
     
     private boolean         m_mandatory;
+    /** Binary data */
     private Object          m_data;
 
+    /** ADWindow instance that own this editor */
 	private ADWindow adwindow;
    
 	/**
@@ -66,6 +71,9 @@ public class WBinaryEditor extends WEditor
         init();
     }
 
+    /**
+     * Init component
+     */
     private void init()
     {
         label.setValue(" ");
@@ -73,7 +81,7 @@ public class WBinaryEditor extends WEditor
         getComponent().setTooltiptext(gridField.getDescription());
     }
 
-     @Override
+    @Override
     public String getDisplay()
     {
         return getComponent().getLabel();
@@ -145,6 +153,7 @@ public class WBinaryEditor extends WEditor
         return LISTENER_EVENTS;
     }
 
+    @Override
 	public void onEvent(Event event) throws Exception 
 	{
 		if (Events.ON_CLICK.equals(event.getName()))

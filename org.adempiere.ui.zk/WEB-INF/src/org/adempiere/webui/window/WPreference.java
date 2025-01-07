@@ -45,14 +45,14 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Space;
+
 /**
- *
+ * User preference dialog
  * @author hengsin
- *
  */
 public class WPreference extends WQuickEntry implements EventListener<Event>, ValueChangeListener {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3259434079666571595L;
 	private static final CLogger log = CLogger.getCLogger(WPreference.class);
@@ -68,7 +68,9 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 	private MUserPreference preferences = null;
 	private int             recordId    = 0;
 
-
+	/**
+	 * Default constructor
+	 */
 	public WPreference() {
 		super(Env.getZoomWindowID(MUserPreference.Table_ID, 0));
 
@@ -91,6 +93,9 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		this.setTitle("");
 	} //WPreference
 
+	/**
+	 * Load user preferences
+	 */
 	private void loadPreferences(){
 		preferences = MUserPreference.getUserPreference(Env.getAD_User_ID(Env.getCtx()), Env.getAD_Client_ID(Env.getCtx()));
 		recordId = preferences.get_ID();
@@ -99,6 +104,10 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 			loadRecord(recordId);
 	} //loadPreferences
 
+	/**
+	 * Layout dialog
+	 * @throws Exception
+	 */
 	protected void jbInit() throws Exception
 	{
 		ZKUpdateUtil.setWidth(this, "230px");
@@ -109,6 +118,9 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		init();
 	} //jbInit
 
+	/**
+	 * Layout dialog
+	 */
 	private void init() {
 
 		Div div = new Div();
@@ -177,6 +189,9 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 
 	} //init
 
+	/**
+	 * Move field editor for migration script comment next to {@link #logMigrationScript}.
+	 */
 	private void moveMigrationScriptComment() {
 		if (logMigrationScript == null)
 			return;
@@ -209,6 +224,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		}
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		String nameEvent=event.getName();
 		Component com =event.getTarget();
@@ -247,6 +263,9 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		}
 	} //onEvent
 
+	/**
+	 * Save changes
+	 */
 	private void onSave() {
 		actionSave();
 
@@ -263,6 +282,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		this.detach();
 	} //onSave
 
+	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		if (evt.getSource() instanceof WYesNoEditor) {
 			// Log Migration Script and AdempiereSys are just in-memory preferences, set them without need to save

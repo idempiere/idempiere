@@ -33,7 +33,7 @@ import java.util.UUID;
 import org.compiere.util.Env;
 
 /**
- * Label Model
+ * Record Label Model
  */
 public class MLabel extends X_AD_Label {
 	private static final long serialVersionUID = -964945898771768568L;	
@@ -72,6 +72,16 @@ public class MLabel extends X_AD_Label {
 			"#8C0D22"
 	};
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Label_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLabel(Properties ctx, String AD_Label_UU, String trxName) {
+        super(ctx, AD_Label_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -93,10 +103,12 @@ public class MLabel extends X_AD_Label {
 	}	
 
 	/**
+	 * <pre>
 	 * Calculates the label css style based on priorities:
 	 * 1- Label style;
 	 * 2- Category style;
-	 * 3- Label Hash to Hex 
+	 * 3- Label Hash to Hex
+	 * </pre> 
 	 * @return css style
 	 */
 	public String buildStyle() {
@@ -118,6 +130,10 @@ public class MLabel extends X_AD_Label {
 		return result.toString();
 	}
 	
+	/**
+	 * @param AD_Style_ID
+	 * @return css
+	 */
 	private String buildStyle(int AD_Style_ID) {
 		StringBuilder result = new StringBuilder();
 		
@@ -151,6 +167,13 @@ public class MLabel extends X_AD_Label {
 		return VIVID_COLORS[colorIndex];
 	}
 	
+	/**
+	 * Get Label record by name
+	 * @param ctx
+	 * @param name
+	 * @param trxName
+	 * @return MLabel
+	 */
 	public static MLabel getByName(Properties ctx, String name, String trxName) {
 		String sqlWhere = " AD_Client_ID=? AND UPPER(Name) LIKE ?";
 

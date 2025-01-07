@@ -23,19 +23,29 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /**
- *	Distribution Run List Line Model
+ *	Material Distribution Run List Line Model.<br/>
+ *  Note: feature not fully implemented and have been marked as inactive in application dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: MDistributionRunLine.java,v 1.4 2006/07/30 00:51:02 jjanke Exp $
  */
 public class MDistributionRunLine extends X_M_DistributionRunLine
 {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4106664830581774843L;
 
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_DistributionRunLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDistributionRunLine(Properties ctx, String M_DistributionRunLine_UU, String trxName) {
+        super(ctx, M_DistributionRunLine_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -71,7 +81,6 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	private BigDecimal 		m_lastDifference = Env.ZERO;
 	/**	Max Allocation 				*/
 	private BigDecimal 		m_maxAllocation = Env.ZERO;
-
 	
 	/**
 	 * 	Get Actual Qty
@@ -84,7 +93,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	
 	/**
 	 * 	Add to Actual Qty
-	 *	@param add number to add
+	 *	@param add qty to add
 	 */
 	public void addActualQty(BigDecimal add)
 	{
@@ -102,7 +111,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	
 	/**
 	 * 	Add to Actual Min Qty
-	 *	@param add number to add
+	 *	@param add qty to add
 	 */
 	public void addActualMin(BigDecimal add)
 	{
@@ -110,14 +119,13 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	}	//	addActualMin
 
 	/**
-	 * 	Is Actual Min Greater than Total
-	 *	@return true if act min &gt; total
+	 * 	Is Actual Min Greater than Total Qty
+	 *	@return true if actual min &gt; total qty
 	 */
 	public boolean isActualMinGtTotal()
 	{
 		return m_actualMin.compareTo(getTotalQty()) > 0;
 	}	//	isActualMinGtTotal
-
 
 	/**
 	 * 	Get Actual Allocation Qty
@@ -129,8 +137,8 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	}	//	getActualAllocation
 	
 	/**
-	 * 	Add to Actual Min Qty
-	 *	@param add number to add
+	 * 	Add to Actual Allocation Qty
+	 *	@param add qty to add
 	 */
 	public void addActualAllocation(BigDecimal add)
 	{
@@ -138,8 +146,8 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	}	//	addActualAllocation
 
 	/**
-	 * 	Is Actual Allocation equals Total
-	 *	@return true if act allocation = total
+	 * 	Is Actual Allocation equals Total Qty
+	 *	@return true if actual allocation = total qty
 	 */
 	public boolean isActualAllocationEqTotal()
 	{
@@ -148,7 +156,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 
 	/**
 	 * 	Get Allocation Difference
-	 *	@return Total - Allocation Qty 
+	 *	@return Total Qty - Allocation Qty 
 	 */
 	public BigDecimal getActualAllocationDiff()
 	{
@@ -185,8 +193,8 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	
 	/**
 	 * 	Set Max Allocation if greater
-	 *	@param max allocation
-	 *	@param set set to max
+	 *	@param max max allocation to set
+	 *	@param set true to always set to max (regardless of max is less than current max allocation)
 	 */
 	public void setMaxAllocation (BigDecimal max, boolean set)
 	{
@@ -195,7 +203,7 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	}	//	setMaxAllocation
 
 	/**
-	 * 	Reset Calculations
+	 * 	Reset all calculation variables (actual qty, actual min, actual allocation and max allocation) to zero 
 	 */
 	public void resetCalculations()
 	{
@@ -205,9 +213,8 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 		m_maxAllocation = Env.ZERO;
 		
 	}	//	resetCalculations
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Get Product
 	 *	@return product
 	 */
@@ -219,19 +226,19 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	}	//	getProduct
 	
 	/**
-	 * 	Get Product Standard Precision
-	 *	@return standard precision
+	 * 	Get Product UOM Precision
+	 *	@return UOM precision
 	 */
 	public int getUOMPrecision()
 	{
 		return getProduct().getUOMPrecision();
 	}	//	getUOMPrecision
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MDistributionRunLine[")

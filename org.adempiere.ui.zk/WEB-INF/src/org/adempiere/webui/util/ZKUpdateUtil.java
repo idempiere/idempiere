@@ -22,52 +22,85 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Tree;
 
 /**
+ * Helper method to set width and height of component.
  * @author hieplq
  *
  */
 public class ZKUpdateUtil {
+	/**
+	 * @param comp
+	 * @param value
+	 */
 	public static void setHeight (HtmlBasedComponent comp, String value){
 		if (comp.getVflex() != null)
 			comp.setVflex(null);
 		comp.setHeight(value);
 	}
 	
+	/**
+	 * @param comp
+	 * @param value
+	 */
 	public static void setWidth (HtmlBasedComponent comp, String value){
 		if (comp.getHflex() != null)
 			comp.setHflex(null);
 		comp.setWidth(value);
 	}
 
+	/**
+	 * @param comp
+	 * @param value
+	 */
 	public static void setHflex (HtmlBasedComponent comp, String value){
 		if (comp.getWidth() != null)
 			comp.setWidth(null);
 		comp.setHflex(value);
 	}
 
+	/**
+	 * @param comp
+	 * @param value
+	 */
 	public static void setVflex (HtmlBasedComponent comp, String value){
 		if (comp.getHeight() != null)
 			comp.setHeight(null);
 		comp.setVflex(value);
 	}
 	
+	/**
+	 * @param comp
+	 * @param value
+	 */
 	public static void setVflex (Listbox comp, boolean value){
 		if (comp.getHeight() != null)
 			comp.setHeight(null);
 		comp.setVflex(value);
 	}
 	
+	/**
+	 * @param comp
+	 * @param value
+	 */
 	public static void setVflex (Grid comp, boolean value){
 		if (comp.getHeight() != null)
 			comp.setHeight(null);
 		comp.setVflex(value);
 	}
 	
+	/**
+	 * @param comp
+	 * @param value
+	 */
 	public static void setVflex (Tree comp, boolean value){
 		if (comp.getHeight() != null)
 			comp.setHeight(null);
 		comp.setVflex(value);
 	}
 	
+	/**
+	 * Use client side script to set height of component to the corresponding height define in css. 
+	 * @param component
+	 */
 	public static void setCSSHeight(HtmlBasedComponent component) {
 		String script = "setTimeout(function() { let e = jq('#" + component.getUuid() + "');";
 		script = script + "let b=zk.Widget.$('#" + component.getUuid() + "'); ";
@@ -75,6 +108,10 @@ public class ZKUpdateUtil {
 		Clients.response(new AuScript(script));
 	}
 	
+	/**
+	 * Use client side script to set width of component to the corresponding width define in css.
+	 * @param component
+	 */
 	public static void setCSSWidth(HtmlBasedComponent component) {
 		String script = "setTimeout(function() { let e = jq('#" + component.getUuid() + "');";
 		script = script + "let b=zk.Widget.$('#" + component.getUuid() + "'); ";

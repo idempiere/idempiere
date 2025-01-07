@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQResponseLineQty
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponseLineQty")
-public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty, I_Persistent 
+public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLineQty (Properties ctx, int C_RfQResponseLineQty_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_RfQResponseLineQty (Properties ctx, String C_RfQResponseLineQty_UU, String trxName)
+    {
+      super (ctx, C_RfQResponseLineQty_UU, trxName);
+      /** if (C_RfQResponseLineQty_UU == null)
+        {
+			setC_RfQLineQty_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setC_RfQResponseLineQty_ID (0);
+			setPrice (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQResponseLineQty (Properties ctx, String C_RfQResponseLineQty_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQResponseLineQty_UU, trxName, virtualColumns);
+      /** if (C_RfQResponseLineQty_UU == null)
+        {
+			setC_RfQLineQty_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setC_RfQResponseLineQty_ID (0);
+			setPrice (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_RfQResponseLineQty (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -148,7 +174,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_RfQResponseLine_ID()));
     }

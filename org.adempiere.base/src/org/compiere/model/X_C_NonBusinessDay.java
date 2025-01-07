@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_NonBusinessDay
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_NonBusinessDay")
-public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Persistent 
+public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_NonBusinessDay (Properties ctx, int C_NonBusinessDay_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_NonBusinessDay (Properties ctx, String C_NonBusinessDay_UU, String trxName)
+    {
+      super (ctx, C_NonBusinessDay_UU, trxName);
+      /** if (C_NonBusinessDay_UU == null)
+        {
+			setC_Calendar_ID (0);
+			setC_NonBusinessDay_ID (0);
+			setDate1 (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_NonBusinessDay (Properties ctx, String C_NonBusinessDay_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_NonBusinessDay_UU, trxName, virtualColumns);
+      /** if (C_NonBusinessDay_UU == null)
+        {
+			setC_Calendar_ID (0);
+			setC_NonBusinessDay_ID (0);
+			setDate1 (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_C_NonBusinessDay (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -214,7 +238,7 @@ public class X_C_NonBusinessDay extends PO implements I_C_NonBusinessDay, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

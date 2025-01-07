@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_Bid
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="B_Bid")
-public class X_B_Bid extends PO implements I_B_Bid, I_Persistent 
+public class X_B_Bid extends PO implements I_B_Bid, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_B_Bid (Properties ctx, int B_Bid_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_B_Bid extends PO implements I_B_Bid, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_B_Bid (Properties ctx, String B_Bid_UU, String trxName)
+    {
+      super (ctx, B_Bid_UU, trxName);
+      /** if (B_Bid_UU == null)
+        {
+			setAD_User_ID (0);
+			setB_Bid_ID (0);
+			setB_BuyerFunds_ID (0);
+			setB_Topic_ID (0);
+			setIsWillingToCommit (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_Bid (Properties ctx, String B_Bid_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_Bid_UU, trxName, virtualColumns);
+      /** if (B_Bid_UU == null)
+        {
+			setAD_User_ID (0);
+			setB_Bid_ID (0);
+			setB_BuyerFunds_ID (0);
+			setB_Topic_ID (0);
+			setIsWillingToCommit (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_B_Bid (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_B_Bid extends PO implements I_B_Bid, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -225,10 +255,10 @@ public class X_B_Bid extends PO implements I_B_Bid, I_Persistent
 	public boolean isWillingToCommit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsWillingToCommit);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -253,7 +283,7 @@ public class X_B_Bid extends PO implements I_B_Bid, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

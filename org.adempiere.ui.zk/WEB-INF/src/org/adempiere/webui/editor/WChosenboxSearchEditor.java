@@ -13,25 +13,39 @@
  *****************************************************************************/
 package org.adempiere.webui.editor;
 
-import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ChosenSearchBox;
+import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.ListHead;
+import org.adempiere.webui.component.ListHeader;
+import org.adempiere.webui.component.ListItem;
+import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.SimpleListModel;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
@@ -41,37 +55,56 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.addon.chosenbox.Chosenbox;
+import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListSubModel;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.South;
 
 /**
- * 
+ * Default editor for {@link DisplayType#ChosenMultipleSelectionSearch}.
+ * Implemented with {@link ChosenSearchBox} component.
  * @author hengsin
- *
  */
 public class WChosenboxSearchEditor extends WEditor implements ContextMenuListener
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_SELECT};
 	private Lookup 				lookup;
+	/** Foreign table name */
 	private String				m_tableName = null;
+	/** Foreign key column name */
 	private String				m_keyColumnName = null;
+	/** Column name for {@link #lookup} */
 	private String 				columnName;
+	/** comma separated value list of selected records */
     private String              value;
     private InfoPanel			infoPanel = null;
+    /** Image URL or font icon sclass for choosebox button */
 	private String 				imageUrl;
 	private MyListModel 		model = new MyListModel();
+	/** Model for {@link Chosenbox} */
 	private InfoListSubModel	subModel = null;
 
 	private static final CLogger log = CLogger.getCLogger(WChosenboxSearchEditor.class);
 	private static final int DEFAULT_MAX_AUTO_COMPLETE_ROWS = 500;
+	/** true when editor is handling ON_SELECT event */
 	private boolean onselecting;
 
 	/**
@@ -118,7 +151,6 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		getComponent().setEnabled(readWrite);
 	}
 
-
 	/**
 	 * Constructor for use if a grid field is unavailable
 	 *
@@ -144,6 +176,13 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		init();
 	}
 
+	/**
+	 * @param columnName
+	 * @param mandatory
+	 * @param readonly
+	 * @param updateable
+	 * @param lookup
+	 */
 	public WChosenboxSearchEditor(String columnName, boolean mandatory, boolean readonly, boolean updateable,
     		Lookup lookup)
 	{
@@ -163,7 +202,6 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 
 	/**
      * initialise editor
-     * @param columnName columnName
 	 */
 	private void init()
 	{
@@ -175,14 +213,16 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		if (lookup instanceof MLookup) 
 		{
 			MLookup mlookup = (MLookup) lookup;
-			if ("C_BPartner_ID".equals(mlookup.getLookupInfo().KeyColumn))
+			if ("C_BPartner_ID".equals(mlookup.getLookupInfo().KeyColumn)
+				|| (mlookup.getLookupInfo().KeyColumn != null && mlookup.getLookupInfo().KeyColumn.endsWith(".C_BPartner_ID")))
 			{
 				if (ThemeManager.isUseFontIconForImage())
 					imageUrl = "z-icon-BPartner";
 				else
 					imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 			}
-			else if ("M_Product_ID".equals(mlookup.getLookupInfo().KeyColumn))
+			else if ("M_Product_ID".equals(mlookup.getLookupInfo().KeyColumn)
+					|| (mlookup.getLookupInfo().KeyColumn != null && mlookup.getLookupInfo().KeyColumn.endsWith(".M_Product_ID")))
 			{
 				if (ThemeManager.isUseFontIconForImage())
 					imageUrl = "z-icon-Product";
@@ -191,6 +231,18 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			}
 		}
 		popupMenu = new WEditorPopupMenu(false, true, isShowPreference(), false, false, false, lookup);
+		popupMenu.removeNewUpdateMenu();
+
+		Menuitem editor = new Menuitem();
+		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
+		if (ThemeManager.isUseFontIconForImage())
+			editor.setIconSclass("z-icon-Wizard");
+		else
+			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
+		editor.addEventListener(Events.ON_CLICK, popupMenu);
+		popupMenu.appendChild(editor);
+
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass(imageUrl);
 		else
@@ -249,6 +301,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		return value;
 	}
 	
+	/**
+	 * @return comma separated value list of selected records
+	 */
 	private String getValueFromComponent()
 	{
 		StringBuilder retVal = new StringBuilder();
@@ -271,6 +326,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
         return retVal.length() > 0 ? retVal.toString() : null;
 	}
 
+	/**
+	 * @return comma separated name list of selected records
+	 */
 	@Override
 	public String getDisplay()
 	{
@@ -288,6 +346,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
         return display.toString();
 	}
 
+	@Override
 	public void onEvent(Event e)
 	{
 		if (Events.ON_CLICK.equals(e.getName()))
@@ -322,20 +381,16 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
     	}
 	}
 
+	/**
+	 * @param newValue
+	 * @return true if newValue is different from {@link #value}
+	 */
 	private boolean isValueChange(Object newValue) {
 		return (value == null && newValue != null) || (value != null && newValue == null) 
 			|| ((value != null && newValue != null) && !value.equals(newValue));
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent evt)
-	{
-		if ("FieldValue".equals(evt.getPropertyName()))
-		{
-			setValue(evt.getNewValue());
-		}
-	}
-
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
@@ -347,9 +402,48 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		else if (WEditorPopupMenu.CHANGE_LOG_EVENT.equals(evt.getContextEvent()))
 		{
 			WFieldRecordInfo.start(gridField);
+		} else if (WEditorPopupMenu.ASSISTANT_EVENT.equals(evt.getContextEvent())) {
+			final WChosenboxSearchAssistant wdc = new WChosenboxSearchAssistant();
+			wdc.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					Object newValue = wdc.getNewValue();
+					updateValue(newValue);
+					setValue(newValue.toString());
+				}
+			});
+			AEnv.showWindow(wdc);
 		}
 	}
 
+	/**
+	 * Handle ON_SELECT event
+	 * @param newValue
+	 */
+	private void updateValue(Object newValue) {
+		try {
+			onselecting = true;
+
+			if (isValueChange(newValue)) {
+				try {
+					if (gridField != null) 
+						gridField.setLookupEditorSettingValue(true);
+					ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), "", newValue);
+					super.fireValueChange(changeEvent);				        
+					this.value = newValue.toString();
+				} finally {
+					if (gridField != null) 
+						gridField.setLookupEditorSettingValue(false);
+				}
+			}
+		} finally {
+			onselecting = false;
+		}
+	}
+
+	/**
+	 * Process selected items from info panel/window
+	 * @param value
+	 */
 	private void processSelectedKeys (Object value)
 	{
 		if (log.isLoggable(Level.FINE))
@@ -396,6 +490,8 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 						{
 							if (obj != null)
 							{
+								if (newValue.contains(obj.toString()))
+									continue;
 								if (builder.length() > 0)
 									builder.append(",");
 								builder.append(obj.toString());
@@ -406,7 +502,8 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 				}
 				else
 				{
-					newValue = newValue + "," + value.toString();
+					if (!newValue.contains(value.toString()))
+						newValue = newValue + "," + value.toString();
 				}
 			}
 			fireValueChangeEvent(newValue);
@@ -431,13 +528,19 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		
 	}	//	actionCombo
 
-
+	/**
+	 * Fire ValueChangeEvent for newValue
+	 * @param newValue
+	 */
 	protected void fireValueChangeEvent(Object newValue) {
 		ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), newValue);
 		// -> ADTabpanel - valuechange
 		fireValueChange(evt);
 	}
 
+	/**
+	 * Open info panel/window
+	 */
 	private void actionButton()
 	{
 		if (lookup == null)
@@ -461,7 +564,10 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			showInfoPanel(ip);
 	}
 
-
+	/**
+	 * Open {@link InfoPanel}
+	 * @param ip InfoPanel
+	 */
 	protected void showInfoPanel(final InfoPanel ip) {
 		ip.setVisible(true);
 		ip.setStyle("border: 2px");
@@ -498,7 +604,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	}
 
 	/**
-	 * 	Sets m_tableName and m_keyColumnName
+	 * 	Set {@link #m_tableName} and {@link #m_keyColumnName}
 	 */
 	private void setTableAndKeyColumn() {
 		if (lookup != null && lookup instanceof MLookup) {
@@ -517,7 +623,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			MTable table = MTable.get(Env.getCtx(), m_tableName);
 			m_keyColumnName = table.getKeyColumns()[0];
 		} else {
-			// no field - the search editor is defined programatically
+			// no field - the search editor is defined programmatically
 			m_keyColumnName = getColumnName();
 			m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
 		}
@@ -529,6 +635,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		}
 	}
 	
+	/**
+	 * @return where clause from {@link #lookup} validation code.
+	 */
 	private String getWhereClause()
 	{
 		String whereClause = "";
@@ -563,7 +672,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		return whereClause;
 	}	//	getWhereClause
 
-
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
@@ -575,6 +684,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		getComponent().setTableEditorMode(b);
 	}
 
+	/**
+	 * @return {@link Lookup}
+	 */
 	public Lookup getLookup() {
 		return lookup;
 	}
@@ -588,10 +700,370 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		super.dynamicDisplay(ctx);
 	}
 	
-	private class MyListModel extends ListModelList<ValueNamePair> implements ListSubModel<ValueNamePair> {
+	/**
+	 * Assistant dialog to manage selection of items and to change ordering of selected items. 
+	 */
+	private class WChosenboxSearchAssistant extends Window implements EventListener<Event> {
+		private static final long serialVersionUID = 1043859495570181469L;
+		private Button bRemoveAll, bUp, bDown;
+		private SimpleListModel selectedModel = new SimpleListModel();
+		private Listbox selectedList = new Listbox();
+		private Hlayout hlayout;
+		private Button bOk, bCancel;
+		private String m_newValue = "";
+
+		public WChosenboxSearchAssistant() {
+			super();
+			setTitle(gridField.getHeader() + " " + Msg.getMsg(Env.getCtx(), "Assistant"));
+			init();
+			load();
+			setClosable(true);
+			setBorder("normal");
+			setShadow(true);
+			setMaximizable(true);
+			setSizable(true);
+
+			if (!ThemeManager.isUseCSSForWindowSize()) {			
+				ZKUpdateUtil.setWindowHeightX(this, 600);
+				ZKUpdateUtil.setWindowWidthX(this, 700);
+			}
+			else
+			{
+				addCallback(AFTER_PAGE_ATTACHED, t -> {
+					ZKUpdateUtil.setCSSHeight(this);
+					ZKUpdateUtil.setCSSWidth(this);
+				});
+			}
+			setSclass("chosenbox-assistant-dialog");
+
+			addCallback(AFTER_PAGE_DETACHED, t -> {
+				WChosenboxSearchEditor.this.getComponent().getChosenbox().focus();
+			});
+		}
+
+		private void init() {
+			m_newValue = getValue() != null ? getValue().toString() : "";
+
+			Borderlayout mainLayout = new Borderlayout();
+			appendChild(mainLayout);
+
+			Center center = new Center();
+			mainLayout.appendChild(center);
+			center.setAutoscroll(true);
+
+
+
+			//Listener for up and down button
+			EventListener<Event> actionListenerUpDown = new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					migrateValueWithinSelectedList(event);
+				}
+			};
+			//Listener for up and down button
+			EventListener<Event> actionListenerRemoveAll = new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					deleteAllValuesList(event);
+				}
+			};
+
+
+			EventListener<Event> mouseListener = new EventListener<Event>() {
+				public void onEvent(Event event) throws Exception {
+					if (Events.ON_DOUBLE_CLICK.equals(event.getName())) {
+						deleteValueList(event);
+					}
+				}
+			};
+
+			EventListener<Event> crossListMouseListener = new DragListener();
+
+			bUp = createButton("MoveUp16", actionListenerUpDown);
+			bDown = createButton("MoveDown16", actionListenerUpDown);
+
+			Hlayout yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
+			boolean isEditable = gridField.isEditable(true);
+
+			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, isEditable, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
+
+			hlayout = createHlayoutLine(new Component[] {selectedList});
+			center.appendChild(hlayout);
+
+			ConfirmPanel confirmPanel = new ConfirmPanel(true, false, true, false, false, false);
+			bOk = confirmPanel.getOKButton();
+			bOk.addEventListener(Events.ON_CLICK, this);
+			bCancel = confirmPanel.getButton(ConfirmPanel.A_CANCEL);
+			bCancel.addEventListener(Events.ON_CLICK, this);
+			bRemoveAll = confirmPanel.getButton(ConfirmPanel.A_RESET);
+			bRemoveAll.addEventListener(Events.ON_CLICK, actionListenerRemoveAll);
+
+			South south = new South();
+			south.setSclass("dialog-footer");
+			mainLayout.appendChild(south);
+			south.appendChild(confirmPanel);
+
+			if (! isEditable) {
+				bUp.setVisible(false);
+				bDown.setVisible(false);
+				bRemoveAll.setVisible(false);
+			}
+		}
+
+		private void load() {
+			selectedModel.removeAllElements();
+
+			// selected
+			Object values = getValue();
+			ArrayList<String> listSelected = new ArrayList<String>();
+			if (values != null && !Util.isEmpty((String) values)) {
+				for (String value : ((String) values).split(",")) {
+
+					String name = lookup.getDisplay(value);
+					selectedModel.addElement(new ValueNamePair(value, name));
+					listSelected.add(value);
+				}	
+			}
+		}
+
+		@Override
+		public void onEvent(Event event) throws Exception {
+			if (event.getTarget() == bOk) {
+
+				StringBuilder value = new StringBuilder("");
+
+				for (Listitem le : selectedList.getItems()) {
+					int index = selectedList.getIndexOfItem(le);
+					ValueNamePair  selObject = (ValueNamePair ) selectedModel.getElementAt(index);
+					value.append(selObject.getID()).append(",");
+				}
+
+				if (value.length() > 0)
+					value = value.deleteCharAt(value.length() - 1);
+				m_newValue = value.toString();
+				this.detach();
+			} else if (event.getTarget() == bCancel) {
+				this.detach();
+			}
+		}
 
 		/**
-		 * 
+		 * Delete All Values from List
+		 * @param event
+		 */
+		private void deleteAllValuesList(Event event) {
+			selectedModel.removeAllElements();
+		}
+
+		/**
+		 * Remove selected item
+		 * @param event
+		 */
+		private void deleteValueList (Event event) {
+			Object source = event.getTarget();
+			if (source instanceof ListItem listItem) {
+				int index = listItem.getIndex();
+				selectedModel.removeElement(selectedModel.getElementAt(index));
+			}
+		}
+
+		private Button createButton(String image, EventListener<Event> actionListener) {
+			Button btn = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/" + image + ".png"), null);
+			LayoutUtils.addSclass("btn-small", btn);
+			LayoutUtils.addSclass("btn-sorttab small-img-btn", btn);
+			if(actionListener != null)
+				btn.addEventListener(Events.ON_CLICK, actionListener);
+			return btn;
+		}
+
+		/**
+		 * @param lb
+		 * @param model
+		 * @param mouseListener
+		 * @param crossListMouseListener
+		 * @param isItemDraggable
+		 * @param headerLabel
+		 * @param buttonsLayout
+		 */
+		private void initListboxAndModel(Listbox lb, SimpleListModel model, EventListener<Event> mouseListener, EventListener<Event> crossListMouseListener, boolean isItemDraggable, String headerLabel, Hlayout buttonsLayout) {
+			lb.addEventListener(Events.ON_RIGHT_CLICK, this);
+			ZKUpdateUtil.setHflex(lb, "1");
+			ZKUpdateUtil.setVflex(lb, true);
+
+			if (mouseListener != null && isItemDraggable)
+				lb.addDoubleClickListener(mouseListener);
+			if (crossListMouseListener != null && isItemDraggable)
+				lb.addOnDropListener(crossListMouseListener);
+			lb.setItemDraggable(isItemDraggable);
+			lb.setItemRenderer(model);
+			lb.setModel(model);
+			model.setMultiple(true);
+			ListHead listHead = new ListHead();
+			listHead.setParent(lb);
+			ListHeader listHeader = new ListHeader();
+			listHeader.appendChild(new Label(headerLabel));
+			listHeader.setParent(listHead);
+			listHeader.appendChild(buttonsLayout);
+		}
+
+		private Hlayout createHlayoutBtn(Button[] btns) {
+			Hlayout hl = new Hlayout();
+			for (Button btn : btns)
+				hl.appendChild(btn);
+			hl.setStyle("display: inline-block; float: right;");
+			return hl;
+		}
+
+		private Hlayout createHlayoutLine(Component[] comps) {
+
+			Hlayout	hl = new Hlayout();
+			hl.setValign("middle");
+			for (Component comp : comps)
+				hl.appendChild(comp);
+			hl.setVflex("1");
+			hl.setStyle("margin-bottom: 5px;");
+			return hl;
+		}
+
+		private SimpleListModel getModel(Listbox listbox) {
+
+			SimpleListModel retValue = null;
+
+			if (listbox == selectedList)
+				retValue = selectedModel;
+
+			return retValue;
+		}
+
+		/**
+		 * Listener for DropEvent 
+		 */
+		private class DragListener implements EventListener<Event> 	{
+			public DragListener() {
+			}
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if (event instanceof DropEvent) {
+					int endIndex = 0;
+					DropEvent me = (DropEvent) event;
+					ListItem endItem = (ListItem) me.getTarget();
+					ListItem startItem = (ListItem) me.getDragged();
+
+					if (!startItem.isSelected())
+						startItem.setSelected(true);
+
+					Listbox selListbox = selectedList;
+					SimpleListModel selModel = getModel(selListbox);
+
+					if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == selListbox) {
+						List<ValueNamePair > selObjects = new ArrayList<ValueNamePair >();
+						endIndex = selListbox.getIndexOfItem(endItem);	
+						for (Object obj : selListbox.getSelectedItems()) {
+							ListItem listItem = (ListItem) obj;
+							int index = selListbox.getIndexOfItem(listItem);
+							ValueNamePair  selObject = (ValueNamePair ) selModel.getElementAt(index);				
+							selObjects.add(selObject);						
+						}
+						migrateValueWithinSelectedList (selModel, selListbox, endIndex, selObjects);
+					}
+				}
+			}
+		}
+
+		/**
+		 * Move selected items to endIndex
+		 * @param selModel
+		 * @param selListbox
+		 * @param endIndex
+		 * @param selObjects
+		 */
+		private void migrateValueWithinSelectedList (SimpleListModel selModel, Listbox selListbox, int endIndex, List<ValueNamePair > selObjects) {
+			int iniIndex =0;
+			Arrays.sort(selObjects.toArray());	
+			ValueNamePair  selObject= null;
+			ValueNamePair  endObject = (ValueNamePair ) selModel.getElementAt(endIndex);
+			for (ValueNamePair  selected : selObjects) {
+				iniIndex = selModel.indexOf(selected);
+				selObject = (ValueNamePair ) selModel.getElementAt(iniIndex);
+				selModel.removeElement(selObject);
+				endIndex = selModel.indexOf(endObject);
+				selModel.add(endIndex, selObject);			
+			}
+
+			selListbox.removeAllItems();
+			for(int i=0 ; i<selModel.getSize(); i++) { 	
+				ValueNamePair  pp = (ValueNamePair ) selModel.getElementAt(i);
+				selListbox.addItem(new ValueNamePair(pp.getID(), pp.getName()));
+			}
+		}
+
+		/**
+		 * Handle event from up and down button. <br/>
+		 * Move selected items up/down within {@link #selectedList}.
+		 * @param event
+		 */
+		private void migrateValueWithinSelectedList (Event event) {
+			Object[] selObjects = selectedList.getSelectedItems().toArray();
+			if (selObjects == null)
+				return;
+			int length = selObjects.length;
+			if (length == 0)
+				return;
+			//
+			int[] indices = selectedList.getSelectedIndices();
+			//
+			boolean change = false;
+			//
+			Object source = event.getTarget();
+			if (source == bUp) {
+				for (int i = 0; i < length; i++) {
+					int index = indices[i];
+					if (index == 0)
+						break;
+					ValueNamePair  selObject = (ValueNamePair ) selectedModel.getElementAt(index);
+					ValueNamePair  newObject = (ValueNamePair ) selectedModel.getElementAt(index - 1);
+					selectedModel.setElementAt(newObject, index);
+					selectedModel.setElementAt(selObject, index - 1);
+					indices[i] = index - 1;
+					change = true;
+				}
+			}	//	up
+
+			else if (source == bDown) {
+				for (int i = length - 1; i >= 0; i--) {
+					int index = indices[i];
+					if (index  >= selectedModel.getSize() - 1)
+						break;
+					ValueNamePair  selObject = (ValueNamePair ) selectedModel.getElementAt(index);
+					ValueNamePair  newObject = (ValueNamePair ) selectedModel.getElementAt(index + 1);
+					selectedModel.setElementAt(newObject, index);
+					selectedModel.setElementAt(selObject, index + 1);
+					selectedList.setSelectedIndex(index + 1);
+					indices[i] = index + 1;
+					change = true;
+				}
+			}	//	down
+
+			//
+			if (change) {
+				selectedList.setSelectedIndices(indices);
+				if ( selectedList.getSelectedItem() != null) {
+					AuFocus focus = new AuFocus(selectedList.getSelectedItem());
+					Clients.response(focus);
+				}
+			}
+		}
+
+		private String getNewValue() {
+			return m_newValue;
+		}
+	}
+
+	/**
+	 * {@link ListSubModel} for {@link Chosenbox} auto complete
+	 */
+	private class MyListModel extends ListModelList<ValueNamePair> implements ListSubModel<ValueNamePair> {
+		/**
+		 * generated serial id
 		 */
 		private static final long serialVersionUID = -1210525428410505409L;
 

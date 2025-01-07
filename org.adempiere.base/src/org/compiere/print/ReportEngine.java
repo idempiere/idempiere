@@ -19,66 +19,41 @@ package org.compiere.print;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
 import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.print.PrinterJob;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import javax.print.DocFlavor;
-import javax.print.StreamPrintService;
-import javax.print.StreamPrintServiceFactory;
-import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.JobName;
 import javax.print.event.PrintServiceAttributeEvent;
 import javax.print.event.PrintServiceAttributeListener;
-import javax.xml.transform.stream.StreamResult;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.pdf.Document;
-import org.adempiere.print.export.PrintDataExcelExporter;
-import org.adempiere.print.export.PrintDataXLSXExporter;
-import org.apache.ecs.XhtmlDocument;
-import org.apache.ecs.xhtml.a;
-import org.apache.ecs.xhtml.script;
-import org.apache.ecs.xhtml.style;
-import org.apache.ecs.xhtml.table;
-import org.apache.ecs.xhtml.tbody;
-import org.apache.ecs.xhtml.td;
-import org.apache.ecs.xhtml.th;
-import org.apache.ecs.xhtml.thead;
-import org.apache.ecs.xhtml.tr;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MDunningRunEntry;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
@@ -87,14 +62,10 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MProject;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRfQResponse;
-import org.compiere.model.MRole;
-import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
-import org.compiere.model.X_AD_StyleLine;
-import org.compiere.print.layout.InstanceAttributeColumn;
-import org.compiere.print.layout.InstanceAttributeData;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.process.ProcessInfo;
@@ -103,18 +74,32 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
-import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
 import org.eevolution.model.X_PP_Order;
-
-import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+import org.idempiere.print.renderer.CSVReportRenderer;
+import org.idempiere.print.renderer.CSVReportRendererConfiguration;
+import org.idempiere.print.renderer.HTMLReportRenderer;
+import org.idempiere.print.renderer.HTMLReportRendererConfiguration;
+import org.idempiere.print.renderer.PDFReportRenderer;
+import org.idempiere.print.renderer.PDFReportRendererConfiguration;
+import org.idempiere.print.renderer.PSReportRenderer;
+import org.idempiere.print.renderer.PSReportRendererConfiguration;
+import org.idempiere.print.renderer.SSVReportRenderer;
+import org.idempiere.print.renderer.SSVReportRendererConfiguration;
+import org.idempiere.print.renderer.TabDelimitedReportRenderer;
+import org.idempiere.print.renderer.TabDelimitedReportRendererConfiguration;
+import org.idempiere.print.renderer.XLSReportRenderer;
+import org.idempiere.print.renderer.XLSReportRendererConfiguration;
+import org.idempiere.print.renderer.XLSXReportRenderer;
+import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
+import org.idempiere.print.renderer.XMLReportRenderer;
+import org.idempiere.print.renderer.XMLReportRendererConfiguration;
 
 /**
  *	Report Engine.
@@ -266,12 +251,6 @@ public class ReportEngine implements PrintServiceAttributeListener
 	private String m_name = null;
 	
 	private boolean m_isReplaceTabContent = false;
-	
-	/**
-	 * store all column has same css rule into a list
-	 * for IDEMPIERE-2640
-	 */
-	private Map<CSSInfo, List<ColumnInfo>> mapCssInfo = new HashMap<CSSInfo, List<ColumnInfo>>();
 	
 	private List<IReportEngineEventListener> eventListeners = new ArrayList<IReportEngineEventListener>();
 
@@ -610,11 +589,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return m_printerName;
 	}	//	getPrinterName
 
-	/**************************************************************************
+	/**
 	 * 	Create HTML File
 	 * 	@param file file
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null the default language is used to format nubers/dates
+	 *  @param language optional language - if null the default language is used to format numbers/dates
 	 * 	@return true if success
 	 */
 	public boolean createHTML (File file, boolean onlyTable, Language language)
@@ -622,11 +601,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return createHTML(file, onlyTable, language, null);
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Create HTML File
 	 * 	@param file file
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null the default language is used to format nubers/dates
+	 *  @param language optional language - if null the default language is used to format numbers/dates
 	 *  @param extension optional extension for html output
 	 * 	@return true if success
 	 */
@@ -656,7 +635,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 * 	Write HTML to writer
 	 * 	@param writer writer
 	 *  @param onlyTable if false create complete HTML document
-	 *  @param language optional language - if null nubers/dates are not formatted
+	 *  @param language optional language - if null numbers/dates are not formatted
 	 * 	@return true if success
 	 */
 	public boolean createHTML (Writer writer, boolean onlyTable, Language language)
@@ -687,534 +666,102 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public boolean createHTML (Writer writer, boolean onlyTable, Language language, IHTMLExtension extension, boolean isExport)
 	{
-		try
-		{
-			//collect column to print
-			List<Object> columns = new ArrayList<>();
-			List<InstanceAttributeData> asiElements = new ArrayList<>();
-			int columnCount = 0;
-			for (int col = 0; col < m_printFormat.getItemCount(); col++)
-			{
-				MPrintFormatItem item = m_printFormat.getItem(col);
-				if (item.isPrinted())
-				{
-					if (item.isTypeField() && item.isPrintInstanceAttributes())
-					{
-						InstanceAttributeData asiElement = new InstanceAttributeData(item, columnCount);
-						asiElement.readAttributesData(m_printData);
-						asiElements.add(asiElement);						
-						continue;
-					}
-					else 
-					{
-						columns.add(item);
-						columnCount++;
-					}
-				}
-			}
-			if (asiElements.size() > 0)
-			{
-				int columnCreated = 0;
-				for(InstanceAttributeData data : asiElements)
-				{
-					List<InstanceAttributeColumn> instanceColumns = data.getColumns();
-					int index = data.getColumnIndex() + columnCreated;
-					for(InstanceAttributeColumn c : instanceColumns)
-					{
-						columns.add(index, c);
-						index++;
-						columnCreated++;
-					}
-				}
-			}
-			
-			String cssPrefix = extension != null ? extension.getClassPrefix() : null;
-			if (cssPrefix != null && cssPrefix.trim().length() == 0)
-				cssPrefix = null;
-			
-			table parameterTable = null;
-			if (!m_printFormat.isForm()) {
-				if (m_query != null && m_query.isActive()) {
-					int rows = m_query.getReportProcessQuery() != null ? m_query.getReportProcessQuery().getRestrictionCount() : m_query.getRestrictionCount();
-					if (rows > 0) {
-						parameterTable = new table();
-						if (cssPrefix != null)
-							parameterTable.setClass(cssPrefix + "-parameter-table");
-						else
-							parameterTable.setClass("parameter-table");
-						parameterTable.setNeedClosingTag(false);
-					}
-				}
-			}
-			
-			table table = new table();
-			if (cssPrefix != null)
-				table.setClass(cssPrefix + "-table");
-			//
-			//
-			table.setNeedClosingTag(false);
-			PrintWriter w = new PrintWriter(writer);
-			XhtmlDocument doc = null;
-			boolean minify = MSysConfig.getBooleanValue(MSysConfig.HTML_REPORT_MINIFY, true, Env.getAD_Client_ID(getCtx()));
-						
-			if (onlyTable)
-				w.print(compress(table.toString(), minify));
-			else
-			{
-				doc = new XhtmlDocument();
-				doc.getHtml().setNeedClosingTag(false);
-				doc.getBody().setNeedClosingTag(false);
-				doc.appendHead("<meta charset=\"UTF-8\" />");
-				
-				if (extension != null && !Util.isEmpty(extension.getWebFontLinks(), true))
-				{
-					doc.appendHead(extension.getWebFontLinks());
-				}
-
-				if (extension != null && extension.getStyleURL() != null)
-				{
-					// maybe cache style content with key is path
-					String pathStyleFile = extension.getFullPathStyle(); // creates a temp file - delete below
-					Path path = Paths.get(pathStyleFile);
-				    List<String> styleLines = Files.readAllLines(path, Ini.getCharset());
-				    Files.delete(path); // delete temp file
-				    StringBuilder styleBuild = new StringBuilder();
-				    for (String styleLine : styleLines){
-				    	styleBuild.append(styleLine); //.append("\n");
-				    }
-				    appendInlineCss (doc, styleBuild);
-				}
-				if (extension != null && extension.getScriptURL() != null && !isExport)
-				{
-					script jslink = new script();
-					jslink.setLanguage("javascript");
-					jslink.setSrc(extension.getScriptURL());
-					doc.appendHead(jslink);
-				}
-				
-				if (extension != null && !isExport){
-					extension.setWebAttribute(doc.getBody());
-				}				
-			}
-			
-			if (doc != null)
-			{
-				//IDEMPIERE-4113
-				mapCssInfo.clear();
-				MPrintFormatItem item = null;
-				int printColIndex = -1;
-				for(int col = 0; col < columns.size(); col++)
-				{
-					Object colobj = columns.get(col);
-					if (colobj instanceof MPrintFormatItem)
-						item = (MPrintFormatItem) colobj;
-					else if (colobj instanceof InstanceAttributeColumn)
-						item = ((InstanceAttributeColumn) colobj).getPrintFormatItem();
-					if(item != null)
-					{
-						printColIndex++;
-						addCssInfo(item, printColIndex);
-					}
-				}//IDEMPIERE-4113
-				appendInlineCss(doc);
-				
-				StringBuilder styleBuild = new StringBuilder();
-				MPrintTableFormat tf = m_printFormat.getTableFormat();
-				CSSInfo cssInfo = new CSSInfo(tf.getPageHeader_Font(), tf.getPageHeaderFG_Color());
-				if (cssPrefix != null) {
-					if (parameterTable != null)
-						styleBuild.append("."+cssPrefix + "-parameter-table th").append(cssInfo.getCssRule());						
-					styleBuild.append("."+cssPrefix + "-table th").append(cssInfo.getCssRule());
-				}
-				else {
-					if (parameterTable != null)						
-						styleBuild.append("parameter-table th").append(cssInfo.getCssRule());
-					styleBuild.append("table th").append(cssInfo.getCssRule());
-				}
-				
-				cssInfo = new CSSInfo(tf.getParameter_Font(), tf.getParameter_Color());
-				styleBuild.append(".tr-parameter td").append(cssInfo.getCssRule());
-				
-				cssInfo = new CSSInfo(tf.getFunct_Font(), tf.getFunctFG_Color());
-				styleBuild.append(".tr-function td").append(cssInfo.getCssRule());
-				
-				MPrintFont printFont = MPrintFont.get(m_printFormat.getAD_PrintFont_ID());
-				Font base = printFont.getFont();
-				Font newFont = new Font(base.getName(), Font.PLAIN, base.getSize()-1);
-				cssInfo = new CSSInfo(newFont, null);
-				styleBuild.append(".tr-level-1 td").append(cssInfo.getCssRule());
-				
-				newFont = new Font(base.getName(), Font.PLAIN, base.getSize()-2);
-				cssInfo = new CSSInfo(newFont, null);
-				styleBuild.append(".tr-level-2 td").append(cssInfo.getCssRule());
-				
-				styleBuild = new StringBuilder(styleBuild.toString().replaceAll(";", "!important;"));
-				appendInlineCss (doc, styleBuild);
-				
-				w.print(compress(doc.toString(), minify));
-				
-				w.print("<div class='"+cssPrefix+"-flex-container'>");
-				String paraWrapId = null;
-				if (parameterTable != null) {
-					paraWrapId = cssPrefix + "-para-table-wrap";
-					w.print("<div id='" + paraWrapId + "'>");
-					w.print(compress(parameterTable.toString(), minify));
-					
-					tr tr = new tr();
-					tr.setClass("tr-parameter");
-					th th = new th();
-					tr.addElement(th);
-					th.addElement(Msg.getMsg(getCtx(), "Parameter") + ":");
-					
-					MQuery query = m_query;
-					if (m_query.getReportProcessQuery() != null)
-						query = m_query.getReportProcessQuery();
-					for (int r = 0; r < query.getRestrictionCount(); r++)
-					{
-						if (r > 0) {
-							tr = new tr();
-							tr.setClass("tr-parameter");
-							td td = new td();
-							tr.addElement(td);
-							td.addElement("&nbsp;");
-						}
-						
-						td td = new td();
-						tr.addElement(td);
-						td.addElement(query.getInfoName(r));
-						
-						td = new td();
-						tr.addElement(td);
-						td.addElement(query.getInfoOperator(r));
-						
-						td = new td();
-						tr.addElement(td);
-						td.addElement(query.getInfoDisplayAll(r));
-						
-						w.print(compress(tr.toString(), minify));
-					}
-										
-					w.print("</table>");
-					w.print("</div>");
-				}
-				
-				StringBuilder tableWrapDiv = new StringBuilder();
-				tableWrapDiv.append("<div class='").append(cssPrefix).append("-table-wrap' ");
-				if (paraWrapId != null) {
-					tableWrapDiv.append("onscroll=\"if (this.scrollTop > 0) document.getElementById('")
-						.append(paraWrapId).append("').style.display='none'; ")
-						.append("else document.getElementById('").append(paraWrapId).append("').style.display='block';\"");
-				}
-				tableWrapDiv.append(" >");
-				
-				w.print(compress(tableWrapDiv.toString(), minify));
-				w.print(compress(table.toString(), minify));
-			}
-			
-			thead thead = new thead();
-			tbody tbody = new tbody();
-			tbody.setNeedClosingTag(false);
-			
-			Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
-			Object [] preValues = null;
-			if (colSuppressRepeats != null){
-				preValues = new Object [colSuppressRepeats.length];
-			}
-
-			int printColIndex = -1;
-			HashMap<Integer, th> suppressMap = new HashMap<>();
-			
-			//	for all rows (-1 = header row)
-			for (int row = -1; row < m_printData.getRowCount(); row++)
-			{
-				tr tr = new tr();
-				if (row != -1)
-				{
-					m_printData.setRowIndex(row);					
-					if (extension != null && !isExport)
-					{
-						extension.extendRowElement(tr, m_printData);
-					}
-					if (m_printData.isFunctionRow()) {
-						tr.setClass(cssPrefix + "-functionrow");
-					} else if ( row < m_printData.getRowCount() && m_printData.isFunctionRow(row+1)) {
-						tr.setClass(cssPrefix + "-lastgrouprow");
-					}
-					// add row to table body
-					//tbody.addElement(tr);
-				} else {
-					// add row to table header
-					thead.addElement(tr);
-				}
-				
-				printColIndex = -1;
-				//	for all columns
-				for (int col = 0; col < columns.size(); col++)
-				{
-					Object colObj = columns.get(col);
-					MPrintFormatItem item = null;
-					InstanceAttributeColumn instanceAttributeColumn = null;
-					if (colObj instanceof MPrintFormatItem)
-					{
-						item = (MPrintFormatItem) colObj;
-					}
-					else if (colObj instanceof InstanceAttributeColumn)
-					{
-						instanceAttributeColumn = (InstanceAttributeColumn) colObj;
-						item = instanceAttributeColumn.getPrintFormatItem();
-					}
-					if (item != null)
-					{
-						printColIndex++;
-						//	header row
-						if (row == -1)
-						{
-							th th = new th();
-							tr.addElement(th);
-							String columnHeader = instanceAttributeColumn != null ? instanceAttributeColumn.getName() : item.getPrintName(language);
-							th.addElement(Util.maskHTML(columnHeader));
-							if (cssPrefix != null && instanceAttributeColumn == null) 
-							{
-								MColumn column = MColumn.get(getCtx(), item.getAD_Column_ID());
-								if (column != null && column.getAD_Column_ID() > 0)
-								{
-									if (DisplayType.isNumeric(column.getAD_Reference_ID()))
-									{
-										th.setClass(cssPrefix + "-number");
-									}
-								}
-							}
-							if (item.isSuppressNull()) 
-							{
-								suppressMap.put(printColIndex, th);
-								th.setID("report-th-"+printColIndex);
-							}
-						}
-						else
-						{
-							td td = new td();
-							tr.addElement(td);
-							//set style
-							int AD_FieldStyle_ID = item.getAD_FieldStyle_ID();
-							if(AD_FieldStyle_ID > 0) {
-								MStyle style = MStyle.get(Env.getCtx(), AD_FieldStyle_ID);
-								X_AD_StyleLine[] lines = style.getStyleLines();
-								StringBuilder styleBuilder = new StringBuilder();
-								for (X_AD_StyleLine line : lines)
-								{
-									String inlineStyle = line.getInlineStyle().trim();
-									String displayLogic = line.getDisplayLogic();
-									if (!Util.isEmpty(displayLogic))
-									{
-										if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
-											continue;
-									}
-									if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-										styleBuilder.append("; ");
-									styleBuilder.append(inlineStyle);
-								}
-								if(styleBuilder.length() > 0)
-									td.setStyle(styleBuilder.toString());
-							}
-							//
-							Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
-									: m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
-							if (obj == null || !isDisplayPFItem(item)){
-								td.addElement("&nbsp;");
-								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
-									preValues[printColIndex] = null;
-								}
-								if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
-									suppressMap.remove(printColIndex);
-							}
-							else if (obj instanceof PrintDataElement)
-							{
-								PrintDataElement pde = (PrintDataElement) obj;
-								String value = pde.getValueDisplay(language);	//	formatted
-
-								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
-									if (value.equals(preValues[printColIndex])){
-										td.addElement("&nbsp;");
-										continue;
-									}else{
-										preValues[printColIndex] = value;
-									}
-								}
-
-								if (item.isSuppressNull() && obj != null && suppressMap.containsKey(printColIndex))
-									suppressMap.remove(printColIndex);
-								
-								if (pde.getColumnName().endsWith("_ID") && extension != null && !isExport)
-								{
-									boolean isZoom = false;
-									if (item.getColumnName().equals("Record_ID")) {
-										Object tablePDE = m_printData.getNode("AD_Table_ID");
-										if (tablePDE != null && tablePDE instanceof PrintDataElement) {
-											int tableID = -1;
-											try {
-												tableID = Integer.parseInt(((PrintDataElement)tablePDE).getValueAsString());
-											} catch (Exception e) {
-												tableID = -1;
-											}
-											if (tableID > 0) {
-												MTable mTable = MTable.get(getCtx(), tableID);
-												String tableName = mTable.getTableName();
-												
-												ArrayList<MColumn> list = new ArrayList<MColumn>();
-												for (String idColumnName : mTable.getIdentifierColumns()) {
-													MColumn column = mTable.getColumn(idColumnName);
-													list.add (column);
-												}
-												if(list.size() > 0) {
-													StringBuilder displayColumn = new StringBuilder();
-													String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
-													
-													for(int i = 0; i < list.size(); i++) {
-														MColumn identifierColumn = list.get(i);
-														if(i > 0)
-															displayColumn.append("||'").append(separator).append("'||");
-														
-														displayColumn.append("NVL(")
-																	.append(DB.TO_CHAR(identifierColumn.getColumnName(), 
-																						identifierColumn.getAD_Reference_ID(), 
-																						Env.getAD_Language(Env.getCtx())))
-																	.append(",'')");
-													}
-													StringBuilder sql = new StringBuilder("SELECT ");
-													sql.append(displayColumn.toString());
-													sql.append(" FROM ").append(tableName);
-													sql.append(" WHERE ")
-														.append(tableName).append(".").append(tableName).append("_ID=?");
-													
-													value = DB.getSQLValueStringEx(null, sql.toString(), Integer.parseInt(value));
-												}
-												String foreignColumnName = tableName + "_ID";
-												pde.setForeignColumnName(foreignColumnName);
-												isZoom = true;
-											}
-										}
-									} else {
-										isZoom = true;
-									}
-									if (isZoom) {
-										// check permission on the zoomed window
-										MTable mTable = MTable.get(getCtx(), pde.getForeignColumnName().substring(0, pde.getForeignColumnName().length()-3));
-										int Record_ID = -1;
-										try {
-											Record_ID = Integer.parseInt(pde.getValueAsString());
-										} catch (Exception e) {
-											Record_ID = -1;
-										}
-							    		Boolean canAccess = null;
-										if (Record_ID >= 0 && mTable != null) {
-											int AD_Window_ID = Env.getZoomWindowID(mTable.get_ID(), Record_ID);
-								    		canAccess = MRole.getDefault().getWindowAccess(AD_Window_ID);
-										}
-							    		if (canAccess == null) {
-							    			isZoom = false;
-							    		}
-									}
-									if (isZoom) {
-										//link for column
-										a href = new a("javascript:void(0)");									
-										href.setID(pde.getColumnName() + "_" + row + "_a");									
-										td.addElement(href);
-										href.addElement(Util.maskHTML(value));
-										if (cssPrefix != null)
-											href.setClass(cssPrefix + "-href");
-										extension.extendIDColumn(row, td, href, pde);
-									} else {
-										td.addElement(Util.maskHTML(value));
-									}
-
-								}
-								else
-								{
-									td.addElement(Util.maskHTML(value));
-								}
-								if (cssPrefix != null)
-								{
-									if (DisplayType.isNumeric(pde.getDisplayType()))
-										td.setClass(cssPrefix + "-number");
-									else if (DisplayType.isDate(pde.getDisplayType()))
-										td.setClass(cssPrefix + "-date");
-									else
-										td.setClass(cssPrefix + "-text");
-								}											
-							}
-							else if (obj instanceof PrintData)
-							{
-								//	ignore contained Data
-							}
-							else
-								log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
-						}
-					}	//	printed
-				}	//	for all columns
-				
-				/* output table header */
-				if (row == -1){
-					w.print(compress(thead.toString(), minify));
-					// output open of tbody
-					w.print(compress(tbody.toString(), minify));
-				}else{
-					// output row by row 
-					w.print(compress(tr.toString(), minify));
-				}
-				
-			}	//	for all rows
-			
-			w.print("</tbody>");
-			w.print("</table>");
-			if (suppressMap.size() > 0) 
-			{
-				StringBuilder st = new StringBuilder();
-				for(th t : suppressMap.values()) 
-				{
-					if (st.length() > 0)
-						st.append(",");
-					st.append("#").append(t.getAttribute("id"));
-				}
-				st.append(" {\n\t\tdisplay:none;\n\t}");
-				style styleTag = new style();
-				styleTag.addElement(st.toString());
-				w.print(compress(styleTag.toString(), minify));
-			}
-			if (!onlyTable)
-			{
-				w.print("</div>");
-				w.print("</div>");
-				w.print("</body>");
-				w.print("</html>");
-			}
-			w.flush();
-			w.close();
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(w)", e);
-			throw new AdempiereException(e);
-		}
+		HTMLReportRendererConfiguration config = new HTMLReportRendererConfiguration()
+				.setOutputWriter(writer)
+				.setOnlyTable(onlyTable)
+				.setExport(isExport)
+				.setExtension(extension)
+				.setLanguage(language);
+		new HTMLReportRenderer().renderReport(this, config);
 		return true;
 	}	//	createHTML
 
-
-	private String getCSSFontFamily(String fontFamily) {
-		if ("Dialog".equals(fontFamily) || "DialogInput".equals(fontFamily) || 	"Monospaced".equals(fontFamily))
-		{
-			return "monospace";
-		} else if ("SansSerif".equals(fontFamily))
-		{
-			return "sans-serif";
-		} else if ("Serif".equals(fontFamily))
-		{
-			return "serif";
+	/**
+	 * Get record identifier string
+	 * @param mTable
+	 * @param tableName
+	 * @param recordID
+	 * @return String identifier
+	 */
+	public String getIdentifier(MTable mTable, String tableName, int recordID) {
+		ArrayList<MColumn> list = new ArrayList<MColumn>();
+		// get translation table - null if not exists
+		MTable mTableTrl = MTable.get(getCtx(), tableName+"_Trl");
+		String tableNameTrl = "";
+		// get report language
+		String reportLang = getLanguageID() > 0 ? new MLanguage(getCtx(), getLanguageID(), null).getAD_Language() : Language.getLoginLanguage().getAD_Language();
+		
+		// use Trl table or base table
+		boolean isTrl = !Env.isBaseLanguage(Language.getLanguage(reportLang), tableName);
+		
+		if(isTrl && mTableTrl != null)
+			tableNameTrl = mTableTrl.getTableName();
+		else
+			isTrl = false;
+		
+		// load identifier columns
+		for (String idColumnName : mTable.getIdentifierColumns()) {
+			MColumn column = mTable.getColumn(idColumnName);
+			list.add (column);
 		}
-		return null;
-	}
-
-	/**************************************************************************
-	 * 	Create CSV File
+		if(list.size() <= 0) {
+			return String.valueOf(recordID);
+		}
+		
+		StringBuilder displayColumn = new StringBuilder();
+		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+		
+		// get record identifier from SQL
+		for(int i = 0; i < list.size(); i++) {
+			MColumn identifierColumn = list.get(i);
+			if(i > 0)
+				displayColumn.append("||'").append(separator).append("'||");
+			
+			displayColumn.append("COALESCE(")
+						.append(DB.TO_CHAR(addTrlSuffix(identifierColumn, tableName, isTrl)+"."+identifierColumn.getColumnName(), 
+											identifierColumn.getAD_Reference_ID(), 
+											Env.getAD_Language(Env.getCtx())))
+						.append(",")
+						.append(DB.TO_CHAR(tableName+"."+identifierColumn.getColumnName(), 
+								identifierColumn.getAD_Reference_ID(), 
+								Env.getAD_Language(Env.getCtx())))
+						.append(",'')");
+		}
+		ArrayList<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder("SELECT ");
+		sql.append(displayColumn.toString());
+		sql.append(" FROM ").append(tableName);
+		if(isTrl) {
+			sql.append(" LEFT JOIN ").append(tableNameTrl).append(" ON ")
+				.append(tableName).append(".").append(tableName).append("_ID = ")
+				.append(tableNameTrl).append(".").append(tableName).append("_ID AND ")
+				.append(tableNameTrl).append(".AD_Language=?");
+			
+			params.add(reportLang);
+		}
+		sql.append(" WHERE ")
+			.append(tableName).append(".").append(tableName).append("_ID=?");
+		
+		params.add(recordID);		
+		return DB.getSQLValueStringEx(null, sql.toString(), params);
+	} // getIdentifier
+	
+	/**
+	 * Add "_Trl" suffix to table name, if the column is translated
+	 * @param column
+	 * @param tableName
+	 * @param isTrl - is translated
+	 * @return String tableName
+	 */
+	private String addTrlSuffix(MColumn column, String tableName, boolean isTrl) {
+		if(column.isTranslated() && isTrl)
+			return tableName + "_Trl";
+		else
+			return tableName;
+	} // addTrlSuffix
+	
+	/**
+	 * 	Create delimited text file
 	 * 	@param file file
 	 *  @param delimiter delimiter, e.g. comma, tab
 	 *  @param language translation language
@@ -1239,7 +786,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	}	//	createCSV
 
 	/**
-	 * 	Write CSV to writer
+	 * 	Write delimited content to writer
 	 * 	@param writer writer
 	 *  @param delimiter delimiter, e.g. comma, tab
 	 *  @param language translation language
@@ -1247,200 +794,35 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public boolean createCSV (Writer writer, char delimiter, Language language)
 	{
-		if (delimiter == 0)
-			delimiter = '\t';
-		try
-		{
-			//collect columns to be printed
-			ArrayList<Object> columns = new ArrayList<>();
-			List<InstanceAttributeData> asiElements = new ArrayList<>();
-			int columnCount = 0;
-			for (int col = 0; col < m_printFormat.getItemCount(); col++)
-			{
-				MPrintFormatItem item = m_printFormat.getItem(col);
-				if (item.isPrinted())
-				{
-					if (item.isTypeField() && item.isPrintInstanceAttributes())
-					{
-						InstanceAttributeData asiElement = new InstanceAttributeData(item, columnCount);
-						asiElement.readAttributesData(m_printData);
-						asiElements.add(asiElement);						
-						continue;
-					}
-					else 
-					{
-						columns.add(item);
-						columnCount++;
-					}
-				}
+		switch (delimiter) {
+			case ',' -> {
+				CSVReportRendererConfiguration config = new CSVReportRendererConfiguration().setLanguage(language).setOutputWriter(writer);
+				new CSVReportRenderer().renderReport(this, config);
 			}
-			if (asiElements.size() > 0)
-			{
-				int columnCreated = 0;
-				for(InstanceAttributeData data : asiElements)
-				{
-					List<InstanceAttributeColumn> instanceColumns = data.getColumns();
-					int index = data.getColumnIndex() + columnCreated;
-					for(InstanceAttributeColumn c : instanceColumns)
-					{
-						columns.add(index, c);
-						index++;
-						columnCreated++;
-					}
-				}
+			case ';' -> {
+				SSVReportRendererConfiguration config = new SSVReportRendererConfiguration().setLanguage(language).setOutputWriter(writer);
+				new SSVReportRenderer().renderReport(this, config);
 			}
-						
-			Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
-			Object [] preValues = null;
-			if (colSuppressRepeats != null){
-				preValues = new Object [colSuppressRepeats.length];
+			case '\t' -> {
+				TabDelimitedReportRendererConfiguration config = new TabDelimitedReportRendererConfiguration().setLanguage(language).setOutputWriter(writer);
+				new TabDelimitedReportRenderer().renderReport(this, config);
 			}
-			int printColIndex = -1;
-			//	for all rows (-1 = header row)
-			for (int row = -1; row < m_printData.getRowCount(); row++)
-			{
-				printColIndex = -1;
-				StringBuffer sb = new StringBuffer();
-				if (row != -1)
-					m_printData.setRowIndex(row);
-
-				//	for all columns
-				boolean first = true;	//	first column to print
-				for (int col = 0; col < columns.size(); col++)
-				{
-					Object colObj = columns.get(col);
-					MPrintFormatItem item = null;
-					InstanceAttributeColumn iaColumn = null;
-					if (colObj instanceof InstanceAttributeColumn)
-					{
-						iaColumn = (InstanceAttributeColumn) colObj;
-						item = iaColumn.getPrintFormatItem();
-					} 
-					else if (colObj instanceof MPrintFormatItem)
-					{
-						item = (MPrintFormatItem)colObj;
-					}
-					if (item != null)
-					{
-						//	column delimiter (comma or tab)
-						if (first)
-							first = false;
-						else
-							sb.append(delimiter);
-						//	header row
-						if (row == -1)
-						{
-							String printName = iaColumn != null ? iaColumn.getName() : item.getPrintName(language);
-							createCSVvalue (sb, delimiter, printName);
-						}
-						else
-						{
-							printColIndex++;
-							Object obj = iaColumn != null ? iaColumn.getPrintDataElement(row) : m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
-							String data = "";
-							if (obj == null || !isDisplayPFItem(item)){
-								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
-									preValues[printColIndex] = null;
-								}
-							}
-							else if (obj instanceof PrintDataElement)
-							{
-								PrintDataElement pde = (PrintDataElement)obj;
-								if (pde.isPKey())
-									data = pde.getValueAsString();
-								else
-									data = pde.getValueDisplay(language);	//	formatted
-								
-								if (colSuppressRepeats != null && colSuppressRepeats[printColIndex]){
-									if (data.equals(preValues[printColIndex])){
-										continue;
-									}else{
-										preValues[printColIndex] = data;
-									}
-								}
-							}
-							else if (obj instanceof PrintData)
-							{
-							}
-							else
-								log.log(Level.SEVERE, "Element not PrintData(Element) " + obj.getClass());
-							createCSVvalue (sb, delimiter, data);
-						}
-					}	//	printed
-				}	//	for all columns
-				writer.write(sb.toString());
-				writer.write(Env.NL);
-			}	//	for all rows
-			//
-			writer.flush();
-			writer.close();
+			default -> throw new IllegalArgumentException("Unexpected value: " + delimiter);
 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(w)", e);
-			return false;
-		}
+		
 		return true;
 	}	//	createCSV
 
 	/**
-	 * 	Add Content to CSV string.
-	 *  Encapsulate/mask content in " if required
-	 * 	@param sb StringBuffer to add to
-	 * 	@param delimiter delimiter
-	 * 	@param content column value
-	 */
-	private void createCSVvalue (StringBuffer sb, char delimiter, String content)
-	{
-		//	nothing to add
-		if (content == null || content.length() == 0)
-			return;
-		//
-		boolean needMask = false;
-		StringBuilder buff = new StringBuilder();
-		char chars[] = content.toCharArray();
-		for (int i = 0; i < chars.length; i++)
-		{
-			char c = chars[i];
-			if (c == '"')
-			{
-				needMask = true;
-				buff.append(c);		//	repeat twice
-			}	//	mask if any control character
-			else if (!needMask && (c == delimiter || !Character.isLetterOrDigit(c)))
-				needMask = true;
-			buff.append(c);
-		}
-
-		//	Optionally mask value
-		if (needMask)
-			sb.append('"').append(buff).append('"');
-		else
-			sb.append(buff);
-	}	//	addCSVColumnValue
-
-	
-	/**************************************************************************
 	 * 	Create XML File
 	 * 	@param file file
 	 * 	@return true if success
 	 */
 	public boolean createXML (File file)
 	{
-		try
-		{
-			Writer fw = new OutputStreamWriter(new FileOutputStream(file, false), Ini.getCharset()); // teo_sarca: save using adempiere charset [ 1658127 ]
-			return createXML (new BufferedWriter(fw));
-		}
-		catch (FileNotFoundException fnfe)
-		{
-			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(f)", e);
-		}
-		return false;
+		XMLReportRendererConfiguration config = new XMLReportRendererConfiguration().setOutputFile(file);
+		new XMLReportRenderer().renderReport(this, config);
+		return true;
 	}	//	createXML
 
 	/**
@@ -1450,22 +832,12 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public boolean createXML (Writer writer)
 	{
-		try
-		{
-			m_printData.createXML(new StreamResult(writer));
-			writer.flush();
-			writer.close();
-			return true;
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(w)", e);
-		}
-		return false;
+		XMLReportRendererConfiguration config = new XMLReportRendererConfiguration().setOutputWriter(writer);
+		new XMLReportRenderer().renderReport(this, config);
+		return true;
 	}	//	createXML
-
 	
-	/**************************************************************************
+	/**
 	 * 	Create PDF file.
 	 * 	(created in temporary storage)
 	 *	@return PDF file
@@ -1496,7 +868,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return null;
 	}	//	getPDF
 
-	/**************************************************************************
+	/**
 	 * 	Create HTML file.
 	 * 	(created in temporary storage)
 	 *	@return HTML file
@@ -1527,7 +899,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return null;
 	}	//	getHTML
 	
-	/**************************************************************************
+	/**
 	 * 	Create CSV file.
 	 * 	(created in temporary storage)
 	 *	@return CSV file
@@ -1558,7 +930,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return null;
 	}	//	getCSV
 	
-	/**************************************************************************
+	/**
 	 * 	Create XLS file.
 	 * 	(created in temporary storage)
 	 *	@return XLS file
@@ -1596,7 +968,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 	}	//	getXLS
 	
-	/**************************************************************************
+	/**
 	 * 	Create XLSX file.
 	 * 	(created in temporary storage)
 	 *	@return XLSX file
@@ -1646,13 +1018,16 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		try
 		{
-			if (file == null)
+			if (file == null) {
 				file = FileUtil.createTempFile ("ReportEngine", ".pdf");
-			fileName = file.getAbsolutePath();
+			} else {
+				if (file.exists()) {
+					file.delete();
+					file = new File(file.getAbsolutePath());
+				}
+			}
 			uri = file.toURI();
-			if (file.exists())
-				file.delete();
-
+			fileName = file.getAbsolutePath();
 		}
 		catch (Exception e)
 		{
@@ -1674,10 +1049,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				pi.setPDFFileName(fileName);
 				ServerProcessCtl.process(pi, (m_trxName == null ? null : Trx.get(m_trxName, false)));
 			} else {
-				if (m_layout == null)
-					layout ();
-				Document.getPDFAsFile(fileName, m_layout.getPageable(false));
-				ArchiveEngine.get().archive(new File(fileName), m_info);
+				PDFReportRendererConfiguration config = new PDFReportRendererConfiguration().setOutputFile(file);
+				new PDFReportRenderer().renderReport(this, config);
 			}
 		}
 		catch (Exception e)
@@ -1710,17 +1083,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public byte[] createPDFData ()
 	{
-		try
-		{
-			if (m_layout == null)
-				layout ();
-			return Document.getPDFAsArray(m_layout.getPageable(false));
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "PDF", e);
-		}
-		return null;
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		PDFReportRendererConfiguration config = new PDFReportRendererConfiguration().setOutputStream(os);
+		new PDFReportRenderer().renderReport(this, config);
+		return os.toByteArray();
 	}	//	createPDFData
 	
 	/**************************************************************************
@@ -1730,19 +1096,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public boolean createPS (File file)
 	{
-		try
-		{
-			return createPS (new FileOutputStream(file));
-		}
-		catch (FileNotFoundException fnfe)
-		{
-			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(f)", e);
-		}
-		return false;
+		PSReportRendererConfiguration config = new PSReportRendererConfiguration().setOutputFile(file);
+		new PSReportRenderer().renderReport(this, config);
+		return true;
 	}	//	createPS
 
 	/**
@@ -1752,37 +1108,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public boolean createPS (OutputStream os)
 	{
-		try
-		{
-			String outputMimeType = DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType();
-			DocFlavor docFlavor = DocFlavor.SERVICE_FORMATTED.PAGEABLE;
-			StreamPrintServiceFactory[] spsfactories =
-				StreamPrintServiceFactory.lookupStreamPrintServiceFactories(docFlavor, outputMimeType);
-			if (spsfactories.length == 0)
-			{
-				log.log(Level.SEVERE, "(fos) - No StreamPrintService");
-				return false;
-			}
-			//	just use first one - sun.print.PSStreamPrinterFactory
-			//	System.out.println("- " + spsfactories[0]);
-			StreamPrintService sps = spsfactories[0].getPrintService(os);
-			//	get format
-			if (m_layout == null)
-				layout();
-			//	print it
-			sps.createPrintJob().print(m_layout.getPageable(false), 
-				new HashPrintRequestAttributeSet());
-			//
-			os.flush();
-			//following 2 line for backward compatibility
-			if (os instanceof FileOutputStream)
-				((FileOutputStream)os).close();
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(fos)", e);
-		}
-		return false;
+		PSReportRendererConfiguration config = new PSReportRendererConfiguration().setOutputStream(os);
+		new PSReportRenderer().renderReport(this, config);
+		return true;
 	}	//	createPS
 
 	/**
@@ -1794,10 +1122,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public void createXLS(File outFile, Language language)
 	throws Exception
 	{
-		Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
-		Map<MPrintFormatItem, PrintData> childFormats = m_layout != null ? m_layout.getChildPrintFormatDetails() : null;
-		PrintDataExcelExporter exp = new PrintDataExcelExporter(getPrintData(), getPrintFormat(), childFormats, colSuppressRepeats, m_query);
-		exp.export(outFile, language);
+		XLSReportRendererConfiguration config = new XLSReportRendererConfiguration().setOutputFile(outFile).setLanguage(language);
+		new XLSReportRenderer().renderReport(this, config);
 	}
 
 	/**
@@ -1809,10 +1135,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public void createXLSX(File outFile, Language language)
 	throws Exception
 	{
-		Boolean [] colSuppressRepeats = m_layout == null || m_layout.colSuppressRepeats == null? LayoutEngine.getColSuppressRepeats(m_printFormat):m_layout.colSuppressRepeats;
-		Map<MPrintFormatItem, PrintData> childFormats = m_layout != null ? m_layout.getChildPrintFormatDetails() : null;
-		PrintDataXLSXExporter exp = new PrintDataXLSXExporter(getPrintData(), getPrintFormat(), childFormats, colSuppressRepeats, m_query);
-		exp.export(outFile, language);
+		XLSXReportRendererConfiguration config = new XLSXReportRendererConfiguration().setOutputFile(outFile).setLanguage(language);
+		new XLSXReportRenderer().renderReport(this, config);
 	}
 	
 	/**************************************************************************
@@ -1940,10 +1264,13 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		//  Create Query from Parameters
 		MQuery query = null;
-		if (IsForm && pi.getRecord_ID() != 0		//	Form = one record
+		if (IsForm && (pi.getRecord_ID() > 0 || !Util.isEmpty(pi.getRecord_UU()))		//	Form = one record
 				&& !TableName.startsWith("T_") )	//	Not temporary table - teo_sarca, BF [ 2828886 ]
 		{
-			query = MQuery.getEqualQuery(TableName + "_ID", pi.getRecord_ID());
+			if (pi.getRecord_ID() > 0)
+				query = MQuery.getEqualQuery(TableName + "_ID", pi.getRecord_ID());
+			else
+				query = MQuery.getEqualQuery(PO.getUUIDColumnName(TableName), pi.getRecord_UU());
 		}
 		else
 		{
@@ -2500,260 +1827,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 		return -1;
 	}
-	
-	/**
-	 * build css for table from mapCssInfo
-	 * @param doc
-	 */
-	public void appendInlineCss (XhtmlDocument doc){
-		StringBuilder buildCssInline = new StringBuilder();
-		
-		// each entry is a css class
-		for (Entry<CSSInfo, List<ColumnInfo>> cssClassInfo : mapCssInfo.entrySet()){
-			// each column is a css name.
-			for (int i = 0; i < cssClassInfo.getValue().size(); i++){
-				if (i > 0)
-					buildCssInline.append (",");
-				
-				buildCssInline.append(cssClassInfo.getValue().get(i).getCssSelector());
-			}
 			
-			buildCssInline.append(cssClassInfo.getKey().getCssRule());
-			buildCssInline.append("\n");
-		}
-		
-		appendInlineCss (doc, buildCssInline);
-	}
-	
-	public void appendInlineCss (XhtmlDocument doc, StringBuilder buildCssInline){
-		if (buildCssInline.length() > 0){
-			buildCssInline.insert(0, "<style>");
-			buildCssInline.append("</style>");
-			doc.appendHead(buildCssInline.toString());
-		}
-	}
-	
-	/**
-	 * create css info from formatItem, add all column has same formatItem in a list
-	 * @param formatItem
-	 * @param index
-	 */
-	public void addCssInfo (MPrintFormatItem formatItem, int index){
-		CSSInfo cadidateCss = new CSSInfo(formatItem);
-		if (mapCssInfo.containsKey(cadidateCss)){
-			mapCssInfo.get(cadidateCss).add(new ColumnInfo(index, formatItem));
-		}else{
-			List<ColumnInfo> newColumnList = new ArrayList<ColumnInfo>();
-			newColumnList.add(new ColumnInfo(index, formatItem));
-			mapCssInfo.put(cadidateCss, newColumnList);
-		}
-	}
-	
-	/**
-	 * Store info for make css rule
-	 * @author hieplq
-	 *
-	 */
-	public class CSSInfo {
-		private Font font;		
-		private Color color;
-		private String cssStr;
-		public CSSInfo (MPrintFormatItem item){
-			MPrintFont mPrintFont = null;
-			
-			if (item.getAD_PrintFont_ID() > 0) 
-			{
-				mPrintFont = MPrintFont.get(item.getAD_PrintFont_ID());
-			}			
-			else if (m_printFormat.getAD_PrintFont_ID() > 0)
-			{
-				mPrintFont = MPrintFont.get(m_printFormat.getAD_PrintFont_ID());
-			}
-			if (mPrintFont != null && mPrintFont.getAD_PrintFont_ID() > 0)
-			{
-				font = mPrintFont.getFont();				
-			}
-			
-			MPrintColor mPrintColor = null;
-			if (item.getAD_PrintColor_ID() > 0) 
-			{
-				mPrintColor = MPrintColor.get(m_ctx, item.getAD_PrintColor_ID());
-			}
-			else if (m_printFormat.getAD_PrintColor_ID() > 0)
-			{
-				mPrintColor = MPrintColor.get(m_ctx, m_printFormat.getAD_PrintColor_ID());
-			}
-			if (mPrintColor != null && mPrintColor.getAD_PrintColor_ID() > 0)
-			{
-				color = mPrintColor.getColor();
-				
-			}
-		}
-		
-		public CSSInfo (Font font, Color color) {
-			this.font = font;
-			this.color = color;
-		}
-		
-		/**
-		 * sum hashCode of partial
-		 */
-		@Override
-		public int hashCode() {
-			return (color == null ? 0 : color.hashCode()) + (font == null ? 0 : font.hashCode());
-		}
-		
-		/**
-		 * equal only when same color and font
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == null || !(obj instanceof CSSInfo) || obj.hashCode() != this.hashCode())
-				return false;
-			
-			CSSInfo compareObj = (CSSInfo)obj;
-			
-			return compareObj (compareObj.color, color) && compareObj (compareObj.font, font);			
-		}
-		
-		/**
-		 * compare two object equal when both is null or result of equal
-		 * @param obj1
-		 * @param obj2
-		 * @return
-		 */
-		protected boolean compareObj(Object obj1, Object obj2) {
-			if (obj1 == null && obj2 != null)
-				return false;
-			
-			if (obj1 == null && obj2 == null){
-				return true;
-			}
-			
-			return obj1.equals(obj2);
-		}
-		
-		/**
-		 * append a css rule to css class
-		 * @param cssBuild
-		 * @param ruleName
-		 * @param ruleValue
-		 */
-		protected void addCssRule(StringBuilder cssBuild, String ruleName, String ruleValue) {
-			cssBuild.append (ruleName);
-			cssBuild.append (":");
-			cssBuild.append (ruleValue);
-			cssBuild.append (";");
-		}
-		
-		/**
-		 * build css rule
-		 * @return
-		 */
-		public String getCssRule (){
-			if (cssStr != null)
-				return cssStr;
-			
-			StringBuilder cssBuild = new StringBuilder();
-			cssBuild.append ("{");
-			
-			if (font != null){
-				
-				String fontFamily = font.getFamily();
-				fontFamily = getCSSFontFamily(fontFamily);
-				if (fontFamily != null){
-					addCssRule(cssBuild, "font-family", fontFamily);
-				}
-				
-				if (font.isBold())
-				{
-					addCssRule(cssBuild, "font-weight", "bold");					
-				}
-				
-				if (font.isItalic())
-				{
-					addCssRule(cssBuild, "font-style", "italic");
-				}									
-				
-				int size = font.getSize();
-				addCssRule(cssBuild, "font-size", size + "pt");
-			}
-			
-			if (color != null)
-			{
-				cssBuild.append("color:rgb(");
-				cssBuild.append(color.getRed()); 
-				cssBuild.append(",");
-				cssBuild.append(color.getGreen());
-				cssBuild.append(",");
-				cssBuild.append(color.getBlue());
-				cssBuild.append(");");
-			}
-			cssBuild.append ("}");
-			cssStr = cssBuild.toString();
-			
-			return cssStr;
-		}
-	}
-	
-	/**
-	 * store info of report column,
-	 * now just use index to create css selector, but for later maybe will construct a complex class name
-	 * @author hieplq
-	 *
-	 */
-	public static class ColumnInfo {
-		protected static String CSS_SELECTOR_TEMPLATE = "table > tbody > tr > td:nth-child(%1$s)";
-		int index = -1;
-		public ColumnInfo (int index, MPrintFormatItem formatItem){
-			this.index = index;
-			
-		}
-		
-		public String getCssSelector(){
-			return String.format(CSS_SELECTOR_TEMPLATE, index + 1);
-		}
-	}
-	
-	private boolean isDisplayPFItem(MPrintFormatItem item)
-	{
-		if(Util.isEmpty(item.getDisplayLogic()))
-			return true;
-		
-		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
-	}
-
-	public String compress(String src, boolean minify) {
-		
-		if(minify) {
-			HtmlCompressor compressor = new HtmlCompressor();
-		    compressor.setEnabled(true);
-		    compressor.setCompressCss(true);
-		    compressor.setCompressJavaScript(true);
-		    compressor.setRemoveComments(true);
-		    compressor.setRemoveMultiSpaces(true);
-		    compressor.setRemoveIntertagSpaces(true);
-//		    compressor.setGenerateStatistics(false);
-//		    compressor.setRemoveQuotes(false);
-//		    compressor.setSimpleDoctype(false);
-//		    compressor.setRemoveScriptAttributes(false);
-//		    compressor.setRemoveStyleAttributes(false);
-//		    compressor.setRemoveLinkAttributes(false);
-//		    compressor.setRemoveFormAttributes(false);
-//		    compressor.setRemoveInputAttributes(false);
-//		    compressor.setSimpleBooleanAttributes(false);
-//		    compressor.setRemoveJavaScriptProtocol(false);
-//		    compressor.setRemoveHttpProtocol(false);
-//		    compressor.setRemoveHttpsProtocol(false);
-//		    compressor.setPreserveLineBreaks(false);
-		    
-		    return compressor.compress(src);
-		}
-		else {
-			return src;
-		}
-	}
-	
 	public static void setDefaultReportTypeToPInstance(Properties ctx, MPInstance instance, int printFormatID) {
 		if(Util.isEmpty(instance.getReportType())) {
 			MPrintFormat pf = new MPrintFormat(ctx, printFormatID, null);
@@ -2763,5 +1837,35 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(ctx),Env.getAD_Org_ID(ctx));
 			instance.setReportType(type);
 		}
+	}
+	
+	private ProcessInfo m_pi = null;
+	
+	/**
+	 * @param pi
+	 */
+	public void setProcessInfo(ProcessInfo pi) {
+		m_pi = pi;
+	}
+	
+	/**
+	 * @return ProcessInfo
+	 */
+	public ProcessInfo getProcessInfo() {
+		return m_pi;
+	}
+	
+	/**
+	 * Evaluate display logic of a print format item
+	 * @param printData data for display logic evaluation
+	 * @param item print format item
+	 * @return true if item has no display logic or display logic evaluate to true
+	 */
+	public static boolean isDisplayPFItem(PrintData printData, MPrintFormatItem item)
+	{
+		if(Util.isEmpty(item.getDisplayLogic()))
+			return true;
+		
+		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, printData), item.getDisplayLogic());
 	}
 }	//	ReportEngine

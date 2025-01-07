@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere 2Pack Core
 Bundle-SymbolicName: org.adempiere.pipo;singleton:=true
-Bundle-Version: 10.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Bundle-Version: 11.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: org.apache.commons.codec,
  org.apache.commons.codec.binary,
  org.apache.tools.ant,

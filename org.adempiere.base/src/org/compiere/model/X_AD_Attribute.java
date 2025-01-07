@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Attribute
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Attribute")
-public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent 
+public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Attribute (Properties ctx, int AD_Attribute_ID, String trxName)
@@ -73,6 +73,46 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Attribute (Properties ctx, String AD_Attribute_UU, String trxName)
+    {
+      super (ctx, AD_Attribute_UU, trxName);
+      /** if (AD_Attribute_UU == null)
+        {
+			setAD_Attribute_ID (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setIsEncrypted (false);
+			setIsFieldOnly (false);
+			setIsHeading (false);
+			setIsMandatory (false);
+			setIsReadOnly (false);
+			setIsSameLine (false);
+			setIsUpdateable (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Attribute (Properties ctx, String AD_Attribute_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Attribute_UU, trxName, virtualColumns);
+      /** if (AD_Attribute_UU == null)
+        {
+			setAD_Attribute_ID (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setIsEncrypted (false);
+			setIsFieldOnly (false);
+			setIsHeading (false);
+			setIsMandatory (false);
+			setIsReadOnly (false);
+			setIsSameLine (false);
+			setIsUpdateable (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Attribute (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +120,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -381,10 +421,10 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	public boolean isEncrypted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEncrypted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -404,10 +444,10 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	public boolean isFieldOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFieldOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -427,10 +467,10 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	public boolean isHeading()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHeading);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -450,10 +490,10 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -473,10 +513,10 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -496,10 +536,10 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	public boolean isSameLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameLine);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -519,10 +559,10 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	public boolean isUpdateable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUpdateable);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -547,7 +587,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

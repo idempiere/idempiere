@@ -20,8 +20,8 @@ import org.compiere.model.X_C_DocType;
 import org.compiere.util.Env;
 
 /**
- * Period Closed Exception.
- * This exception is throwed by
+ * Period Closed Exception.<br/>
+ * This exception is throw by
  * {@link org.compiere.model.MPeriod#testPeriodOpen(java.util.Properties, Timestamp, int, int)} and
  * {@link org.compiere.model.MPeriod#testPeriodOpen(java.util.Properties, Timestamp, String, int)} methods.
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
@@ -33,12 +33,13 @@ import org.compiere.util.Env;
 public class PeriodClosedException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2798371272365454799L;
 
 	/**
-	 * 
+	 * @param dateAcct
+	 * @param docBaseType
 	 */
 	public PeriodClosedException(Timestamp dateAcct, String docBaseType)
 	{

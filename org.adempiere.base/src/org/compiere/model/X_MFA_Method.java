@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Method
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Method")
-public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent 
+public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_MFA_Method (Properties ctx, String MFA_Method_UU, String trxName)
+    {
+      super (ctx, MFA_Method_UU, trxName);
+      /** if (MFA_Method_UU == null)
+        {
+			setMethod (null);
+			setMFA_Method_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_MFA_Method (Properties ctx, String MFA_Method_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, MFA_Method_UU, trxName, virtualColumns);
+      /** if (MFA_Method_UU == null)
+        {
+			setMethod (null);
+			setMFA_Method_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_MFA_Method (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -337,7 +361,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_QualityTest
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_QualityTest")
-public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent 
+public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_QualityTest (Properties ctx, int M_QualityTest_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_QualityTest (Properties ctx, String M_QualityTest_UU, String trxName)
+    {
+      super (ctx, M_QualityTest_UU, trxName);
+      /** if (M_QualityTest_UU == null)
+        {
+			setM_QualityTest_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_QualityTest (Properties ctx, String M_QualityTest_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_QualityTest_UU, trxName, virtualColumns);
+      /** if (M_QualityTest_UU == null)
+        {
+			setM_QualityTest_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_QualityTest (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -170,7 +192,7 @@ public class X_M_QualityTest extends PO implements I_M_QualityTest, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

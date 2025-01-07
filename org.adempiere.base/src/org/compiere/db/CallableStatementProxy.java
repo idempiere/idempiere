@@ -26,10 +26,19 @@ import org.idempiere.db.util.AutoCommitConnectionBroker;
  */
 public class CallableStatementProxy extends PreparedStatementProxy {
 
+	/**
+	 * @param vo
+	 */
 	public CallableStatementProxy(CStatementVO vo) {
 		super(vo);
 	}
 
+	/**
+	 * @param resultSetType
+	 * @param resultSetConcurrency
+	 * @param sql0
+	 * @param trxName
+	 */
 	public CallableStatementProxy(int resultSetType, int resultSetConcurrency,
 			String sql0, String trxName) {
 		super(resultSetType, resultSetConcurrency, sql0, trxName);

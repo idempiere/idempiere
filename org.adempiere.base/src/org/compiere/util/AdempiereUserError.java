@@ -18,9 +18,8 @@ package org.compiere.util;
 
 
 /**
- *	Adempiere User Error.
- *	Cuased by (lack of) user input/selection.
- * 	(No program error)
+ *	iDempiere User Error.
+ *	Caused by (lack of) user input/selection.
  *
  *  @author Jorg Janke
  *  @version $Id: AdempiereUserError.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $

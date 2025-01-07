@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1334100963468705584L;
 
@@ -76,7 +76,17 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MMeasureCalc> s_cache 
 		= new ImmutableIntPOCache<Integer, MMeasureCalc> (Table_Name, 10);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_MeasureCalc_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMeasureCalc(Properties ctx, String PA_MeasureCalc_UU, String trxName) {
+        super(ctx, PA_MeasureCalc_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param PA_MeasureCalc_ID id
@@ -99,7 +109,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}	//	MMeasureCalc
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MMeasureCalc(MMeasureCalc copy) 
@@ -108,7 +118,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -118,7 +128,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -130,7 +140,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get Sql to return single value for the Performance Indicator
+	 * 	Get SQL to return single value for the Performance Indicator
 	 *	@param restrictions array of goal restrictions
 	 *	@param MeasureScope scope of this value  
 	 *	@param MeasureDataType data type
@@ -177,7 +187,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}	//	getSql
 	
 	/**
-	 * 	Get Sql to value for the bar chart
+	 * 	Get SQL to retrieve value for bar chart
 	 *	@param restrictions array of goal restrictions
 	 *	@param MeasureDisplay scope of this value  
 	 *	@param startDate optional report start date
@@ -245,7 +255,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	/**
 	 * 	Get Zoom Query
 	 * 	@param restrictions restrictions
-	 * 	@param MeasureDisplay display
+	 * 	@param MeasureDisplay measure display type (MGoal.MEASUREDISPLAY_*)
 	 * 	@param date date
 	 * 	@param role role
 	 *	@return query
@@ -319,7 +329,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}	//	getQuery
 	
 	/**
-	 * 	Add Restrictions
+	 * 	Add Restrictions to SQL
 	 *	@param sql existing sql
 	 *	@param restrictions restrictions
 	 *	@param role role
@@ -335,12 +345,12 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 
 	/**
 	 * 	Add Restrictions to SQL
-	 *	@param sql orig sql
-	 *	@param queryOnly incomplete sql for query restriction
+	 *	@param sql existing sql
+	 *	@param queryOnly if true, don't add role access SQL clause 
 	 *	@param restrictions restrictions
 	 *	@param role role
 	 *	@param tableName table name
-	 *	@param orgColumn org column
+	 *	@param orgColumn organization column
 	 *	@param bpColumn bpartner column
 	 *	@param pColumn product column
 	 *	@return updated sql
@@ -499,6 +509,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MMeasureCalc[");
@@ -516,7 +527,8 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}
 
 	/**
-	 * Get the Where clause adding the WHERE keyword when needed
+	 * Get where clause, add WHERE keyword if where clause not started with it
+	 * @return where clause with "WHERE " keyword
 	 */
 	@Override
 	public String getWhereClause() {

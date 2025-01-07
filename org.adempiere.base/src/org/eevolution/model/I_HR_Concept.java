@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Concept
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_HR_Concept 
@@ -235,12 +235,12 @@ public interface I_HR_Concept
     public static final String COLUMNNAME_IsPaid = "IsPaid";
 
 	/** Set Paid.
-	  * The document is paid
+	  * The document is fully paid
 	  */
 	public void setIsPaid (boolean IsPaid);
 
 	/** Get Paid.
-	  * The document is paid
+	  * The document is fully paid
 	  */
 	public boolean isPaid();
 

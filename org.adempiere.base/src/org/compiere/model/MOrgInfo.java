@@ -35,14 +35,14 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6257741576762100779L;
 
 	/**
 	 *  Get MOrgInfo from cache (immutable)
 	 *	@param AD_Org_ID id
-	 *	@return Org Info
+	 *	@return MOrgInfo
 	 */
 	public static MOrgInfo get (Properties ctx, int AD_Org_ID)
 	{
@@ -112,9 +112,18 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MOrgInfo>	s_cache	= new ImmutableIntPOCache<Integer, MOrgInfo>(Table_Name, 50);
-
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_OrgInfo_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MOrgInfo(Properties ctx, String AD_OrgInfo_UU, String trxName) {
+        super(ctx, AD_OrgInfo_UU, trxName);
+    }
+
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
@@ -138,7 +147,7 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	}	//	MOrgInfo
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MOrgInfo(MOrgInfo copy) 
@@ -147,7 +156,7 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -157,7 +166,7 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -175,6 +184,16 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
+	}
+	
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if(!newRecord && getParent_Org_ID()==get_ID()){
+			log.saveError("Error", "Parent_Org_ID=AD_Org_ID");
+			return false;
+		}
+		
+		return true;
 	}
 
 }

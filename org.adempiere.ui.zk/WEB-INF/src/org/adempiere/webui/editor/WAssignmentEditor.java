@@ -1,3 +1,26 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ **********************************************************************/
 package org.adempiere.webui.editor;
 
 import java.sql.PreparedStatement;
@@ -29,6 +52,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
+/**
+ * Default editor for {@link DisplayType#Assignment}.<br/>
+ * Implemented with {@link EditorBox} component, {@link WAssignmentDialog} and {@link InfoSchedule} dialog.
+ * @author hengsin
+ */
 public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	
 	private static final String RETRIEVE_RESOURCE_ASSIGNMENT_SQL = "SELECT r.Name,ra.AssignDateFrom,ra.Qty,uom.UOMSymbol "
@@ -43,6 +71,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
 		
 	private boolean m_readWrite;
+	/** S_ResourceAssignment_ID */
 	private Object m_value;
 	
 	private DateFormat			m_dateFormat = DisplayType.getDateFormat(DisplayType.DateTime);
@@ -68,6 +97,9 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 		initComponents();
 	}
 	
+	/**
+	 * Init component and context menu
+	 */
 	private void initComponents() {
 		getComponent().getTextbox().setReadonly(true);
 		if (ThemeManager.isUseFontIconForImage())
@@ -81,8 +113,6 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 		if (gridField != null)
 			getComponent().getTextbox().setPlaceholder(gridField.getPlaceholder());
 	}
-
-	
 
 	@Override
 	public String[] getEvents() {
@@ -160,7 +190,8 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 		}
 
 	}
-		
+	
+	@Override
 	public void onEvent(Event event) throws Exception {
 		//
 		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
@@ -184,7 +215,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 				}
 			}
 	
-			//	Start VAssignment Dialog
+			//	Open WAssignmentDialog Dialog
 			if (S_ResourceAssignment_ID != 0)
 			{
 				final WAssignmentDialog vad = new WAssignmentDialog (ma, true, true);
@@ -200,7 +231,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 				vad.setTitle(null);
 				LayoutUtils.openPopupWindow(this.getComponent().getTextbox(), vad);
 			}
-			//	Start InfoSchedule directly
+			//	Open InfoSchedule directly
 			else
 			{
 				final InfoSchedule is = new InfoSchedule(ma, true, new Callback<MResourceAssignment>() {
@@ -227,10 +258,18 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 		
 	}
 
+	/**
+	 * Zoom to window for S_ResourceAssignment
+	 */
 	private void actionZoom() {
 		AEnv.zoom(gridField.getGridTab().getAD_Table_ID(), (Integer)getValue());
 	}
 
+	/**
+	 * Fire {@link ValueChangeEvent} after changes from InfoSchedule or WAssignmentDialog.
+	 * @param oldValue
+	 * @param ma MResourceAssignment
+	 */
 	private void processNewValue(final Integer oldValue, MResourceAssignment ma) {
 		// Set Value
 		if (ma != null && ma.getS_ResourceAssignment_ID() != 0)

@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxDefinition
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDefinition")
-public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persistent 
+public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxDefinition (Properties ctx, int C_TaxDefinition_ID, String trxName)
@@ -59,6 +59,30 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_TaxDefinition (Properties ctx, String C_TaxDefinition_UU, String trxName)
+    {
+      super (ctx, C_TaxDefinition_UU, trxName);
+      /** if (C_TaxDefinition_UU == null)
+        {
+			setC_TaxDefinition_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDefinition (Properties ctx, String C_TaxDefinition_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDefinition_UU, trxName, virtualColumns);
+      /** if (C_TaxDefinition_UU == null)
+        {
+			setC_TaxDefinition_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_TaxDefinition (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +90,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -390,10 +414,10 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -510,7 +534,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

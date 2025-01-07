@@ -16,8 +16,9 @@ package org.idempiere.broadcast.process;
 import org.idempiere.broadcast.BroadcastMsgUtil;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
+
 /**
- * 
+ * Process to publish test broadcast message 
  * @author Vivek
  * @author Deepak Pansheriya
  *
@@ -29,7 +30,6 @@ public class TestBrodcastMessage extends SvrProcess
     @Override
     protected void prepare()
     {
-	// TODO Auto-generated method stub
     }
 
     @Override

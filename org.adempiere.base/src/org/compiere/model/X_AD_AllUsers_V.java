@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_AllUsers_V
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_AllUsers_V")
-public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent 
+public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_AllUsers_V (Properties ctx, int AD_AllUsers_V_ID, String trxName)
@@ -51,6 +51,24 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_AllUsers_V (Properties ctx, String AD_AllUsers_V_UU, String trxName)
+    {
+      super (ctx, AD_AllUsers_V_UU, trxName);
+      /** if (AD_AllUsers_V_UU == null)
+        {
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AllUsers_V (Properties ctx, String AD_AllUsers_V_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AllUsers_V_UU, trxName, virtualColumns);
+      /** if (AD_AllUsers_V_UU == null)
+        {
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_AllUsers_V (Properties ctx, ResultSet rs, String trxName)
     {
@@ -58,7 +76,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -250,10 +268,10 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	public boolean isExpired()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExpired);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -272,10 +290,10 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	public boolean isLocked()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLocked);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -294,10 +312,10 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	public boolean isNoExpire()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoExpire);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -316,10 +334,10 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	public boolean isNoPasswordReset()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoPasswordReset);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -338,10 +356,10 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	public boolean isSupportUser()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSupportUser);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

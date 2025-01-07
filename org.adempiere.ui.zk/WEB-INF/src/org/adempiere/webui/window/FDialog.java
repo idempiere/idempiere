@@ -379,9 +379,11 @@ public class FDialog
 			weditor = new WNumberEditor();
 			break;
 		case DisplayType.TableDir:
+		case DisplayType.TableDirUU:
 			weditor = new WTableDirEditor(lookup, "", "", true, false, true);
 			break;
 		case DisplayType.Search:
+		case DisplayType.SearchUU:
 			weditor = new WSearchEditor(lookup, "", "", true, false, true);
 			break;
 		case DisplayType.ChosenMultipleSelectionSearch:
@@ -436,7 +438,6 @@ public class FDialog
      * @param adMessage
      * @param adMessageArgs
      * @param title
-     * @param correctInput
      * @param callback
      */
     public static void askForInputTextConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, final Callback<Map.Entry<Boolean, String>> callback)

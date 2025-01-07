@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AllocationLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AllocationLine")
-public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Persistent 
+public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_AllocationLine (Properties ctx, int C_AllocationLine_ID, String trxName)
@@ -64,6 +64,34 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AllocationLine (Properties ctx, String C_AllocationLine_UU, String trxName)
+    {
+      super (ctx, C_AllocationLine_UU, trxName);
+      /** if (C_AllocationLine_UU == null)
+        {
+			setAmount (Env.ZERO);
+			setC_AllocationHdr_ID (0);
+			setC_AllocationLine_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setWriteOffAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AllocationLine (Properties ctx, String C_AllocationLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AllocationLine_UU, trxName, virtualColumns);
+      /** if (C_AllocationLine_UU == null)
+        {
+			setAmount (Env.ZERO);
+			setC_AllocationHdr_ID (0);
+			setC_AllocationLine_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setWriteOffAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AllocationLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +99,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -319,7 +347,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Invoice_ID()));
     }
@@ -429,10 +457,10 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

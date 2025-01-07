@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorLog
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="IMP_ProcessorLog")
-public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Persistent 
+public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_IMP_ProcessorLog (Properties ctx, String IMP_ProcessorLog_UU, String trxName)
+    {
+      super (ctx, IMP_ProcessorLog_UU, trxName);
+      /** if (IMP_ProcessorLog_UU == null)
+        {
+			setIMP_Processor_ID (0);
+			setIMP_ProcessorLog_ID (0);
+			setIsError (true);
+// 'Y'
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_IMP_ProcessorLog (Properties ctx, String IMP_ProcessorLog_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, IMP_ProcessorLog_UU, trxName, virtualColumns);
+      /** if (IMP_ProcessorLog_UU == null)
+        {
+			setIMP_Processor_ID (0);
+			setIMP_ProcessorLog_ID (0);
+			setIsError (true);
+// 'Y'
+        } */
+    }
+
     /** Load Constructor */
     public X_IMP_ProcessorLog (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -211,10 +237,10 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

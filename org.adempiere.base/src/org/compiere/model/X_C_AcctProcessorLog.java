@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_AcctProcessorLog
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctProcessorLog")
-public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_Persistent 
+public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_AcctProcessorLog (Properties ctx, int C_AcctProcessorLog_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AcctProcessorLog (Properties ctx, String C_AcctProcessorLog_UU, String trxName)
+    {
+      super (ctx, C_AcctProcessorLog_UU, trxName);
+      /** if (C_AcctProcessorLog_UU == null)
+        {
+			setC_AcctProcessor_ID (0);
+			setC_AcctProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctProcessorLog (Properties ctx, String C_AcctProcessorLog_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctProcessorLog_UU, trxName, virtualColumns);
+      /** if (C_AcctProcessorLog_UU == null)
+        {
+			setC_AcctProcessor_ID (0);
+			setC_AcctProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AcctProcessorLog (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -195,10 +219,10 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -57,7 +57,7 @@ import org.idempiere.cache.POCopyCache;
 public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2749091471654364602L;
 
@@ -71,17 +71,37 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 	private List<MEXPFormatLine> m_lines = null;
 	private List<MEXPFormatLine> m_lines_unique = null;
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param EXP_Format_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MEXPFormat(Properties ctx, String EXP_Format_UU, String trxName) {
+        super(ctx, EXP_Format_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param EXP_Format_ID
+     * @param trxName
+     */
 	public MEXPFormat(Properties ctx, int EXP_Format_ID, String trxName) 
 	{	
 		super(ctx, EXP_Format_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MEXPFormat(Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MEXPFormat(MEXPFormat copy) {
@@ -89,7 +109,7 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -98,7 +118,7 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -110,10 +130,17 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 		this.m_lines_unique = copy.m_lines_unique != null ? copy.m_lines_unique.stream().map(e -> {return new MEXPFormatLine(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
 	}
 	
+	/**
+	 * @return list of format lines (MEXPFormatLine)
+	 */
 	public List<MEXPFormatLine> getFormatLines() {
 		return getFormatLinesOrderedBy(X_EXP_FormatLine.COLUMNNAME_Position);
 	}
 	
+	/**
+	 * @param orderBy
+	 * @return list of format lines (MEXPFormatLine)
+	 */
 	public List<MEXPFormatLine> getFormatLinesOrderedBy(String orderBy) 
 	{
 		if(m_lines != null)
@@ -132,6 +159,10 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 		return m_lines;
 	}
 
+	/**
+	 * @return collection of format line (MEXPFormatLine) with IsPartUniqueIndex=Y
+	 * @throws SQLException
+	 */
 	public Collection<MEXPFormatLine> getUniqueColumns() throws SQLException {	
 		
 		if (m_lines_unique != null)
@@ -193,6 +224,16 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 		return null;
 	}
 	
+	/**
+	 * Get export format via value, client and version
+	 * @param ctx
+	 * @param value
+	 * @param AD_Client_ID
+	 * @param version
+	 * @param trxName
+	 * @return MEXPFormat
+	 * @throws SQLException
+	 */
 	public static MEXPFormat getFormatByValueAD_Client_IDAndVersion(Properties ctx, String value, int AD_Client_ID, String version, String trxName) 
 			throws SQLException 
 	{
@@ -219,6 +260,16 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 		return null;
 	}
 
+	/**
+	 * Get export format via client, table and version
+	 * @param ctx
+	 * @param AD_Client_ID
+	 * @param AD_Table_ID
+	 * @param version
+	 * @param trxName
+	 * @return MEXPFormat
+	 * @throws SQLException
+	 */
 	public static MEXPFormat getFormatByAD_Client_IDAD_Table_IDAndVersion(Properties ctx, int AD_Client_ID, int AD_Table_ID, String version, String trxName) throws SQLException 
 	{
 		String key = new String(MTable.getTableName(ctx, AD_Table_ID)+version);
@@ -255,6 +306,7 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 	 * 	Before Delete
 	 *	@return true of it can be deleted
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		int[] ids =MEXPFormatLine.getAllIDs(MEXPFormatLine.Table_Name, "EXP_Format_ID="+getEXP_Format_ID(), get_TrxName());

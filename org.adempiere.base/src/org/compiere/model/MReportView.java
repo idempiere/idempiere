@@ -24,24 +24,43 @@ import org.idempiere.cache.ImmutablePOSupport;
 
 public class MReportView extends X_AD_ReportView implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6065574433744333005L;
 	
 	/**	Cache					*/
 	static private ImmutableIntPOCache<Integer,MReportView> s_cache = new ImmutableIntPOCache<Integer,MReportView>(Table_Name, 30, 60);
-	
-	
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ReportView_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MReportView(Properties ctx, String AD_ReportView_UU, String trxName) {
+        super(ctx, AD_ReportView_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param AD_ReportView_ID
+     * @param trxName
+     */
 	public MReportView(Properties ctx, int AD_ReportView_ID, String trxName) {
 		super(ctx, AD_ReportView_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MReportView(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MReportView(MReportView copy) {
@@ -49,7 +68,7 @@ public class MReportView extends X_AD_ReportView implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -58,7 +77,7 @@ public class MReportView extends X_AD_ReportView implements ImmutablePOSupport {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

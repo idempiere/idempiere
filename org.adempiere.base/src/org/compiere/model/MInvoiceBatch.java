@@ -25,7 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-
+import org.compiere.util.Util;
 
 /**
  *	Invoice Batch Header Model
@@ -35,12 +35,22 @@ import org.compiere.util.Env;
  */
 public class MInvoiceBatch extends X_C_InvoiceBatch
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 3449653049236263604L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_InvoiceBatch_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MInvoiceBatch(Properties ctx, String C_InvoiceBatch_UU, String trxName) {
+        super(ctx, C_InvoiceBatch_UU, trxName);
+		if (Util.isEmpty(C_InvoiceBatch_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -52,14 +62,19 @@ public class MInvoiceBatch extends X_C_InvoiceBatch
 	{
 		super (ctx, C_InvoiceBatch_ID, trxName);
 		if (C_InvoiceBatch_ID == 0)
-		{
-			setControlAmt (Env.ZERO);	// 0
-			setDateDoc (new Timestamp(System.currentTimeMillis()));	// @#Date@
-			setDocumentAmt (Env.ZERO);
-			setIsSOTrx (false);	// N
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInvoiceBatch
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setControlAmt (Env.ZERO);	// 0
+		setDateDoc (new Timestamp(System.currentTimeMillis()));	// @#Date@
+		setDocumentAmt (Env.ZERO);
+		setIsSOTrx (false);	// N
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -74,7 +89,6 @@ public class MInvoiceBatch extends X_C_InvoiceBatch
 	
 	/**	The Lines						*/
 	private MInvoiceBatchLine[]	m_lines	= null;
-
 	
 	/**
 	 * 	Get Lines
@@ -116,12 +130,13 @@ public class MInvoiceBatch extends X_C_InvoiceBatch
 		list.toArray (m_lines);
 		return m_lines;
 	}	//	getLines
-
 	
 	/**
-	 * 	Set Processed
+	 * 	Set Processed.
+	 *  Propagate to lines.
 	 *	@param processed processed
 	 */
+	@Override
 	public void setProcessed (boolean processed)
 	{
 		super.setProcessed (processed);

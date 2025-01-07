@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_ZoomCondition
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ZoomCondition")
-public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Persistent 
+public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ZoomCondition (Properties ctx, int AD_ZoomCondition_ID, String trxName)
@@ -62,6 +62,36 @@ public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ZoomCondition (Properties ctx, String AD_ZoomCondition_UU, String trxName)
+    {
+      super (ctx, AD_ZoomCondition_UU, trxName);
+      /** if (AD_ZoomCondition_UU == null)
+        {
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setAD_ZoomCondition_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ZoomCondition (Properties ctx, String AD_ZoomCondition_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ZoomCondition_UU, trxName, virtualColumns);
+      /** if (AD_ZoomCondition_UU == null)
+        {
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setAD_ZoomCondition_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ZoomCondition (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +99,7 @@ public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
@@ -32,13 +34,22 @@ import org.compiere.util.Msg;
  */
 public class MRecordAccess extends X_AD_Record_Access
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -5115765616266528435L;
+	private static final long serialVersionUID = -6463810251202651132L;
 
 	/**
-	 * 	Persistency Constructor
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Record_Access_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRecordAccess(Properties ctx, String AD_Record_Access_UU, String trxName) {
+        super(ctx, AD_Record_Access_UU, trxName);
+    }
+
+	/**
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -129,8 +140,10 @@ public class MRecordAccess extends X_AD_Record_Access
 	}	//	getKeyColumnName
 
 	/**
-	 * 	Get Synonym of Column
-	 *	@return Synonym Column Name
+	 * 	Get predefined synonym of column.<br/>
+	 *  SalesRep_ID is synonym of AD_User_ID.<br/>
+	 *  Account_ID is synonym of C_ElementValue_ID.
+	 *	@return Synonym of Column Name or null
 	 */
 	public String getSynonym()
 	{
@@ -143,8 +156,9 @@ public class MRecordAccess extends X_AD_Record_Access
 	}	//	getSynonym
 
 	/**
-	 * 	Key Column has a Synonym
+	 * 	Key Column has a Synonym.
 	 *	@return true if Key Column has Synonym
+	 *  @see #getSynonym()
 	 */
 	public boolean isSynonym()
 	{
@@ -153,7 +167,7 @@ public class MRecordAccess extends X_AD_Record_Access
 
 	/**
 	 * 	Is Read Write
-	 *	@return rw - false if exclude
+	 *	@return false if exclude or readonly
 	 */
 	public boolean isReadWrite()
 	{
@@ -166,6 +180,7 @@ public class MRecordAccess extends X_AD_Record_Access
 	 * 	Get Key Column Name with consideration of Synonym
 	 *	@param tableInfo
 	 *	@return key column name
+	 *  @see #getSynonym()
 	 */
 	public String getKeyColumnName (AccessSqlParser.TableInfo[] tableInfo)
 	{
@@ -195,6 +210,7 @@ public class MRecordAccess extends X_AD_Record_Access
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MRecordAccess[AD_Role_ID=")
@@ -273,5 +289,30 @@ public class MRecordAccess extends X_AD_Record_Access
 		}		
 		return m_tableName;
 	}	//	getTableName
+	
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MRecordAccess

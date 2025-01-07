@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_CostDetail
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_CostDetail")
-public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent 
+public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -68,6 +68,40 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_CostDetail (Properties ctx, String M_CostDetail_UU, String trxName)
+    {
+      super (ctx, M_CostDetail_UU, trxName);
+      /** if (M_CostDetail_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setIsSOTrx (false);
+			setM_AttributeSetInstance_ID (0);
+			setM_CostDetail_ID (0);
+			setM_Product_ID (0);
+			setProcessed (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostDetail (Properties ctx, String M_CostDetail_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostDetail_UU, trxName, virtualColumns);
+      /** if (M_CostDetail_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setIsSOTrx (false);
+			setM_AttributeSetInstance_ID (0);
+			setM_CostDetail_ID (0);
+			setM_Product_ID (0);
+			setProcessed (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_CostDetail (Properties ctx, ResultSet rs, String trxName)
     {
@@ -75,7 +109,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -371,10 +405,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -700,10 +734,10 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

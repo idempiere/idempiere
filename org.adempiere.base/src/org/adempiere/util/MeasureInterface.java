@@ -16,16 +16,17 @@
 package org.adempiere.util;
 
 import java.math.BigDecimal;
+
 /**
- * 	Custom Measure Interface
+ * 	Custom performance measurement interface
  *	
  *  @author victor.perez@e-evolution.com, www.e-evolution.com
  */
 public interface MeasureInterface
 {
 	/**
-	 *	@return measure value
+	 *	@return measured value
 	 */
 	public BigDecimal getValue();
 	
-}	//	ReplenishmentInterface
+}

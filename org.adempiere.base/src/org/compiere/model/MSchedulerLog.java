@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
 
 /**
  *	Scheduler Log
@@ -30,9 +31,21 @@ public class MSchedulerLog extends X_AD_SchedulerLog
 	implements AdempiereProcessorLog
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8105976307507562851L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_SchedulerLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSchedulerLog(Properties ctx, String AD_SchedulerLog_UU, String trxName) {
+        super(ctx, AD_SchedulerLog_UU, trxName);
+		if (Util.isEmpty(AD_SchedulerLog_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -44,8 +57,15 @@ public class MSchedulerLog extends X_AD_SchedulerLog
 	{
 		super (ctx, AD_SchedulerLog_ID, trxName);
 		if (AD_SchedulerLog_ID == 0)
-			setIsError(false);
+			setInitialDefaults();
 	}	//	MSchedulerLog
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsError(false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -61,7 +81,7 @@ public class MSchedulerLog extends X_AD_SchedulerLog
 	/**
 	 * 	Parent Constructor
 	 *	@param parent parent
-	 *	@param summary summary
+	 *	@param summary summary text
 	 */
 	public MSchedulerLog (MScheduler parent, String summary)
 	{

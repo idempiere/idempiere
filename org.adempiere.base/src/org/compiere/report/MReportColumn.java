@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.X_PA_ReportColumn;
+import org.compiere.util.Util;
 
 /**
  *  Report Column Model
@@ -36,6 +37,18 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	private static final long serialVersionUID = 2584173320087743126L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_ReportColumn_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReportColumn(Properties ctx, String PA_ReportColumn_UU, String trxName) {
+        super(ctx, PA_ReportColumn_UU, trxName);
+		if (Util.isEmpty(PA_ReportColumn_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Constructor
 	 * 	@param ctx context
@@ -46,11 +59,16 @@ public class MReportColumn extends X_PA_ReportColumn
 	{
 		super (ctx, PA_ReportColumn_ID, trxName);
 		if (PA_ReportColumn_ID == 0)
-		{
-			setIsPrinted (true);
-			setSeqNo (0);
-		}
+			setInitialDefaults();
 	}	//	MReportColumn
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsPrinted (true);
+		setSeqNo (0);
+	}
 
 	/**
 	 * 	Constructor

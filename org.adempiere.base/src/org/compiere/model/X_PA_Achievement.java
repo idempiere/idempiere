@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Achievement
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_Achievement")
-public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persistent 
+public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)
@@ -66,6 +66,36 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_Achievement (Properties ctx, String PA_Achievement_UU, String trxName)
+    {
+      super (ctx, PA_Achievement_UU, trxName);
+      /** if (PA_Achievement_UU == null)
+        {
+			setIsAchieved (false);
+			setManualActual (Env.ZERO);
+			setName (null);
+			setPA_Achievement_ID (0);
+			setPA_Measure_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Achievement (Properties ctx, String PA_Achievement_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Achievement_UU, trxName, virtualColumns);
+      /** if (PA_Achievement_UU == null)
+        {
+			setIsAchieved (false);
+			setManualActual (Env.ZERO);
+			setName (null);
+			setPA_Achievement_ID (0);
+			setPA_Measure_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_Achievement (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +103,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -140,10 +170,10 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	public boolean isAchieved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAchieved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -187,7 +217,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

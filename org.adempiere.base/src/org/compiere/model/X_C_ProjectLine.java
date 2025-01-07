@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectLine")
-public class X_C_ProjectLine extends PO implements I_C_ProjectLine, I_Persistent 
+public class X_C_ProjectLine extends PO implements I_C_ProjectLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ProjectLine (Properties ctx, int C_ProjectLine_ID, String trxName)
@@ -85,6 +85,56 @@ public class X_C_ProjectLine extends PO implements I_C_ProjectLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ProjectLine (Properties ctx, String C_ProjectLine_UU, String trxName)
+    {
+      super (ctx, C_ProjectLine_UU, trxName);
+      /** if (C_ProjectLine_UU == null)
+        {
+			setC_Project_ID (0);
+			setC_ProjectLine_ID (0);
+			setInvoicedAmt (Env.ZERO);
+			setInvoicedQty (Env.ZERO);
+// 0
+			setIsPrinted (true);
+// Y
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_ProjectLine WHERE C_Project_ID=@C_Project_ID@
+			setPlannedAmt (Env.ZERO);
+			setPlannedMarginAmt (Env.ZERO);
+			setPlannedPrice (Env.ZERO);
+			setPlannedQty (Env.ZERO);
+// 1
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectLine (Properties ctx, String C_ProjectLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectLine_UU, trxName, virtualColumns);
+      /** if (C_ProjectLine_UU == null)
+        {
+			setC_Project_ID (0);
+			setC_ProjectLine_ID (0);
+			setInvoicedAmt (Env.ZERO);
+			setInvoicedQty (Env.ZERO);
+// 0
+			setIsPrinted (true);
+// Y
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_ProjectLine WHERE C_Project_ID=@C_Project_ID@
+			setPlannedAmt (Env.ZERO);
+			setPlannedMarginAmt (Env.ZERO);
+			setPlannedPrice (Env.ZERO);
+			setPlannedQty (Env.ZERO);
+// 1
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ProjectLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -92,7 +142,7 @@ public class X_C_ProjectLine extends PO implements I_C_ProjectLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -439,10 +489,10 @@ public class X_C_ProjectLine extends PO implements I_C_ProjectLine, I_Persistent
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -470,7 +520,7 @@ public class X_C_ProjectLine extends PO implements I_C_ProjectLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
@@ -649,10 +699,10 @@ public class X_C_ProjectLine extends PO implements I_C_ProjectLine, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

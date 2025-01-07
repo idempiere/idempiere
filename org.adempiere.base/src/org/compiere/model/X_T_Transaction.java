@@ -24,22 +24,22 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_Transaction
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_Transaction")
-public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent 
+public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_T_Transaction (Properties ctx, int T_Transaction_ID, String trxName)
+    public X_T_Transaction (Properties ctx, String T_Transaction_UU, String trxName)
     {
-      super (ctx, T_Transaction_ID, trxName);
-      /** if (T_Transaction_ID == 0)
+      super (ctx, T_Transaction_UU, trxName);
+      /** if (T_Transaction_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setM_AttributeSetInstance_ID (0);
@@ -53,10 +53,10 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
     }
 
     /** Standard Constructor */
-    public X_T_Transaction (Properties ctx, int T_Transaction_ID, String trxName, String ... virtualColumns)
+    public X_T_Transaction (Properties ctx, String T_Transaction_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, T_Transaction_ID, trxName, virtualColumns);
-      /** if (T_Transaction_ID == 0)
+      super (ctx, T_Transaction_UU, trxName, virtualColumns);
+      /** if (T_Transaction_UU == null)
         {
 			setAD_PInstance_ID (0);
 			setM_AttributeSetInstance_ID (0);
@@ -76,7 +76,7 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -93,7 +93,7 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_Transaction[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

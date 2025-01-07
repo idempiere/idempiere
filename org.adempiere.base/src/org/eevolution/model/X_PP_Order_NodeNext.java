@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for PP_Order_NodeNext
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_NodeNext")
-public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Persistent 
+public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Order_NodeNext (Properties ctx, int PP_Order_NodeNext_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Order_NodeNext (Properties ctx, String PP_Order_NodeNext_UU, String trxName)
+    {
+      super (ctx, PP_Order_NodeNext_UU, trxName);
+      /** if (PP_Order_NodeNext_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setPP_Order_ID (0);
+			setPP_Order_Node_ID (0);
+			setSeqNo (0);
+// 10
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_NodeNext (Properties ctx, String PP_Order_NodeNext_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_NodeNext_UU, trxName, virtualColumns);
+      /** if (PP_Order_NodeNext_UU == null)
+        {
+			setAD_WF_Node_ID (0);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setPP_Order_ID (0);
+			setPP_Order_Node_ID (0);
+			setSeqNo (0);
+// 10
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Order_NodeNext (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -198,10 +230,10 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	public boolean isStdUserWorkflow()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStdUserWorkflow);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

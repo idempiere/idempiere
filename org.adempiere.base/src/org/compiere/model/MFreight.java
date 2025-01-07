@@ -30,11 +30,24 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+/**
+ * Freight amount model
+ */
 public class MFreight extends X_M_Freight {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1280041173155194185L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Freight_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MFreight(Properties ctx, String M_Freight_UU, String trxName) {
+        super(ctx, M_Freight_UU, trxName);
+    }
 
 	/**
      * Default constructor 
@@ -59,12 +72,13 @@ public class MFreight extends X_M_Freight {
 	}
 
 	/**
-	 * Get a freight record based on the parameters
-	 * Shipper, Freight Category are used as filters
-	 * DateOrdered is used to get the most recent record that is valid for that date
-	 * MaxDimension is used to get records that are valid for such dimensions
-	 * Country/Region From/To are used to get the records, first valid is the more detailed defined
-	 *
+	 * <pre>
+	 * Get a freight record based on the parameters.
+	 * Shipper, Freight Category are used as filters.
+	 * DateOrdered is used to get the most recent record that is valid for that date.
+	 * MaxDimension is used to get records that are valid for such dimensions.
+	 * Country/Region From/To are used as filters.
+	 * </pre>
 	 * @param ctx                 Context
 	 * @param shipperId           Shipper
 	 * @param freightCategoryId   Freight Category

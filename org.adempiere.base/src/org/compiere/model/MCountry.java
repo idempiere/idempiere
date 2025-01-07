@@ -33,11 +33,12 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Location Country Model (Value Object)
+ *	Location Country Model
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: MCountry.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
@@ -49,7 +50,7 @@ public class MCountry extends X_C_Country
 	implements Comparator<Object>, Serializable, ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6102749517340832365L;
 
@@ -92,6 +93,7 @@ public class MCountry extends X_C_Country
 	 *	@return Country
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static MCountry getDefault (Properties ctx)
 	{
 		return getDefault();
@@ -119,6 +121,7 @@ public class MCountry extends X_C_Country
 	 *  @return MCountry Array
 	 *  @deprecated
 	 */
+	@Deprecated
 	public static MCountry[] getCountries(Properties ctx)
 	{
 		return getCountries();
@@ -144,7 +147,7 @@ public class MCountry extends X_C_Country
 	
 	/**
 	 * 	Load Countries.
-	 * 	Set Default Language to Client Language
+	 * 	Set Default Country via country code of Client Language (AD_Language.CountryCode).
 	 */
 	private static synchronized void loadAllCountries ()
 	{
@@ -167,7 +170,7 @@ public class MCountry extends X_C_Country
 	}	//	loadAllCountries
 
 	/**
-	 * Load Default Country for actual client on context
+	 * Load Default Country for login client
 	 */
 	private static void loadDefaultCountry() {
 		loadAllCountriesIfNeeded();
@@ -204,6 +207,7 @@ public class MCountry extends X_C_Country
 	 *	@param AD_Language language or null
 	 *  @deprecated - not used at all, you can delete references to this method
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static void setDisplayLanguage (String AD_Language)
 	{
 		s_AD_Language = AD_Language;
@@ -223,10 +227,20 @@ public class MCountry extends X_C_Country
 	private static CLogger		s_log = CLogger.getCLogger (MCountry.class);
 	//	Default DisplaySequence	*/
 	private static String		DISPLAYSEQUENCE = "@C@, @P@";
-
 	
-	/*************************************************************************
-	 *	Create empty Country
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Country_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCountry(Properties ctx, String C_Country_UU, String trxName) {
+        super(ctx, C_Country_UU, trxName);
+		if (Util.isEmpty(C_Country_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	@param ctx context
 	 * 	@param C_Country_ID ID
 	 *	@param trxName transaction
@@ -235,17 +249,22 @@ public class MCountry extends X_C_Country
 	{
 		super (ctx, C_Country_ID, trxName);
 		if (C_Country_ID == 0)
-		{
-			setDisplaySequence(DISPLAYSEQUENCE);
-			setHasRegion(false);
-			setHasPostal_Add(false);
-			setIsAddressLinesLocalReverse (false);
-			setIsAddressLinesReverse (false);
-		}
+			setInitialDefaults();
 	}   //  MCountry
 
 	/**
-	 *	Create Country from current row in ResultSet
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDisplaySequence(DISPLAYSEQUENCE);
+		setHasRegion(false);
+		setHasPostal_Add(false);
+		setIsAddressLinesLocalReverse (false);
+		setIsAddressLinesReverse (false);
+	}
+
+	/**
+	 *	Load Country from current row in ResultSet
 	 * 	@param ctx context
 	 *  @param rs ResultSet
 	 *	@param trxName transaction
@@ -256,7 +275,7 @@ public class MCountry extends X_C_Country
 	}	//	MCountry
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MCountry(MCountry copy) 
@@ -265,7 +284,7 @@ public class MCountry extends X_C_Country
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -275,7 +294,7 @@ public class MCountry extends X_C_Country
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -290,6 +309,7 @@ public class MCountry extends X_C_Country
 	 *	Return Name - translated if DisplayLanguage is set.
 	 *  @return Name
 	 */
+	@Override
 	public String toString()
 	{
 		return getTrlName();
@@ -313,12 +333,12 @@ public class MCountry extends X_C_Country
 	{
 		return get_Translation(COLUMNNAME_Name, language);
 	}	//	getTrlName
-	
-	
+		
 	/**
-	 * 	Get Display Sequence
+	 * 	Get Display Sequence for city (C), region (R), postal code (P) and additional postal code (A). 
 	 *	@return display sequence
 	 */
+	@Override
 	public String getDisplaySequence ()
 	{
 		String ds = super.getDisplaySequence ();
@@ -328,10 +348,11 @@ public class MCountry extends X_C_Country
 	}	//	getDisplaySequence
 
 	/**
-	 * 	Get Local Display Sequence.
-	 * 	If not defined get Display Sequence
-	 *	@return local display sequence
+	 * 	Get Local Display Sequence for city (C), region (R), postal code (P) and additional postal code (A).
+	 * 	If not defined get Display Sequence.
+	 *	@return display sequence
 	 */
+	@Override
 	public String getDisplaySequenceLocal ()
 	{
 		String ds = super.getDisplaySequenceLocal();
@@ -346,6 +367,7 @@ public class MCountry extends X_C_Country
 	 *  @param o2 object 2
 	 *  @return -1,0, 1
 	 */
+	@Override
 	public int compare(Object o1, Object o2)
 	{
 		String s1 = o1.toString();
@@ -359,7 +381,7 @@ public class MCountry extends X_C_Country
 	}	//	compare
 
 	/**
-	 * 	Is the region valid in the country
+	 * 	Is the region valid in this country
 	 *	@param C_Region_ID region
 	 *	@return true if valid
 	 */

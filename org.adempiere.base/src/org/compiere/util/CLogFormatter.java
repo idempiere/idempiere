@@ -25,9 +25,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.compiere.model.SystemProperties;
 
 /**
- *	idempiere Log Formatter
+ *	iDempiere Log Formatter
  *	
  *  @author Jorg Janke
  *  @version $Id: CLogFormatter.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
@@ -50,7 +51,7 @@ public class CLogFormatter extends Formatter
     /**	New Line				*/
     public static String	NL = System.getProperty("line.separator");
 	
-	/**************************************************************************
+	/**
 	 * 	CLogFormatter
 	 */
 	private CLogFormatter()
@@ -136,8 +137,8 @@ public class CLogFormatter extends Formatter
 		sb.append(" ")
 			.append(record.getLevel().getLocalizedName());
 		/**	Thread			**/
-		if (record.getThreadID() != 10)
-			sb.append(" [").append(record.getThreadID()).append("]");
+		if (record.getLongThreadID() != 10)
+			sb.append(" [").append(record.getLongThreadID()).append("]");
 		
 		//
 		sb.append(NL);
@@ -195,7 +196,7 @@ public class CLogFormatter extends Formatter
     	m_shortFormat = shortFormat;
     }	//	setFormat
     
-    /**************************************************************************
+    /**
      * 	Get Class Method from Log Record
      *	@param record record
      *	@return class.method
@@ -329,14 +330,14 @@ public class CLogFormatter extends Formatter
 		String prefix = null;
 		try
 		{
-			prefix = System.getProperty("org.idempiere.FileLogPrefix");
+			prefix = SystemProperties.getFileLogPrefix();
 			if (!Util.isEmpty(prefix))
 				return Env.parseContext(Env.getCtx(), 0, prefix, false);
 		}
 		catch (Exception ex)
 		{
 			System.out.println("Parsing error in org.idempiere.FileLogPrefix - setting back to empty from " + prefix);
-			System.setProperty("org.idempiere.FileLogPrefix", "");
+			SystemProperties.setFileLogPrefix("");
 		}
 		return "";
 	}

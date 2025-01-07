@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for PA_DashboardPreference
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardPreference")
-public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPreference, I_Persistent 
+public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPreference, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_DashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
@@ -76,6 +76,48 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_DashboardPreference (Properties ctx, String PA_DashboardPreference_UU, String trxName)
+    {
+      super (ctx, PA_DashboardPreference_UU, trxName);
+      /** if (PA_DashboardPreference_UU == null)
+        {
+			setAD_Role_ID (0);
+// 0
+			setAD_User_ID (0);
+// 0
+			setFlexGrow (0);
+// 1
+			setIsCollapsedByDefault (false);
+// N
+			setIsShowInDashboard (true);
+// 'Y'
+			setPA_DashboardContent_ID (0);
+			setPA_DashboardPreference_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DashboardPreference (Properties ctx, String PA_DashboardPreference_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DashboardPreference_UU, trxName, virtualColumns);
+      /** if (PA_DashboardPreference_UU == null)
+        {
+			setAD_Role_ID (0);
+// 0
+			setAD_User_ID (0);
+// 0
+			setFlexGrow (0);
+// 1
+			setIsCollapsedByDefault (false);
+// N
+			setIsShowInDashboard (true);
+// 'Y'
+			setPA_DashboardContent_ID (0);
+			setPA_DashboardPreference_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_DashboardPreference (Properties ctx, ResultSet rs, String trxName)
     {
@@ -83,7 +125,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -212,10 +254,10 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	public boolean isCollapsedByDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCollapsedByDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -235,10 +277,10 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	public boolean isShowInDashboard()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowInDashboard);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

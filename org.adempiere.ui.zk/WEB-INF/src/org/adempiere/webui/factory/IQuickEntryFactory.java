@@ -18,7 +18,7 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.grid.AbstractWQuickEntry;
 
 /**
- * 
+ * Factory interface for {@link AbstractWQuickEntry}
  * @author Andreas Sumerauer
  *
  */

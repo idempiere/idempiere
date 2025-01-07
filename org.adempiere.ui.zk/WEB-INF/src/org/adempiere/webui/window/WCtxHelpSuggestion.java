@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.I_AD_CtxHelpMsg;
 import org.compiere.model.MCtxHelp;
 import org.compiere.model.MCtxHelpMsg;
@@ -15,6 +16,7 @@ import org.compiere.model.MCtxHelpSuggestion;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MTask;
@@ -41,8 +43,8 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 
 /**
+ * Dialog to capture suggestion for context help (AD_CtxHelp)
  * @author hengsin
- *
  */
 public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 
@@ -62,15 +64,22 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	private String baseContent;
 	
 	private String translatedContent;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
-	 * default constructor
+	 * @param ctxHelpMsg
 	 */
 	public WCtxHelpSuggestion(MCtxHelpMsg ctxHelpMsg) {
 		this.ctxHelpMsg = new MCtxHelpMsg(ctxHelpMsg.getCtx(), ctxHelpMsg.getAD_CtxHelpMsg_ID(), ctxHelpMsg.get_TrxName());
 		layout();
 	}
 
+	/**
+	 * @param po
+	 * @param baseContent
+	 * @param translatedContent
+	 */
 	public WCtxHelpSuggestion(PO po, String baseContent, String translatedContent) {
 		this.po = po;
 		this.baseContent = baseContent;
@@ -78,6 +87,9 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		layout();
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	private void layout() {
 		Borderlayout borderlayout = new Borderlayout();
 		appendChild(borderlayout);
@@ -171,10 +183,20 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		}		
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.detach();
 	}
 
+	/**
+	 * Save changes to AD_CtxHelpMsg or AD_CtxHelpSuggestion
+	 */
 	private void onSave() {
 		String trxName = Trx.createTrxName();
 		Trx trx = Trx.get(trxName, true);
@@ -198,6 +220,10 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		}
 	}
 	
+	/**
+	 * Save changes to AD_CtxHelpMsg or AD_CtxHelpSuggestion
+	 * @param trx
+	 */
 	private void onSave0(Trx trx) {
 		if (ctxHelpMsg != null && ctxHelpMsg.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
 			if (Env.isBaseLanguage(Env.getCtx(), I_AD_CtxHelpMsg.Table_Name)) {
@@ -283,6 +309,11 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		this.detach();
 	}
 	
+	/**
+	 * remove html header tag
+	 * @param htmlString
+	 * @return alter string
+	 */
 	private String removeHeaderTag(String htmlString) {
 		htmlString = htmlString
 				.replace("<html>", "")
@@ -294,6 +325,10 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		return htmlString;
 	}
 	
+	/**
+	 * @param po
+	 * @return context help name for po
+	 */
 	private String getContextHelpName(PO po) {
 		if (po == null) {
 			return "Home";
@@ -329,6 +364,10 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		}
 	}
 	
+	/**
+	 * @param po
+	 * @param ctxHelp
+	 */
 	private void setContextHelpInfo(PO po, MCtxHelp ctxHelp) {
 		if (po == null) {
 			ctxHelp.setName("Home");

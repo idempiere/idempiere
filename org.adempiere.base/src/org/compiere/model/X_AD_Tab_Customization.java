@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Tab_Customization
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tab_Customization")
-public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent 
+public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Tab_Customization (Properties ctx, String AD_Tab_Customization_UU, String trxName)
+    {
+      super (ctx, AD_Tab_Customization_UU, trxName);
+      /** if (AD_Tab_Customization_UU == null)
+        {
+			setAD_User_ID (0);
+			setCustom (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Tab_Customization (Properties ctx, String AD_Tab_Customization_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Tab_Customization_UU, trxName, virtualColumns);
+      /** if (AD_Tab_Customization_UU == null)
+        {
+			setAD_User_ID (0);
+			setCustom (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Tab_Customization (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -247,10 +269,10 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	public boolean isQuickForm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQuickForm);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

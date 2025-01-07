@@ -45,8 +45,10 @@ import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Table;
 import org.compiere.process.DatabaseViewValidate;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.TrxEventListener;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -122,6 +124,27 @@ public class TableElementHandler extends AbstractElementHandler {
 				logImportDetail(ctx, dbDetail, 0, mTable.getName(), mTable.get_ID(), "Validate");
 				throw new DatabaseAccessException("Failed to validate view for " + mTable.getName());
 			}
+		}
+		
+		Trx trx = Trx.get(getTrxName(ctx), false);
+		if (trx != null && !mTable.isView()) {
+			trx.addTrxEventListener(new TrxEventListener() {
+				
+				@Override
+				public void afterRollback(Trx trx, boolean success) {
+				}
+				
+				@Override
+				public void afterCommit(Trx trx, boolean success) {
+					if (success) {
+						CacheMgt.get().reset(MTable.Table_Name, mTable.get_ID());
+					}
+				}
+				
+				@Override
+				public void afterClose(Trx trx) {
+				}
+			});
 		}
 	}
 	

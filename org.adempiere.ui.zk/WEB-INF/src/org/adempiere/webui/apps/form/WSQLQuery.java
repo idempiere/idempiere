@@ -183,7 +183,6 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 	 *  Process SQL Statements.
 	 *
 	 *  @param sqlStatement a single SQL statement
-	 *  @param allowDML     whether to allow DML statements
 	 *  @return a string summarizing the results
 	 */
 	public String processStatement (String sqlStatement) {

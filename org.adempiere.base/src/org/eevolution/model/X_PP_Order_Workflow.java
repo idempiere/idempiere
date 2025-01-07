@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Workflow
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Workflow")
-public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Persistent 
+public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Order_Workflow (Properties ctx, int PP_Order_Workflow_ID, String trxName)
@@ -93,6 +93,62 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Order_Workflow (Properties ctx, String PP_Order_Workflow_UU, String trxName)
+    {
+      super (ctx, PP_Order_Workflow_UU, trxName);
+      /** if (PP_Order_Workflow_UU == null)
+        {
+			setAccessLevel (null);
+			setAD_Workflow_ID (0);
+			setAuthor (null);
+			setCost (Env.ZERO);
+			setDuration (0);
+// 0
+			setDurationUnit (null);
+// h
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setLimit (0);
+			setName (null);
+			setPP_Order_ID (0);
+			setPP_Order_Workflow_ID (0);
+			setPriority (0);
+			setPublishStatus (null);
+// U
+			setVersion (0);
+			setWaitingTime (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Workflow (Properties ctx, String PP_Order_Workflow_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Workflow_UU, trxName, virtualColumns);
+      /** if (PP_Order_Workflow_UU == null)
+        {
+			setAccessLevel (null);
+			setAD_Workflow_ID (0);
+			setAuthor (null);
+			setCost (Env.ZERO);
+			setDuration (0);
+// 0
+			setDurationUnit (null);
+// h
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setLimit (0);
+			setName (null);
+			setPP_Order_ID (0);
+			setPP_Order_Workflow_ID (0);
+			setPriority (0);
+			setPublishStatus (null);
+// U
+			setVersion (0);
+			setWaitingTime (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Order_Workflow (Properties ctx, ResultSet rs, String trxName)
     {
@@ -100,7 +156,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -458,10 +514,10 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -523,7 +579,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

@@ -31,8 +31,8 @@ import org.compiere.model.MWarehouse;
 import org.compiere.util.Env;
 
 /**
+ * Default {@link IReservationTracer} implementation for core
  * @author hengsin
- *
  */
 public class ReservationLogTracer implements IReservationTracer {
 
@@ -48,7 +48,6 @@ public class ReservationLogTracer implements IReservationTracer {
 	private String trxName;
 
 	/**
-	 * 
 	 * @param C_DocType_ID
 	 * @param documentNo
 	 * @param lineNo

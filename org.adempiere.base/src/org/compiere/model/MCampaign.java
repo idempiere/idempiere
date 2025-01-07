@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
  *	Campaign model
  *	
@@ -28,11 +27,20 @@ import java.util.Properties;
  */
 public class MCampaign extends X_C_Campaign
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -5881057827687596119L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Campaign_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCampaign(Properties ctx, String C_Campaign_UU, String trxName) {
+        super(ctx, C_Campaign_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -57,13 +65,16 @@ public class MCampaign extends X_C_Campaign
 	}	//	MCampaign
 	
 	/**
-	 * 	After Save.
-	 * 	Insert
-	 * 	- create tree
+	 *  <pre>
+	 *  After Save.
+	 *  - Create or update tree.
+	 *  - Update value description of combination
+	 *  </pre>
 	 *	@param newRecord insert
 	 *	@param success save success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -84,6 +95,7 @@ public class MCampaign extends X_C_Campaign
 	 *	@param success
 	 *	@return deleted
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_RegistrationAttribute
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationAttribute")
-public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAttribute, I_Persistent 
+public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAttribute, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_RegistrationAttribute (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_RegistrationAttribute (Properties ctx, String A_RegistrationAttribute_UU, String trxName)
+    {
+      super (ctx, A_RegistrationAttribute_UU, trxName);
+      /** if (A_RegistrationAttribute_UU == null)
+        {
+			setAD_Reference_ID (0);
+			setA_RegistrationAttribute_ID (0);
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_RegistrationAttribute (Properties ctx, String A_RegistrationAttribute_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_RegistrationAttribute_UU, trxName, virtualColumns);
+      /** if (A_RegistrationAttribute_UU == null)
+        {
+			setAD_Reference_ID (0);
+			setA_RegistrationAttribute_ID (0);
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setSeqNo (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_RegistrationAttribute (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -230,10 +260,10 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -258,7 +288,7 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

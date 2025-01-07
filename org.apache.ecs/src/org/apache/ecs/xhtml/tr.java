@@ -77,7 +77,7 @@ public class tr extends MultiPartElement
 	 * or not. public tr(boolean close) { setNeedClosingTag(close); }
 	 */
 	/**
-	 * Sets the align="" attribute convience variables are provided in the
+	 * Sets the align="" attribute convenience variables are provided in the
 	 * AlignType interface
 	 * 
 	 * @param align
@@ -90,7 +90,7 @@ public class tr extends MultiPartElement
 	}
 
 	/**
-	 * Sets the valign="" attribute convience variables are provided in the
+	 * Sets the valign="" attribute convenience variables are provided in the
 	 * AlignType interface
 	 * 
 	 * @param align

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_InfoWindow_Access
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoWindow_Access")
-public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access, I_Persistent 
+public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow_Access (Properties ctx, int AD_InfoWindow_Access_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_InfoWindow_Access (Properties ctx, String AD_InfoWindow_Access_UU, String trxName)
+    {
+      super (ctx, AD_InfoWindow_Access_UU, trxName);
+      /** if (AD_InfoWindow_Access_UU == null)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_Role_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoWindow_Access (Properties ctx, String AD_InfoWindow_Access_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoWindow_Access_UU, trxName, virtualColumns);
+      /** if (AD_InfoWindow_Access_UU == null)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_Role_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_InfoWindow_Access (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_InfoWindow_Access[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

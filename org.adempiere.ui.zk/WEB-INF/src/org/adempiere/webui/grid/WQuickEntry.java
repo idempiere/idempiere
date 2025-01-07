@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WLocationEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
@@ -66,7 +67,7 @@ import org.zkoss.zul.Vlayout;
 public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Event>, ValueChangeListener
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6385383768870354870L;
 
@@ -81,14 +82,17 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	private int parent_TabNo;
 
 	List<GridField> quickFields = new ArrayList<GridField>();
+	/** editors for {@link #quickFields} */
 	protected List<WEditor> quickEditors = new ArrayList<WEditor>();
 	protected List<Object> initialValues = new ArrayList<Object>();
 	protected List<GridTab> quickTabs = new ArrayList<GridTab>();
+	/** POs for {@link #quickTabs} */
 	protected List<PO> quickPOs = new ArrayList<PO>();
 
 	/** Read Only				*/
 	private boolean m_readOnly = false;
 
+	/** Center container for field label and editors */
 	protected Vlayout centerPanel = new Vlayout();
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true, false, false, false, false, false);
@@ -97,8 +101,13 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	
 	private boolean isHasField = false;
 
+	/** browser orientation */
 	private String orientation;
 
+	/**
+	 * @param WindowNo
+	 * @param AD_Window_ID
+	 */
 	public WQuickEntry(int WindowNo, int AD_Window_ID)
 	{
 		this(WindowNo, 0, AD_Window_ID);
@@ -108,6 +117,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	 *	Constructor.
 	 *	Requires call loadRecord
 	 * 	@param WindowNo	Window No
+	 *  @param TabNo
 	 * 	@param AD_Window_ID
 	 */
 	public WQuickEntry(int WindowNo, int TabNo, int AD_Window_ID)
@@ -137,6 +147,9 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 
 	}	//	WQuickEntry
 	
+	/**
+	 * @param AD_Window_ID
+	 */
 	public WQuickEntry(int AD_Window_ID)
 	{
 		super();
@@ -144,14 +157,14 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		m_AD_Window_ID = AD_Window_ID;
 		parent_WindowNo = 0;
 		m_WindowNo = 0;
-		log.info("R/O=" + isReadOnly());
+		if (log.isLoggable(Level.INFO))
+			log.info("R/O=" + isReadOnly());
 	}	//	WQuickEntry
 
 	/**
-	 *	Static Init
+	 *	Layout dialog
 	 * 	@throws Exception
 	 */
-
 	protected void initLayout() throws Exception
 	{
 		if (!ThemeManager.isUseCSSForWindowSize()) {
@@ -185,6 +198,9 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 	}
 
+	/**
+	 * Handle client info event
+	 */
 	protected void onClientInfo()
 	{
 		if (getPage() != null) {
@@ -199,7 +215,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	}
 	
 	/**
-	 *	Dynamic Init
+	 * Initialize {@link #quickTabs}, {@link #quickFields} and {@link #quickEditors}
 	 */
 	protected void initPOs()
 	{
@@ -241,6 +257,10 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 	}	//	initPOs
 
+	/**
+	 * @param refID display type
+	 * @return true if display type support quick entry
+	 */
 	private boolean isValidQuickEntryType(int refID) {
 		boolean valid =
 			! (
@@ -251,6 +271,12 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		return valid;
 	}
 
+	/**
+	 * Add new row of label and editor
+	 * @param editor
+	 * @param newTab true if start of new grid tab
+	 * @param gt
+	 */
 	private void createLine(WEditor editor, boolean newTab, GridTab gt) {
 		if (newTab) {
 			Separator sep = new Separator();
@@ -280,25 +306,15 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		layout.appendChild(field);
 		ZKUpdateUtil.setHflex((HtmlBasedComponent)field, "7");
 		
-		//editor.setValue("Y");
 		centerPanel.appendChild(layout);
 	}
 
-	/**
-	 * check table is editable in quick entry
-	 * user must has write right and has at least a input field
-	 * @return
-	 */
+	@Override
 	public boolean isAvailableQuickEdit (){
 		return isHasField && !isReadOnly();
 	}
 	
-	/**
-	 *	Load Record_ID
-	 *  @param Record_ID - existing Record or 0 for new
-	 * 	@return true if loaded
-	 */
-
+	@Override
 	public boolean loadRecord (int Record_ID)
 	{
 		String parentColumn = null;
@@ -397,18 +413,11 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	 */
 	protected boolean actionSave()
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG))
+			log.config("");
 		boolean anyChange = false;
 		for (int idxf = 0; idxf < quickEditors.size(); idxf++) {
-			WEditor editor = quickEditors.get(idxf);
-			Object value = editor.getValue();
-			Object initialValue = initialValues.get(idxf);
-
-			boolean changed = (value != null && initialValue == null)
-					|| (value == null && initialValue != null)
-					|| (value != null && initialValue != null && ! value.equals(initialValue));
-
-			if (changed) {
+			if (isChanged(idxf)) {
 				anyChange = true;
 			}
 		}
@@ -445,11 +454,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 
 				WEditor editor = quickEditors.get(idxf);
 				Object value = editor.getValue();
-				Object initialValue = initialValues.get(idxf);
 
-				boolean changed = (value != null && initialValue == null)
-						|| (value == null && initialValue != null)
-						|| (value != null && initialValue != null && !value.equals(initialValue));
 				boolean thisMandatoryError = false;
 				if (field.isMandatory(true)) {
 					if (value == null || value.toString().length() == 0) {
@@ -462,7 +467,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 				}
 
 				po.set_ValueOfColumn(field.getColumnName(), value);
-				if (changed && ! thisMandatoryError) {
+				if (isChanged(idxf) && ! thisMandatoryError) {
 					savePO = true;
 				}
 			}
@@ -502,12 +507,24 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 		return true;
 	}	//	actionSave
-
+	
 	/**
-	 *	Returns Record_ID
-	 *	@return Record_ID (0 = not saved)
+	 * 
+	 * @param index of field
+	 * @return true if changed
 	 */
+	private boolean isChanged(int index)
+	{
+		WEditor editor = quickEditors.get(index);
+		Object value = editor.getValue();
+		Object initialValue = initialValues.get(index);
+		
+		return (value != null && initialValue == null)
+				|| (value == null && initialValue != null)
+				|| (value != null && initialValue != null);
+	}
 
+	@Override
 	public int getRecord_ID()
 	{
 		if (quickPOs.isEmpty() || quickPOs.get(0) == null)
@@ -516,6 +533,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		return quickPOs.get(0).get_ID();
 	}	//	getRecord_ID
 
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (isReadOnly())
@@ -538,10 +556,16 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 	@Override
 	public void detach() {
 		super.detach();
+		IDesktop desktop = SessionManager.getAppDesktop();
+		
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		desktop.setCloseTabWithShortcut(false);
+		
 		if(m_WindowNo!=0)
-			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
+			desktop.unregisterWindow(m_WindowNo);
 	}
 	
+	@Override
 	public void valueChange(ValueChangeEvent evt)
 	{
 		if (evt.getSource() instanceof WEditor) {
@@ -585,9 +609,7 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 	}
 
-	/**
-	 *	refresh all fields
-	 */
+	@Override
 	public void dynamicDisplay()
 	{
 		for (int idxf = 0; idxf < quickFields.size(); idxf++) {
@@ -604,6 +626,10 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 	} // dynamicDisplay
 
+	/**
+	 * Update style of all field editors
+	 * @param tab
+	 */
 	private void updateStyleTab(GridTab tab) {
 		for (int idxf = 0; idxf < quickFields.size(); idxf++) {
 			GridField field = quickFields.get(idxf);
@@ -615,22 +641,20 @@ public class WQuickEntry extends AbstractWQuickEntry implements EventListener<Ev
 		}
 	}
 	
-	/**
-	 *	get size quickfields
-	 */
+	@Override
 	public final int getQuickFields(){
 		return quickFields.size();
-	}// size of quickfields
+	}
 
 	/**
-	 * get readOnly 
+	 * @return true if it is read only, false otherwise 
 	 */
 	protected final boolean isReadOnly() {
 		return m_readOnly;
 	}
 
 	/**
-	 * @return the confirmPanel
+	 * @return the ConfirmPanel
 	 */
 	protected final ConfirmPanel getConfirmPanel() {
 		return confirmPanel;

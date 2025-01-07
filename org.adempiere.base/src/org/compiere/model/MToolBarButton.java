@@ -29,13 +29,22 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 	 */
 	private static final long serialVersionUID = -7909388573996489685L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ToolBarButton_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MToolBarButton(Properties ctx, String AD_ToolBarButton_UU, String trxName) {
+        super(ctx, AD_ToolBarButton_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_ToolBarButton_ID
 	 * @param trxName
 	 */
-	public MToolBarButton(Properties ctx, int AD_ToolBarButton_ID,
-			String trxName) {
+	public MToolBarButton(Properties ctx, int AD_ToolBarButton_ID, String trxName) {
 		super(ctx, AD_ToolBarButton_ID, trxName);
 	}
 

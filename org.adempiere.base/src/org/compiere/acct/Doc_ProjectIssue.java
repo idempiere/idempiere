@@ -32,7 +32,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *	Project Issue.
+ *	Posting for {@link MProjectIssue} document. DOCTYPE_ProjectIssue.<br/>
  *	Note:
  *		Will load the default GL Category.
  *		Set up a document type to set the GL Category.
@@ -62,6 +62,7 @@ public class Doc_ProjectIssue extends Doc
 	 *  Load Document Details
 	 *  @return error message or null
 	 */
+	@Override
 	protected String loadDocumentDetails()
 	{
 		setC_Currency_ID(NO_CURRENCY);
@@ -84,6 +85,7 @@ public class Doc_ProjectIssue extends Doc
 	 * 	Get DocumentNo
 	 *	@return document no
 	 */
+	@Override
 	public String getDocumentNo ()
 	{
 		MProject p = m_issue.getParent();
@@ -99,6 +101,7 @@ public class Doc_ProjectIssue extends Doc
 	 *  Get Balance
 	 *  @return Zero (always balanced)
 	 */
+	@Override
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
@@ -117,6 +120,7 @@ public class Doc_ProjectIssue extends Doc
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
+	@Override
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		//  create Fact Header
@@ -230,7 +234,6 @@ public class Doc_ProjectIssue extends Doc
 	 *	@param as Account Schema
 	 *	@return Unit Labor Cost
 	 */
-
 	private BigDecimal getLaborCost(MAcctSchema as)
 	{
 		// Todor Lulov 30.01.2008

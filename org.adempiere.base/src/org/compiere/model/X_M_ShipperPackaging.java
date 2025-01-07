@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_ShipperPackaging
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperPackaging")
-public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_Persistent 
+public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ShipperPackaging (Properties ctx, int M_ShipperPackaging_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ShipperPackaging (Properties ctx, String M_ShipperPackaging_UU, String trxName)
+    {
+      super (ctx, M_ShipperPackaging_UU, trxName);
+      /** if (M_ShipperPackaging_UU == null)
+        {
+			setIsDefault (false);
+// N
+			setM_Shipper_ID (0);
+			setM_ShipperPackagingCfg_ID (0);
+			setM_ShipperPackaging_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShipperPackaging (Properties ctx, String M_ShipperPackaging_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShipperPackaging_UU, trxName, virtualColumns);
+      /** if (M_ShipperPackaging_UU == null)
+        {
+			setIsDefault (false);
+// N
+			setM_Shipper_ID (0);
+			setM_ShipperPackagingCfg_ID (0);
+			setM_ShipperPackaging_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ShipperPackaging (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -106,10 +136,10 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

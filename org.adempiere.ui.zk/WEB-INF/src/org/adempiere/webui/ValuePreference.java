@@ -36,11 +36,13 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -256,6 +258,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Button bDelete;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**
 	* is true when value preference for a field of process call by info window 
@@ -346,7 +350,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		if(isProcessInIW){
 			// in case show process in info window, don't show checkbox window in value preference dialog.
 			// must set is checked to save current windowID (dummy) with value preference other it will save null, 
-			// make data conflic with case save for all window 
+			// make data conflict with case save for all window 
 			cbWindow.setChecked(true);
 		}else{
 			chlayout.appendChild(cbWindow);
@@ -467,6 +471,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}
 
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.detach();
 	}
 

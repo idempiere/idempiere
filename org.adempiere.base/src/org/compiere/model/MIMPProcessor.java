@@ -39,41 +39,63 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
+ * Import processor model for replication
  * @author Trifon Trifonov
  */
-public class MIMPProcessor
-	extends X_IMP_Processor
-	implements AdempiereProcessor 
+public class MIMPProcessor extends X_IMP_Processor implements AdempiereProcessor 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4477942100661801354L;
 
 	private static CLogger	s_log	= CLogger.getCLogger (MIMPProcessor.class);
 	
-	public MIMPProcessor(Properties ctx,
-			int EXP_ReplicationProcessor_ID, String trxName) 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param IMP_Processor_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MIMPProcessor(Properties ctx, String IMP_Processor_UU, String trxName) {
+        super(ctx, IMP_Processor_UU, trxName);
+		if (Util.isEmpty(IMP_Processor_UU))
+			setInitialDefaults();
+    }
+
+	public MIMPProcessor(Properties ctx, int EXP_ReplicationProcessor_ID, String trxName) 
 	{
 		super(ctx, EXP_ReplicationProcessor_ID, trxName);
 		if (EXP_ReplicationProcessor_ID == 0)
-		{
-			setName (/*client.getName() + " - " +*/ "Default Import Processor");
-			setFrequencyType (FREQUENCYTYPE_Hour);
-			setFrequency (1);
-			setKeepLogDays (7);
-		}	
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setName (/*client.getName() + " - " +*/ "Default Import Processor");
+		setFrequencyType (FREQUENCYTYPE_Hour);
+		setFrequency (1);
+		setKeepLogDays (7);
+	}
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MIMPProcessor(Properties ctx, ResultSet rs, String trxName) 
 	{
 		super(ctx, rs, trxName);
 	}
 	
 	/**
-	 * 
+	 * @param requery
+	 * @return next run time stamp
 	 */
 	public Timestamp getDateNextRun (boolean requery)
 	{
@@ -81,7 +103,6 @@ public class MIMPProcessor
 			load(get_TrxName());
 		return getDateNextRun();
 	}
-
 
 	/**
 	 * 	Get Logs
@@ -120,8 +141,8 @@ public class MIMPProcessor
 	}	//	getLogs
 
 	/**
-	 * 	Delete old Request Log
-	 *	@return number of records
+	 * 	Delete old processor logs
+	 *	@return number of records deleted
 	 */
 	public int deleteLog()
 	{
@@ -134,11 +155,16 @@ public class MIMPProcessor
 		return no;
 	}
 
+	@Override
 	public String getServerID() {
 		StringBuilder msgreturn = new StringBuilder("ReplicationProcessor").append(get_ID());
 		return msgreturn.toString();
 	}
 	
+	/**
+	 * @param trxName
+	 * @return processor parameters
+	 */
 	public X_IMP_ProcessorParameter[] getIMP_ProcessorParameters(String trxName) {
 		List<X_IMP_ProcessorParameter> resultList = new ArrayList<X_IMP_ProcessorParameter>();
 		                   
@@ -170,6 +196,10 @@ public class MIMPProcessor
 		return result;
 	}
 	
+	/**
+	 * @param ctx
+	 * @return active import processors
+	 */
 	public static MIMPProcessor[] getActive(Properties ctx)
 	{
 		ArrayList<MIMPProcessor> list = new ArrayList<MIMPProcessor>();

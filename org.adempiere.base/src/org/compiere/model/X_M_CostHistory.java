@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_CostHistory
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_CostHistory")
-public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent 
+public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_CostHistory (Properties ctx, int M_CostHistory_ID, String trxName)
@@ -72,6 +72,44 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_CostHistory (Properties ctx, String M_CostHistory_UU, String trxName)
+    {
+      super (ctx, M_CostHistory_UU, trxName);
+      /** if (M_CostHistory_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setM_CostDetail_ID (0);
+			setM_CostElement_ID (0);
+			setM_CostHistory_ID (0);
+			setM_CostHistory_UU (null);
+			setM_CostType_ID (0);
+			setNewCostPrice (Env.ZERO);
+			setNewQty (Env.ZERO);
+			setOldCostPrice (Env.ZERO);
+			setOldQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostHistory (Properties ctx, String M_CostHistory_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostHistory_UU, trxName, virtualColumns);
+      /** if (M_CostHistory_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setM_CostDetail_ID (0);
+			setM_CostElement_ID (0);
+			setM_CostHistory_ID (0);
+			setM_CostHistory_UU (null);
+			setM_CostType_ID (0);
+			setNewCostPrice (Env.ZERO);
+			setNewQty (Env.ZERO);
+			setOldCostPrice (Env.ZERO);
+			setOldQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_CostHistory (Properties ctx, ResultSet rs, String trxName)
     {
@@ -79,7 +117,7 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

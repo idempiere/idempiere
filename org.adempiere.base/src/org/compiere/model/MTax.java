@@ -28,6 +28,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -43,7 +44,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTax extends X_C_Tax implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7971399495606742382L;
 	/**	Cache						*/
@@ -56,11 +57,10 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	/** Postal Codes		*/
 	private MTaxPostal[]	m_postals = null;
 	
-
 	/**
-	 * 	Get All Tax codes (for AD_Client)
+	 * 	Get All Tax codes for client of this session/context
 	 *	@param ctx context
-	 *	@return MTax
+	 *	@return array of MTax
 	 */
 	public static MTax[] getAll (Properties ctx)
 	{
@@ -75,7 +75,6 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		}
 
 		//	Create it
-		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
 		List<MTax> list = new Query(ctx, I_C_Tax.Table_Name, null, null)
 								.setClient_ID()
 								.setOrderBy("C_CountryGroupFrom_ID, C_Country_ID, C_Region_ID, C_CountryGroupTo_ID, To_Country_ID, To_Region_ID, ValidFrom DESC")
@@ -139,7 +138,19 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		return tax;
 	}
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Tax_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTax(Properties ctx, String C_Tax_UU, String trxName) {
+        super(ctx, C_Tax_UU, trxName);
+		if (Util.isEmpty(C_Tax_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_Tax_ID id
@@ -149,18 +160,23 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	{
 		super (ctx, C_Tax_ID, trxName);
 		if (C_Tax_ID == 0)
-		{
-			setIsDefault (false);
-			setIsDocumentLevel (true);
-			setIsSummary (false);
-			setIsTaxExempt (false);
-			setRate (Env.ZERO);
-			setRequiresTaxCertificate (false);
-			setSOPOType (SOPOTYPE_Both);
-			setValidFrom (TimeUtil.getDay(1990,1,1));
-			setIsSalesTax(false);
-		}
+			setInitialDefaults();
 	}	//	MTax
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+		setIsDocumentLevel (true);
+		setIsSummary (false);
+		setIsTaxExempt (false);
+		setRate (Env.ZERO);
+		setRequiresTaxCertificate (false);
+		setSOPOType (SOPOTYPE_Both);
+		setValidFrom (TimeUtil.getDay(1990,1,1));
+		setIsSalesTax(false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -174,7 +190,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	}	//	MTax
 
 	/**
-	 * 	New Constructor
+	 * 	New record Constructor
 	 *	@param ctx
 	 *	@param Name
 	 *	@param Rate
@@ -190,7 +206,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	}	//	MTax
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MTax(MTax copy) 
@@ -199,7 +215,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -209,7 +225,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -225,7 +241,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 
 	/**
 	 * 	Get Child Taxes
-	 * 	@param requery reload
+	 * 	@param requery true to reload from DB
 	 *	@return array of taxes or null
 	 */
 	public MTax[] getChildTaxes (boolean requery)
@@ -235,14 +251,12 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		if (m_childTaxes != null && !requery)
 			return m_childTaxes;
 		//
-		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
 		final String whereClause = COLUMNNAME_Parent_Tax_ID+"=?";
 		List<MTax> list = new Query(getCtx(), I_C_Tax.Table_Name, whereClause,  get_TrxName())
 			.setParameters(getC_Tax_ID())
 			.setOnlyActiveRecords(true)
 			.setClient_ID()
 			.list();	
-		//red1 - end -
 		if (list.size() > 0 && is_Immutable())
 			list.stream().forEach(e -> e.markImmutable());
 	 
@@ -253,22 +267,20 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	
 	/**
 	 * Get Postal Qualifiers
-	 * @param requery requery
-	 * @return array of postal codes
+	 * @param requery true to reload from DB
+	 * @return array of MTaxPostal
 	 */
 	public MTaxPostal[] getPostals (boolean requery)
 	{
 		if (m_postals != null && !requery)
 			return m_postals;
 
-		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
 		final String whereClause = MTaxPostal.COLUMNNAME_C_Tax_ID+"=?";
 		List<MTaxPostal> list = new Query(getCtx(), I_C_TaxPostal.Table_Name, whereClause,  get_TrxName())
 			.setParameters(getC_Tax_ID())
 			.setOnlyActiveRecords(true)
 			.setOrderBy(I_C_TaxPostal.COLUMNNAME_Postal+", "+I_C_TaxPostal.COLUMNNAME_Postal_To)
 			.list();	
-		//red1 - end -
 		if (list.size() > 0 && is_Immutable())
 			list.stream().forEach(e -> e.markImmutable());
 
@@ -280,12 +292,12 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	}	//	getPostals
 	
 	/**
-	 * Do we have Postal Codes
-	 * @return true if postal codes exist
+	 * Is this tax uses postal code criteria
+	 * @return true if uses postal code criteria
 	 */
 	public boolean isPostal()
 	{
-		if(getPostals(false) == null)
+		if (getPostals(false) == null)
 			return false;
 		
 		return getPostals(false).length > 0;
@@ -300,6 +312,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		return getRate().signum() == 0;
 	}	//	isZeroTax
 	
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MTax[")
@@ -318,11 +331,11 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 
 	
 	/**
-	 * 	Calculate Tax - no rounding
-	 *	@param amount amount
-	 *	@param taxIncluded if true tax is calculated from gross otherwise from net 
-	 *	@param scale scale 
-	 *	@return  tax amount
+	 * 	Calculate Tax Amount
+	 *	@param amount base amount to calculate tax amount
+	 *	@param taxIncluded if true tax amount is already included in the amount parameter and we need to extract tax amount from it.  
+	 *	@param scale rounding scale for tax amount 
+	 *	@return tax amount
 	 */
 	public BigDecimal calculateTax (BigDecimal amount, boolean taxIncluded, int scale)
 	{
@@ -389,6 +402,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)
@@ -412,8 +426,9 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
-	 * @return true if input tax is added to product cost
+	 * @return 
+	 * - true if tax is posted to the product asset account and added to product cost (non deductible input tax).<br/> 
+	 * - false if tax is posted to a separate GL account from product asset account (deductible input tax).
 	 */
 	public boolean isDistributeTaxWithLineItem()
 	{

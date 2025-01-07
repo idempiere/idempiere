@@ -21,6 +21,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
@@ -32,13 +34,22 @@ import org.compiere.util.Msg;
  */
 public class MColumnAccess extends X_AD_Column_Access
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2362624234744824977L;
+	private static final long serialVersionUID = -4824730344123047467L;
 
 	/**
-	 * 	Persistency Constructor
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Column_Access_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MColumnAccess(Properties ctx, String AD_Column_Access_UU, String trxName) {
+        super(ctx, AD_Column_Access_UU, trxName);
+    }
+
+	/**
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -60,12 +71,12 @@ public class MColumnAccess extends X_AD_Column_Access
 	{
 		super(ctx, rs, trxName);
 	}	//	MColumnAccess
-
 	
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MColumnAccess[");
@@ -159,5 +170,30 @@ public class MColumnAccess extends X_AD_Column_Access
 		}		
 		return m_columnName;
 	}	//	getColumnName
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MColumnAccess

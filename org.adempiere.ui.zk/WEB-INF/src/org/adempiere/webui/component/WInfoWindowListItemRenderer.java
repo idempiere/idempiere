@@ -31,6 +31,7 @@ import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.GridField;
 import org.compiere.model.InfoColumnVO;
 import org.compiere.model.MStyle;
@@ -38,7 +39,10 @@ import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Span;
 
 /**
  * List item renderer for Info Window list box. 
@@ -111,6 +115,11 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 						IDColumn idc = (IDColumn)value;
 						value = idc.getRecord_ID();
 					}
+					else if(value instanceof UUIDColumn)
+					{
+						UUIDColumn idc = (UUIDColumn)value;
+						value = idc.getRecord_UU();
+					}
 					else if(value instanceof KeyNamePair)
 					{
 						KeyNamePair knp = (KeyNamePair)value;
@@ -165,14 +174,15 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 						return value;
 					}
 				});
-				if (styleStr != null && styleStr.startsWith(MStyle.SCLASS_PREFIX)) {
-					String sclass = styleStr.substring(MStyle.SCLASS_PREFIX.length());
-					listcell.setSclass(sclass);
-				} else if (style != null && styleStr.startsWith(MStyle.ZCLASS_PREFIX)) {
-					String zclass = styleStr.substring(MStyle.ZCLASS_PREFIX.length());
-					listcell.setZclass(zclass);
-				} else {
-					ZkCssHelper.appendStyle(listcell, styleStr);
+				if(style.isWrapWithSpan()) {
+					Span span = new Span();
+					span.appendChild(new Text(listcell.getValue()));
+					listcell.setLabel(null);
+					listcell.appendChild(span);
+					setStyle(span, styleStr);
+				}
+				else {
+					setStyle(listcell, styleStr);
 				}
 			}
 		}
@@ -181,5 +191,17 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 			listcell = super.getCellComponent(table, field, rowIndex, columnIndex);
 
 		return listcell;
+	}
+	
+	private void setStyle(HtmlBasedComponent component, String style) {
+		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
+			component.setSclass(sclass);
+		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
+			component.setZclass(zclass);
+		} else {
+			ZkCssHelper.appendStyle(component, style);
+		}
 	}
 }

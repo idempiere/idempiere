@@ -44,8 +44,8 @@ import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
 /**
+ * Default {@link IMappedProcessFactory} implementation
  * @author hengsin
- *
  */
 @Component(name = "org.idempiere.process.MappedProcessFactory", 
 	immediate = true, 
@@ -102,6 +102,7 @@ public class MappedProcessFactory extends MappedByNameFactory<ProcessCall> imple
 		}
 	}
 	
+	/** Supplier class to create new ProcessCall instance */
 	private static final class ProcessCallSupplier implements Supplier<ProcessCall> {
 		
 		private Constructor<? extends ProcessCall> constructor;

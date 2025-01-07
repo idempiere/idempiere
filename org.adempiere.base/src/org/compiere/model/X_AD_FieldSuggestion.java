@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_FieldSuggestion
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_FieldSuggestion")
-public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_Persistent 
+public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName)
@@ -78,6 +78,52 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_FieldSuggestion (Properties ctx, String AD_FieldSuggestion_UU, String trxName)
+    {
+      super (ctx, AD_FieldSuggestion_UU, trxName);
+      /** if (AD_FieldSuggestion_UU == null)
+        {
+			setAD_Field_ID (0);
+			setAD_FieldSuggestion_ID (0);
+			setAD_FieldSuggestion_UU (null);
+			setAD_Language (null);
+			setAD_UserClient_ID (0);
+			setAD_User_ID (0);
+			setFieldSuggestionTarget (null);
+// E
+			setIsApproved (false);
+// N
+			setIsUpdateBaseLanguage (true);
+// Y
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_FieldSuggestion (Properties ctx, String AD_FieldSuggestion_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_FieldSuggestion_UU, trxName, virtualColumns);
+      /** if (AD_FieldSuggestion_UU == null)
+        {
+			setAD_Field_ID (0);
+			setAD_FieldSuggestion_ID (0);
+			setAD_FieldSuggestion_UU (null);
+			setAD_Language (null);
+			setAD_UserClient_ID (0);
+			setAD_User_ID (0);
+			setFieldSuggestionTarget (null);
+// E
+			setIsApproved (false);
+// N
+			setIsUpdateBaseLanguage (true);
+// Y
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_FieldSuggestion (Properties ctx, ResultSet rs, String trxName)
     {
@@ -85,7 +131,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -392,10 +438,10 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -414,10 +460,10 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	public boolean isUpdateBaseLanguage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUpdateBaseLanguage);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -453,10 +499,10 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

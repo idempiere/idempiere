@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Role_OrgAccess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Role_OrgAccess")
-public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Persistent 
+public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Role_OrgAccess (Properties ctx, int AD_Role_OrgAccess_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Role_OrgAccess (Properties ctx, String AD_Role_OrgAccess_UU, String trxName)
+    {
+      super (ctx, AD_Role_OrgAccess_UU, trxName);
+      /** if (AD_Role_OrgAccess_UU == null)
+        {
+			setAD_Role_ID (0);
+			setIsReadOnly (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Role_OrgAccess (Properties ctx, String AD_Role_OrgAccess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Role_OrgAccess_UU, trxName, virtualColumns);
+      /** if (AD_Role_OrgAccess_UU == null)
+        {
+			setAD_Role_ID (0);
+			setIsReadOnly (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Role_OrgAccess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_Role_OrgAccess[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -139,10 +161,10 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

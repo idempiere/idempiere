@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for RV_BPartner
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="RV_BPartner")
-public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent 
+public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName)
@@ -89,6 +89,60 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_RV_BPartner (Properties ctx, String RV_BPartner_UU, String trxName)
+    {
+      super (ctx, RV_BPartner_UU, trxName);
+      /** if (RV_BPartner_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Country_ID (0);
+			setContactName (null);
+			setCountryName (null);
+			setIsCustomer (false);
+			setIsEmployee (false);
+			setIsOneTime (false);
+			setIsProspect (false);
+			setIsSalesRep (false);
+			setIsSummary (false);
+			setIsVendor (false);
+			setLDAPUser (false);
+			setName (null);
+			setNotificationType (null);
+			setSendEMail (false);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_RV_BPartner (Properties ctx, String RV_BPartner_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, RV_BPartner_UU, trxName, virtualColumns);
+      /** if (RV_BPartner_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Country_ID (0);
+			setContactName (null);
+			setCountryName (null);
+			setIsCustomer (false);
+			setIsEmployee (false);
+			setIsOneTime (false);
+			setIsProspect (false);
+			setIsSalesRep (false);
+			setIsSummary (false);
+			setIsVendor (false);
+			setLDAPUser (false);
+			setName (null);
+			setNotificationType (null);
+			setSendEMail (false);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_RV_BPartner (Properties ctx, ResultSet rs, String trxName)
     {
@@ -96,7 +150,7 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -437,10 +491,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isad_user_isactive()
 	{
 		Object oo = get_Value(COLUMNNAME_ad_user_isactive);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -702,10 +756,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_bp_ismanufacturer()
 	{
 		Object oo = get_Value(COLUMNNAME_c_bp_ismanufacturer);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -724,10 +778,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_bp_ispotaxexempt()
 	{
 		Object oo = get_Value(COLUMNNAME_c_bp_ispotaxexempt);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -875,10 +929,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_bp_location_isactive()
 	{
 		Object oo = get_Value(COLUMNNAME_c_bp_location_isactive);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -897,10 +951,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_bp_location_isbillto()
 	{
 		Object oo = get_Value(COLUMNNAME_c_bp_location_isbillto);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -934,10 +988,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_bp_location_ispayfrom()
 	{
 		Object oo = get_Value(COLUMNNAME_c_bp_location_ispayfrom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -956,10 +1010,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_bp_location_isremitto()
 	{
 		Object oo = get_Value(COLUMNNAME_c_bp_location_isremitto);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -978,10 +1032,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_bp_location_isshipto()
 	{
 		Object oo = get_Value(COLUMNNAME_c_bp_location_isshipto);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1245,10 +1299,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_country_isactive()
 	{
 		Object oo = get_Value(COLUMNNAME_c_country_isactive);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1455,10 +1509,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_location_isactive()
 	{
 		Object oo = get_Value(COLUMNNAME_c_location_isactive);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1709,10 +1763,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isc_region_isactive()
 	{
 		Object oo = get_Value(COLUMNNAME_c_region_isactive);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2038,10 +2092,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isCustomer()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCustomer);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2061,10 +2115,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2084,10 +2138,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isDiscountPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDiscountPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2107,10 +2161,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isEmployee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmployee);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2129,10 +2183,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isOneTime()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOneTime);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2152,10 +2206,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isProspect()
 	{
 		Object oo = get_Value(COLUMNNAME_IsProspect);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2175,10 +2229,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isSalesRep()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSalesRep);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2198,10 +2252,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2221,10 +2275,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isTaxExempt()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxExempt);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2244,10 +2298,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isVendor()
 	{
 		Object oo = get_Value(COLUMNNAME_IsVendor);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2299,10 +2353,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isLDAPUser()
 	{
 		Object oo = get_Value(COLUMNNAME_LDAPUser);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -2816,10 +2870,10 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public boolean isSendEMail()
 	{
 		Object oo = get_Value(COLUMNNAME_SendEMail);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

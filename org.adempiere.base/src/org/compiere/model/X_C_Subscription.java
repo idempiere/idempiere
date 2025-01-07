@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Subscription
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Subscription")
-public class X_C_Subscription extends PO implements I_C_Subscription, I_Persistent 
+public class X_C_Subscription extends PO implements I_C_Subscription, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Subscription (Properties ctx, int C_Subscription_ID, String trxName)
@@ -70,6 +70,42 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Subscription (Properties ctx, String C_Subscription_UU, String trxName)
+    {
+      super (ctx, C_Subscription_UU, trxName);
+      /** if (C_Subscription_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_Subscription_ID (0);
+			setC_SubscriptionType_ID (0);
+			setIsDue (false);
+			setM_Product_ID (0);
+			setName (null);
+			setPaidUntilDate (new Timestamp( System.currentTimeMillis() ));
+			setRenewalDate (new Timestamp( System.currentTimeMillis() ));
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Subscription (Properties ctx, String C_Subscription_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Subscription_UU, trxName, virtualColumns);
+      /** if (C_Subscription_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_Subscription_ID (0);
+			setC_SubscriptionType_ID (0);
+			setIsDue (false);
+			setM_Product_ID (0);
+			setName (null);
+			setPaidUntilDate (new Timestamp( System.currentTimeMillis() ));
+			setRenewalDate (new Timestamp( System.currentTimeMillis() ));
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Subscription (Properties ctx, ResultSet rs, String trxName)
     {
@@ -77,7 +113,7 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -205,10 +241,10 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	public boolean isDue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDue);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -261,7 +297,7 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

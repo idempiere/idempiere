@@ -24,18 +24,39 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+@Deprecated(forRemoval = true, since = "11")
 public class MBlackListCheque extends X_U_BlackListCheque
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 6958839594386806390L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param U_BlackListCheque_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MBlackListCheque(Properties ctx, String U_BlackListCheque_UU, String trxName) {
+        super(ctx, U_BlackListCheque_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param U_BlackListCheque_ID
+     * @param trxName
+     */
 	public MBlackListCheque(Properties ctx, int U_BlackListCheque_ID, String trxName)
     {
         super(ctx, U_BlackListCheque_ID, trxName);
     }
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
     public MBlackListCheque(Properties ctx, ResultSet rs, String trxName) 
     {
 		super(ctx, rs, trxName);

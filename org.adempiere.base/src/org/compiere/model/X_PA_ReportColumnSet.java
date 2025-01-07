@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumnSet
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportColumnSet")
-public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_Persistent 
+public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_ReportColumnSet (Properties ctx, int PA_ReportColumnSet_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_ReportColumnSet (Properties ctx, String PA_ReportColumnSet_UU, String trxName)
+    {
+      super (ctx, PA_ReportColumnSet_UU, trxName);
+      /** if (PA_ReportColumnSet_UU == null)
+        {
+			setName (null);
+			setPA_ReportColumnSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportColumnSet (Properties ctx, String PA_ReportColumnSet_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportColumnSet_UU, trxName, virtualColumns);
+      /** if (PA_ReportColumnSet_UU == null)
+        {
+			setName (null);
+			setPA_ReportColumnSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_ReportColumnSet (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -120,7 +144,7 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -175,10 +199,10 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

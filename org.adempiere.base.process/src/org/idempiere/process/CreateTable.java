@@ -29,13 +29,6 @@ import static org.compiere.model.SystemIDs.REFERENCE_AD_LANGUAGE;
 import static org.compiere.model.SystemIDs.REFERENCE_AD_USER;
 import static org.compiere.model.SystemIDs.REFERENCE_AD_USER_SALESREP;
 import static org.compiere.model.SystemIDs.REFERENCE_C_DOCTYPE;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_NUMBER;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTSTATUS;
 import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
@@ -49,6 +42,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.M_Element;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_Workflow;
@@ -220,9 +214,6 @@ public class CreateTable extends SvrProcess {
 	 */
 	protected String doIt() {
 
-		if (!p_isCreateKeyColumn && p_isCreateTranslationTable)
-			return ("@Error@ Main table must have a key column if you want to handle translations");
-
 		if (Util.isEmpty(p_name))
 			p_name = p_tableName;
 
@@ -241,12 +232,24 @@ public class CreateTable extends SvrProcess {
 			createColumn(table, elementID.getColumnName());
 		}
 
-		M_Element elementUU = M_Element.get(getCtx(), p_tableName + "_UU");
+		String uucolName = PO.getUUIDColumnName(p_tableName);
+		M_Element elementUU = M_Element.get(getCtx(), uucolName);
 		if (elementUU == null) { // Create Element <TableName> + _UU
-			elementUU = new M_Element(getCtx(), p_tableName + "_UU", p_entityType, get_TrxName());
+			elementUU = new M_Element(getCtx(), uucolName, p_entityType, get_TrxName());
 			elementUU.saveEx();
 		}
-		createColumn(table, elementUU.getColumnName());
+		if (createColumn(table, elementUU.getColumnName()) > 0) {
+			// UUID Index and Constraint
+			MTableIndex tiuu = new MTableIndex(table, MTable.getUUIDIndexName(table.getTableName()));
+			tiuu.setIsCreateConstraint(true);
+			tiuu.setIsUnique(true);
+			tiuu.setIsKey(table.isUUIDKeyTable());
+			tiuu.saveEx();
+
+			MColumn uuColumn = getColumn(table, uucolName);
+			MIndexColumn icuu = new MIndexColumn(tiuu, uuColumn, 10);
+			icuu.saveEx();
+		}
 
 		if (p_isCreateColValue)
 			createColumn(table, "Value");
@@ -317,13 +320,27 @@ public class CreateTable extends SvrProcess {
 			int colElementID = 0;
 			if (elementID != null)
 				colElementID = createColumn(tableTrl, elementID.getColumnName()); // <TableName>_ID (ID of parent table)
+			else
+				colElementID = createColumn(tableTrl, elementUU.getColumnName()); // <TableName>_UU (UUID of parent table)
 
-			M_Element elementTrlUU = M_Element.get(getCtx(), tableTrl.getTableName() + "_UU");
+			String uuTrlcolName = PO.getUUIDColumnName(tableTrl.getTableName());
+			M_Element elementTrlUU = M_Element.get(getCtx(), uuTrlcolName);
 			if (elementTrlUU == null) {
-				elementTrlUU = new M_Element(getCtx(), tableTrl.getTableName() + "_UU", p_entityType, get_TrxName());
+				elementTrlUU = new M_Element(getCtx(), uuTrlcolName, p_entityType, get_TrxName());
 				elementTrlUU.saveEx();
 			}
-			createColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
+			if (createColumn(tableTrl, elementTrlUU.getColumnName()) > 0) {
+				// UUID Index and Constraint
+				MTableIndex tiuutrl = new MTableIndex(tableTrl, MTable.getUUIDIndexName(tableTrl.getTableName()));
+				tiuutrl.setIsCreateConstraint(true);
+				tiuutrl.setIsUnique(true);
+				tiuutrl.setIsKey(tableTrl.isUUIDKeyTable());
+				tiuutrl.saveEx();
+
+				MColumn uuTrlColumn = getColumn(tableTrl, uuTrlcolName);
+				MIndexColumn icuuTrl = new MIndexColumn(tiuutrl, uuTrlColumn, 10);
+				icuuTrl.saveEx();
+			}
 
 			int colLanguageID = createColumn(tableTrl, "AD_Language"); 
 			createColumn(tableTrl, "IsTranslated"); 
@@ -347,9 +364,9 @@ public class CreateTable extends SvrProcess {
 			ti.setIsKey(true);
 			ti.saveEx();
 			
-			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 1);
+			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 10);
 			ic.saveEx();
-			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 2);
+			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 20);
 			ic.saveEx();
 			
 			addLog(Msg.getMsg(getCtx(), "TrlCreatedSyncColumnValidateIndex"));
@@ -425,6 +442,7 @@ public class CreateTable extends SvrProcess {
 	 * Create a column if it doesn't exist
 	 * @param table
 	 * @param columnName
+	 * @return AD_Column_ID just column is created, if the column already exists return -1
 	 */
 	private int createColumn(MTable table, String columnName) {
 		MColumn columnThatExists = getColumn(table, columnName);
@@ -493,7 +511,7 @@ public class CreateTable extends SvrProcess {
 			column.setIsParent(true);
 		}
 		else if (columnName.equals("Value") || columnName.equals("Name") || columnName.equals("DocumentNo")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
+			column.setAD_Reference_ID(DisplayType.String);
 			column.setIsUpdateable(true);
 			column.setIsSelectionColumn(true);
 
@@ -512,7 +530,7 @@ public class CreateTable extends SvrProcess {
 			column.setFieldLength(length);
 		}
 		else if (columnName.equals("Description") || columnName.equals("Help")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
+			column.setAD_Reference_ID(DisplayType.String);
 			column.setIsUpdateable(true);
 			int length = LENGTH_0;
 			if (columnName.equals("Description"))
@@ -524,21 +542,21 @@ public class CreateTable extends SvrProcess {
 				column.setIsTranslated(true);
 		}
 		else if (columnName.equals("C_Currency_ID")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLEDIR);
+			column.setAD_Reference_ID(DisplayType.TableDir);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_22);
 			column.setDefaultValue("@C_Currency_ID@");
 		}
 		else if (columnName.equals("DateAcct") || columnName.equals("DateTrx")) { 
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_DATE);
+			column.setAD_Reference_ID(DisplayType.Date);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_7);
 			column.setDefaultValue("@#Date@");
 		}
 		else if (columnName.equals("DocAction")) { 
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_BUTTON);
+			column.setAD_Reference_ID(DisplayType.Button);
 			column.setAD_Reference_Value_ID(REFERENCE_DOCUMENTACTION);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
@@ -547,7 +565,7 @@ public class CreateTable extends SvrProcess {
 			column.setIsToolbarButton(MColumn.ISTOOLBARBUTTON_Window);
 		}
 		else if (columnName.equals("DocStatus")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_LIST);
+			column.setAD_Reference_ID(DisplayType.List);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_2);
@@ -555,24 +573,24 @@ public class CreateTable extends SvrProcess {
 			column.setDefaultValue(DocAction.STATUS_Drafted);
 		}
 		else if (columnName.equals("ProcessedOn")) { 
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_NUMBER);
+			column.setAD_Reference_ID(DisplayType.Number);
 			column.setFieldLength(LENGTH_20);
 		}
 		else if (columnName.equals("C_DocType_ID")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLEDIR);
+			column.setAD_Reference_ID(DisplayType.TableDir);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_22);
 		}
 		else if (columnName.equals("C_DocTypeTarget_ID")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLE);
+			column.setAD_Reference_ID(DisplayType.Table);
 			column.setAD_Reference_Value_ID(REFERENCE_C_DOCTYPE);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_22);
 		}
 		else if (columnName.equals("Posted")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_BUTTON);
+			column.setAD_Reference_ID(DisplayType.Button);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_1);
@@ -595,8 +613,8 @@ public class CreateTable extends SvrProcess {
 			column.setIsMandatory(true);
 			column.setFieldLength(LENGTH_22);
 		}
-		else if (element.getColumnName().equalsIgnoreCase(table.getTableName() + "_UU")) { // UUID column
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
+		else if (element.getColumnName().equalsIgnoreCase(PO.getUUIDColumnName(table.getTableName()))) { // UUID column
+			column.setAD_Reference_ID(DisplayType.UUID);
 			column.setFieldLength(LENGTH_36);
 		}
 		else if (element.getColumnName().equalsIgnoreCase((table.getTableName().substring(0, table.getTableName().length()-4)) + "_ID")) { // ID of parent table (for translation tables)
@@ -604,6 +622,13 @@ public class CreateTable extends SvrProcess {
 			column.setIsParent(true);
 			column.setIsMandatory(true);
 			column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_Cascade);
+		}
+		else if (element.getColumnName().equalsIgnoreCase(PO.getUUIDColumnName(table.getTableName().substring(0, table.getTableName().length()-4)))) { // UUID of parent table (for translation tables)
+			column.setAD_Reference_ID(DisplayType.SearchUU);
+			column.setIsParent(true);
+			column.setIsMandatory(true);
+			column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_Cascade);
+			column.setFieldLength(LENGTH_36);
 		}
 
 		column.saveEx();

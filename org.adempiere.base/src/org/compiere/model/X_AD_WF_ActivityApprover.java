@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_WF_ActivityApprover
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_ActivityApprover")
-public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityApprover, I_Persistent 
+public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityApprover, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityApprover (Properties ctx, int AD_WF_ActivityApprover_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WF_ActivityApprover (Properties ctx, String AD_WF_ActivityApprover_UU, String trxName)
+    {
+      super (ctx, AD_WF_ActivityApprover_UU, trxName);
+      /** if (AD_WF_ActivityApprover_UU == null)
+        {
+			setAD_User_ID (0);
+			setAD_WF_ActivityApprover_ID (0);
+			setAD_WF_Activity_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_ActivityApprover (Properties ctx, String AD_WF_ActivityApprover_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_ActivityApprover_UU, trxName, virtualColumns);
+      /** if (AD_WF_ActivityApprover_UU == null)
+        {
+			setAD_User_ID (0);
+			setAD_WF_ActivityApprover_ID (0);
+			setAD_WF_Activity_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WF_ActivityApprover (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_WF_ActivityApprover extends PO implements I_AD_WF_ActivityAppr
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

@@ -30,14 +30,34 @@ import java.util.Properties;
 
 public class MDocumentStatusAccess extends X_PA_DocumentStatusAccess {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6018040839563733491L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_DocumentStatusAccess_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDocumentStatusAccess(Properties ctx, String PA_DocumentStatusAccess_UU, String trxName) {
+        super(ctx, PA_DocumentStatusAccess_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param PA_DocumentStatusAccess_ID
+     * @param trxName
+     */
 	public MDocumentStatusAccess(Properties ctx, int PA_DocumentStatusAccess_ID, String trxName) {
 		super(ctx, PA_DocumentStatusAccess_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MDocumentStatusAccess(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}

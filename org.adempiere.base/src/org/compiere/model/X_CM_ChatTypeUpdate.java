@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for CM_ChatTypeUpdate
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatTypeUpdate")
-public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Persistent 
+public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_CM_ChatTypeUpdate (Properties ctx, int CM_ChatTypeUpdate_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_CM_ChatTypeUpdate (Properties ctx, String CM_ChatTypeUpdate_UU, String trxName)
+    {
+      super (ctx, CM_ChatTypeUpdate_UU, trxName);
+      /** if (CM_ChatTypeUpdate_UU == null)
+        {
+			setAD_User_ID (0);
+			setCM_ChatType_ID (0);
+			setIsSelfService (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatTypeUpdate (Properties ctx, String CM_ChatTypeUpdate_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatTypeUpdate_UU, trxName, virtualColumns);
+      /** if (CM_ChatTypeUpdate_UU == null)
+        {
+			setAD_User_ID (0);
+			setCM_ChatType_ID (0);
+			setIsSelfService (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_CM_ChatTypeUpdate (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -80,7 +104,7 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_CM_ChatTypeUpdate[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -169,10 +193,10 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

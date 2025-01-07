@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectPhase
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectPhase")
-public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persistent 
+public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ProjectPhase (Properties ctx, int C_ProjectPhase_ID, String trxName)
@@ -76,6 +76,46 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ProjectPhase (Properties ctx, String C_ProjectPhase_UU, String trxName)
+    {
+      super (ctx, C_ProjectPhase_UU, trxName);
+      /** if (C_ProjectPhase_UU == null)
+        {
+			setCommittedAmt (Env.ZERO);
+			setC_Project_ID (0);
+			setC_ProjectPhase_ID (0);
+			setIsCommitCeiling (false);
+			setIsComplete (false);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setProjInvoiceRule (null);
+// @ProjInvoiceRule@
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_ProjectPhase WHERE C_Project_ID=@C_Project_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectPhase (Properties ctx, String C_ProjectPhase_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectPhase_UU, trxName, virtualColumns);
+      /** if (C_ProjectPhase_UU == null)
+        {
+			setCommittedAmt (Env.ZERO);
+			setC_Project_ID (0);
+			setC_ProjectPhase_ID (0);
+			setIsCommitCeiling (false);
+			setIsComplete (false);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setProjInvoiceRule (null);
+// @ProjInvoiceRule@
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_ProjectPhase WHERE C_Project_ID=@C_Project_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ProjectPhase (Properties ctx, ResultSet rs, String trxName)
     {
@@ -83,7 +123,7 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -322,10 +362,10 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
 	public boolean isCommitCeiling()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCommitCeiling);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -345,10 +385,10 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
 	public boolean isComplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsComplete);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -506,7 +546,7 @@ public class X_C_ProjectPhase extends PO implements I_C_ProjectPhase, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getSeqNo()));
     }

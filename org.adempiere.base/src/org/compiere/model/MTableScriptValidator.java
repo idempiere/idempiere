@@ -31,7 +31,7 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Table Validator Scripts
+ *	Script validator for Table
  *  @author Carlos Ruiz
  *  @version $Id: MTableScriptValidator.java
  * 
@@ -43,7 +43,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6776991549481106111L;
 
@@ -82,8 +82,8 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	 * 	Get Model Validation Script Rules for a table/event
 	 *	@param ctx context
 	 *	@param ad_table_id AD_Table_ID
-	 *	@param event Event
-	 *	@return array of MTableScriptValidator or null if error or no validators found
+	 *	@param event Event (EVENTMODELVALIDATOR_*)
+	 *	@return list of MTableScriptValidator or null if error or no validators found
 	 */
 	public static List<MTableScriptValidator> getModelValidatorRules (Properties ctx, int ad_table_id, String event)
 	{
@@ -130,7 +130,17 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	private static CCache<MultiKey,List<MTableScriptValidator>> s_cacheTableEvent
 					= new CCache<MultiKey,List<MTableScriptValidator>>(null, Table_Name+"_TableEvent", 20, false);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Table_ScriptValidator_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTableScriptValidator(Properties ctx, String AD_Table_ScriptValidator_UU, String trxName) {
+        super(ctx, AD_Table_ScriptValidator_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Table_ScriptValidator_ID id
@@ -153,7 +163,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	}	//	MTableScriptValidator
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MTableScriptValidator(MTableScriptValidator copy) 
@@ -162,7 +172,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -172,7 +182,7 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

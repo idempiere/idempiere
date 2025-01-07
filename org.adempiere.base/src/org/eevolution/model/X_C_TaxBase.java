@@ -23,16 +23,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxBase
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxBase")
-public class X_C_TaxBase extends PO implements I_C_TaxBase, I_Persistent 
+public class X_C_TaxBase extends PO implements I_C_TaxBase, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_TaxBase (Properties ctx, int C_TaxBase_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_C_TaxBase extends PO implements I_C_TaxBase, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_TaxBase (Properties ctx, String C_TaxBase_UU, String trxName)
+    {
+      super (ctx, C_TaxBase_UU, trxName);
+      /** if (C_TaxBase_UU == null)
+        {
+			setC_TaxBase_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxBase (Properties ctx, String C_TaxBase_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxBase_UU, trxName, virtualColumns);
+      /** if (C_TaxBase_UU == null)
+        {
+			setC_TaxBase_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_TaxBase (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_C_TaxBase extends PO implements I_C_TaxBase, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -200,7 +224,7 @@ public class X_C_TaxBase extends PO implements I_C_TaxBase, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

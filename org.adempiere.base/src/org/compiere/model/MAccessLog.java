@@ -30,9 +30,19 @@ public class MAccessLog extends X_AD_AccessLog
 {
 
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -7169782622717772940L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_AccessLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAccessLog(Properties ctx, String AD_AccessLog_UU, String trxName) {
+        super(ctx, AD_AccessLog_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor

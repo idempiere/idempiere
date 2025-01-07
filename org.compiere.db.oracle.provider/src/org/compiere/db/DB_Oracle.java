@@ -39,12 +39,15 @@ import java.util.logging.Level;
 import javax.sql.DataSource;
 
 import org.adempiere.db.oracle.OracleBundleActivator;
+import org.adempiere.db.oracle.partition.TablePartitionService;
 import org.adempiere.exceptions.DBException;
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_Oracle;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -65,7 +68,7 @@ import oracle.jdbc.OracleDriver;
  *  @version    $Id: DB_Oracle.java,v 1.7 2006/09/22 23:35:19 jjanke Exp $
  *  ---
  *  Modifications: Refactoring. Replaced Oracle Cache Manager with C3P0
- *  connection pooling framework for better and more efficient connnection handling
+ *  connection pooling framework for better and more efficient connection handling
  *
  *  @author Ashley Ramdass (Posterita)
  */
@@ -367,8 +370,8 @@ public class DB_Oracle implements AdempiereDatabase
     public String convertStatement (String oraStatement)
     {
     	Convert.logMigrationScript(oraStatement, null);
-		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
-			String filterOrDebug = System.getProperty("org.idempiere.db.debug.filter");
+		if (SystemProperties.isDBDebug()) {
+			String filterOrDebug = SystemProperties.getDBDebugFilter();
 			boolean print = true;
 			if (filterOrDebug != null)
 				print = oraStatement.matches(filterOrDebug);
@@ -417,7 +420,7 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String getSystemUser()
     {
-    	String systemUser = System.getProperty("ADEMPIERE_DB_SYSTEM_USER");
+    	String systemUser = SystemProperties.getAdempiereDBSystemUser();
     	if (systemUser == null)
     		systemUser = "system";
         return systemUser;
@@ -929,7 +932,7 @@ public class DB_Oracle implements AdempiereDatabase
 				}
 			} catch (Exception e) {
 				if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
-				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
+				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage(), e);
 			} finally {
 				DB.close(rs, stmt);
 			}			
@@ -947,6 +950,12 @@ public class DB_Oracle implements AdempiereDatabase
 		if (toIndex == -1)
 			return info;
 		return info.substring(fromIndex + 1, toIndex);
+	}
+
+	@Override
+	public String getForeignKeyConstraint(Exception e) {
+		// finding the name of foreign key constraint is the same as unique constraint
+		return getNameOfUniqueConstraintError(e);
 	}
 
 	@Override
@@ -1180,5 +1189,8 @@ public class DB_Oracle implements AdempiereDatabase
 		return "72000".equals(ex.getSQLState()) && ex.getErrorCode() == 1013;
 	}
 	
-	
+	@Override
+	public ITablePartitionService getTablePartitionService() {
+		return new TablePartitionService();
+	}
 }   //  DB_Oracle

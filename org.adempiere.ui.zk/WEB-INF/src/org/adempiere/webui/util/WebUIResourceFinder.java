@@ -28,6 +28,11 @@ import org.adempiere.webui.theme.ThemeManager;
  */
 public class WebUIResourceFinder implements IResourceFinder {
 
+	/**
+	 * Find entries from bundle
+	 * @param name
+	 * @return entries found
+	 */
 	private Enumeration<URL> find(String name) {
 		int pathIndex = name.lastIndexOf("/");
 		String path = "/";
@@ -42,6 +47,7 @@ public class WebUIResourceFinder implements IResourceFinder {
 	}
 	
 	protected Pattern patternOnlyName = Pattern.compile("\\w+\\.\\w+"); 
+	
 	@Override
 	public URL getResource(String name) {
 		if ("images/iDempiereHR.png".equals(name) || "images/iDempiere.png".equals(name)) {
@@ -68,6 +74,11 @@ public class WebUIResourceFinder implements IResourceFinder {
 		return url;
 	}
 	
+	/**
+	 * Find resource from classpath (if prefix with "~./") or bundle
+	 * @param name
+	 * @return URL or null
+	 */
 	private URL findResource(String name) {
 		Enumeration<URL> e;
 		URL url;

@@ -13,6 +13,7 @@ import org.compiere.model.I_AD_Org;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MColumn;
 import org.compiere.model.MImage;
 import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
@@ -173,13 +174,38 @@ public class PoExporter {
 	}
 
 	public void addTableReference(String columnName, String tableName, AttributesImpl atts) {
-		int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : -1;
-		addTableReference(columnName, tableName, id, atts);
+		if (tableName != null) {
+			MTable table = MTable.get(po.getCtx(), tableName, po.get_TrxName());
+			if (table.isUUIDKeyTable()) {
+				String uuid = (String)po.get_Value(columnName);
+				addTableReferenceUUID(columnName, tableName, uuid, atts);
+			} else {
+				int id = po.get_Value(columnName) != null ? (Integer)po.get_Value(columnName) : -1;
+				addTableReference(columnName, tableName, id, atts);
+			}
+		}
+	}
+
+	public void addTableReferenceMulti(String columnName, String tableName, AttributesImpl atts) {
+		if (tableName != null) {
+			String values = (String)po.get_Value(columnName);
+			addTableReferenceMulti(columnName, tableName, values, atts);
+		}
 	}
 
 	public void addTableReference(String columnName, String tableName, int id, AttributesImpl atts) {
-		String value = ReferenceUtils.getTableReference(tableName, id, atts);
+		String value = ReferenceUtils.getTableReference(tableName, id, atts, po.get_TrxName());
 		addString(columnName, value, atts);
+	}
+
+	public void addTableReferenceUUID(String columnName, String tableName, String uuid, AttributesImpl atts) {
+		String value = ReferenceUtils.getTableReferenceUUID(tableName, uuid, atts);
+		addString(columnName, value, atts);
+	}
+
+	public void addTableReferenceMulti(String columnName, String tableName, String values, AttributesImpl atts) {
+		String target_values = ReferenceUtils.getTableReferenceMulti(tableName, values, atts, po.get_TrxName());
+		addString(columnName, target_values, atts);
 	}
 
 	public void export(List<String> excludes) {
@@ -235,6 +261,10 @@ public class PoExporter {
 					continue;
 			}
 			
+			// Skip AD_Org_ID except Table AD_Org
+			if (columnName.equals("AD_Org_ID") && !(I_AD_Org.Table_Name.equals(po.get_TableName())))
+				continue;
+			
 			//only export official id
 			if (columnName.equalsIgnoreCase(info.getTableName()+"_ID")) {
 				int id = po.get_ID();
@@ -245,39 +275,46 @@ public class PoExporter {
 			}
 
 			int displayType = info.getColumnDisplayType(i);
+			String trxName = ctx.trx == null ? null : ctx.trx.getTrxName();
 			if (DisplayType.YesNo == displayType) {
 				add(columnName, false, new AttributesImpl());
 			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType) {
 				String tableName = null;
-				if ("Record_ID".equalsIgnoreCase(columnName) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
-					int AD_Table_ID = po.get_Value(po.get_ColumnIndex("AD_Table_ID")) != null
-							? (Integer)po.get_Value(po.get_ColumnIndex("AD_Table_ID")) : 0;
-					tableName = MTable.getTableName(ctx.ctx, AD_Table_ID);
+				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
+					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
+					if (AD_Table_ID > 0)
+						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
 				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Parent_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, ctx.trx.getTrxName());
+					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
 					tableName = tree.getSourceTableName(true);
 				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Node_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, ctx.trx.getTrxName());
+					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
 					tableName = tree.getSourceTableName(true);
 				} else {
-					tableName = columnName.substring(0, columnName.length() - 3);
+					MColumn column = MColumn.get(ctx.ctx, info.getTableName(), columnName, trxName);
+					tableName = column.getReferenceTableName();
 				}
 				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isList(displayType)) {
 				add(columnName, "", new AttributesImpl());
-			} else if (DisplayType.isLookup(displayType)) {
+			} else if (DisplayType.isLookup(displayType) || DisplayType.isMultiID(displayType)) {
 				String tableName = null;
-				if ("Record_ID".equalsIgnoreCase(columnName) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
-					int AD_Table_ID = po.get_Value(po.get_ColumnIndex("AD_Table_ID")) != null
-						? (Integer)po.get_Value(po.get_ColumnIndex("AD_Table_ID")) : 0;
-					tableName = MTable.getTableName(ctx.ctx, AD_Table_ID);
+				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
+					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
+					if (AD_Table_ID > 0)
+						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
 				} else if (info.getColumnLookup(i) != null){
 					String lookupColumn = info.getColumnLookup(i).getColumnName();
 					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
-				} 
-				addTableReference(columnName, tableName, new AttributesImpl());
+				}
+				if (   info.getColumnDisplayType(i) == DisplayType.ChosenMultipleSelectionList
+					|| DisplayType.isMultiID(info.getColumnDisplayType(i))) {
+					addTableReferenceMulti(columnName, tableName, new AttributesImpl());
+				} else {
+					addTableReference(columnName, tableName, new AttributesImpl());
+				}
 			} else if (DisplayType.Account == displayType) {
 				String tableName = "C_ValidCombination";
 				addTableReference(columnName, tableName, new AttributesImpl());

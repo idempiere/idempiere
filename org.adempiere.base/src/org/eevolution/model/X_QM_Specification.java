@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for QM_Specification
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="QM_Specification")
-public class X_QM_Specification extends PO implements I_QM_Specification, I_Persistent 
+public class X_QM_Specification extends PO implements I_QM_Specification, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_QM_Specification (Properties ctx, int QM_Specification_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_QM_Specification extends PO implements I_QM_Specification, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_QM_Specification (Properties ctx, String QM_Specification_UU, String trxName)
+    {
+      super (ctx, QM_Specification_UU, trxName);
+      /** if (QM_Specification_UU == null)
+        {
+			setM_AttributeSet_ID (0);
+			setM_Product_ID (0);
+			setQM_Specification_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_QM_Specification (Properties ctx, String QM_Specification_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, QM_Specification_UU, trxName, virtualColumns);
+      /** if (QM_Specification_UU == null)
+        {
+			setM_AttributeSet_ID (0);
+			setM_Product_ID (0);
+			setQM_Specification_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_QM_Specification (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_QM_Specification extends PO implements I_QM_Specification, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

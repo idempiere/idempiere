@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Bundle-SymbolicName: org.adempiere.eclipse.equinox.http.servlet
 Eclipse-LazyStart: true
 Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:
@@ -9,7 +9,7 @@ Eclipse-SourceReferences: scm:cvs:pserver:dev.eclipse.org:/cvsroot/rt:
  et;tag=v20100503
 Bundle-Activator: org.adempiere.eclipse.equinox.http.servlet.Activator
 Export-Package: org.adempiere.eclipse.equinox.http.servlet
-Bundle-Version: 10.0.0.qualifier
+Bundle-Version: 11.0.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Name: %bundleName
@@ -24,3 +24,4 @@ Import-Package: javax.servlet;version="4.0",
 Bundle-ManifestVersion: 2
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.eclipse.equinox.http.servlet
+Require-Bundle: org.adempiere.base;bundle-version="10.0.0"

@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Product")
-public class X_M_Product extends PO implements I_M_Product, I_Persistent 
+public class X_M_Product extends PO implements I_M_Product, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -134,6 +134,104 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Product (Properties ctx, String M_Product_UU, String trxName)
+    {
+      super (ctx, M_Product_UU, trxName);
+      /** if (M_Product_UU == null)
+        {
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsAutoProduce (false);
+// N
+			setIsBOM (false);
+// N
+			setIsDropShip (false);
+			setIsExcludeAutoDelivery (false);
+// N
+			setIsInvoicePrintDetails (false);
+			setIsKanban (false);
+// N
+			setIsManufactured (false);
+// N
+			setIsOwnBox (false);
+// N
+			setIsPhantom (false);
+// N
+			setIsPickListPrintDetails (false);
+			setIsPurchased (true);
+// Y
+			setIsSelfService (true);
+// Y
+			setIsSold (true);
+// Y
+			setIsStocked (true);
+// Y
+			setIsSummary (false);
+			setIsVerified (false);
+// N
+			setIsWebStoreFeatured (false);
+			setLowLevel (0);
+// 0
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_Category_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+			setProductType (null);
+// I
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Product (Properties ctx, String M_Product_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Product_UU, trxName, virtualColumns);
+      /** if (M_Product_UU == null)
+        {
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsAutoProduce (false);
+// N
+			setIsBOM (false);
+// N
+			setIsDropShip (false);
+			setIsExcludeAutoDelivery (false);
+// N
+			setIsInvoicePrintDetails (false);
+			setIsKanban (false);
+// N
+			setIsManufactured (false);
+// N
+			setIsOwnBox (false);
+// N
+			setIsPhantom (false);
+// N
+			setIsPickListPrintDetails (false);
+			setIsPurchased (true);
+// Y
+			setIsSelfService (true);
+// Y
+			setIsSold (true);
+// Y
+			setIsStocked (true);
+// Y
+			setIsSummary (false);
+			setIsVerified (false);
+// N
+			setIsWebStoreFeatured (false);
+			setLowLevel (0);
+// 0
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_Category_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+			setProductType (null);
+// I
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Product (Properties ctx, ResultSet rs, String trxName)
     {
@@ -141,7 +239,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -368,10 +466,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isDiscontinued()
 	{
 		Object oo = get_Value(COLUMNNAME_Discontinued);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -523,10 +621,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isAutoProduce()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoProduce);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -546,10 +644,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isBOM()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBOM);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -569,10 +667,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isDropShip()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDropShip);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -592,10 +690,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isExcludeAutoDelivery()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExcludeAutoDelivery);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -615,10 +713,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isInvoicePrintDetails()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoicePrintDetails);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -638,10 +736,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isKanban()
 	{
 		Object oo = get_Value(COLUMNNAME_IsKanban);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -661,10 +759,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isManufactured()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManufactured);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -683,10 +781,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isOwnBox()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOwnBox);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -706,10 +804,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isPhantom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPhantom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -729,10 +827,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isPickListPrintDetails()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPickListPrintDetails);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -752,10 +850,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isPurchased()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPurchased);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -775,10 +873,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -798,10 +896,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isSold()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSold);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -821,10 +919,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isStocked()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStocked);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -844,10 +942,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -867,10 +965,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isVerified()
 	{
 		Object oo = get_Value(COLUMNNAME_IsVerified);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -890,10 +988,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isWebStoreFeatured()
 	{
 		Object oo = get_Value(COLUMNNAME_IsWebStoreFeatured);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1151,10 +1249,10 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1449,7 +1547,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

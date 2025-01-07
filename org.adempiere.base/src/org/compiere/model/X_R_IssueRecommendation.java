@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueRecommendation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueRecommendation")
-public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendation, I_Persistent 
+public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_IssueRecommendation (Properties ctx, int R_IssueRecommendation_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_IssueRecommendation (Properties ctx, String R_IssueRecommendation_UU, String trxName)
+    {
+      super (ctx, R_IssueRecommendation_UU, trxName);
+      /** if (R_IssueRecommendation_UU == null)
+        {
+			setName (null);
+			setR_IssueRecommendation_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_IssueRecommendation (Properties ctx, String R_IssueRecommendation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_IssueRecommendation_UU, trxName, virtualColumns);
+      /** if (R_IssueRecommendation_UU == null)
+        {
+			setName (null);
+			setR_IssueRecommendation_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_IssueRecommendation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -134,7 +156,7 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

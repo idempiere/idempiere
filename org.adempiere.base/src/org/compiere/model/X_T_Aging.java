@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_Aging
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_Aging")
-public class X_T_Aging extends PO implements I_T_Aging, I_Persistent 
+public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_Aging (Properties ctx, int T_Aging_ID, String trxName)
@@ -113,6 +113,84 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_Aging (Properties ctx, String T_Aging_UU, String trxName)
+    {
+      super (ctx, T_Aging_UU, trxName);
+      /** if (T_Aging_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setC_BPartner_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Currency_ID (0);
+			setDue0 (Env.ZERO);
+			setDue0_30 (Env.ZERO);
+			setDue0_7 (Env.ZERO);
+			setDue1_7 (Env.ZERO);
+			setDue31_60 (Env.ZERO);
+			setDue31_Plus (Env.ZERO);
+			setDue61_90 (Env.ZERO);
+			setDue61_Plus (Env.ZERO);
+			setDue8_30 (Env.ZERO);
+			setDue91_Plus (Env.ZERO);
+			setDueAmt (Env.ZERO);
+			setDueDate (new Timestamp( System.currentTimeMillis() ));
+			setInvoicedAmt (Env.ZERO);
+			setIsListInvoices (false);
+			setIsSOTrx (false);
+			setOpenAmt (Env.ZERO);
+			setPastDue1_30 (Env.ZERO);
+			setPastDue1_7 (Env.ZERO);
+			setPastDue31_60 (Env.ZERO);
+			setPastDue31_Plus (Env.ZERO);
+			setPastDue61_90 (Env.ZERO);
+			setPastDue61_Plus (Env.ZERO);
+			setPastDue8_30 (Env.ZERO);
+			setPastDue91_Plus (Env.ZERO);
+			setPastDueAmt (Env.ZERO);
+			setStatementDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_Aging (Properties ctx, String T_Aging_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_Aging_UU, trxName, virtualColumns);
+      /** if (T_Aging_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setC_BPartner_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Currency_ID (0);
+			setDue0 (Env.ZERO);
+			setDue0_30 (Env.ZERO);
+			setDue0_7 (Env.ZERO);
+			setDue1_7 (Env.ZERO);
+			setDue31_60 (Env.ZERO);
+			setDue31_Plus (Env.ZERO);
+			setDue61_90 (Env.ZERO);
+			setDue61_Plus (Env.ZERO);
+			setDue8_30 (Env.ZERO);
+			setDue91_Plus (Env.ZERO);
+			setDueAmt (Env.ZERO);
+			setDueDate (new Timestamp( System.currentTimeMillis() ));
+			setInvoicedAmt (Env.ZERO);
+			setIsListInvoices (false);
+			setIsSOTrx (false);
+			setOpenAmt (Env.ZERO);
+			setPastDue1_30 (Env.ZERO);
+			setPastDue1_7 (Env.ZERO);
+			setPastDue31_60 (Env.ZERO);
+			setPastDue31_Plus (Env.ZERO);
+			setPastDue61_90 (Env.ZERO);
+			setPastDue61_Plus (Env.ZERO);
+			setPastDue8_30 (Env.ZERO);
+			setPastDue91_Plus (Env.ZERO);
+			setPastDueAmt (Env.ZERO);
+			setStatementDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_T_Aging (Properties ctx, ResultSet rs, String trxName)
     {
@@ -120,7 +198,7 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -137,7 +215,7 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_Aging[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -434,10 +512,10 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
 	public boolean isDateAcct()
 	{
 		Object oo = get_Value(COLUMNNAME_DateAcct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -710,10 +788,10 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
 	public boolean isListInvoices()
 	{
 		Object oo = get_Value(COLUMNNAME_IsListInvoices);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -733,10 +811,10 @@ public class X_T_Aging extends PO implements I_T_Aging, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

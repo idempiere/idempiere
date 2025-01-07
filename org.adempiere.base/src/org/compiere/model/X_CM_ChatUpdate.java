@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for CM_ChatUpdate
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatUpdate")
-public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent 
+public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_CM_ChatUpdate (Properties ctx, int CM_ChatUpdate_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_CM_ChatUpdate (Properties ctx, String CM_ChatUpdate_UU, String trxName)
+    {
+      super (ctx, CM_ChatUpdate_UU, trxName);
+      /** if (CM_ChatUpdate_UU == null)
+        {
+			setAD_User_ID (0);
+			setCM_Chat_ID (0);
+			setIsSelfService (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatUpdate (Properties ctx, String CM_ChatUpdate_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatUpdate_UU, trxName, virtualColumns);
+      /** if (CM_ChatUpdate_UU == null)
+        {
+			setAD_User_ID (0);
+			setCM_Chat_ID (0);
+			setIsSelfService (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_CM_ChatUpdate (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -80,7 +104,7 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_CM_ChatUpdate[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -169,10 +193,10 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

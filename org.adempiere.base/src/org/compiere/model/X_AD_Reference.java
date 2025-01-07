@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Reference
- *  @author iDempiere (generated) 
+ *  @author iDempiere (generated)
  *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Reference")
-public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent 
+public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230213L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Reference (Properties ctx, String AD_Reference_UU, String trxName)
+    {
+      super (ctx, AD_Reference_UU, trxName);
+      /** if (AD_Reference_UU == null)
+        {
+			setAD_Reference_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setShowInactive (null);
+// N
+			setValidationType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Reference (Properties ctx, String AD_Reference_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Reference_UU, trxName, virtualColumns);
+      /** if (AD_Reference_UU == null)
+        {
+			setAD_Reference_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setShowInactive (null);
+// N
+			setValidationType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Reference (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -223,10 +255,10 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	public boolean isOrderByValue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOrderByValue);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -251,7 +283,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -279,22 +311,6 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 		return (String)get_Value(COLUMNNAME_ShowInactive);
 	}
 
-	/** Set Value Format.
-		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	*/
-	public void setVFormat (String VFormat)
-	{
-		set_Value (COLUMNNAME_VFormat, VFormat);
-	}
-
-	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	  */
-	public String getVFormat()
-	{
-		return (String)get_Value(COLUMNNAME_VFormat);
-	}
-
 	/** ValidationType AD_Reference_ID=2 */
 	public static final int VALIDATIONTYPE_AD_Reference_ID=2;
 	/** DataType = D */
@@ -318,5 +334,21 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	public String getValidationType()
 	{
 		return (String)get_Value(COLUMNNAME_ValidationType);
+	}
+
+	/** Set Value Format.
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
+	public void setVFormat (String VFormat)
+	{
+		set_Value (COLUMNNAME_VFormat, VFormat);
+	}
+
+	/** Get Value Format.
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	  */
+	public String getVFormat()
+	{
+		return (String)get_Value(COLUMNNAME_VFormat);
 	}
 }

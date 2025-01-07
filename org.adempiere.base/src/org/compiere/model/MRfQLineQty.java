@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Line Qty Model
@@ -35,7 +36,7 @@ import org.compiere.util.Env;
 public class MRfQLineQty extends X_C_RfQLineQty
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2742007712266317681L;
 
@@ -64,6 +65,18 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	/**	Cache						*/
 	private static CCache<Integer,MRfQLineQty>	s_cache	= new CCache<Integer,MRfQLineQty>(Table_Name, 20);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RfQLineQty_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRfQLineQty(Properties ctx, String C_RfQLineQty_UU, String trxName) {
+        super(ctx, C_RfQLineQty_UU, trxName);
+		if (Util.isEmpty(C_RfQLineQty_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -74,12 +87,17 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	{
 		super (ctx, C_RfQLineQty_ID, trxName);
 		if (C_RfQLineQty_ID == 0)
-		{
-			setIsOfferQty (false);
-			setIsPurchaseQty (false);
-			setQty (Env.ONE);	// 1
-		}
+			setInitialDefaults();
 	}	//	MRfQLineQty
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsOfferQty (false);
+		setIsPurchaseQty (false);
+		setQty (Env.ONE);	// 1
+	}
 
 	/**
 	 * 	Load Constructor
@@ -104,7 +122,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	}	//	MRfQLineQty
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MRfQLineQty(MRfQLineQty copy) 
@@ -113,7 +131,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -123,7 +141,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -139,8 +157,8 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	private MUOM	m_uom = null;
 	
 	/**
-	 * 	Get Uom Name
-	 *	@return UOM
+	 * 	Get UOM Name
+	 *	@return UOM name
 	 */
 	public String getUomName()
 	{
@@ -150,7 +168,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	}	//	getUomText
 	
 	/**
-	 * 	Get active Response Qtys of this RfQ Qty
+	 * 	Get active Response Line Qty of this RfQ Line Qty
 	 * 	@param onlyValidAmounts only valid amounts
 	 *	@return array of response line qtys
 	 */
@@ -193,6 +211,7 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MRfQLineQty[");

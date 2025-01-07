@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ChangeNotice
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ChangeNotice")
-public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persistent 
+public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ChangeNotice (Properties ctx, int M_ChangeNotice_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ChangeNotice (Properties ctx, String M_ChangeNotice_UU, String trxName)
+    {
+      super (ctx, M_ChangeNotice_UU, trxName);
+      /** if (M_ChangeNotice_UU == null)
+        {
+			setIsApproved (false);
+// N
+			setM_ChangeNotice_ID (0);
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ChangeNotice (Properties ctx, String M_ChangeNotice_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ChangeNotice_UU, trxName, virtualColumns);
+      /** if (M_ChangeNotice_UU == null)
+        {
+			setIsApproved (false);
+// N
+			setM_ChangeNotice_ID (0);
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ChangeNotice (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -151,10 +179,10 @@ public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persiste
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -216,7 +244,7 @@ public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -235,10 +263,10 @@ public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -257,10 +285,10 @@ public class X_M_ChangeNotice extends PO implements I_M_ChangeNotice, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -25,18 +25,28 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 
 /**
- *	Distribution Run Model
+ *	Material Distribution Run Model.<br/>
+ *  Note: feature not fully implemented and have been marked as inactive in application dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: MDistributionRun.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
 public class MDistributionRun extends X_M_DistributionRun
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -4355723603388382287L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_DistributionRun_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDistributionRun(Properties ctx, String M_DistributionRun_UU, String trxName) {
+        super(ctx, M_DistributionRun_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor

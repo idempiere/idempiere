@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for AD_PInstance_Log
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PInstance_Log")
-public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Persistent 
+public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Log (Properties ctx, int AD_PInstance_Log_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PInstance_Log (Properties ctx, String AD_PInstance_Log_UU, String trxName)
+    {
+      super (ctx, AD_PInstance_Log_UU, trxName);
+      /** if (AD_PInstance_Log_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PInstance_Log (Properties ctx, String AD_PInstance_Log_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PInstance_Log_UU, trxName, virtualColumns);
+      /** if (AD_PInstance_Log_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setLog_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PInstance_Log (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -81,7 +103,7 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_PInstance_Log[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -212,6 +234,31 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** PInstanceLogType AD_Reference_ID=200242 */
+	public static final int PINSTANCELOGTYPE_AD_Reference_ID=200242;
+	/** Progress = P */
+	public static final String PINSTANCELOGTYPE_Progress = "P";
+	/** Result = R */
+	public static final String PINSTANCELOGTYPE_Result = "R";
+	/** Status = S */
+	public static final String PINSTANCELOGTYPE_Status = "S";
+	/** Set Log Type.
+		@param PInstanceLogType Process Audit Log Type
+	*/
+	public void setPInstanceLogType (String PInstanceLogType)
+	{
+
+		set_Value (COLUMNNAME_PInstanceLogType, PInstanceLogType);
+	}
+
+	/** Get Log Type.
+		@return Process Audit Log Type
+	  */
+	public String getPInstanceLogType()
+	{
+		return (String)get_Value(COLUMNNAME_PInstanceLogType);
 	}
 
 	/** Set Process Message.

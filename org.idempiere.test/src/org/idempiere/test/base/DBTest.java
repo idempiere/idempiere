@@ -14,38 +14,54 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.Adempiere;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MOrder;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.LoginDetails;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Test {@link org.compiere.util.DB} class
  * @author Teo Sarca, www.arhipac.ro
  * @author hengsin
  */
+@Isolated
+@Execution(ExecutionMode.SAME_THREAD)
 public class DBTest extends AbstractTestCase
 {
 	private static final int TEST_RECORD_ID = 103;
@@ -297,6 +313,47 @@ public class DBTest extends AbstractTestCase
 	}
 	
 	@Test
+	public void testForUpdateAndForeignKey() 
+	{
+		try {
+			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
+			SQLException sqlException = null;
+			Trx trx2 = Trx.get(Trx.createTrxName(), true);
+			MOrder order = null;
+			try {
+				order = new MOrder(Env.getCtx(), 0, trx2.getTrxName());
+				order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+				order.setC_BPartner_ID(bp.get_ID());
+				order.setDateOrdered(getLoginDate());
+				Thread thread = new Thread (() -> { 
+					try {
+						Thread.sleep(15 * 1000);
+					} catch (InterruptedException e) {
+					}
+					if (trx2.isActive()) trx2.rollbackAndCloseOnTimeout();
+				});
+				thread.start();
+				order.saveEx();		
+				trx2.commit(true);
+			} catch (SQLException e) {
+				sqlException = e;
+				order = null;
+			} finally {
+				trx2.close();
+			}
+			assertNull(sqlException, "Failed to save and commit order: " + (sqlException != null ? sqlException.getMessage() : ""));
+			if (order != null && order.get_ID() > 0) {
+				order.set_TrxName(null);
+				order.deleteEx(true);
+			}
+		} finally {
+			rollback();
+		}				
+	}
+
+	@Test
 	public void testPostgreSQLSyncColumn() {
 		if (!DB.isPostgreSQL() || !DB.getDatabase().isNativeMode())
 			return;
@@ -327,4 +384,102 @@ public class DBTest extends AbstractTestCase
 		}
 	}
 
+	@Test
+	public void testTrxTimeout() 
+	{
+		try {
+			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
+			Exception exception = null;
+			Trx trx2 = Trx.get(Trx.createTrxName(), true);
+			MBPartner bp2 = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, trx2.getTrxName());
+			try {
+				Thread thread = new Thread (() -> { 
+					try {
+						Thread.sleep(5 * 1000);
+					} catch (InterruptedException e) {
+					}
+					if (trx2.isActive()) trx2.rollbackAndCloseOnTimeout();
+				});
+				thread.start();
+				DB.getDatabase().forUpdate(bp2, 10);
+			} catch (Exception e) {
+				exception = e;
+			} finally {
+				trx2.close();
+			}
+			assertNotNull(exception, "Exception not happens as expected");
+			assertTrue(exception instanceof DBException, "Exception not instanceof DBException");
+		} finally {
+			rollback();
+		}				
+	}
+
+	public static Pattern REG_ACTIVE_CONNECT = Pattern.compile("# Busy Connections:\\s*(\\d+)\\s*,", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+	
+	public static int getNumConnectPerStatus (String poolStatus, Pattern patternStatus) {
+		int numActiveConn = -1;
+		try {
+			
+			Matcher regexMatcher = patternStatus.matcher(poolStatus);
+			if (regexMatcher.find()) {
+				String activeConnectionStr = regexMatcher.group(1);
+				numActiveConn = Integer.parseInt(activeConnectionStr);
+			}
+		} catch (PatternSyntaxException ex) {
+			// Syntax error in the regular expression
+		}
+		return numActiveConn;
+	}
+	
+	/**
+	 * test case to simulate transaction timeouts and ensure no open connections remain afterwards
+	 */
+	@Test
+	public void testTrxTimeout2() {
+		//initial delay to give connection pool time to release active connections
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+		}
+		
+		//create a short duration monitor for testing
+		Trx.TrxMonitor monitor = new Trx.TrxMonitor();
+		ScheduledFuture<?> future = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(monitor, 0, 6, TimeUnit.SECONDS);
+		int beforeActiveConnection = getNumConnectPerStatus(DB.getDatabase().getStatus(), REG_ACTIVE_CONNECT);
+		
+		Trx trx2 = Trx.get(Trx.createTrxName(), true);
+		trx2.setTimeout(3);// timeout after 3s
+		
+		DB.getSQLValueEx(trx2.getTrxName(), "SELECT 1 FROM DUAL");// to make transaction start
+		
+		try {
+			Thread.sleep(8000);//Wait for the transaction monitor to complete its task
+			
+			int afterActiveConnection = getNumConnectPerStatus(DB.getDatabase().getStatus(), REG_ACTIVE_CONNECT);
+			assertEquals(beforeActiveConnection, afterActiveConnection);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			future.cancel(true);
+		}
+	}
+
+	/**
+	 * Test max length of UUID column name and its index
+	 */
+	@Test
+	public void testUUIDColumnName() {
+		assertEquals(PO.getUUIDColumnName   ("MyTable"                                                      ), "MyTable_UU"                                                     );
+		assertEquals(PO.getUUIDColumnName   ("XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheName" ), "XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheName_UU");
+		assertEquals(PO.getUUIDColumnName   ("CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheName"), "CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheNam_UU");
+		assertEquals(MTable.getUUIDIndexName("MyTable"                                                      ), "MyTable_UU_idx"                                                 );
+		assertEquals(MTable.getUUIDIndexName("XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheName" ), "XCUSTOM_ThisIsAVeryLongTableNameWithSixtyCharactersOnTheNauuidx");
+		assertEquals(MTable.getUUIDIndexName("CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheName"), "CUSTOM_AVeryLongTableNameWithMoreThanSixtyCharactersOnTheNuuidx");
+		assertEquals(MTable.getUUIDIndexName("XYCUSTOM_ThisIsAVeryLongTableNameWith55CharactersOnName"      ), "XYCUSTOM_ThisIsAVeryLongTableNameWith55CharactersOnName_UU_idx" );
+		assertEquals(MTable.getUUIDIndexName("XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName"     ), "XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName_UU_idx");
+		assertEquals(MTable.getUUIDIndexName("XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName"    ), "XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName_uuidx");
+	}
+	
 }

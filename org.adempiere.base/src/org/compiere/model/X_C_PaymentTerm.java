@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentTerm
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentTerm")
-public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent 
+public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_PaymentTerm (Properties ctx, int C_PaymentTerm_ID, String trxName)
@@ -81,6 +81,52 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_PaymentTerm (Properties ctx, String C_PaymentTerm_UU, String trxName)
+    {
+      super (ctx, C_PaymentTerm_UU, trxName);
+      /** if (C_PaymentTerm_UU == null)
+        {
+			setAfterDelivery (false);
+			setC_PaymentTerm_ID (0);
+			setDiscount (Env.ZERO);
+			setDiscount2 (Env.ZERO);
+			setDiscountDays (0);
+			setDiscountDays2 (0);
+			setGraceDays (0);
+			setIsDueFixed (false);
+			setIsValid (false);
+			setName (null);
+			setNetDays (0);
+			setPaymentTermUsage (null);
+// B
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentTerm (Properties ctx, String C_PaymentTerm_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentTerm_UU, trxName, virtualColumns);
+      /** if (C_PaymentTerm_UU == null)
+        {
+			setAfterDelivery (false);
+			setC_PaymentTerm_ID (0);
+			setDiscount (Env.ZERO);
+			setDiscount2 (Env.ZERO);
+			setDiscountDays (0);
+			setDiscountDays2 (0);
+			setGraceDays (0);
+			setIsDueFixed (false);
+			setIsValid (false);
+			setName (null);
+			setNetDays (0);
+			setPaymentTermUsage (null);
+// B
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_PaymentTerm (Properties ctx, ResultSet rs, String trxName)
     {
@@ -88,7 +134,7 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -123,10 +169,10 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public boolean isAfterDelivery()
 	{
 		Object oo = get_Value(COLUMNNAME_AfterDelivery);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -367,10 +413,10 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -390,10 +436,10 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public boolean isDueFixed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDueFixed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -413,10 +459,10 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public boolean isNextBusinessDay()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNextBusinessDay);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -436,10 +482,10 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -464,7 +510,7 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -559,10 +605,10 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

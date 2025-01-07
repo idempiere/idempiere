@@ -19,19 +19,19 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_Substitute
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Substitute")
-public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent 
+public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Substitute (Properties ctx, int M_Substitute_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Substitute (Properties ctx, String M_Substitute_UU, String trxName)
+    {
+      super (ctx, M_Substitute_UU, trxName);
+      /** if (M_Substitute_UU == null)
+        {
+			setM_Product_ID (0);
+			setName (null);
+			setSubstitute_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Substitute (Properties ctx, String M_Substitute_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Substitute_UU, trxName, virtualColumns);
+      /** if (M_Substitute_UU == null)
+        {
+			setM_Product_ID (0);
+			setName (null);
+			setSubstitute_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Substitute (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -81,7 +105,7 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_Substitute[")
-        .append(get_ID()).append(",Name=").append(getName()).append("]");
+        .append(get_UUID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -160,12 +184,12 @@ public class X_M_Substitute extends PO implements I_M_Substitute, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), getName());
+        return new ValueNamePair(get_UUID(), getName());
     }
 
 	public org.compiere.model.I_M_Product getSubstitute() throws RuntimeException

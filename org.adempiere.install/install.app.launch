@@ -15,11 +15,13 @@
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
     <stringAttribute key="location" value="${workspace_loc}/runtime-install.app"/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
-    <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.compatibility.bootdelegation=true"/>
@@ -30,6 +32,7 @@
         <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
         <setEntry value="bcutil@default:default"/>
+        <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
         <setEntry value="com.github.librepdf.openpdf-fonts-extra@default:default"/>
         <setEntry value="com.github.librepdf.openpdf@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
@@ -38,10 +41,10 @@
         <setEntry value="com.google.http-client.google-http-client@default:default"/>
         <setEntry value="com.google.oauth-client@default:default"/>
         <setEntry value="com.google.zxing.core@default:default"/>
-        <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.mail.gimap@default:default"/>
         <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
+        <setEntry value="com.zaxxer.HikariCP@default:default"/>
         <setEntry value="groovy@default:default"/>
         <setEntry value="io.github.classgraph.classgraph@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
@@ -50,6 +53,7 @@
         <setEntry value="org.antlr.antlr4-runtime@default:default"/>
         <setEntry value="org.apache.activemq.activemq-client@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
+        <setEntry value="org.apache.aries.spifly.dynamic.bundle@default:default"/>
         <setEntry value="org.apache.commons.collections@default:default"/>
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
@@ -63,7 +67,8 @@
         <setEntry value="org.apache.geronimo.specs.geronimo-jms_1.1_spec@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
-        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
+        <setEntry value="org.apache.logging.log4j.api@default:default"/>
+        <setEntry value="org.apache.logging.log4j.to-slf4j@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>
         <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
@@ -85,19 +90,50 @@
         <setEntry value="org.eclipse.osgi@-1:true"/>
         <setEntry value="org.fusesource.hawtbuf.hawtbuf@default:default"/>
         <setEntry value="org.hamcrest.core@default:default"/>
-        <setEntry value="org.jsr-305@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.krysalis.barcode4j@default:default"/>
+        <setEntry value="org.objectweb.asm.commons@default:default"/>
+        <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
+        <setEntry value="org.objectweb.asm.tree@default:default"/>
+        <setEntry value="org.objectweb.asm.util@default:default"/>
+        <setEntry value="org.objectweb.asm@default:default"/>
+        <setEntry value="org.osgi.annotation.bundle@default:default"/>
+        <setEntry value="org.osgi.annotation.versioning@default:default"/>
+        <setEntry value="org.osgi.service.cm@default:default"/>
+        <setEntry value="org.osgi.service.component.annotations@default:default"/>
+        <setEntry value="org.osgi.service.component@default:default"/>
+        <setEntry value="org.osgi.service.coordinator@default:default"/>
+        <setEntry value="org.osgi.service.device@default:default"/>
+        <setEntry value="org.osgi.service.event@default:default"/>
+        <setEntry value="org.osgi.service.log.stream@default:default"/>
+        <setEntry value="org.osgi.service.metatype.annotations@default:default"/>
+        <setEntry value="org.osgi.service.metatype@default:default"/>
+        <setEntry value="org.osgi.service.prefs@default:default"/>
+        <setEntry value="org.osgi.service.provisioning@default:default"/>
+        <setEntry value="org.osgi.service.upnp@default:default"/>
+        <setEntry value="org.osgi.service.useradmin@default:default"/>
+        <setEntry value="org.osgi.service.wireadmin@default:default"/>
+        <setEntry value="org.osgi.util.function@default:default"/>
+        <setEntry value="org.osgi.util.measurement@default:default"/>
+        <setEntry value="org.osgi.util.position@default:default"/>
+        <setEntry value="org.osgi.util.promise@default:default"/>
+        <setEntry value="org.osgi.util.pushstream@default:default"/>
+        <setEntry value="org.osgi.util.tracker@default:default"/>
+        <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.passay@default:default"/>
+        <setEntry value="org.postgresql.jdbc@default:default"/>
         <setEntry value="slf4j.api*1.7.30@default:default"/>
-        <setEntry value="slf4j.jcl@default:false"/>
+        <setEntry value="slf4j.jdk14@default:false"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
+        <setEntry value="wrapped.com.oracle.database.jdbc.ojdbc10@default:default"/>
         <setEntry value="wrapped.dev.samstevens.totp.totp@default:default"/>
         <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
         <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
+        <setEntry value="wrapped.net.sourceforge.barbecue.barbecue@default:default"/>
         <setEntry value="wrapped.org.apache.activemq.activemq-kahadb-store@default:default"/>
+        <setEntry value="wrapped.org.apache.poi.poi-ooxml-lite@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
         <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
         <setEntry value="wrapped.org.apache.xmlbeans.xmlbeans@default:default"/>

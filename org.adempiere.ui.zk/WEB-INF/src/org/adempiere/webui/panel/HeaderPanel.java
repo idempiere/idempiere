@@ -19,13 +19,16 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.GlobalSearch;
 import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.component.Panel;
+import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.AboutWindow;
+import org.compiere.model.MQuery;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -36,12 +39,13 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
- *
+ * Header panel of desktop
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author  <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Mar 2, 2007
@@ -51,8 +55,12 @@ import org.zkoss.zul.impl.LabelImageElement;
 
 public class HeaderPanel extends Panel implements EventListener<Event>
 {
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = -2351317624519209484L;
 
+	/** Logo */
 	protected Image image;
 	protected LabelImageElement btnMenu;
 	protected Popup popMenu;
@@ -61,12 +69,19 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 
 	private GlobalSearch globalSearch;
 
+	/**
+	 * Default constructor
+	 */
     public HeaderPanel()
     {
         super();
-        addEventListener(Events.ON_CREATE, this);              
+        addEventListener(Events.ON_CREATE, this);
+        addEventListener(ZoomEvent.EVENT_NAME, this);
     }
 
+    /**
+     * Layout panel
+     */
     protected void onCreate()
     {
     	image = (Image) getFellow("logo");
@@ -80,7 +95,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 
     	btnMenu = (LabelImageElement) getFellow("menuButton");
     	btnMenu.setIconSclass("z-icon-sitemap");
-    	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
+    	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")) + " Alt+M");
     	btnMenu.addEventListener(Events.ON_CLICK, this);
     	if (ClientInfo.isMobile()) {
     		LayoutUtils.addSclass("mobile", this);
@@ -89,6 +104,9 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
     }
 
+    /**
+     * Create pop up menu tree
+     */
 	protected void createPopupMenu() {
 		popMenu = new Popup();
     	popMenu.setId("menuTreePopup");
@@ -104,14 +122,20 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 		popMenu.setAttribute(popMenu.getUuid(), System.currentTimeMillis());
 	}
 
+	/**
+	 * Create global search box
+	 */
 	protected void createSearchPanel() {
 		globalSearch = new GlobalSearch(new MenuSearchController(menuTreePanel.getMenuTree()));
     	Component stub = getFellow("menuLookup");
     	stub.getParent().insertBefore(globalSearch, stub);
     	stub.detach();
     	globalSearch.setId("menuLookup");
+    	globalSearch.setPlaceHolderText("Alt+G");
+    	globalSearch.setTooltipText("Alt+G");
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName())) {
 			if(event.getTarget() == image)
@@ -132,17 +156,26 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 		} else if (Events.ON_CREATE.equals(event.getName())) {
 			onCreate();
 		}else if (event instanceof KeyEvent)
-		{
-			//alt+m for the menu
+		{			
 			KeyEvent ke = (KeyEvent) event;
-			if (ke.getKeyCode() == 77)
+			if (ke.getKeyCode() == 77) // alt+m for the menu
 			{
 				popMenu.open(btnMenu, "after_start");
 				popMenu.setFocus(true);
-			}else if (ke.getKeyCode() == 27) {
+			}
+			else if (ke.getKeyCode() == 27) // esc to close menu 
+			{ 
 				popMenu.close();
-			}else if (ke.getKeyCode() == 71) {
+			}
+			else if (ke.getKeyCode() == 71) // alt+g for the search 
+			{ 
 				globalSearch.setFocus(true);
+			}
+		} else if(event.getName().equals(ZoomEvent.EVENT_NAME)) {
+			Clients.clearBusy();
+			ZoomEvent ze = (ZoomEvent) event;
+			if (ze.getData() != null && ze.getData() instanceof MQuery) {
+				AEnv.zoom((MQuery) ze.getData());
 			}
 		}
 	}
@@ -167,16 +200,25 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 			popMenu.setPage(null);
 	}
 	
+	/**
+	 * @return logo image
+	 */
 	public Image getLogo() {
 		return image;
 	}
 	
+	/**
+	 * Close popup for global search
+	 */
 	public void closeSearchPopup() {
 		Component c = getFellow("menuLookup");
 		if (c != null && c instanceof GlobalSearch)
 			((GlobalSearch)c).closePopup();
 	}
 	
+	/**
+	 * Handle onClientInfo event
+	 */
 	protected void onClientInfo() {
 		ZKUpdateUtil.setWindowWidthX(popMenu, 600);
 		Component c = getFellow("menuLookup");

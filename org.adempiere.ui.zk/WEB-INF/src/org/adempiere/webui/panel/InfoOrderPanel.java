@@ -44,6 +44,7 @@ import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MOrder;
 import org.compiere.model.MQuery;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -52,11 +53,11 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -515,7 +516,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 	public void zoom()
 	{
 		log.info("");
-		Integer C_Order_ID = getSelectedRowKey();
+		Integer C_Order_ID = getIntSelectedRowKey(MOrder.Table_ID);
 		if (C_Order_ID == null)
 			return;
 		MQuery query = new MQuery("C_Order");

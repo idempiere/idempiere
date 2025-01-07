@@ -82,12 +82,18 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 	private static final String ON_DEFER_CHANGE_ROLE = "onDeferChangeRole";
 	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
 
+	/**
+	 * Default constructor
+	 */
 	public UserPanel()
     {
     	super();
         this.ctx = Env.getCtx();
     }
 
+	/**
+	 * Call when UI is compose from zul definition
+	 */
     protected void onCreate()
     {
     	String s = Msg.getMsg(Env.getCtx(), "CloseTabFromBrowser?").replace("\n", "<br>");
@@ -143,28 +149,43 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	}
     }
 
+    /**
+     * @return true if client is mobile
+     */
     private boolean isMobile() {
 		return ClientInfo.isMobile();
 	}
 
+    /**
+     * @return name of user
+     */
 	private String getUserName()
     {
         MUser user = MUser.get(ctx);
         return user.getName();
     }
 
+	/**
+	 * @return name of role
+	 */
     private String getRoleName()
     {
         MRole role = MRole.getDefault(ctx, false);
         return role.getName();
     }
 
+    /**
+     * @return name of tenant
+     */
     private String getClientName()
     {
         MClient client = MClient.get(ctx);
         return client.getName();
     }
 
+    /**
+     * @return name of organization
+     */
     private String getOrgName()
     {
     	int orgId = Env.getAD_Org_ID(ctx);
@@ -179,6 +200,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	}
     }
 
+    @Override
 	public void onEvent(Event event) throws Exception {
 		if (event == null)
 			return;
@@ -292,6 +314,9 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 
 	}
 
+    /**
+     * Open user panel popup for mobile client
+     */
 	protected void openMobileUserPanelPopup() {
 		if (popup != null) {
 			Object value = popup.removeAttribute(popup.getUuid());
@@ -339,11 +364,17 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		
 	}
 
+	/**
+	 * @return email of user
+	 */
 	private String getUserEmail() {
 		 MUser user = MUser.get(ctx);
 		return user.getEMail();
 	}
 
+	/**
+	 * @return name of warehouse
+	 */
 	private String getWarehouseName() {
 		int id = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
 		if (id > 0) {

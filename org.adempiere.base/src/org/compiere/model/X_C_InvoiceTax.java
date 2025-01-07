@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_InvoiceTax
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoiceTax")
-public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent 
+public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_InvoiceTax (Properties ctx, int C_InvoiceTax_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_InvoiceTax (Properties ctx, String C_InvoiceTax_UU, String trxName)
+    {
+      super (ctx, C_InvoiceTax_UU, trxName);
+      /** if (C_InvoiceTax_UU == null)
+        {
+			setC_Invoice_ID (0);
+			setC_Tax_ID (0);
+			setIsTaxIncluded (false);
+			setProcessed (false);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_InvoiceTax (Properties ctx, String C_InvoiceTax_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_InvoiceTax_UU, trxName, virtualColumns);
+      /** if (C_InvoiceTax_UU == null)
+        {
+			setC_Invoice_ID (0);
+			setC_Tax_ID (0);
+			setIsTaxIncluded (false);
+			setProcessed (false);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_InvoiceTax (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -88,7 +118,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_InvoiceTax[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -204,10 +234,10 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 	public boolean isTaxIncluded()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxIncluded);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -227,10 +257,10 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

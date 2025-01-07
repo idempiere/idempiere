@@ -78,6 +78,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -102,7 +104,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -1398301240136128512L;
+	private static final long serialVersionUID = -8847249274740131848L;
 
 	/** Event post from {@link #valueChange(ValueChangeEvent)} **/
 	private static final String ON_POST_EDITOR_VALUE_CHANGE_EVENT = "onPostEditorValueChange";
@@ -578,49 +580,45 @@ public class ProcessParameterPanel extends Panel implements
 		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		//mandatory fields validation
-		StringBuilder sb = new StringBuilder();
+		Map<Component, String> wrongValidateComponents = new HashMap<>();
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++) {
 			GridField field = (GridField) m_mFields.get(i);
-			if (field.isMandatory(true)) // check context
-			{				
-				WEditor wEditor = (WEditor) m_wEditors.get(i);
-				Object data = wEditor.getValue();
-				if (data == null || data.toString().length() == 0) {
-					field.setInserting(true); // set editable (i.e. updateable)
-												// otherwise deadlock
-					field.setError(true);
-					if (sb.length() > 0)
-						sb.append(", ");
-					sb.append(field.getHeader());
-					if (m_wEditors2.get(i) != null) // is a range
-						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeFrom")).append(")");
-				} else
-					field.setError(false);
-				// Check for Range
-				WEditor wEditor2 = (WEditor) m_wEditors2.get(i);
-				if (wEditor2 != null) {
-					Object data2 = wEditor2.getValue();
-					GridField field2 = (GridField) m_mFields2.get(i);
-					if (data2 == null || data2.toString().length() == 0) {
-						field2.setInserting(true); // set editable (i.e.
-													// updateable) otherwise
-													// deadlock
-						field2.setError(true);
-						if (sb.length() > 0)
-							sb.append(", ");
-						sb.append(field2.getHeader());
-						sb.append(" (").append(Msg.getMsg(Env.getCtx(), "ProcessParameterRangeTo")).append(")");
-					} else
-						field2.setError(false);
-				} // range field
-			} // mandatory
+			GridField field2 = (GridField) m_mFields2.get(i);
+			WEditor wEditor = (WEditor) m_wEditors.get(i);
+			if (wEditor.getComponent() instanceof InputElement)
+				((InputElement)wEditor.getComponent()).clearErrorMessage();
+			WEditor wEditor2 = (WEditor) m_wEditors2.get(i);
+			if (wEditor2 != null && wEditor2.getComponent() instanceof InputElement)
+				((InputElement)wEditor2.getComponent()).clearErrorMessage();
+			Object data = wEditor.getValue();
+			String msg = validate(data, field.getValueMin(), field.getValueMax(), field.isMandatory(true), field.getDisplayType());
+			if (msg != null) {
+				field.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
+				field.setError(true);
+				wrongValidateComponents.put(wEditor.getComponent(), msg);
+			}
+			if (m_wEditors2.get(i) != null) { // is a range
+				data = wEditor2.getValue();
+				msg = validate(data, field.getValueMin(), field.getValueMax(), field.isMandatory(true), field.getDisplayType());
+				if (msg != null) {
+					field2.setInserting(true); // set editable (i.e. updateable) otherwise deadlock
+					field2.setError(true);
+					wrongValidateComponents.put(wEditor2.getComponent(), msg);
+				}
+			}
+
 		} // field loop
 
-		if (sb.length() != 0) {
-			Dialog.error(m_WindowNo, "FillMandatory", sb.toString());
-			return false;
-		}
+		List<WrongValueException> wrongValues = new ArrayList<WrongValueException>();
+
+		wrongValidateComponents.forEach((component, msg) -> {
+			WrongValueException wrongValueException = new WrongValueException(component, msg);
+			wrongValues.add(wrongValueException);
+		});
+
+		if (wrongValues.size() > 0)
+			throw new WrongValuesException(wrongValues.toArray(new WrongValueException[0]));
 
 		/** call {@link IProcessParameterListener} validate(ProcessParameterPanel) **/
 		if (m_processInfo.getAD_Process_ID() > 0) {
@@ -638,6 +636,75 @@ public class ProcessParameterPanel extends Panel implements
 		return true;
 	}	//	validateParameters
 	
+	/**
+	 * Validate mandatory and min/max value
+	 * @param value
+	 * @param valueMin
+	 * @param valueMax
+	 * @param isMandatory
+	 * @param fieldType
+	 * @return null if OK, any message if not OK
+	 */
+	public static String validate(Object value, String valueMin, String valueMax, boolean isMandatory, int fieldType) {
+
+		if (isMandatory) {
+			if (value == null || value.toString().length() == 0) {
+				return Msg.getMsg(Env.getCtx(), "FillMandatory");
+			}
+		}
+
+		BigDecimal value_BD = null;
+		BigDecimal valueMin_BD = null;
+		BigDecimal valueMax_BD = null;
+		Timestamp value_TS = null;
+		Timestamp valueMin_TS = null;
+		Timestamp valueMax_TS = null;
+
+		if (fieldType == DisplayType.Date) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat(DisplayType.DEFAULT_DATE_FORMAT);
+			if (value != null) {
+				try { value_TS = new Timestamp(dateFormat.parse(value.toString()).getTime()); } catch (Exception ex){}
+			}
+			if (valueMin != null) {
+				try { valueMin_TS = new Timestamp(dateFormat.parse(valueMin).getTime()); } catch (Exception ex){}
+			}
+			if (valueMax != null) {
+				try { valueMax_TS = new Timestamp(dateFormat.parse(valueMax).getTime()); } catch (Exception ex){}
+			}
+
+			if (value_TS != null && valueMin_TS != null && value_TS.before(valueMin_TS))
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+			if (value_TS != null && valueMax_TS != null && value_TS.after(valueMax_TS))
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+
+		} else if (DisplayType.isNumeric(fieldType)) {
+			if (value != null) {
+				try { value_BD = new BigDecimal(value.toString()); } catch (Exception ex){}
+			}
+			if (valueMin != null) {
+				try { valueMin_BD = new BigDecimal(valueMin); } catch (Exception ex){}
+			}
+			if (valueMax != null) {
+				try { valueMax_BD = new BigDecimal(valueMax); } catch (Exception ex){}
+			}
+
+			if (value_BD != null && valueMin_BD != null && valueMin_BD.compareTo(value_BD) > 0)
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+			if (value_BD != null && valueMax_BD != null && valueMax_BD.compareTo(value_BD) < 0)
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+		} else {
+			if (value != null && valueMin != null && valueMin.compareTo(value.toString()) > 0)
+				return Msg.getMsg(Env.getCtx(), "LessThanMinValue", new Object[] {valueMin});
+
+			if (value != null && valueMax != null && valueMax.compareTo(value.toString()) < 0)
+				return Msg.getMsg(Env.getCtx(), "MoreThanMaxValue", new Object[] {valueMax});
+		}
+
+		return null;
+	}
+
 	/** 
 	 * load parameters from saved instance
 	 * @param instance

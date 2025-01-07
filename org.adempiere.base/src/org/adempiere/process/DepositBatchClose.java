@@ -29,17 +29,15 @@
 ***********************************************************************/
 package org.adempiere.process;
 
-
 import java.util.logging.*;
 import org.compiere.model.*;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
  
 /**
- *  Close Deposit Batch.
+ *  Process to Close Deposit Batch (set processed to Y)
  *
  *	@author Alejandro Falcone
- *	@version $Id: DepositBatchClose.java,v 1.2 2007/07/03 00:51:01 afalcone Exp $
  */
 @org.adempiere.base.annotation.Process
 public class DepositBatchClose extends SvrProcess
@@ -50,6 +48,7 @@ public class DepositBatchClose extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] para = getParameter();
@@ -68,6 +67,7 @@ public class DepositBatchClose extends SvrProcess
 	 *  @return Message (translated text)
 	 *  @throws Exception if not successful
 	 */
+	@Override
 	protected String doIt() throws Exception
 	{
 		MDepositBatch depositbatch = new MDepositBatch (getCtx(), m_C_DepositBatch_ID, get_TrxName());

@@ -16,7 +16,7 @@ package org.adempiere.base;
 import org.compiere.model.ModelValidator;
 
 /**
- * 
+ * Factory interface for {@link ModelValidator}.
  * @author hengsin
  *
  */
@@ -24,7 +24,7 @@ public interface IModelValidatorFactory {
 	
 	/**
 	 * @param className
-	 * @return new modelvalidator intance
+	 * @return new ModelValidator instance
 	 */
 	public ModelValidator newModelValidatorInstance(String className);
 }

@@ -21,7 +21,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.compiere.util.Env;
-
+import org.compiere.util.Util;
 
 /**
  *	Resource Assignment Model
@@ -32,14 +32,28 @@ import org.compiere.util.Env;
 public class MResourceAssignment extends X_S_ResourceAssignment
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 4230793339153210998L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param S_ResourceAssignment_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MResourceAssignment(Properties ctx, String S_ResourceAssignment_UU, String trxName) {
+        super(ctx, S_ResourceAssignment_UU, trxName);
+		p_info.setUpdateable(true);		//	default table is not updateable
+		if (Util.isEmpty(S_ResourceAssignment_UU))
+			setInitialDefaults();
+    }
+
 	/**
-	 * 	Stnadard Constructor
+	 * 	Standard Constructor
 	 *	@param ctx
 	 *	@param S_ResourceAssignment_ID
+	 *  @param trxName
 	 */
 	public MResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName)
 	{
@@ -47,16 +61,21 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 		p_info.setUpdateable(true);		//	default table is not updateable
 		//	Default values
 		if (S_ResourceAssignment_ID == 0)
-		{
-			setAssignDateFrom(new Timestamp(System.currentTimeMillis()));
-			setQty(Env.ONE);
-			setName(".");
-			setIsConfirmed(false);
-		}
+			setInitialDefaults();
 	}	//	MResourceAssignment
 
 	/**
-	 * 	Load Contsructor
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAssignDateFrom(new Timestamp(System.currentTimeMillis()));
+		setQty(Env.ONE);
+		setName(".");
+		setIsConfirmed(false);
+	}
+
+	/**
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 */
@@ -70,6 +89,7 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 	 *  String Representation
 	 *  @return string
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MResourceAssignment[ID=");
@@ -86,6 +106,7 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 	 * 	Before Delete
 	 *	@return true if not confirmed
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		//	 allow to delete, when not confirmed

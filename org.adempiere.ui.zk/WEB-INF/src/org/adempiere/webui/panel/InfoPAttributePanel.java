@@ -54,18 +54,17 @@ import org.zkoss.zul.Vbox;
 
 /**
  * Search by Product Attribute.
- * This class is based on org.compiere.apps.search.InfoPAttribute written by Jorg Janke
  * @author Elaine
  *
  */
 public class InfoPAttributePanel extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4922961793415942591L;
 
-	/* the attribute set selected on the InfoProduct window */
+	/** the attribute set selected on the InfoProduct window */
 	private int p_M_AttributeSet_ID = 0;
 	
 	/**
@@ -106,7 +105,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 	
 	/**	Resulting Query			*/
 	private String		m_query = "";
-	/**	Product Attribure Editors	*/
+	/**	Product Attribute Editors	*/
 	private ArrayList<Component>	m_productEditors = new ArrayList<Component>();
 	private ArrayList<Component>	m_productEditorsTo = new ArrayList<Component>();
 	/**	Instance Attribute Editors	*/
@@ -129,7 +128,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 	//
 
 	/**
-	 * 	Static Init
+	 * 	Layout dialog
 	 *	@throws Exception
 	 */
 	private void jbInit() throws Exception
@@ -385,8 +384,8 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 
 	/**
 	 *	Get Attribute List
-	 *	@param M_Attribute_ID attribure
-	 *	@return array
+	 *	@param M_Attribute_ID attribute
+	 *	@return [M_AttributeValue_ID:Name]
 	 */
 	private KeyNamePair[] getAttributeList(int M_Attribute_ID)
 	{
@@ -471,9 +470,10 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 
 	
 	/**
-	 *	Action Listener
+	 *	Handle event
 	 *	@param e event
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{
 		if (e.getTarget().getId().equals(ConfirmPanel.A_OK))
@@ -486,16 +486,16 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 			m_query = null;
 			dispose();
 		}
-	}	//	actionPerformed
+	}
 
 	/**
 	 * 	Create Query
-	 *  <code>
+	 *  <p>
 	 * 	Available synonyms:
-	 *		M_Product p
-	 *		M_ProductPrice pr
-	 *		M_AttributeSet pa
-	 *	</code>
+	 *	<ul>M_Product p</ul>
+	 *	<ul>M_ProductPrice pr</ul>
+	 *	<ul>M_AttributeSet pa</ul>
+	 *	</p>
 	 *	@return query
 	 */
 	private String createQuery()
@@ -698,12 +698,13 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 		m_query = null;
 		if (sb.length() > 0)
 			m_query = sb.toString();
-		log.config(m_query);		
+		if (log.isLoggable(Level.CONFIG))
+			log.config(m_query);		
 		return m_query;
 	}	//	createQuery
 
 	/**
-	 * 	Get resulting Query WHERE
+	 * 	Get where clause
 	 *	@return query or null
 	 */
 	public String getWhereClause()

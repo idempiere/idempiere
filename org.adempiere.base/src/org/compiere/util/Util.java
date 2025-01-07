@@ -54,7 +54,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- *  General Utilities
+ *  General Utility methods
  *
  *  @author     Jorg Janke
  *  @version    $Id: Util.java,v 1.3 2006/07/30 00:52:23 jjanke Exp $
@@ -92,7 +92,6 @@ public class Util
 			pos = oldValue.indexOf(oldPart);
 		}
 		retValue.append(oldValue);
-	//	log.fine( "Env.replace - " + value + " - Old=" + oldPart + ", New=" + newPart + ", Result=" + retValue.toString());
 		return retValue.toString();
 	}	//	replace
 
@@ -115,7 +114,6 @@ public class Util
 		}
 		return out.toString();
 	}	//	removeCRLF
-
 
 	/**
 	 * Clean - Remove all white spaces
@@ -144,7 +142,6 @@ public class Util
 		}
 		return out.toString();
 	}	//	cleanWhitespace
-
 
 	/**
 	 * Mask HTML content.
@@ -211,10 +208,10 @@ public class Util
 	}	//	maskHTML
 
 	/**
-	 * Get the number of occurances of countChar in string.
+	 * Get the number of occurrences of countChar in string.
 	 * @param string String to be searched
 	 * @param countChar to be counted character
-	 * @return number of occurances
+	 * @return number of occurrences
 	 */
 	public static int getCount (String string, char countChar)
 	{
@@ -231,7 +228,7 @@ public class Util
 	}	//	getCount
 
 	/**
-	 * Is String Empty
+	 * Is String Empty or null
 	 * @param str string
 	 * @return true if &gt;= 1 char
 	 */
@@ -241,7 +238,7 @@ public class Util
 	}	//	isEmpty
 	
 	/**
-	 * Is String Empty
+	 * Is String Empty or null
 	 * @param str string
 	 * @param trimWhitespaces trim whitespaces
 	 * @return true if &gt;= 1 char
@@ -268,9 +265,9 @@ public class Util
 		return text;
 	}
 
-	/**************************************************************************
+	/**
 	 * Find index of search character in str.
-	 * This ignores content in () and 'texts'
+	 * This ignores content in () and quoted text ('texts').
 	 * @param str string
 	 * @param search search character
 	 * @return index or -1 if not found
@@ -282,7 +279,7 @@ public class Util
 
 	/**
 	 *  Find index of search characters in str.
-	 *  This ignores content in () and 'texts'
+	 *  This ignores content in () and quoted text ('texts').
 	 *  @param str string
 	 *  @param search1 first search character
 	 *  @param search2 second search character (or)
@@ -317,7 +314,7 @@ public class Util
 
 	/**
 	 *  Find index of search character in str.
-	 *  This ignores content in () and 'texts'
+	 *  This ignores content in () and quoted text ('texts')
 	 *  @param str string
 	 *  @param search search character
 	 *  @return index or -1 if not found
@@ -352,8 +349,7 @@ public class Util
 		return -1;
 	}   //  findIndexOf
 
-	
-	/**************************************************************************
+	/**
 	 *  Return Hex String representation of byte b
 	 *  @param b byte
 	 *  @return Hex
@@ -379,12 +375,11 @@ public class Util
 		byte lo = (byte) (c & 0xff);
 		return toHex(hi) + toHex(lo);
 	}   //  toHex
-
 	
-	/**************************************************************************
-	 * Init Cap Words With Spaces
+	/**
+	 * Capitalize first character of a word
 	 * @param in string
-	 * @return init cap
+	 * @return Capitalize string
 	 */
 	public static String initCap (String in)
 	{
@@ -407,11 +402,10 @@ public class Util
 		}
 		return new String (data);
 	}	//	initCap
-
 	
-	/**************************************************************************
-	 * Return a Iterator with only the relevant attributes.
-	 * Fixes implementation in AttributedString, which returns everything
+	/**
+	 * Return a Iterator with only the relevant attributes.<br/>
+	 * Fixes implementation in AttributedString, which returns everything.
 	 * @param aString attributed string
 	 * @param relevantAttributes relevant attributes
 	 * @return iterator
@@ -421,7 +415,6 @@ public class Util
 	{
 		AttributedCharacterIterator iter = aString.getIterator();
 		Set<?> set = iter.getAllAttributeKeys();
-	//	System.out.println("AllAttributeKeys=" + set);
 		if (set.size() == 0)
 			return iter;
 		//	Check, if there are unwanted attributes
@@ -457,15 +450,12 @@ public class Util
 					}
 				}
 			}
-		//	else
-		//		System.out.println("Unwanted: " + att);
 		}
 		return aString.getIterator();
 	}	//	getIterator
 
-
 	/**
-	 * Dump a Map (key=value) to out
+	 * Dump a Map (key=value) to standard out
 	 * @param map Map
 	 */
 	static public void dump (Map<Object,Object> map)
@@ -562,7 +552,7 @@ public class Util
 	/**
 	 * Is 8 Bit
 	 * @param str string
-	 * @return true if string contains chars &gt; 255
+	 * @return true if string doesn't contains chars &gt; 255
 	 */
 	public static boolean is8Bit (String str)
 	{
@@ -573,7 +563,6 @@ public class Util
 		{
 			if (cc[i] > 255)
 			{
-			//	System.out.println("Not 8 Bit - " + str);
 				return false;
 			}
 		}
@@ -601,8 +590,8 @@ public class Util
 	/**
 	 * Trim to max character length
 	 * @param str string
-	 * @param length max (incl) character length
-	 * @return string
+	 * @param length max (inclusive) character length
+	 * @return trim string
 	 */
 	public static String trimLength (String str, int length)
 	{
@@ -671,7 +660,7 @@ public class Util
 	}	//	trimSize
 
 	/**
-	 * String diacritics from given string
+	 * Strip diacritics from given string
 	 * @param s	original string
 	 * @return string without diacritics
 	 */
@@ -694,6 +683,11 @@ public class Util
 		/* */
 	}
 
+	/**
+	 * Set time portion to zero.
+	 * @param ts
+	 * @return truncated timestamp
+	 */
 	public static Timestamp removeTime(Timestamp ts) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(ts);
@@ -705,13 +699,13 @@ public class Util
     }
 	
 	/**
-    *
-    * @param pdfList
-    * @param outFile
-    * @throws IOException
-    * @throws DocumentException
-    * @throws FileNotFoundException
-    */
+     * Merge pdf files
+     * @param pdfList list of pdf file to merge
+     * @param outFile merged output file
+     * @throws IOException
+     * @throws DocumentException
+     * @throws FileNotFoundException
+     */
 	public static void mergePdf(List<File> pdfList, File outFile) throws IOException,
 			DocumentException, FileNotFoundException {
 		Document document = null;
@@ -755,8 +749,8 @@ public class Util
 	}
 
 	/**
-	 * Make the filename correct (updating all unauthorized characters to safe ones)
-	 * @param the filename to check
+	 * Make filename safe (updating all unauthorized characters to safe ones)
+	 * @param input the filename to check
 	 * @returns the correct filename
 	 */
 	public static String setFilenameCorrect(String input) {
@@ -770,11 +764,24 @@ public class Util
 		return output.trim();
 	}
 
+	private final static String UUID_REGEX="[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
+
 	/**
-	 * @return true if there is a directory org.adempiere.base within AdempiereHome (is the case when executed from Eclipse) 
+	 * Is value a valid UUID string
+	 * @param value
+	 * @return true if value is a uuid identifier
+	 */
+	public static boolean isUUID(String value)
+	{
+		return value == null ? false : value.matches(UUID_REGEX);
+	}
+
+	/**
+	 * Is running from Eclipse
+	 * @return true if there is a directory org.adempiere.base within AdempiereHome or if there is a System property org.idempiere.developermode set to Y 
 	 */
 	public static boolean isDeveloperMode() {
-		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
+		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base")) || "Y".equals(System.getProperty("org.idempiere.developermode"));
 	}
 
 }   //  Util

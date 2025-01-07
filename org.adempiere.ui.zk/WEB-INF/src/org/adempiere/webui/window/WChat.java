@@ -29,10 +29,12 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MChat;
 import org.compiere.model.MChatEntry;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -56,7 +58,7 @@ import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 	Application Chat
+ * 	Chat dialog (CM_Chat)
  *
  *  @author Jorg Janke
  *  @version $Id: AChat.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
@@ -64,25 +66,29 @@ import org.zkoss.zul.Vlayout;
 public class WChat extends Window implements EventListener<Event>, DialogEvents
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -5265835393257520762L;
-	
+	private static final long serialVersionUID = 8839053486411714175L;
+
 	private static final String USER_LABEL_STYLE = "font-weight: bold";
 	private static final String TIME_LABEL_STYLE = "font-size:xx-small;color:gray;margin-left:20px";
+	
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 *	Constructor.
-	 *	loads Chat, if ID &lt;&gt; 0
+	 *	loads Chat, if CM_Chat_ID &gt; 0
 	 *  @param WindowNo window no
 	 *  @param CM_Chat_ID chat
 	 *  @param AD_Table_ID table
 	 *  @param Record_ID record key
+	 *  @param Record_UU record UUID
 	 *  @param Description description
 	 *  @param trxName transaction
 	 */
 	public WChat (int WindowNo, int CM_Chat_ID,
-		int AD_Table_ID, int Record_ID, String Description,
+		int AD_Table_ID, int Record_ID, String Record_UU, String Description,
 		String trxName)
 	{
 		super();
@@ -104,7 +110,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		if (CM_Chat_ID > 0)
 			m_chat = new MChat (Env.getCtx(), CM_Chat_ID, trxName);
 		else
-			m_chat = new MChat (Env.getCtx(), AD_Table_ID, Record_ID, Description, trxName);
+			m_chat = new MChat (Env.getCtx(), AD_Table_ID, Record_ID, Record_UU, Description, trxName);
 		loadChat();
 		//
 	}	//	Attachment
@@ -132,7 +138,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	private String orientation;
 
 	/**
-	 * 	Static Init.
+	 * 	Layout dialog
 	 *	@throws Exception
 	 */
 	private void staticInit () throws Exception
@@ -142,8 +148,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		this.setAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "chat");
 		this.appendChild(mainPanel);
 		mainPanel.setStyle("border: none; background-color: white;");
-		//
-		
+		//		
 		Center center = new Center();
 		center.setSclass("dialog-content");
 		Vlayout content = new Vlayout();
@@ -194,6 +199,9 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 	
+	/**
+	 * Handle onClientInfo event
+	 */
 	protected void onClientInfo()
 	{		
 		if (getPage() != null)
@@ -210,7 +218,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	}
 	
 	/**
-	 * 	Load Chat
+	 * 	Load chat entries (CM_ChatEntry)
 	 */
 	private void loadChat()
 	{
@@ -229,6 +237,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		}
 	}	//	loadChat
 
+	/**
+	 * Add entry to UI and {@link #entryMap}
+	 * @param entry
+	 */
 	protected void addEntry(MChatEntry entry) {
 		if (entry.getCM_ChatEntryParent_ID() == 0) {
 			Treechildren treeChildren = messageTree.getTreechildren();
@@ -291,6 +303,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		}
 	}
 
+	/**
+	 * @param entry
+	 * @return time stamp label
+	 */
 	protected Label createTimestampLabel(MChatEntry entry) {
 		Timestamp created = entry.getCreated();
 		if (m_format == null)
@@ -300,6 +316,10 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		return timeLabel;
 	}
 
+	/**
+	 * @param entry
+	 * @return user name label
+	 */
 	protected Label createUserNameLabel(MChatEntry entry) {
 		Label userLabel;
 		MUser user = MUser.get(Env.getCtx(), entry.getCreatedBy());
@@ -316,9 +336,8 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		return button;
 	}
 
-
 	/**
-	 * 	Action Performed
+	 * 	Handle event
 	 *	@param e event
 	 */
 	public void actionPerformed (Event e)
@@ -377,11 +396,19 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		
 	}	//	actionPerformed
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		actionPerformed(event);
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		this.detach();
 	}
 }	//	WChat

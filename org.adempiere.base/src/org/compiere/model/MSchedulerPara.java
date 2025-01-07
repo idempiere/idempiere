@@ -32,9 +32,19 @@ import org.idempiere.model.IProcessParameter;
 public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSupport, IProcessParameter
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -9178948165437974600L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Scheduler_Para_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSchedulerPara(Properties ctx, String AD_Scheduler_Para_UU, String trxName) {
+        super(ctx, AD_Scheduler_Para_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -42,8 +52,7 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 	 *	@param AD_Scheduler_Para_ID id
 	 *	@param trxName transaction
 	 */
-	public MSchedulerPara (Properties ctx, int AD_Scheduler_Para_ID,
-		String trxName)
+	public MSchedulerPara (Properties ctx, int AD_Scheduler_Para_ID, String trxName)
 	{
 		super (ctx, AD_Scheduler_Para_ID, trxName);
 	}	//	MSchedulerPara
@@ -60,7 +69,7 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 	}	//	MSchedulerPara
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MSchedulerPara(MSchedulerPara copy) 
@@ -69,7 +78,7 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -79,7 +88,7 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -106,7 +115,7 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 	}	//	getColumnName
 	
 	/**
-	 * 	Get Display Type
+	 * 	Get Display Type (AD_Reference_ID)
 	 *	@return display type
 	 */
 	public int getDisplayType()
@@ -120,6 +129,7 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString() 
 	{
 		StringBuilder sb = new StringBuilder("MSchedulerPara[");

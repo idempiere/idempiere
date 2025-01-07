@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestProcessor_Route
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessor_Route")
-public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcessor_Route, I_Persistent 
+public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcessor_Route, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor_Route (Properties ctx, int R_RequestProcessor_Route_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_RequestProcessor_Route (Properties ctx, String R_RequestProcessor_Route_UU, String trxName)
+    {
+      super (ctx, R_RequestProcessor_Route_UU, trxName);
+      /** if (R_RequestProcessor_Route_UU == null)
+        {
+			setAD_User_ID (0);
+			setR_RequestProcessor_ID (0);
+			setR_RequestProcessor_Route_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestProcessor_Route (Properties ctx, String R_RequestProcessor_Route_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestProcessor_Route_UU, trxName, virtualColumns);
+      /** if (R_RequestProcessor_Route_UU == null)
+        {
+			setAD_User_ID (0);
+			setR_RequestProcessor_ID (0);
+			setR_RequestProcessor_Route_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_RequestProcessor_Route (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -246,7 +272,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getSeqNo()));
     }

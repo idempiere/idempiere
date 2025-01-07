@@ -36,7 +36,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MActivity extends X_C_Activity implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5939026057597689130L;
 	
@@ -81,6 +81,16 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 		return null;
 	}
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Activity_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MActivity(Properties ctx, String C_Activity_UU, String trxName) {
+        super(ctx, C_Activity_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -104,7 +114,7 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 	}	//	MActivity
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MActivity(MActivity copy)
@@ -113,7 +123,7 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -123,7 +133,7 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -134,6 +144,12 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 		copyPO(copy);
 	}
 
+	/**
+	 * @param ctx
+	 * @param C_Activity_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MActivity(Properties ctx, int C_Activity_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_Activity_ID, trxName, virtualColumns);
 	}
@@ -146,6 +162,7 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 	 *	@param success save success
 	 *	@return true if saved
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -167,6 +184,7 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 	 *	@param success
 	 *	@return deleted
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (success)

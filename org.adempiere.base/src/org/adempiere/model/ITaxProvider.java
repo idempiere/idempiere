@@ -27,7 +27,6 @@ import org.compiere.process.ProcessInfo;
  * @author Elaine
  *
  * @contributor Murilo H. Torquato <muriloht@devcoffee.com.br>
- *
  */
 public interface ITaxProvider {
 		
@@ -131,10 +130,10 @@ public interface ITaxProvider {
 	public boolean updateHeaderTax(MTaxProvider provider, MRMALine line);
 
 	/**
-	 * 
+	 * Validate connection to online tax calculation service.
 	 * @param provider
 	 * @param pi
-	 * @return error message
+	 * @return error message or null
 	 * @throws Exception
 	 */
 	public String validateConnection(MTaxProvider provider, ProcessInfo pi) throws Exception;

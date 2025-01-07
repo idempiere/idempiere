@@ -33,6 +33,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Response Model	
@@ -43,10 +44,21 @@ import org.compiere.util.TimeUtil;
 public class MRfQResponse extends X_C_RfQResponse
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1472377321844135042L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RfQResponse_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRfQResponse(Properties ctx, String C_RfQResponse_UU, String trxName) {
+        super(ctx, C_RfQResponse_UU, trxName);
+		if (Util.isEmpty(C_RfQResponse_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -58,15 +70,20 @@ public class MRfQResponse extends X_C_RfQResponse
 	{
 		super (ctx, C_RfQResponse_ID, trxName);
 		if (C_RfQResponse_ID == 0)
-		{
-			setIsComplete (false);
-			setIsSelectedWinner (false);
-			setIsSelfService (false);
-			setPrice (Env.ZERO);
-			setProcessed(false);
-			setProcessing(false);
-		}
+			setInitialDefaults();
 	}	//	MRfQResponse
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsComplete (false);
+		setIsSelectedWinner (false);
+		setIsSelfService (false);
+		setPrice (Env.ZERO);
+		setProcessed(false);
+		setProcessing(false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -94,8 +111,8 @@ public class MRfQResponse extends X_C_RfQResponse
 
 	/**
 	 * 	Parent Constructor
-	 *	@param rfq rfq
-	 *	@param partner web response
+	 *	@param rfq
+	 *	@param partner
 	 */
 	public MRfQResponse (MRfQ rfq, MBPartner partner)
 	{
@@ -107,8 +124,7 @@ public class MRfQResponse extends X_C_RfQResponse
 	
 	/**
 	 * 	Parent Constructor.
-	 * 	Automatically saved if lines were created 
-	 * 	Saved automatically
+	 * 	Automatically saved if lines were created .
 	 *	@param rfq rfq
 	 *	@param subscriber optional subscriber
 	 *	@param C_BPartner_ID bpartner
@@ -154,11 +170,10 @@ public class MRfQResponse extends X_C_RfQResponse
 	private MRfQ				m_rfq = null;
 	/** Lines						*/
 	private MRfQResponseLine[]	m_lines = null;
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Get Response Lines
-	 * 	@param requery requery
+	 * 	@param requery true to re-query from DB
 	 *	@return array of Response Lines
 	 */
 	public MRfQResponseLine[] getLines(boolean requery)
@@ -197,14 +212,13 @@ public class MRfQResponse extends X_C_RfQResponse
 	}	//	getLines
 	
 	/**
-	 * 	Get Response Lines (no requery)
+	 * 	Get Response Lines (no re-query)
 	 *	@return array of Response Lines
 	 */
 	public MRfQResponseLine[] getLines ()
 	{
 		return getLines (false);
-	}	//	getLines
-	
+	}	//	getLines	
 	
 	/**
 	 * 	Get RfQ
@@ -222,6 +236,7 @@ public class MRfQResponse extends X_C_RfQResponse
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MRfQResponse[");
@@ -231,11 +246,10 @@ public class MRfQResponse extends X_C_RfQResponse
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Send RfQ
-	 *	@return true if RfQ is sent per email.
+	 *	@return true if RfQ is sent via email.
 	 */
 	public boolean sendRfQ()
 	{
@@ -302,11 +316,10 @@ public class MRfQResponse extends X_C_RfQResponse
 		// ==================================
 		return re.getPDF(file);
 	}	//	getPDF
-
 	
-	/**************************************************************************
-	 * 	Check if Response is Complete
-	 *	@return null if complere - error message otherwise
+	/**
+	 * 	Check if Response is Completed
+	 *	@return null if completed, error message otherwise
 	 */
 	public String checkComplete()
 	{
@@ -387,7 +400,7 @@ public class MRfQResponse extends X_C_RfQResponse
 	
 	/**
 	 * 	Is Quote Total Amt Only
-	 *	@return true if only Total
+	 *	@return true if quote total amount only
 	 */
 	public boolean isQuoteTotalAmtOnly()
 	{
@@ -399,6 +412,7 @@ public class MRfQResponse extends X_C_RfQResponse
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Calculate Complete Date (also used to verify)

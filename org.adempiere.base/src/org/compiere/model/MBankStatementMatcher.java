@@ -29,7 +29,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *	Bank Statement Matcher Algorithm
+ *	Bank Statement Matcher Configuration
  *	
  *  @author Jorg Janke
  *  @version $Id: MBankStatementMatcher.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
@@ -37,12 +37,12 @@ import org.compiere.util.Env;
 public class MBankStatementMatcher extends X_C_BankStatementMatcher
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3756318777177414260L;
 
 	/**
-	 * 	Get Bank Statement Matcher Algorithms
+	 * 	Get Bank Statement Matcher Configuration
 	 * 	@param ctx context
 	 *	@param trxName transaction
 	 *	@return matchers
@@ -83,7 +83,17 @@ public class MBankStatementMatcher extends X_C_BankStatementMatcher
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MBankStatementMatcher.class);
 
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_BankStatementMatcher_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MBankStatementMatcher(Properties ctx, String C_BankStatementMatcher_UU, String trxName) {
+        super(ctx, C_BankStatementMatcher_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_BankStatementMatcher_ID id
@@ -120,7 +130,7 @@ public class MBankStatementMatcher extends X_C_BankStatementMatcher
 	}	//	isMatcherValid
 
 	/**
-	 * 	Get Matcher 
+	 * 	Get matcher instance 
 	 *	@return Matcher Instance
 	 */
 	public BankStatementMatcherInterface getMatcher()

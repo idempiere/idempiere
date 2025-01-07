@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Disposed
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Disposed")
-public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Persistent 
+public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Disposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
@@ -108,6 +108,78 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Disposed (Properties ctx, String A_Asset_Disposed_UU, String trxName)
+    {
+      super (ctx, A_Asset_Disposed_UU, trxName);
+      /** if (A_Asset_Disposed_UU == null)
+        {
+			setA_Accumulated_Depr (Env.ZERO);
+// 0
+			setA_Accumulated_Depr_Delta (Env.ZERO);
+// 0
+			setA_Activation_Method (null);
+// 'AA'
+			setA_Asset_Disposed_ID (0);
+			setA_Asset_ID (0);
+			setA_Disposal_Amt (Env.ZERO);
+// 0
+			setA_Disposed_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Disposed_Method (null);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setDocumentNo (null);
+			setExpense (Env.ZERO);
+// 0
+			setIsApproved (false);
+// N
+			setPosted (false);
+// N
+			setPostingType (null);
+// A
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Disposed (Properties ctx, String A_Asset_Disposed_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Disposed_UU, trxName, virtualColumns);
+      /** if (A_Asset_Disposed_UU == null)
+        {
+			setA_Accumulated_Depr (Env.ZERO);
+// 0
+			setA_Accumulated_Depr_Delta (Env.ZERO);
+// 0
+			setA_Activation_Method (null);
+// 'AA'
+			setA_Asset_Disposed_ID (0);
+			setA_Asset_ID (0);
+			setA_Disposal_Amt (Env.ZERO);
+// 0
+			setA_Disposed_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Disposed_Method (null);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setDocumentNo (null);
+			setExpense (Env.ZERO);
+// 0
+			setIsApproved (false);
+// N
+			setPosted (false);
+// N
+			setPostingType (null);
+// A
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Disposed (Properties ctx, ResultSet rs, String trxName)
     {
@@ -115,7 +187,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -234,7 +306,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Disposed_ID()));
     }
@@ -754,10 +826,10 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -777,10 +849,10 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	public boolean isDisposed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisposed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -800,10 +872,10 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -852,10 +924,10 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -893,10 +965,10 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

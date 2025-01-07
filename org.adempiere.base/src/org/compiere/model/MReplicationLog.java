@@ -27,18 +27,28 @@ import java.util.Properties;
  */
 public class MReplicationLog extends X_AD_Replication_Log
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -8815834636981996509L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Replication_Log_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MReplicationLog(Properties ctx, String AD_Replication_Log_UU, String trxName) {
+        super(ctx, AD_Replication_Log_UU, trxName);
+    }
+
 	/**
-	 * 	Create new Log
+	 * 	Create new Replication Log
 	 * 	@param ctx context
 	 * 	@param AD_Replication_Run_ID id
 	 * 	@param AD_ReplicationTable_ID id
 	 * 	@param P_Msg msg
+	 *  @param trxName
 	 */
 	public MReplicationLog(Properties ctx, int AD_Replication_Run_ID, int AD_ReplicationTable_ID, String P_Msg, String trxName)
 	{
@@ -49,6 +59,11 @@ public class MReplicationLog extends X_AD_Replication_Log
 		setP_Msg(P_Msg);
 	}	//	MReplicationLog
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MReplicationLog(Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);

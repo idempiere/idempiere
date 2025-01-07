@@ -20,8 +20,8 @@ import org.adempiere.base.ServiceQuery;
 
 
 /**
- * This is the Equinox implementation of extension Locator.
- * It delegates work to the ExtensionList that lookups up extensions.
+ * This is the Equinox implementation of extension Locator. <br/>
+ * It delegates work to the ExtensionList that lookups up extensions. <br/>
  * Usually, the ids of extension points correspond to the interface names of the services.
  *  
  * @author viola
@@ -33,12 +33,14 @@ public class EquinoxExtensionLocator {
 
 	private EquinoxExtensionLocator() {}
 	
+	/**
+	 * @return EquinoxExtensionLocator singleton instance
+	 */
 	public static EquinoxExtensionLocator instance() {
 		return INSTANCE;
 	}
 	
 	/**
-	 * 
 	 * @param type
 	 * @return equinox extension holder
 	 */
@@ -47,7 +49,6 @@ public class EquinoxExtensionLocator {
 	}
 	
 	/**
-	 * 
 	 * @param type
 	 * @param extensionPointId
 	 * @return equinox extension holder
@@ -58,7 +59,6 @@ public class EquinoxExtensionLocator {
 	}
 
 	/**
-	 * 
 	 * @param type
 	 * @param query
 	 * @return equinox extension holder
@@ -68,7 +68,6 @@ public class EquinoxExtensionLocator {
 	}
 
 	/**
-	 * 
 	 * @param type
 	 * @param extensionId
 	 * @param query
@@ -80,7 +79,6 @@ public class EquinoxExtensionLocator {
 	}
 	
 	/**
-	 * 
 	 * @param type
 	 * @param extensionPointId
 	 * @param extensionId
@@ -94,7 +92,6 @@ public class EquinoxExtensionLocator {
 	}
 		
 	/**
-	 * 
 	 * @param type
 	 * @return equinox extension holder
 	 */
@@ -103,7 +100,6 @@ public class EquinoxExtensionLocator {
 	}
 
 	/**
-	 * 
 	 * @param type
 	 * @param extensionPointId
 	 * @return equinox extension holder
@@ -114,7 +110,6 @@ public class EquinoxExtensionLocator {
 	}
 	
 	/**
-	 * 
 	 * @param type
 	 * @param query
 	 * @return equinox extension holder
@@ -124,7 +119,6 @@ public class EquinoxExtensionLocator {
 	}
 
 	/**
-	 * 
 	 * @param type
 	 * @param extensionId
 	 * @param query
@@ -136,7 +130,6 @@ public class EquinoxExtensionLocator {
 	}
 	
 	/**
-	 * 
 	 * @param type
 	 * @param extensionPointId
 	 * @param extensionId

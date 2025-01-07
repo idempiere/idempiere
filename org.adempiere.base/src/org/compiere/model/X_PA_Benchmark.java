@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Benchmark
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_Benchmark")
-public class X_PA_Benchmark extends PO implements I_PA_Benchmark, I_Persistent 
+public class X_PA_Benchmark extends PO implements I_PA_Benchmark, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_Benchmark (Properties ctx, int PA_Benchmark_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_PA_Benchmark extends PO implements I_PA_Benchmark, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_Benchmark (Properties ctx, String PA_Benchmark_UU, String trxName)
+    {
+      super (ctx, PA_Benchmark_UU, trxName);
+      /** if (PA_Benchmark_UU == null)
+        {
+			setAccumulationType (null);
+			setName (null);
+			setPA_Benchmark_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Benchmark (Properties ctx, String PA_Benchmark_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Benchmark_UU, trxName, virtualColumns);
+      /** if (PA_Benchmark_UU == null)
+        {
+			setAccumulationType (null);
+			setName (null);
+			setPA_Benchmark_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_Benchmark (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_PA_Benchmark extends PO implements I_PA_Benchmark, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -159,7 +183,7 @@ public class X_PA_Benchmark extends PO implements I_PA_Benchmark, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

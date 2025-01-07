@@ -29,6 +29,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	GL Distribution Model
@@ -40,7 +41,7 @@ import org.compiere.util.Env;
 public class MDistribution extends X_GL_Distribution
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5964912910470166735L;
 
@@ -190,7 +191,9 @@ public class MDistribution extends X_GL_Distribution
 	 *	@param ctx ignore
 	 *	@param Account_ID id
 	 *	@return array of distributions
+	 *  @deprecated
 	 */
+	@Deprecated
 	public static MDistribution[] get (Properties ctx, int Account_ID)
 	{
 		return get(Account_ID);
@@ -203,6 +206,7 @@ public class MDistribution extends X_GL_Distribution
 	 *  @deprecated - using the method to get a specific account ID doesn't make sense because of the flag IsAnyAcct
 	 *                use method getAll() instead
 	 */
+	@Deprecated
 	public static MDistribution[] get (int Account_ID)
 	{
 		Properties ctx = Env.getCtx();
@@ -254,9 +258,20 @@ public class MDistribution extends X_GL_Distribution
 	/**	Distributions by Account			*/
 	private static CCache<String,MDistribution[]> s_accounts 
 		= new CCache<String,MDistribution[]>(Table_Name, 100);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param GL_Distribution_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDistribution(Properties ctx, String GL_Distribution_UU, String trxName) {
+        super(ctx, GL_Distribution_UU, trxName);
+		if (Util.isEmpty(GL_Distribution_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param GL_Distribution_ID id
@@ -266,25 +281,30 @@ public class MDistribution extends X_GL_Distribution
 	{
 		super (ctx, GL_Distribution_ID, trxName);
 		if (GL_Distribution_ID == 0)
-		{
-			setAnyAcct (true);	// Y
-			setAnyActivity (true);	// Y
-			setAnyBPartner (true);	// Y
-			setAnyCampaign (true);	// Y
-			setAnyLocFrom (true);	// Y
-			setAnyLocTo (true);	// Y
-			setAnyOrg (true);	// Y
-			setAnyOrgTrx (true);	// Y
-			setAnyProduct (true);	// Y
-			setAnyProject (true);	// Y
-			setAnySalesRegion (true);	// Y
-			setAnyUser1 (true);	// Y
-			setAnyUser2 (true);	// Y
-			//
-			setIsValid (false);	// N
-			setPercentTotal (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MDistribution
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAnyAcct (true);	// Y
+		setAnyActivity (true);	// Y
+		setAnyBPartner (true);	// Y
+		setAnyCampaign (true);	// Y
+		setAnyLocFrom (true);	// Y
+		setAnyLocTo (true);	// Y
+		setAnyOrg (true);	// Y
+		setAnyOrgTrx (true);	// Y
+		setAnyProduct (true);	// Y
+		setAnyProject (true);	// Y
+		setAnySalesRegion (true);	// Y
+		setAnyUser1 (true);	// Y
+		setAnyUser2 (true);	// Y
+		//
+		setIsValid (false);	// N
+		setPercentTotal (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -298,7 +318,7 @@ public class MDistribution extends X_GL_Distribution
 	}	//	MDistribution
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDistribution(MDistribution copy) 
@@ -307,7 +327,7 @@ public class MDistribution extends X_GL_Distribution
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -317,7 +337,7 @@ public class MDistribution extends X_GL_Distribution
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -334,7 +354,7 @@ public class MDistribution extends X_GL_Distribution
 	
 	/**
 	 * 	Get Lines and calculate total
-	 *	@param reload reload data
+	 *	@param reload true to reload data
 	 *	@return array of lines
 	 */
 	public MDistributionLine[] getLines (boolean reload)
@@ -414,7 +434,7 @@ public class MDistribution extends X_GL_Distribution
 	 * 	Distribute Amount to Lines
 	 * 	@param acct account
 	 *	@param Amt amount
-	 * @param Qty 
+	 *  @param Qty 
 	 *	@param C_Currency_ID currency
 	 */
 	public void distribute (MAccount acct, BigDecimal Amt, BigDecimal Qty, int C_Currency_ID)
@@ -490,13 +510,13 @@ public class MDistribution extends X_GL_Distribution
 			}
 		}
 	}	//	distribute
-	
-	
+		
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//	Reset not selected Any

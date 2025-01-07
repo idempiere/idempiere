@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_ClientInfo
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ClientInfo")
-public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent 
+public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ClientInfo (Properties ctx, int AD_ClientInfo_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ClientInfo (Properties ctx, String AD_ClientInfo_UU, String trxName)
+    {
+      super (ctx, AD_ClientInfo_UU, trxName);
+      /** if (AD_ClientInfo_UU == null)
+        {
+			setIsConfirmOnDocClose (false);
+// N
+			setIsConfirmOnDocVoid (false);
+// N
+			setIsDiscountLineAmt (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ClientInfo (Properties ctx, String AD_ClientInfo_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ClientInfo_UU, trxName, virtualColumns);
+      /** if (AD_ClientInfo_UU == null)
+        {
+			setIsConfirmOnDocClose (false);
+// N
+			setIsConfirmOnDocVoid (false);
+// N
+			setIsDiscountLineAmt (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ClientInfo (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -85,7 +113,7 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_ClientInfo[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -606,10 +634,10 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	public boolean isConfirmOnDocClose()
 	{
 		Object oo = get_Value(COLUMNNAME_IsConfirmOnDocClose);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -628,10 +656,10 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	public boolean isConfirmOnDocVoid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsConfirmOnDocVoid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -651,10 +679,10 @@ public class X_AD_ClientInfo extends PO implements I_AD_ClientInfo, I_Persistent
 	public boolean isDiscountLineAmt()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDiscountLineAmt);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

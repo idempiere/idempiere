@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for IMP_Processor
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="IMP_Processor")
-public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent 
+public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_IMP_Processor (Properties ctx, int IMP_Processor_ID, String trxName)
@@ -67,6 +67,40 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_IMP_Processor (Properties ctx, String IMP_Processor_UU, String trxName)
+    {
+      super (ctx, IMP_Processor_UU, trxName);
+      /** if (IMP_Processor_UU == null)
+        {
+			setFrequency (0);
+			setFrequencyType (null);
+			setIMP_Processor_ID (0);
+			setIMP_Processor_Type_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_IMP_Processor (Properties ctx, String IMP_Processor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, IMP_Processor_UU, trxName, virtualColumns);
+      /** if (IMP_Processor_UU == null)
+        {
+			setFrequency (0);
+			setFrequencyType (null);
+			setIMP_Processor_ID (0);
+			setIMP_Processor_Type_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_IMP_Processor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +108,7 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -377,10 +411,10 @@ public class X_IMP_Processor extends PO implements I_IMP_Processor, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

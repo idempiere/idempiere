@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Split
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Split")
-public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent 
+public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Split (Properties ctx, int A_Asset_Split_ID, String trxName)
@@ -92,6 +92,62 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Split (Properties ctx, String A_Asset_Split_UU, String trxName)
+    {
+      super (ctx, A_Asset_Split_UU, trxName);
+      /** if (A_Asset_Split_UU == null)
+        {
+			setA_Asset_Acct_ID (0);
+// @SQL=SELECT A_Asset_Acct_ID FROM A_Asset_Acct WHERE A_Asset_Acct.A_Asset_Acct_ID=@A_Asset_Acct_ID@
+			setA_Asset_ID (0);
+// @SQL=SELECT A_Asset_ID FROM A_Asset WHERE A_Asset.A_Asset_ID=@A_Asset_ID@
+			setA_Asset_Split_ID (0);
+			setA_Depreciation_Workfile_ID (0);
+// @SQL=SELECT A_Depreciation_Workfile_ID FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Depreciation_Workfile_ID=@A_Depreciation_Workfile_ID@
+			setA_QTY_Current (Env.ZERO);
+// @SQL=SELECT A_QTY_Current FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Asset_ID=@A_Asset_ID@ and A_Depreciation_Workfile.PostingType='@PostingType@'
+			setA_Split_Type (null);
+			setA_Transfer_Balance_IS (false);
+			setC_Period_ID (0);
+// @Date@
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setPostingType (null);
+// @SQL=SELECT PostingType FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Depreciation_Workfile_ID=@A_Depreciation_Workfile_ID@
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Split (Properties ctx, String A_Asset_Split_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Split_UU, trxName, virtualColumns);
+      /** if (A_Asset_Split_UU == null)
+        {
+			setA_Asset_Acct_ID (0);
+// @SQL=SELECT A_Asset_Acct_ID FROM A_Asset_Acct WHERE A_Asset_Acct.A_Asset_Acct_ID=@A_Asset_Acct_ID@
+			setA_Asset_ID (0);
+// @SQL=SELECT A_Asset_ID FROM A_Asset WHERE A_Asset.A_Asset_ID=@A_Asset_ID@
+			setA_Asset_Split_ID (0);
+			setA_Depreciation_Workfile_ID (0);
+// @SQL=SELECT A_Depreciation_Workfile_ID FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Depreciation_Workfile_ID=@A_Depreciation_Workfile_ID@
+			setA_QTY_Current (Env.ZERO);
+// @SQL=SELECT A_QTY_Current FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Asset_ID=@A_Asset_ID@ and A_Depreciation_Workfile.PostingType='@PostingType@'
+			setA_Split_Type (null);
+			setA_Transfer_Balance_IS (false);
+			setC_Period_ID (0);
+// @Date@
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setPostingType (null);
+// @SQL=SELECT PostingType FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Depreciation_Workfile_ID=@A_Depreciation_Workfile_ID@
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Split (Properties ctx, ResultSet rs, String trxName)
     {
@@ -99,7 +155,7 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -247,7 +303,7 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Split_ID()));
     }
@@ -397,10 +453,10 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
 	public boolean isA_Transfer_Balance_IS()
 	{
 		Object oo = get_Value(COLUMNNAME_A_Transfer_Balance_IS);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -493,10 +549,10 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -515,10 +571,10 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

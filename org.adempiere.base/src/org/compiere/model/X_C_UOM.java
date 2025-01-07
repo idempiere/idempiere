@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UOM
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_UOM")
-public class X_C_UOM extends PO implements I_C_UOM, I_Persistent 
+public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20240319L;
 
     /** Standard Constructor */
     public X_C_UOM (Properties ctx, int C_UOM_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_UOM (Properties ctx, String C_UOM_UU, String trxName)
+    {
+      super (ctx, C_UOM_UU, trxName);
+      /** if (C_UOM_UU == null)
+        {
+			setCostingPrecision (0);
+			setC_UOM_ID (0);
+			setIsDefault (false);
+			setName (null);
+			setStdPrecision (0);
+			setX12DE355 (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_UOM (Properties ctx, String C_UOM_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_UOM_UU, trxName, virtualColumns);
+      /** if (C_UOM_UU == null)
+        {
+			setCostingPrecision (0);
+			setC_UOM_ID (0);
+			setIsDefault (false);
+			setName (null);
+			setStdPrecision (0);
+			setX12DE355 (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_UOM (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -177,10 +207,10 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -205,7 +235,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -227,6 +257,22 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set UN/CEFACT Code.
+		@param UNCEFACT Code for Units of Measure used in International Trade
+	*/
+	public void setUNCEFACT (String UNCEFACT)
+	{
+		set_Value (COLUMNNAME_UNCEFACT, UNCEFACT);
+	}
+
+	/** Get UN/CEFACT Code.
+		@return Code for Units of Measure used in International Trade
+	  */
+	public String getUNCEFACT()
+	{
+		return (String)get_Value(COLUMNNAME_UNCEFACT);
 	}
 
 	/** Set Symbol.

@@ -13,18 +13,28 @@
  *****************************************************************************/
 package org.adempiere.base.event;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.adempiere.base.BaseActivator;
+import org.adempiere.base.event.annotations.BaseEventHandler;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
+import org.compiere.util.Util;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
@@ -33,7 +43,7 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 /**
- * Simple wrapper for the osgi event admin service.
+ * Simple wrapper for the osgi event admin service.<br/>
  * Usage: EventManager.getInstance().sendEvent/postEvent
  * @author hengsin
  *
@@ -48,6 +58,9 @@ public class EventManager implements IEventManager {
 
 	private Map<EventHandler, List<ServiceRegistration<?>>> registrations = new HashMap<EventHandler, List<ServiceRegistration<?>>>();
 
+	private List<String> blackListEventHandlers = null;
+	private Map<String, List<String>> blackListTopicMap = null;
+	
 	/**
 	 * @param eventAdmin
 	 */
@@ -55,12 +68,71 @@ public class EventManager implements IEventManager {
 		synchronized (mutex) {
 			if (instance == null) {
 				instance  = this;
+				retrieveBlacklistHandlers();
 				mutex.notifyAll();
 			}
 		}
 		this.eventAdmin = eventAdmin;
 	}
 
+	private void retrieveBlacklistHandlers() {
+		blackListEventHandlers = new ArrayList<String>();
+		blackListTopicMap = new HashMap<String, List<String>>();
+		String path = Ini.getAdempiereHome();
+		File file = new File(path, "event.handlers.blacklist");
+		if (file.exists()) {
+			BufferedReader br = null;
+			try {
+				FileReader reader = new FileReader(file);
+				br = new BufferedReader(reader);
+				String s = null;
+				do {
+					s = br.readLine();
+					if (!Util.isEmpty(s)) {
+						s = s.trim();
+						s = s.replaceAll(" ", "");
+						if (s.endsWith("[*]")) {
+							blackListEventHandlers.add(s.substring(0, s.length()-3));
+						} else {
+							int topicStart = s.indexOf("[");
+							if (topicStart <= 0)
+								continue;
+							int topicEnd = s.indexOf("]", topicStart);
+							if (topicEnd <= 0)
+								continue;
+							String topicValue = s.substring(topicStart+1, topicEnd);
+							String className = s.substring(0, topicStart);
+							if (blackListEventHandlers.contains(className))
+								continue;
+							List<String> topicList = blackListTopicMap.get(className);
+							if (topicList == null) {
+								topicList = new ArrayList<String>();
+								blackListTopicMap.put(className, topicList);
+							}
+							String[] topics = topicValue.split("[,]");
+							for(String topic : topics) {
+								if (!topicList.contains(topic)) {
+									topicList.add(topic);
+								}
+							}
+						}
+					}
+				} while (s != null);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (br != null) {
+					try {
+						br.close();
+					} catch (IOException e) {}
+				}
+			}
+		}
+		
+	}
+	
 	/**
 	 * @param eventAdmin
 	 */
@@ -143,6 +215,35 @@ public class EventManager implements IEventManager {
 		return register(topics, filter, eventHandler);
 	}
 
+	/**
+	 * @param topics List of event topic. If only some of the event topic is black listed,
+	 * the method will return false and remove the black listed event topic from topics list.  
+	 * @param eventHandler
+	 * @return true if eventhandler is black listed (i.e don't register the service) for topics
+	 */
+	private boolean isBlackListed(List<String> topics, EventHandler eventHandler) {
+		String className = eventHandler.getClass().getName();
+		if (eventHandler instanceof BaseEventHandler beh) {
+			if (beh.getDelegateClass() != null)
+				className = beh.getDelegateClass().getName();
+		}
+		if (blackListEventHandlers != null && blackListEventHandlers.contains(className))
+			return true;
+		if (blackListTopicMap != null && !blackListTopicMap.isEmpty()) {
+			List<String> blackListed = blackListTopicMap.get(className);
+			if (blackListed != null && !blackListed.isEmpty()) {
+				Iterator<String> iterator = topics.iterator();
+				while(iterator.hasNext()) {
+					String topic = iterator.next();
+					if (blackListed.contains(topic))
+						iterator.remove();
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.adempiere.base.event.IEventManager#register(java.lang.String[], java.lang.String, org.osgi.service.event.EventHandler)
 	 */
@@ -153,6 +254,16 @@ public class EventManager implements IEventManager {
 			log.severe("No bundle context. Topic="+Arrays.toString(topics));
 			return false;
 		}
+		
+		//check black listed event topics
+		List<String> topicList = Arrays.stream(topics).collect(Collectors.toCollection(ArrayList::new));
+		if (isBlackListed(topicList, eventHandler))
+			return false;
+		if (topicList.isEmpty())
+			return false;		
+		if (topicList.size() != topics.length)
+			topics = topicList.toArray(new String[0]);
+		
 		Dictionary<String, Object> d = new Hashtable<String, Object>();
 		d.put(EventConstants.EVENT_TOPIC, topics);
 		if (filter != null)

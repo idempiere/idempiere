@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PackageLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_PackageLine")
-public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent 
+public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PackageLine (Properties ctx, int M_PackageLine_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_PackageLine (Properties ctx, String M_PackageLine_UU, String trxName)
+    {
+      super (ctx, M_PackageLine_UU, trxName);
+      /** if (M_PackageLine_UU == null)
+        {
+			setM_InOutLine_ID (0);
+			setM_Package_ID (0);
+			setM_PackageLine_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PackageLine (Properties ctx, String M_PackageLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PackageLine_UU, trxName, virtualColumns);
+      /** if (M_PackageLine_UU == null)
+        {
+			setM_InOutLine_ID (0);
+			setM_Package_ID (0);
+			setM_PackageLine_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_PackageLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -164,7 +190,7 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_Package_ID()));
     }

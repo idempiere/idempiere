@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for R_CategoryUpdates
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_CategoryUpdates")
-public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Persistent 
+public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_CategoryUpdates (Properties ctx, int R_CategoryUpdates_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_CategoryUpdates (Properties ctx, String R_CategoryUpdates_UU, String trxName)
+    {
+      super (ctx, R_CategoryUpdates_UU, trxName);
+      /** if (R_CategoryUpdates_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Category_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_CategoryUpdates (Properties ctx, String R_CategoryUpdates_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_CategoryUpdates_UU, trxName, virtualColumns);
+      /** if (R_CategoryUpdates_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Category_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_CategoryUpdates (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -80,7 +104,7 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_R_CategoryUpdates[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -126,10 +150,10 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

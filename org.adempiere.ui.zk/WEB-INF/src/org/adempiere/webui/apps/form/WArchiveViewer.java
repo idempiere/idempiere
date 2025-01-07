@@ -41,7 +41,6 @@ import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -57,6 +56,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
@@ -64,6 +64,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
 import org.compiere.apps.form.Archive;
@@ -136,7 +137,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 					if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
 						if (media != null && iframe.getSrc() == null) {
 							String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-							String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+							String pdfJsUrl = AEnv.toPdfJsUrl(url);
 							iframe.setSrc(pdfJsUrl);
 						}
 					}
@@ -178,9 +179,9 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private Listbox createdByQField = new Listbox();
 	private Label createdQLabel = new Label(Msg.translate(Env.getCtx(), "Created"));
 	/** Created date from field of query tab */
-	private Datebox createdQFrom = new Datebox();
+	private WDateEditor createdQFrom = new WDateEditor();
 	/** Created date to field of query tab */
-	private Datebox createdQTo = new Datebox();
+	private WDateEditor createdQTo = new WDateEditor();
 	
 	//Viewer Tab
 	/** Prior button of viewer tab */
@@ -286,7 +287,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			else
 			{
 				String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-				String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+				String pdfJsUrl = AEnv.toPdfJsUrl(url);
 				iframe.setContent(null);
 				iframe.setSrc(pdfJsUrl);
 			}
@@ -457,8 +458,10 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			rows.appendChild(row);
 			row.appendChild(createdQLabel);
 			Hbox hbox = new Hbox();
-			hbox.appendChild(createdQFrom);
-			hbox.appendChild(createdQTo);
+			hbox.appendChild(createdQFrom.getComponent());
+			hbox.appendChild(createdQTo.getComponent());
+			DateRangeButton drb = (new DateRangeButton(createdQFrom, createdQTo));
+			hbox.appendChild(drb);
 			row.appendChild(hbox);
 			row.appendChild(new Space());
 			
@@ -742,7 +745,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 
 		WEMailDialog dialog = new WEMailDialog (Msg.getMsg(Env.getCtx(), "SendMail"),
 				from, "", "", "", new FileDataSource(attachment),
-				m_WindowNo, m_AD_Table_ID, m_Record_ID, null);
+				m_WindowNo, ar.getAD_Table_ID(), ar.getRecord_ID(), ar.getRecord_UU(), null);
 
 		AEnv.showWindow(dialog);
 	}
@@ -867,14 +870,27 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	 * 	Execute query.
 	 *	@param isReport report
 	 *	@param AD_Table_ID table
-	 *	@param Record_ID tecord
-	 */	
-	public void query (boolean isReport, int AD_Table_ID, int Record_ID)
+	 *	@param Record_ID record
+	 */
+	public void query(boolean isReport, int AD_Table_ID, int Record_ID)
 	{
-		if (log.isLoggable(Level.CONFIG)) log.config("Report=" + isReport + ", AD_Table_ID=" + AD_Table_ID + ",Record_ID=" + Record_ID);
+		query(isReport, AD_Table_ID, Record_ID, null);
+	}
+
+	/**
+	 * 	Execute query.
+	 *	@param isReport report
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record ID
+	 *	@param Record_UU record UUID
+	 */	
+	public void query(boolean isReport, int AD_Table_ID, int Record_ID, String Record_UU)
+	{
+		if (log.isLoggable(Level.CONFIG)) log.config("Report=" + isReport + ", AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + ", Record_UU=" + Record_UU);
 		reportField.setChecked(isReport);
 		m_AD_Table_ID = AD_Table_ID;
 		m_Record_ID = Record_ID;
+		m_Record_UU = Record_UU;
 		cmd_query();
 	}	//	query	
 	

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_PInstance 
 {
@@ -139,6 +139,21 @@ public interface I_AD_PInstance
 	public int getAD_Session_ID();
 
 	public org.compiere.model.I_AD_Session getAD_Session() throws RuntimeException;
+
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -262,6 +277,15 @@ public interface I_AD_PInstance
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
+
+    /** Column name Record_UU */
+    public static final String COLUMNNAME_Record_UU = "Record_UU";
+
+	/** Set Record UUID	  */
+	public void setRecord_UU (String Record_UU);
+
+	/** Get Record UUID	  */
+	public String getRecord_UU();
 
     /** Column name ReportType */
     public static final String COLUMNNAME_ReportType = "ReportType";

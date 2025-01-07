@@ -27,12 +27,11 @@ import org.compiere.util.Env;
 
 /**
  * @author Ashley G Ramdass
- *
  */
 public class MPOSTerminal extends X_U_POSTerminal
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6972567212871993024L;
     
@@ -47,6 +46,16 @@ public class MPOSTerminal extends X_U_POSTerminal
     }
 
     /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param U_POSTerminal_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPOSTerminal(Properties ctx, String U_POSTerminal_UU, String trxName) {
+        super(ctx, U_POSTerminal_UU, trxName);
+    }
+
+    /**
      * @param ctx
      * @param U_POSTerminal_ID
      * @param trxName
@@ -57,7 +66,7 @@ public class MPOSTerminal extends X_U_POSTerminal
     }
     
     /**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPOSTerminal(MPOSTerminal copy) 
@@ -66,7 +75,7 @@ public class MPOSTerminal extends X_U_POSTerminal
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -76,7 +85,7 @@ public class MPOSTerminal extends X_U_POSTerminal
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -113,6 +122,7 @@ public class MPOSTerminal extends X_U_POSTerminal
         return retValue;
     }
     
+    @Override
     protected void loadComplete(boolean success)
     {
         if (success)
@@ -121,6 +131,9 @@ public class MPOSTerminal extends X_U_POSTerminal
         }
     }
     
+    /**
+     * @param terminal
+     */
     public static void checkLock(MPOSTerminal terminal)
     {
         if (terminal.isLocked())
@@ -146,6 +159,7 @@ public class MPOSTerminal extends X_U_POSTerminal
     /**
      * @see org.compiere.model.PO#beforeSave(boolean)
      */
+    @Override
     protected boolean beforeSave(boolean newRecord)
     {
         if (is_ValueChanged(COLUMNNAME_Locked) && isLocked())

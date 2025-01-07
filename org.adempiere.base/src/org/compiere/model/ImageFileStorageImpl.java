@@ -44,8 +44,8 @@ import org.xml.sax.SAXException;
 import org.w3c.dom.Element;
 
 /**
+ * File system backed implementation of {@link IImageStore}
  * @author hengsin
- *
  */
 public class ImageFileStorageImpl implements IImageStore {
 	
@@ -88,7 +88,7 @@ public class ImageFileStorageImpl implements IImageStore {
 			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 			if(filePath!=null){
 				filePath = filePath.replaceFirst(IMAGE_FOLDER_PLACEHOLDER, imagePathRoot.replaceAll("\\\\","\\\\\\\\"));
-				//just to be shure...
+				//just to be sure...
 				String replaceSeparator = File.separator;
 				if(!replaceSeparator.equals("/")){
 					replaceSeparator = "\\\\";
@@ -158,6 +158,12 @@ public class ImageFileStorageImpl implements IImageStore {
 
 	}
 
+	/**
+	 * Write image data to file
+	 * @param image
+	 * @param prov
+	 * @param inflatedData
+	 */
 	private void write(MImage image, MStorageProvider prov, byte[] inflatedData) {
 		BufferedOutputStream out = null;
 		try {
@@ -219,6 +225,10 @@ public class ImageFileStorageImpl implements IImageStore {
 		}
 	}
 
+	/**
+	 * @param prov
+	 * @return root path
+	 */
 	private String getImagePathRoot(MStorageProvider prov) {
 		String imagePathRoot = prov.getFolder();
 		if (imagePathRoot == null)

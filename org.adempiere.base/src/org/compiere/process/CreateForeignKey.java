@@ -222,7 +222,7 @@ public class CreateForeignKey extends SvrProcess {
 				else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull)
 					dbDeleteRule = MColumn.FKCONSTRAINTTYPE_SetNull;
 				else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction || dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict)
-					dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction;
+					dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 				String fkConstraintType = column.getFKConstraintType();
 				if (fkConstraintType == null) {
 					fkConstraintType = dbDeleteRule;
@@ -232,9 +232,9 @@ public class CreateForeignKey extends SvrProcess {
 							|| "CreatedBy".equals(column.getColumnName())
 							|| "UpdatedBy".equals(column.getColumnName())
 						   )
-							fkConstraintType = MColumn.FKCONSTRAINTTYPE_DoNotCreate;
+							fkConstraintType = MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore;
 						else
-							fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+							fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 					}
 				}
 
@@ -252,7 +252,7 @@ public class CreateForeignKey extends SvrProcess {
 						column.saveEx();
 						break;
 					}
-					else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
+					else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore))
 					{
 						addLog(column.getAD_Column_ID(), null, null, 
 								Msg.getMsg(getCtx(), "CreateForeignKeyProcessColumn") + column.getColumnName()+ " / " + 

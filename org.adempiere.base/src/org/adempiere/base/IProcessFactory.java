@@ -16,16 +16,15 @@ package org.adempiere.base;
 import org.compiere.process.ProcessCall;
 
 /**
- * 
+ * Factory interface for {@link ProcessCall}.
  * @author hengsin
- *
  */
 public interface IProcessFactory {
 
 	/**
 	 * Create new process instance
 	 * @param className
-	 * @return new process instance
+	 * @return new ProcessCall instance
 	 */
 	public ProcessCall newProcessInstance(String className);
 	

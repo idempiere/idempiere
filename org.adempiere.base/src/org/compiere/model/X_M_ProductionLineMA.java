@@ -22,19 +22,19 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_ProductionLineMA
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionLineMA")
-public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_Persistent 
+public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ProductionLineMA (Properties ctx, int M_ProductionLineMA_ID, String trxName)
@@ -60,6 +60,30 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ProductionLineMA (Properties ctx, String M_ProductionLineMA_UU, String trxName)
+    {
+      super (ctx, M_ProductionLineMA_UU, trxName);
+      /** if (M_ProductionLineMA_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+			setM_ProductionLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductionLineMA (Properties ctx, String M_ProductionLineMA_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductionLineMA_UU, trxName, virtualColumns);
+      /** if (M_ProductionLineMA_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+			setM_ProductionLine_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ProductionLineMA (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +91,7 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -84,7 +108,7 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_ProductionLineMA[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -179,12 +203,12 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getM_ProductionLine_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getM_ProductionLine_ID()));
     }
 
 	/** Set M_ProductionLineMA_UU.

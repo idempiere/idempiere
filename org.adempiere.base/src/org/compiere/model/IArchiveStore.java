@@ -13,15 +13,44 @@
  *****************************************************************************/
 package org.compiere.model;
 
+/**
+ * Store provider interface for storage of archive content
+ */
 public interface IArchiveStore {
 	
+	/**
+	 * Load binary content of archive
+	 * @param archive
+	 * @param prov
+	 * @return byte[] content
+	 */
 	public byte[] loadLOBData(MArchive archive,MStorageProvider prov);
 
+	/**
+	 * Save content of archive
+	 * @param archive
+	 * @param prov
+	 * @param inflatedData byte[] content of archive
+	 */
 	public void save(MArchive archive, MStorageProvider prov,byte[] inflatedData);
 	
+	/**
+	 * Delete stored archive content
+	 * @param archive
+	 * @param prov
+	 * @return true if successfully deleted
+	 */
 	public boolean deleteArchive(MArchive archive, MStorageProvider prov);
 
+	/**
+	 * @return true if archive content is being buffered and pending flush to destination storage
+	 */
 	public boolean isPendingFlush();
 	
+	/**
+	 * Flush buffer archive content to destination storage
+	 * @param archive
+	 * @param prov
+	 */
 	public void flush(MArchive archive,MStorageProvider prov);
 }

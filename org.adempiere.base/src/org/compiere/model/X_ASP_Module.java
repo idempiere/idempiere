@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Module
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Module")
-public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent 
+public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_ASP_Module (Properties ctx, int ASP_Module_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_ASP_Module (Properties ctx, String ASP_Module_UU, String trxName)
+    {
+      super (ctx, ASP_Module_UU, trxName);
+      /** if (ASP_Module_UU == null)
+        {
+			setASP_Module_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Module (Properties ctx, String ASP_Module_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Module_UU, trxName, virtualColumns);
+      /** if (ASP_Module_UU == null)
+        {
+			setASP_Module_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_ASP_Module (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -172,7 +196,7 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

@@ -14,21 +14,28 @@
 package org.adempiere.exceptions;
 
 /**
- * Throwed when there are some fields that are mandatory but unfilled.
+ * Throw when there are some fields that are mandatory but unfilled.
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
 public class FillMandatoryException extends AdempiereException
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 9074980284529933724L;
 
+	/**
+	 * @param fields one or more field
+	 */
 	public FillMandatoryException(String...fields)
 	{
 		super("@FillMandatory@ "+buildMessage(fields));
 	}
 	
+	/**
+	 * @param fields
+	 * @return comma separated fields
+	 */
 	private static final String buildMessage(String...fields)
 	{
 		StringBuilder sb = new StringBuilder();

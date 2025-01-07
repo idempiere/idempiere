@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaySelection
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_PaySelection")
-public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persistent 
+public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_PaySelection (Properties ctx, int C_PaySelection_ID, String trxName)
@@ -74,6 +74,44 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_PaySelection (Properties ctx, String C_PaySelection_UU, String trxName)
+    {
+      super (ctx, C_PaySelection_UU, trxName);
+      /** if (C_PaySelection_UU == null)
+        {
+			setC_BankAccount_ID (0);
+			setC_PaySelection_ID (0);
+			setIsApproved (false);
+			setName (null);
+// @#Date@
+			setPayDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setProcessed (false);
+			setProcessing (false);
+			setTotalAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaySelection (Properties ctx, String C_PaySelection_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaySelection_UU, trxName, virtualColumns);
+      /** if (C_PaySelection_UU == null)
+        {
+			setC_BankAccount_ID (0);
+			setC_PaySelection_ID (0);
+			setIsApproved (false);
+			setName (null);
+// @#Date@
+			setPayDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setProcessed (false);
+			setProcessing (false);
+			setTotalAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_PaySelection (Properties ctx, ResultSet rs, String trxName)
     {
@@ -81,7 +119,7 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -213,10 +251,10 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -235,10 +273,10 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 	public boolean isOnePaymentPerInvoice()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOnePaymentPerInvoice);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -263,7 +301,7 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -298,10 +336,10 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -320,10 +358,10 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

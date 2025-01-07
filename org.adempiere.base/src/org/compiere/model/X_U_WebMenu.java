@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for U_WebMenu
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="U_WebMenu")
-public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent 
+public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_U_WebMenu (Properties ctx, String U_WebMenu_UU, String trxName)
+    {
+      super (ctx, U_WebMenu_UU, trxName);
+      /** if (U_WebMenu_UU == null)
+        {
+			setHasSubMenu (false);
+// 'N'
+			setMenuLink (null);
+			setModule (null);
+			setName (null);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_WebMenu (Properties ctx, String U_WebMenu_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_WebMenu_UU, trxName, virtualColumns);
+      /** if (U_WebMenu_UU == null)
+        {
+			setHasSubMenu (false);
+// 'N'
+			setMenuLink (null);
+			setModule (null);
+			setName (null);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_U_WebMenu (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -136,10 +166,10 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	public boolean isHasSubMenu()
 	{
 		Object oo = get_Value(COLUMNNAME_HasSubMenu);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -37,6 +37,16 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	private static final long serialVersionUID = 1599140293008534080L;
 	private static final Map<Integer, List<MUserDefProc>> m_fullMap = new HashMap<Integer, List<MUserDefProc>>();
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Proc_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefProc(Properties ctx, String AD_UserDef_Proc_UU, String trxName) {
+        super(ctx, AD_UserDef_Proc_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_UserDef_Proc_ID
@@ -44,7 +54,6 @@ public class MUserDefProc extends X_AD_UserDef_Proc implements ImmutablePOSuppor
 	 */
 	public MUserDefProc(Properties ctx, int AD_UserDef_Proc_ID, String trxName) {
 		super(ctx, AD_UserDef_Proc_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

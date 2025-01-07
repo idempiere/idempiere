@@ -118,7 +118,7 @@ public class DunningRunTest extends AbstractTestCase {
 
 		// Run the process Dunning Run Create
 		MProcess process = MProcess.get(PROCESS_DUNNING_RUN_CREATE);
-		MPInstance pinstance = new MPInstance(process, 0);
+		MPInstance pinstance = new MPInstance(process, 0, 0, null);
 		MPInstancePara[] paras = pinstance.getParameters();
 		for (MPInstancePara para : paras) {
 			if (para.getParameterName().equals("AD_Org_ID")) {

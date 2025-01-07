@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList_Version
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_PriceList_Version")
-public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, I_Persistent 
+public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_PriceList_Version (Properties ctx, int M_PriceList_Version_ID, String trxName)
@@ -66,6 +66,38 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_PriceList_Version (Properties ctx, String M_PriceList_Version_UU, String trxName)
+    {
+      super (ctx, M_PriceList_Version_UU, trxName);
+      /** if (M_PriceList_Version_UU == null)
+        {
+			setM_DiscountSchema_ID (0);
+			setM_PriceList_ID (0);
+			setM_PriceList_Version_ID (0);
+			setName (null);
+// @#Date@
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PriceList_Version (Properties ctx, String M_PriceList_Version_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PriceList_Version_UU, trxName, virtualColumns);
+      /** if (M_PriceList_Version_UU == null)
+        {
+			setM_DiscountSchema_ID (0);
+			setM_PriceList_ID (0);
+			setM_PriceList_Version_ID (0);
+			setName (null);
+// @#Date@
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
     /** Load Constructor */
     public X_M_PriceList_Version (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +105,7 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -250,7 +282,7 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

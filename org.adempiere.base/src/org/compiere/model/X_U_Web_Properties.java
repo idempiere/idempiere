@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for U_Web_Properties
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="U_Web_Properties")
-public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Persistent 
+public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_U_Web_Properties (Properties ctx, int U_Web_Properties_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_U_Web_Properties (Properties ctx, String U_Web_Properties_UU, String trxName)
+    {
+      super (ctx, U_Web_Properties_UU, trxName);
+      /** if (U_Web_Properties_UU == null)
+        {
+			setU_Key (null);
+			setU_Value (null);
+			setU_Web_Properties_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_Web_Properties (Properties ctx, String U_Web_Properties_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_Web_Properties_UU, trxName, virtualColumns);
+      /** if (U_Web_Properties_UU == null)
+        {
+			setU_Key (null);
+			setU_Value (null);
+			setU_Web_Properties_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_U_Web_Properties (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

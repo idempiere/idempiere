@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Registration
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Registration")
-public class X_A_Registration extends PO implements I_A_Registration, I_Persistent 
+public class X_A_Registration extends PO implements I_A_Registration, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Registration (Properties ctx, int A_Registration_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_A_Registration extends PO implements I_A_Registration, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Registration (Properties ctx, String A_Registration_UU, String trxName)
+    {
+      super (ctx, A_Registration_UU, trxName);
+      /** if (A_Registration_UU == null)
+        {
+			setA_Registration_ID (0);
+			setAssetServiceDate (new Timestamp( System.currentTimeMillis() ));
+			setIsAllowPublish (false);
+			setIsInProduction (false);
+			setIsRegistered (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Registration (Properties ctx, String A_Registration_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Registration_UU, trxName, virtualColumns);
+      /** if (A_Registration_UU == null)
+        {
+			setA_Registration_ID (0);
+			setAssetServiceDate (new Timestamp( System.currentTimeMillis() ));
+			setIsAllowPublish (false);
+			setIsInProduction (false);
+			setIsRegistered (false);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Registration (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_A_Registration extends PO implements I_A_Registration, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -275,10 +305,10 @@ public class X_A_Registration extends PO implements I_A_Registration, I_Persiste
 	public boolean isAllowPublish()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowPublish);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -298,10 +328,10 @@ public class X_A_Registration extends PO implements I_A_Registration, I_Persiste
 	public boolean isInProduction()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInProduction);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -321,10 +351,10 @@ public class X_A_Registration extends PO implements I_A_Registration, I_Persiste
 	public boolean isRegistered()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRegistered);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -377,7 +407,7 @@ public class X_A_Registration extends PO implements I_A_Registration, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -411,10 +441,10 @@ public class X_A_Registration extends PO implements I_A_Registration, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

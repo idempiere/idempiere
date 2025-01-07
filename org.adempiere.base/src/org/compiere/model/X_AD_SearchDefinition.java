@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_SearchDefinition
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_SearchDefinition")
-public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, I_Persistent 
+public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName)
@@ -68,6 +68,42 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_SearchDefinition (Properties ctx, String AD_SearchDefinition_UU, String trxName)
+    {
+      super (ctx, AD_SearchDefinition_UU, trxName);
+      /** if (AD_SearchDefinition_UU == null)
+        {
+			setAD_SearchDefinition_ID (0);
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setDataType (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDefault (false);
+// N
+			setSearchType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SearchDefinition (Properties ctx, String AD_SearchDefinition_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SearchDefinition_UU, trxName, virtualColumns);
+      /** if (AD_SearchDefinition_UU == null)
+        {
+			setAD_SearchDefinition_ID (0);
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setDataType (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDefault (false);
+// N
+			setSearchType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_SearchDefinition (Properties ctx, ResultSet rs, String trxName)
     {
@@ -75,7 +111,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -281,10 +317,10 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

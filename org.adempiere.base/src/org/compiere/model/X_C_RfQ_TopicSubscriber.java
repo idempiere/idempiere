@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_TopicSubscriber
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQ_TopicSubscriber")
-public class X_C_RfQ_TopicSubscriber extends PO implements I_C_RfQ_TopicSubscriber, I_Persistent 
+public class X_C_RfQ_TopicSubscriber extends PO implements I_C_RfQ_TopicSubscriber, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_RfQ_TopicSubscriber (Properties ctx, int C_RfQ_TopicSubscriber_ID, String trxName)
@@ -60,6 +60,32 @@ public class X_C_RfQ_TopicSubscriber extends PO implements I_C_RfQ_TopicSubscrib
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_RfQ_TopicSubscriber (Properties ctx, String C_RfQ_TopicSubscriber_UU, String trxName)
+    {
+      super (ctx, C_RfQ_TopicSubscriber_UU, trxName);
+      /** if (C_RfQ_TopicSubscriber_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_RfQ_Topic_ID (0);
+			setC_RfQ_TopicSubscriber_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQ_TopicSubscriber (Properties ctx, String C_RfQ_TopicSubscriber_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQ_TopicSubscriber_UU, trxName, virtualColumns);
+      /** if (C_RfQ_TopicSubscriber_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_RfQ_Topic_ID (0);
+			setC_RfQ_TopicSubscriber_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_RfQ_TopicSubscriber (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +93,7 @@ public class X_C_RfQ_TopicSubscriber extends PO implements I_C_RfQ_TopicSubscrib
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -203,7 +229,7 @@ public class X_C_RfQ_TopicSubscriber extends PO implements I_C_RfQ_TopicSubscrib
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_RfQ_Topic_ID()));
     }

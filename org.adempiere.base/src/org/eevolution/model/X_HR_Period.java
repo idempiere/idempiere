@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Period
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_Period")
-public class X_HR_Period extends PO implements I_HR_Period, I_Persistent 
+public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_Period (Properties ctx, int HR_Period_ID, String trxName)
@@ -69,6 +69,40 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_Period (Properties ctx, String HR_Period_UU, String trxName)
+    {
+      super (ctx, HR_Period_UU, trxName);
+      /** if (HR_Period_UU == null)
+        {
+			setC_Period_ID (0);
+			setC_Year_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setHR_Payroll_ID (0);
+			setHR_Period_ID (0);
+			setName (null);
+			setPeriodNo (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Period (Properties ctx, String HR_Period_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Period_UU, trxName, virtualColumns);
+      /** if (HR_Period_UU == null)
+        {
+			setC_Period_ID (0);
+			setC_Year_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setHR_Payroll_ID (0);
+			setHR_Period_ID (0);
+			setName (null);
+			setPeriodNo (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_Period (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +110,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -310,7 +344,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -380,10 +414,10 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -402,10 +436,10 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

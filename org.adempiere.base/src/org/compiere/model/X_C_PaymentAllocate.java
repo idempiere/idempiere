@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentAllocate
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentAllocate")
-public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Persistent 
+public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_PaymentAllocate (Properties ctx, int C_PaymentAllocate_ID, String trxName)
@@ -67,6 +67,38 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_PaymentAllocate (Properties ctx, String C_PaymentAllocate_UU, String trxName)
+    {
+      super (ctx, C_PaymentAllocate_UU, trxName);
+      /** if (C_PaymentAllocate_UU == null)
+        {
+			setAmount (Env.ZERO);
+			setC_Invoice_ID (0);
+			setC_PaymentAllocate_ID (0);
+			setC_Payment_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setOverUnderAmt (Env.ZERO);
+			setWriteOffAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentAllocate (Properties ctx, String C_PaymentAllocate_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentAllocate_UU, trxName, virtualColumns);
+      /** if (C_PaymentAllocate_UU == null)
+        {
+			setAmount (Env.ZERO);
+			setC_Invoice_ID (0);
+			setC_PaymentAllocate_ID (0);
+			setC_Payment_ID (0);
+			setDiscountAmt (Env.ZERO);
+			setOverUnderAmt (Env.ZERO);
+			setWriteOffAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_PaymentAllocate (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +106,7 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -173,7 +205,7 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Invoice_ID()));
     }

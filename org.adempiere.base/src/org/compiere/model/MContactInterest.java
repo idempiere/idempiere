@@ -25,12 +25,12 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
  
 /**
- *  Business Partner Contact Interest.
- *  Adempiere compies with spamming laws.
- *  If the opt out date is set (by the user), 
- *  you should not subscribe the user again.
+ *  <pre>
+ *  Business Partner Contact Interest (subscription).
+ *  Adempiere complies with spam laws.
+ *  If the opt out date is set (by the user), you should not subscribe the user again.
  *  Internally, the isActive flag is used.
- *
+ *  </pre>
  *  @author Jorg Janke
  *  @version $Id: MContactInterest.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  *  @author red1 FR: [ 2214883 ] Remove SQL code and Replace for Query 
@@ -38,16 +38,16 @@ import org.compiere.util.Env;
 public class MContactInterest extends X_R_ContactInterest
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4720845687902863428L;
 
 	/**
-	 * 	Get Contact Interest
+	 * 	Get or create Contact Interest
 	 *	@param ctx context
 	 *	@param R_InterestArea_ID interest ares
 	 *	@param AD_User_ID user
-	 * 	@param isActive create as active
+	 * 	@param isActive isActive value for create
 	 *	@param trxName transaction
 	 *	@return Contact Interest 
 	 */
@@ -69,10 +69,18 @@ public class MContactInterest extends X_R_ContactInterest
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("Found - " + retValue);
 		return retValue;
 	}	//	get
-
 	
-	/**************************************************************************
-	 * 	Persistency Constructor
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_ContactInterest_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MContactInterest(Properties ctx, String R_ContactInterest_UU, String trxName) {
+        super(ctx, R_ContactInterest_UU, trxName);
+    }
+
+	/**
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -113,7 +121,7 @@ public class MContactInterest extends X_R_ContactInterest
 	}	//	MContactInterest
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MContactInterest(MContactInterest copy) 
@@ -122,7 +130,7 @@ public class MContactInterest extends X_R_ContactInterest
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -132,7 +140,7 @@ public class MContactInterest extends X_R_ContactInterest
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -147,10 +155,11 @@ public class MContactInterest extends X_R_ContactInterest
 	private static CLogger		s_log = CLogger.getCLogger (MContactInterest.class);
 
 	/**
-	 * 	Set OptOut Date
+	 * 	Set OptOut Date.
 	 * 	User action only.
-	 *	@param OptOutDate date
+	 *	@param OptOutDate opt out date, null to use current date
 	 */
+	@Override
 	public void setOptOutDate (Timestamp OptOutDate)
 	{
 		if (OptOutDate == null)
@@ -179,9 +188,9 @@ public class MContactInterest extends X_R_ContactInterest
 	}	//	isOptOut
 	
 	/**
-	 * 	Set Subscribe Date
+	 * 	Set Subscribe Date.
 	 * 	User action only.
-	 *	@param SubscribeDate date
+	 *	@param SubscribeDate subscribe date, null to use current date
 	 */
 	public void setSubscribeDate (Timestamp SubscribeDate)
 	{
@@ -194,7 +203,7 @@ public class MContactInterest extends X_R_ContactInterest
 	}	//	setSubscribeDate
 
 	/**
-	 * 	Subscribe
+	 * 	Subscribe.
 	 * 	User action only.
 	 */
 	public void subscribe()
@@ -207,7 +216,7 @@ public class MContactInterest extends X_R_ContactInterest
 	/**
 	 * 	Subscribe.
 	 * 	User action only.
-	 * 	@param subscribe subscribe
+	 * 	@param subscribe true to subscribe, false to opt out
 	 */
 	public void subscribe (boolean subscribe)
 	{
@@ -234,6 +243,7 @@ public class MContactInterest extends X_R_ContactInterest
 	 * 	String representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MContactInterest[")
@@ -243,21 +253,5 @@ public class MContactInterest extends X_R_ContactInterest
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-
-	/**************************************************************************
-	 * 	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		org.compiere.Adempiere.startup(true);
-		int R_InterestArea_ID = 1000002;
-		int AD_User_ID = 1000002;
-		MContactInterest ci = MContactInterest.get(Env.getCtx(), R_InterestArea_ID, AD_User_ID, false, null);
-		ci.subscribe();
-		ci.saveEx();
-		//
-		ci = MContactInterest.get(Env.getCtx(), R_InterestArea_ID, AD_User_ID, false, null);
-	}	//	main
-
 
 }	//	MContactInterest

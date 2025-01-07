@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Reval
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Reval")
-public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent 
+public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName)
@@ -90,6 +90,60 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Reval (Properties ctx, String A_Asset_Reval_UU, String trxName)
+    {
+      super (ctx, A_Asset_Reval_UU, trxName);
+      /** if (A_Asset_Reval_UU == null)
+        {
+			setA_Asset_Cost_Change (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Reval_ID (0);
+			setA_Change_Acumulated_Depr (Env.ZERO);
+// 0
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setPostingType (null);
+// A
+			setProcessed (false);
+// N
+			setProcessing (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Reval (Properties ctx, String A_Asset_Reval_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Reval_UU, trxName, virtualColumns);
+      /** if (A_Asset_Reval_UU == null)
+        {
+			setA_Asset_Cost_Change (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Reval_ID (0);
+			setA_Change_Acumulated_Depr (Env.ZERO);
+// 0
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setPostingType (null);
+// A
+			setProcessed (false);
+// N
+			setProcessing (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Reval (Properties ctx, ResultSet rs, String trxName)
     {
@@ -97,7 +151,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -224,7 +278,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Reval_ID()));
     }
@@ -414,10 +468,10 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -466,10 +520,10 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -507,10 +561,10 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

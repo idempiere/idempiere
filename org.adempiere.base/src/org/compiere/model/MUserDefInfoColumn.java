@@ -45,6 +45,16 @@ public class MUserDefInfoColumn extends X_AD_UserDef_Info_Column {
 	 */
 	private static final long serialVersionUID = -4381444937794716616L;
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Info_Column_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefInfoColumn(Properties ctx, String AD_UserDef_Info_Column_UU, String trxName) {
+        super(ctx, AD_UserDef_Info_Column_UU, trxName);
+    }
+
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency

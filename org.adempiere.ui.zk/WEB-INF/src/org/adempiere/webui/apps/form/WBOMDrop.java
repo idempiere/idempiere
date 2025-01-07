@@ -678,6 +678,8 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 	@Override
 	public void onEvent (Event e) throws Exception
 	{
+		super.onEvent(e);
+
 		if (log.isLoggable(Level.CONFIG)) log.config(e.getName());
 		
 		Object source = e.getTarget();
@@ -698,7 +700,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 				
 				for (Radio radio : lsRadio) {
 					if (!checkbox.equals(radio)) {						
-						// fix unknow error. at fisrt event, prev radio checkbox also is checked
+						// fix unknown error. at first event, prev radio checkbox also is checked
 						radio.setChecked(false);
 						// set qty input of uncheck radio button
 						index = m_selectorList.indexOf(radio);

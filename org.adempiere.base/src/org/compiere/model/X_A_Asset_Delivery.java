@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Delivery
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Delivery")
-public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Persistent 
+public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Delivery (Properties ctx, int A_Asset_Delivery_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Delivery (Properties ctx, String A_Asset_Delivery_UU, String trxName)
+    {
+      super (ctx, A_Asset_Delivery_UU, trxName);
+      /** if (A_Asset_Delivery_UU == null)
+        {
+			setA_Asset_Delivery_ID (0);
+			setA_Asset_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Delivery (Properties ctx, String A_Asset_Delivery_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Delivery_UU, trxName, virtualColumns);
+      /** if (A_Asset_Delivery_UU == null)
+        {
+			setA_Asset_Delivery_ID (0);
+			setA_Asset_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Delivery (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -306,7 +330,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getMovementDate()));
     }

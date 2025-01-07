@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoWindow
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoWindow")
-public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent 
+public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow (Properties ctx, int AD_InfoWindow_ID, String trxName)
@@ -87,6 +87,60 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_InfoWindow (Properties ctx, String AD_InfoWindow_UU, String trxName)
+    {
+      super (ctx, AD_InfoWindow_UU, trxName);
+      /** if (AD_InfoWindow_UU == null)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFromClause (null);
+			setIsDefault (false);
+// N
+			setIsDistinct (false);
+// N
+			setIsShowInDashboard (true);
+// Y
+			setIsValid (false);
+// N
+			setMaxQueryRecords (0);
+// 0
+			setName (null);
+			setPagingSize (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoWindow (Properties ctx, String AD_InfoWindow_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoWindow_UU, trxName, virtualColumns);
+      /** if (AD_InfoWindow_UU == null)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFromClause (null);
+			setIsDefault (false);
+// N
+			setIsDistinct (false);
+// N
+			setIsShowInDashboard (true);
+// Y
+			setIsValid (false);
+// N
+			setMaxQueryRecords (0);
+// 0
+			setName (null);
+			setPagingSize (0);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_InfoWindow (Properties ctx, ResultSet rs, String trxName)
     {
@@ -94,7 +148,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -332,10 +386,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -355,10 +409,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isDistinct()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDistinct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -378,10 +432,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isLoadPageNum()
 	{
 		Object oo = get_Value(COLUMNNAME_isLoadPageNum);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -401,10 +455,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isShowInDashboard()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowInDashboard);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -424,10 +478,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -471,7 +525,7 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -567,10 +621,10 @@ public class X_AD_InfoWindow extends PO implements I_AD_InfoWindow, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

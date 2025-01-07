@@ -34,14 +34,14 @@ import org.compiere.process.DocAction;
 /**
  * Generic PO implementation, this can be use together with ModelValidator as alternative to the classic 
  * generated model class and extend ( X_ and M_ ) approach.
- * 
+ * <p>
  * Originally for used to insert/update data from adempieredata.xml file in 2pack.
  * @author Marco LOMBARDO
  * @contributor Low Heng Sin
  */
 public class GenericPO extends PO implements DocAction {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3180937588404433030L;
 	
@@ -135,8 +135,6 @@ public class GenericPO extends PO implements DocAction {
 		return Integer.parseInt(p_info.getAccessLevel());
 	}
 
-
-
 	/* METHODS TO USE GenericPO in Documents */
 
 	/**
@@ -157,7 +155,7 @@ public class GenericPO extends PO implements DocAction {
 		return docActionDelegate.getDocStatus();
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Process document
 	 *	@param processAction document action
 	 *	@return true if performed
@@ -282,7 +280,7 @@ public class GenericPO extends PO implements DocAction {
 		return docActionDelegate.reActivateIt();
 	}	//	reActivateIt
 
-	/*************************************************************************
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
@@ -350,7 +348,7 @@ public class GenericPO extends PO implements DocAction {
  */
 class PropertiesWrapper extends Properties {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8887531951501323594L;
 	protected Properties source;

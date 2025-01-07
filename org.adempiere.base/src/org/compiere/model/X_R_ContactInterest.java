@@ -20,19 +20,19 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for R_ContactInterest
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_ContactInterest")
-public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Persistent 
+public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_ContactInterest (Properties ctx, int R_ContactInterest_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_ContactInterest (Properties ctx, String R_ContactInterest_UU, String trxName)
+    {
+      super (ctx, R_ContactInterest_UU, trxName);
+      /** if (R_ContactInterest_UU == null)
+        {
+			setAD_User_ID (0);
+// @AD_User_ID@
+			setR_InterestArea_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_ContactInterest (Properties ctx, String R_ContactInterest_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_ContactInterest_UU, trxName, virtualColumns);
+      /** if (R_ContactInterest_UU == null)
+        {
+			setAD_User_ID (0);
+// @AD_User_ID@
+			setR_InterestArea_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_ContactInterest (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -82,7 +106,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_R_ContactInterest[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -114,12 +138,12 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getAD_User_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getAD_User_ID()));
     }
 
 	/** Set Opt-out Date.

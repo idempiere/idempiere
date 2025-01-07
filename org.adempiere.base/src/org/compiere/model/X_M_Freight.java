@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Freight
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Freight")
-public class X_M_Freight extends PO implements I_M_Freight, I_Persistent 
+public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Freight (Properties ctx, int M_Freight_ID, String trxName)
@@ -66,6 +66,36 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Freight (Properties ctx, String M_Freight_UU, String trxName)
+    {
+      super (ctx, M_Freight_UU, trxName);
+      /** if (M_Freight_UU == null)
+        {
+			setC_Currency_ID (0);
+			setFreightAmt (Env.ZERO);
+			setM_FreightCategory_ID (0);
+			setM_Freight_ID (0);
+			setM_Shipper_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Freight (Properties ctx, String M_Freight_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Freight_UU, trxName, virtualColumns);
+      /** if (M_Freight_UU == null)
+        {
+			setC_Currency_ID (0);
+			setFreightAmt (Env.ZERO);
+			setM_FreightCategory_ID (0);
+			setM_Freight_ID (0);
+			setM_Shipper_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Freight (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +103,7 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -329,7 +359,7 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_Shipper_ID()));
     }

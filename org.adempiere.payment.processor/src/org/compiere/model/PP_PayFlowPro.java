@@ -201,7 +201,7 @@ public final class PP_PayFlowPro extends PaymentProcessor
 			else
 				log.log(Level.SEVERE, "Response unknown = " + token);
 		}
-		//  Probelms with rc (e.g. 0 with Result=24)
+		//  Problems with rc (e.g. 0 with Result=24)
 		return m_ok;
 	}   //  process
 

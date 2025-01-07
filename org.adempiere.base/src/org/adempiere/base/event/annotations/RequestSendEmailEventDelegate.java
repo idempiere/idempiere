@@ -29,7 +29,8 @@ import org.adempiere.base.event.RequestSendEMailEventData;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate for {@link RequestSendEMail} event topic. <br/>
+ * To handle RequestSendEMail event, create a sub class of this and override the onRequestSendEmail method.
  * @author hengsin
  *
  */
@@ -57,7 +58,7 @@ public abstract class RequestSendEmailEventDelegate extends EventDelegate {
 	}
 
 	/**
-	 * Override this to handle event
+	 * Override this to handle RequestSendEMail event
 	 * @param requestSendEMailEventData 
 	 */
 	protected abstract void onRequestSendEmail(RequestSendEMailEventData requestSendEMailEventData);

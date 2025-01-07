@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Report
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_PA_Report 
 {

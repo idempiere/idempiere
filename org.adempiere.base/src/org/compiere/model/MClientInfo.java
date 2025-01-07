@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4707948832203223893L;
 
@@ -105,7 +105,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	}	//	get
 	
 	/**
-	 * 	Get optionally cached client
+	 * 	Get optionally cached client for current context
 	 *	@return client
 	 */
 	public static MClientInfo get ()
@@ -114,7 +114,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get optionally cached client
+	 * 	Get optionally cached client for context (ctx)
 	 *	@param ctx context
 	 *	@return client
 	 */
@@ -142,9 +142,18 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MClientInfo> s_cache = new ImmutableIntPOCache<Integer,MClientInfo>(Table_Name, 2);
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MClientInfo.class);
-
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ClientInfo_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MClientInfo(Properties ctx, String AD_ClientInfo_UU, String trxName) {
+        super(ctx, AD_ClientInfo_UU, trxName);
+    }
+
+	/**
 	 *	Standard Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
@@ -203,7 +212,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	}	//	MClientInfo
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MClientInfo(MClientInfo copy) 
@@ -212,7 +221,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -222,7 +231,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -273,6 +282,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	 * 	@overwrite
 	 *	@return true if saved
 	 */
+	@Override
 	public boolean save ()
 	{
 		if (getAD_Org_ID() != 0)

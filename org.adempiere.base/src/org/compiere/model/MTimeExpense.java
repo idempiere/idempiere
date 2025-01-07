@@ -31,6 +31,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Time + Expense Model
@@ -50,6 +51,18 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	private static final long serialVersionUID = 1567303438502090279L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param S_TimeExpense_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTimeExpense(Properties ctx, String S_TimeExpense_UU, String trxName) {
+        super(ctx, S_TimeExpense_UU, trxName);
+		if (Util.isEmpty(S_TimeExpense_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -60,13 +73,18 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	{
 		super (ctx, S_TimeExpense_ID, trxName);
 		if (S_TimeExpense_ID == 0)
-		{
-			setDateReport (new Timestamp (System.currentTimeMillis ()));
-			setIsApproved (false);
-			super.setProcessed (false);
-			setProcessing(false);
-		}
+			setInitialDefaults();
 	}	//	MTimeExpense
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateReport (new Timestamp (System.currentTimeMillis ()));
+		setIsApproved (false);
+		super.setProcessed (false);
+		setProcessing(false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -238,14 +256,11 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	/**
 	 * 	Create PDF file
 	 *	@param file output file
-	 *	@return file if success
+	 *	@return not implemented, always return null
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 	
 	/**************************************************************************

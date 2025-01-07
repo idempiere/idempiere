@@ -32,7 +32,7 @@ import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *  Reference List Value
+ *  List Values for {@link X_AD_Reference#VALIDATIONTYPE_ListValidation}
  *
  *  @author Jorg Janke
  *  @version $Id: MRefList.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
@@ -44,7 +44,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2704284822855131148L;
 	/**	RefList Value Cache						*/
@@ -79,7 +79,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -89,7 +89,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -114,11 +114,11 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	}
 
 	/**
-	 * Get Reference List Value Name (cached)
+	 * Get Reference List Name for Value (cached)
 	 * @param AD_Language
 	 * @param AD_Reference_ID reference
-	 * @param Value value
-	 * @return List or ""
+	 * @param Value list value
+	 * @return List Name or ""
 	 */
 	public static String getListName (String AD_Language, int AD_Reference_ID, String Value)
 	{
@@ -167,14 +167,13 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 		//
 		return retValue;
 	}	//	getListName
-	
-	
+		
 	/**
-	 * Get Reference List Value Description (cached)
+	 * Get Reference List Description (cached) for Value
 	 * @param ctx context
-	 * @param ListName reference
-	 * @param Value value
-	 * @return List or null
+	 * @param ListName list name
+	 * @param Value list value
+	 * @return List Description or null
 	 */
 	public static String getListDescription (Properties ctx, String ListName, String Value)
 	{
@@ -183,11 +182,11 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	}
 
 	/**
-	 * Get Reference List Value Description (cached)
+	 * Get Reference List Description (cached) for Value
 	 * @param AD_Language
-	 * @param ListName reference
-	 * @param Value value
-	 * @return List or null
+	 * @param ListName list name
+	 * @param Value list value
+	 * @return List Description or null
 	 */
 	public static String getListDescription (String AD_Language, String ListName, String Value)
 	{
@@ -241,11 +240,11 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	}	//	getListDescription
 	
 	/**
-	 * Get Reference List (translated)
+	 * Get Reference List (translated name) entries
 	 * @param ctx context
 	 * @param AD_Reference_ID reference
-	 * @param optional if true add "",""
-	 * @return List or null
+	 * @param optional if true add ValueNamePair("","") to list entries return
+	 * @return Array of ValueNamePair(list value, translated list name) or null
 	 */
 	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional)
 	{
@@ -253,25 +252,25 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	} // getList
 
 	/**
-	 * Get Reference List (translated)
+	 * Get Reference List (translated name) entries
 	 * @param ctx context
 	 * @param AD_Reference_ID reference
-	 * @param optional if true add "",""
-	 * @param orderBy N-Name, V-Value, D-Default (IsOrderByValue)
-	 * @return List or null
+	 * @param optional if true add ValueNamePair("","") to list entries return
+	 * @param orderBy (Null,"" or N)-Name, V-Value, D-Default (IsOrderByValue)
+	 * @return Array of ValueNamePair(list value, translated list name) or null
 	 */
 	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String orderBy) {
 		return getList(ctx, AD_Reference_ID, optional, "", orderBy);
 	}
 	
 	/**
-	 * Get Reference List (translated)
+	 * Get Reference List (translated name) entries
 	 * @param ctx context
 	 * @param AD_Reference_ID reference
-	 * @param optional if true add "",""
+	 * @param optional if true add ValueNamePair("","") to list entries return
 	 * @param additionalWhereClause
-	 * @param orderBy N-Name, V-Value, D-Default (IsOrderByValue)
-	 * @return List or null
+	 * @param orderBy (Null,"" or N)-Name, V-Value, D-Default (IsOrderByValue)
+	 * @return Array of ValueNamePair(list value, translated list name) or null
 	 */
 	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String additionalWhereClause, String orderBy) {
 
@@ -323,9 +322,19 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	/** Value Cache						*/
 	private static CCache<String,String> s_cache = new CCache<String,String>(Table_Name, 20);
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Ref_List_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRefList(Properties ctx, String AD_Ref_List_UU, String trxName) {
+        super(ctx, AD_Ref_List_UU, trxName);
+		if (Util.isEmpty(AD_Ref_List_UU))
+			setInitialDefaults();
+    }
 
-	/**************************************************************************
-	 * 	Persistency Constructor
+	/**
 	 *	@param ctx context
 	 *	@param AD_Ref_List_ID id
 	 *	@param trxName transaction
@@ -334,13 +343,18 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	{
 		super (ctx, AD_Ref_List_ID, trxName);
 		if (AD_Ref_List_ID == 0)
-		{
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-		}
+			setInitialDefaults();
 	}	//	MRef_List
 
 	/**
-	 * 	Load Contructor
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+	}
+
+	/**
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result
 	 *	@param trxName transaction
@@ -354,6 +368,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	 *	String Representation
 	 * 	@return Name
 	 */
+	@Override
 	public String toString()
 	{
 		return getName();

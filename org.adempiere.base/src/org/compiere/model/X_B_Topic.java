@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_Topic
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="B_Topic")
-public class X_B_Topic extends PO implements I_B_Topic, I_Persistent 
+public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_B_Topic (Properties ctx, int B_Topic_ID, String trxName)
@@ -72,6 +72,44 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_B_Topic (Properties ctx, String B_Topic_UU, String trxName)
+    {
+      super (ctx, B_Topic_UU, trxName);
+      /** if (B_Topic_UU == null)
+        {
+			setB_TopicCategory_ID (0);
+			setB_Topic_ID (0);
+			setB_TopicType_ID (0);
+			setDecisionDate (new Timestamp( System.currentTimeMillis() ));
+			setDocumentNo (null);
+			setIsPublished (false);
+			setName (null);
+			setProcessed (false);
+			setTopicAction (null);
+			setTopicStatus (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_Topic (Properties ctx, String B_Topic_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_Topic_UU, trxName, virtualColumns);
+      /** if (B_Topic_UU == null)
+        {
+			setB_TopicCategory_ID (0);
+			setB_Topic_ID (0);
+			setB_TopicType_ID (0);
+			setDecisionDate (new Timestamp( System.currentTimeMillis() ));
+			setDocumentNo (null);
+			setIsPublished (false);
+			setName (null);
+			setProcessed (false);
+			setTopicAction (null);
+			setTopicStatus (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_B_Topic (Properties ctx, ResultSet rs, String trxName)
     {
@@ -79,7 +117,7 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -254,10 +292,10 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	public boolean isPublished()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPublished);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -282,7 +320,7 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -301,10 +339,10 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -323,10 +361,10 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

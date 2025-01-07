@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition_Plan
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecognition_Plan")
-public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecognition_Plan, I_Persistent 
+public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecognition_Plan, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Plan (Properties ctx, int C_RevenueRecognition_Plan_ID, String trxName)
@@ -71,6 +71,42 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_RevenueRecognition_Plan (Properties ctx, String C_RevenueRecognition_Plan_UU, String trxName)
+    {
+      super (ctx, C_RevenueRecognition_Plan_UU, trxName);
+      /** if (C_RevenueRecognition_Plan_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Currency_ID (0);
+			setC_InvoiceLine_ID (0);
+			setC_RevenueRecognition_ID (0);
+			setC_RevenueRecognition_Plan_ID (0);
+			setP_Revenue_Acct (0);
+			setRecognizedAmt (Env.ZERO);
+			setTotalAmt (Env.ZERO);
+			setUnEarnedRevenue_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RevenueRecognition_Plan (Properties ctx, String C_RevenueRecognition_Plan_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RevenueRecognition_Plan_UU, trxName, virtualColumns);
+      /** if (C_RevenueRecognition_Plan_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Currency_ID (0);
+			setC_InvoiceLine_ID (0);
+			setC_RevenueRecognition_ID (0);
+			setC_RevenueRecognition_Plan_ID (0);
+			setP_Revenue_Acct (0);
+			setRecognizedAmt (Env.ZERO);
+			setTotalAmt (Env.ZERO);
+			setUnEarnedRevenue_Acct (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_RevenueRecognition_Plan (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +114,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -214,7 +250,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_RevenueRecognition_ID()));
     }

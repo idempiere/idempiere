@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_Password_History
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Password_History")
-public class X_AD_Password_History extends PO implements I_AD_Password_History, I_Persistent 
+public class X_AD_Password_History extends PO implements I_AD_Password_History, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Password_History (Properties ctx, int AD_Password_History_ID, String trxName)
@@ -53,6 +53,26 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Password_History (Properties ctx, String AD_Password_History_UU, String trxName)
+    {
+      super (ctx, AD_Password_History_UU, trxName);
+      /** if (AD_Password_History_UU == null)
+        {
+			setAD_Password_History_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Password_History (Properties ctx, String AD_Password_History_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Password_History_UU, trxName, virtualColumns);
+      /** if (AD_Password_History_UU == null)
+        {
+			setAD_Password_History_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Password_History (Properties ctx, ResultSet rs, String trxName)
     {
@@ -60,7 +80,7 @@ public class X_AD_Password_History extends PO implements I_AD_Password_History, 
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

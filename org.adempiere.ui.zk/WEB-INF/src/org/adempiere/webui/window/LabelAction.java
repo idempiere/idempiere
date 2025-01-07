@@ -37,6 +37,9 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.impl.LabelImageElement;
 
+/**
+ * Toolbar action for labelling of record (AD_labelAssignment)
+ */
 public class LabelAction {
 	private AbstractADWindowContent panel;	
 	private Window window = null;	
@@ -50,7 +53,8 @@ public class LabelAction {
 		this.panel = panel;	
 		int AD_Table_ID = panel.getActiveGridTab().getAD_Table_ID();
 		int Record_ID = panel.getActiveGridTab().getRecord_ID();
-		labelsPanel = new LabelsPanel(panel, AD_Table_ID, Record_ID);
+		String Record_UU = panel.getActiveGridTab().getRecord_UU();
+		labelsPanel = new LabelsPanel(panel, AD_Table_ID, Record_ID, Record_UU);
 	}	
 
 	/**

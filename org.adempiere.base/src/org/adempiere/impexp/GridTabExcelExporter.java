@@ -29,7 +29,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Excel Exporter Adapter for GridTab
+ * Excel (XLS) Exporter Adapter for GridTab
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 1943731 ] Window data export functionality
  */
@@ -37,6 +37,9 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 {
 	private GridTab m_tab = null;
 
+	/**
+	 * Default constructor
+	 */
 	public GridTabExcelExporter()
 	{
 		setFreezePane(0, 1);
@@ -123,13 +126,19 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 		; // nothing
 	}
 
+	@Override
 	protected int getCurrentRow()
 	{
 		return m_tab.getCurrentRow();
 	}
 
+	/** Column Name:MLookup */
 	private HashMap<String, MLookup> m_buttonLookups = new HashMap<String, MLookup>();
 
+	/**
+	 * @param mField
+	 * @return lookup for field
+	 */
 	private MLookup getButtonLookup(GridField mField)
 	{
 		MLookup lookup = m_buttonLookups.get(mField.getColumnName());

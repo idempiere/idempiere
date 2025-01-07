@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceBatchLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoiceBatchLine")
-public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_Persistent 
+public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_InvoiceBatchLine (Properties ctx, int C_InvoiceBatchLine_ID, String trxName)
@@ -108,6 +108,78 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_InvoiceBatchLine (Properties ctx, String C_InvoiceBatchLine_UU, String trxName)
+    {
+      super (ctx, C_InvoiceBatchLine_UU, trxName);
+      /** if (C_InvoiceBatchLine_UU == null)
+        {
+			setC_BPartner_ID (0);
+// @C_BPartner_ID@
+			setC_BPartner_Location_ID (0);
+// @C_BPartner_Location_ID@
+			setC_Charge_ID (0);
+			setC_DocType_ID (0);
+// @C_DocType_ID@
+			setC_InvoiceBatch_ID (0);
+			setC_InvoiceBatchLine_ID (0);
+			setC_Tax_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@;@DateDoc@
+			setDateInvoiced (new Timestamp( System.currentTimeMillis() ));
+// @DateInvoiced@;@DateDoc@
+			setDocumentNo (null);
+// @DocumentNo@
+			setIsTaxIncluded (false);
+// @IsTaxIncluded@
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_InvoiceBatchLine WHERE C_InvoiceBatch_ID=@C_InvoiceBatch_ID@
+			setLineNetAmt (Env.ZERO);
+			setLineTotalAmt (Env.ZERO);
+			setPriceEntered (Env.ZERO);
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+// 1
+			setTaxAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_InvoiceBatchLine (Properties ctx, String C_InvoiceBatchLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_InvoiceBatchLine_UU, trxName, virtualColumns);
+      /** if (C_InvoiceBatchLine_UU == null)
+        {
+			setC_BPartner_ID (0);
+// @C_BPartner_ID@
+			setC_BPartner_Location_ID (0);
+// @C_BPartner_Location_ID@
+			setC_Charge_ID (0);
+			setC_DocType_ID (0);
+// @C_DocType_ID@
+			setC_InvoiceBatch_ID (0);
+			setC_InvoiceBatchLine_ID (0);
+			setC_Tax_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@;@DateDoc@
+			setDateInvoiced (new Timestamp( System.currentTimeMillis() ));
+// @DateInvoiced@;@DateDoc@
+			setDocumentNo (null);
+// @DocumentNo@
+			setIsTaxIncluded (false);
+// @IsTaxIncluded@
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_InvoiceBatchLine WHERE C_InvoiceBatch_ID=@C_InvoiceBatch_ID@
+			setLineNetAmt (Env.ZERO);
+			setLineTotalAmt (Env.ZERO);
+			setPriceEntered (Env.ZERO);
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+// 1
+			setTaxAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_InvoiceBatchLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -115,7 +187,7 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -581,10 +653,10 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
 	public boolean isTaxIncluded()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxIncluded);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -612,7 +684,7 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
@@ -688,10 +760,10 @@ public class X_C_InvoiceBatchLine extends PO implements I_C_InvoiceBatchLine, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

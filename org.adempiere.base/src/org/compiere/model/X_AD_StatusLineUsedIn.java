@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_StatusLineUsedIn
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_StatusLineUsedIn")
-public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent 
+public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, int AD_StatusLineUsedIn_ID, String trxName)
@@ -62,6 +62,36 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_StatusLineUsedIn (Properties ctx, String AD_StatusLineUsedIn_UU, String trxName)
+    {
+      super (ctx, AD_StatusLineUsedIn_UU, trxName);
+      /** if (AD_StatusLineUsedIn_UU == null)
+        {
+			setAD_StatusLine_ID (0);
+			setAD_StatusLineUsedIn_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsStatusLine (true);
+// Y
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_StatusLineUsedIn (Properties ctx, String AD_StatusLineUsedIn_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_StatusLineUsedIn_UU, trxName, virtualColumns);
+      /** if (AD_StatusLineUsedIn_UU == null)
+        {
+			setAD_StatusLine_ID (0);
+			setAD_StatusLineUsedIn_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsStatusLine (true);
+// Y
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_StatusLineUsedIn (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +99,7 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -89,6 +119,34 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
+
+	/** Set Info Window.
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
+	{
+		if (AD_InfoWindow_ID < 1)
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
+	}
+
+	/** Get Info Window.
+		@return Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
 	{
@@ -270,10 +328,10 @@ public class X_AD_StatusLineUsedIn extends PO implements I_AD_StatusLineUsedIn, 
 	public boolean isStatusLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStatusLine);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

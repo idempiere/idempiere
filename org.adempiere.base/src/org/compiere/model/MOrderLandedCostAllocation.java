@@ -25,23 +25,31 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /**
+ * Landed Cost Allocation Line
  * @author hengsin
- *
  */
 public class MOrderLandedCostAllocation extends X_C_OrderLandedCostAllocation {
-
 	/**
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3876186097908624583L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_OrderLandedCostAllocation_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MOrderLandedCostAllocation(Properties ctx, String C_OrderLandedCostAllocation_UU, String trxName) {
+        super(ctx, C_OrderLandedCostAllocation_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
 	 * @param C_OrderLandedCostAllocation_ID
 	 * @param trxName
 	 */
-	public MOrderLandedCostAllocation(Properties ctx,
-			int C_OrderLandedCostAllocation_ID, String trxName) {
+	public MOrderLandedCostAllocation(Properties ctx, int C_OrderLandedCostAllocation_ID, String trxName) {
 		super(ctx, C_OrderLandedCostAllocation_ID, trxName);
 	}
 
@@ -69,10 +77,10 @@ public class MOrderLandedCostAllocation extends X_C_OrderLandedCostAllocation {
 	}	//	setAmt
 	
 	/**
-	 * Get Lines of allocation
+	 * Get landed cost allocation lines of an order line 
 	 * @param C_OrderLine_ID
 	 * @param trxName
-	 * @return lines
+	 * @return landed cost allocation lines
 	 */
 	public static MOrderLandedCostAllocation[] getOfOrderLine(int C_OrderLine_ID, String trxName)
 	{

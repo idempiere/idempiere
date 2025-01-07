@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Relation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_Relation")
-public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent 
+public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_BP_Relation (Properties ctx, int C_BP_Relation_ID, String trxName)
@@ -71,6 +71,44 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BP_Relation (Properties ctx, String C_BP_Relation_UU, String trxName)
+    {
+      super (ctx, C_BP_Relation_UU, trxName);
+      /** if (C_BP_Relation_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartnerRelation_ID (0);
+			setC_BPartnerRelation_Location_ID (0);
+			setC_BP_Relation_ID (0);
+			setIsBillTo (false);
+			setIsPayFrom (false);
+			setIsRemitTo (false);
+			setIsShipTo (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_Relation (Properties ctx, String C_BP_Relation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_Relation_UU, trxName, virtualColumns);
+      /** if (C_BP_Relation_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartnerRelation_ID (0);
+			setC_BPartnerRelation_Location_ID (0);
+			setC_BP_Relation_ID (0);
+			setIsBillTo (false);
+			setIsPayFrom (false);
+			setIsRemitTo (false);
+			setIsShipTo (false);
+// N
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BP_Relation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +116,7 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -278,10 +316,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	public boolean isBillTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBillTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -301,10 +339,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	public boolean isPayFrom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPayFrom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -324,10 +362,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	public boolean isRemitTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRemitTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -347,10 +385,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	public boolean isShipTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShipTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -375,7 +413,7 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

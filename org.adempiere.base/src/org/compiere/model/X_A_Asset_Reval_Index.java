@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Reval_Index
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Reval_Index")
-public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, I_Persistent 
+public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval_Index (Properties ctx, int A_Asset_Reval_Index_ID, String trxName)
@@ -64,6 +64,34 @@ public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Reval_Index (Properties ctx, String A_Asset_Reval_Index_UU, String trxName)
+    {
+      super (ctx, A_Asset_Reval_Index_UU, trxName);
+      /** if (A_Asset_Reval_Index_UU == null)
+        {
+			setA_Asset_Reval_Index_ID (0);
+			setA_Effective_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Reval_Code (null);
+			setA_Reval_Multiplier (null);
+			setA_Reval_Rate (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Reval_Index (Properties ctx, String A_Asset_Reval_Index_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Reval_Index_UU, trxName, virtualColumns);
+      /** if (A_Asset_Reval_Index_UU == null)
+        {
+			setA_Asset_Reval_Index_ID (0);
+			setA_Effective_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Reval_Code (null);
+			setA_Reval_Multiplier (null);
+			setA_Reval_Rate (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Reval_Index (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +99,7 @@ public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, 
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -116,7 +144,7 @@ public class X_A_Asset_Reval_Index extends PO implements I_A_Asset_Reval_Index, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Reval_Index_ID()));
     }

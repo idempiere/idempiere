@@ -29,22 +29,46 @@ import org.compiere.util.DB;
 import org.compiere.util.KeyNamePair;
 
 public class MReportCube extends X_PA_ReportCube {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4771117572936231607L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_ReportCube_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MReportCube(Properties ctx, String PA_ReportCube_UU, String trxName) {
+        super(ctx, PA_ReportCube_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param PA_ReportCube_ID
+     * @param trxName
+     */
 	public MReportCube(Properties ctx, int PA_ReportCube_ID, String trxName) {
 		super(ctx, PA_ReportCube_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MReportCube(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 	
-	public String update(boolean reset, boolean force) {
-		
+	/**
+	 * Update Fact_Acct_Summary base on this report cube configuration
+	 * @param reset if false, will check whether update is needed since last update of Fact_Acct_Summary
+	 * @param force if false, throw exception if can't lock this report cube record by changing Processing to Y
+	 * @return info message
+	 */
+	public String update(boolean reset, boolean force) {		
 		String result = getName() + ": ";
 		Timestamp ts = null;
 		long start;
@@ -65,7 +89,7 @@ public class MReportCube extends X_PA_ReportCube {
 			 "WHERE c.PA_ReportCube_ID = ? " +
 			 "AND fact.updated > c.LastRecalculated";
 
-			log.log (Level.FINE, sql);
+			if (log.isLoggable(Level.FINE)) log.log (Level.FINE, sql);
 
 			start = System.currentTimeMillis();
 			KeyNamePair[] changedPeriods = DB.getKeyNamePairs(sql, false, getPA_ReportCube_ID());
@@ -91,7 +115,6 @@ public class MReportCube extends X_PA_ReportCube {
 			periods = periodList.toString();
 			where += (" AND C_Period_ID IN " + periods);
 		}
-
 
 		if ( !force )
 		{
@@ -183,7 +206,6 @@ public class MReportCube extends X_PA_ReportCube {
 				groups.append(", f." + dim);
 			}
 
-
 			String sql = insert.append(select.toString()).append(from).append(groups.toString()).toString();
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql);
 			Object[] params = new Object[] { getPA_ReportCube_ID(), getC_Calendar_ID(), getAD_Client_ID() };
@@ -196,7 +218,6 @@ public class MReportCube extends X_PA_ReportCube {
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, insertResult);
 			result += insertResult;
 			
-
 			// set timestamp
 			String tsSQL = "SELECT max(fas.Updated)" +
 			" FROM Fact_Acct_Summary fas" +

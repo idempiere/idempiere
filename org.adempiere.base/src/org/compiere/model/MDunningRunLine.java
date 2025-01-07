@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Dunning Run Line Model
@@ -32,9 +33,21 @@ import org.compiere.util.Env;
 public class MDunningRunLine extends X_C_DunningRunLine
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6329441027195611155L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_DunningRunLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDunningRunLine(Properties ctx, String C_DunningRunLine_UU, String trxName) {
+        super(ctx, C_DunningRunLine_UU, trxName);
+		if (Util.isEmpty(C_DunningRunLine_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standarc Constructor
@@ -46,19 +59,24 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	{
 		super (ctx, C_DunningRunLine_ID, trxName);
 		if (C_DunningRunLine_ID == 0)
-		{
-			setAmt (Env.ZERO);
-			setOpenAmt(Env.ZERO);
-			setConvertedAmt (Env.ZERO);
-			setFeeAmt (Env.ZERO);
-			setInterestAmt (Env.ZERO);
-			setTotalAmt (Env.ZERO);
-			setDaysDue (0);
-			setTimesDunned (0);
-			setIsInDispute(false);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MDunningRunLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAmt (Env.ZERO);
+		setOpenAmt(Env.ZERO);
+		setConvertedAmt (Env.ZERO);
+		setFeeAmt (Env.ZERO);
+		setInterestAmt (Env.ZERO);
+		setTotalAmt (Env.ZERO);
+		setDaysDue (0);
+		setTimesDunned (0);
+		setIsInDispute(false);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -104,7 +122,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	
 	/**
 	 * 	Get Invoice
-	 *	@return Returns the invoice.
+	 *	@return invoice or null
 	 */
 	public MInvoice getInvoice ()
 	{
@@ -188,7 +206,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	
 	/**
 	 * 	Get Payment
-	 *	@return Returns the payment.
+	 *	@return payment or null
 	 */
 	public MPayment getPayment ()
 	{
@@ -220,7 +238,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	
 	/**
 	 * 	Get Currency From (Invoice/Payment)
-	 *	@return Returns the Currency From
+	 *	@return C_Currency_ID of invoice or payment
 	 */
 	public int getC_CurrencyFrom_ID ()
 	{
@@ -236,7 +254,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	
 	/**
 	 * 	Get Currency To from Parent
-	 *	@return Returns the Currency To
+	 *	@return C_Currency_ID of parent (MDunningRunEntry)
 	 */
 	public int getC_CurrencyTo_ID ()
 	{
@@ -294,6 +312,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -307,6 +326,7 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
@@ -316,8 +336,8 @@ public class MDunningRunLine extends X_C_DunningRunLine
 	}	//	afterDelete
 	
 	/**
-	 * 	Update Entry.
-	 *	Calculate/update Amt/Qty 
+	 * 	Update Entry (C_DunningRunEntry).
+	 *	Calculate/update Amt/Qty.
 	 */
 	private void updateEntry()
 	{

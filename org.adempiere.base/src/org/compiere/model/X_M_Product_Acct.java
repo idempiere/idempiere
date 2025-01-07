@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_Product_Acct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_Acct")
-public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persistent 
+public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Product_Acct (Properties ctx, int M_Product_Acct_ID, String trxName)
@@ -76,6 +76,50 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Product_Acct (Properties ctx, String M_Product_Acct_UU, String trxName)
+    {
+      super (ctx, M_Product_Acct_UU, trxName);
+      /** if (M_Product_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setM_Product_ID (0);
+			setP_Asset_Acct (0);
+			setP_COGS_Acct (0);
+			setP_CostAdjustment_Acct (0);
+			setP_Expense_Acct (0);
+			setP_InventoryClearing_Acct (0);
+			setP_InvoicePriceVariance_Acct (0);
+			setP_PurchasePriceVariance_Acct (0);
+			setP_RateVariance_Acct (0);
+			setP_Revenue_Acct (0);
+			setP_TradeDiscountGrant_Acct (0);
+			setP_TradeDiscountRec_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Product_Acct (Properties ctx, String M_Product_Acct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Product_Acct_UU, trxName, virtualColumns);
+      /** if (M_Product_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setM_Product_ID (0);
+			setP_Asset_Acct (0);
+			setP_COGS_Acct (0);
+			setP_CostAdjustment_Acct (0);
+			setP_Expense_Acct (0);
+			setP_InventoryClearing_Acct (0);
+			setP_InvoicePriceVariance_Acct (0);
+			setP_PurchasePriceVariance_Acct (0);
+			setP_RateVariance_Acct (0);
+			setP_Revenue_Acct (0);
+			setP_TradeDiscountGrant_Acct (0);
+			setP_TradeDiscountRec_Acct (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Product_Acct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -83,7 +127,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -100,7 +144,7 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_Product_Acct[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

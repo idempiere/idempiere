@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Sequence_Audit
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Sequence_Audit")
-public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Persistent 
+public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Sequence_Audit (Properties ctx, int AD_Sequence_Audit_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Sequence_Audit (Properties ctx, String AD_Sequence_Audit_UU, String trxName)
+    {
+      super (ctx, AD_Sequence_Audit_UU, trxName);
+      /** if (AD_Sequence_Audit_UU == null)
+        {
+			setAD_Sequence_ID (0);
+			setAD_Table_ID (0);
+			setDocumentNo (null);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Sequence_Audit (Properties ctx, String AD_Sequence_Audit_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Sequence_Audit_UU, trxName, virtualColumns);
+      /** if (AD_Sequence_Audit_UU == null)
+        {
+			setAD_Sequence_ID (0);
+			setAD_Table_ID (0);
+			setDocumentNo (null);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Sequence_Audit (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -82,7 +108,7 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_Sequence_Audit[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

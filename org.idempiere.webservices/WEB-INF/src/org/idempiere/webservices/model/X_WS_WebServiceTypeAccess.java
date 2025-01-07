@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for WS_WebServiceTypeAccess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceTypeAccess")
-public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceTypeAccess, I_Persistent 
+public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceTypeAccess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebServiceTypeAccess (Properties ctx, int WS_WebServiceTypeAccess_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
         } */
     }
 
+    /** Standard Constructor */
+    public X_WS_WebServiceTypeAccess (Properties ctx, String WS_WebServiceTypeAccess_UU, String trxName)
+    {
+      super (ctx, WS_WebServiceTypeAccess_UU, trxName);
+      /** if (WS_WebServiceTypeAccess_UU == null)
+        {
+			setAD_Role_ID (0);
+			setIsReadWrite (true);
+// Y
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceTypeAccess (Properties ctx, String WS_WebServiceTypeAccess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceTypeAccess_UU, trxName, virtualColumns);
+      /** if (WS_WebServiceTypeAccess_UU == null)
+        {
+			setAD_Role_ID (0);
+			setIsReadWrite (true);
+// Y
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_WS_WebServiceTypeAccess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -83,7 +109,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_WS_WebServiceTypeAccess[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -129,10 +155,10 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	public boolean isReadWrite()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadWrite);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

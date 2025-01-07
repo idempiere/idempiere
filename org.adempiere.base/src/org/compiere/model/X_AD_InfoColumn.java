@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoColumn
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoColumn")
-public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent 
+public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -105,6 +105,78 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_InfoColumn (Properties ctx, String AD_InfoColumn_UU, String trxName)
+    {
+      super (ctx, AD_InfoColumn_UU, trxName);
+      /** if (AD_InfoColumn_UU == null)
+        {
+			setAD_InfoColumn_ID (0);
+			setAD_InfoWindow_ID (0);
+			setAD_Reference_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAutocomplete (false);
+// N
+			setIsCentrallyMaintained (true);
+// Y
+			setIsDisplayed (true);
+// Y
+			setIsIdentifier (false);
+// N
+			setIsMandatory (false);
+// N
+			setIsQueryAfterChange (false);
+// N
+			setIsQueryCriteria (false);
+			setIsRange (false);
+// N
+			setIsReadOnly (true);
+// Y
+			setName (null);
+			setSelectClause (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoColumn WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoColumn (Properties ctx, String AD_InfoColumn_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoColumn_UU, trxName, virtualColumns);
+      /** if (AD_InfoColumn_UU == null)
+        {
+			setAD_InfoColumn_ID (0);
+			setAD_InfoWindow_ID (0);
+			setAD_Reference_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAutocomplete (false);
+// N
+			setIsCentrallyMaintained (true);
+// Y
+			setIsDisplayed (true);
+// Y
+			setIsIdentifier (false);
+// N
+			setIsMandatory (false);
+// N
+			setIsQueryAfterChange (false);
+// N
+			setIsQueryCriteria (false);
+			setIsRange (false);
+// N
+			setIsReadOnly (true);
+// Y
+			setName (null);
+			setSelectClause (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoColumn WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_InfoColumn (Properties ctx, ResultSet rs, String trxName)
     {
@@ -112,7 +184,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -483,10 +555,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isAutocomplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutocomplete);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -506,10 +578,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -529,10 +601,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isDisplayed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisplayed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -552,10 +624,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isIdentifier()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIdentifier);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -575,10 +647,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isKey()
 	{
 		Object oo = get_Value(COLUMNNAME_IsKey);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -598,10 +670,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -621,10 +693,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isQueryAfterChange()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQueryAfterChange);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -644,10 +716,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isQueryCriteria()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQueryCriteria);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -667,10 +739,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isRange()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRange);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -690,10 +762,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -718,7 +790,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

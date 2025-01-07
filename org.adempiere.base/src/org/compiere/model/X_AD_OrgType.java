@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_OrgType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_OrgType")
-public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent 
+public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_OrgType (Properties ctx, int AD_OrgType_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_OrgType (Properties ctx, String AD_OrgType_UU, String trxName)
+    {
+      super (ctx, AD_OrgType_UU, trxName);
+      /** if (AD_OrgType_UU == null)
+        {
+			setAD_OrgType_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_OrgType (Properties ctx, String AD_OrgType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_OrgType_UU, trxName, virtualColumns);
+      /** if (AD_OrgType_UU == null)
+        {
+			setAD_OrgType_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_OrgType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -183,7 +205,7 @@ public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

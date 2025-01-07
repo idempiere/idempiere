@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Tax Postal Model
  *	
@@ -32,9 +31,19 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTaxPostal extends X_C_TaxPostal implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 2517717028191578304L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_TaxPostal_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTaxPostal(Properties ctx, String C_TaxPostal_UU, String trxName) {
+        super(ctx, C_TaxPostal_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -59,7 +68,7 @@ public class MTaxPostal extends X_C_TaxPostal implements ImmutablePOSupport
 	}	//	MTaxPostal
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MTaxPostal(MTaxPostal copy) 
@@ -68,7 +77,7 @@ public class MTaxPostal extends X_C_TaxPostal implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -78,7 +87,7 @@ public class MTaxPostal extends X_C_TaxPostal implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor  
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

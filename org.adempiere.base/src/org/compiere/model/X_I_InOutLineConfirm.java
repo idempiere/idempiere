@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_InOutLineConfirm
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_InOutLineConfirm")
-public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_Persistent 
+public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName)
@@ -67,6 +67,38 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_InOutLineConfirm (Properties ctx, String I_InOutLineConfirm_UU, String trxName)
+    {
+      super (ctx, I_InOutLineConfirm_UU, trxName);
+      /** if (I_InOutLineConfirm_UU == null)
+        {
+			setConfirmationNo (null);
+			setConfirmedQty (Env.ZERO);
+			setDifferenceQty (Env.ZERO);
+			setI_InOutLineConfirm_ID (0);
+			setI_IsImported (false);
+			setM_InOutLineConfirm_ID (0);
+			setScrappedQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_InOutLineConfirm (Properties ctx, String I_InOutLineConfirm_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_InOutLineConfirm_UU, trxName, virtualColumns);
+      /** if (I_InOutLineConfirm_UU == null)
+        {
+			setConfirmationNo (null);
+			setConfirmedQty (Env.ZERO);
+			setDifferenceQty (Env.ZERO);
+			setI_InOutLineConfirm_ID (0);
+			setI_IsImported (false);
+			setM_InOutLineConfirm_ID (0);
+			setScrappedQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_InOutLineConfirm (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +106,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -206,7 +238,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getI_InOutLineConfirm_ID()));
     }
@@ -240,10 +272,10 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -291,10 +323,10 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -313,10 +345,10 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

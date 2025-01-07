@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Locator
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Locator")
-public class X_M_Locator extends PO implements I_M_Locator, I_Persistent 
+public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Locator (Properties ctx, int M_Locator_ID, String trxName)
@@ -69,6 +69,42 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Locator (Properties ctx, String M_Locator_UU, String trxName)
+    {
+      super (ctx, M_Locator_UU, trxName);
+      /** if (M_Locator_UU == null)
+        {
+			setIsDefault (false);
+			setM_Locator_ID (0);
+			setM_Warehouse_ID (0);
+			setPriorityNo (0);
+// 50
+			setValue (null);
+			setX (null);
+			setY (null);
+			setZ (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Locator (Properties ctx, String M_Locator_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Locator_UU, trxName, virtualColumns);
+      /** if (M_Locator_UU == null)
+        {
+			setIsDefault (false);
+			setM_Locator_ID (0);
+			setM_Warehouse_ID (0);
+			setPriorityNo (0);
+// 50
+			setValue (null);
+			setX (null);
+			setY (null);
+			setZ (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Locator (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +112,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -111,10 +147,10 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -250,7 +286,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

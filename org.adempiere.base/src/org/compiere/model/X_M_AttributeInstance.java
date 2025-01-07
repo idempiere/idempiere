@@ -22,19 +22,19 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_AttributeInstance
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeInstance")
-public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, I_Persistent 
+public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_AttributeInstance (Properties ctx, String M_AttributeInstance_UU, String trxName)
+    {
+      super (ctx, M_AttributeInstance_UU, trxName);
+      /** if (M_AttributeInstance_UU == null)
+        {
+			setM_Attribute_ID (0);
+			setM_AttributeSetInstance_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeInstance (Properties ctx, String M_AttributeInstance_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeInstance_UU, trxName, virtualColumns);
+      /** if (M_AttributeInstance_UU == null)
+        {
+			setM_Attribute_ID (0);
+			setM_AttributeSetInstance_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_AttributeInstance (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -82,7 +104,7 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_AttributeInstance[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -185,12 +207,12 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getM_AttributeValue_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getM_AttributeValue_ID()));
     }
 
 	/** Set Search Key.

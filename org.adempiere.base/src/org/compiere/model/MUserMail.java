@@ -36,6 +36,16 @@ public class MUserMail extends X_AD_UserMail
 	 */
 	private static final long serialVersionUID = -6933973466878945692L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserMail_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserMail(Properties ctx, String AD_UserMail_UU, String trxName) {
+        super(ctx, AD_UserMail_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

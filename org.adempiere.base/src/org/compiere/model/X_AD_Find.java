@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Find
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Find")
-public class X_AD_Find extends PO implements I_AD_Find, I_Persistent 
+public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
@@ -69,6 +69,40 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Find (Properties ctx, String AD_Find_UU, String trxName)
+    {
+      super (ctx, AD_Find_UU, trxName);
+      /** if (AD_Find_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_Find_ID (0);
+			setAndOr (null);
+// A
+			setFind_ID (Env.ZERO);
+			setOperation (null);
+// ==
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Find (Properties ctx, String AD_Find_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Find_UU, trxName, virtualColumns);
+      /** if (AD_Find_UU == null)
+        {
+			setAD_Column_ID (0);
+			setAD_Find_ID (0);
+			setAndOr (null);
+// A
+			setFind_ID (Env.ZERO);
+			setOperation (null);
+// ==
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Find (Properties ctx, ResultSet rs, String trxName)
     {
@@ -76,7 +110,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -149,7 +183,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Find_ID()));
     }

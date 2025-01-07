@@ -30,6 +30,16 @@ public class MWebMenu extends X_U_WebMenu
 	 */
 	private static final long serialVersionUID = -7370745711964160621L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param U_WebMenu_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWebMenu(Properties ctx, String U_WebMenu_UU, String trxName) {
+        super(ctx, U_WebMenu_UU, trxName);
+    }
+
 	public MWebMenu(Properties ctx, int U_WebMenu_ID, String trxName) 
 	{
 		super(ctx, U_WebMenu_ID, trxName);

@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Cost Queue Model
@@ -37,19 +38,18 @@ import org.compiere.util.Env;
 public class MCostQueue extends X_M_CostQueue
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1782836708418500130L;
 
-
 	/**
 	 * 	Get/Create Cost Queue Record.
-	 * 	CostingLevel is not validated
+	 * 	CostingLevel is not validated.
 	 *	@param product product
-	 *	@param M_AttributeSetInstance_ID real asi
+	 *	@param M_AttributeSetInstance_ID asi
 	 *	@param as accounting schema
-	 *	@param AD_Org_ID real org
-	 *	@param M_CostElement_ID element
+	 *	@param AD_Org_ID org
+	 *	@param M_CostElement_ID cost element
 	 *	@param trxName transaction
 	 *	@return cost queue or null
 	 */
@@ -152,7 +152,6 @@ public class MCostQueue extends X_M_CostQueue
 		list.toArray(costQ);
 		return costQ;
 	}	//	getQueue
-
 	
 	/**
 	 * 	Adjust Qty based on in Lifo/Fifo order
@@ -163,7 +162,7 @@ public class MCostQueue extends X_M_CostQueue
 	 *	@param ce Cost Element
 	 *	@param Qty quantity to be reduced
 	 *	@param trxName transaction
-	 *	@return cost price reduced or null of error
+	 *	@return cost price reduced or null if error
 	 */
 	public static BigDecimal adjustQty (MProduct product, int M_ASI_ID,
 		MAcctSchema as, int Org_ID, MCostElement ce, BigDecimal Qty, 
@@ -225,7 +224,7 @@ public class MCostQueue extends X_M_CostQueue
 	}	//	adjustQty
 
 	/**
-	 * 	Calculate Cost based on Qty based on in Lifo/Fifo order
+	 * 	Calculate Cost based on Qty and in Lifo/Fifo order
 	 *	@param product product
 	 *	@param M_ASI_ID costing level ASI
 	 *	@param as accounting schema
@@ -310,9 +309,20 @@ public class MCostQueue extends X_M_CostQueue
 	
 	/**	Logger	*/
 	private static CLogger 	s_log = CLogger.getCLogger (MCostQueue.class);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_CostQueue_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCostQueue(Properties ctx, String M_CostQueue_UU, String trxName) {
+        super(ctx, M_CostQueue_UU, trxName);
+		if (Util.isEmpty(M_CostQueue_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param ignored multi-key
@@ -322,13 +332,18 @@ public class MCostQueue extends X_M_CostQueue
 	{
 		super (ctx, ignored, trxName);
 		if (ignored == 0)
-		{
-			setCurrentCostPrice (Env.ZERO);
-			setCurrentQty (Env.ZERO);
-		}
+			setInitialDefaults();
 		else
 			throw new IllegalArgumentException("Multi-Key");
 	}	//	MCostQueue
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCurrentCostPrice (Env.ZERO);
+		setCurrentQty (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -363,9 +378,9 @@ public class MCostQueue extends X_M_CostQueue
 	}	//	MCostQueue
 
 	/**
-	 * 	Update Record.
+	 * 	Update current cost price and qty.
 	 * 	((OldAvg*OldQty)+(Price*Qty)) / (OldQty+Qty)
-	 *	@param amt total Amount
+	 *	@param amt total Amount (price * qty)
 	 *	@param qty quantity
 	 *	@param precision costing precision
 	 */

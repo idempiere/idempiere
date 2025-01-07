@@ -24,32 +24,32 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_BankRegister
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_BankRegister")
-public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persistent 
+public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
-    public X_T_BankRegister (Properties ctx, int T_BankRegister_ID, String trxName)
+    public X_T_BankRegister (Properties ctx, String T_BankRegister_UU, String trxName)
     {
-      super (ctx, T_BankRegister_ID, trxName);
-      /** if (T_BankRegister_ID == 0)
+      super (ctx, T_BankRegister_UU, trxName);
+      /** if (T_BankRegister_UU == null)
         {
 			setAD_PInstance_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_T_BankRegister (Properties ctx, int T_BankRegister_ID, String trxName, String ... virtualColumns)
+    public X_T_BankRegister (Properties ctx, String T_BankRegister_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, T_BankRegister_ID, trxName, virtualColumns);
-      /** if (T_BankRegister_ID == 0)
+      super (ctx, T_BankRegister_UU, trxName, virtualColumns);
+      /** if (T_BankRegister_UU == null)
         {
 			setAD_PInstance_ID (0);
         } */
@@ -62,7 +62,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -79,7 +79,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_BankRegister[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

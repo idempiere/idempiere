@@ -39,7 +39,7 @@ import org.compiere.util.CLogger;
  */
 public class MEXPProcessorParameter extends X_EXP_ProcessorParameter {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2633307385854436092L;
 	/**	Static Logger	*/
@@ -47,10 +47,30 @@ public class MEXPProcessorParameter extends X_EXP_ProcessorParameter {
 	private static CLogger	s_log	= CLogger.getCLogger (MEXPProcessorParameter.class);
 	
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param EXP_ProcessorParameter_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MEXPProcessorParameter(Properties ctx, String EXP_ProcessorParameter_UU, String trxName) {
+        super(ctx, EXP_ProcessorParameter_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param EXP_ProcessorParameter_ID
+     * @param trxName
+     */
 	public MEXPProcessorParameter(Properties ctx, int EXP_ProcessorParameter_ID, String trxName) {
 		super(ctx, EXP_ProcessorParameter_ID, trxName);
 	}
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MEXPProcessorParameter(Properties ctx, ResultSet rs, String trxName) {
 		super (ctx, rs, trxName);
 	}

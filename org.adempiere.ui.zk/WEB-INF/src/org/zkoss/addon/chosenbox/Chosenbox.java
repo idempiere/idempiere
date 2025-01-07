@@ -120,6 +120,9 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 		}
 	}
 	
+	/**
+	 * Post onOk event to first parent component that listen to it
+	 */
 	private void postOnOk() {
 		Component p = getParent();
 		while (p != null) {
@@ -159,6 +162,7 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 
 	/**
 	 * Sets the tab order of the input node of this component.
+	 * @param tabindex
 	 */
 	public void setTabindex(int tabindex) throws WrongValueException {
 		if (_tabindex != tabindex) {

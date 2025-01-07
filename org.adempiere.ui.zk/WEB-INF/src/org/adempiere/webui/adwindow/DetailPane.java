@@ -73,6 +73,7 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.LayoutRegion;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
@@ -87,11 +88,10 @@ import org.zkoss.zul.Toolbar;
  * @author hengsin
  */
 public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
-
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6251897492168864784L;
+	private static final long serialVersionUID = 3764215603459946930L;
 
 	public static final String BTN_PROCESS_ID = "BtnProcess";
 
@@ -129,14 +129,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private static final String SAVE_IMAGE = "images/Save16.png";
 	private static final String QUICK_FORM_IMAGE = "images/QuickForm16.png";
 	private static final String TOGGLE_IMAGE = "images/Multi16.png";
-
-	/** Timestamp for previous key event **/
-	private long prevKeyEventTime = 0;
-	/**
-	 * Previous KeyEvent reference.
-	 * Use together with {@link #prevKeyEventTime} to detect double firing of key event by browser.
-	 */
-	private KeyEvent prevKeyEvent;
 
 	/** tabbox for AD_Tabs **/
 	private Tabbox tabbox;
@@ -717,7 +709,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     	
     	String labelText = buildLabelText(status);
     	if (error) {
-    		Clients.showNotification(buildNotificationText(status), "error", findTabpanel(this), "top_left", 3500, true);
+    		Component ref = isCollapsed(this) ? findTabpanel(this) : findTabpanel(messageContainer);
+    		Clients.showNotification(buildNotificationText(status), "error", ref, "top_left", 3500, true);
     	}
     	Label label = new Label(labelText);
     	messageContainer.appendChild(label);
@@ -742,6 +735,21 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     			tp.getRecordToolbar().dynamicDisplay();
     		}
     	}
+	}
+
+	/**
+	 * Is parent of detailPane in collapsed state
+	 * @param detailPane
+	 * @return true if parent of detailPane is in collapsed state
+	 */
+	private boolean isCollapsed(DetailPane detailPane) {
+		Component parent = detailPane.getParent();
+		while (parent != null) {
+			if (parent instanceof LayoutRegion lr)
+				return !lr.isOpen();
+			parent = parent.getParent();
+		}
+		return false;
 	}
 
 	/**
@@ -800,22 +808,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			LayoutUtils.redraw(this);
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
+		if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
-        	}
 		}
 	}
 	
@@ -834,8 +828,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 * @param error
 	 * @param msg
 	 */
-	private void showPopup(boolean error, String msg) {		
-		Clients.showNotification(buildNotificationText(msg), "error", findTabpanel(this), "at_pointer", 3500, true);
+	private void showPopup(boolean error, String msg) {
+		Clients.showNotification(buildNotificationText(msg), "error", null, "at_pointer", 3500, true);
 	}
 	
 	/**
@@ -1088,7 +1082,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private Component findTabpanel(Component comp) {
 		Component parent = comp.getParent();
 		while (parent != null) {
-			if (parent instanceof Tabpanel)
+			if (parent instanceof org.adempiere.webui.component.Tabpanel)
 				return parent;
 			
 			parent = parent.getParent();
@@ -1147,8 +1141,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			}
 		} 
 		if (btn != null) {
-			prevKeyEventTime = System.currentTimeMillis();
-        	prevKeyEvent = keyEvent;
 			keyEvent.stopPropagation();
 			if (!btn.isDisabled() && btn.isVisible()) {
 				Events.sendEvent(btn, new Event(Events.ON_CLICK, btn));
@@ -1164,12 +1156,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 * Custom {@link org.adempiere.webui.component.Tabpanel} implementation for DetailPane.
 	 */
 	public static class Tabpanel extends org.adempiere.webui.component.Tabpanel {
-
 		/**
 		 * generated serial id 
 		 */
-		private static final long serialVersionUID = 8248794614430375822L;
-		
+		private static final long serialVersionUID = -2502140440194514450L;
+
 		private ToolBar toolbar;
 
 		private RecordToolbar recordToolBar;
@@ -1357,11 +1348,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	 *
 	 */
 	private static class RecordToolbar extends Hlayout {
-		
 		/**
 		 * generated serial id
 		 */
-		private static final long serialVersionUID = 5024630043211194429L;
+		private static final long serialVersionUID = -3369063577339438823L;
+
 		private ToolBarButton btnFirst;
 		private ToolBarButton btnPrevious;
 		private ToolBarButton btnRecordInfo;

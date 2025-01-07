@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.math.BigDecimal;
@@ -18,21 +36,29 @@ import org.compiere.util.Msg;
 
 /**
  * @author hengsin
- *
  */
 public class MProductionPlan extends X_M_ProductionPlan {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1830027775110768396L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_ProductionPlan_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MProductionPlan(Properties ctx, String M_ProductionPlan_UU, String trxName) {
+        super(ctx, M_ProductionPlan_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
 	 * @param M_ProductionPlan_ID
 	 * @param trxName
 	 */
-	public MProductionPlan(Properties ctx, int M_ProductionPlan_ID,
-			String trxName) {
+	public MProductionPlan(Properties ctx, int M_ProductionPlan_ID, String trxName) {
 		super(ctx, M_ProductionPlan_ID, trxName);
 	}
 
@@ -45,6 +71,9 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @return array of MProductionLine
+	 */
 	public MProductionLine[] getLines() {
 		ArrayList<MProductionLine> list = new ArrayList<MProductionLine>();
 		
@@ -79,6 +108,10 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		return retValue;
 	}
 	
+	/**
+	 * Delete production lines
+	 * @param trxName
+	 */
 	public void deleteLines(String trxName) {
 
 		for (MProductionLine line : getLines())
@@ -88,6 +121,11 @@ public class MProductionPlan extends X_M_ProductionPlan {
 
 	}// deleteLines
 
+	/**
+	 * Create production lines
+	 * @param mustBeStocked true to check on hand quantity of components
+	 * @return number of lines created
+	 */
 	public int createLines(boolean mustBeStocked) {
 		
 		int lineno = 100;
@@ -113,6 +151,14 @@ public class MProductionPlan extends X_M_ProductionPlan {
 		return count;
 	}
 
+	/**
+	 * Create production lines
+	 * @param mustBeStocked true to check on hand quantity of components
+	 * @param finishedProduct end product
+	 * @param requiredQty
+	 * @param lineno
+	 * @return number of line created
+	 */
 	private int createLines(boolean mustBeStocked, MProduct finishedProduct, BigDecimal requiredQty, int lineno) {
 		
 		int count = 0;

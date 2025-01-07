@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for T_Replenish
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_Replenish")
-public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent 
+public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_Replenish (Properties ctx, int T_Replenish_ID, String trxName)
@@ -66,6 +66,38 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_Replenish (Properties ctx, String T_Replenish_UU, String trxName)
+    {
+      super (ctx, T_Replenish_UU, trxName);
+      /** if (T_Replenish_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setC_BPartner_ID (0);
+			setLevel_Max (Env.ZERO);
+			setLevel_Min (Env.ZERO);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setReplenishType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_Replenish (Properties ctx, String T_Replenish_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_Replenish_UU, trxName, virtualColumns);
+      /** if (T_Replenish_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setC_BPartner_ID (0);
+			setLevel_Max (Env.ZERO);
+			setLevel_Min (Env.ZERO);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setReplenishType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_T_Replenish (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +105,7 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -90,7 +122,7 @@ public class X_T_Replenish extends PO implements I_T_Replenish, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_Replenish[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

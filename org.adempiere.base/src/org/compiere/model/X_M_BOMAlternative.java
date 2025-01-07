@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOMAlternative
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_BOMAlternative")
-public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Persistent 
+public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_BOMAlternative (Properties ctx, int M_BOMAlternative_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_BOMAlternative (Properties ctx, String M_BOMAlternative_UU, String trxName)
+    {
+      super (ctx, M_BOMAlternative_UU, trxName);
+      /** if (M_BOMAlternative_UU == null)
+        {
+			setM_BOMAlternative_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_BOMAlternative (Properties ctx, String M_BOMAlternative_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_BOMAlternative_UU, trxName, virtualColumns);
+      /** if (M_BOMAlternative_UU == null)
+        {
+			setM_BOMAlternative_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_BOMAlternative (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -185,7 +209,7 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

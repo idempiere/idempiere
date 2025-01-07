@@ -21,7 +21,7 @@ import org.apache.ecs.filter.NullFilter;
 /**
 A basic ECS element that doesn't have a filter.  This allows content developers
 to use ECS with legacy applications that want to generate HTML but also be a
-use raw HTML.  Don't use this unless you have to do so for compatibilty reasons
+use raw HTML.  Don't use this unless you have to do so for compatibility reasons
 */
 
 public class ClearElement extends StringElement {

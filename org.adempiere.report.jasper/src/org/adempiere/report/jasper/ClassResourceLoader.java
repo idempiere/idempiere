@@ -33,11 +33,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Language;
 import org.compiere.utils.DigestOfFile;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * 
@@ -72,12 +76,28 @@ public class ClassResourceLoader {
 		URL url = null;
 		File reportFile = null;
 		String resourceName = path.startsWith(RESOURCE_PATH_PREFIX) ? path.substring(RESOURCE_PATH_PREFIX.length()).trim() : path.trim();
+		Bundle bundle = null;
+		//if resource name include optional bundle symbolic name (syntax -> resource:bundleSymbolicName:jasperReportFileName), find the specific bundle 
+		if (resourceName.indexOf(":") > 0) {
+			String symbolicName = resourceName.substring(0, resourceName.indexOf(":"));
+			resourceName = resourceName.substring(resourceName.indexOf(":")+1);
+			Optional<Bundle> optional = Arrays.stream(Activator.getBundleContext().getBundles()).filter(b -> b.getSymbolicName().equals(symbolicName)).findFirst();
+			if (optional.isPresent())
+				bundle = optional.get();
+		}		
+		ClassLoader classLoader = null;
+		//if resource name include optional bundle symbolic name, use classLoader of the specific bundle
+		if (bundle != null) {
+			classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
+		} else {
+			classLoader = getClass().getClassLoader();
+		}
 		//only copy to tmp if reportPath is jrxml file (for compilation)
 		if (resourceName.endsWith(".jrxml")) {
 			String localResourceName = toLocalName(resourceName);
 			String localAbsolutePathName = destinationFolder + localResourceName;
 			reportFile = new File(localAbsolutePathName);
-			String localPathName = localAbsolutePathName.substring(0, localAbsolutePathName.lastIndexOf(System.getProperty("file.separator"))+1);
+			String localPathName = localAbsolutePathName.substring(0, localAbsolutePathName.lastIndexOf(File.separator)+1);
 			Path localAbsolutePath = Path.of(localPathName);
 			try {
 				if (!Files.exists(localAbsolutePath))
@@ -85,11 +105,11 @@ public class ClassResourceLoader {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			String localFileName = localAbsolutePathName.substring(localAbsolutePathName.lastIndexOf(System.getProperty("file.separator"))+1);
+			String localFileName = localAbsolutePathName.substring(localAbsolutePathName.lastIndexOf(File.separator)+1);
 			String extension = localFileName.substring(localFileName.lastIndexOf("."));
 			File tmpOutputFile = null;
 			
-			url = getClass().getClassLoader().getResource(resourceName);
+			url = classLoader.getResource(resourceName);
 			if (url != null) {
 				try (InputStream inputStream = url.openStream()) {
 					if (inputStream != null) {
@@ -131,7 +151,7 @@ public class ClassResourceLoader {
 				}
 			}
 		} else {
-			url = getClass().getClassLoader().getResource(resourceName);
+			url = classLoader.getResource(resourceName);
 			empty = (url == null);
 		}
 
@@ -155,7 +175,7 @@ public class ClassResourceLoader {
 			String path = localName.substring(0, localName.lastIndexOf("/"));
 			localName = localName.substring(localName.lastIndexOf("/")+1);
 			path = path.replace('/', '_');
-			localName = path + System.getProperty("file.separator") + localName;
+			localName = path + File.separator + localName;
 		}
 		return localName;
 	}

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Preference
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Preference 
 {
@@ -48,6 +48,21 @@ public interface I_AD_Preference
 	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_Form_ID */
+    public static final String COLUMNNAME_AD_Form_ID = "AD_Form_ID";
+
+	/** Set Special Form.
+	  * Special Form
+	  */
+	public void setAD_Form_ID (int AD_Form_ID);
+
+	/** Get Special Form.
+	  * Special Form
+	  */
+	public int getAD_Form_ID();
+
+	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_InfoWindow_ID */
     public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";

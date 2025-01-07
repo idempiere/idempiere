@@ -306,20 +306,23 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 	public static void addNodeInTree(FavoriteSimpleTreeModel treeModel, Tree tree, DefaultTreeNode<Object> parentDTN, MTreeFavoriteNode favNode)
 	{
 		String name = null;
+		String description = null;
 		String action = null;
 
 		if (favNode.getAD_Menu_ID() > 0)
 		{
 			MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(favNode.getAD_Menu_ID(), null);
 			name = menu.getDisplayedName();
+			description = menu.get_Translation(MMenu.COLUMNNAME_Description);
 			action = menu.getAction();
 		}
 		else
 		{
 			name = favNode.getName();
+			description = name;
 		}
 
-		MTreeNode mtnNew = new MTreeNode(	favNode.getAD_Tree_Favorite_Node_ID(), favNode.getSeqNo(), name, name, favNode.getParent_ID(), favNode.getAD_Menu_ID(),
+		MTreeNode mtnNew = new MTreeNode(	favNode.getAD_Tree_Favorite_Node_ID(), favNode.getSeqNo(), name, description, favNode.getParent_ID(), favNode.getAD_Menu_ID(),
 											action, favNode.isSummary(), favNode.isCollapsible(), favNode.isFavourite());
 
 		DefaultTreeNode<Object> newNode = new DefaultTreeNode<Object>(mtnNew);

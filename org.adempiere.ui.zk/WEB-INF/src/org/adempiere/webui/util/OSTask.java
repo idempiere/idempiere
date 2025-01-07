@@ -38,7 +38,9 @@ public class OSTask extends Thread
 	private String          m_cmd;
 	private Process         m_child = null;
 
+	/** standard output buffer for os task */
 	private StringBuffer    m_out = new StringBuffer();
+	/** error output buffer for os task */
 	private StringBuffer    m_err = new StringBuffer();
 
 	/** The Output Stream of process        */
@@ -51,12 +53,13 @@ public class OSTask extends Thread
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(OSTask.class);
 
-	/** Read Out                            */
+	/** Read standard output from process */
 	private Thread          m_outReader = new Thread()
 	{
 		public void run()
 		{
-			log.fine("outReader");
+			if (log.isLoggable(Level.FINE))
+				log.fine("outReader");
 			try
 			{
 				int c;
@@ -70,16 +73,18 @@ public class OSTask extends Thread
 			{
 				log.log(Level.SEVERE, "outReader", ioe);
 			}
-			log.fine("outReader - done");
+			if (log.isLoggable(Level.FINE))
+				log.fine("outReader - done");
 		}   //  run
 	};   //  m_outReader
 
-	/** Read Out                            */
+	/** Read error output from process */
 	private Thread          m_errReader = new Thread()
 	{
 		public void run()
 		{
-			log.fine("errReader");
+			if (log.isLoggable(Level.FINE))
+				log.fine("errReader");
 			try
 			{
 				int c;
@@ -93,17 +98,19 @@ public class OSTask extends Thread
 			{
 				log.log(Level.SEVERE, "errReader", ioe);
 			}
-			log.fine("errReader - done");
+			if (log.isLoggable(Level.FINE))
+				log.fine("errReader - done");
 		}   //  run
 	};   //  m_errReader
 
 
 	/**
-	 *  Execute it
+	 * Execute it
 	 */
 	public void run()
 	{
-		log.info(m_cmd);
+		if (log.isLoggable(Level.INFO))
+			log.info(m_cmd);
 		try
 		{
 			m_child = Runtime.getRuntime().exec(m_cmd);
@@ -134,7 +141,8 @@ public class OSTask extends Thread
 					if (log.isLoggable(Level.INFO))log.log(Level.INFO, "(ie) - " + ie);
 				}
 				//  ExitValue
-				log.config("done");
+				if (log.isLoggable(Level.CONFIG))
+					log.config("done");
 			}
 		}
 		catch (IOException ioe)
@@ -145,14 +153,15 @@ public class OSTask extends Thread
 	}   //  run
 
 	/**
-	 *  Check if interrupted
-	 *  @return true if interrupted
+	 * Check if interrupted
+	 * @return true if interrupted
 	 */
 	private boolean checkInterrupted()
 	{
 		if (isInterrupted())
 		{
-			log.config("interrupted");
+			if (log.isLoggable(Level.CONFIG))
+				log.config("interrupted");
 			//  interrupt child processes
 			if (m_child != null)
 				m_child.destroy();
@@ -180,7 +189,7 @@ public class OSTask extends Thread
 	}   //  checkInterrupted
 
 	/**
-	 *  Get Out Info
+	 *  Get standard output buffer
 	 *  @return StringBuffer
 	 */
 	public StringBuffer getOut()
@@ -189,7 +198,7 @@ public class OSTask extends Thread
 	}   //  getOut
 
 	/**
-	 *  Get Err Info
+	 *  Get error output buffer
 	 *  @return StringBuffer
 	 */
 	public StringBuffer getErr()

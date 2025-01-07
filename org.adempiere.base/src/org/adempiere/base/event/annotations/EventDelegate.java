@@ -27,19 +27,16 @@ package org.adempiere.base.event.annotations;
 import org.osgi.service.event.Event;
 
 /**
- * 
- * Annotation driven event delegate base class that works together with {@link BaseEventHandler}.
- * Subclass implementation doesn't have to be thread safe as event delegate is create and throw away for each event call.
- * Subclass should use {@link EventTopic} or one of its derived annotation to define the event topic to handle
+ * Annotation driven event delegate base class that works together with {@link BaseEventHandler}.<br/>
+ * Subclass implementation doesn't have to be thread safe as event delegate is create and throw away for each event call.<br/>
+ * Subclass should use {@link EventTopic} or one of its derived annotation to define the event topic to handle.
  * @author hengsin
- *
  */
 public class EventDelegate {
 
 	protected Event event;
 
 	/**
-	 * 
 	 * @param event
 	 */
 	public EventDelegate(Event event) {
@@ -47,7 +44,6 @@ public class EventDelegate {
 	}
 
 	/**
-	 * 
 	 * @return {@link Event}
 	 */
 	protected Event getEvent() {

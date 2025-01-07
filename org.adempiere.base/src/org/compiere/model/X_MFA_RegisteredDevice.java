@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for MFA_RegisteredDevice
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="MFA_RegisteredDevice")
-public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice, I_Persistent 
+public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_MFA_RegisteredDevice (Properties ctx, int MFA_RegisteredDevice_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
         } */
     }
 
+    /** Standard Constructor */
+    public X_MFA_RegisteredDevice (Properties ctx, String MFA_RegisteredDevice_UU, String trxName)
+    {
+      super (ctx, MFA_RegisteredDevice_UU, trxName);
+      /** if (MFA_RegisteredDevice_UU == null)
+        {
+			setAD_User_ID (0);
+			setMFADeviceIdentifier (null);
+			setMFA_RegisteredDevice_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_MFA_RegisteredDevice (Properties ctx, String MFA_RegisteredDevice_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, MFA_RegisteredDevice_UU, trxName, virtualColumns);
+      /** if (MFA_RegisteredDevice_UU == null)
+        {
+			setAD_User_ID (0);
+			setMFADeviceIdentifier (null);
+			setMFA_RegisteredDevice_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_MFA_RegisteredDevice (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

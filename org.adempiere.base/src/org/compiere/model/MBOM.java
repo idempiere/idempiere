@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -34,10 +35,11 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @author Jorg Janke
  *  @version $Id: MBOM.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  */
+@Deprecated(forRemoval = true, since = "11")
 public class MBOM extends X_M_BOM implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6311001492891936078L;
 
@@ -119,6 +121,18 @@ public class MBOM extends X_M_BOM implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MBOM.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_BOM_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBOM(Properties ctx, String M_BOM_UU, String trxName) {
+        super(ctx, M_BOM_UU, trxName);
+		if (Util.isEmpty(M_BOM_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -129,11 +143,16 @@ public class MBOM extends X_M_BOM implements ImmutablePOSupport
 	{
 		super (ctx, M_BOM_ID, trxName);
 		if (M_BOM_ID == 0)
-		{
-			setBOMType (BOMTYPE_CurrentActive);	// A
-			setBOMUse (BOMUSE_Master);	// A
-		}
+			setInitialDefaults();
 	}	//	MBOM
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setBOMType (BOMTYPE_CurrentActive);	// A
+		setBOMUse (BOMUSE_Master);	// A
+	}
 
 	/**
 	 * 	Load Constructor

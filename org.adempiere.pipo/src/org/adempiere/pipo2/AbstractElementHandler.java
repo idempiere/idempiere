@@ -90,7 +90,25 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID,
     		String action) throws SAXException{
-    	logImportDetail (ctx, detail, success, objectName, objectID, action, null, null);
+    	logImportDetail (ctx, detail, success, objectName, objectID, null, action, null, null);
+    }
+
+	/**
+     *	Write results to log and records in history table
+     *
+     *		@param ctx
+     *      @param success
+     *      @param detail
+     *      @param objectName
+     *      @param objectID
+     *      @param objectUU
+     *      @param action
+     * 		@throws SAXException
+     *
+     */
+    public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID, String objectUU,
+    		String action) throws SAXException{
+    	logImportDetail (ctx, detail, success, objectName, objectID, objectUU, action, null, null);
     }
 
 	/**
@@ -109,7 +127,35 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID,
     		String action, String execCode, String result) throws SAXException{
+    	logImportDetail (ctx, detail, success, objectName, objectID, null, action, execCode, result);
+    }
+
+	/**
+     *	Write results to log and records in history table
+     *
+     *		@param ctx
+     *      @param success
+     *      @param detail
+     *      @param objectName
+     *      @param objectID
+     *      @param objectUU
+     *      @param action
+     *      @param execCode
+     *      @param result
+     * 		@throws SAXException
+     *
+     */
+    public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID, String objectUU,
+    		String action, String execCode, String result) throws SAXException{
 		String msgSuccess = success == 1 ? "Success" : "Failure";
+
+		// try to figure out the UUID when empty
+		if (Util.isEmpty(objectUU) && objectID > 0 && detail.getAD_Table_ID() > 0) {
+			MTable table = MTable.get(ctx.ctx, detail.getAD_Table_ID(), getTrxName(ctx));
+			PO po = table.getPO(objectID, getTrxName(ctx));
+			if (po != null)
+				objectUU = po.get_UUID();
+		}
 
 		detail.setName(objectName);
 		detail.setAction(action);
@@ -120,6 +166,8 @@ public abstract class AbstractElementHandler implements ElementHandler {
 			detail.setResult(result);
 		if (objectID >= 0)
 			detail.setRecord_ID(objectID);
+		if (!Util.isEmpty(objectUU))
+			detail.setRecord_UU(objectUU);
 		ctx.packIn.addImportDetail(detail);
 		StringBuilder msg = new StringBuilder(action).append(" ");
 		if (detail.getTableName() != null)
@@ -141,7 +189,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 	public void backupRecord(PIPOContext ctx, int AD_Package_Imp_Detail_ID, String tableName,PO from){
 
     	// Create new record
-		MTable mTable = MTable.get(ctx.ctx, tableName);
+		MTable mTable = MTable.get(ctx.ctx, tableName, getTrxName(ctx));
     	int tableID = mTable.getAD_Table_ID();    			
 		POInfo poInfo = POInfo.getPOInfo(ctx.ctx, tableID);
 
@@ -411,9 +459,10 @@ public abstract class AbstractElementHandler implements ElementHandler {
      * @param expectedName
      * @return Parent element record id
      */
-    protected int getParentId(Element element, String expectedName) {
+    protected Object getParentId(Element element, String expectedName) {
     	if (element.parent != null && element.parent.getElementValue().equals(expectedName) &&
-    			element.parent.recordId > 0)
+    			(   (element.parent.recordId instanceof Integer && (Integer)element.parent.recordId > 0)
+    			 || (element.parent.recordId instanceof String && !Util.isEmpty((String)element.parent.recordId))))
     		return element.parent.recordId;
     	else
     		return 0;

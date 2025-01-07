@@ -29,11 +29,10 @@ import org.compiere.model.X_T_Replenish;
  */
 public interface ReplenishInterface
 {
-
 	/**
 	 * 	Return the Qty To Order
 	 *	@param wh warehouse
-	 *	@param replenish temporary replenishment
+	 *	@param replenish replenishment criterias
 	 *	@return qty to order
 	 */
 	public BigDecimal getQtyToOrder (MWarehouse wh, X_T_Replenish replenish);

@@ -20,19 +20,19 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for B_Seller
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="B_Seller")
-public class X_B_Seller extends PO implements I_B_Seller, I_Persistent 
+public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_B_Seller (Properties ctx, int B_Seller_ID, String trxName)
@@ -60,6 +60,32 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_B_Seller (Properties ctx, String B_Seller_UU, String trxName)
+    {
+      super (ctx, B_Seller_UU, trxName);
+      /** if (B_Seller_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsInternal (false);
+			setName (null);
+			setValidTo (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_Seller (Properties ctx, String B_Seller_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_Seller_UU, trxName, virtualColumns);
+      /** if (B_Seller_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsInternal (false);
+			setName (null);
+			setValidTo (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_B_Seller (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +93,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -84,7 +110,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_B_Seller[")
-        .append(get_ID()).append(",Name=").append(getName()).append("]");
+        .append(get_UUID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -161,10 +187,10 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	public boolean isInternal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInternal);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -186,12 +212,12 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), getName());
+        return new ValueNamePair(get_UUID(), getName());
     }
 
 	/** Set Valid to.

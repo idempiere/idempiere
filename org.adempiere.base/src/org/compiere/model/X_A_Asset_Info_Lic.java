@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Info_Lic
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Info_Lic")
-public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Persistent 
+public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Lic (Properties ctx, int A_Asset_Info_Lic_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Info_Lic (Properties ctx, String A_Asset_Info_Lic_UU, String trxName)
+    {
+      super (ctx, A_Asset_Info_Lic_UU, trxName);
+      /** if (A_Asset_Info_Lic_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Lic_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Info_Lic (Properties ctx, String A_Asset_Info_Lic_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Info_Lic_UU, trxName, virtualColumns);
+      /** if (A_Asset_Info_Lic_UU == null)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Lic_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Info_Lic (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -138,7 +160,7 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Info_Lic_ID()));
     }
@@ -251,10 +273,10 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

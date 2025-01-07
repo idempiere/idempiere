@@ -21,10 +21,9 @@ import java.sql.Timestamp;
 
 import org.compiere.model.MBankStatementLoader;
 
-
 /**
- *	Interface to be implemented by bank statement loader classes
- *
+ *	Interface to be implemented by bank statement loader classes.
+ *  <pre>
  *  Bank statement loader classes that extend this interface can be loaded
  *  by the MBankStatementLoader controller class. 
  *  The usage patter looks like this:
@@ -42,7 +41,7 @@ import org.compiere.model.MBankStatementLoader;
  *
  *  -The MBankStatementLoader controller object can now obtain the data for the current bank
  *  statement line by using the corresponding get methods of the loader class.
- *
+ *  </pre>
  *	@author Maarten Klinker, Eldir Tomassen
  *	@version $Id: BankStatementLoaderInterface.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
@@ -58,21 +57,19 @@ public interface BankStatementLoaderInterface
 
 	/**
 	 * Verify whether the data to be imported is valid
-	 * @return Data is valid
-	 * If the actual loaders does not do any validity checks
-	 * it will just return true.
+	 * @return true if Data is valid
 	 */	
 	public boolean isValid();
 
 	/**
 	 * Start importing statement lines
-	 * @return Statement lines imported successfully
+	 * @return true if statement lines imported successfully
 	 */	
 	public boolean loadLines();
 
 	/**
 	 * Return the most recent error
-	 * @return Error message
+	 * @return Error message.
 	 * This error message will be handled as a ADempiere message,
 	 * (e.g. it can be translated)
 	 */
@@ -80,7 +77,7 @@ public interface BankStatementLoaderInterface
 
 	/**
 	 * Return the most recent error description
-	 * @return Error description
+	 * @return Error description.
 	 * This is an additional error description, it can be used to provided
 	 * descriptive information, such as a file name or SQL error, that can not
 	 * be translated by the ADempiere message system.
@@ -89,9 +86,10 @@ public interface BankStatementLoaderInterface
 	
 	/**
 	 * The last time this loader acquired bank statement data.
-	 * For OFX this is the <DTEND> value. This is generally only available\
+	 * <p>
+	 * For OFX this is the &lt;DTEND&gt; value. This is generally only available
 	 * after loadLines() has been called. If a specific loader class 
-	 * does not provided this information it is allowed to return null
+	 * does not provide this information it is allowed to return null.
 	 * @return Date last run
 	 */
 	public Timestamp getDateLastRun();
@@ -115,7 +113,7 @@ public interface BankStatementLoaderInterface
 	public String getIBAN() ;
 	
 	/**
-	 * Additional reference information
+	 * Additional reference information.<br/>
 	 * Statement level reference information. If a specific loader class
 	 * does not provided this, it is allowed to return null.
 	 * @return Statement Reference
@@ -123,7 +121,7 @@ public interface BankStatementLoaderInterface
 	public String getStatementReference();
 	
 	/**
-	 * Statement Date
+	 * Statement Date.<br/>
 	 * Date of the bank statement. If a specific loader does not provide this, 
 	 * it is allowed to return null.
 	 * @return Statement Date
@@ -132,7 +130,8 @@ public interface BankStatementLoaderInterface
 	
 	/**
 	 * Transaction ID assigned by the bank.
-	 * For OFX this is the <FITID>
+	 * <p>
+	 * For OFX this is the &lt;FITID&gt;.
 	 * If a specific loader does not provide this, it is allowed to return
 	 * null.
 	 * @return Transaction ID
@@ -140,28 +139,31 @@ public interface BankStatementLoaderInterface
 	public String getTrxID();
 	
 	/**
-	 * Additional reference information
+	 * Additional reference information.
 	 * Statement line level reference information.
-	 * For OFX this is the <REFNUM> field.
+	 * <p>
+	 * For OFX this is the &lt;REFNUM&gt; field.
 	 * If a specific loader does not provided this, it is allowed to return null.
 	 * @return Reference
 	 */
 	public String getReference();
 	
 	/**
-	 * Check number
+	 * Check number.
 	 * Check number, in case the transaction was initiated by a check.
-	 * For OFX this is the <CHECKNUM> field, for MS-Money (OFC) this is the
-	 * <CHKNUM> field.
+	 * <p>
+	 * For OFX this is the &lt;CHECKNUM&gt; field, for MS-Money (OFC) this is the
+	 * &lt;CHKNUM&gt; field.
 	 * If a specific loader does not provide this, it is allowed to return null.
 	 * @return Transaction reference
 	 */
 	public String getCheckNo();
 	
 	/**
-	 * Payee name
-	 * Name information, for OFX this is the <NAME> or
-	 * <PAYEE><NAME> field	
+	 * Payee name.
+	 * <p>
+	 * Name information, for OFX this is the &lt;NAME&gt; or
+	 * &lt;PAYEE&gt;&lt;NAME&gt; field.	
 	 * If a specific loader class does not provide this, it is allowed
 	 * to return null.
 	 * @return Payee name
@@ -169,8 +171,9 @@ public interface BankStatementLoaderInterface
 	public String getPayeeName();
 	
 	/**
-	 * Payee account
-	 * Account information of "the other party"
+	 * Payee account.
+	 * <p>
+	 * Account information of "the other party".
 	 * If a specific loader class does not provide this, it is allowed
 	 * to return null.
 	 * @return Payee bank account number
@@ -178,14 +181,15 @@ public interface BankStatementLoaderInterface
 	public String getPayeeAccountNo();
 	
 	/**
-	 * Statement line date
+	 * Statement line date.
 	 * This has to be provided by all loader classes.
 	 * @return Statement line date
 	 */
 	public Timestamp getStatementLineDate();
 	
 	/**
-	 * Effective date
+	 * Effective date.
+	 * <p>
 	 * Date at the funds became available.
 	 * If a specific loader does not provide this, it is allowed to return null.
 	 * @return Effective date
@@ -193,8 +197,8 @@ public interface BankStatementLoaderInterface
 	public Timestamp getValutaDate();
 	
 	/**
-	 * Transaction type
-	 * @return Transaction type
+	 * Transaction type.
+	 * @return Transaction type.<br/>
 	 * This returns the transaction type as used by the bank
 	 * Whether a transaction is credit or debit depends on the amount (i.e. negative),
 	 * this field is for reference only.
@@ -211,7 +215,7 @@ public interface BankStatementLoaderInterface
 	
 	/**
 	 * Currency
-	 * @return Currency
+	 * @return Currency.<br/>
 	 * Return the currency, if included in the statement data.
 	 * It is returned as it appears in the import data, it should
 	 * not be processed by the loader in any way.
@@ -222,7 +226,7 @@ public interface BankStatementLoaderInterface
 	
 	/**
 	 * Statement line amount
-	 * @return Statement Line Amount
+	 * @return Statement Line Amount.
 	 * This has to be provided by all loader classes.
 	 */
 	public BigDecimal getStmtAmt();
@@ -241,17 +245,17 @@ public interface BankStatementLoaderInterface
 	
 	/**
 	 * Transaction memo
-	 * @return Memo
+	 * @return Memo.<br/>
 	 * Additional descriptive information.
-	 * For OFX this is the <MEMO> filed, for SWIFT MT940
+	 * For OFX this is the &lt;MEMO&gt; filed, for SWIFT MT940
 	 * this is the "86" line.
 	 * If a specific loader does not provide this, it is allowed to return null.
 	 */
 	public String getMemo();
 	
 	/**
-	 * Charge name
-	 * @return Charge name
+	 * Charge name.
+	 * @return Charge name.<br/>
 	 * Name of the charge, in case this transaction is a bank charge.
 	 * If a specific loader class does not provide this, it is allowed
 	 * to return null.
@@ -260,8 +264,8 @@ public interface BankStatementLoaderInterface
 	
 	/**
 	 * Charge amount
-	 * @return Charge amount
-	 * Name of the charge, in case this transaction is a bank charge.
+	 * @return Charge amount.<br/>
+	 * Charge amount, in case this transaction is a bank charge.
 	 * If a specific loader class does not provide this, it is allowed
 	 * to return null.
 	 */

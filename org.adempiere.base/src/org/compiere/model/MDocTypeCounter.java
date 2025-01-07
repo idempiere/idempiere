@@ -24,9 +24,9 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
-
 
 /**
  *	Counter Document Type Model
@@ -37,14 +37,14 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3999273279386464393L;
 
 	/**
-	 * 	Get Counter document for document type
+	 * 	Get counter document for a document type
 	 *	@param ctx context
-	 *	@param C_DocType_ID base document
+	 *	@param C_DocType_ID document type to get counter document
 	 *	@return counter document C_DocType_ID or 0 or -1 if no counter doc
 	 */
 	public static int getCounterDocType_ID (Properties ctx, int C_DocType_ID)
@@ -87,7 +87,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	 * 	Get (first) valid Counter document for document type
 	 *	@param ctx ignore
 	 *	@param C_DocType_ID base document
-	 *	@return counter document (may be invalid) or null
+	 *	@return counter document type (may be invalid) or null
 	 */
 	public static MDocTypeCounter getCounterDocType (Properties ctx, int C_DocType_ID)
 	{
@@ -97,7 +97,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	/**
 	 * 	Get (first) valid Counter document for document type
 	 *	@param C_DocType_ID base document
-	 *	@return counter document (may be invalid) or null
+	 *	@return counter document type (may be invalid) or null
 	 */
 	public static MDocTypeCounter getCounterDocType (int C_DocType_ID)
 	{
@@ -148,7 +148,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	}	//	getCounterDocType
 	
 	/**
-	 * 	Get MDocTypeCounter from Cache
+	 * 	Get MDocTypeCounter from Cache (Immutable)
 	 *	@param C_DocTypeCounter_ID id
 	 *	@return MDocTypeCounter
 	 */
@@ -158,7 +158,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	}
 	
 	/**
-	 * 	Get MDocTypeCounter from Cache
+	 * 	Get MDocTypeCounter from Cache (Immutable)
 	 *	@param C_DocTypeCounter_ID id
 	 *  @param trxName transaction
 	 *	@return MDocTypeCounter
@@ -169,7 +169,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	}
 	
 	/**
-	 * 	Get MDocTypeCounter from Cache
+	 * 	Get MDocTypeCounter from Cache (Immutable)
 	 *  @param ctx context
 	 *	@param C_DocTypeCounter_ID id
 	 *  @param trxName
@@ -193,7 +193,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 
 	/**
 	 * 	Get Counter Document BaseType
-	 *	@param DocBaseType Document Base Type (e.g. SOO)
+	 *	@param DocBaseType Document Base Type (e.g. SOO) to get counter document base type
 	 *	@return Counter Document BaseType (e.g. POO) or null if there is none
 	 */
 	public static String getCounterDocBaseType (String DocBaseType)
@@ -231,17 +231,27 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 			s_log.log(Level.SEVERE, "getCounterDocBaseType for " + DocBaseType + ": None found");
 		return retValue;
 	}	//	getCounterDocBaseType
-	
-	
-	/**	Object Cache				*/
+		
+	/**	MDocTypeCounter Cache				*/
 	private static ImmutableIntPOCache<Integer,MDocTypeCounter> s_cache = new ImmutableIntPOCache<Integer,MDocTypeCounter>(Table_Name, 20);
 	/**	Counter Relationship Cache	*/
 	private static ImmutableIntPOCache<Integer,MDocTypeCounter> s_counter = new ImmutableIntPOCache<Integer,MDocTypeCounter>(Table_Name, "C_DocTypeCounter_Relation", 20);
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MDocTypeCounter.class);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_DocTypeCounter_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDocTypeCounter(Properties ctx, String C_DocTypeCounter_UU, String trxName) {
+        super(ctx, C_DocTypeCounter_UU, trxName);
+		if (Util.isEmpty(C_DocTypeCounter_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_DocTypeCounter_ID id
@@ -251,11 +261,16 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	{
 		super (ctx, C_DocTypeCounter_ID, trxName);
 		if (C_DocTypeCounter_ID == 0)
-		{
-			setIsCreateCounter (true);	// Y
-			setIsValid (false);
-		}	
+			setInitialDefaults();
 	}	//	MDocTypeCounter
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsCreateCounter (true);	// Y
+		setIsValid (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -269,7 +284,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	}	//	MDocTypeCounter
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDocTypeCounter(MDocTypeCounter copy) 
@@ -288,7 +303,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -300,21 +315,22 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	}
 	
 	/**
-	 * 	Set C_DocType_ID
+	 * 	Set C_DocType_ID. Reset IsValid to false.
 	 *	@param C_DocType_ID id
 	 */
+	@Override
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
 		super.setC_DocType_ID (C_DocType_ID);
 		if (isValid())
 			setIsValid(false);
 	}	//	setC_DocType_ID
-
 	
 	/**
-	 * 	Set Counter C_DocType_ID
+	 * 	Set Counter C_DocType_ID. Reset IsValid to false.
 	 *	@param Counter_C_DocType_ID id
 	 */
+	@Override
 	public void setCounter_C_DocType_ID (int Counter_C_DocType_ID)
 	{
 		super.setCounter_C_DocType_ID (Counter_C_DocType_ID);
@@ -353,10 +369,9 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 		}
 		return dt;
 	}	//	getCounterDocType
-
 	
-	/**************************************************************************
-	 * 	Validate Document Type compatability
+	/**
+	 * 	Validate Document Type compatibility and update IsValid flag accordingly.
 	 *	@return Error message or null if valid
 	 */
 	public String validate()
@@ -416,6 +431,7 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MDocTypeCounter[");
@@ -426,13 +442,13 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
-	
+		
 	/**
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)

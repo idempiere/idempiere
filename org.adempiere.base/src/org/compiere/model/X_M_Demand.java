@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Demand
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Demand")
-public class X_M_Demand extends PO implements I_M_Demand, I_Persistent 
+public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Demand (Properties ctx, int M_Demand_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Demand (Properties ctx, String M_Demand_UU, String trxName)
+    {
+      super (ctx, M_Demand_UU, trxName);
+      /** if (M_Demand_UU == null)
+        {
+			setC_Calendar_ID (0);
+			setC_Year_ID (0);
+			setIsDefault (false);
+			setM_Demand_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Demand (Properties ctx, String M_Demand_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Demand_UU, trxName, virtualColumns);
+      /** if (M_Demand_UU == null)
+        {
+			setC_Calendar_ID (0);
+			setC_Year_ID (0);
+			setIsDefault (false);
+			setM_Demand_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Demand (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -191,10 +219,10 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -256,7 +284,7 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -274,10 +302,10 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

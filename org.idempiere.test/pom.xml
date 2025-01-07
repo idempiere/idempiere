@@ -54,10 +54,18 @@
 					<argLine>
 						-DIDEMPIERE_HOME=${idempiere.home} ${p1} ${p2} ${p3} ${p4} ${p5}
 					</argLine>
-					<testRuntime>p2Installed</testRuntime>
+					<testRuntime>default</testRuntime>
 					<skipTests>${skipTests}</skipTests>
-					<providerHint>junit58</providerHint>
+					<providerHint>junit59</providerHint>
 				</configuration>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -66,12 +74,61 @@
 				<configuration>
 					<dependency-resolution>
 						<extraRequirements>
-							<!-- product IU under test -->
 							<requirement>
-								<type>p2-installable-unit</type>
-								<id>org.adempiere.server.product</id>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.core.runtime</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.common</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.event</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.adempiere.install</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.compiere.db.oracle.provider</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.compiere.db.postgresql.provider</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.adempiere.server</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.adempiere.replication</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.adempiere.pipo</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.idempiere.hazelcast.service</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+										<id>org.idempiere.tablepartition</id>
+										<versionRange>0.0.0</versionRange>
+								</requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>

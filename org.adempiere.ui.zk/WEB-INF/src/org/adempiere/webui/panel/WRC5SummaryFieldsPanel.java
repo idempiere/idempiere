@@ -35,27 +35,37 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Row;
 
+/**
+ * Panel to edit summary related properties of print format items (IsSummary, IsCounted, IsAveraged, etc)
+ */
 public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4660623126634851224L;
 
 	private static final int RENDER_IN_COLUMNS=10;
-	Checkbox m_chkSum[]=null;
-	Checkbox m_chkCount[]=null;
-	Checkbox m_chkMin[]=null;
-	Checkbox m_chkMax[]=null;
-	Checkbox m_chkMean[]=null;
-	Checkbox m_chkVariance[]=null;
-	Checkbox m_chkDesviation[]=null;
-	private ArrayList<MPrintFormatItem> DisplayItems=new ArrayList<MPrintFormatItem>();
-	Grid grid = new Grid();
+	protected Checkbox m_chkSum[]=null;
+	protected Checkbox m_chkCount[]=null;
+	protected Checkbox m_chkMin[]=null;
+	protected Checkbox m_chkMax[]=null;
+	protected Checkbox m_chkMean[]=null;
+	protected Checkbox m_chkVariance[]=null;
+	protected Checkbox m_chkDeviation[]=null;
+	/** printed print format items */
+	private ArrayList<MPrintFormatItem> displayItems=new ArrayList<MPrintFormatItem>();
+	protected Grid grid = new Grid();
 
+	/**
+	 * default constructor
+	 */
 	public WRC5SummaryFieldsPanel() {
 		super();		
 	}
 	
+	/**
+	 * Layout panel
+	 */
 	public void init(){
 		Window wind=new Window();
 		ZKUpdateUtil.setWidth(wind, "90%");
@@ -94,26 +104,29 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 
 	@Override
 	public void refresh() {
-		DisplayItems = new ArrayList<MPrintFormatItem>();
+		displayItems = new ArrayList<MPrintFormatItem>();
 		for(int i=0 ; i<m_pfi.size() ; i ++){
 			if(m_pfi.get(i) != null && m_pfi.get(i).isPrinted()){
-				DisplayItems.add(m_pfi.get(i));
+				displayItems.add(m_pfi.get(i));
 			}
 		}
 		dynamicInit();
 	}
 
+	/**
+	 * Update print format items
+	 */
 	@Override
 	public void updatePFI() {
-		for(int i=0 ;i<DisplayItems.size() ; i++){
-			int j = m_pfi.indexOf(getPrintFormatItem(DisplayItems.get(i).get_ID()));
+		for(int i=0 ;i<displayItems.size() ; i++){
+			int j = m_pfi.indexOf(getPrintFormatItem(displayItems.get(i).get_ID()));
 			m_pfi.get(j).setIsSummarized(m_chkSum[i].isChecked());
 			m_pfi.get(j).setIsCounted(m_chkCount[i].isChecked());
 			m_pfi.get(j).setIsMinCalc(m_chkMin[i].isChecked());
 			m_pfi.get(j).setIsMaxCalc(m_chkMax[i].isChecked());
 			m_pfi.get(j).setIsAveraged(m_chkMean[i].isChecked());
 			m_pfi.get(j).setIsVarianceCalc(m_chkVariance[i].isChecked());
-			m_pfi.get(j).setIsDeviationCalc(m_chkDesviation[i].isChecked());
+			m_pfi.get(j).setIsDeviationCalc(m_chkDeviation[i].isChecked());
 		}
 	}
 
@@ -150,50 +163,50 @@ public class WRC5SummaryFieldsPanel extends WRCTabPanel implements EventListener
 
 		rows.appendChild(row);
 		
-		m_chkSum =new Checkbox[DisplayItems.size()];
-		m_chkCount=new Checkbox[DisplayItems.size()];
-		m_chkMin=new Checkbox[DisplayItems.size()];
-		m_chkMax=new Checkbox[DisplayItems.size()];
-		m_chkMean=new Checkbox[DisplayItems.size()];
-		m_chkVariance=new Checkbox[DisplayItems.size()];
-		m_chkDesviation=new Checkbox[DisplayItems.size()];
+		m_chkSum =new Checkbox[displayItems.size()];
+		m_chkCount=new Checkbox[displayItems.size()];
+		m_chkMin=new Checkbox[displayItems.size()];
+		m_chkMax=new Checkbox[displayItems.size()];
+		m_chkMean=new Checkbox[displayItems.size()];
+		m_chkVariance=new Checkbox[displayItems.size()];
+		m_chkDeviation=new Checkbox[displayItems.size()];
 		
-		for(int i=0 ;i<DisplayItems.size(); i++){
+		for(int i=0 ;i<displayItems.size(); i++){
 			row=new Row();
-			String strValue = DisplayItems.get(i).getPrintName(Language.getLoginLanguage());
+			String strValue = displayItems.get(i).getPrintName(Language.getLoginLanguage());
 			if(strValue ==null || strValue.length()==0){
-				strValue = DisplayItems.get(i).getName();
+				strValue = displayItems.get(i).getName();
 			}
 			Label field=new Label(strValue);
 			row.appendChild(field);
 			m_chkSum[i]=new Checkbox();
-			m_chkSum[i].setChecked(DisplayItems.get(i).isSummarized());
+			m_chkSum[i].setChecked(displayItems.get(i).isSummarized());
 			m_chkSum[i].addEventListener(Events.ON_CHECK, this);
 			row.appendChild(m_chkSum[i]);
 			m_chkCount[i]=new Checkbox();
-			m_chkCount[i].setChecked(DisplayItems.get(i).isCounted());
+			m_chkCount[i].setChecked(displayItems.get(i).isCounted());
 			m_chkCount[i].addEventListener(Events.ON_CHECK, this);
 			row.appendChild(m_chkCount[i]);
 			m_chkMin[i]=new Checkbox();
-			m_chkMin[i].setChecked(DisplayItems.get(i).isMinCalc());
+			m_chkMin[i].setChecked(displayItems.get(i).isMinCalc());
 			m_chkMin[i].addEventListener(Events.ON_CHECK, this);
 			row.appendChild(m_chkMin[i]);
 			m_chkMax[i]=new Checkbox();
-			m_chkMax[i].setChecked(DisplayItems.get(i).isMaxCalc());
+			m_chkMax[i].setChecked(displayItems.get(i).isMaxCalc());
 			m_chkMax[i].addEventListener(Events.ON_CHECK, this);
 			row.appendChild(m_chkMax[i]);
 			m_chkMean[i]=new Checkbox();
-			m_chkMean[i].setChecked(DisplayItems.get(i).isAveraged());
+			m_chkMean[i].setChecked(displayItems.get(i).isAveraged());
 			m_chkMean[i].addEventListener(Events.ON_CHECK, this);
 			row.appendChild(m_chkMean[i]);
 			m_chkVariance[i]=new Checkbox();
-			m_chkVariance[i].setChecked(DisplayItems.get(i).isVarianceCalc());
+			m_chkVariance[i].setChecked(displayItems.get(i).isVarianceCalc());
 			m_chkVariance[i].addEventListener(Events.ON_CHECK, this);
 			row.appendChild(m_chkVariance[i]);
-			m_chkDesviation[i]=new Checkbox();
-			m_chkDesviation[i].setChecked(DisplayItems.get(i).isDeviationCalc());
-			m_chkDesviation[i].addEventListener(Events.ON_CHECK, this);
-			row.appendChild(m_chkDesviation[i]);
+			m_chkDeviation[i]=new Checkbox();
+			m_chkDeviation[i].setChecked(displayItems.get(i).isDeviationCalc());
+			m_chkDeviation[i].addEventListener(Events.ON_CHECK, this);
+			row.appendChild(m_chkDeviation[i]);
 			rows.appendChild(row);
 		}
 		grid.appendChild(rows);

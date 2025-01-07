@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCostAllocation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_LandedCostAllocation")
-public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAllocation, I_Persistent 
+public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAllocation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName)
@@ -67,6 +67,38 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_LandedCostAllocation (Properties ctx, String C_LandedCostAllocation_UU, String trxName)
+    {
+      super (ctx, C_LandedCostAllocation_UU, trxName);
+      /** if (C_LandedCostAllocation_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setBase (Env.ZERO);
+			setC_InvoiceLine_ID (0);
+			setC_LandedCostAllocation_ID (0);
+			setM_CostElement_ID (0);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_LandedCostAllocation (Properties ctx, String C_LandedCostAllocation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_LandedCostAllocation_UU, trxName, virtualColumns);
+      /** if (C_LandedCostAllocation_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setBase (Env.ZERO);
+			setC_InvoiceLine_ID (0);
+			setC_LandedCostAllocation_ID (0);
+			setM_CostElement_ID (0);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_LandedCostAllocation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +106,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -164,7 +196,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_InvoiceLine_ID()));
     }

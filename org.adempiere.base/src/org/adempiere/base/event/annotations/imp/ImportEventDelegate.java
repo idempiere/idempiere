@@ -30,9 +30,10 @@ import org.adempiere.base.event.annotations.EventDelegate;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate for import event.<br/>
+ * To handle an import event, create a sub class of this and uses the import event annotation (AfterImport, BeforeImport, etc)
+ * to annotate the event handling method. 
  * @author hengsin
- *
  */
 public class ImportEventDelegate extends EventDelegate {
 
@@ -44,7 +45,7 @@ public class ImportEventDelegate extends EventDelegate {
 	}
 
 	/**
-	 * 
+	 * Get data object for import event
 	 * @return {@link ImportEventData}
 	 */
 	protected ImportEventData getImportEventData() {

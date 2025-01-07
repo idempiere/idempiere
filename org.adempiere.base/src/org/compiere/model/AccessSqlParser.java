@@ -99,7 +99,7 @@ public class AccessSqlParser
 	/**
 	 * 	Parse Original SQL.
 	 * 	Called from setSql or Constructor.
-	 * 	@return true if pased
+	 * 	@return true if parsed successfully
 	 */
 	public boolean parse()
 	{
@@ -119,7 +119,7 @@ public class AccessSqlParser
 	}	//	parse
 
 	/**
-	 * 	Parses 	m_sqlOriginal and creates Array of m_sql statements
+	 * 	Parses {@link #m_sqlOriginal} and creates Array of {@link #m_sql} statements
 	 */
 	private void getSelectStatements()
 	{
@@ -272,7 +272,6 @@ public class AccessSqlParser
 		return retValue;
 	}	//	getTableInfo
 
-
 	/**
 	 * 	String Representation
 	 *	@return info
@@ -419,7 +418,7 @@ public class AccessSqlParser
 		}	//	TableInfo
 		
 		/**
-		 * 	Short Constuctor - no syn
+		 * 	Short Constructor - no synonym
 		 *	@param tableName table
 		 */
 		public TableInfo (String tableName)

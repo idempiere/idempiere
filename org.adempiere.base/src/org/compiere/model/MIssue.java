@@ -32,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Secure;
+import org.compiere.util.Util;
 
 /**
  * 	Issue Report Model
@@ -42,7 +43,7 @@ import org.compiere.util.Secure;
 public class MIssue extends X_AD_Issue
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3680542992654002121L;
 
@@ -74,8 +75,10 @@ public class MIssue extends X_AD_Issue
 	 *	@param ctx context
 	 *	@param hexInput hex string
 	 *	@return issue
+	 *  @deprecated
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static MIssue create (Properties ctx, String hexInput)
 	{
 		HashMap<String,String> hmIn = null;
@@ -103,7 +106,19 @@ public class MIssue extends X_AD_Issue
 	/** Answer Delimiter		*/
 	public static String	DELIMITER = "|";
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Issue_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MIssue(Properties ctx, String AD_Issue_UU, String trxName) {
+        super(ctx, AD_Issue_UU, trxName);
+		if (Util.isEmpty(AD_Issue_UU))
+			setInitialDefaults(ctx);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Issue_ID issue
@@ -113,19 +128,24 @@ public class MIssue extends X_AD_Issue
 	{
 		super (ctx, AD_Issue_ID, trxName);
 		if (AD_Issue_ID == 0)
-		{
-			setProcessed (false);	// N
-			setSystemStatus(SYSTEMSTATUS_Evaluation);
-			try
-			{
-				init(ctx);
-			}
-			catch (Exception e)
-			{
-				e.getStackTrace();
-			}
-		}
+			setInitialDefaults(ctx);
 	}	//	MIssue
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults(Properties ctx) {
+		setProcessed (false);	// N
+		setSystemStatus(SYSTEMSTATUS_Evaluation);
+		try
+		{
+			init(ctx);
+		}
+		catch (Exception e)
+		{
+			e.getStackTrace();
+		}
+	}
 
 	/**
 	 * 	Load Constructor
@@ -196,7 +216,9 @@ public class MIssue extends X_AD_Issue
 	 * 	HashMap Constructor
 	 *	@param ctx context
 	 *	@param hmIn hash map
+	 *  @deprecated
 	 */
+	@Deprecated
 	public MIssue (Properties ctx, HashMap<String,String> hmIn)
 	{
 		super (ctx, 0, null);
@@ -235,7 +257,7 @@ public class MIssue extends X_AD_Issue
 	
 	/**
 	 * 	Set Issue Summary.
-	 * 	Truncate it to 2000 char
+	 * 	Truncate to 2000 char.
 	 *	@param IssueSummary summary
 	 */
 	public void setIssueSummary (String IssueSummary)
@@ -251,7 +273,7 @@ public class MIssue extends X_AD_Issue
 	
 	/**
 	 * 	Set Stack Trace.
-	 * 	Truncate it to 2000 char
+	 * 	Truncate to 2000 char.
 	 *	@param StackTrace trace
 	 */
 	public void setStackTrace (String StackTrace)
@@ -264,11 +286,10 @@ public class MIssue extends X_AD_Issue
 			StackTrace = StackTrace.substring(0,INFOLENGTH-1);
 		super.setStackTrace (StackTrace);
 	}	//	setStackTrace
-	
-	
+		
 	/**
 	 * 	Set Error Trace.
-	 * 	Truncate it to 2000 char
+	 * 	Truncate to 2000 char.
 	 *	@param ErrorTrace trace
 	 */
 	public void setErrorTrace (String ErrorTrace)
@@ -302,7 +323,7 @@ public class MIssue extends X_AD_Issue
 	
 	/**
 	 * 	Set Comments.
-	 * 	Truncate it to 2000 char
+	 * 	Truncate to 2000 char.
 	 *	@param Comments
 	 */
 	public void setComments (String Comments)
@@ -316,7 +337,7 @@ public class MIssue extends X_AD_Issue
 	
 	/**
 	 * 	Set ResponseText.
-	 * 	Truncate it to 2000 char
+	 * 	Truncate to 2000 char.
 	 *	@param ResponseText
 	 */
 	public void setResponseText (String ResponseText)
@@ -331,7 +352,9 @@ public class MIssue extends X_AD_Issue
 	/**
 	 * 	Process Request.
 	 * 	@return answer
+	 *  @deprecated
 	 */
+	@Deprecated
 	public String process()
 	{
 		MIssueProject.get(this);	//	sets also Asset
@@ -343,7 +366,9 @@ public class MIssue extends X_AD_Issue
 	/**
 	 * 	Create Answer to send to User
 	 *	@return answer
+	 *  @deprecated
 	 */
+	@Deprecated
 	public String createAnswer()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -370,7 +395,7 @@ public class MIssue extends X_AD_Issue
 		if (getR_Request_ID() == 0)
 			return null;
 		return new X_R_Request(getCtx(), getR_Request_ID(), null);
-	}	//	getRequestDocumentNo
+	}	//	getRequest
 
 	/**
 	 * 	Get Request Document No
@@ -386,8 +411,9 @@ public class MIssue extends X_AD_Issue
 	
 	/**
 	 * 	Get System Status
-	 *	@return system status
+	 *	@return system status or SYSTEMSTATUS_Evaluation if not set by user
 	 */
+	@Override
 	public String getSystemStatus ()
 	{
 		String s = super.getSystemStatus ();
@@ -395,12 +421,13 @@ public class MIssue extends X_AD_Issue
 			s = SYSTEMSTATUS_Evaluation;
 		return s;
 	}	//	getSystemStatus
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Report/Update Issue.
 	 *	@return error message
+	 *  @deprecated not implemented
 	 */
+	@Deprecated
 	public String report()
 	{
 		return null;
@@ -410,6 +437,7 @@ public class MIssue extends X_AD_Issue
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MIssue[");

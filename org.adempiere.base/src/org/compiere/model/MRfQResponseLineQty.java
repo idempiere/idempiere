@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Response Line Qty
@@ -33,12 +34,23 @@ import org.compiere.util.Env;
 public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Comparator<Object>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4118030805518374853L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RfQResponseLineQty_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRfQResponseLineQty(Properties ctx, String C_RfQResponseLineQty_UU, String trxName) {
+        super(ctx, C_RfQResponseLineQty_UU, trxName);
+		if (Util.isEmpty(C_RfQResponseLineQty_UU))
+			setInitialDefaults();
+    }
+
 	/**
-	 * 	Persistency Constructor
 	 *	@param ctx context
 	 *	@param C_RfQResponseLineQty_ID id
 	 *	@param trxName transaction
@@ -47,12 +59,16 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	{
 		super (ctx, C_RfQResponseLineQty_ID, trxName);
 		if (C_RfQResponseLineQty_ID == 0)
-		{
-			setPrice (Env.ZERO);
-			setDiscount(Env.ZERO);
-		}
-
+			setInitialDefaults();
 	}	//	MRfQResponseLineQty
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPrice (Env.ZERO);
+		setDiscount(Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -77,8 +93,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 		setC_RfQResponseLine_ID (line.getC_RfQResponseLine_ID());
 		setC_RfQLineQty_ID (qty.getC_RfQLineQty_ID());
 	}	//	MRfQResponseLineQty
-	
-	
+		
 	/**	RfQ Line Qty			*/
 	private MRfQLineQty		m_rfqQty = null;
 	
@@ -93,9 +108,11 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 		return m_rfqQty;
 	}	//	getRfQLineQty
 	
-
 	/**
-	 * 	Is the Amount (price - discount) Valid
+	 * 	Is the Amount Valid.<br/>
+	 *  - Price > 0 <br/>
+	 *  - Discount &lt;= 100 <br/>
+	 *  - Net Amount > 0
 	 * 	@return true if valid
 	 */
 	public boolean isValidAmt()
@@ -143,16 +160,15 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 		if (discount == null || Env.ZERO.compareTo(discount) == 0)
 			return price;
 		//	Calculate
-	//	double result = price.doubleValue() * (100.0 - discount.doubleValue()) / 100.0;
 		BigDecimal factor = Env.ONEHUNDRED.subtract(discount);
 		return price.multiply(factor).divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);  
 	}	//	getNetAmt
 
-	
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MRfQResponseLineQty[");
@@ -174,6 +190,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
      *	@throws ClassCastException if the arguments' types prevent them from
      * 	       being compared by this Comparator.
      */
+	@Override
 	public int compare(Object o1, Object o2)
 	{
 		if (o1 == null)
@@ -209,6 +226,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
      * 	@param   obj   the reference object with which to compare.
      *	@return true if Net Amount equal
      */
+	@Override
     public boolean equals(Object obj)
 	{
     	if (obj instanceof MRfQResponseLineQty)
@@ -227,6 +245,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
     	return false;
 	}	//	equals
     
+	@Override
     public int hashCode()
 	{
 	  assert false : "hashCode not designed";
@@ -238,6 +257,7 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (!isActive())

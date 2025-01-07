@@ -24,7 +24,6 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
  *	Resource Model
  *	
@@ -40,7 +39,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MResource extends X_S_Resource implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6893347336885257619L;
 	/** Cache */
@@ -93,10 +92,21 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 		return rs;
 	}
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param S_Resource_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MResource(Properties ctx, String S_Resource_UU, String trxName) {
+        super(ctx, S_Resource_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param S_Resource_ID id
+	 *  @param trxName
 	 */
 	public MResource (Properties ctx, int S_Resource_ID, String trxName)
 	{
@@ -114,7 +124,7 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 	}	//	MResource
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MResource(MResource copy) 
@@ -123,7 +133,7 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -133,7 +143,7 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -150,8 +160,7 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 	private MResourceType	m_resourceType = null;
 	/** Cached Product			*/
 	private MProduct		m_product = null;
-	
-	
+		
 	/**
 	 * 	Get cached Resource Type
 	 *	@return Resource Type
@@ -186,6 +195,9 @@ public class MResource extends X_S_Resource implements ImmutablePOSupport
 		return m_product;
 	}	//	getProduct
 	
+	/**
+	 * @return product C_UOM_ID
+	 */
 	public int getC_UOM_ID()
 	{
 		return getProduct().getC_UOM_ID();

@@ -56,33 +56,28 @@ public class MInfoWindowTest extends AbstractTestCase {
 		MInfoWindow infoWindow = new MInfoWindow(Env.getCtx(), 0, getTrxName());
 		MInfoColumn infoColumn1 = new MInfoColumn(Env.getCtx(), 0, getTrxName());
 		MInfoColumn infoColumn2 = new MInfoColumn(Env.getCtx(), 0, getTrxName());
-		try {
-			PO.setCrossTenantSafe();			
-			infoWindow.setAD_Table_ID(MTest.Table_ID);
-			infoWindow.setName("testColumnAccess");
-			infoWindow.setFromClause("Test t");
-			infoWindow.saveEx();
-						
-			infoColumn1.setAD_InfoWindow_ID(infoWindow.get_ID());
-			infoColumn1.setName(MTest.COLUMNNAME_T_Amount);
-			infoColumn1.setEntityType("U");
-			infoColumn1.setSelectClause("t."+MTest.COLUMNNAME_T_Amount);
-			infoColumn1.setSeqNo(10);
-			infoColumn1.setAD_Reference_ID(DisplayType.Amount);
-			infoColumn1.setColumnName(MTest.COLUMNNAME_T_Amount);
-			infoColumn1.saveEx();
-						
-			infoColumn2.setAD_InfoWindow_ID(infoWindow.get_ID());
-			infoColumn2.setName(MTest.COLUMNNAME_T_DateTime);
-			infoColumn2.setEntityType("U");
-			infoColumn2.setSelectClause("t."+MTest.COLUMNNAME_T_DateTime);
-			infoColumn2.setSeqNo(10);
-			infoColumn2.setAD_Reference_ID(DisplayType.DateTime);
-			infoColumn2.setColumnName(MTest.COLUMNNAME_T_DateTime);
-			infoColumn2.saveEx();
-		} finally {
-			PO.clearCrossTenantSafe();
-		}
+		infoWindow.setAD_Table_ID(MTest.Table_ID);
+		infoWindow.setName("testColumnAccess");
+		infoWindow.setFromClause("Test t");
+		infoWindow.saveCrossTenantSafeEx();
+					
+		infoColumn1.setAD_InfoWindow_ID(infoWindow.get_ID());
+		infoColumn1.setName(MTest.COLUMNNAME_T_Amount);
+		infoColumn1.setEntityType("U");
+		infoColumn1.setSelectClause("t."+MTest.COLUMNNAME_T_Amount);
+		infoColumn1.setSeqNo(10);
+		infoColumn1.setAD_Reference_ID(DisplayType.Amount);
+		infoColumn1.setColumnName(MTest.COLUMNNAME_T_Amount);
+		infoColumn1.saveCrossTenantSafeEx();
+					
+		infoColumn2.setAD_InfoWindow_ID(infoWindow.get_ID());
+		infoColumn2.setName(MTest.COLUMNNAME_T_DateTime);
+		infoColumn2.setEntityType("U");
+		infoColumn2.setSelectClause("t."+MTest.COLUMNNAME_T_DateTime);
+		infoColumn2.setSeqNo(10);
+		infoColumn2.setAD_Reference_ID(DisplayType.DateTime);
+		infoColumn2.setColumnName(MTest.COLUMNNAME_T_DateTime);
+		infoColumn2.saveCrossTenantSafeEx();
 		
 		infoWindow.getInfoColumns(true, true);
 		TableInfo[] tableInfos = infoWindow.getTableInfos();

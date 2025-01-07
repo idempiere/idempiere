@@ -21,9 +21,8 @@ import java.util.Properties;
 import org.compiere.util.ContextProvider;
 
 /**
- *
+ * Default {@link ContextProvider} for core.
  * @author Low Heng Sin
- *
  */
 public class ServerContextProvider implements ContextProvider {
 
@@ -34,7 +33,7 @@ public class ServerContextProvider implements ContextProvider {
 	private ServerContextProvider() {}
 
 	/**
-	 * Get server context proxy
+	 * Get server context
 	 */
 	public Properties getContext() {
 		return context;

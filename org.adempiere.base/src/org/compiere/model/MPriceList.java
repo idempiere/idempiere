@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -37,10 +38,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7128840936482927934L;
-
 
 	/**
 	 * 	Get Price List (cached) (immutable)
@@ -186,7 +186,7 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get Standard Currency Precision
+	 * 	Get Standard Currency Precision from price list
 	 *	@param ctx context 
 	 *	@param M_PriceList_ID price list
 	 *	@return precision
@@ -198,7 +198,7 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	}	//	getStandardPrecision
 	
 	/**
-	 * 	Get Price Precision
+	 * 	Get Price Precision from price list
 	 *	@param ctx context 
 	 *	@param M_PriceList_ID price list
 	 *	@return precision
@@ -211,9 +211,20 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	
 	/** Cache of Price Lists			*/
 	private static ImmutableIntPOCache<Integer,MPriceList> s_cache = new ImmutableIntPOCache<Integer,MPriceList>(Table_Name, 5, 5);
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_PriceList_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPriceList(Properties ctx, String M_PriceList_UU, String trxName) {
+        super(ctx, M_PriceList_UU, trxName);
+		if (Util.isEmpty(M_PriceList_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_PriceList_ID id
@@ -223,14 +234,19 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	{
 		super(ctx, M_PriceList_ID, trxName);
 		if (M_PriceList_ID == 0)
-		{
-			setEnforcePriceLimit (false);
-			setIsDefault (false);
-			setIsSOPriceList (false);
-			setIsTaxIncluded (false);
-			setPricePrecision (2);	// 2
-		}
+			setInitialDefaults();
 	}	//	MPriceList
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEnforcePriceLimit (false);
+		setIsDefault (false);
+		setIsSOPriceList (false);
+		setIsTaxIncluded (false);
+		setPricePrecision (2);	// 2
+	}
 
 	/**
 	 * 	Load Constructor
@@ -263,7 +279,7 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	}	//	MPriceList
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPriceList(MPriceList copy) 
@@ -272,7 +288,7 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -282,7 +298,7 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -311,7 +327,7 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	/**
 	 * 	Get Price List Version
 	 *	@param valid date where PLV must be valid or today if null
-	 *	@return PLV
+	 *	@return MPriceListVersion
 	 */
 	public MPriceListVersion getPriceListVersion (Timestamp valid)
 	{

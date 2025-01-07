@@ -14,9 +14,8 @@
 package org.adempiere.webui.factory;
 
 /**
- * 
+ * Interface for feedback service
  * @author hengsin
- *
  */
 public interface IFeedbackService {
 

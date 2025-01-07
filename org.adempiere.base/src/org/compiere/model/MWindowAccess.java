@@ -19,6 +19,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
+import org.compiere.util.Util;
+
 
 /**
  *	
@@ -28,11 +32,22 @@ import java.util.Properties;
  */
 public class MWindowAccess extends X_AD_Window_Access
 {
-
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -1236781018671637481L;
+	private static final long serialVersionUID = 7056606424817652079L;
+
+	/**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Window_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWindowAccess(Properties ctx, String AD_Window_Access_UU, String trxName) {
+        super(ctx, AD_Window_Access_UU, trxName);
+		if (Util.isEmpty(AD_Window_Access_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -46,10 +61,15 @@ public class MWindowAccess extends X_AD_Window_Access
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
 		else
-		{
-			setIsReadWrite (true);
-		}
+			setInitialDefaults();
 	}	//	MWindowAccess
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsReadWrite (true);
+	}
 
 	/**
 	 * 	MWindowAccess
@@ -75,5 +95,30 @@ public class MWindowAccess extends X_AD_Window_Access
 		setAD_Window_ID(parent.getAD_Window_ID());
 		setAD_Role_ID (AD_Role_ID);
 	}	//	MWindowAccess
+
+	/**
+	 * 	After Save
+	 *	@param newRecord new
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	/**
+	 * 	After Delete
+	 *	@param success success
+	 *	@return success
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MWindowAccess

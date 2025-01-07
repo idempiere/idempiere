@@ -14,7 +14,7 @@
 package org.adempiere.webui.util;
 
 /**
- * Callback interface to perform UI update inside the UI thread or server push thread.
+ * Callback interface to perform UI update inside UI (Event Listener) thread
  * @author hengsin
  *
  */

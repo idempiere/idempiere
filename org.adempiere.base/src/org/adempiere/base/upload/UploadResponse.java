@@ -26,10 +26,8 @@
 package org.adempiere.base.upload;
 
 /**
- * 
  * Response from upload service
  * @author hengsin
- *
  */
 public class UploadResponse {
 	
@@ -37,7 +35,6 @@ public class UploadResponse {
 	private String linkLabel;
 	
 	/**
-	 * 
 	 * @param link
 	 * @param linkLabel
 	 */
@@ -48,15 +45,15 @@ public class UploadResponse {
 	}
 
 	/**
-	 * 
-	 * @return link url to the uploaded file
+	 * Get external link URL to the uploaded file
+	 * @return link URL to the uploaded file
 	 */
 	public String getLink() {
 		return link;
 	}
 
 	/**
-	 * 
+	 * Get label for the uploaded file
 	 * @return label for the uploaded file
 	 */
 	public String getLinkLabel() {

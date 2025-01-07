@@ -20,10 +20,11 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Period Control Model	
+ *	Period Control Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MPeriodControl.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
@@ -31,10 +32,21 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -3743823984541572396L;
+	private static final long serialVersionUID = -7818843756246170549L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PeriodControl_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPeriodControl(Properties ctx, String C_PeriodControl_UU, String trxName) {
+        super(ctx, C_PeriodControl_UU, trxName);
+		if (Util.isEmpty(C_PeriodControl_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -46,11 +58,16 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	{
 		super(ctx, C_PeriodControl_ID, trxName);
 		if (C_PeriodControl_ID == 0)
-		{
-			setPeriodAction (PERIODACTION_NoAction);
-			setPeriodStatus (PERIODSTATUS_NeverOpened);
-		}
+			setInitialDefaults();
 	}	//	MPeriodControl
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPeriodAction (PERIODACTION_NoAction);
+		setPeriodStatus (PERIODSTATUS_NeverOpened);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -93,7 +110,7 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	}	//	MPeriodControl
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPeriodControl(MPeriodControl copy) 
@@ -102,7 +119,7 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -112,7 +129,7 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -124,19 +141,33 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	}
 	
 	/**
-	 * 	Is Period Open
+	 * 	Is Open
 	 *	@return true if open
 	 */
 	public boolean isOpen()
 	{
-		return PERIODSTATUS_Open.equals(getPeriodStatus());
+		return isOpen(false);
 	}	//	isOpen
 
-	
+	/**
+	 * 	Is Open
+	 *  @param forPosting - true to check if the period is open for posting, false is for DocAction
+	 *	@return true if open
+	 */
+	public boolean isOpen(boolean forPosting)
+	{
+		if (forPosting)
+			return PERIODSTATUS_Open.equals(getPeriodStatus())
+				|| PERIODSTATUS_DocumentClosed.equals(getPeriodStatus());
+		else
+			return PERIODSTATUS_Open.equals(getPeriodStatus());
+	}	//	isOpen
+
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MPeriodControl[");

@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CycleStep
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CycleStep")
-public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent 
+public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CycleStep (Properties ctx, int C_CycleStep_ID, String trxName)
@@ -67,6 +67,38 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CycleStep (Properties ctx, String C_CycleStep_UU, String trxName)
+    {
+      super (ctx, C_CycleStep_UU, trxName);
+      /** if (C_CycleStep_UU == null)
+        {
+			setC_Cycle_ID (0);
+			setC_CycleStep_ID (0);
+			setName (null);
+			setRelativeWeight (Env.ZERO);
+// 1
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_CycleStep WHERE C_Cycle_ID=@C_Cycle_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CycleStep (Properties ctx, String C_CycleStep_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CycleStep_UU, trxName, virtualColumns);
+      /** if (C_CycleStep_UU == null)
+        {
+			setC_Cycle_ID (0);
+			setC_CycleStep_ID (0);
+			setName (null);
+			setRelativeWeight (Env.ZERO);
+// 1
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_CycleStep WHERE C_Cycle_ID=@C_Cycle_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CycleStep (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +106,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -179,7 +211,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

@@ -24,6 +24,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Time + Expense Line Model
@@ -38,6 +39,18 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 */
 	private static final long serialVersionUID = 3580618153284679385L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param S_TimeExpenseLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTimeExpenseLine(Properties ctx, String S_TimeExpenseLine_UU, String trxName) {
+        super(ctx, S_TimeExpenseLine_UU, trxName);
+		if (Util.isEmpty(S_TimeExpenseLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -48,24 +61,29 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	{
 		super (ctx, S_TimeExpenseLine_ID, trxName);
 		if (S_TimeExpenseLine_ID == 0)
-		{
-			setQty(Env.ONE);
-			setQtyInvoiced(Env.ZERO);
-			setQtyReimbursed(Env.ZERO);
-			//
-			setExpenseAmt(Env.ZERO);
-			setConvertedAmt(Env.ZERO);
-			setPriceReimbursed(Env.ZERO);
-			setInvoicePrice(Env.ZERO);
-			setPriceInvoiced(Env.ZERO);
-			//
-			setDateExpense (new Timestamp(System.currentTimeMillis()));
-			setIsInvoiced (false);
-			setIsTimeReport (false);
-			setLine (10);
-			setProcessed(false);
-		}
+			setInitialDefaults();
 	}	//	MTimeExpenseLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setQty(Env.ONE);
+		setQtyInvoiced(Env.ZERO);
+		setQtyReimbursed(Env.ZERO);
+		//
+		setExpenseAmt(Env.ZERO);
+		setConvertedAmt(Env.ZERO);
+		setPriceReimbursed(Env.ZERO);
+		setInvoicePrice(Env.ZERO);
+		setPriceInvoiced(Env.ZERO);
+		//
+		setDateExpense (new Timestamp(System.currentTimeMillis()));
+		setIsInvoiced (false);
+		setIsTimeReport (false);
+		setLine (10);
+		setProcessed(false);
+	}
 
 	/**
 	 * 	Load Constructor

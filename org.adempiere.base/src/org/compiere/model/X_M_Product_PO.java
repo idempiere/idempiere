@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_Product_PO
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_PO")
-public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent 
+public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_Product_PO (Properties ctx, int M_Product_PO_ID, String trxName)
@@ -67,6 +67,38 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_Product_PO (Properties ctx, String M_Product_PO_UU, String trxName)
+    {
+      super (ctx, M_Product_PO_UU, trxName);
+      /** if (M_Product_PO_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setIsCurrentVendor (true);
+// Y
+			setM_Product_ID (0);
+// @M_Product_ID@
+			setVendorProductNo (null);
+// @Value@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Product_PO (Properties ctx, String M_Product_PO_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Product_PO_UU, trxName, virtualColumns);
+      /** if (M_Product_PO_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setIsCurrentVendor (true);
+// Y
+			setM_Product_ID (0);
+// @M_Product_ID@
+			setVendorProductNo (null);
+// @Value@
+        } */
+    }
+
     /** Load Constructor */
     public X_M_Product_PO (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +106,7 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -91,7 +123,7 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_Product_PO[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -250,10 +282,10 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 	public boolean isDiscontinued()
 	{
 		Object oo = get_Value(COLUMNNAME_Discontinued);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -289,10 +321,10 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 	public boolean isCurrentVendor()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCurrentVendor);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

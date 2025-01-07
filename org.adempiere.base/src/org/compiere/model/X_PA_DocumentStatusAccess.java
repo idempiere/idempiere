@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for PA_DocumentStatusAccess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_DocumentStatusAccess")
-public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatusAccess, I_Persistent 
+public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatusAccess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatusAccess (Properties ctx, int PA_DocumentStatusAccess_ID, String trxName)
@@ -52,6 +52,26 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_DocumentStatusAccess (Properties ctx, String PA_DocumentStatusAccess_UU, String trxName)
+    {
+      super (ctx, PA_DocumentStatusAccess_UU, trxName);
+      /** if (PA_DocumentStatusAccess_UU == null)
+        {
+			setPA_DocumentStatusAccess_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DocumentStatusAccess (Properties ctx, String PA_DocumentStatusAccess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DocumentStatusAccess_UU, trxName, virtualColumns);
+      /** if (PA_DocumentStatusAccess_UU == null)
+        {
+			setPA_DocumentStatusAccess_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_DocumentStatusAccess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -59,7 +79,7 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

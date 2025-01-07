@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for PA_DocumentStatus
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_DocumentStatus")
-public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Persistent 
+public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
@@ -62,6 +62,36 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_DocumentStatus (Properties ctx, String PA_DocumentStatus_UU, String trxName)
+    {
+      super (ctx, PA_DocumentStatus_UU, trxName);
+      /** if (PA_DocumentStatus_UU == null)
+        {
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setPA_DocumentStatus_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DocumentStatus (Properties ctx, String PA_DocumentStatus_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DocumentStatus_UU, trxName, virtualColumns);
+      /** if (PA_DocumentStatus_UU == null)
+        {
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setPA_DocumentStatus_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_DocumentStatus (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +99,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

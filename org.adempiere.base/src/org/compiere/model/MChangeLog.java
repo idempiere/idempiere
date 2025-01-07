@@ -16,15 +16,15 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Change Log Model
@@ -35,9 +35,9 @@ import org.compiere.util.DB;
 public class MChangeLog extends X_AD_ChangeLog
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = 7262833610411402160L;
+	private static final long serialVersionUID = 3082084206319959526L;
 
 	/**
 	 * 	Do we track changes for this table
@@ -53,6 +53,9 @@ public class MChangeLog extends X_AD_ChangeLog
 		return index >= 0;
 	}	//	trackChanges
 
+	/**
+	 * Reset logged table list cache
+	 */
 	public static synchronized void resetLoggedList() {
 		s_changeLog = null;
 	}
@@ -62,37 +65,10 @@ public class MChangeLog extends X_AD_ChangeLog
 	 */
 	private static void fillChangeLog()
 	{
-		ArrayList<Integer> list = new ArrayList<Integer>(40);
-		String sql = "SELECT t.AD_Table_ID FROM AD_Table t "
-			+ "WHERE t.IsChangeLog='Y'"					//	also inactive
-			+ " OR EXISTS (SELECT * FROM AD_Column c "
-				+ "WHERE t.AD_Table_ID=c.AD_Table_ID AND c.ColumnName='EntityType') "
-			+ "ORDER BY t.AD_Table_ID";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-				list.add(Integer.valueOf(rs.getInt(1)));
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		//	Convert to Array
-		s_changeLog = new int [list.size()];
-		for (int i = 0; i < s_changeLog.length; i++)
-		{
-			Integer id = (Integer)list.get(i);
-			s_changeLog[i] = id.intValue();
-		}
+		final String where = "IsChangeLog='Y' OR EXISTS (SELECT * FROM AD_Column c WHERE AD_Table.AD_Table_ID=c.AD_Table_ID AND c.ColumnName='EntityType')";
+		s_changeLog = new Query(Env.getCtx(), MTable.Table_Name, where, null)
+				.setOrderBy(MTable.COLUMNNAME_AD_Table_ID)
+				.getIDs();
 		if (s_log.isLoggable(Level.INFO)) s_log.info("#" + s_changeLog.length);
 	}	//	fillChangeLog
 
@@ -102,9 +78,8 @@ public class MChangeLog extends X_AD_ChangeLog
 	private static CLogger		s_log = CLogger.getCLogger(MChangeLog.class);
 	/** NULL Value				*/
 	public static String		NULL = "NULL";
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
@@ -114,6 +89,16 @@ public class MChangeLog extends X_AD_ChangeLog
 	{
 		super(ctx, rs, trxName);
 	}	//	MChangeLog
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ChangeLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MChangeLog(Properties ctx, String AD_ChangeLog_UU, String trxName) {
+        super(ctx, AD_ChangeLog_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -127,8 +112,8 @@ public class MChangeLog extends X_AD_ChangeLog
 	}	//	MChangeLog
 	
 	/**
-	 *	Preserved for backward compatibility
-	 *@deprecated
+	 * Preserved for backward compatibility
+	 * @deprecated
 	 */
 	public MChangeLog (Properties ctx, 
 			int AD_ChangeLog_ID, String TrxName, int AD_Session_ID, 
@@ -161,6 +146,33 @@ public class MChangeLog extends X_AD_ChangeLog
 		int AD_Client_ID, int AD_Org_ID,
 		Object OldValue, Object NewValue, String event)
 	{
+		this(ctx, AD_ChangeLog_ID, TrxName, AD_Session_ID, 
+			AD_Table_ID, AD_Column_ID, Record_ID, null,
+			AD_Client_ID, AD_Org_ID,
+			OldValue, NewValue, event);
+	}
+
+	/**
+	 * 	Full Constructor
+	 *	@param ctx context
+	 *	@param AD_ChangeLog_ID 0 for new change log
+	 *	@param TrxName transaction
+	 *	@param AD_Session_ID session
+	 *	@param AD_Table_ID table
+	 *	@param AD_Column_ID column
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param AD_Client_ID client
+	 *	@param AD_Org_ID org
+	 *	@param OldValue old
+	 *	@param NewValue new
+	 */
+	public MChangeLog (Properties ctx, 
+		int AD_ChangeLog_ID, String TrxName, int AD_Session_ID, 
+		int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,
+		int AD_Client_ID, int AD_Org_ID,
+		Object OldValue, Object NewValue, String event)
+	{
 		this (ctx, 0, TrxName);	
 		if (AD_ChangeLog_ID == 0)
 		{
@@ -174,7 +186,16 @@ public class MChangeLog extends X_AD_ChangeLog
 		//
 		setAD_Table_ID (AD_Table_ID);
 		setAD_Column_ID (AD_Column_ID);
-		setRecord_ID (Record_ID);
+		String saveUUID = MSysConfig.getValue(MSysConfig.AD_CHANGELOG_SAVE_UUID, "B");
+		// B - just based UUID tables (default)
+		// A - always
+		// U - just UUID, not ID
+		if (Record_ID > 0 && (!"U".equals(saveUUID) || Util.isEmpty(Record_UU))) {
+			setRecord_ID (Record_ID);
+		}
+		if ("U".equals(saveUUID) || "A".equals(saveUUID) || ("B".equals(saveUUID) && (Record_ID <= 0 || MTable.get(AD_Table_ID).isUUIDKeyTable()))) {
+			setRecord_UU (Record_UU);
+		}
 		//
 		setClientOrg (AD_Client_ID, AD_Org_ID);
 		//
@@ -182,7 +203,6 @@ public class MChangeLog extends X_AD_ChangeLog
 		setNewValue (NewValue);
 		setEventChangeLog(event);
 	}	//	MChangeLog
-
 	
 	/**
 	 * 	Set Old Value
@@ -198,7 +218,7 @@ public class MChangeLog extends X_AD_ChangeLog
 
 	/**
 	 * 	Is Old Value Null
-	 *	@return true if null
+	 *	@return true if old value is null
 	 */
 	public boolean isOldNull()
 	{
@@ -220,7 +240,7 @@ public class MChangeLog extends X_AD_ChangeLog
 	
 	/**
 	 * 	Is New Value Null
-	 *	@return true if null
+	 *	@return true if new value is null
 	 */
 	public boolean isNewNull()
 	{

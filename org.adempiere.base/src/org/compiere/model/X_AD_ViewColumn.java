@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_ViewColumn
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ViewColumn")
-public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent 
+public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ViewColumn (Properties ctx, String AD_ViewColumn_UU, String trxName)
+    {
+      super (ctx, AD_ViewColumn_UU, trxName);
+      /** if (AD_ViewColumn_UU == null)
+        {
+			setAD_ViewColumn_ID (0);
+			setAD_ViewComponent_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ViewColumn (Properties ctx, String AD_ViewColumn_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ViewColumn_UU, trxName, virtualColumns);
+      /** if (AD_ViewColumn_UU == null)
+        {
+			setAD_ViewColumn_ID (0);
+			setAD_ViewComponent_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ViewColumn (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {

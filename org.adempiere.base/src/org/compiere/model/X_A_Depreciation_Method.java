@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Method
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Method")
-public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Method, I_Persistent 
+public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Method, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Method (Properties ctx, int A_Depreciation_Method_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Depreciation_Method (Properties ctx, String A_Depreciation_Method_UU, String trxName)
+    {
+      super (ctx, A_Depreciation_Method_UU, trxName);
+      /** if (A_Depreciation_Method_UU == null)
+        {
+			setA_Depreciation_Method_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Method (Properties ctx, String A_Depreciation_Method_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Method_UU, trxName, virtualColumns);
+      /** if (A_Depreciation_Method_UU == null)
+        {
+			setA_Depreciation_Method_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Depreciation_Method (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -109,7 +133,7 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Method_ID()));
     }
@@ -190,10 +214,10 @@ public class X_A_Depreciation_Method extends PO implements I_A_Depreciation_Meth
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

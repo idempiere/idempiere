@@ -39,6 +39,16 @@ public class MUserDefWin extends X_AD_UserDef_Win implements ImmutablePOSupport
 	private static final long serialVersionUID = -7542708120229671875L;
 	private static final Map<Integer, List<MUserDefWin>> m_fullMap = new HashMap<Integer, List<MUserDefWin>>();
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Win_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefWin(Properties ctx, String AD_UserDef_Win_UU, String trxName) {
+        super(ctx, AD_UserDef_Win_UU, trxName);
+    }
+
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency

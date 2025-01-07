@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Project Phase Model
@@ -36,9 +37,21 @@ import org.compiere.util.Env;
 public class MProjectPhase extends X_C_ProjectPhase
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5824045445920353065L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_ProjectPhase_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MProjectPhase(Properties ctx, String C_ProjectPhase_UU, String trxName) {
+        super(ctx, C_ProjectPhase_UU, trxName);
+		if (Util.isEmpty(C_ProjectPhase_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -50,14 +63,19 @@ public class MProjectPhase extends X_C_ProjectPhase
 	{
 		super (ctx, C_ProjectPhase_ID, trxName);
 		if (C_ProjectPhase_ID == 0)
-		{
-			setCommittedAmt (Env.ZERO);
-			setIsCommitCeiling (false);
-			setIsComplete (false);
-			setSeqNo (0);
-			setQty (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MProjectPhase
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCommittedAmt (Env.ZERO);
+		setIsCommitCeiling (false);
+		setIsComplete (false);
+		setSeqNo (0);
+		setQty (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -135,10 +153,9 @@ public class MProjectPhase extends X_C_ProjectPhase
 	}	//	getTasks
 
 	/**
-	 * 	Copy Lines from other Phase
-	 * 	BF 3067850 - monhate
-	 *	@param fromPhase from phase
-	 *	@return number of tasks copied
+	 * 	Copy project lines from other Phase
+	 *	@param fromPhase phase to copy from
+	 *	@return number of project line copied
 	 */
 	public int copyLinesFrom (MProjectPhase fromPhase)
 	{
@@ -163,12 +180,10 @@ public class MProjectPhase extends X_C_ProjectPhase
 
 		return count;		
 	}
-	
-	
+		
 	/**
 	 * 	Copy Tasks from other Phase
-	 *  BF 3067850 - monhate
-	 *	@param fromPhase from phase
+	 *	@param fromPhase phase to copy from
 	 *	@return number of tasks copied
 	 */
 	public int copyTasksFrom (MProjectPhase fromPhase)
@@ -218,8 +233,8 @@ public class MProjectPhase extends X_C_ProjectPhase
 	}	//	copyTasksFrom
 
 	/**
-	 * 	Copy Tasks from other Phase
-	 *	@param fromPhase from phase
+	 * 	Copy Tasks from other MProjectTypePhase
+	 *	@param fromPhase MProjectTypePhase to copy from
 	 *	@return number of tasks copied
 	 */
 	public int copyTasksFrom (MProjectTypePhase fromPhase)
@@ -242,9 +257,8 @@ public class MProjectPhase extends X_C_ProjectPhase
 		return count;
 	}	//	copyTasksFrom
 	
-	/**************************************************************************
+	/**
 	 * 	Get Project Lines
-	 * 	BF 3067850 - monhate
 	 *	@return Array of lines
 	 */	public MProjectLine[] getLines()
 	{
@@ -263,6 +277,7 @@ public class MProjectPhase extends X_C_ProjectPhase
 	 * 	String Representation
 	 *	@return info
 	 */
+	 @Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MProjectPhase[");

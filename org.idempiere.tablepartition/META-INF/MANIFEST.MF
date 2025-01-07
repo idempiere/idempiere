@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Table Partition
+Bundle-SymbolicName: org.idempiere.tablepartition;singleton:=true
+Bundle-Version: 11.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
+Export-Package: org.idempiere.tablepartition.process
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
+Bundle-ClassPath: .
+Automatic-Module-Name: org.idempiere.tablepartition
+Bundle-Vendor: iDempiere Community
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.idempiere.tablepartition.ProcessFactoryImpl.xml,
+ OSGI-INF/org.idempiere.tablepartition.callout.ColumnCalloutFactoryImpl.xml

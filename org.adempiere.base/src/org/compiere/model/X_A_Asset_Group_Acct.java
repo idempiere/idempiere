@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Group_Acct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Group_Acct")
-public class X_A_Asset_Group_Acct extends PO implements I_A_Asset_Group_Acct, I_Persistent 
+public class X_A_Asset_Group_Acct extends PO implements I_A_Asset_Group_Acct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Group_Acct (Properties ctx, int A_Asset_Group_Acct_ID, String trxName)
@@ -89,6 +89,60 @@ public class X_A_Asset_Group_Acct extends PO implements I_A_Asset_Group_Acct, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Group_Acct (Properties ctx, String A_Asset_Group_Acct_UU, String trxName)
+    {
+      super (ctx, A_Asset_Group_Acct_UU, trxName);
+      /** if (A_Asset_Group_Acct_UU == null)
+        {
+			setA_Accumdepreciation_Acct (0);
+			setA_Asset_Acct (0);
+			setA_Asset_Group_Acct_ID (0);
+			setA_Asset_Group_ID (0);
+			setA_Depreciation_Acct (0);
+			setA_Depreciation_F_ID (0);
+			setA_Depreciation_ID (0);
+			setA_Disposal_Loss_Acct (0);
+			setA_Disposal_Revenue_Acct (0);
+			setA_Split_Percent (Env.ZERO);
+// 1
+			setC_AcctSchema_ID (0);
+			setPostingType (null);
+// 'A'
+			setUseLifeMonths_F (0);
+// 0
+			setUseLifeYears_F (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Group_Acct (Properties ctx, String A_Asset_Group_Acct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Group_Acct_UU, trxName, virtualColumns);
+      /** if (A_Asset_Group_Acct_UU == null)
+        {
+			setA_Accumdepreciation_Acct (0);
+			setA_Asset_Acct (0);
+			setA_Asset_Group_Acct_ID (0);
+			setA_Asset_Group_ID (0);
+			setA_Depreciation_Acct (0);
+			setA_Depreciation_F_ID (0);
+			setA_Depreciation_ID (0);
+			setA_Disposal_Loss_Acct (0);
+			setA_Disposal_Revenue_Acct (0);
+			setA_Split_Percent (Env.ZERO);
+// 1
+			setC_AcctSchema_ID (0);
+			setPostingType (null);
+// 'A'
+			setUseLifeMonths_F (0);
+// 0
+			setUseLifeYears_F (Env.ZERO);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Group_Acct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -96,7 +150,7 @@ public class X_A_Asset_Group_Acct extends PO implements I_A_Asset_Group_Acct, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -189,7 +243,7 @@ public class X_A_Asset_Group_Acct extends PO implements I_A_Asset_Group_Acct, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Group_Acct_ID()));
     }
@@ -830,10 +884,10 @@ public class X_A_Asset_Group_Acct extends PO implements I_A_Asset_Group_Acct, I_
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -39,6 +39,7 @@ import org.adempiere.base.upload.UploadResponse;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MMailText;
 import org.compiere.model.MNote;
 import org.compiere.model.MOrgInfo;
@@ -194,7 +195,7 @@ public class Scheduler extends AdempiereServer
 		int AD_Table_ID = scheduler.getAD_Table_ID();
 		int Record_ID = scheduler.getRecord_ID();
 		//
-		MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), Record_ID);
+		MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), AD_Table_ID, Record_ID, null); // TODO: Support Schedule with Record_UU
 		pInstance.saveEx();
 		fillParameter(pInstance);
 		//
@@ -258,7 +259,7 @@ public class Scheduler extends AdempiereServer
 					note.saveEx();
 					String log = pi.getLogInfo(true);
 					if (log != null &&  log.trim().length() > 0) {
-						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), null);
 						attachment.setClientOrg(scheduler.getAD_Client_ID(), scheduler.getAD_Org_ID());
 						attachment.setTextMsg(schedulerName);
 						attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
@@ -307,7 +308,7 @@ public class Scheduler extends AdempiereServer
 						MAttachment attachment = null;
 						if (fileList != null && !fileList.isEmpty()) {
 							//	Attachment
-							attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+							attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), null);
 							attachment.setClientOrg(scheduler.getAD_Client_ID(), scheduler.getAD_Org_ID());
 							attachment.setTextMsg(schedulerName);
 							for (File entry : fileList)
@@ -317,7 +318,7 @@ public class Scheduler extends AdempiereServer
 						String log = pi.getLogInfo(true);
 						if (log != null &&  log.trim().length() > 0) {
 							if (attachment == null) {
-								attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), null);
+								attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), null);
 								attachment.setClientOrg(scheduler.getAD_Client_ID(), scheduler.getAD_Org_ID());
 								attachment.setTextMsg(schedulerName);
 							}
@@ -683,7 +684,7 @@ public class Scheduler extends AdempiereServer
 		if (variable == null
 			|| (variable != null && variable.length() == 0))
 			value = null;
-		else if (variable.startsWith("@SQL=")) {
+		else if (variable.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			String	defStr = "";
 			String sql = variable.substring(5);	//	w/o tag
 			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables

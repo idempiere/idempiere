@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -12,20 +33,32 @@ import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.fa.feature.UseLifeImpl;
 
-/**	Asset Class
+/**	
+ *  Asset Class
  *	@author Teo Sarca, SC Arhipac SRL
  *	@version $Id$
  */
 public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
-{
-	
+{	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7805056592418891872L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Class_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetClass(Properties ctx, String A_Asset_Class_UU, String trxName) {
+        super(ctx, A_Asset_Class_UU, trxName);
+    }
+
 	/**
-	 *
+	 * @param ctx
+	 * @param A_Asset_Class_ID
+	 * @param trxName
 	 */
 	public MAssetClass(Properties ctx, int A_Asset_Class_ID, String trxName)
 	{
@@ -43,7 +76,7 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	}	//	MAssetClass
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MAssetClass(MAssetClass copy) 
@@ -52,7 +85,7 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -62,7 +95,7 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -73,10 +106,11 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**		*/
+	/**	immutable cache	*/
 	private static ImmutableIntPOCache<Integer, MAssetClass> s_cache = new ImmutableIntPOCache<Integer, MAssetClass>(Table_Name, 20);
 
-	/**	Get Asset Class from cache
+	/**	
+	 *  Get Asset Class from cache
 	 *	@param id A_Asset_Class_ID
 	 *	@return MAssetClass or null if not found
 	 */
@@ -84,7 +118,8 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 		return get(Env.getCtx(), id);
 	}
 	
-	/**	Get Asset Class from cache
+	/**	
+	 *  Get Asset Class from cache (immutable)
 	 *	@param ctx	context
 	 *	@param id A_Asset_Class_ID
 	 *	@return MAssetClass or null if not found
@@ -108,7 +143,9 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	} // get
 	
 	/**
-	 *
+	 * Get MAssetClass via Value from DB
+	 * @param ctx
+	 * @param value
 	 */
 	public static MAssetClass get(Properties ctx, String value)
 	{
@@ -121,7 +158,7 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	} // get
 
 	/**
-	 *
+	 * Set description value
 	 */
 	public void setDescription() {
 		StringBuilder description = new StringBuilder();
@@ -138,7 +175,7 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	}
 	
 	/**
-	 *
+	 * Set fixed asset group level
 	 */
 	public void setLevels() {
 		setMFX_Grupa(0);
@@ -166,7 +203,8 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	}
 	
 	/**
-	 *
+	 * @param serviceDate
+	 * @return Life period min or life period 2004 min
 	 */
 	public int getA_Life_Period_Min(Timestamp serviceDate) {
 		Calendar cal = TimeUtil.getCalendar(serviceDate);
@@ -178,7 +216,13 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 		}
 	}
 	
-	/** Validate */
+	/**
+	 * Validate A_Life_Period of asset
+	 * @param saveError
+	 * @param A_Life_Period Useful life period in months
+	 * @param serviceDate
+	 * @return error message or empty string
+	 */
 	public String validate(boolean saveError, int A_Life_Period, Timestamp serviceDate) {
 		log.fine("Entering");
 		int A_Life_Period_Min = 0;
@@ -208,21 +252,22 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 			return errmsg;
 		}
 		
-		log.fine("Leaving: OK!");
 		return "";
 	}
 	
-	/** Validate UseLifeImpl model 
+	/** 
+	 * Validate UseLifeImpl model
+	 * @param asset 
 	 */
 	public boolean validate(UseLifeImpl asset) {
 		if (log.isLoggable(Level.FINE)) log.fine("Entering: UseLifeImpl=" + asset);
 		
 		if (!asset.isFiscal()) {
-			log.fine("Leaving: fiscal=false [RETURN TRUE]");
+			if(log.isLoggable(Level.FINE)) log.fine("Leaving: fiscal=false [RETURN TRUE]");
 			return true;
 		}
 		else {
-			log.fine("asset is fiscal");
+			if(log.isLoggable(Level.FINE)) log.fine("asset is fiscal");
 		}
 		
 		int A_Life_Period = asset.getUseLifeMonths();
@@ -234,16 +279,15 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 		return ok;
 	}
 
-	/**	Depreciated check
-	 *
+	/**	
+	 * Depreciated check
+	 * @return true if assert have been fully depreciated
 	 */
 	public boolean isDepreciated() {
 		return !(getA_Life_Period_Min() == 0 && getA_Life_Period_Max() ==0);
 	}
 	
-	/**
-	 *
-	 */
+	@Override
 	public boolean beforeSave (boolean newRecord) {
 		setDescription();
 		if (is_ValueChanged("Value")) {

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for PA_DashboardContent_Access
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardContent_Access")
-public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardContent_Access, I_Persistent 
+public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardContent_Access, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)
@@ -52,6 +52,26 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_DashboardContent_Access (Properties ctx, String PA_DashboardContent_Access_UU, String trxName)
+    {
+      super (ctx, PA_DashboardContent_Access_UU, trxName);
+      /** if (PA_DashboardContent_Access_UU == null)
+        {
+			setPA_DashboardContent_Access_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DashboardContent_Access (Properties ctx, String PA_DashboardContent_Access_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DashboardContent_Access_UU, trxName, virtualColumns);
+      /** if (PA_DashboardContent_Access_UU == null)
+        {
+			setPA_DashboardContent_Access_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, ResultSet rs, String trxName)
     {
@@ -59,7 +79,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

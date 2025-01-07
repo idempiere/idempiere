@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormatItem
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintFormatItem")
-public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_Persistent 
+public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -165,6 +165,138 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PrintFormatItem (Properties ctx, String AD_PrintFormatItem_UU, String trxName)
+    {
+      super (ctx, AD_PrintFormatItem_UU, trxName);
+      /** if (AD_PrintFormatItem_UU == null)
+        {
+			setAD_PrintFormatChild_ID (0);
+			setAD_PrintFormat_ID (0);
+			setAD_PrintFormatItem_ID (0);
+			setFieldAlignmentType (null);
+// D
+			setImageIsAttached (false);
+			setIsAveraged (false);
+			setIsCentrallyMaintained (false);
+			setIsCounted (false);
+			setIsDesc (false);
+// N
+			setIsDeviationCalc (false);
+			setIsFilledRectangle (false);
+// N
+			setIsFixedWidth (false);
+			setIsGroupBy (false);
+			setIsHeightOneLine (true);
+// Y
+			setIsImageField (false);
+			setIsMaxCalc (false);
+			setIsMinCalc (false);
+			setIsNextLine (true);
+// Y
+			setIsNextPage (false);
+			setIsOrderBy (false);
+			setIsPageBreak (false);
+			setIsPrintBarcodeText (true);
+// Y
+			setIsPrinted (true);
+// Y
+			setIsPrintInstanceAttributes (false);
+// N
+			setIsRelativePosition (true);
+// Y
+			setIsRunningTotal (false);
+			setIsSetNLPosition (false);
+			setIsSummarized (false);
+			setIsSuppressNull (false);
+			setIsSuppressRepeats (false);
+// N
+			setIsVarianceCalc (false);
+			setLineAlignmentType (null);
+// X
+			setMaxHeight (0);
+			setMaxWidth (0);
+			setName (null);
+			setPrintAreaType (null);
+// C
+			setPrintFormatType (null);
+// F
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_PrintFormatItem WHERE AD_PrintFormat_ID=@AD_PrintFormat_ID@
+			setSortNo (0);
+			setXPosition (0);
+			setXSpace (0);
+			setYPosition (0);
+			setYSpace (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintFormatItem (Properties ctx, String AD_PrintFormatItem_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintFormatItem_UU, trxName, virtualColumns);
+      /** if (AD_PrintFormatItem_UU == null)
+        {
+			setAD_PrintFormatChild_ID (0);
+			setAD_PrintFormat_ID (0);
+			setAD_PrintFormatItem_ID (0);
+			setFieldAlignmentType (null);
+// D
+			setImageIsAttached (false);
+			setIsAveraged (false);
+			setIsCentrallyMaintained (false);
+			setIsCounted (false);
+			setIsDesc (false);
+// N
+			setIsDeviationCalc (false);
+			setIsFilledRectangle (false);
+// N
+			setIsFixedWidth (false);
+			setIsGroupBy (false);
+			setIsHeightOneLine (true);
+// Y
+			setIsImageField (false);
+			setIsMaxCalc (false);
+			setIsMinCalc (false);
+			setIsNextLine (true);
+// Y
+			setIsNextPage (false);
+			setIsOrderBy (false);
+			setIsPageBreak (false);
+			setIsPrintBarcodeText (true);
+// Y
+			setIsPrinted (true);
+// Y
+			setIsPrintInstanceAttributes (false);
+// N
+			setIsRelativePosition (true);
+// Y
+			setIsRunningTotal (false);
+			setIsSetNLPosition (false);
+			setIsSummarized (false);
+			setIsSuppressNull (false);
+			setIsSuppressRepeats (false);
+// N
+			setIsVarianceCalc (false);
+			setLineAlignmentType (null);
+// X
+			setMaxHeight (0);
+			setMaxWidth (0);
+			setName (null);
+			setPrintAreaType (null);
+// C
+			setPrintFormatType (null);
+// F
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_PrintFormatItem WHERE AD_PrintFormat_ID=@AD_PrintFormat_ID@
+			setSortNo (0);
+			setXPosition (0);
+			setXSpace (0);
+			setYPosition (0);
+			setYSpace (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PrintFormatItem (Properties ctx, ResultSet rs, String trxName)
     {
@@ -172,7 +304,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -614,10 +746,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isImageIsAttached()
 	{
 		Object oo = get_Value(COLUMNNAME_ImageIsAttached);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -653,10 +785,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isAveraged()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAveraged);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -676,10 +808,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -699,10 +831,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isCounted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCounted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -722,10 +854,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isDesc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDesc);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -745,10 +877,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isDeviationCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDeviationCalc);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -768,10 +900,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isFilledRectangle()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFilledRectangle);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -791,10 +923,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isFixedWidth()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFixedWidth);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -814,10 +946,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isGroupBy()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGroupBy);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -837,10 +969,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isHeightOneLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHeightOneLine);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -860,10 +992,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isImageField()
 	{
 		Object oo = get_Value(COLUMNNAME_IsImageField);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -883,10 +1015,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isMaxCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMaxCalc);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -906,10 +1038,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isMinCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMinCalc);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -929,10 +1061,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isNextLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNextLine);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -952,10 +1084,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isNextPage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNextPage);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -975,10 +1107,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isOrderBy()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOrderBy);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -998,10 +1130,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isPageBreak()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPageBreak);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1021,10 +1153,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isPrintBarcodeText()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrintBarcodeText);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1044,10 +1176,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1067,10 +1199,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isPrintInstanceAttributes()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrintInstanceAttributes);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1090,10 +1222,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isRelativePosition()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRelativePosition);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1113,10 +1245,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isRunningTotal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRunningTotal);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1136,10 +1268,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isSetNLPosition()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSetNLPosition);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1159,10 +1291,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isSummarized()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummarized);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1182,10 +1314,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isSuppressNull()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSuppressNull);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1205,10 +1337,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isSuppressRepeats()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSuppressRepeats);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1228,10 +1360,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isVarianceCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsVarianceCalc);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1340,7 +1472,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

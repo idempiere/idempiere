@@ -31,14 +31,17 @@ import org.adempiere.webui.window.WPAttributeDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
+import org.compiere.model.MPAttributeLookup;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Default editor for {@link DisplayType#PAttribute}.<br/>
+ * Implemented with {@link PAttributebox} component and {@link WPAttributeDialog} dialog.
  * @author Low Heng Sin
  *
  */
@@ -48,15 +51,15 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 
 	private static final CLogger log = CLogger.getCLogger(WPAttributeEditor.class);
 
-	private int m_WindowNo;
+	protected int m_WindowNo;
 
-	private Lookup m_mPAttribute;
+	/** {@link MPAttributeLookup} */
+	protected Lookup m_mPAttribute;
 
-	private int m_C_BPartner_ID;
-
-	private Object m_value;
-
-	private GridTab m_GridTab;
+	protected int m_C_BPartner_ID;
+	
+	/** M_AttributeSetInstance_ID */
+	protected Object m_value;
 
 	/**	No Instance Key					*/
 	private static Integer		NO_INSTANCE = Integer.valueOf(0);
@@ -81,16 +84,18 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 	public WPAttributeEditor(GridTab gridTab, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
 	{
 		super(new PAttributebox(), gridField, tableEditor, editorConfiguration);
-		m_GridTab = gridTab;
+		setGridTab(gridTab);
 		initComponents();
 	}
 
+	/**
+	 * Init component and context menu
+	 */
 	private void initComponents() {
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass("z-icon-PAttribute");
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
-		// getComponent().addEventListener(Events.ON_CLICK, this); // IDEMPIERE-426 - dup listener, already set at WEditor
 
 		m_WindowNo = gridField.getWindowNo();
 		m_mPAttribute = gridField.getLookup();
@@ -143,6 +148,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		return getComponent().getText();
 	}
 
+	@Override
 	public void onEvent(Event event)
 	{
 		if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
@@ -171,22 +177,21 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 	}
 
 	/**
-	 *  Start dialog
+	 *  Open {@link WPAttributeDialog}
 	 */
 	private void cmd_dialog()
 	{
-		//
 		Integer oldValue = (Integer)getValue ();
 		final int oldValueInt = oldValue == null ? 0 : oldValue.intValue ();
 		int M_AttributeSetInstance_ID = oldValueInt;
 		int M_Product_ID = 0;
 		int M_ProductBOM_ID = 0;
-		if (m_GridTab != null) {
-			M_Product_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, m_GridTab.getTabNo(), "M_Product_ID");
-			M_ProductBOM_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, m_GridTab.getTabNo(), "M_ProductBOM_ID");
+		if (gridTab != null) {
+			M_Product_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, gridTab.getTabNo(), "M_Product_ID");
+			M_ProductBOM_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, gridTab.getTabNo(), "M_ProductBOM_ID");
 			//For third level tab (e.g, LineMA), should take M_Product_ID from Line instead of from Header
-			if (m_GridTab.getTabLevel() > 1 && m_GridTab.getParentTab() != null && m_GridTab.getField("M_Product_ID")==null) {
-				int tmp = Env.getContextAsInt (Env.getCtx (), m_WindowNo, m_GridTab.getParentTab().getTabNo(), "M_Product_ID");
+			if (gridTab.getTabLevel() > 1 && gridTab.getParentTab() != null && gridTab.getField("M_Product_ID")==null) {
+				int tmp = Env.getContextAsInt (Env.getCtx (), m_WindowNo, gridTab.getParentTab().getTabNo(), "M_Product_ID");
 				if (tmp > 0)
 					M_Product_ID = tmp;
 			}
@@ -227,12 +232,12 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 					{
 						getComponent().setText(vad.getM_AttributeSetInstanceName());
 						M_AttributeSetInstance_ID = vad.getM_AttributeSetInstance_ID();
-						if (m_GridTab != null && !productWindow && vad.getM_Locator_ID() > 0)
+						if (gridTab != null && !productWindow && vad.getM_Locator_ID() > 0)
 						{
 							if (gridField.getColumnName().equals("M_AttributeSetInstanceTo_ID"))
-								m_GridTab.setValue("M_LocatorTo_ID", vad.getM_Locator_ID());
+								gridTab.setValue("M_LocatorTo_ID", vad.getM_Locator_ID());
 							else
-								m_GridTab.setValue("M_Locator_ID", vad.getM_Locator_ID());
+								gridTab.setValue("M_Locator_ID", vad.getM_Locator_ID());
 							
 						}
 						changed = true;
@@ -247,45 +252,13 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 			});
 			
 		}
-		/** Selection
-		{
-			//	Get Model
-			MAttributeSetInstance masi = MAttributeSetInstance.get(Env.getCtx(), M_AttributeSetInstance_ID, M_Product_ID);
-			if (masi == null)
-			{
-				log.log(Level.SEVERE, "No Model for M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID + ", M_Product_ID=" + M_Product_ID);
-			}
-			else
-			{
-				Env.setContext(Env.getCtx(), m_WindowNo, "M_AttributeSet_ID", masi.getM_AttributeSet_ID());
-				//	Get Attribute Set
-				MAttributeSet as = masi.getMAttributeSet();
-				//	Product has no Attribute Set
-				if (as == null)
-					ADialog.error(m_WindowNo, this, "PAttributeNoAttributeSet");
-				//	Product has no Instance Attributes
-				else if (!as.isInstanceAttribute())
-					ADialog.error(m_WindowNo, this, "PAttributeNoInstanceAttribute");
-				else
-				{
-					int M_Warehouse_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, "M_Warehouse_ID");
-					int M_Locator_ID = Env.getContextAsInt (Env.getCtx (), m_WindowNo, "M_Locator_ID");
-					String title = "";
-					PAttributeInstance pai = new PAttributeInstance (
-						Env.getFrame(this), title,
-						M_Warehouse_ID, M_Locator_ID, M_Product_ID, m_C_BPartner_ID);
-					if (pai.getM_AttributeSetInstance_ID() != -1)
-					{
-						m_text.setText(pai.getM_AttributeSetInstanceName());
-						M_AttributeSetInstance_ID = pai.getM_AttributeSetInstance_ID();
-						changed = true;
-					}
-				}
-			}
-		}
-		**/		
-	}   //  cmd_file
+	}   //  cmd_dialog
 
+	/**
+	 * Process new M_AttributeSetInstance_ID from {@link WPAttributeDialog}.
+	 * @param oldValueInt
+	 * @param M_AttributeSetInstance_ID
+	 */
 	private void processChanges(int oldValueInt, int M_AttributeSetInstance_ID) {
 		if (log.isLoggable(Level.FINEST)) log.finest("Changed M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
 		m_value = new Object();				//	force re-query display
@@ -296,18 +269,20 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 
 		ValueChangeEvent vce = new ValueChangeEvent(this, gridField.getColumnName(), new Object(), getValue());
 		fireValueChange(vce);
-		if (M_AttributeSetInstance_ID == oldValueInt && m_GridTab != null && gridField != null)
+		if (M_AttributeSetInstance_ID == oldValueInt && gridTab != null && gridField != null)
 		{
 			//  force Change - user does not realize that embedded object is already saved.
-			m_GridTab.processFieldChange(gridField);
+			gridTab.processFieldChange(gridField);
 		}
 	}
 
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
     }
 
+	@Override
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent()))
@@ -320,6 +295,9 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	/**
+	 * Zoom to record of {@link #getValue()}.
+	 */
 	public void actionZoom()
 	{
 	   	AEnv.actionZoom(m_mPAttribute, getValue());

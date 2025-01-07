@@ -19,19 +19,19 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for C_AcctSchema_Default
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema_Default")
-public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default, I_Persistent 
+public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Default (Properties ctx, int C_AcctSchema_Default_ID, String trxName)
@@ -125,6 +125,98 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AcctSchema_Default (Properties ctx, String C_AcctSchema_Default_UU, String trxName)
+    {
+      super (ctx, C_AcctSchema_Default_UU, trxName);
+      /** if (C_AcctSchema_Default_UU == null)
+        {
+			setB_Asset_Acct (0);
+			setB_InterestExp_Acct (0);
+			setB_InterestRev_Acct (0);
+			setB_InTransit_Acct (0);
+			setB_PaymentSelect_Acct (0);
+			setB_UnallocatedCash_Acct (0);
+			setC_AcctSchema_ID (0);
+			setCh_Expense_Acct (0);
+			setC_Prepayment_Acct (0);
+			setC_Receivable_Acct (0);
+			setNotInvoicedReceipts_Acct (0);
+			setP_Asset_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
+			setP_COGS_Acct (0);
+			setP_CostAdjustment_Acct (0);
+			setP_Expense_Acct (0);
+			setP_InventoryClearing_Acct (0);
+			setP_InvoicePriceVariance_Acct (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
+			setP_PurchasePriceVariance_Acct (0);
+			setP_RateVariance_Acct (0);
+			setP_Revenue_Acct (0);
+			setP_TradeDiscountGrant_Acct (0);
+			setP_TradeDiscountRec_Acct (0);
+			setRealizedGain_Acct (0);
+			setRealizedLoss_Acct (0);
+			setT_Credit_Acct (0);
+			setT_Due_Acct (0);
+			setT_Expense_Acct (0);
+			setUnrealizedGain_Acct (0);
+			setUnrealizedLoss_Acct (0);
+			setV_Liability_Acct (0);
+			setV_Prepayment_Acct (0);
+			setW_Differences_Acct (0);
+			setWriteOff_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctSchema_Default (Properties ctx, String C_AcctSchema_Default_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctSchema_Default_UU, trxName, virtualColumns);
+      /** if (C_AcctSchema_Default_UU == null)
+        {
+			setB_Asset_Acct (0);
+			setB_InterestExp_Acct (0);
+			setB_InterestRev_Acct (0);
+			setB_InTransit_Acct (0);
+			setB_PaymentSelect_Acct (0);
+			setB_UnallocatedCash_Acct (0);
+			setC_AcctSchema_ID (0);
+			setCh_Expense_Acct (0);
+			setC_Prepayment_Acct (0);
+			setC_Receivable_Acct (0);
+			setNotInvoicedReceipts_Acct (0);
+			setP_Asset_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
+			setP_COGS_Acct (0);
+			setP_CostAdjustment_Acct (0);
+			setP_Expense_Acct (0);
+			setP_InventoryClearing_Acct (0);
+			setP_InvoicePriceVariance_Acct (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
+			setP_PurchasePriceVariance_Acct (0);
+			setP_RateVariance_Acct (0);
+			setP_Revenue_Acct (0);
+			setP_TradeDiscountGrant_Acct (0);
+			setP_TradeDiscountRec_Acct (0);
+			setRealizedGain_Acct (0);
+			setRealizedLoss_Acct (0);
+			setT_Credit_Acct (0);
+			setT_Due_Acct (0);
+			setT_Expense_Acct (0);
+			setUnrealizedGain_Acct (0);
+			setUnrealizedLoss_Acct (0);
+			setV_Liability_Acct (0);
+			setV_Prepayment_Acct (0);
+			setW_Differences_Acct (0);
+			setWriteOff_Acct (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AcctSchema_Default (Properties ctx, ResultSet rs, String trxName)
     {
@@ -132,7 +224,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -149,7 +241,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_AcctSchema_Default[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -346,12 +438,12 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_AcctSchema_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getC_AcctSchema_ID()));
     }
 
 	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException
@@ -992,10 +1084,10 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

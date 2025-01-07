@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Related
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info_Related")
-public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_Related, I_Persistent 
+public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_Related, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_UserDef_Info_Related (Properties ctx, String AD_UserDef_Info_Related_UU, String trxName)
+    {
+      super (ctx, AD_UserDef_Info_Related_UU, trxName);
+      /** if (AD_UserDef_Info_Related_UU == null)
+        {
+			setAD_InfoRelated_ID (0);
+			setAD_UserDef_Info_ID (0);
+// @AD_UserDef_Info_ID@
+			setAD_UserDef_Info_Related_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Info_Related (Properties ctx, String AD_UserDef_Info_Related_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Info_Related_UU, trxName, virtualColumns);
+      /** if (AD_UserDef_Info_Related_UU == null)
+        {
+			setAD_InfoRelated_ID (0);
+			setAD_UserDef_Info_ID (0);
+// @AD_UserDef_Info_ID@
+			setAD_UserDef_Info_Related_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

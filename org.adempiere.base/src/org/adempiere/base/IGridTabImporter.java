@@ -23,14 +23,13 @@ import org.adempiere.util.IProcessUI;
 import org.compiere.model.GridTab;
 
 /**
- *
+ * Interface to import data to {@link GridTab}.
  * @author Carlos Ruiz
- *
  */
 public interface IGridTabImporter {
 
 	/**
-	 * export gridTab data to file
+	 * Import data from filestream to gridTab
 	 * @param gridTab
 	 * @param childs
 	 * @param filestream
@@ -39,16 +38,30 @@ public interface IGridTabImporter {
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode);
 	
 	/**
-	 * export gridTab data to file
+	 * Import data from filestream to gridTab
 	 * @param gridTab
 	 * @param childs
 	 * @param filestream
 	 * @param charset
 	 * @param importMode
 	 * @param processUI
-	 * @return
+	 * @return File for import log
 	 */
 	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode, IProcessUI processUI);
+
+	/**
+	 * Import data from filestream to gridTab
+	 * @param gridTab
+	 * @param childs
+	 * @param filestream
+	 * @param charset
+	 * @param importMode
+	 * @param delimiterChar
+	 * @param quoteChar
+	 * @param processUI
+	 * @return File for import log
+	 */
+	public File fileImport(GridTab gridTab, List<GridTab> childs, InputStream filestream, Charset charset, String importMode, String delimiterChar, String quoteChar, IProcessUI processUI);
 
 	/**
 	 * @return file extension

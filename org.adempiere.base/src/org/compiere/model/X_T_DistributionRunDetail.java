@@ -21,19 +21,19 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 
 /** Generated Model for T_DistributionRunDetail
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_DistributionRunDetail")
-public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRunDetail, I_Persistent 
+public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRunDetail, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_DistributionRunDetail (Properties ctx, int T_DistributionRunDetail_ID, String trxName)
@@ -73,6 +73,44 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_DistributionRunDetail (Properties ctx, String T_DistributionRunDetail_UU, String trxName)
+    {
+      super (ctx, T_DistributionRunDetail_UU, trxName);
+      /** if (T_DistributionRunDetail_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setM_DistributionList_ID (0);
+			setM_DistributionListLine_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_DistributionRunLine_ID (0);
+			setMinQty (Env.ZERO);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+			setRatio (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_DistributionRunDetail (Properties ctx, String T_DistributionRunDetail_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_DistributionRunDetail_UU, trxName, virtualColumns);
+      /** if (T_DistributionRunDetail_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setM_DistributionList_ID (0);
+			setM_DistributionListLine_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_DistributionRunLine_ID (0);
+			setMinQty (Env.ZERO);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+			setRatio (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_T_DistributionRunDetail (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +118,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -97,7 +135,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_T_DistributionRunDetail[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -241,12 +279,12 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 		return ii.intValue();
 	}
 
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
+    /** Get Record UU/ColumnName
+        @return UU/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public ValueNamePair getValueNamePair()
     {
-        return new KeyNamePair(get_ID(), String.valueOf(getM_DistributionRun_ID()));
+        return new ValueNamePair(get_UUID(), String.valueOf(getM_DistributionRun_ID()));
     }
 
 	public org.compiere.model.I_M_DistributionRunLine getM_DistributionRunLine() throws RuntimeException

@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
 
 /**
- *
+ * Load extension priority from extensions-priorty.properties
  * @author hengsin
  *
  */

@@ -31,15 +31,25 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /**
+ * Exclude create of Lot for a table (for e.g C_OrderLine).
  * @author hengsin
- *
  */
 public class MLotCtlExclude extends X_M_LotCtlExclude {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7189245472896373850L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_LotCtlExclude_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLotCtlExclude(Properties ctx, String M_LotCtlExclude_UU, String trxName) {
+        super(ctx, M_LotCtlExclude_UU, trxName);
+    }
 
 	/**
 	 * @param ctx
@@ -60,7 +70,7 @@ public class MLotCtlExclude extends X_M_LotCtlExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MLotCtlExclude(MLotCtlExclude copy) {
@@ -68,7 +78,7 @@ public class MLotCtlExclude extends X_M_LotCtlExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -77,7 +87,7 @@ public class MLotCtlExclude extends X_M_LotCtlExclude {
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

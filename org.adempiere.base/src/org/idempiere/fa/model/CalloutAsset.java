@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.idempiere.fa.model;
 
 import java.sql.PreparedStatement;
@@ -17,8 +35,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- * @category STUB for upgrading to 361
- *
+ * Callout for MAsset
  */
 public class CalloutAsset extends CalloutEngine {
 	
@@ -48,7 +65,6 @@ public class CalloutAsset extends CalloutEngine {
 		return "";
 	}
 	
-
 	public String asset(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		if (value != null && MAsset.COLUMNNAME_A_Asset_ID.equals(mField.getColumnName()))
@@ -61,8 +77,7 @@ public class CalloutAsset extends CalloutEngine {
 		return "";
 		
 	}
-	
-	
+		
 	/**
 	 *	Table_Period.  Used to set the Manual Period Field.  This allows
 	 *	the Spread Field to be displayed when there is a code that
@@ -80,7 +95,7 @@ public class CalloutAsset extends CalloutEngine {
 	 */
 	public String Table_Period (Properties ctx, int WindowNo,
 			GridTab mTab, GridField mField, Object value, Object oldValue)
-		{
+	{
 		Integer A_Depreciation_Table_Header_ID = (Integer)value;
 			
 			PreparedStatement pstmt = null;
@@ -117,7 +132,7 @@ public class CalloutAsset extends CalloutEngine {
 				pstmt = null;
 			}
 			return "";
-		}	//	Period Type
+	}	//	Period Type
 	
 	/**
 	 *	Field_Clear.  Used to set the Manual Period Field.  This allows
@@ -136,7 +151,7 @@ public class CalloutAsset extends CalloutEngine {
 	 */
 	public String Field_Clear (Properties ctx, int WindowNo,
 			GridTab mTab, GridField mField, Object value, Object oldValue)
-		{
+	{
 		Object A_Depreciation_ID = value;
 			
 			PreparedStatement pstmt = null;
@@ -183,28 +198,6 @@ public class CalloutAsset extends CalloutEngine {
 				pstmt = null;
 			}
 			return "";
-		}	//	Period Type	
+	}	//	Period Type	
 
-	/** ARHIPAC: TEO: BEGIN ------------------------------------------------------------------------------------------------------------------------------ */
-	/* commented by @win - no necessary code
-	public String invoiceLineProduct(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
-		if (isCalloutActive()) {
-			return "";
-		}
-		ro.arhipac.adempiere.fa.ModelValidator.modelChange_InvoiceLine(
-				SetGetUtil.wrap(mTab),
-				-1);
-		return "";
-	}
-	
-	public String inventoryLineProduct(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
-		if (isCalloutActive()) {
-			return "";
-		}
-		ro.arhipac.adempiere.fa.ModelValidator.modelChange_InventoryLine(
-				SetGetUtil.wrap(mTab),
-				-1);
-		return "";
-	}
-	*/
 }

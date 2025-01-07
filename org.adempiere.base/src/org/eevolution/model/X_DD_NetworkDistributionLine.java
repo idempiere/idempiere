@@ -25,16 +25,16 @@ import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for DD_NetworkDistributionLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="DD_NetworkDistributionLine")
-public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDistributionLine, I_Persistent 
+public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDistributionLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistributionLine (Properties ctx, int DD_NetworkDistributionLine_ID, String trxName)
@@ -66,6 +66,36 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
         } */
     }
 
+    /** Standard Constructor */
+    public X_DD_NetworkDistributionLine (Properties ctx, String DD_NetworkDistributionLine_UU, String trxName)
+    {
+      super (ctx, DD_NetworkDistributionLine_UU, trxName);
+      /** if (DD_NetworkDistributionLine_UU == null)
+        {
+			setDD_NetworkDistribution_ID (0);
+			setDD_NetworkDistributionLine_ID (0);
+			setM_Shipper_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setM_WarehouseSource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_DD_NetworkDistributionLine (Properties ctx, String DD_NetworkDistributionLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, DD_NetworkDistributionLine_UU, trxName, virtualColumns);
+      /** if (DD_NetworkDistributionLine_UU == null)
+        {
+			setDD_NetworkDistribution_ID (0);
+			setDD_NetworkDistributionLine_ID (0);
+			setM_Shipper_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setM_WarehouseSource_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_DD_NetworkDistributionLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +103,7 @@ public class X_DD_NetworkDistributionLine extends PO implements I_DD_NetworkDist
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

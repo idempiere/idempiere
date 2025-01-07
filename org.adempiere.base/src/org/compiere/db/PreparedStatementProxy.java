@@ -33,6 +33,12 @@ import org.idempiere.db.util.AutoCommitConnectionBroker;
  */
 public class PreparedStatementProxy extends StatementProxy {
 
+	/**
+	 * @param resultSetType
+	 * @param resultSetConcurrency
+	 * @param sql0
+	 * @param trxName
+	 */
 	public PreparedStatementProxy(int resultSetType, int resultSetConcurrency,
 			String sql0, String trxName) {
 		if (sql0 == null || sql0.length() == 0)
@@ -46,6 +52,12 @@ public class PreparedStatementProxy extends StatementProxy {
 		init();
 	} // PreparedStatementProxy
 	
+	/**
+	 * @param resultSetType
+	 * @param resultSetConcurrency
+	 * @param sql0
+	 * @param connection
+	 */
 	public PreparedStatementProxy(int resultSetType, int resultSetConcurrency,
 			String sql0, Connection connection) {
 		if (sql0 == null || sql0.length() == 0)
@@ -57,13 +69,16 @@ public class PreparedStatementProxy extends StatementProxy {
 		init(connection);
 	} // PreparedStatementProxy
 	
+	/**
+	 * @param vo
+	 */
 	public PreparedStatementProxy(CStatementVO vo)
 	{
 		super(vo);
 	}	//	PreparedStatementProxy
 
 	/**
-	 * Initialise the prepared statement wrapper object
+	 * Initialize the prepared statement wrapper object
 	 */
 	protected void init() {
 		try {
@@ -92,7 +107,7 @@ public class PreparedStatementProxy extends StatementProxy {
 	}
 
 	/**
-	 * Initialise the prepared statement wrapper object
+	 * Initialize the prepared statement wrapper object
 	 */
 	protected void init(Connection connection) {
 		try {
@@ -107,7 +122,8 @@ public class PreparedStatementProxy extends StatementProxy {
 	@Override
 	protected RowSet getRowSet() 
 	{
-		log.finest("local_getRowSet");
+		if (log.isLoggable(Level.FINE))
+			log.finest("local_getRowSet");
 		
 		RowSet rowSet = null;
 		ResultSet rs = null;

@@ -49,6 +49,10 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
+/**
+ * Default implementation of {@link IMappedFormFactory}
+ * @author hengsin
+ */
 @Component(name = "org.adempiere.webui.factory.MappedFormFactory",
 immediate = true,
 service = {IFormFactory.class, IMappedFormFactory.class},
@@ -57,6 +61,9 @@ public class MappedFormFactory extends MappedByNameFactory<ADForm> implements IF
 
 	private final static CLogger s_log = CLogger.getCLogger(MappedFormFactory.class);
 	
+	/**
+	 * Default constructor
+	 */
 	public MappedFormFactory() {
 	}
 
@@ -101,10 +108,16 @@ public class MappedFormFactory extends MappedByNameFactory<ADForm> implements IF
 		
 	}
 
+	/**
+	 * {@link Supplier} class for instantiation of {@link ADForm} 
+	 */
 	private static final class FormSupplier implements Supplier<ADForm> {
 		
 		private Constructor<?> constructor;
 
+		/**
+		 * @param constructor form class constructor
+		 */
 		private FormSupplier(Constructor<?> constructor) {
 			this.constructor = constructor;
 		}

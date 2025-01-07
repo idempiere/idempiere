@@ -24,11 +24,10 @@ import java.util.zip.ZipOutputStream;
 import org.compiere.util.CLogger;
 
 /**
+ * DB backed implementation of {@link IImageStore}
  * @author hengsin
- *
  */
 public class ImageDBStorageImpl implements IImageStore {
-
 
 	private final CLogger log = CLogger.getCLogger(getClass());
 

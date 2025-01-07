@@ -29,8 +29,7 @@ public class Service {
 	private static IServiceLocator theLocator = new DynamicServiceLocator();
 
 	/**
-	 * 
-	 * @return service locator instance
+	 * @return IServiceLocator instance
 	 */
 	public static IServiceLocator locator() {
 		return theLocator;

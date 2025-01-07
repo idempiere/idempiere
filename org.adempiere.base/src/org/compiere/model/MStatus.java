@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -37,7 +38,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MStatus extends X_R_Status implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 446327334122691551L;
 
@@ -92,10 +93,10 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get Default Request Status
+	 * 	Get Default Request Status for given request type
 	 *	@param ctx context
 	 *	@param R_RequestType_ID request type
-	 *	@return Request Type
+	 *	@return default Request status or null
 	 */
 	public static MStatus getDefault (Properties ctx, int R_RequestType_ID)
 	{
@@ -138,9 +139,9 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	}	//	getDefault
 
 	/**
-	 * 	Get Closed Status
+	 * 	Get request status records with IsClosed=Y
 	 *	@param ctx context
-	 *	@return Request Type
+	 *	@return array of request status 
 	 */
 	public static MStatus[] getClosed (Properties ctx)
 	{
@@ -173,7 +174,6 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 		list.toArray(retValue);
 		return retValue;
 	}	//	get
-
 	
 	/** Static Logger					*/
 	private static CLogger s_log = CLogger.getCLogger(MStatus.class);
@@ -184,8 +184,19 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	static private ImmutableIntPOCache<Integer,MStatus> s_cacheDefault
 		= new ImmutableIntPOCache<Integer,MStatus>(Table_Name, "R_Status_Default", 10);
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_Status_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MStatus(Properties ctx, String R_Status_UU, String trxName) {
+        super(ctx, R_Status_UU, trxName);
+		if (Util.isEmpty(R_Status_UU))
+			setInitialDefaults();
+    }
 
-	/**************************************************************************
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param R_Status_ID is
@@ -195,16 +206,21 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	{
 		super (ctx, R_Status_ID, trxName);
 		if (R_Status_ID == 0)
-		{
+			setInitialDefaults();
+	}	//	MStatus
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		//	setValue (null);
 		//	setName (null);
-			setIsClosed (false);	// N
-			setIsDefault (false);
-			setIsFinalClose (false);	// N
-			setIsOpen (false);
-			setIsWebCanUpdate (true);
-		}
-	}	//	MStatus
+		setIsClosed (false);	// N
+		setIsDefault (false);
+		setIsFinalClose (false);	// N
+		setIsOpen (false);
+		setIsWebCanUpdate (true);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -218,7 +234,7 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	}	//	MStatus
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MStatus(MStatus copy) 
@@ -227,7 +243,7 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -237,7 +253,7 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -253,6 +269,7 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isOpen() && isClosed())
@@ -272,6 +289,7 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MStatus[");

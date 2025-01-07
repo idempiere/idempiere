@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ChartDatasource
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ChartDatasource")
-public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_Persistent 
+public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ChartDatasource (Properties ctx, String AD_ChartDatasource_UU, String trxName)
+    {
+      super (ctx, AD_ChartDatasource_UU, trxName);
+      /** if (AD_ChartDatasource_UU == null)
+        {
+			setAD_ChartDatasource_ID (0);
+			setAD_Chart_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFromClause (null);
+			setName (null);
+			setValueColumn (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ChartDatasource (Properties ctx, String AD_ChartDatasource_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ChartDatasource_UU, trxName, virtualColumns);
+      /** if (AD_ChartDatasource_UU == null)
+        {
+			setAD_ChartDatasource_ID (0);
+			setAD_Chart_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFromClause (null);
+			setName (null);
+			setValueColumn (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ChartDatasource (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -302,7 +334,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

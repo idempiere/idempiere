@@ -29,7 +29,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *	Distribution Run Detail
+ *	Material Distribution Run Detail.<br/>
+ *  Note: feature not fully implemented and have been marked as inactive in application dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: MDistributionRunDetail.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
@@ -37,7 +38,7 @@ import org.compiere.util.Env;
 public class MDistributionRunDetail extends X_T_DistributionRunDetail
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8679063565056887913L;
 
@@ -86,6 +87,16 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MDistributionRunDetail.class);
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param T_DistributionRunDetail_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDistributionRunDetail(Properties ctx, String T_DistributionRunDetail_UU, String trxName) {
+        super(ctx, T_DistributionRunDetail_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -112,8 +123,8 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	private int	m_precision = 0;
 	
 	/**
-	 * 	Round MinQty and Qty
-	 *	@param precision precision (saved)
+	 * 	Round MinQty and Qty (RoundingMode.HALF_UP) and save to DB
+	 *	@param precision rounding precision
 	 */
 	public void round (int precision)
 	{
@@ -136,7 +147,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	}	//	round
 	
 	/**
-	 * 	We can adjust Allocation Qty
+	 * 	can adjust Allocation Qty ?
 	 *	@return true if qty &gt; min
 	 */
 	public boolean isCanAdjust()
@@ -146,7 +157,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 
 	/**
 	 * 	Get Actual Allocation Qty
-	 *	@return the greater of the min/qty
+	 *	@return the greater of min and qty
 	 */
 	public BigDecimal getActualAllocation()
 	{
@@ -184,6 +195,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MDistributionRunDetail[")

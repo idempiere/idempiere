@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectTask
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectTask")
-public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent 
+public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_ProjectTask (Properties ctx, int C_ProjectTask_ID, String trxName)
@@ -71,6 +71,42 @@ public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_ProjectTask (Properties ctx, String C_ProjectTask_UU, String trxName)
+    {
+      super (ctx, C_ProjectTask_UU, trxName);
+      /** if (C_ProjectTask_UU == null)
+        {
+			setCommittedAmt (Env.ZERO);
+			setC_ProjectPhase_ID (0);
+			setC_ProjectTask_ID (0);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setProjInvoiceRule (null);
+// @ProjInvoiceRule@
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_ProjectTask WHERE C_ProjectPhase_ID=@C_ProjectPhase_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectTask (Properties ctx, String C_ProjectTask_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectTask_UU, trxName, virtualColumns);
+      /** if (C_ProjectTask_UU == null)
+        {
+			setCommittedAmt (Env.ZERO);
+			setC_ProjectPhase_ID (0);
+			setC_ProjectTask_ID (0);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setProjInvoiceRule (null);
+// @ProjInvoiceRule@
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_ProjectTask WHERE C_ProjectPhase_ID=@C_ProjectPhase_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_C_ProjectTask (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +114,7 @@ public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -376,7 +412,7 @@ public class X_C_ProjectTask extends PO implements I_C_ProjectTask, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getSeqNo()));
     }

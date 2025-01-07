@@ -35,6 +35,9 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.compiere.acct.Doc;
+import org.compiere.acct.DocManager;
+import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetExclude;
@@ -44,6 +47,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
@@ -64,6 +68,8 @@ import org.compiere.model.MProductionLine;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -574,6 +580,35 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cost2, "MCost record not found");
 			assertEquals(new BigDecimal("3.00"), cost2.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
 			
+			//check posting
+			ProductCost pc = new ProductCost(Env.getCtx(), line1.getM_Product_ID(), line1.getM_AttributeSetInstance_ID(), getTrxName());
+			MAccount asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, line1.getM_InOut_ID(), getTrxName());
+			doc.setC_BPartner_ID(line1.getParent().getC_BPartner_ID());
+			MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, line1.getM_InOut_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> fas = query.list();					
+			assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
+			boolean nirFound = false;
+			boolean assetFound = false;
+			for (MFactAcct fa : fas) {
+				if (asset.getAccount_ID() == fa.getAccount_ID()) {
+					if (line1.get_ID() == fa.getLine_ID()) {
+						assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR Asset");
+						assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR Asset");
+					}
+					assetFound = true;
+				} else if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
+					if (line1.get_ID() == fa.getLine_ID()) {
+						assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Not Invoiced Receipt");
+						assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Not Invoiced Receipt");
+					}
+					nirFound = true;
+				}
+			}
+			assertTrue(nirFound, "No Not Invoiced Receipt posting found");
+			assertTrue(assetFound, "No Product Asset posting found");
+			
 			//shipment
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
@@ -617,6 +652,39 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(2, linema.length, "Unexpected number of MInOutLineMA records");
 			assertEquals(linema[0].getM_AttributeSetInstance_ID(), asi1.get_ID(), "Unexpected M_AttributeSetInstance_ID for MInOutLineMA 1");
 			assertEquals(linema[1].getM_AttributeSetInstance_ID(), asi2.get_ID(), "Unexpected M_AttributeSetInstance_ID for MInOutLineMA 2");
+			assertEquals(1, linema[0].getMovementQty().intValue(), "Unexpected MovementQty for MInOutLineMA 1");
+			assertEquals(1, linema[1].getMovementQty().intValue(), "Unexpected MovementQty for MInOutLineMA 2");
+			
+			// check posting
+			if (!shipment.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);			
+			}
+			pc = new ProductCost(Env.getCtx(), shipmentLine.getM_Product_ID(), shipmentLine.getM_AttributeSetInstance_ID(), getTrxName());
+			MAccount cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.getM_InOut_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			fas = query.list();
+			assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
+			boolean cogsFound = false;
+			assetFound = false;
+			for (MFactAcct fa : fas) {
+				if (cogs.getAccount_ID() == fa.getAccount_ID()) {
+					if (shipmentLine.get_ID() == fa.getLine_ID()) {
+						assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
+						assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR COGS");
+					}
+					cogsFound = true;
+				} else if (asset.getAccount_ID() == fa.getAccount_ID()) {
+					if (shipmentLine.get_ID() == fa.getLine_ID()) {
+						assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+						assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+					}
+					assetFound = true;
+				}
+			}
+			assertTrue(cogsFound, "No COGS posting found");
+			assertTrue(assetFound, "No Product Asset posting found");
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[0].getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");

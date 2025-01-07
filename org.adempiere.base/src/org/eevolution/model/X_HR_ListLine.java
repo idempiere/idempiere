@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_ListLine")
-public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent 
+public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_ListLine (Properties ctx, int HR_ListLine_ID, String trxName)
@@ -60,6 +60,30 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_ListLine (Properties ctx, String HR_ListLine_UU, String trxName)
+    {
+      super (ctx, HR_ListLine_UU, trxName);
+      /** if (HR_ListLine_UU == null)
+        {
+			setHR_ListLine_ID (0);
+			setMaxValue (Env.ZERO);
+			setMinValue (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_ListLine (Properties ctx, String HR_ListLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_ListLine_UU, trxName, virtualColumns);
+      /** if (HR_ListLine_UU == null)
+        {
+			setHR_ListLine_ID (0);
+			setMaxValue (Env.ZERO);
+			setMinValue (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_ListLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +91,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -350,7 +374,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

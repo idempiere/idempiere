@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Project
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Project")
-public class X_C_Project extends PO implements I_C_Project, I_Persistent 
+public class X_C_Project extends PO implements I_C_Project, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Project (Properties ctx, int C_Project_ID, String trxName)
@@ -94,6 +94,64 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Project (Properties ctx, String C_Project_UU, String trxName)
+    {
+      super (ctx, C_Project_UU, trxName);
+      /** if (C_Project_UU == null)
+        {
+			setC_Currency_ID (0);
+			setCommittedAmt (Env.ZERO);
+			setCommittedQty (Env.ZERO);
+			setC_Project_ID (0);
+			setInvoicedAmt (Env.ZERO);
+			setInvoicedQty (Env.ZERO);
+			setIsCommitCeiling (false);
+			setIsCommitment (false);
+			setIsSummary (false);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setPlannedMarginAmt (Env.ZERO);
+			setPlannedQty (Env.ZERO);
+			setProcessed (false);
+			setProjectBalanceAmt (Env.ZERO);
+			setProjectLineLevel (null);
+// P
+			setProjInvoiceRule (null);
+// -
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Project (Properties ctx, String C_Project_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Project_UU, trxName, virtualColumns);
+      /** if (C_Project_UU == null)
+        {
+			setC_Currency_ID (0);
+			setCommittedAmt (Env.ZERO);
+			setCommittedQty (Env.ZERO);
+			setC_Project_ID (0);
+			setInvoicedAmt (Env.ZERO);
+			setInvoicedQty (Env.ZERO);
+			setIsCommitCeiling (false);
+			setIsCommitment (false);
+			setIsSummary (false);
+			setName (null);
+			setPlannedAmt (Env.ZERO);
+			setPlannedMarginAmt (Env.ZERO);
+			setPlannedQty (Env.ZERO);
+			setProcessed (false);
+			setProjectBalanceAmt (Env.ZERO);
+			setProjectLineLevel (null);
+// P
+			setProjInvoiceRule (null);
+// -
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Project (Properties ctx, ResultSet rs, String trxName)
     {
@@ -101,7 +159,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -625,10 +683,10 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	public boolean isCommitCeiling()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCommitCeiling);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -648,10 +706,10 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	public boolean isCommitment()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCommitment);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -671,10 +729,10 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -855,10 +913,10 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -877,10 +935,10 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1033,7 +1091,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

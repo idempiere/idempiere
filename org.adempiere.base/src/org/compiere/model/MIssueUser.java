@@ -25,15 +25,18 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- * 	Issue User Model
+ * 	Issue User Model.<br/>
+ *  Note: Not fully implemented and have been marked as inactive in Application Dictionary.
  *	
  *  @author Jorg Janke
  *  @version $Id: MIssueUser.java,v 1.2 2006/07/30 00:54:54 jjanke Exp $
+ *  @deprecated
  */
+@Deprecated
 public class MIssueUser extends X_R_IssueUser
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6761335385032704707L;
 
@@ -87,7 +90,17 @@ public class MIssueUser extends X_R_IssueUser
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MIssueUser.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param R_IssueUser_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MIssueUser(Properties ctx, String R_IssueUser_UU, String trxName) {
+        super(ctx, R_IssueUser_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_IssueUser_ID id
@@ -108,8 +121,7 @@ public class MIssueUser extends X_R_IssueUser
 	{
 		super (ctx, rs, trxName);
 	}	//	MIssueUser
-	
-	
+		
 	/**
 	 * 	Set AD_User_ID
 	 */
@@ -125,6 +137,7 @@ public class MIssueUser extends X_R_IssueUser
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MIssueUser[");

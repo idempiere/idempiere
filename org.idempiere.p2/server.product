@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="10.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="iDempiere Server" uid="org.adempiere.server.product" id="org.adempiere.server.server_product" application="org.adempiere.server.application" version="11.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -9,7 +9,7 @@
    <launcherArgs>
       <programArgs>-console
       </programArgs>
-      <vmArgs>--add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-exports=java.desktop/sun.awt=ALL-UNNAMED --add-exports=java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED -Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-https.xml,etc/jetty-threadpool.xml,etc/jetty-http-forwarded.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml
+      <vmArgs>--add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-exports=java.desktop/sun.awt=ALL-UNNAMED --add-exports=java.sql.rowset/com.sun.rowset=ALL-UNNAMED --add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED -Declipse.product=org.adempiere.server.product -Dosgi.noShutdown=true -Dosgi.framework.activeThreadType=normal -Dorg.osgi.framework.bootdelegation=sun.security.ssl -Dosgi.compatibility.bootdelegation=true -Djetty.home=jettyhome -Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-https.xml,etc/jetty-threadpool.xml,etc/jetty-http-forwarded.xml -Dmail.mime.encodefilename=true -Dmail.mime.decodefilename=true -Dmail.mime.encodeparameters=true -Dmail.mime.decodeparameters=true -Dhazelcast.config=hazelcast.xml -Dorg.apache.cxf.osgi.http.transport.disable=true
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -24,7 +24,7 @@
    </launcher>
 
    <vm>
-      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11</linux>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17</linux>
    </vm>
 
    <plugins>
@@ -61,15 +61,15 @@
       <plugin id="org.idempiere.felix.webconsole" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-el" autoStart="true" startLevel="0" />
       <plugin id="org.mortbay.jasper.apache-jsp" autoStart="true" startLevel="0" />
-      <property name="osgi.instance.area.default" value="@config.dir/../workspace" />
-      <property name="eclipse.product" value="org.adempiere.server.product" />
-      <property name="osgi.checkConfiguration" value="true" />
-      <property name="osgi.console.enable.builtin" value="false" />
-      <property name="osgi.compatibility.bootdelegation" value="true" />
-      <property name="org.eclipse.equinox.simpleconfigurator.exclusiveInstallation" value="false" />
       <property name="osgi.framework.activeThreadType" value="normal" />
-      <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="osgi.instance.area.default" value="@config.dir/../workspace" />
+      <property name="osgi.checkConfiguration" value="true" />
       <property name="osgi.noShutdown" value="true" />
+      <property name="org.eclipse.equinox.simpleconfigurator.exclusiveInstallation" value="false" />
+      <property name="osgi.compatibility.bootdelegation" value="true" />
+      <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="eclipse.product" value="org.adempiere.server.product" />
+      <property name="osgi.console.enable.builtin" value="false" />
    </configurations>
 
    <preferencesInfo>

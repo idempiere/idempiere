@@ -147,7 +147,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 		m_file_istream = new FileInputStream(filePath);
 
 		m_file_istream = m_importTemplate.validateFile(m_file_istream);
-		File outFile = csvImporter.fileImport(activeTab, childTabs, m_file_istream, Charset.forName(m_importTemplate.getCharacterSet()), p_ImportMode, processUI);
+		File outFile = csvImporter.fileImport(activeTab, childTabs, m_file_istream, Charset.forName(m_importTemplate.getCharacterSet()), p_ImportMode, m_importTemplate.getSeparatorChar(), m_importTemplate.getQuoteChar(), processUI);
 		// TODO: Potential improvement - traverse the outFile and call addLog with the results
 
 		if (processUI != null)
@@ -194,7 +194,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
             	log.warning(msg);
             }
 
-            // Refresh the list on dependant fields
+            // Refresh the list on dependent fields
     		for (GridField dependentField : l_gridTab.getDependantFields(mField.getColumnName()))
     		{
     			//  if the field has a lookup

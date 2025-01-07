@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Employee
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_Employee")
-public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent 
+public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_Employee (Properties ctx, int HR_Employee_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_Employee (Properties ctx, String HR_Employee_UU, String trxName)
+    {
+      super (ctx, HR_Employee_UU, trxName);
+      /** if (HR_Employee_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setHR_Department_ID (0);
+			setHR_Employee_ID (0);
+			setHR_Job_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Employee (Properties ctx, String HR_Employee_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Employee_UU, trxName, virtualColumns);
+      /** if (HR_Employee_UU == null)
+        {
+			setC_BPartner_ID (0);
+			setHR_Department_ID (0);
+			setHR_Employee_ID (0);
+			setHR_Job_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_Employee (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -331,7 +359,7 @@ public class X_HR_Employee extends PO implements I_HR_Employee, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

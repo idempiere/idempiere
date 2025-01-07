@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_CyclePhase
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_CyclePhase")
-public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent 
+public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_CyclePhase (Properties ctx, int C_CyclePhase_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_CyclePhase (Properties ctx, String C_CyclePhase_UU, String trxName)
+    {
+      super (ctx, C_CyclePhase_UU, trxName);
+      /** if (C_CyclePhase_UU == null)
+        {
+			setC_CycleStep_ID (0);
+			setC_Phase_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CyclePhase (Properties ctx, String C_CyclePhase_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CyclePhase_UU, trxName, virtualColumns);
+      /** if (C_CyclePhase_UU == null)
+        {
+			setC_CycleStep_ID (0);
+			setC_Phase_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_CyclePhase (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_CyclePhase[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

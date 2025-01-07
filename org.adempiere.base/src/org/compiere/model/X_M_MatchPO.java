@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MatchPO
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_MatchPO")
-public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent 
+public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_MatchPO (Properties ctx, int M_MatchPO_ID, String trxName)
@@ -74,6 +74,44 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_MatchPO (Properties ctx, String M_MatchPO_UU, String trxName)
+    {
+      super (ctx, M_MatchPO_UU, trxName);
+      /** if (M_MatchPO_UU == null)
+        {
+			setC_OrderLine_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setM_InOutLine_ID (0);
+			setM_MatchPO_ID (0);
+			setM_Product_ID (0);
+			setPosted (false);
+			setProcessed (false);
+			setProcessing (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MatchPO (Properties ctx, String M_MatchPO_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MatchPO_UU, trxName, virtualColumns);
+      /** if (M_MatchPO_UU == null)
+        {
+			setC_OrderLine_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setM_InOutLine_ID (0);
+			setM_MatchPO_ID (0);
+			setM_Product_ID (0);
+			setPosted (false);
+			setProcessed (false);
+			setProcessing (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_MatchPO (Properties ctx, ResultSet rs, String trxName)
     {
@@ -81,7 +119,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -225,7 +263,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -244,10 +282,10 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -388,10 +426,10 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -430,10 +468,10 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -471,10 +509,10 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -23,7 +23,7 @@ import org.apache.ecs.Printable;
 /**
  * This class creates a &lt;script&gt; tag.
  * <P>
- * Note that XHTML script tag doesn't hide the script text withing comments like
+ * Note that XHTML script tag doesn't hide the script text within comments like
  * its HTML counterpart does. This difference is caused by the fact that XHTML
  * is XML and XML parsers can throw the comments out. Use this tag with browsers
  * that support scripting language(s).

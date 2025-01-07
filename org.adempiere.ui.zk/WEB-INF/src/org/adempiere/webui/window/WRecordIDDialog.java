@@ -24,6 +24,7 @@
 **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.adempiere.webui.component.Button;
@@ -31,17 +32,21 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
-import org.adempiere.webui.editor.WRecordIDEditor;
+import org.adempiere.webui.editor.WRecordEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
@@ -53,25 +58,32 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 
+ * Dialog to edit Record_ID or Record_UU field
  * @author Peter Takacs, Cloudempiere
  *
  */
 public class WRecordIDDialog extends Window implements EventListener<Event>, ValueChangeListener {
-
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 8126107952514403099L;
+	private static final long serialVersionUID = 1791159320699080384L;
 	
 	/** Record_ID editor from which the window is opened */
-	private WRecordIDEditor editor;
+	private WRecordEditor<?> editor;
 	/** Current tab's AD_Table_ID GrodField */
 	private GridField tableIDGridField;
 	/** Current Record_ID value from {@link #editor} */
-	private Integer recordIDValue;
+	private Object recordIDValue;
 	/** Current AD_Table_ID value from {@link #editor} */
 	private Integer tableIDValue;
+	/** Grid Tab */
+	GridTab gridTab;
+	/** Grid Field */
+	GridField gridField;
+	/** Window Number */
+	int windowNo;
+	/** Tab Number */
+	int tabNo;
 	
 	// UI components
 	private Div contentDiv;
@@ -91,20 +103,14 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	 * @param editor
 	 * @param tableIDGridField
 	 */
-	public WRecordIDDialog(Page page, WRecordIDEditor editor, GridField tableIDGridField) {
+	public WRecordIDDialog(Page page, WRecordEditor<?> editor, GridField tableIDGridField) {
 		super();
-		
-		this.editor = editor;
-		this.tableIDGridField = tableIDGridField;
-		if(editor.getValue() instanceof Integer) {
-			this.recordIDValue = (Integer)editor.getValue();
-		} else {
-			if (editor.getValue() == null)
-				this.recordIDValue = null;
-			else
-				this.recordIDValue = Integer.valueOf(editor.getValue().toString());
-		}
 
+		this.editor = editor;
+		gridTab = editor.getGridField().getGridTab();
+		gridField = editor.getGridField();
+		tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
+		windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
 		if (editor.getAD_Table_ID() instanceof Integer) {
 			tableIDValue = (Integer) editor.getAD_Table_ID();
 		} else {
@@ -114,9 +120,17 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 				tableIDValue = Integer.valueOf(editor.getAD_Table_ID().toString());
 		}
 
+
+		this.tableIDGridField = tableIDGridField;
+		this.recordIDValue = editor.toKeyValue(editor.getValue());
+
 		init(page);
 	}
 	
+	/**
+	 * Layout dialog
+	 * @param page
+	 */
 	private void init(Page page) {
 		Vlayout vLayout = new Vlayout();
 		labelsDiv = new Div();
@@ -136,9 +150,9 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		tableIDEditor.setValue(tableIDValue);
 		
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
-		MLookup recordsLookup = editor.getRecordsLookup(tableID);
+		MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.isUseUUIDKey());
 		if(recordsLookup != null)
-			recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
+			recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		
 		setPage(page);
 		setClosable(true);
@@ -152,8 +166,13 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		if (editor.getGridField().getGridTab() != null) {
 			parentTextBox = new Textbox();
 			parentTextBox.setReadonly(true);
-			parentTextBox.setValue(editor.getIdentifier(
-					editor.getGridField().getGridTab().getAD_Table_ID(), editor.getGridField().getGridTab().getRecord_ID()));
+			MTable parentTable = MTable.get(editor.getGridField().getGridTab().getAD_Table_ID());
+			Serializable parentRecordId;
+			if (! parentTable.isIDKeyTable())
+				parentRecordId = (Serializable) editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
+			else
+				parentRecordId = editor.getGridField().getGridTab().getRecord_ID();
+			parentTextBox.setValue(MLookup.getIdentifier(parentTable.getAD_Table_ID(), parentRecordId, tabNo, windowNo));
 		}
 		
 		if (recordsEditor != null)
@@ -219,17 +238,23 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		if (evt.getSource().equals(tableIDEditor)) {
+			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
+			if (tableID > 0) {
+				String error = editor.validateTableIdValue(tableID);
+				if (!Util.isEmpty(error)) {
+					throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), error));
+				}
+			}
+
 			// the Record_ID should be cleared when a different AD_Table_ID is selected
 			if (recordsEditor != null) {
 				recordsEditor.setValue(null);
 				recordsEditorLabel.detach();
 				recordsEditor.getComponent().detach();
 			}
-			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-			
-			MLookup recordsLookup = editor.getRecordsLookup(tableID);
+			MLookup recordsLookup = MLookup.getRecordsLookup(tableID, tabNo, windowNo, editor.isUseUUIDKey());
 			if(recordsLookup != null) {
-				recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
+				recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		    	labelsDiv.appendChild(recordsEditorLabel);
 				fieldsDiv.appendChild(recordsEditor.getComponent());
 				recordsEditor.getComponent().focus();

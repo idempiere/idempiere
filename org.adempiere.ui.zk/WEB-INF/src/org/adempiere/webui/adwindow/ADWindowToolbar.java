@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
@@ -90,7 +91,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -5151981978053022864L;
+	private static final long serialVersionUID = -2174135931334134570L;
 
 	/**
 	 * Attribute for {@link #overflowPopup} to store the last close timestamp in ms.
@@ -177,17 +178,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private boolean isAllowProductInfo = MRole.getDefault().canAccess_Info_Product();
 
 	private int windowNo = 0;
-	/** previous key event time in ms **/
-	private long prevKeyEventTime = 0;
-	/** 
-	 * Previous key event.
-	 * Use together with prevKeyEventTime to detect double fire of key event from browser
-	 */
-	private KeyEvent prevKeyEvent;
 	
 	/**
 	 * Maintain hierarchical Quick form by its parent-child tab while open leaf
-	 * tab once & dispose and doing same action
+	 * tab once and dispose and doing same action
 	 */
 	private int	quickFormTabHrchyLevel		= 0;
 	/** show more button for mobile client **/
@@ -203,6 +197,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private int prevWidth;
 	/** AD Window content part that own this toolbar **/
 	private AbstractADWindowContent windowContent;
+	/**
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
+	 */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * default constructor
@@ -578,22 +576,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 			if (!(keyEvent.getKeyCode() == KeyEvent.F2) && windowContent != null && windowContent.getOpenQuickFormTabs().size() > 0)
 				return;
 
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
-	        	this.onCtrlKeyEvent(keyEvent);
-        	}
+		if (LayoutUtils.isReallyVisible(this))
+			this.onCtrlKeyEvent(keyEvent);
         } else if (Events.ON_SELECT.equals(eventName)) 
         {
         	int index = fQueryName.getSelectedIndex();
@@ -608,6 +592,13 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 				setSelectedUserQuery(userQueries[index-1]);
 
         	doOnClick(event);
+        }
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(eventName)) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (windowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(windowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
         }
     }
 
@@ -868,7 +859,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
 	/**
      * Turn on/off Lock button (Pressed=On, Not Pressed=Off)
-     * @param enabled
+     * @param locked
      */
     public void lock(boolean locked)
     {
@@ -931,20 +922,17 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
-			if (keyEvent.getKeyCode() == VK_X)
+			if ((keyEvent.getKeyCode() == VK_X))
 			{
-				if (windowNo > 0)
-				{
-					prevKeyEventTime = System.currentTimeMillis();
-		        	prevKeyEvent = keyEvent;
-					keyEvent.stopPropagation();
-					SessionManager.getAppDesktop().closeWindow(windowNo);
-				}
+				onCloseWithShortcut(keyEvent);
 			}
 			else
 			{
 				btn = altKeyMap.get(keyEvent.getKeyCode());
 			}
+		}
+		else if (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing) {	// ESC
+			onCloseWithShortcut(keyEvent);
 		}
 		else if (!keyEvent.isAltKey() && keyEvent.isCtrlKey() && !keyEvent.isShiftKey())
 		{
@@ -981,6 +969,15 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
+	 * Close Window
+	 * @param keyEvent
+	 */
+	private void onCloseWithShortcut(KeyEvent keyEvent) {
+		keyEvent.stopPropagation();
+		Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
+	}
+	
+	/**
 	 * Fire ON_Click event for button, trigger by shortcut key event.
 	 * @param keyEvent source shortcut key event
 	 * @param btn
@@ -988,8 +985,6 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private void fireButtonClickEvent(KeyEvent keyEvent, ToolBarButton btn)
 	{
 		if (btn != null) {
-			prevKeyEventTime = System.currentTimeMillis();
-        	prevKeyEvent = keyEvent;
 			keyEvent.stopPropagation();
 			if (!btn.isDisabled() && btn.isVisible()) {
 				Events.sendEvent(btn, new Event(Events.ON_CLICK, btn));
@@ -1114,8 +1109,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
 	/**
      * Enable/disable Process button
-     * @param enabled
-     */
+	 * @param b boolean
+	 */
 	public void enableProcessButton(boolean b) {
 		if (btnProcess != null) {
 			btnProcess.setDisabled(!b);
@@ -1214,6 +1209,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		} catch (Exception e) {}
 	}
 
@@ -1222,6 +1218,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+			addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		}
 	}
 	

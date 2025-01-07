@@ -44,7 +44,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Formal definition for a set of data record pairs
+ * Extended model class for AD_RelationType.<br/>
+ * Formal definition for a set of data record pairs.
  * 
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194 ] Advanced Zoom and
  *         RelationTypes
@@ -62,7 +63,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * <b>Warning:</b> Doesn't support POs with more or less than one key
 	 * column.
 	 */
-	final static String SQL =
+	protected final static String SQL =
 	    "  SELECT "
 			+ "    rt.AD_RelationType_ID"
 			+ ",   rt.Name"
@@ -89,36 +90,62 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			+ "    AND tab.AD_Key=?"
 			+ "  ORDER BY rt.Name";
 
-	final static String SQL_WINDOW_NAME = "SELECT Name FROM AD_Window WHERE AD_WINDOW_ID=?";
+	protected final static String SQL_WINDOW_NAME = "SELECT Name FROM AD_Window WHERE AD_WINDOW_ID=?";
 
-	final static String SQL_WINDOW_NAME_TRL = "SELECT Name FROM AD_Window_Trl WHERE AD_WINDOW_ID=? AND AD_LANGUAGE=?";
+	protected final static String SQL_WINDOW_NAME_TRL = "SELECT Name FROM AD_Window_Trl WHERE AD_WINDOW_ID=? AND AD_LANGUAGE=?";
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5486148151201672913L;
 
 	public int destinationRefId;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_RelationType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRelationType(Properties ctx, String AD_RelationType_UU, String trxName) {
+        super(ctx, AD_RelationType_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param AD_RelationType_ID
+     * @param trxName
+     */
 	public MRelationType(Properties ctx, int AD_RelationType_ID, String trxName) {
 		super(ctx, AD_RelationType_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MRelationType(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param AD_RelationType_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MRelationType(Properties ctx, int AD_RelationType_ID, String trxName, String... virtualColumns) {
 		super(ctx, AD_RelationType_ID, trxName, virtualColumns);
 	}
 
 	/**
-	 * Returns the types that define a relation which contains the given PO.
+	 * Returns the types that define a relation which contains the given PO.<br/>
 	 * Explicit types are returned even if they don't actually contain the given
 	 * PO.
 	 * 
 	 * @param po
-	 * @return
+	 * @return matching relation types
 	 */
 	public static List<MRelationType> retrieveTypes(final PO po,
 			final int windowId) {
@@ -159,6 +186,11 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		}
 	}
 
+	/**
+	 * @param po
+	 * @param windowID
+	 * @return zoom info records from matching relation types
+	 */
 	public static List<ZoomInfo> retrieveZoomInfos(final PO po,
 			final int windowID) {
 
@@ -175,6 +207,9 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		return result;
 	}
 
+	/**
+	 * @return display text from lookup of destination reference
+	 */
 	private String getDestinationRoleDisplay() {
 
 		checkDestinationRefId();
@@ -198,6 +233,10 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		return lookup.getDisplay(keyValue);
 	}
 
+	/**
+	 * @param windowId
+	 * @return window name
+	 */
 	private String retrieveWindowName(final int windowId) {
 
 		final boolean baseLanguage = Env.isBaseLanguage(Env.getCtx(),
@@ -224,6 +263,13 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		}
 	}
 
+	/**
+	 * @param po
+	 * @param windowId
+	 * @param rs
+	 * @return relation types
+	 * @throws SQLException
+	 */
 	private static List<MRelationType> evalResultSet(final PO po,
 			final int windowId, final ResultSet rs) throws SQLException {
 
@@ -281,10 +327,16 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		return result;
 	}
 
-	static boolean whereClauseMatches(PO po, String where) {
+	/**
+	 * @param po
+	 * @param where
+	 * @return true if where is empty or match found in DB
+	 */
+	protected static boolean whereClauseMatches(PO po, String where) {
 
 		if (Util.isEmpty(where, true)) {
-			logger.fine("whereClause is empty. Returning true");
+			if (logger.isLoggable(Level.FINE))
+				logger.fine("whereClause is empty. Returning true");
 			return true;
 		}
 
@@ -302,10 +354,15 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		return match;
 	}
 
+	/**
+	 * @param po
+	 * @param where
+	 * @return parsed where clause
+	 */
 	public static String parseWhereClause(final PO po, final String where) {
 
-		logger
-				.fine("building private ctx instance containing the PO's String and int values");
+		if (logger.isLoggable(Level.FINE))
+			logger.fine("building private ctx instance containing the PO's String and int values");
 
 		final Properties privateCtx = new Properties();
 		privateCtx.putAll(po.getCtx());
@@ -337,6 +394,9 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		return parsedWhere;
 	}
 
+	/**
+	 * throw exception if destination reference is not valid
+	 */
 	public void checkDestinationRefId() {
 
 		if (destinationRefId == 0) {
@@ -348,7 +408,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	/**
 	 * 
 	 * @param po
-	 * @return
+	 * @return zoom info records from destination reference
 	 */
 	public List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(final PO po) {
 
@@ -376,6 +436,11 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 				query, display));
 	}
 
+	/**
+	 * @param po
+	 * @param refTable
+	 * @return AD_Window_ID
+	 */
 	public int retrieveWindowID(final PO po, final MRefTable refTable) {
 
 		MTable table = null;
@@ -403,6 +468,12 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 	}
 
+	/**
+	 * @param ctx
+	 * @param referenceId
+	 * @param trxName
+	 * @return MRefTable
+	 */
 	public static MRefTable retrieveRefTable(final Properties ctx,
 			final int referenceId, final String trxName) {
 
@@ -415,6 +486,10 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		return refTable;
 	}
 
+	/**
+	 * Update record count and zoom value of query
+	 * @param query
+	 */
 	private static void evaluateQuery(final MQuery query) {
 
 		StringBuilder sqlCommon = new StringBuilder(" FROM ").append(query.getZoomTableName())
@@ -435,27 +510,43 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		}
 	}
 
+	/**
+	 * @return table name of source reference
+	 */
 	private String retrieveSourceTableName() {
 
 		return retrieveTableName(getAD_Reference_Source_ID());
 	}
 
+	/**
+	 * @return table name of target reference
+	 */
 	private String retrieveTargetTableName() {
 
 		return retrieveTableName(getAD_Reference_Target_ID());
 	}
 
+	/**
+	 * @return table name of destination reference
+	 */
 	public String retrieveDestinationTableName() {
 
 		return retrieveTableName(destinationRefId);
 	}
 
+	/**
+	 * @param refId
+	 * @return table name
+	 */
 	private String retrieveTableName(final int refId) {
 
 		return retrieveRefTable(getCtx(), refId, get_TrxName()).getAD_Table()
 				.getTableName();
 	}
 
+	/**
+	 * @return key column name of destination reference
+	 */
 	public String retrieveDestinationKeyColName() {
 
 		final int keyColumnId = retrieveRefTable(getCtx(), destinationRefId,

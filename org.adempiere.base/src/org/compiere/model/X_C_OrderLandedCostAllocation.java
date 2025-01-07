@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCostAllocation
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderLandedCostAllocation")
-public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLandedCostAllocation, I_Persistent 
+public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLandedCostAllocation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCostAllocation (Properties ctx, int C_OrderLandedCostAllocation_ID, String trxName)
@@ -68,6 +68,40 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_OrderLandedCostAllocation (Properties ctx, String C_OrderLandedCostAllocation_UU, String trxName)
+    {
+      super (ctx, C_OrderLandedCostAllocation_UU, trxName);
+      /** if (C_OrderLandedCostAllocation_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setBase (Env.ZERO);
+			setC_OrderLandedCostAllocation_ID (0);
+			setC_OrderLandedCost_ID (0);
+			setC_OrderLine_ID (0);
+			setProcessed (false);
+// N
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderLandedCostAllocation (Properties ctx, String C_OrderLandedCostAllocation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderLandedCostAllocation_UU, trxName, virtualColumns);
+      /** if (C_OrderLandedCostAllocation_UU == null)
+        {
+			setAmt (Env.ZERO);
+			setBase (Env.ZERO);
+			setC_OrderLandedCostAllocation_ID (0);
+			setC_OrderLandedCost_ID (0);
+			setC_OrderLine_ID (0);
+			setProcessed (false);
+// N
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_OrderLandedCostAllocation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -75,7 +109,7 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -239,10 +273,10 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

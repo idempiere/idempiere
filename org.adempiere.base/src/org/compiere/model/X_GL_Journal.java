@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Journal
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_Journal")
-public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent 
+public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_GL_Journal (Properties ctx, int GL_Journal_ID, String trxName)
@@ -126,6 +126,96 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_Journal (Properties ctx, String GL_Journal_UU, String trxName)
+    {
+      super (ctx, GL_Journal_UU, trxName);
+      /** if (GL_Journal_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+// @$C_AcctSchema_ID@
+			setC_ConversionType_ID (0);
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_DocType_ID (0);
+// @C_DocType_ID@
+			setC_Period_ID (0);
+// @C_Period_ID@
+			setCurrencyRate (Env.ZERO);
+// 1
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @DateDoc@
+			setDescription (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setGL_Category_ID (0);
+// @GL_Category_ID@
+			setGL_Journal_ID (0);
+			setIsApproved (true);
+// Y
+			setIsPrinted (false);
+// N
+			setPosted (false);
+// N
+			setPostingType (null);
+// @PostingType@
+			setTotalCr (Env.ZERO);
+// 0
+			setTotalDr (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Journal (Properties ctx, String GL_Journal_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Journal_UU, trxName, virtualColumns);
+      /** if (GL_Journal_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+// @$C_AcctSchema_ID@
+			setC_ConversionType_ID (0);
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setC_DocType_ID (0);
+// @C_DocType_ID@
+			setC_Period_ID (0);
+// @C_Period_ID@
+			setCurrencyRate (Env.ZERO);
+// 1
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @DateDoc@
+			setDescription (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setGL_Category_ID (0);
+// @GL_Category_ID@
+			setGL_Journal_ID (0);
+			setIsApproved (true);
+// Y
+			setIsPrinted (false);
+// N
+			setPosted (false);
+// N
+			setPostingType (null);
+// @PostingType@
+			setTotalCr (Env.ZERO);
+// 0
+			setTotalDr (Env.ZERO);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_Journal (Properties ctx, ResultSet rs, String trxName)
     {
@@ -133,7 +223,7 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -505,7 +595,7 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -645,10 +735,10 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -668,10 +758,10 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -691,10 +781,10 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -743,10 +833,10 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -784,10 +874,10 @@ public class X_GL_Journal extends PO implements I_GL_Journal, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

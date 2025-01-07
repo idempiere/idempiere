@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SchedulerRecipient
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_SchedulerRecipient")
-public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipient, I_Persistent 
+public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipient, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_SchedulerRecipient (Properties ctx, String AD_SchedulerRecipient_UU, String trxName)
+    {
+      super (ctx, AD_SchedulerRecipient_UU, trxName);
+      /** if (AD_SchedulerRecipient_UU == null)
+        {
+			setAD_Scheduler_ID (0);
+			setAD_SchedulerRecipient_ID (0);
+			setIsUpload (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SchedulerRecipient (Properties ctx, String AD_SchedulerRecipient_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SchedulerRecipient_UU, trxName, virtualColumns);
+      /** if (AD_SchedulerRecipient_UU == null)
+        {
+			setAD_Scheduler_ID (0);
+			setAD_SchedulerRecipient_ID (0);
+			setIsUpload (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -238,7 +264,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_User_ID()));
     }
@@ -272,10 +298,10 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 	public boolean isUpload()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUpload);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

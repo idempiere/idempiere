@@ -83,11 +83,24 @@ Enhancement suggestions are tracked as [JIRA issues](https://idempiere.atlassian
 * **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
 * **Explain why this enhancement would be useful** to most iDempiere users and isn't something that can or should be implemented as a [community plugin](https://wiki.idempiere.org/en/Category:Available_Plugins).
 
-### **Did you write a patch that fixes a bug or adds and enhancement?**
+### **Do you want to contribute code by fixing a bug or adding an enhancement?**
 
-* Attach your patch to the corresponding JIRA ticket or create a pull request and link it to the JIRA ticket.
-* Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
-* Before submitting, please read the [Contributing to iDempiere's core](https://wiki.idempiere.org/en/Contributing_to_Trunk) guide to know more about coding conventions, guidelines and benchmarks.
+Before integrating any code change, please read the [Contributing to iDempiere's core](https://wiki.idempiere.org/en/Contributing_to_Trunk) guide to know more about coding conventions, guidelines and benchmarks.
+
+iDempiere uses a forking workflow for code contributions. To have a detailed explanation of how to create a pull request, please read [the Fork and Branch Git Workflow page](https://wiki.idempiere.org/en/Fork_and_Branch_Git_Workflow).
+
+In summary, here are the steps to follow:
+
+* Create your personal fork.
+* Clone your fork to your local machine.
+* Synchronize your local repository with the upstream source.
+* Create a feature branch for your work.
+* Integrate your changes into the source code.
+* **Test thoughtfully**
+* Create a commit using the iDempiere standard message format: _IDEMPIERE-[####] [Ticket Description]_.
+* Push your commit to your own fork.
+* Navigate to GitHub in the web browser.
+* Create a Pull request.
 * If the change is big and adds new functionality, please document the modifications and new features and add this documentation to [the new features wiki](https://wiki.idempiere.org/en/Category:New_Features).
 
 ### **Did you write a plugin that is valuable for the community?**

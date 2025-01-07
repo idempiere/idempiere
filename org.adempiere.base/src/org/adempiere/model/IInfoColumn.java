@@ -17,11 +17,10 @@ package org.adempiere.model;
 import org.compiere.model.MInfoColumn;
 
 /**
- * 
+ * Interface for class to provide access to contain or related {@link MInfoColumn}.
+ * @see MInfoProcess
+ * @see MInfoRelated
  * @author hieplq
- * implement to provide InfoColumn
- * example MInfoProcess, MInfoRelate
- *
  */
 public interface IInfoColumn {
 	/**
@@ -31,8 +30,8 @@ public interface IInfoColumn {
 	public int getInfoColumnID ();
 	
 	/**
-	 * Object MInfoColumn
-	 * @return
+	 * Get MInfoColumn instance
+	 * @return MInfoColumn
 	 */
 	public MInfoColumn getAD_InfoColumn ();
 }

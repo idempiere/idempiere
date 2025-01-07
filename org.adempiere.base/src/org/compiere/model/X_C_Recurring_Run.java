@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for C_Recurring_Run
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Recurring_Run")
-public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persistent 
+public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Recurring_Run (Properties ctx, int C_Recurring_Run_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Recurring_Run (Properties ctx, String C_Recurring_Run_UU, String trxName)
+    {
+      super (ctx, C_Recurring_Run_UU, trxName);
+      /** if (C_Recurring_Run_UU == null)
+        {
+			setC_Recurring_ID (0);
+			setC_Recurring_Run_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Recurring_Run (Properties ctx, String C_Recurring_Run_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Recurring_Run_UU, trxName, virtualColumns);
+      /** if (C_Recurring_Run_UU == null)
+        {
+			setC_Recurring_ID (0);
+			setC_Recurring_Run_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Recurring_Run (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

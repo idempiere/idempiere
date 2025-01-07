@@ -27,7 +27,7 @@ package org.apache.ecs;
 public interface AlignType
 {
 
-    // convience variables
+    // convenience variables
     public final static String CENTER = "center";
     public final static String TOP = "top";
     public final static String BOTTOM = "bottom";

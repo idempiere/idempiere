@@ -24,7 +24,7 @@
 	</listener -->
 
 	<listener>
-		<description>[Optional] Mointor the statistic</description>
+		<description>[Optional] Monitor the statistic</description>
 		<listener-class>org.adempiere.webui.util.Statistic</listener-class>
 	</listener>
 
@@ -138,5 +138,9 @@
     <library-property>
         <name>org.zkoss.zk.ui.uuidRecycle.disabled</name>
         <value>true</value>
+    </library-property>
+    <library-property>
+    	<name>org.zkoss.zul.Filedownload.contentTypeAsIs</name>
+    	<value>true</value>
     </library-property>
 </zk>

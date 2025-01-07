@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /**
- * 	Tax Tax Declaration Accounting Model
+ * 	Tax Declaration Accounting Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MTaxDeclarationAcct.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -28,9 +28,19 @@ import java.util.Properties;
 public class MTaxDeclarationAcct extends X_C_TaxDeclarationAcct
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -840113412342364029L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_TaxDeclarationAcct_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MTaxDeclarationAcct(Properties ctx, String C_TaxDeclarationAcct_UU, String trxName) {
+        super(ctx, C_TaxDeclarationAcct_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Table 
 {
@@ -161,6 +161,19 @@ public interface I_AD_Table
 	  */
 	public int getCreatedBy();
 
+    /** Column name CreatePartition */
+    public static final String COLUMNNAME_CreatePartition = "CreatePartition";
+
+	/** Set Create/update partition.
+	  * Process which create or update table partitions based on the table and column records
+	  */
+	public void setCreatePartition (String CreatePartition);
+
+	/** Get Create/update partition.
+	  * Process which create or update table partitions based on the table and column records
+	  */
+	public String getCreatePartition();
+
     /** Column name CreateWindowFromTable */
     public static final String COLUMNNAME_CreateWindowFromTable = "CreateWindowFromTable";
 
@@ -297,6 +310,19 @@ public interface I_AD_Table
 	  * Use Search instead of Pick list
 	  */
 	public boolean isHighVolume();
+
+    /** Column name IsPartition */
+    public static final String COLUMNNAME_IsPartition = "IsPartition";
+
+	/** Set Partition.
+	  * This is a partitioned table
+	  */
+	public void setIsPartition (boolean IsPartition);
+
+	/** Get Partition.
+	  * This is a partitioned table
+	  */
+	public boolean isPartition();
 
     /** Column name IsSecurityEnabled */
     public static final String COLUMNNAME_IsSecurityEnabled = "IsSecurityEnabled";

@@ -23,11 +23,25 @@ import org.idempiere.cache.ImmutablePOCache;
 public class MDepreciationMethod extends X_A_Depreciation_Method implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7477974832683140825L;
 
-	/** Standard Constructor */
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Depreciation_Method_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MDepreciationMethod(Properties ctx, String A_Depreciation_Method_UU, String trxName) {
+        super(ctx, A_Depreciation_Method_UU, trxName);
+    }
+
+	/**
+	 * @param ctx
+	 * @param A_Depreciation_Method_ID
+	 * @param trxName
+	 */
 	public MDepreciationMethod (Properties ctx, int A_Depreciation_Method_ID, String trxName)
 	{
 		super (ctx, A_Depreciation_Method_ID, trxName);
@@ -37,6 +51,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	 *  Load Constructor
 	 *  @param ctx context
 	 *  @param rs result set record
+	 *  @param trxName
 	 */
 	public MDepreciationMethod (Properties ctx, ResultSet rs, String trxName)
 	{
@@ -44,7 +59,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	}	//	MDepreciationMethod
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MDepreciationMethod(MDepreciationMethod copy) 
@@ -53,7 +68,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -63,7 +78,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -82,7 +97,8 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	s_cache_forType = new ImmutablePOCache<String,MDepreciationMethod>(Table_Name, Table_Name+"_DepreciationType", 5);
 	
 	/**
-	 *
+	 * add to cache
+	 * @param depr
 	 */
 	private static void addToCache(MDepreciationMethod depr)
 	{
@@ -95,7 +111,7 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	}
 
 	/**
-	 *
+	 * @return precision
 	 */
 	private static int getPrecision()
 	{
@@ -162,10 +178,17 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 		addToCache(depr);
 		return (MDepreciationMethod) depr.markImmutable();
 	}
-
 	
 	/**
-	 *
+	 * Invoke depreciation calculation for this method
+	 * @param ctx
+	 * @param depreciationType
+	 * @param A_Asset_ID
+	 * @param A_Asset_Adjustment
+	 * @param A_PeriodNo
+	 * @param PostingType
+	 * @param A_Asset_Acct_ID
+	 * @return depreciation for current period
 	 */
 	public static BigDecimal invoke (Properties ctx, String depreciationType,
 										int A_Asset_ID, BigDecimal A_Asset_Adjustment,
@@ -181,6 +204,10 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 
 	/**
 	 * Calculate adjustment
+	 * @param assetwk
+	 * @param assetAcct
+	 * @param A_Asset_Adjustment
+	 * @param A_PeriodNo
 	 * @return adjustment to be applied in the specified period
 	 */
 	public BigDecimal invoke (MDepreciationWorkfile assetwk,
@@ -192,6 +219,11 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	
 	/**
 	 * Calculate adjustment
+	 * @param A_Asset_ID
+	 * @param A_Asset_Adjustment
+	 * @param A_PeriodNo
+	 * @param PostingType
+	 * @param A_Asset_Acct_ID
 	 * @return adjustment to be applied in the specified period
 	 */
 	public BigDecimal invoke (int A_Asset_ID, BigDecimal A_Asset_Adjustment,
@@ -254,16 +286,28 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 		return retValue;
 	}
 
-	/**	MDI	- adjustment is made ​​in the current month
-	 *
+	/**	
+	 * MDI	- adjustment is made ​​in the current month
+	 * @param A_Asset_ID
+	 * @param A_Asset_Adjustment
+	 * @param A_PeriodNo
+	 * @param PostingType
+	 * @param A_Asset_Acct_ID
+	 * @return adjustment value
 	 */
 	public BigDecimal apply_MDI (int A_Asset_ID, BigDecimal A_Asset_Adjustment, int A_PeriodNo, String PostingType, int A_Asset_Acct_ID)
 	{
 		return A_Asset_Adjustment;
 	}
 	
-	/**	YDI	-adjustment is made ​​for periods of the year remains
-	 *
+	/**
+	 * YDI	- adjustment is made ​​for periods of the year remains
+	 * @param A_Asset_ID
+	 * @param A_Asset_Adjustment
+	 * @param A_PeriodNo
+	 * @param PostingType
+	 * @param A_Asset_Acct_ID
+	 * @return adjustment value
 	 */
 	public BigDecimal apply_YDI (int A_Asset_ID, BigDecimal A_Asset_Adjustment, int A_PeriodNo, String PostingType, int A_Asset_Acct_ID)
 	{
@@ -279,8 +323,14 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 		return periodAdjustment;
 	}
 	
-	/**	LDI	- adjustment is made ​​on the remaining life
-	 *
+	/**
+	 * LDI	- adjustment is made ​​on the remaining life
+	 * @param A_Asset_ID
+	 * @param A_Asset_Adjustment
+	 * @param A_PeriodNo
+	 * @param PostingType
+	 * @param A_Asset_Acct_ID
+	 * @return adjustment value
 	 */
 	public BigDecimal apply_LDI (int A_Asset_ID, BigDecimal A_Asset_Adjustment, int A_PeriodNo, String PostingType, int A_Asset_Acct_ID)
 	{

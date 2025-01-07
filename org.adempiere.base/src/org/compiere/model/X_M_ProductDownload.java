@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductDownload
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductDownload")
-public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Persistent 
+public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ProductDownload (Properties ctx, int M_ProductDownload_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ProductDownload (Properties ctx, String M_ProductDownload_UU, String trxName)
+    {
+      super (ctx, M_ProductDownload_UU, trxName);
+      /** if (M_ProductDownload_UU == null)
+        {
+			setDownloadURL (null);
+			setM_ProductDownload_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductDownload (Properties ctx, String M_ProductDownload_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductDownload_UU, trxName, virtualColumns);
+      /** if (M_ProductDownload_UU == null)
+        {
+			setDownloadURL (null);
+			setM_ProductDownload_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ProductDownload (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -187,7 +213,7 @@ public class X_M_ProductDownload extends PO implements I_M_ProductDownload, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

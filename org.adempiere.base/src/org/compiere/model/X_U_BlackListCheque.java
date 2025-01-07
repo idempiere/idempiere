@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for U_BlackListCheque
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="U_BlackListCheque")
-public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Persistent 
+public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_U_BlackListCheque (Properties ctx, int U_BlackListCheque_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_U_BlackListCheque (Properties ctx, String U_BlackListCheque_UU, String trxName)
+    {
+      super (ctx, U_BlackListCheque_UU, trxName);
+      /** if (U_BlackListCheque_UU == null)
+        {
+			setBankName (null);
+			setChequeNo (null);
+			setU_BlackListCheque_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_BlackListCheque (Properties ctx, String U_BlackListCheque_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_BlackListCheque_UU, trxName, virtualColumns);
+      /** if (U_BlackListCheque_UU == null)
+        {
+			setBankName (null);
+			setChequeNo (null);
+			setU_BlackListCheque_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_U_BlackListCheque (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

@@ -29,6 +29,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Invoice Tax Model
@@ -42,10 +43,9 @@ import org.compiere.util.Env;
 public class MInvoiceTax extends X_C_InvoiceTax
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5560880305482497098L;
-
 
 	/**
 	 * 	Get Tax Line for Invoice Line
@@ -112,7 +112,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	 *	@param precision currency precision
 	 *	@param oldTax if true old tax is returned
 	 *	@param trxName transaction name
-	 *	@return existing or new tax
+	 *	@return array of existing or new tax
 	 */
 	public static MInvoiceTax[] getChildTaxes(MInvoiceLine line, int precision, 
 		boolean oldTax, String trxName)
@@ -176,10 +176,20 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MInvoiceTax.class);
-	
-	
-	/**************************************************************************
-	 * 	Persistency Constructor
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_InvoiceTax_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MInvoiceTax(Properties ctx, String C_InvoiceTax_UU, String trxName) {
+        super(ctx, C_InvoiceTax_UU, trxName);
+		if (Util.isEmpty(C_InvoiceTax_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -189,14 +199,20 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
-		setTaxAmt (Env.ZERO);
-		setTaxBaseAmt (Env.ZERO);
-		setIsTaxIncluded(false);
+		setInitialDefaults();
 	}	//	MInvoiceTax
 
 	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setTaxAmt (Env.ZERO);
+		setTaxBaseAmt (Env.ZERO);
+		setIsTaxIncluded(false);
+	}
+
+	/**
 	 * 	Load Constructor.
-	 * 	Set Precision and TaxIncluded for tax calculations!
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction
@@ -207,7 +223,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	}	//	MInvoiceTax
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MInvoiceTax(MInvoiceTax copy) 
@@ -216,7 +232,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -226,7 +242,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -243,11 +259,10 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	private MTax 		m_tax = null;
 	/** Cached Precision			*/
 	private Integer		m_precision = null;
-	
-	
+		
 	/**
 	 * 	Get Precision
-	 * 	@return Returns the precision or 2
+	 * 	@return precision set or 2
 	 */
 	private int getPrecision ()
 	{
@@ -275,10 +290,9 @@ public class MInvoiceTax extends X_C_InvoiceTax
 			m_tax = MTax.get(getCtx(), getC_Tax_ID());
 		return m_tax;
 	}	//	getTax
-	
-	
-	/**************************************************************************
-	 * 	Calculate/Set Tax Base Amt from Invoice Lines
+		
+	/**
+	 * 	Calculate/Set Tax and Tax Base Amt from Invoice Lines
 	 * 	@return true if tax calculated
 	 */
 	public boolean calculateTaxFromLines ()
@@ -358,6 +372,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MInvoiceTax[");

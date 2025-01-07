@@ -22,7 +22,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz - globalqss - bxservice                               *
  **********************************************************************/
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -32,21 +31,30 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Msg;
 
 /**
-*
-* @author Carlos Ruiz - globalqss - bxservice
-*
-*/
+ * POS Payment
+ * @author Carlos Ruiz - globalqss - bxservice
+ */
 public class MPOSPayment extends X_C_POSPayment
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -4889347016616915128L;
 
 	/**	Logger	*/
 	protected static CLogger s_log = CLogger.getCLogger (MPOSPayment.class);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_POSPayment_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPOSPayment(Properties ctx, String C_POSPayment_UU, String trxName) {
+        super(ctx, C_POSPayment_UU, trxName);
+    }
+
+	/**
 	 *  Default Constructor
 	 *  @param ctx context
 	 *  @param  C_POSPayment_ID  order line to load
@@ -68,11 +76,12 @@ public class MPOSPayment extends X_C_POSPayment
 		super(ctx, rs, trxName);
 	}	//	MPOSPayment
 
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return true if it can be saved
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MOrder parent = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());

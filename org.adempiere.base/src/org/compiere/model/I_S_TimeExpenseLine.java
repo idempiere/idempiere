@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_TimeExpenseLine
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_S_TimeExpenseLine 
 {
@@ -386,7 +386,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public String getNote();
 
-    /** Column name PriceInvoiced */
+	/** Column name PriceInvoiced */
     public static final String COLUMNNAME_PriceInvoiced = "PriceInvoiced";
 
 	/** Set Price Invoiced.

@@ -30,10 +30,9 @@ import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
 
 /**
- *	Base Class for MLookup, MLocator.
- *  as well as for MLocation, MAccount (only single value)
- *  Maintains selectable data as NamePairs in ArrayList
- *  The objects itself may be shared by the lookup implementation (ususally HashMap)
+ *	Base Class for MLookup, MLocator, MLocation and MAccount (only single value).<br/>
+ *  Maintains selectable data as NamePairs in ArrayList.<br/>
+ *  The objects itself may be shared by the lookup implementation (usually HashMap).
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: Lookup.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
@@ -42,7 +41,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	implements MutableComboBoxModel<Object>, Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2500275921218601088L;
 
@@ -97,13 +96,13 @@ public abstract class Lookup extends AbstractListModel<Object>
 	{
 		return m_WindowNo;
 	}	//	getWindowNo
-
 	
-	/**************************************************************************
-	 * Set the value of the selected item. The selected item may be null.
+	/**
+	 * Set selected item by value. The selected item may be null.
 	 * <p>
-	 * @param anObject The combo box value or null for no selection.
+	 * @param anObject Value of selected item or null for no selection.
 	 */
+	@Override
 	public void setSelectedItem(Object anObject)
 	{
 		if ((m_selectedObject != null && !m_selectedObject.equals( anObject ))
@@ -123,8 +122,8 @@ public abstract class Lookup extends AbstractListModel<Object>
 	}   //  setSelectedItem
 
 	/**
-	 *  Return previously selected Item
-	 *  @return value
+	 *  Return selected Item
+	 *  @return value of selected item
 	 */
 	public Object getSelectedItem()
 	{
@@ -143,7 +142,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	/**
 	 *  Get Element at Index
 	 *  @param index index
-	 *  @return value
+	 *  @return value at index
 	 */
 	public Object getElementAt (int index)
 	{
@@ -154,8 +153,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	 * Returns the index-position of the specified object in the list.
 	 *
 	 * @param anObject object
-	 * @return an int representing the index position, where 0 is
-	 *         the first position
+	 * @return index position, where 0 is the first position
 	 */
 	public int getIndexOf (Object anObject)
 	{
@@ -229,9 +227,8 @@ public abstract class Lookup extends AbstractListModel<Object>
 		m_loaded = false;
 	}   //  removeAllElements
 
-	
-	/**************************************************************************
-	 *	Put Value
+	/**
+	 *	Append {@link ValueNamePair} to list
 	 *  @param key key
 	 *  @param value value
 	 */
@@ -242,7 +239,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	}	//	put
 
 	/**
-	 *	Put Value
+	 *	Append {@link KeyNamePair} to list
 	 *  @param key key
 	 *  @param value value
 	 */
@@ -253,12 +250,13 @@ public abstract class Lookup extends AbstractListModel<Object>
 	}	//	put
 
 	/**
-	 *  Fill ComboBox with lookup data (async using Worker).
+	 *  Fill ComboBox with lookup data (asynchronous using Worker).<br/>
 	 *  - try to maintain selected item
 	 *  @param mandatory  has mandatory data only (i.e. no "null" selection)
 	 *  @param onlyValidated only validated
 	 *  @param onlyActive onlt active
 	 *  @param temporary  save current values - restore via fillComboBox (true)
+	 *  @param shortList
 	 */
 	public void fillComboBox (boolean mandatory, boolean onlyValidated, 
 		boolean onlyActive, boolean temporary, boolean shortList) // IDEMPIERE 90
@@ -273,7 +271,6 @@ public abstract class Lookup extends AbstractListModel<Object>
 			//  We need to do a deep copy, so store it in Array
 			p_data.toArray(m_tempData);
 		}
-
 
 		Object obj = m_selectedObject;
 		p_data.clear();
@@ -301,8 +298,8 @@ public abstract class Lookup extends AbstractListModel<Object>
 	}   //  fillComboBox
 
 	/**
-	 *  Fill ComboBox with old saved data (if exists) or all data available
-	 *  @param restore if true, use saved data - else fill it with all data
+	 *  Fill UI component with temporary buffered data (if exists) or load from DB
+	 *  @param restore if true, use temporary buffered data - else load from DB
 	 */
 	public void fillComboBox (boolean restore)
 	{
@@ -327,29 +324,28 @@ public abstract class Lookup extends AbstractListModel<Object>
 		if (p_data != null)
 			fillComboBox(isMandatory(), true, true, false, false); // IDEMPIERE 90
 	}   //  fillComboBox
-
 	
-	/**************************************************************************
-	 *	Get Display of Key Value
-	 *  @param key key
-	 *  @return String
+	/**
+	 *	Get Display Text of Key Value
+	 *  @param key key value
+	 *  @return Display Text
 	 */
 	public abstract String getDisplay (Object key);
 
 	/**
-	 *	Get Object of Key Value
-	 *  @param key key
-	 *  @return Object or null
+	 *	Get {@link NamePair} of Key Value
+	 *  @param key key value
+	 *  @return NamePair or null
 	 */
 	public abstract NamePair get (Object key);
 
-
 	/**
-	 *  Fill ComboBox with Data (Value/KeyNamePair)
+	 *  Load Data (Value/KeyNamePair) from DB.
 	 *  @param mandatory  has mandatory data only (i.e. no "null" selection)
 	 *  @param onlyValidated only validated
 	 *  @param onlyActive only active
 	 * 	@param temporary force load for temporary display
+	 *  @param shortlist
 	 *  @return ArrayList
 	 */
 	public abstract ArrayList<Object> getData (boolean mandatory, 
@@ -357,7 +353,6 @@ public abstract class Lookup extends AbstractListModel<Object>
 
 	/**
 	 *	Get underlying fully qualified Table.Column Name.
-	 *	Used for VLookup.actionButton (Zoom)
 	 *  @return column name
 	 */
 	public abstract String getColumnName();
@@ -370,13 +365,13 @@ public abstract class Lookup extends AbstractListModel<Object>
 	public abstract boolean containsKey (Object key);
 
 	/**
-	 *  The Lookup contains the key, do not push direct
+	 *  The Lookup contains the key (do not check the direct lookup list)
 	 *  @param key key
 	 *  @return true if contains key
 	 */
 	public abstract boolean containsKeyNoDirect (Object key);
 	
-	/**************************************************************************
+	/**
 	 *	Refresh Values - default implementation
 	 *  @return size
 	 */
@@ -396,7 +391,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 
 	/**
 	 *  Get dynamic Validation SQL (none)
-	 *  @return validation
+	 *  @return validation SQL
 	 */
 	public String getValidation()
 	{
@@ -405,7 +400,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 
 	/**
 	 *  Has Inactive records - default implementation
-	 *  @return true if inactive
+	 *  @return true if has inactive records
 	 */
 	public boolean hasInactive()
 	{
@@ -433,7 +428,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	/**
 	 *	Get Zoom - default implementation
 	 * 	@param query query
-	 *  @return Zoom Window - here 0
+	 *  @return Zoom AD_Window_ID
 	 */
 	public int getZoom(MQuery query)
 	{
@@ -441,7 +436,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	}	//	getZoom
 
 	/**
-	 *	Get Zoom Query String - default implementation
+	 *	Get Zoom Query Object
 	 *  @return Zoom Query
 	 */
 	public MQuery getZoomQuery()
@@ -450,26 +445,32 @@ public abstract class Lookup extends AbstractListModel<Object>
 	}	//	getZoomQuery
 
 	/**
-	 *	Get Data Direct from Table.
-	 *	Default implementation - does not requery
-	 *  @param key key
+	 *	Perform Direct Lookup from Table.
+	 *  @param key key value
 	 *  @param saveInCache save in cache for r/w
 	 * 	@param cacheLocal cache locally for r/o
 	 * 	@param trxName the transaction name
-	 *  @return value
+	 *  @return NamePair
 	 */
 	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal, String trxName)
 	{
 		return get (key);
 	}	//	getDirect
 
+	/**
+	 * Perform Direct Lookup from Table.
+	 * @param key
+	 * @param saveInCache
+	 * @param cacheLocal
+	 * @return NamePair
+	 */
 	public NamePair getDirect (Object key, boolean saveInCache, boolean cacheLocal)
 	{
 		return get (key);
 	}	//	getDirect
 
 	/**
-	 * 
+	 * Perform direct lookup for keys
 	 * @param keys
 	 * @return name pair arrays
 	 */
@@ -497,7 +498,7 @@ public abstract class Lookup extends AbstractListModel<Object>
 	}   //  dispose
 
 	/**
-	 *  Wait until async Load Complete
+	 *  Wait until asynchronous loading complete
 	 */
 	public void loadComplete()
 	{
@@ -536,6 +537,9 @@ public abstract class Lookup extends AbstractListModel<Object>
 		m_shortList = shortlist;
 	}
 
+	/**
+	 * @return true if lookup should return a short list
+	 */
 	public boolean isShortList()
 	{
 		return m_shortList;

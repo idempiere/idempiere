@@ -19,8 +19,8 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.grid.WQuickEntry;
 
-
 /**
+ * Default implementation of {@link IQuickEntryFactory}
  * @author Andreas Sumerauer
  */
 public class DefaultQuickEntryFactory implements IQuickEntryFactory {

@@ -52,9 +52,19 @@ import com.google.api.client.json.gson.GsonFactory;
  */
 public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6808970904951033494L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_AuthorizationAccount_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAuthorizationAccount(Properties ctx, String AD_AuthorizationAccount_UU, String trxName) {
+        super(ctx, AD_AuthorizationAccount_UU, trxName);
+    }
 
 	/**
 	 * Create empty Authorization Account
@@ -80,7 +90,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 
 	/**
 	 * Try to find a refresh token from another account with same email in the same credential
-	 * @return
+	 * @return refresh token or null
 	 */
 	public String findRefreshToken() {
 		final String where = "AD_AuthorizationCredential_ID=? "
@@ -181,7 +191,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	/**
 	 * Get a valid account from this email
 	 * @param email
-	 * @return
+	 * @return MAuthorizationAccount or null
 	 */
 	public static MAuthorizationAccount getEMailAccount(String email) {
 		String where = "EMail=? AND IsIntersectCSV(AD_AuthorizationScopes,"+DB.TO_STRING(AD_AUTHORIZATIONSCOPES_EMail)+")='Y' AND AD_Client_ID IN (0,?) AND IsAccessRevoked='N' AND IsAuthorized='Y'";
@@ -194,7 +204,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	}
 
 	/**
-	 * 
+	 * Get authorized accounts for a user
 	 * @param AD_User_ID
 	 * @param scopes
 	 * @return list of {@link MAuthorizationAccount}
@@ -210,8 +220,8 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	}
 	
 	/**
-	 * Get an authorization token - refresh it if expired
-	 * @return AuthorizationToken
+	 * Get access token - refresh it if expired
+	 * @return access token
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
@@ -221,7 +231,7 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	}
 	
 	/**
-	 * 
+	 * Get document upload services for authorized accounts
 	 * @return map of {@link MAuthorizationAccount} and {@link IUploadService}
 	 */
 	public static Map<MAuthorizationAccount, IUploadService> getUserUploadServices() {

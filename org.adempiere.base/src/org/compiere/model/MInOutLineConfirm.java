@@ -22,9 +22,10 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
- *	Ship Confirmation Line Model
+ *	Shipment Confirmation Line Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MInOutLineConfirm.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -32,9 +33,21 @@ import org.compiere.util.Msg;
 public class MInOutLineConfirm extends X_M_InOutLineConfirm
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2753405320678781177L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_InOutLineConfirm_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MInOutLineConfirm(Properties ctx, String M_InOutLineConfirm_UU, String trxName) {
+        super(ctx, M_InOutLineConfirm_UU, trxName);
+		if (Util.isEmpty(M_InOutLineConfirm_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -46,12 +59,17 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	{
 		super (ctx, M_InOutLineConfirm_ID, trxName);
 		if (M_InOutLineConfirm_ID == 0)
-		{
-			setDifferenceQty(Env.ZERO);
-			setScrappedQty(Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInOutLineConfirm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDifferenceQty(Env.ZERO);
+		setScrappedQty(Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Construvtor
@@ -103,10 +121,10 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	
 	
 	/**
-	 * 	Process Confirmation Line.
+	 * 	Process Confirmation Line.<br/>
 	 * 	- Update InOut Line
-	 * 	@param isSOTrx sales order
-	 * 	@param confirmType type
+	 * 	@param isSOTrx true for sales trx, false otherwise
+	 * 	@param confirmType type (MInOutConfirm.CONFIRMTYPE_*)
 	 *	@return success
 	 */
 	public boolean processLine (boolean isSOTrx, String confirmType)
@@ -166,9 +184,10 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	
 	
 	/**
-	 * 	Before Delete - do not delete
+	 * 	Before Delete - do not allow delete
 	 *	@return false 
 	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
 		log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
@@ -180,6 +199,7 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		MInOutConfirm parent = new MInOutConfirm(getCtx(), getM_InOutConfirm_ID(), get_TrxName());

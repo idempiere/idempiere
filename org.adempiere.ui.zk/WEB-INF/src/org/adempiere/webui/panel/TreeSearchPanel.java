@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.adwindow.ADTreePanel;
 import org.adempiere.webui.component.AutoComplete;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
@@ -61,7 +61,8 @@ import org.zkoss.zul.impl.LabelElement;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
- *
+ * Panel with combo search box for menu tree. <br/>
+ * Use by {@link ADTreePanel}.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 3, 2007
  * @version $Revision: 0.10 $
@@ -71,14 +72,16 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 	public static final String TREE_ROW_MOVABLE = "tree.row.movable";
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1659100374345282774L;
 
 	private static final String ON_COMBO_SELECT_ECHO_EVENT = "onComboSelectEcho";
 	private static final String ON_POST_SELECT_TREEITEM_EVENT = "onPostSelectTreeitem";
 	protected static final String ON_POST_FIRE_TREE_EVENT = "onPostFireTreeEvent";
+	/** <label>.<menuType> : TreeItem or Name : DefaultTreeNode */
 	protected TreeMap<String, Object> treeNodeItemMap = new TreeMap<String, Object>();
+	//values for combo auto complete
     protected String[] treeValues;
     protected String[] treeTypes;
     protected String[] treeDescription;
@@ -144,6 +147,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     		+ "let evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});"
     		+ "zAu.send(evt);})()";
 	
+    /**
+     * Layout panel
+     */
     protected void init()
     {
     	layout = new Hlayout();
@@ -175,13 +181,12 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         		}				
 			}
 		});
+
+        ZKUpdateUtil.setHflex(cmbSearch, "1");
+        ZKUpdateUtil.setHflex(lblSearch, "0");
         
         addEventListener(ON_COMBO_SELECT_ECHO_EVENT, this);
         addEventListener(ON_POST_SELECT_TREEITEM_EVENT, this);
-        if (AEnv.isInternetExplorer())
-        {
-        	ZKUpdateUtil.setWidth(cmbSearch, "200px");
-        }
 
         layout.appendChild(lblSearch);
         layout.appendChild(cmbSearch);
@@ -204,6 +209,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         }
     }
 
+    /**
+     * Handle onSelect event (for mobile only)
+     * @param evt
+     */
     private void onSelect(Event evt) {
 		if (moveItemBox != null) {
 			Treeitem selected = tree.getSelectedItem();
@@ -219,6 +228,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		}
 	}
     
+    /**
+     * Handle onPostMove event (for mobile only)
+     * @param evt
+     */
     private void onPostMove(Event evt) {
     	Treeitem item = (Treeitem) evt.getData();
     	Treerow dragged = (Treerow) moveItemBtn.getAttribute("draggedComponent");
@@ -234,6 +247,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     	}    	
     }
 
+    /**
+     * Handle onClick event of {@link #moveItemBtn} (for mobile only)
+     */
 	private void onMoveBtnClicked() {
 		if (moveItemBox != null) {
 			moveItemBox.detach();
@@ -274,12 +290,20 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		ti.focus();
 	}
 
+	/**
+	 * Add treeItem to {@link #treeNodeItemMap}
+	 * @param treeItem
+	 */
 	protected void addTreeItem(Treeitem treeItem)
     {
         StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE));
         treeNodeItemMap.put(key.toString(), treeItem);
     }
 
+	/**
+	 * Add DefaultTreeNode to {@link #treeNodeItemMap}
+	 * @param node
+	 */
     protected void addTreeItem(DefaultTreeNode<?> node) {
     	Object data = node.getData();
     	if (data instanceof MTreeNode) {
@@ -301,6 +325,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         }
     }
 
+    /**
+     * Populate list for auto complete combo ({@link #cmbSearch})
+     */
 	public void refreshSearchList() {
 		treeNodeItemMap.clear();
 		if (tree.getModel() == null) {
@@ -371,6 +398,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         cmbSearch.setContents(treeTypes);
 	}
 
+	/**
+	 * @param treeItem
+	 * @return true if treeItem is folder
+	 */
 	protected boolean isFolder(Treeitem treeItem) {
 		List<Component> list = treeItem.getChildren();
 		for (Component c : list) {
@@ -381,6 +412,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		return false;
 	}
 
+	/**
+	 * @param treeItem
+	 * @return label for treeItem
+	 */
 	protected String getLabel(Treeitem treeItem) {
 		String label = treeItem.getLabel();
         if (label == null || label.trim().length() == 0) 
@@ -395,6 +430,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         return label;
 	}
 	
+	/**
+	 * @param treeItem
+	 * @return Image URL for treeItem
+	 */
 	protected String getImage(Treeitem treeItem) {
 		String image = treeItem.getImage();
         if (image == null || image.trim().length() == 0) 
@@ -413,6 +452,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
      * @param event
      * @see EventListener#onEvent(Event)
      */
+	@Override
     public void onEvent(Event event)
     {
         if (cmbSearch.equals(event.getTarget()))
@@ -487,6 +527,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         }
     }
 
+	/**
+	 * Select tree item by value
+	 * @param value
+	 */
 	private void selectTreeitem(String value) {
 		if (Executions.getCurrent().getAttribute(getUuid()+".selectTreeitem") != null)
 			return;
@@ -515,6 +559,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		}
 	}
 
+	/**
+	 * Handle ON_POST_SELECT_TREEITEM_EVENT
+	 */
     protected void onPostSelectTreeitem() {
     	Clients.clearBusy();
     	Event event = null;
@@ -535,6 +582,10 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     	Events.echoEvent(ON_POST_FIRE_TREE_EVENT, this, null);
     }
 
+    /**
+     * select selectedItem and make sure parent of selectedItem is open
+     * @param selectedItem
+     */
 	public static void select(Treeitem selectedItem) {
 		Treeitem parent = selectedItem.getParentItem();
 		while (parent != null) {
@@ -554,6 +605,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 		refreshSearchList();
 	}
 	
+	/**
+	 * @return selected tree item
+	 */
 	public Treeitem getSelectedItem() {
 		return selectedItem;
 	}

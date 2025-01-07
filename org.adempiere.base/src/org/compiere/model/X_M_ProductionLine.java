@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionLine")
-public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent 
+public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName)
@@ -71,6 +71,42 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_ProductionLine (Properties ctx, String M_ProductionLine_UU, String trxName)
+    {
+      super (ctx, M_ProductionLine_UU, trxName);
+      /** if (M_ProductionLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionLine WHERE M_Production_ID=@M_Production_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setMovementQty (Env.ZERO);
+			setM_Product_ID (0);
+			setM_ProductionLine_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductionLine (Properties ctx, String M_ProductionLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductionLine_UU, trxName, virtualColumns);
+      /** if (M_ProductionLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionLine WHERE M_Production_ID=@M_Production_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setMovementQty (Env.ZERO);
+			setM_Product_ID (0);
+			setM_ProductionLine_ID (0);
+			setProcessed (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_ProductionLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +114,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -129,10 +165,10 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	public boolean isEndProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEndProduct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -291,7 +327,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_Production_ID()));
     }
@@ -394,10 +430,10 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

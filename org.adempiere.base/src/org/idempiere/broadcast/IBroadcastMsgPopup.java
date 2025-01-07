@@ -19,12 +19,15 @@ import java.util.ArrayList;
 import org.adempiere.model.MBroadcastMessage;
 
 /**
- * 
+ * Interface to show popup broadcast message
  * @author Deepak Pansheriya
- *
  */
 public interface IBroadcastMsgPopup {
 
+	/**
+	 * Process messages
+	 * @param arrMessages
+	 */
 	public void prepareMessage(ArrayList<MBroadcastMessage> arrMessages);
 	
 }

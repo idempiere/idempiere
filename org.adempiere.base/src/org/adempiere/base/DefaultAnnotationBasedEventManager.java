@@ -26,7 +26,10 @@ package org.adempiere.base;
 
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = {})
+/**
+ * Default implementation of {@link AnnotationBasedEventManager} that would scan the org.adempiere.base.event.delegate package.
+ */
+@Component(immediate = true, service = {DefaultAnnotationBasedEventManager.class})
 public class DefaultAnnotationBasedEventManager extends AnnotationBasedEventManager {
 
 	/**

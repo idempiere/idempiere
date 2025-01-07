@@ -33,9 +33,10 @@ import org.compiere.util.Util;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event handler for import event.<br/>
+ * Developers usually don't have to use this class directly; instead, the recommended approach is 
+ * to subclass {@link ImportEventDelegate} and use import event topic annotation.
  * @author hengsin
- *
  */
 public class ImportEventHandler extends BaseEventHandler {
 

@@ -23,16 +23,16 @@ import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebService
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebService")
-public class X_WS_WebService extends PO implements I_WS_WebService, I_Persistent 
+public class X_WS_WebService extends PO implements I_WS_WebService, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_WS_WebService (Properties ctx, int WS_WebService_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_WS_WebService extends PO implements I_WS_WebService, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_WS_WebService (Properties ctx, String WS_WebService_UU, String trxName)
+    {
+      super (ctx, WS_WebService_UU, trxName);
+      /** if (WS_WebService_UU == null)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebService_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebService (Properties ctx, String WS_WebService_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebService_UU, trxName, virtualColumns);
+      /** if (WS_WebService_UU == null)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebService_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_WS_WebService (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_WS_WebService extends PO implements I_WS_WebService, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -137,7 +161,7 @@ public class X_WS_WebService extends PO implements I_WS_WebService, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

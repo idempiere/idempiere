@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for A_FundingMode_Acct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_FundingMode_Acct")
-public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_Persistent 
+public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_FundingMode_Acct (Properties ctx, int A_FundingMode_Acct_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_FundingMode_Acct (Properties ctx, String A_FundingMode_Acct_UU, String trxName)
+    {
+      super (ctx, A_FundingMode_Acct_UU, trxName);
+      /** if (A_FundingMode_Acct_UU == null)
+        {
+			setA_FundingMode_Acct (0);
+			setA_FundingMode_ID (0);
+			setC_AcctSchema_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_FundingMode_Acct (Properties ctx, String A_FundingMode_Acct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_FundingMode_Acct_UU, trxName, virtualColumns);
+      /** if (A_FundingMode_Acct_UU == null)
+        {
+			setA_FundingMode_Acct (0);
+			setA_FundingMode_ID (0);
+			setC_AcctSchema_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_FundingMode_Acct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -80,7 +104,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_A_FundingMode_Acct[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for A_Asset
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset")
-public class X_A_Asset extends PO implements I_A_Asset, I_Persistent 
+public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset (Properties ctx, int A_Asset_ID, String trxName)
@@ -89,6 +89,60 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset (Properties ctx, String A_Asset_UU, String trxName)
+    {
+      super (ctx, A_Asset_UU, trxName);
+      /** if (A_Asset_UU == null)
+        {
+			setA_Asset_Action (null);
+// 'MD'
+			setA_Asset_Group_ID (0);
+			setA_Asset_ID (0);
+			setA_Asset_Status (null);
+// 'NW'
+			setIsDepreciated (false);
+			setIsDisposed (false);
+			setIsFullyDepreciated (false);
+// N
+			setIsInPosession (false);
+			setIsOwned (false);
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+			setProcessed (false);
+// 'N'
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset (Properties ctx, String A_Asset_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_UU, trxName, virtualColumns);
+      /** if (A_Asset_UU == null)
+        {
+			setA_Asset_Action (null);
+// 'MD'
+			setA_Asset_Group_ID (0);
+			setA_Asset_ID (0);
+			setA_Asset_Status (null);
+// 'NW'
+			setIsDepreciated (false);
+			setIsDisposed (false);
+			setIsFullyDepreciated (false);
+// N
+			setIsInPosession (false);
+			setIsOwned (false);
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+			setProcessed (false);
+// 'N'
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset (Properties ctx, ResultSet rs, String trxName)
     {
@@ -96,7 +150,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -744,10 +798,10 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public boolean isDepreciated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDepreciated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -767,10 +821,10 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public boolean isDisposed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDisposed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -790,10 +844,10 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public boolean isFullyDepreciated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFullyDepreciated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -813,10 +867,10 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public boolean isInPosession()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInPosession);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -836,10 +890,10 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public boolean isOwned()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOwned);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1202,10 +1256,10 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1224,10 +1278,10 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

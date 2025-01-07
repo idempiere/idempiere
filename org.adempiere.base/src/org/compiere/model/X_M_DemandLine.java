@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DemandLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_DemandLine")
-public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent 
+public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_DemandLine (Properties ctx, int M_DemandLine_ID, String trxName)
@@ -65,6 +65,36 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_DemandLine (Properties ctx, String M_DemandLine_UU, String trxName)
+    {
+      super (ctx, M_DemandLine_UU, trxName);
+      /** if (M_DemandLine_UU == null)
+        {
+			setC_Period_ID (0);
+			setM_Demand_ID (0);
+			setM_DemandLine_ID (0);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+			setQtyCalculated (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DemandLine (Properties ctx, String M_DemandLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DemandLine_UU, trxName, virtualColumns);
+      /** if (M_DemandLine_UU == null)
+        {
+			setC_Period_ID (0);
+			setM_Demand_ID (0);
+			setM_DemandLine_ID (0);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+			setQtyCalculated (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_DemandLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +102,7 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -124,7 +154,7 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Period_ID()));
     }

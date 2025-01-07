@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for U_POSTerminal
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="U_POSTerminal")
-public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent 
+public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_U_POSTerminal (Properties ctx, int U_POSTerminal_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_U_POSTerminal (Properties ctx, String U_POSTerminal_UU, String trxName)
+    {
+      super (ctx, U_POSTerminal_UU, trxName);
+      /** if (U_POSTerminal_UU == null)
+        {
+			setAutoLock (false);
+// N
+			setCashBookTransferType (null);
+			setC_CashBook_ID (0);
+			setC_CashBPartner_ID (0);
+			setU_POSTerminal_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_POSTerminal (Properties ctx, String U_POSTerminal_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_POSTerminal_UU, trxName, virtualColumns);
+      /** if (U_POSTerminal_UU == null)
+        {
+			setAutoLock (false);
+// N
+			setCashBookTransferType (null);
+			setC_CashBook_ID (0);
+			setC_CashBPartner_ID (0);
+			setU_POSTerminal_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_U_POSTerminal (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -105,10 +135,10 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	public boolean isAutoLock()
 	{
 		Object oo = get_Value(COLUMNNAME_AutoLock);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -227,7 +257,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** CashBook = C */
 	public static final String CASHBOOKTRANSFERTYPE_CashBook = "C";
 	/** Set Cash Book Transfer Type.
-		@param CashBookTransferType Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
+		@param CashBookTransferType Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book
 	*/
 	public void setCashBookTransferType (String CashBookTransferType)
 	{
@@ -236,7 +266,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Get Cash Book Transfer Type.
-		@return Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
+		@return Where the money in the cash book should be transferred to. Either a Bank Account or another Cash Book
 	  */
 	public String getCashBookTransferType()
 	{
@@ -551,10 +581,10 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	public boolean isLocked()
 	{
 		Object oo = get_Value(COLUMNNAME_Locked);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

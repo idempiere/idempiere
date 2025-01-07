@@ -18,18 +18,47 @@ import java.util.Properties;
 
 import org.compiere.model.X_M_PromotionLine;
 
+/**
+ * Extended model class for M_PromotionLine
+ */
 public class MPromotionLine extends X_M_PromotionLine {
 
 	private static final long serialVersionUID = -8284722914757724765L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_PromotionLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPromotionLine(Properties ctx, String M_PromotionLine_UU, String trxName) {
+        super(ctx, M_PromotionLine_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param M_PromotionLine_ID
+     * @param trxName
+     */
 	public MPromotionLine(Properties ctx, int M_PromotionLine_ID, String trxName) {
 		super(ctx, M_PromotionLine_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPromotionLine(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param M_PromotionLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MPromotionLine(Properties ctx, int M_PromotionLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_PromotionLine_ID, trxName, virtualColumns);
 	}

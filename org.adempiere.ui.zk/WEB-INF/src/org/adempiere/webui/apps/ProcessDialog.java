@@ -43,6 +43,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.model.MProcess;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -92,6 +93,8 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext, ITabOnCloseHandler
 {
+	public static final String SAVED_PREDEFINED_CONTEXT_VARIABLES = "__PredefinedContextVariables__";
+
 	/**
 	 * generated serial id
 	 */
@@ -124,12 +127,10 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 
 	/** Window No					*/
 	private int m_WindowNo = -1;
-	/** timestamp of previous key event **/
-	private long prevKeyEventTime = 0;
 	/**
-	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
+	 * SysConfig USE_ESC_FOR_TAB_CLOSING
 	 */
-	private KeyEvent prevKeyEvent;
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
 	/**
 	 * Dialog to start a process/report
@@ -153,6 +154,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		this.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", isSOTrx ? "Y" : "N");
+		//save for rerun of report
+		if (predefinedContextVariables != null && MProcess.get(AD_Process_ID).isReport())
+		{
+			Env.setContext(Env.getCtx(), m_WindowNo, SAVED_PREDEFINED_CONTEXT_VARIABLES, predefinedContextVariables);
+		}
 		Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefinedContextVariables);
 		try
 		{
@@ -173,6 +179,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		super.onPageAttached(newpage, oldpage);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+			addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			
 			Component parentTab = this.getParent();
 			if (parentTab != null && parentTab instanceof Tabpanel) {
@@ -186,6 +193,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		super.onPageDetached(page);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
+			removeEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
 		} catch (Exception e) {}
 	}
@@ -236,23 +244,17 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			}
         } else if (event.getName().equals(Events.ON_CTRL_KEY)) {
         	KeyEvent keyEvent = (KeyEvent) event;
-        	if (LayoutUtils.isReallyVisible(this)) {
-	        	//filter same key event that is too close
-	        	//firefox fire key event twice when grid is visible
-	        	long time = System.currentTimeMillis();
-	        	if (prevKeyEvent != null && prevKeyEventTime > 0 &&
-	        			prevKeyEvent.getKeyCode() == keyEvent.getKeyCode() &&
-	    				prevKeyEvent.getTarget() == keyEvent.getTarget() &&
-	    				prevKeyEvent.isAltKey() == keyEvent.isAltKey() &&
-	    				prevKeyEvent.isCtrlKey() == keyEvent.isCtrlKey() &&
-	    				prevKeyEvent.isShiftKey() == keyEvent.isShiftKey()) {
-	        		if ((time - prevKeyEventTime) <= 300) {
-	        			return;
-	        		}
-	        	}
+        	if (LayoutUtils.isReallyVisible(this))
 	        	this.onCtrlKeyEvent(keyEvent);
-        	}
-		} else {
+		} 
+        else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(event.getName())) {
+        	IDesktop desktop = SessionManager.getAppDesktop();
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
+        	else
+        		desktop.setCloseTabWithShortcut(true);
+        }
+        else {
 			super.onEvent(event);
 		}
 	}
@@ -279,13 +281,10 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	 * @param keyEvent
 	 */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
-		if (keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58) { // Alt-X
-			if (m_WindowNo > 0) {
-				prevKeyEventTime = System.currentTimeMillis();
-				prevKeyEvent = keyEvent;
-				keyEvent.stopPropagation();
-				SessionManager.getAppDesktop().closeWindow(m_WindowNo);
-			}
+		if ((keyEvent.isAltKey() && keyEvent.getKeyCode() == 0x58)	// Alt-X
+				|| (keyEvent.getKeyCode() == 0x1B && isUseEscForTabClosing)) {	// ESC
+			keyEvent.stopPropagation();
+			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
 	}
 

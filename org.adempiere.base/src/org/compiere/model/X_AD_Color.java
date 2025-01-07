@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Color
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Color")
-public class X_AD_Color extends PO implements I_AD_Color, I_Persistent 
+public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Color (Properties ctx, int AD_Color_ID, String trxName)
@@ -71,6 +71,42 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Color (Properties ctx, String AD_Color_UU, String trxName)
+    {
+      super (ctx, AD_Color_UU, trxName);
+      /** if (AD_Color_UU == null)
+        {
+			setAD_Color_ID (0);
+			setAlpha (0);
+			setBlue (0);
+			setColorType (null);
+			setGreen (0);
+			setImageAlpha (Env.ZERO);
+			setIsDefault (false);
+			setName (null);
+			setRed (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Color (Properties ctx, String AD_Color_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Color_UU, trxName, virtualColumns);
+      /** if (AD_Color_UU == null)
+        {
+			setAD_Color_ID (0);
+			setAlpha (0);
+			setBlue (0);
+			setColorType (null);
+			setGreen (0);
+			setImageAlpha (Env.ZERO);
+			setIsDefault (false);
+			setName (null);
+			setRed (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Color (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +114,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -338,10 +374,10 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -404,7 +440,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

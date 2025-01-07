@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Web Services Helper Resource Lookup
+Bundle-SymbolicName: org.idempiere.webservices.resources;singleton:=true
+Bundle-Version: 11.0.0.qualifier
+Export-Package: org.idempiere.webservices.resources,
+ org.idempiere.webservices.resources.cxf,
+ schemas,
+ schemas.configuration
+Import-Package: javax.servlet;version="4.0.0",
+ org.compiere.util,
+ org.eclipse.jetty.osgi.boot;version="10.0.9",
+ org.eclipse.jetty.server.handler;version="10.0.9",
+ org.eclipse.jetty.servlet;version="10.0.9",
+ org.eclipse.jetty.util;version="10.0.9",
+ org.eclipse.jetty.webapp;version="10.0.9",
+ org.osgi.framework;version="1.10.0",
+ org.osgi.framework.wiring;version="1.2.0",
+ org.springframework.web.context;version="5.2.22.RELEASE"
+Bundle-Vendor: Idempiere
+Automatic-Module-Name: org.idempiere.webservices.resources
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"

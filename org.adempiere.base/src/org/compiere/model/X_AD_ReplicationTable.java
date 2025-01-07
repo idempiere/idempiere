@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReplicationTable
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReplicationTable")
-public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, I_Persistent 
+public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ReplicationTable (Properties ctx, int AD_ReplicationTable_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ReplicationTable (Properties ctx, String AD_ReplicationTable_UU, String trxName)
+    {
+      super (ctx, AD_ReplicationTable_UU, trxName);
+      /** if (AD_ReplicationTable_UU == null)
+        {
+			setAD_ReplicationStrategy_ID (0);
+			setAD_ReplicationTable_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setReplicationType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReplicationTable (Properties ctx, String AD_ReplicationTable_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReplicationTable_UU, trxName, virtualColumns);
+      /** if (AD_ReplicationTable_UU == null)
+        {
+			setAD_ReplicationStrategy_ID (0);
+			setAD_ReplicationTable_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setReplicationType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ReplicationTable (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -122,7 +152,7 @@ public class X_AD_ReplicationTable extends PO implements I_AD_ReplicationTable, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_ReplicationStrategy_ID()));
     }

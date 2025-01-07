@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_ImportTemplateAccess
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ImportTemplateAccess")
-public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplateAccess, I_Persistent 
+public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplateAccess, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplateAccess (Properties ctx, int AD_ImportTemplateAccess_ID, String trxName)
@@ -52,6 +52,26 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ImportTemplateAccess (Properties ctx, String AD_ImportTemplateAccess_UU, String trxName)
+    {
+      super (ctx, AD_ImportTemplateAccess_UU, trxName);
+      /** if (AD_ImportTemplateAccess_UU == null)
+        {
+			setAD_ImportTemplateAccess_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ImportTemplateAccess (Properties ctx, String AD_ImportTemplateAccess_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ImportTemplateAccess_UU, trxName, virtualColumns);
+      /** if (AD_ImportTemplateAccess_UU == null)
+        {
+			setAD_ImportTemplateAccess_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ImportTemplateAccess (Properties ctx, ResultSet rs, String trxName)
     {
@@ -59,7 +79,7 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -184,10 +204,10 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
 	public boolean isAllowInsert()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowInsert);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -206,10 +226,10 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
 	public boolean isAllowMerge()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowMerge);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -228,10 +248,10 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
 	public boolean isAllowUpdate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowUpdate);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

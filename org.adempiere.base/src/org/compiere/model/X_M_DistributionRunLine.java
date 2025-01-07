@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionRunLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_DistributionRunLine")
-public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLine, I_Persistent 
+public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_DistributionRunLine (Properties ctx, int M_DistributionRunLine_ID, String trxName)
@@ -71,6 +71,42 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_DistributionRunLine (Properties ctx, String M_DistributionRunLine_UU, String trxName)
+    {
+      super (ctx, M_DistributionRunLine_UU, trxName);
+      /** if (M_DistributionRunLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_DistributionRunLine WHERE M_DistributionRun_ID=@M_DistributionRun_ID@
+			setM_DistributionList_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_DistributionRunLine_ID (0);
+			setMinQty (Env.ZERO);
+// 0
+			setM_Product_ID (0);
+			setTotalQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DistributionRunLine (Properties ctx, String M_DistributionRunLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DistributionRunLine_UU, trxName, virtualColumns);
+      /** if (M_DistributionRunLine_UU == null)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_DistributionRunLine WHERE M_DistributionRun_ID=@M_DistributionRun_ID@
+			setM_DistributionList_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_DistributionRunLine_ID (0);
+			setMinQty (Env.ZERO);
+// 0
+			setM_Product_ID (0);
+			setTotalQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_DistributionRunLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +114,7 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -193,7 +229,7 @@ public class X_M_DistributionRunLine extends PO implements I_M_DistributionRunLi
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_DistributionRun_ID()));
     }

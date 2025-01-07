@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process")
-public class X_AD_Process extends PO implements I_AD_Process, I_Persistent 
+public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
         {
 			setAccessLevel (null);
 			setAD_Process_ID (0);
+			setAllowMultipleExecution (null);
+// P
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsBetaFunctionality (false);
@@ -58,6 +60,46 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
         {
 			setAccessLevel (null);
 			setAD_Process_ID (0);
+			setAllowMultipleExecution (null);
+// P
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+			setIsReport (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Process (Properties ctx, String AD_Process_UU, String trxName)
+    {
+      super (ctx, AD_Process_UU, trxName);
+      /** if (AD_Process_UU == null)
+        {
+			setAccessLevel (null);
+			setAD_Process_ID (0);
+			setAllowMultipleExecution (null);
+// P
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+			setIsReport (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Process (Properties ctx, String AD_Process_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Process_UU, trxName, virtualColumns);
+      /** if (AD_Process_UU == null)
+        {
+			setAccessLevel (null);
+			setAD_Process_ID (0);
+			setAllowMultipleExecution (null);
+// P
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsBetaFunctionality (false);
@@ -74,7 +116,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -304,12 +346,18 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 
 	/** AllowMultipleExecution AD_Reference_ID=200158 */
 	public static final int ALLOWMULTIPLEEXECUTION_AD_Reference_ID=200158;
-	/** Disallow multiple executions = N */
-	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutions = "N";
-	/** Disallow multiple executions with the same parameters = P */
-	public static final String ALLOWMULTIPLEEXECUTION_DisallowMultipleExecutionsWithTheSameParameters = "P";
-	/** Set Multiple Execution.
-		@param AllowMultipleExecution Allow or disallow executing a process/report multiple times.
+	/** Not from same user = N */
+	public static final String ALLOWMULTIPLEEXECUTION_NotFromSameUser = "N";
+	/** Not from any user = NA */
+	public static final String ALLOWMULTIPLEEXECUTION_NotFromAnyUser = "NA";
+	/** Not from same user and parameters = P */
+	public static final String ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters = "P";
+	/** Not from any user and same parameters = PA */
+	public static final String ALLOWMULTIPLEEXECUTION_NotFromAnyUserAndSameParameters = "PA";
+	/** Yes = Y */
+	public static final String ALLOWMULTIPLEEXECUTION_Yes = "Y";
+	/** Set Allow Concurrent Execution.
+		@param AllowMultipleExecution Allow or disallow executing a process/report multiple times concurrently
 	*/
 	public void setAllowMultipleExecution (String AllowMultipleExecution)
 	{
@@ -317,8 +365,8 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 		set_Value (COLUMNNAME_AllowMultipleExecution, AllowMultipleExecution);
 	}
 
-	/** Get Multiple Execution.
-		@return Allow or disallow executing a process/report multiple times.
+	/** Get Allow Concurrent Execution.
+		@return Allow or disallow executing a process/report multiple times concurrently
 	  */
 	public String getAllowMultipleExecution()
 	{
@@ -460,10 +508,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public boolean isBetaFunctionality()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBetaFunctionality);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -483,10 +531,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public boolean isDirectPrint()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDirectPrint);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -506,10 +554,10 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public boolean isReport()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReport);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -549,7 +597,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

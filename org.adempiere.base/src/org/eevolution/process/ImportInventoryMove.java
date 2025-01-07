@@ -17,7 +17,6 @@
  *****************************************************************************/
 package org.eevolution.process;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,10 +44,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.eevolution.model.X_I_Movement;
 
-
-
 /**
- *	Import Inventory Movement from I_M_Movemen
+ *	Import Inventory Movement from I_M_Movement
  *
  * 	@author 	Alberto Juarez Caballero, alberto.juarez@e-evolution.com, www.e-evolution.com
  * 	@author 	victor.perez@e-evolution.com, www.e-evolution.com
@@ -78,6 +75,7 @@ public class ImportInventoryMove extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
+	@Override
 	protected void prepare()
 	{
 		ProcessInfoParameter[] parameters = getParameter();
@@ -98,15 +96,14 @@ public class ImportInventoryMove extends SvrProcess
 		}
 	}	//	prepare
 
-
 	/**
 	 *  Perform process.
 	 *  @return Message
 	 *  @throws Exception
 	 */
+	@Override
 	protected String doIt() throws java.lang.Exception
-	{
-		
+	{		
 //		Delete Old Imported
 		if (m_DeleteOldImported)
 		{
@@ -123,12 +120,10 @@ public class ImportInventoryMove extends SvrProcess
 		importRecords();	
 		return "Imported: " + imported + ", Not imported: " + notimported;
 	}	//	doIt
-	
-	
+		
 	/**
-	 * import records using I_M_Movement table
-	 */
-	
+	 * Import records using I_M_Movement table
+	 */	
 	private void importRecords()
 	{
 		if (m_IsImportOnlyNoErrors && m_ErrorsFound)
@@ -290,8 +285,7 @@ public class ImportInventoryMove extends SvrProcess
 	 * Import Inventory Move using X_I_M_Movement table
 	 * @param imove X_I_M_Movement
 	 * @return MMovement
-	 */
-	
+	 */	
 	private MMovement importMInventoryMove(X_I_Movement imove)
 	{
 	    	final String  whereClause = I_M_Movement.COLUMNNAME_MovementDate + "= ? AND "
@@ -332,10 +326,9 @@ public class ImportInventoryMove extends SvrProcess
 		
 		return move;
 	}
-
 	
 	/**
-	 * fill IDs values based on Search Key 
+	 * Fill IDs values based on Search Key 
 	 */
 	private void fillIDValues()
 	{
@@ -398,7 +391,7 @@ public class ImportInventoryMove extends SvrProcess
 	}
 	
 	/**
-	 * get a record's ID 
+	 * Get a record's ID 
 	 * @param tableName String
 	 * @param whereClause String
 	 * @param values Object[]
@@ -409,10 +402,9 @@ public class ImportInventoryMove extends SvrProcess
 		return new Query(getCtx(),tableName,whereClause,get_TrxName()).setClient_ID()
 		.setParameters(values).firstId();
 	}  
-	
-	
+		
 	/**
-	 * get all records in X_I_Movement table
+	 * Get all records in X_I_Movement table
 	 * @param imported boolean
 	 * @param isWithoutError boolean
 	 * @return collection of X_I_Movement records

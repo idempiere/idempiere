@@ -30,7 +30,7 @@ import org.compiere.util.CLogger;
 public class MCurrencyAcct extends X_C_Currency_Acct
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2256532431388781618L;
 	/** Static Logger					*/
@@ -51,9 +51,18 @@ public class MCurrencyAcct extends X_C_Currency_Acct
 		.first();
 		return retValue;
 	}	//	get
-	
-	
-	/**************************************************************************
+		
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Currency_Acct_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCurrencyAcct(Properties ctx, String C_Currency_Acct_UU, String trxName) {
+        super(ctx, C_Currency_Acct_UU, trxName);
+    }
+
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set

@@ -19,23 +19,31 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.adempiere.exceptions.WarehouseInvalidForOrgException;
 
-
 /**
- * Forecast Line Model
+ * Material Forecast Line Model.<br/>
+ * Note: not fully develop and have been marked as inactive in Application Dictionary.
  * 
  * @author Victor Perez www.e-evolution.com     
  * @version $Id: MForecastLine.java,v 1.11 2005/05/17 05:29:52 vpj-cd Exp $
  */
-public class MForecastLine extends  X_M_ForecastLine
-{
-
-	
+public class MForecastLine extends X_M_ForecastLine
+{	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3420900505079279058L;
 	/** Parent					*/
 	private MForecast			m_parent = null;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_ForecastLine_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MForecastLine(Properties ctx, String M_ForecastLine_UU, String trxName) {
+        super(ctx, M_ForecastLine_UU, trxName);
+    }
 
 	/**
 	 * Standard Constructor
@@ -57,15 +65,22 @@ public class MForecastLine extends  X_M_ForecastLine
 		super(ctx, rs, trxName);
 	}	//	MForecastLine
 
+	/**
+	 * @param ctx
+	 * @param M_ForecastLine_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MForecastLine(Properties ctx, int M_ForecastLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_ForecastLine_ID, trxName, virtualColumns);
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Before Save
 	 *	@param newRecord
 	 *	@return true if it can be saved
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord 

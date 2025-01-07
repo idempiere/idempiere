@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_StandardResponse
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_StandardResponse")
-public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_Persistent 
+public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_StandardResponse (Properties ctx, String R_StandardResponse_UU, String trxName)
+    {
+      super (ctx, R_StandardResponse_UU, trxName);
+      /** if (R_StandardResponse_UU == null)
+        {
+			setName (null);
+			setResponseText (null);
+			setR_StandardResponse_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_StandardResponse (Properties ctx, String R_StandardResponse_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_StandardResponse_UU, trxName, virtualColumns);
+      /** if (R_StandardResponse_UU == null)
+        {
+			setName (null);
+			setResponseText (null);
+			setR_StandardResponse_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_StandardResponse (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -104,7 +128,7 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

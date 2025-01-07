@@ -111,6 +111,18 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		return retValue;
 	}
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Window_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWindow(Properties ctx, String AD_Window_UU, String trxName) {
+        super(ctx, AD_Window_UU, trxName);
+		if (Util.isEmpty(AD_Window_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -121,16 +133,22 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	{
 		super (ctx, AD_Window_ID, trxName);
 		if (AD_Window_ID == 0)
-		{
-			setWindowType (WINDOWTYPE_Maintain);	// M
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsBetaFunctionality (false);
-			setIsDefault (false);
-			setIsSOTrx (true);	// Y
-		}	}	//	M_Window
+			setInitialDefaults();
+	}	//	M_Window
 
 	/**
-	 * 	Koad Constructor
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setWindowType (WINDOWTYPE_Maintain);	// M
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsBetaFunctionality (false);
+		setIsDefault (false);
+		setIsSOTrx (true);	// Y
+	}
+
+	/**
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentBatch
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentBatch")
-public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persistent 
+public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_PaymentBatch (Properties ctx, int C_PaymentBatch_ID, String trxName)
@@ -62,6 +62,34 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_PaymentBatch (Properties ctx, String C_PaymentBatch_UU, String trxName)
+    {
+      super (ctx, C_PaymentBatch_UU, trxName);
+      /** if (C_PaymentBatch_UU == null)
+        {
+			setC_PaymentBatch_ID (0);
+			setC_PaymentProcessor_ID (0);
+			setName (null);
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentBatch (Properties ctx, String C_PaymentBatch_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentBatch_UU, trxName, virtualColumns);
+      /** if (C_PaymentBatch_UU == null)
+        {
+			setC_PaymentBatch_ID (0);
+			setC_PaymentProcessor_ID (0);
+			setName (null);
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_PaymentBatch (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +97,7 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -174,7 +202,7 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -209,10 +237,10 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -231,10 +259,10 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

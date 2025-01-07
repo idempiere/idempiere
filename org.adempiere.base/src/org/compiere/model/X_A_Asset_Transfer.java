@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Transfer
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Transfer")
-public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Persistent 
+public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_A_Asset_Transfer (Properties ctx, int A_Asset_Transfer_ID, String trxName)
@@ -112,6 +112,82 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Transfer (Properties ctx, String A_Asset_Transfer_UU, String trxName)
+    {
+      super (ctx, A_Asset_Transfer_UU, trxName);
+      /** if (A_Asset_Transfer_UU == null)
+        {
+			setA_Accumdepreciation_New_Acct (0);
+			setA_Asset_ID (0);
+			setA_Asset_New_Acct (0);
+			setA_Asset_Transfer_ID (0);
+			setA_CapvsExp (null);
+// 'Cap'
+			setA_Depreciation_New_Acct (0);
+			setA_Disposal_Loss_New_Acct (0);
+			setA_Disposal_Revenue_New_Acct (0);
+			setA_Period_End (0);
+			setA_Period_Start (0);
+			setA_Split_Percent (Env.ZERO);
+// 1
+			setA_Transfer_Balance (true);
+// Y
+			setA_Transfer_Balance_IS (false);
+			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setPostingType (null);
+// A
+			setProcessed (false);
+// N
+			setProcessing (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Transfer (Properties ctx, String A_Asset_Transfer_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Transfer_UU, trxName, virtualColumns);
+      /** if (A_Asset_Transfer_UU == null)
+        {
+			setA_Accumdepreciation_New_Acct (0);
+			setA_Asset_ID (0);
+			setA_Asset_New_Acct (0);
+			setA_Asset_Transfer_ID (0);
+			setA_CapvsExp (null);
+// 'Cap'
+			setA_Depreciation_New_Acct (0);
+			setA_Disposal_Loss_New_Acct (0);
+			setA_Disposal_Revenue_New_Acct (0);
+			setA_Period_End (0);
+			setA_Period_Start (0);
+			setA_Split_Percent (Env.ZERO);
+// 1
+			setA_Transfer_Balance (true);
+// Y
+			setA_Transfer_Balance_IS (false);
+			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setPostingType (null);
+// A
+			setProcessed (false);
+// N
+			setProcessing (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Transfer (Properties ctx, ResultSet rs, String trxName)
     {
@@ -119,7 +195,7 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -357,7 +433,7 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Transfer_ID()));
     }
@@ -691,10 +767,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public boolean isA_Transfer_Balance()
 	{
 		Object oo = get_Value(COLUMNNAME_A_Transfer_Balance);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -713,10 +789,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public boolean isA_Transfer_Balance_IS()
 	{
 		Object oo = get_Value(COLUMNNAME_A_Transfer_Balance_IS);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -930,10 +1006,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -982,10 +1058,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1023,10 +1099,10 @@ public class X_A_Asset_Transfer extends PO implements I_A_Asset_Transfer, I_Pers
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

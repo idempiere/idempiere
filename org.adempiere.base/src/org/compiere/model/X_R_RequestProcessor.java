@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestProcessor
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessor")
-public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_Persistent 
+public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor (Properties ctx, int R_RequestProcessor_ID, String trxName)
@@ -80,6 +80,52 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_RequestProcessor (Properties ctx, String R_RequestProcessor_UU, String trxName)
+    {
+      super (ctx, R_RequestProcessor_UU, trxName);
+      /** if (R_RequestProcessor_UU == null)
+        {
+			setAD_Schedule_ID (0);
+			setInactivityAlertDays (0);
+// 0
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setOverdueAlertDays (0);
+// 0
+			setOverdueAssignDays (0);
+// 0
+			setRemindDays (0);
+// 0
+			setR_RequestProcessor_ID (0);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestProcessor (Properties ctx, String R_RequestProcessor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestProcessor_UU, trxName, virtualColumns);
+      /** if (R_RequestProcessor_UU == null)
+        {
+			setAD_Schedule_ID (0);
+			setInactivityAlertDays (0);
+// 0
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setOverdueAlertDays (0);
+// 0
+			setOverdueAssignDays (0);
+// 0
+			setRemindDays (0);
+// 0
+			setR_RequestProcessor_ID (0);
+			setSupervisor_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_RequestProcessor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -87,7 +133,7 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -240,7 +286,7 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -296,10 +342,10 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

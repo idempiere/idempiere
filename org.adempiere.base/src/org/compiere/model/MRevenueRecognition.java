@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-
 /**
  *	Revenue Recognition Model
  *	
@@ -29,11 +28,20 @@ import java.util.Properties;
  */
 public class MRevenueRecognition extends X_C_RevenueRecognition
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -8528224265258285903L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_RevenueRecognition_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MRevenueRecognition(Properties ctx, String C_RevenueRecognition_UU, String trxName) {
+        super(ctx, C_RevenueRecognition_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -55,6 +63,9 @@ public class MRevenueRecognition extends X_C_RevenueRecognition
 		super(ctx, rs, trxName);
 	}	//	MRevenueRecognition
 	
+	/**
+	 * @return list of active MRevenueRecogService
+	 */
 	public List<MRevenueRecogService> getServicesList() {
 		
 		if ( isTimeBased() )
@@ -68,6 +79,11 @@ public class MRevenueRecognition extends X_C_RevenueRecognition
 		return query.list();
 	}
 	
+	/**
+	 * @param ctx
+	 * @param trxName
+	 * @return list of MRevenueRecognition record (include both active and inactive)
+	 */
 	public static List<MRevenueRecognition> getAll(Properties ctx, String trxName) {
 		Query query = new Query(ctx,MRevenueRecognition.Table_Name, null, trxName);
 		return query.list();

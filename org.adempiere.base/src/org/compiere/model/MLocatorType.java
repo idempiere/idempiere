@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -39,7 +40,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3021833597380696668L;
 
@@ -78,7 +79,19 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MLocatorType.class);
 
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_LocatorType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLocatorType(Properties ctx, String M_LocatorType_UU, String trxName) {
+        super(ctx, M_LocatorType_UU, trxName);
+		if (Util.isEmpty(M_LocatorType_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Locator Constructor
 	 *	@param ctx Context
 	 *	@param M_LocatorType_ID id
@@ -86,12 +99,18 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	 */
 	public MLocatorType (Properties ctx, int M_LocatorType_ID, String trxName) {
 		super (ctx, M_LocatorType_ID, trxName);
-		if (M_LocatorType_ID == 0) {
-			setIsAvailableForReplenishment (true);
-			setIsAvailableForReservation (true);
-			setIsAvailableForShipping (true);
-		}
+		if (M_LocatorType_ID == 0)
+			setInitialDefaults();
 	}	//	MLocatorType
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsAvailableForReplenishment (true);
+		setIsAvailableForReservation (true);
+		setIsAvailableForShipping (true);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -104,7 +123,7 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	}	//	MLocatorType
 
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MLocatorType(MLocatorType copy) {
@@ -112,7 +131,7 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -121,7 +140,7 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -135,6 +154,7 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	 *	Get String Representation
 	 * 	@return Name
 	 */
+	@Override
 	public String toString() {
 		return getName();
 	}	//	toString

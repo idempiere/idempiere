@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for R_RequestUpdates
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestUpdates")
-public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Persistent 
+public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_RequestUpdates (Properties ctx, int R_RequestUpdates_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_RequestUpdates (Properties ctx, String R_RequestUpdates_UU, String trxName)
+    {
+      super (ctx, R_RequestUpdates_UU, trxName);
+      /** if (R_RequestUpdates_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Request_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestUpdates (Properties ctx, String R_RequestUpdates_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestUpdates_UU, trxName, virtualColumns);
+      /** if (R_RequestUpdates_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Request_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_RequestUpdates (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -80,7 +104,7 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_R_RequestUpdates[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -126,10 +150,10 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

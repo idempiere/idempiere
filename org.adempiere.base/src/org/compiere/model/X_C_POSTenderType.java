@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSTenderType
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_POSTenderType")
-public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persistent 
+public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_POSTenderType (Properties ctx, int C_POSTenderType_ID, String trxName)
@@ -65,6 +65,38 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_POSTenderType (Properties ctx, String C_POSTenderType_UU, String trxName)
+    {
+      super (ctx, C_POSTenderType_UU, trxName);
+      /** if (C_POSTenderType_UU == null)
+        {
+			setC_POSTenderType_ID (0);
+			setIsGuarantee (false);
+// N
+			setIsPostDated (false);
+// N
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_POSTenderType (Properties ctx, String C_POSTenderType_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_POSTenderType_UU, trxName, virtualColumns);
+      /** if (C_POSTenderType_UU == null)
+        {
+			setC_POSTenderType_ID (0);
+			setIsGuarantee (false);
+// N
+			setIsPostDated (false);
+// N
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_POSTenderType (Properties ctx, ResultSet rs, String trxName)
     {
@@ -72,7 +104,7 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -175,10 +207,10 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
 	public boolean isGuarantee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGuarantee);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -197,10 +229,10 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
 	public boolean isPostDated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPostDated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -225,7 +257,7 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

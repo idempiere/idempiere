@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSKey
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_POSKey")
-public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent 
+public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_POSKey (Properties ctx, int C_POSKey_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_POSKey (Properties ctx, String C_POSKey_UU, String trxName)
+    {
+      super (ctx, C_POSKey_UU, trxName);
+      /** if (C_POSKey_UU == null)
+        {
+			setC_POSKey_ID (0);
+			setC_POSKeyLayout_ID (0);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_POSKey WHERE C_POSKeyLayout_ID=@C_POSKeyLayout_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_POSKey (Properties ctx, String C_POSKey_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_POSKey_UU, trxName, virtualColumns);
+      /** if (C_POSKey_UU == null)
+        {
+			setC_POSKey_ID (0);
+			setC_POSKeyLayout_ID (0);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_POSKey WHERE C_POSKeyLayout_ID=@C_POSKeyLayout_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_C_POSKey (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -297,7 +325,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

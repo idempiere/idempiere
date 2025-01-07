@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_Tax_Acct
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_Tax_Acct")
-public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent 
+public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_Tax_Acct (Properties ctx, int C_Tax_Acct_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_Tax_Acct (Properties ctx, String C_Tax_Acct_UU, String trxName)
+    {
+      super (ctx, C_Tax_Acct_UU, trxName);
+      /** if (C_Tax_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Tax_ID (0);
+			setT_Credit_Acct (0);
+			setT_Due_Acct (0);
+			setT_Expense_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Tax_Acct (Properties ctx, String C_Tax_Acct_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Tax_Acct_UU, trxName, virtualColumns);
+      /** if (C_Tax_Acct_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Tax_ID (0);
+			setT_Credit_Acct (0);
+			setT_Due_Acct (0);
+			setT_Expense_Acct (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_Tax_Acct (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -84,7 +112,7 @@ public class X_C_Tax_Acct extends PO implements I_C_Tax_Acct, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_C_Tax_Acct[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info")
-public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persistent 
+public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_UserDef_Info (Properties ctx, String AD_UserDef_Info_UU, String trxName)
+    {
+      super (ctx, AD_UserDef_Info_UU, trxName);
+      /** if (AD_UserDef_Info_UU == null)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_UserDef_Info_ID (0);
+			setSeqNo (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Info (Properties ctx, String AD_UserDef_Info_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Info_UU, trxName, virtualColumns);
+      /** if (AD_UserDef_Info_UU == null)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_UserDef_Info_ID (0);
+			setSeqNo (0);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_UserDef_Info (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -114,8 +140,8 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return ii.intValue();
 	}
 
-	/** AD_Language AD_Reference_ID=106 */
-	public static final int AD_LANGUAGE_AD_Reference_ID=106;
+	/** AD_Language AD_Reference_ID=327 */
+	public static final int AD_LANGUAGE_AD_Reference_ID=327;
 	/** Set Language.
 		@param AD_Language Language for this entity
 	*/

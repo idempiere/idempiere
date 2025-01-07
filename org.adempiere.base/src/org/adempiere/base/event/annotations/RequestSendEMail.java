@@ -32,14 +32,13 @@ import java.lang.annotation.Target;
 
 import org.adempiere.base.event.IEventTopics;
 
+/**
+ * Method annotation for handling of send request email event 
+ * @author hengsin
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @EventTopic(topic = IEventTopics.REQUEST_SEND_EMAIL)
-/**
- * 
- * @author hengsin
- *
- */
 public @interface RequestSendEMail {
 
 }

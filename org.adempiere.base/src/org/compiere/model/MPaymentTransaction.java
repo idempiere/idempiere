@@ -32,43 +32,69 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
- * 
+ * Online payment transaction
  * @author Elaine
  *
  */
 public class MPaymentTransaction extends X_C_PaymentTransaction implements ProcessCall, PaymentInterface {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8722189788479132158L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_PaymentTransaction_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MPaymentTransaction(Properties ctx, String C_PaymentTransaction_UU, String trxName) {
+        super(ctx, C_PaymentTransaction_UU, trxName);
+		if (Util.isEmpty(C_PaymentTransaction_UU))
+			setInitialDefaults();
+    }
+
+    /**
+     * @param ctx
+     * @param C_PaymentTransaction_ID
+     * @param trxName
+     */
 	public MPaymentTransaction(Properties ctx, int C_PaymentTransaction_ID, String trxName) {
 		super(ctx, C_PaymentTransaction_ID, trxName);
 		
 		//  New
 		if (C_PaymentTransaction_ID == 0)
-		{
-			setTrxType(TRXTYPE_Sales);
-			//
-			setR_AvsAddr (R_AVSZIP_Unavailable);
-			setR_AvsZip (R_AVSZIP_Unavailable);
-			//
-			setIsReceipt (true);
-			setIsApproved (false);
-			setIsOnline (false);
-			setIsSelfService(false);
-			setIsDelayedCapture (false);
-			setProcessed(false);
-			//
-			setPayAmt(Env.ZERO);
-			setTaxAmt(Env.ZERO);
-			//
-			setDateTrx (new Timestamp(System.currentTimeMillis()));
-			setTenderType(TENDERTYPE_Check);
-		}
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setTrxType(TRXTYPE_Sales);
+		//
+		setR_AvsAddr (R_AVSZIP_Unavailable);
+		setR_AvsZip (R_AVSZIP_Unavailable);
+		//
+		setIsReceipt (true);
+		setIsApproved (false);
+		setIsOnline (false);
+		setIsSelfService(false);
+		setIsDelayedCapture (false);
+		setProcessed(false);
+		//
+		setPayAmt(Env.ZERO);
+		setTaxAmt(Env.ZERO);
+		//
+		setDateTrx (new Timestamp(System.currentTimeMillis()));
+		setTenderType(TENDERTYPE_Check);
+	}
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MPaymentTransaction(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
@@ -96,6 +122,11 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return true;
 	}
 	
+	/**
+	 * Set payment amount and currency
+	 * @param C_Currency_ID
+	 * @param payAmt
+	 */
 	public void setAmount (int C_Currency_ID, BigDecimal payAmt)
 	{
 		if (C_Currency_ID == 0)
@@ -104,6 +135,16 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		setPayAmt(payAmt);
 	}
 	
+	/**
+	 * Set credit card details
+	 * @param TrxType
+	 * @param creditCardType
+	 * @param creditCardNumber
+	 * @param creditCardVV
+	 * @param creditCardExpMM
+	 * @param creditCardExpYY
+	 * @return true if credit detail is valid
+	 */
 	public boolean setCreditCard (String TrxType, String creditCardType, String creditCardNumber,
 			String creditCardVV, int creditCardExpMM, int creditCardExpYY)
 	{
@@ -123,6 +164,15 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return check == 0;
 	}
 	
+	/**
+	 * Set credit card details
+	 * @param TrxType
+	 * @param creditCardType
+	 * @param creditCardNumber
+	 * @param creditCardVV
+	 * @param creditCardExp
+	 * @return true if credit card detail is valid
+	 */
 	public boolean setCreditCard (String TrxType, String creditCardType, String creditCardNumber,
 			String creditCardVV, String creditCardExp)
 	{
@@ -131,6 +181,10 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			MPaymentValidate.getCreditCardExpYY(creditCardExp));
 	}
 	
+	/**
+	 * Find and set bank account payment processor (C_BankAccount_Processor)
+	 * @return true if success
+	 */
 	public boolean setPaymentProcessor ()
 	{
 		return setPaymentProcessor (getTenderType(), getCreditCardType(), getC_PaymentProcessor_ID());
@@ -141,6 +195,13 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	/**	Temporary	Bank Account Processor		*/
 	private MBankAccountProcessor	m_mBankAccountProcessor = null;
 	
+	/**
+	 * Find and set bank account payment processor (C_BankAccount_Processor)
+	 * @param tender
+	 * @param CCType
+	 * @param C_PaymentProcessor_ID
+	 * @return true if success
+	 */
 	public boolean setPaymentProcessor (String tender, String CCType, int C_PaymentProcessor_ID)
 	{
 		m_mBankAccountProcessor = null;
@@ -177,8 +238,8 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return m_mBankAccountProcessor != null;
 	}
 	
-	/**************************************************************************
-	 *  Process Payment
+	/**
+	 *  Execute online payment processing
 	 *  @return true if approved
 	 */
 	public boolean processOnline()
@@ -326,6 +387,10 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return approved && processed;
 	}
 	
+	/**
+	 * Void online authorization (TRXTYPE_Authorization) of payment
+	 * @return true if success
+	 */
 	public boolean voidOnlineAuthorizationPaymentTransaction() 
 	{
 		if (getTenderType().equals(TENDERTYPE_CreditCard) && isOnline() && getTrxType().equals(TRXTYPE_Authorization) && !isVoided() && !isDelayedCapture())
@@ -362,6 +427,11 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return true;
 	}
 	
+	/**
+	 * Perform online delay capture (TRXTYPE_DelayedCapture) of authorized (TRXTYPE_Authorization) payment.
+	 * @param C_Invoice_ID
+	 * @return true if success
+	 */
 	public boolean delayCaptureOnlineAuthorizationPaymentTransaction(int C_Invoice_ID)
 	{
 		if (getTenderType().equals(TENDERTYPE_CreditCard) && isOnline() && getTrxType().equals(TRXTYPE_Authorization) && !isVoided() && !isDelayedCapture())
@@ -403,11 +473,18 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return true;
 	}
 	
+	/**
+	 * @return credit card type name (master card, visa, etc)
+	 */
 	public String getCreditCardName()
 	{
 		return getCreditCardName(getCreditCardType());
 	}
 	
+	/**
+	 * @param CreditCardType
+	 * @return name of credit card type
+	 */
 	public String getCreditCardName(String CreditCardType)
 	{
 		if (CreditCardType == null)
@@ -432,16 +509,27 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	/** Error Message						*/
 	private String				m_errorMessage = null;
 	
+	/**
+	 * @param errorMessage
+	 */
 	public void setErrorMessage(String errorMessage)
 	{
 		m_errorMessage = errorMessage;
 	}
 	
+	/**
+	 * @return error message
+	 */
 	public String getErrorMessage()
 	{
 		return m_errorMessage;
 	}
 	
+	/**
+	 * Create payment using details from this record
+	 * @param trxName
+	 * @return MPayment
+	 */
 	public MPayment createPayment(String trxName)
 	{
 		MPayment payment = new MPayment(getCtx(), 0, trxName);
@@ -511,14 +599,12 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	}
 
 	/**
-	 *  Process Online Payment.
-	 *  implements ProcessCall after standard constructor
-	 *  Called when pressing the Process_Online button in C_Payment
+	 *  Process Online Payment. Call {@link #processOnline()} and save changes make to this record.
 	 *
 	 *  @param ctx Context
 	 *  @param pi Process Info
 	 *  @param trx transaction
-	 *  @return true if the next process should be performed
+	 *  @return true if success
 	 */
 	@Override
 	public boolean startProcess(Properties ctx, ProcessInfo pi, Trx trx) {
@@ -549,6 +635,15 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return this;
 	}
 	
+	/**
+	 * Create new payment transaction from existing payment transaction record
+	 * @param from source payment transaction to copy from
+	 * @param dateTrx
+	 * @param trxType
+	 * @param orig_TrxID
+	 * @param trxName
+	 * @return MPaymentTransaction created
+	 */
 	public static MPaymentTransaction copyFrom(MPaymentTransaction from, Timestamp dateTrx, String trxType, String orig_TrxID, String trxName) {
 		MPaymentTransaction to = new MPaymentTransaction(from.getCtx(), 0, trxName);
 		to.set_TrxName(trxName);
@@ -621,6 +716,13 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return to;
 	}
 	
+	/**
+	 * Get authorized credit card payment transactions that are pending delay capture
+	 * @param C_Order_ID
+	 * @param C_Invoice_ID
+	 * @param trxName
+	 * @return array of C_PaymentTransaction_ID
+	 */
 	public static int[] getAuthorizationPaymentTransactionIDs(int C_Order_ID, int C_Invoice_ID, String trxName)
 	{
 		StringBuilder whereClause = new StringBuilder();
@@ -638,6 +740,13 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 		return MPaymentTransaction.getAllIDs(Table_Name, whereClause.toString(), trxName);
 	}
 	
+	/**
+	 * Get authorized credit card payment transactions that are pending delay capture
+	 * @param orderIDList
+	 * @param C_Invoice_ID
+	 * @param trxName
+	 * @return array of C_PaymentTransaction_ID
+	 */
 	public static int[] getAuthorizationPaymentTransactionIDs(int[] orderIDList, int C_Invoice_ID, String trxName)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -670,6 +779,7 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	 * 	String Representation
 	*	@return info
 	*/
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MPaymentTransaction[");

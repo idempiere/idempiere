@@ -29,13 +29,11 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 
 /**
- *
+ * Value object of chart column
  * @author hengsin
- *
  */
 public class GraphColumn
 {
-
 	/**
 	 * 	Base Constructor
 	 *	@param label label
@@ -81,6 +79,8 @@ public class GraphColumn
 	/**
 	 * 	Request Type Constructor
 	 *	@param rt Request Type
+	 *  @param data
+	 *  @param id
 	 */
 	public GraphColumn (MRequestType rt, BigDecimal data, int id)
 	{
@@ -92,6 +92,8 @@ public class GraphColumn
 	/**
 	 * 	Project Type Constructor
 	 *	@param pt Project Type
+	 *  @param data
+	 *  @param id
 	 */
 	public GraphColumn (MProjectType pt, BigDecimal data, int id)
 	{
@@ -163,33 +165,48 @@ public class GraphColumn
 		return m_mc;
 	}	//	getMeasureCalc
 
+	/**
+	 * @return MRequestType
+	 */
 	public MRequestType getRequestType()
 	{
 		return m_rt;
 	}
 
+	/**
+	 * @return MProjectType
+	 */
 	public MProjectType getProjectType()
 	{
 		return m_pt;
 	}
 
+	/**
+	 * @return measure display type (MGoal.MEASUREDISPLAY_*)
+	 */
 	public String getMeasureDisplay()
 	{
 		return m_measureDisplay;
 	}	//	getMeasureDisplay
 
+	/**
+	 * @return date
+	 */
 	public Timestamp getDate()
 	{
 		return m_date;
 	}	//	getDate
 
+	/**
+	 * @return record id
+	 */
 	public int getID()
 	{
 		return m_id;
 	}
 
 	/**
-	 * @return Returns the label.
+	 * @return column label.
 	 */
 	public String getLabel ()
 	{
@@ -210,7 +227,7 @@ public class GraphColumn
 
 	/**
 	 *	@param date for label.
-	 * 	@param MeasureDisplay measure display
+	 * 	@param MeasureDisplay measure display type (MGoal.MEASUREDISPLAY_*)
 	 */
 	public void setLabel (Timestamp date, String MeasureDisplay)
 	{
@@ -243,7 +260,7 @@ public class GraphColumn
 	}	//	setLabel
 
 	/**
-	 * @return Returns the targetValue.
+	 * @return targetValue.
 	 */
 	public double getTargetValue ()
 	{
@@ -259,7 +276,7 @@ public class GraphColumn
 	}	//	setTargetValue
 
 	/**
-	 * @return Returns the data value.
+	 * @return data value
 	 */
 	public double getValue ()
 	{
@@ -279,7 +296,7 @@ public class GraphColumn
 	}	//	setValue
 
 	/**
-	 * @return Returns the column width in pixels.
+	 * @return column width in pixels.
 	 */
 	public double getColWidth ()
 	{
@@ -295,7 +312,7 @@ public class GraphColumn
 	}	//	getColWidth
 
 	/**
-	 * @return Returns the height in pixels.
+	 * @return height in pixels.
 	 */
 	public double getColHeight()
 	{
@@ -310,6 +327,11 @@ public class GraphColumn
 		m_height = height;
 	}	//	setHeight
 
+	/**
+	 * Get query for goal
+	 * @param mGoal
+	 * @return query
+	 */
 	public MQuery getMQuery(MGoal mGoal)
 	{
 		MQuery query = null;

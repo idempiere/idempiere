@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Label
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Label")
-public class X_AD_Label extends PO implements I_AD_Label, I_Persistent 
+public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Label (Properties ctx, int AD_Label_ID, String trxName)
@@ -52,6 +52,26 @@ public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Label (Properties ctx, String AD_Label_UU, String trxName)
+    {
+      super (ctx, AD_Label_UU, trxName);
+      /** if (AD_Label_UU == null)
+        {
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Label (Properties ctx, String AD_Label_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Label_UU, trxName, virtualColumns);
+      /** if (AD_Label_UU == null)
+        {
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Label (Properties ctx, ResultSet rs, String trxName)
     {
@@ -59,7 +79,7 @@ public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

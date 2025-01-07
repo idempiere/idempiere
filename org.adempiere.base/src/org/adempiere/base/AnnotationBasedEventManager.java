@@ -27,6 +27,7 @@ package org.adempiere.base;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -73,9 +74,9 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 
 	private static final CLogger s_log = CLogger.getCLogger(AnnotationBasedEventManager.class); 
 	
-	private IEventManager eventManager;
-	private BundleContext bundleContext;
-	private List<EventHandler> handlers = new ArrayList<>();
+	protected IEventManager eventManager;
+	protected BundleContext bundleContext;
+	protected List<EventHandler> handlers = new ArrayList<>();
 
 	private ServiceTracker<IEventManager, IEventManager> serviceTracker;
 	
@@ -137,50 +138,90 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 	}
 	
 	/**
-	 * Perform scan, discover and register of annotated classes
+	 * Scan, discover and register annotated event delegate classes. <br/>
+	 * The scan is asynchronous and return {@link CompletableFuture} to caller.
+	 * If needed, caller can use the return {@link CompletableFuture} to wait for the scan to complete (using either get or join).
+	 * @param context bundle context
+	 * @param packageNames one or more package to scan
+	 * @return CompletableFuture&lt;List&lt;EventHandler&gt;&gt;
 	 */
-	protected void scan() {
-		long start = System.currentTimeMillis();
-		ClassLoader classLoader = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
-
+	public synchronized CompletableFuture<List<EventHandler>> scan(BundleContext context, String ...packageNames) {
+		return scan(context, false, packageNames);
+	}
+	
+	/**
+	 * Scan, discover and register annotated event delegate classes.
+	 * @param context bundle context
+	 * @param logScanDuration
+	 * @param packageNames one or more package to scan
+	 * @return CompletableFuture&lt;List&lt;EventHandler&gt;&gt;
+	 */
+	protected CompletableFuture<List<EventHandler>> scan(BundleContext context, boolean logScanDuration, String ...packageNames) {
+		long start = logScanDuration ? System.currentTimeMillis() : 0;
+		final CompletableFuture<List<EventHandler>> completable = new CompletableFuture<>();
+		ClassLoader classLoader = context.getBundle().adapt(BundleWiring.class).getClassLoader();
+		
 		ClassGraph graph = new ClassGraph()
 				.enableAnnotationInfo()
 				.overrideClassLoaders(classLoader)
 				.disableNestedJarScanning()
 				.disableModuleScanning()
-				.acceptPackagesNonRecursive(getPackages());
+				.acceptPackagesNonRecursive(packageNames);
 
 		ScanResultProcessor scanResultProcessor = scanResult ->
 		{
+			List<EventHandler> handlerList = new ArrayList<>();
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(EventTopicDelegate.class)) {
 		    	if (classInfo.isAbstract())
 		    		continue;
+		    	EventHandler handler = null;
 		        String className = classInfo.getName();
 		        AnnotationInfo baseInfo = classInfo.getAnnotationInfo(EventTopicDelegate.class);
 		        String filter = (String) baseInfo.getParameterValues().getValue("filter");
 		        if (classInfo.hasAnnotation(ModelEventTopic.class)) {
 		        	AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(ModelEventTopic.class);
-			        modelEventDelegate(classLoader, className, annotationInfo, filter);
+			        handler = modelEventDelegate(classLoader, className, annotationInfo, filter);
 		        } else if (classInfo.hasAnnotation(ImportEventTopic.class)) {
 		        	AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(ImportEventTopic.class);
-		        	importEventDelegate(classLoader, className, annotationInfo, filter);
+		        	handler = importEventDelegate(classLoader, className, annotationInfo, filter);
 		        } else if (classInfo.hasAnnotation(ProcessEventTopic.class)) {
 		        	AnnotationInfo annotationInfo = classInfo.getAnnotationInfo(ProcessEventTopic.class);
-		        	processEventDelegate(classLoader, className, annotationInfo, filter);
+		        	handler = processEventDelegate(classLoader, className, annotationInfo, filter);
 		        } else {
-		        	simpleEventDelegate(classLoader, className, filter);
+		        	handler = simpleEventDelegate(classLoader, className, filter);
 		        }
+		        if (handler != null)
+		        	handlerList.add(handler);
 		    }
 			long end = System.currentTimeMillis();
-			s_log.info(() -> this.getClass().getSimpleName() + " loaded " + handlers.size() + " classes in "
-						+ ((end-start)/1000f) + "s");
-			signalScanCompletion(true);
+			if (logScanDuration)
+				s_log.info(() -> this.getClass().getSimpleName() + " loaded " + handlerList.size() + " classes in "
+							+ ((end-start)/1000f) + "s");
+			if (handlerList.size() > 0) {
+				synchronized (handlers) {
+					handlers.addAll(handlerList);
+				}
+			}
+			completable.complete(handlerList);
 		};
 
 		graph.scanAsync(getExecutorService(), getMaxThreads(), scanResultProcessor, getScanFailureHandler());
+		return completable;
+	}
+	/**
+	 * Perform asynchronous scan, discover and register of annotated event delegate classes.
+	 */
+	protected void scan() {
+		scan(bundleContext, true, getPackages());
 	}
 
-	private void simpleEventDelegate(ClassLoader classLoader, String className, String filter) {
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param filter
+	 * @return new SimpleEventHandler instance
+	 */
+	private EventHandler simpleEventDelegate(ClassLoader classLoader, String className, String filter) {
 		try {
 			@SuppressWarnings("unchecked")
 			Class<? extends EventDelegate> delegateClass = (Class<? extends EventDelegate>) classLoader.loadClass(className);
@@ -189,15 +230,23 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			SimpleEventHandler handler = new SimpleEventHandler(delegateClass, supplier);
 			if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-			handlers.add(handler);
-		    eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))
 				s_log.log(Level.INFO, e.getMessage(), e);
+			return null;
 		}
 	}
 
-	private void processEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param annotationInfo
+	 * @param filter
+	 * @return new ProcessEventHandler instance
+	 */
+	private EventHandler processEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
 		try {
 			String processUUID = (String) annotationInfo.getParameterValues().getValue("processUUID");
 			@SuppressWarnings("unchecked")
@@ -207,15 +256,23 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			ProcessEventHandler handler = new ProcessEventHandler(delegateClass, processUUID, supplier);
 			if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-			handlers.add(handler);
 		    eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+		    return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))
 				s_log.log(Level.INFO, e.getMessage(), e);
+			return null;
 		}
 	}
 
-	private void importEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param annotationInfo
+	 * @param filter
+	 * @return new ImportEventHandler instance
+	 */
+	private EventHandler importEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
 		try {
 			String importTableName = (String) annotationInfo.getParameterValues().getValue("importTableName");
 			@SuppressWarnings("unchecked")
@@ -225,15 +282,23 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			ImportEventHandler handler = new ImportEventHandler(delegateClass, importTableName, supplier);
 			if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-			handlers.add(handler);
-		    eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))
 				s_log.log(Level.INFO, e.getMessage(), e);
+			return null;
 		}
 	}
 
-	private void modelEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
+	/**
+	 * @param classLoader
+	 * @param className
+	 * @param annotationInfo
+	 * @param filter
+	 * @return new ModelEventHandler instance
+	 */
+	private EventHandler modelEventDelegate(ClassLoader classLoader, String className, AnnotationInfo annotationInfo, String filter) {		
 		try {			
 			AnnotationClassRef classRef = (AnnotationClassRef) annotationInfo.getParameterValues().getValue("modelClass");
 			@SuppressWarnings("unchecked")
@@ -246,11 +311,12 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			ModelEventHandler<?> handler = new ModelEventHandler(modelClass, delegateClass, supplier);
 		    if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-		    handlers.add(handler);
 		    eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+		    return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))
 				s_log.log(Level.INFO, e.getMessage(), e);
+			return null;
 		}
 	}
 	

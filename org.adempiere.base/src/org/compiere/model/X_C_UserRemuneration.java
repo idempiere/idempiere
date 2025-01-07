@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UserRemuneration
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_UserRemuneration")
-public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_Persistent 
+public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_C_UserRemuneration (Properties ctx, int C_UserRemuneration_ID, String trxName)
@@ -70,6 +70,40 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_UserRemuneration (Properties ctx, String C_UserRemuneration_UU, String trxName)
+    {
+      super (ctx, C_UserRemuneration_UU, trxName);
+      /** if (C_UserRemuneration_UU == null)
+        {
+			setAD_User_ID (0);
+			setC_Remuneration_ID (0);
+			setC_UserRemuneration_ID (0);
+			setGrossRAmt (Env.ZERO);
+			setGrossRCost (Env.ZERO);
+			setOvertimeAmt (Env.ZERO);
+			setOvertimeCost (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_UserRemuneration (Properties ctx, String C_UserRemuneration_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_UserRemuneration_UU, trxName, virtualColumns);
+      /** if (C_UserRemuneration_UU == null)
+        {
+			setAD_User_ID (0);
+			setC_Remuneration_ID (0);
+			setC_UserRemuneration_ID (0);
+			setGrossRAmt (Env.ZERO);
+			setGrossRCost (Env.ZERO);
+			setOvertimeAmt (Env.ZERO);
+			setOvertimeCost (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_C_UserRemuneration (Properties ctx, ResultSet rs, String trxName)
     {
@@ -77,7 +111,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -129,7 +163,7 @@ public class X_C_UserRemuneration extends PO implements I_C_UserRemuneration, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_User_ID()));
     }

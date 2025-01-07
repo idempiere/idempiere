@@ -32,26 +32,51 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.model.IProcessParameter;
 
 /**
- *
+ * Process drill rule parameter model
  * @author Igor Pojzl, Cloudempiere
  * @author Peter Takacs, Cloudempiere
  */
 public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implements ImmutablePOSupport, IProcessParameter {
-
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1460684182951511710L;
 
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Process_DrillRule_Para_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MProcessDrillRulePara(Properties ctx, String AD_Process_DrillRule_Para_UU, String trxName) {
+        super(ctx, AD_Process_DrillRule_Para_UU, trxName);
+    }
+
+    /**
+     * @param ctx
+     * @param AD_Process_DrillRule_Para_ID
+     * @param trxName
+     */
 	public MProcessDrillRulePara(Properties ctx, int AD_Process_DrillRule_Para_ID, String trxName) {
 		super(ctx, AD_Process_DrillRule_Para_ID, trxName);
 	}
 
+	/**
+	 * @param ctx
+	 * @param AD_Process_DrillRule_Para_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MProcessDrillRulePara(Properties ctx, int AD_Process_DrillRule_Para_ID, String trxName,
 			String[] virtualColumns) {
 		super(ctx, AD_Process_DrillRule_Para_ID, trxName, virtualColumns);
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MProcessDrillRulePara(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
@@ -60,7 +85,6 @@ public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implement
 	private MProcessPara	m_parameter = null;
 	/** Parent						*/
 	private MProcessDrillRule	m_parent = null;
-
 
 	/**
 	 * 	Get Parameter Column Name

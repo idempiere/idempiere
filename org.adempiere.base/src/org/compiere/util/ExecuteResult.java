@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Deprecated(forRemoval = true, since = "11")
 public class ExecuteResult implements Serializable {
 	/**
 	 * 

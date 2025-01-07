@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReplicationStrategy
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReplicationStrategy")
-public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStrategy, I_Persistent 
+public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStrategy, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_ReplicationStrategy (Properties ctx, int AD_ReplicationStrategy_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_ReplicationStrategy (Properties ctx, String AD_ReplicationStrategy_UU, String trxName)
+    {
+      super (ctx, AD_ReplicationStrategy_UU, trxName);
+      /** if (AD_ReplicationStrategy_UU == null)
+        {
+			setAD_ReplicationStrategy_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReplicationStrategy (Properties ctx, String AD_ReplicationStrategy_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReplicationStrategy_UU, trxName, virtualColumns);
+      /** if (AD_ReplicationStrategy_UU == null)
+        {
+			setAD_ReplicationStrategy_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_ReplicationStrategy (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -221,7 +247,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

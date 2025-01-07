@@ -21,10 +21,10 @@ import java.util.Properties;
 
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.X_AD_WorkflowProcessorLog;
-
+import org.compiere.util.Util;
 
 /**
- *	Processor Log
+ *	Extended Workflow Processor Log model for AD_WorkflowProcessorLog
  *	
  *  @author Jorg Janke
  *  @version $Id: MWorkflowProcessorLog.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -33,9 +33,21 @@ public class MWorkflowProcessorLog extends X_AD_WorkflowProcessorLog
 	implements AdempiereProcessorLog
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7646579803939292482L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_WorkflowProcessorLog_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MWorkflowProcessorLog(Properties ctx, String AD_WorkflowProcessorLog_UU, String trxName) {
+        super(ctx, AD_WorkflowProcessorLog_UU, trxName);
+		if (Util.isEmpty(AD_WorkflowProcessorLog_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -47,10 +59,15 @@ public class MWorkflowProcessorLog extends X_AD_WorkflowProcessorLog
 	{
 		super (ctx, AD_WorkflowProcessorLog_ID, trxName);
 		if (AD_WorkflowProcessorLog_ID == 0)
-		{
-			setIsError (false);
-		}	
+			setInitialDefaults();
 	}	//	MWorkflowProcessorLog
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsError (false);
+	}
 
 	/**
 	 * 	Load Constructor

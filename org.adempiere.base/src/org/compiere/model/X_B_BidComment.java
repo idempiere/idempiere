@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for B_BidComment
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="B_BidComment")
-public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent 
+public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_B_BidComment (Properties ctx, int B_BidComment_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_B_BidComment (Properties ctx, String B_BidComment_UU, String trxName)
+    {
+      super (ctx, B_BidComment_UU, trxName);
+      /** if (B_BidComment_UU == null)
+        {
+			setAD_User_ID (0);
+			setB_BidComment_ID (0);
+			setB_Topic_ID (0);
+			setTextMsg (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_BidComment (Properties ctx, String B_BidComment_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_BidComment_UU, trxName, virtualColumns);
+      /** if (B_BidComment_UU == null)
+        {
+			setAD_User_ID (0);
+			setB_BidComment_ID (0);
+			setB_Topic_ID (0);
+			setTextMsg (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_B_BidComment (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

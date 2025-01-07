@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Movement
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="HR_Movement")
-public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent 
+public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_HR_Movement (Properties ctx, int HR_Movement_ID, String trxName)
@@ -63,6 +63,32 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_HR_Movement (Properties ctx, String HR_Movement_UU, String trxName)
+    {
+      super (ctx, HR_Movement_UU, trxName);
+      /** if (HR_Movement_UU == null)
+        {
+			setHR_Concept_ID (0);
+			setHR_Movement_ID (0);
+			setProcessed (false);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Movement (Properties ctx, String HR_Movement_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Movement_UU, trxName, virtualColumns);
+      /** if (HR_Movement_UU == null)
+        {
+			setHR_Concept_ID (0);
+			setHR_Movement_ID (0);
+			setProcessed (false);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
     /** Load Constructor */
     public X_HR_Movement (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +96,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -624,7 +650,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getHR_Process_ID()));
     }
@@ -643,10 +669,10 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -666,10 +692,10 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 	public boolean isRegistered()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRegistered);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -716,10 +742,10 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -112,14 +112,17 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 	}
 	
 	private final static class MyTest extends X_Test {
-
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 2010413233032792416L;
+		private static final long serialVersionUID = 6598731099622814068L;
 
 		public MyTest(Properties ctx, int Test_ID, String trxName) {
 			super(ctx, Test_ID, trxName);
+		}
+
+		public MyTest(Properties ctx, String Test_UU, String trxName) {
+			super(ctx, Test_UU, trxName);
 		}
 
 		public MyTest(Properties ctx, ResultSet rs, String trxName) {
@@ -128,14 +131,17 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 	}	
 	
 	private final static class MyTest2 extends X_Test {
-
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 2010413233032792416L;
+		private static final long serialVersionUID = 7420832191690522686L;
 
 		public MyTest2(Properties ctx, int Test_ID, String trxName) {
 			super(ctx, Test_ID, trxName);
+		}
+
+		public MyTest2(Properties ctx, String Test_UU, String trxName) {
+			super(ctx, Test_UU, trxName);
 		}
 
 		public MyTest2(Properties ctx, ResultSet rs, String trxName) {

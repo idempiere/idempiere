@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLineSet
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportLineSet")
-public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Persistent 
+public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_ReportLineSet (Properties ctx, int PA_ReportLineSet_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_ReportLineSet (Properties ctx, String PA_ReportLineSet_UU, String trxName)
+    {
+      super (ctx, PA_ReportLineSet_UU, trxName);
+      /** if (PA_ReportLineSet_UU == null)
+        {
+			setName (null);
+			setPA_ReportLineSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportLineSet (Properties ctx, String PA_ReportLineSet_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportLineSet_UU, trxName, virtualColumns);
+      /** if (PA_ReportLineSet_UU == null)
+        {
+			setName (null);
+			setPA_ReportLineSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_ReportLineSet (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -120,7 +144,7 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -174,10 +198,10 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

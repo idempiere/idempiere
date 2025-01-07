@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_DiscountSchemaLine")
-public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine, I_Persistent 
+public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -120,6 +120,90 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_DiscountSchemaLine (Properties ctx, String M_DiscountSchemaLine_UU, String trxName)
+    {
+      super (ctx, M_DiscountSchemaLine_UU, trxName);
+      /** if (M_DiscountSchemaLine_UU == null)
+        {
+			setC_ConversionType_ID (0);
+			setConversionDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setIsIgnoreIsCurrentVendor (false);
+// N
+			setLimit_AddAmt (Env.ZERO);
+			setLimit_Base (null);
+// X
+			setLimit_Discount (Env.ZERO);
+			setLimit_MaxAmt (Env.ZERO);
+			setLimit_MinAmt (Env.ZERO);
+			setLimit_Rounding (null);
+// C
+			setList_AddAmt (Env.ZERO);
+			setList_Base (null);
+// L
+			setList_Discount (Env.ZERO);
+			setList_MaxAmt (Env.ZERO);
+			setList_MinAmt (Env.ZERO);
+			setList_Rounding (null);
+// C
+			setM_DiscountSchema_ID (0);
+			setM_DiscountSchemaLine_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_DiscountSchemaLine WHERE M_DiscountSchema_ID=@M_DiscountSchema_ID@
+			setStd_AddAmt (Env.ZERO);
+			setStd_Base (null);
+// S
+			setStd_Discount (Env.ZERO);
+			setStd_MaxAmt (Env.ZERO);
+			setStd_MinAmt (Env.ZERO);
+			setStd_Rounding (null);
+// C
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DiscountSchemaLine (Properties ctx, String M_DiscountSchemaLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DiscountSchemaLine_UU, trxName, virtualColumns);
+      /** if (M_DiscountSchemaLine_UU == null)
+        {
+			setC_ConversionType_ID (0);
+			setConversionDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setIsIgnoreIsCurrentVendor (false);
+// N
+			setLimit_AddAmt (Env.ZERO);
+			setLimit_Base (null);
+// X
+			setLimit_Discount (Env.ZERO);
+			setLimit_MaxAmt (Env.ZERO);
+			setLimit_MinAmt (Env.ZERO);
+			setLimit_Rounding (null);
+// C
+			setList_AddAmt (Env.ZERO);
+			setList_Base (null);
+// L
+			setList_Discount (Env.ZERO);
+			setList_MaxAmt (Env.ZERO);
+			setList_MinAmt (Env.ZERO);
+			setList_Rounding (null);
+// C
+			setM_DiscountSchema_ID (0);
+			setM_DiscountSchemaLine_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_DiscountSchemaLine WHERE M_DiscountSchema_ID=@M_DiscountSchema_ID@
+			setStd_AddAmt (Env.ZERO);
+			setStd_Base (null);
+// S
+			setStd_Discount (Env.ZERO);
+			setStd_MaxAmt (Env.ZERO);
+			setStd_MinAmt (Env.ZERO);
+			setStd_Rounding (null);
+// C
+        } */
+    }
+
     /** Load Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -127,7 +211,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -296,10 +380,10 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	public boolean isIgnoreIsCurrentVendor()
 	{
 		Object oo = get_Value(COLUMNNAME_IsIgnoreIsCurrentVendor);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -774,7 +858,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getSeqNo()));
     }

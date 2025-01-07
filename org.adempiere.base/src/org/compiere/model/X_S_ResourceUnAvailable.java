@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceUnAvailable
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceUnAvailable")
-public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailable, I_Persistent 
+public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailable, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_S_ResourceUnAvailable (Properties ctx, int S_ResourceUnAvailable_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
         } */
     }
 
+    /** Standard Constructor */
+    public X_S_ResourceUnAvailable (Properties ctx, String S_ResourceUnAvailable_UU, String trxName)
+    {
+      super (ctx, S_ResourceUnAvailable_UU, trxName);
+      /** if (S_ResourceUnAvailable_UU == null)
+        {
+			setDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setS_Resource_ID (0);
+			setS_ResourceUnAvailable_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ResourceUnAvailable (Properties ctx, String S_ResourceUnAvailable_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ResourceUnAvailable_UU, trxName, virtualColumns);
+      /** if (S_ResourceUnAvailable_UU == null)
+        {
+			setDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setS_Resource_ID (0);
+			setS_ResourceUnAvailable_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_S_ResourceUnAvailable (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -165,7 +189,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getS_Resource_ID()));
     }

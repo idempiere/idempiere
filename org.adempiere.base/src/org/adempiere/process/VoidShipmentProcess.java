@@ -25,7 +25,7 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
 /**
- * 
+ * Process to perform online void of a shipment package ({@link MPackage}).
  * @author Low Heng Sin
  *
  */

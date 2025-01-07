@@ -45,9 +45,23 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		return getPO(getClass(tableName), tableName, Record_ID, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param Record_ID
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, int Record_ID, String trxName) {
 		if (clazz == null)
 		{
+			return null;
+		}
+		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table != null && table.isUUIDKeyTable())
+		{
+			if (Record_ID == 0) // this is the convention to create a new record
+				return getPO(clazz, tableName, "", trxName); // get new Record using UUID constructor
 			return null;
 		}
 
@@ -119,10 +133,102 @@ public abstract class AbstractModelFactory implements IModelFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public PO getPO(String tableName, String Record_UU, String trxName) {
+		return getPO(getClass(tableName), tableName, Record_UU, trxName);
+	}
+
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param Record_UU
+	 * @param trxName
+	 * @return new PO instance
+	 */
+	public static PO getPO(Class<?> clazz, String tableName, String Record_UU, String trxName) {
+		if (clazz == null)
+		{
+			return null;
+		}
+
+		boolean errorLogged = false;
+		try
+		{
+			Exception ce = null;
+			Object[] arguments = null;
+			Constructor<?> constructor = null;
+			try
+			{
+				constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, String.class, String.class});
+				arguments = new Object[] {Env.getCtx(), Record_UU, trxName};
+			}
+			catch (Exception e)
+			{
+				ce = e;
+			}
+			if(constructor==null)
+			{
+				try
+				{
+					constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, String.class, String.class, String[].class});
+					arguments = new Object[] {Env.getCtx(), Record_UU, trxName, null};
+				}
+				catch(Exception e)
+				{
+					ce = e;
+				}
+			}
+
+			if(constructor==null && ce!=null)
+			{
+				String msg = ce.getMessage();
+				if (msg == null)
+					msg = ce.toString();
+				s_log.warning("No transaction Constructor for " + clazz + " (" + msg + ")");
+			}
+
+			PO po = constructor!=null ? (PO)constructor.newInstance(arguments) : null;
+			return po;
+		}
+		catch (Exception e)
+		{
+			if (e.getCause() != null)
+			{
+				Throwable t = e.getCause();
+				s_log.log(Level.SEVERE, "(uuid) - Table=" + tableName + ",Class=" + clazz, t);
+				errorLogged = true;
+				if (t instanceof Exception)
+					s_log.saveError("Error", (Exception)e.getCause());
+				else
+					s_log.saveError("Error", "Table=" + tableName + ",Class=" + clazz);
+			}
+			else
+			{
+				s_log.log(Level.SEVERE, "(uuid) - Table=" + tableName + ",Class=" + clazz, e);
+				errorLogged = true;
+				s_log.saveError("Error", "Table=" + tableName + ",Class=" + clazz);
+			}
+		}
+		if (!errorLogged)
+			s_log.log(Level.SEVERE, "(uuid) - Not found - Table=" + tableName
+				+ ", Record_UU=" + Record_UU);
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public PO getPO(String tableName, ResultSet rs, String trxName) {
 		return getPO(getClass(tableName), tableName, rs, trxName);
 	}
 
+	/**
+	 * @param clazz
+	 * @param tableName
+	 * @param rs
+	 * @param trxName
+	 * @return new PO instance
+	 */
 	public static PO getPO(Class<?> clazz, String tableName, ResultSet rs, String trxName) {
 		if (clazz == null)
 		{

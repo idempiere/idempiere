@@ -24,16 +24,16 @@ import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for T_BOMLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="T_BOMLine")
-public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent 
+public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_T_BOMLine (Properties ctx, int T_BOMLine_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_T_BOMLine (Properties ctx, String T_BOMLine_UU, String trxName)
+    {
+      super (ctx, T_BOMLine_UU, trxName);
+      /** if (T_BOMLine_UU == null)
+        {
+			setSel_Product_ID (0);
+			setT_BOMLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_BOMLine (Properties ctx, String T_BOMLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_BOMLine_UU, trxName, virtualColumns);
+      /** if (T_BOMLine_UU == null)
+        {
+			setSel_Product_ID (0);
+			setT_BOMLine_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_T_BOMLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -304,10 +326,10 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	public boolean isImplosion()
 	{
 		Object oo = get_Value(COLUMNNAME_Implosion);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -327,10 +349,10 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	public boolean isCostFrozen()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCostFrozen);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

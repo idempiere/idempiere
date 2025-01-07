@@ -25,6 +25,8 @@
  **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
@@ -33,7 +35,10 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -47,8 +52,8 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Vbox;
 
 /**
+ * Dialog to export and download report
  * @author hengsin
- *
  */
 public class WReportExportDialog extends Window implements EventListener<Event> {
 
@@ -59,12 +64,13 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 	private Listbox cboType = new Listbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private IReportViewerExportSource viewer;
+	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
+	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 	
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WReportExportDialog.class);
 	
 	/**
-	 * 
 	 * @param viewer
 	 */
 	public WReportExportDialog(IReportViewerExportSource viewer) {
@@ -79,27 +85,18 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 		cboType.setMold("select");
 		
 		cboType.getItems().clear();			
-		cboType.appendItem("ps" + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), "ps");
-		cboType.appendItem("xml" + " - " + Msg.getMsg(Env.getCtx(), "FileXML"), "xml");
-		cboType.appendItem("pdf" + " - " + Msg.getMsg(Env.getCtx(), "FilePDF"), "pdf");
-		cboType.appendItem("html" + " - " + Msg.getMsg(Env.getCtx(), "FileHTML"), "html");
-		cboType.appendItem("txt" + " - " + Msg.getMsg(Env.getCtx(), "FileTXT"), "txt");
-		cboType.appendItem("ssv" + " - " + Msg.getMsg(Env.getCtx(), "FileSSV"), "ssv");
-		cboType.appendItem("csv" + " - " + Msg.getMsg(Env.getCtx(), "FileCSV"), "csv");
-		cboType.appendItem("xls" + " - " + Msg.getMsg(Env.getCtx(), "FileXLS"), "xls");
-		cboType.appendItem("xlsx" + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), "xlsx");
-		
-		String contentType = viewer.getContentType();
-		if (IReportViewerExportSource.PDF_MIME_TYPE.equals(contentType)) {
-			cboType.setSelectedIndex(2);
-		} else if (IReportViewerExportSource.HTML_MIME_TYPE.equals(contentType)) {
-			cboType.setSelectedIndex(3);
-		} else if (IReportViewerExportSource.EXCEL_MIME_TYPE.equals(contentType)) {			
-			cboType.setSelectedIndex(7);
-		} else if (IReportViewerExportSource.CSV_MIME_TYPE.equals(contentType)) {
-			cboType.setSelectedIndex(6);
-		} else if (IReportViewerExportSource.EXCEL_XML_MIME_TYPE.equals(contentType)) {			
-			cboType.setSelectedIndex(8);
+		ExportFormat[] exportFormats = viewer.getExportFormats();
+		Arrays.sort(exportFormats, new Comparator<ExportFormat>() {
+			@Override
+			public int compare(ExportFormat ef0, ExportFormat ef1) {
+				return ef0.label.compareTo(ef1.label);
+			}
+		});
+		for(ExportFormat exportFormat : exportFormats) {
+			ListItem item = cboType.appendItem(exportFormat.label, exportFormat);
+			if (viewer.getContentType().equals(exportFormat.contentType) && viewer.getFileExtension().equals(exportFormat.extension)) {
+				item.setSelected(true);
+			}
 		}
 		
 		Hbox hb = new Hbox();
@@ -131,10 +128,20 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 			exportFile();
 	}
 
+	/**
+	 * Handle onCancel event
+	 */
 	private void onCancel() {
+		// do not allow to close tab for Events.ON_CTRL_KEY event
+		if(isUseEscForTabClosing)
+			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
+
 		onClose();
 	}
 
+	/**
+	 * Export report as file for download by user
+	 */
 	private void exportFile()
 	{
 		try
@@ -148,51 +155,11 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 				return;
 			}
 			
-			String ext = li.getValue().toString();			
-			if (ext.equals(IReportViewerExportSource.PDF_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.PDF_MIME_TYPE, IReportViewerExportSource.PDF_FILE_EXT);
-			}
-			else if (ext.equals(IReportViewerExportSource.POSTSCRIPT_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.POSTSCRIPT_MIME_TYPE, IReportViewerExportSource.POSTSCRIPT_FILE_EXT);
-			}
-			else if (ext.equals(IReportViewerExportSource.XML_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.XML_MIME_TYPE, IReportViewerExportSource.XML_FILE_EXT);
-			}
-			else if (ext.equals(IReportViewerExportSource.CSV_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.CSV_MIME_TYPE, IReportViewerExportSource.CSV_FILE_EXT);
-			}
-			else if (ext.equals(IReportViewerExportSource.SSV_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.CSV_MIME_TYPE, IReportViewerExportSource.SSV_FILE_EXT);
-			}
-			else if (ext.equals(IReportViewerExportSource.TEXT_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.TEXT_MIME_TYPE, IReportViewerExportSource.TEXT_FILE_EXT);							
-			}
-			else if (ext.equals(IReportViewerExportSource.HTML_FILE_EXT) || ext.equals("htm"))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.HTML_MIME_TYPE, IReportViewerExportSource.HTML_FILE_EXT);
-			}
-			else if (ext.equals(IReportViewerExportSource.EXCEL_XML_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.EXCEL_XML_MIME_TYPE, IReportViewerExportSource.EXCEL_XML_FILE_EXT);
-			}
-			else if (ext.equals(IReportViewerExportSource.EXCEL_FILE_EXT))
-			{
-				media = viewer.getMedia(IReportViewerExportSource.EXCEL_MIME_TYPE, IReportViewerExportSource.EXCEL_FILE_EXT);
-			}
-			else
-			{
-				Dialog.error(-1, "FileInvalidExtension");
-				return;
-			}
+			ExportFormat exportFormat = li.getValue();
+			media = viewer.getMedia(exportFormat.contentType, exportFormat.extension);
 
 			onClose();		
-			Filedownload.save(media, viewer.getReportName() + "." + ext);
+			Filedownload.save(media, viewer.getReportName() + "." + exportFormat.extension);
 		}
 		catch (Exception e)
 		{

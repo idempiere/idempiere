@@ -19,15 +19,36 @@ import java.util.Properties;
 import org.compiere.model.MShippingTransaction;
 
 /**
- * 
+ * Online shipment processor interface
  * @author Low Heng Sin
- *
  */
 public interface IShipmentProcessor 
 {	
+	/**
+	 * Perform online shipment
+	 * @param ctx
+	 * @param shippingTransaction
+	 * @param trxName
+	 * @return true if success, false otherwise
+	 */
 	public boolean processShipment(Properties ctx, MShippingTransaction shippingTransaction, String trxName);
 	
+	/**
+	 * Perform shipment rate inquiry
+	 * @param ctx
+	 * @param shippingTransaction
+	 * @param isPriviledgedRate
+	 * @param trxName
+	 * @return true if success, false otherwise
+	 */
 	public boolean rateInquiry(Properties ctx, MShippingTransaction shippingTransaction, boolean isPriviledgedRate, String trxName);
 
+	/**
+	 * Void online shipment
+	 * @param ctx
+	 * @param shippingTransaction
+	 * @param get_TrxName
+	 * @return true if success, false otherwise
+	 */
 	public boolean voidShipment(Properties ctx, MShippingTransaction shippingTransaction, String get_TrxName);
 }

@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Responsible
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Responsible")
-public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Persistent 
+public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_WF_Responsible (Properties ctx, int AD_WF_Responsible_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WF_Responsible (Properties ctx, String AD_WF_Responsible_UU, String trxName)
+    {
+      super (ctx, AD_WF_Responsible_UU, trxName);
+      /** if (AD_WF_Responsible_UU == null)
+        {
+			setAD_Role_ID (0);
+			setAD_WF_Responsible_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setResponsibleType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_Responsible (Properties ctx, String AD_WF_Responsible_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_Responsible_UU, trxName, virtualColumns);
+      /** if (AD_WF_Responsible_UU == null)
+        {
+			setAD_Role_ID (0);
+			setAD_WF_Responsible_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setResponsibleType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WF_Responsible (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -238,7 +268,7 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

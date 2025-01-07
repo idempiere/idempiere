@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Category
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_Category")
-public class X_R_Category extends PO implements I_R_Category, I_Persistent 
+public class X_R_Category extends PO implements I_R_Category, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_R_Category (Properties ctx, int R_Category_ID, String trxName)
@@ -55,6 +55,28 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_Category (Properties ctx, String R_Category_UU, String trxName)
+    {
+      super (ctx, R_Category_UU, trxName);
+      /** if (R_Category_UU == null)
+        {
+			setName (null);
+			setR_Category_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_Category (Properties ctx, String R_Category_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_Category_UU, trxName, virtualColumns);
+      /** if (R_Category_UU == null)
+        {
+			setName (null);
+			setR_Category_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_Category (Properties ctx, ResultSet rs, String trxName)
     {
@@ -62,7 +84,7 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -162,7 +184,7 @@ public class X_R_Category extends PO implements I_R_Category, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

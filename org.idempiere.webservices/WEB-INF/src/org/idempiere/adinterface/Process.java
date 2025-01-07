@@ -330,7 +330,7 @@ public class Process {
 			{
 				int AD_Workflow_ID = process.getAD_Workflow_ID();
 				MWorkflow wf = MWorkflow.get (Env.getCtx(), AD_Workflow_ID);
-				MWFProcess wfProcess = wf.startWait(pi);	//	may return null
+				MWFProcess wfProcess = wf.start(pi, (String)null);	//	may return null
 				if(wfProcess != null)
 				{
 					//wynik
@@ -488,7 +488,7 @@ public class Process {
 	
 	private static MPInstance fillParameter(CompiereService m_cs, DataRow dr, MProcess process, Map<String, Object> requestCtx) throws Exception
 	{
-		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), 0);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), 0, 0, null);
 		pInstance.saveEx();
 		
 		DataField f[] = dr.getFieldArray();

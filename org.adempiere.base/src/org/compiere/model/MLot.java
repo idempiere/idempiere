@@ -38,7 +38,7 @@ import org.compiere.util.KeyNamePair;
 public class MLot extends X_M_Lot
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2238962371935615958L;
 	/**	Logger					*/
@@ -116,9 +116,18 @@ public class MLot extends X_M_Lot
 		list.toArray(retValue);
 		return retValue;
 	}	//	getProductLotPairs
-
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param M_Lot_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MLot(Properties ctx, String M_Lot_UU, String trxName) {
+        super(ctx, M_Lot_UU, trxName);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 * 	@param ctx context
 	 * 	@param M_Lot_ID ID
@@ -141,7 +150,6 @@ public class MLot extends X_M_Lot
 	}	//	MLot
 
 	/**
-	 * 	Parent Constructor
 	 * 	@param ctl lot control
 	 * 	@param M_Product_ID product
 	 * 	@param Name name
@@ -159,6 +167,7 @@ public class MLot extends X_M_Lot
 	 *	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		return getName();

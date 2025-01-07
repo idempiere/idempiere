@@ -29,12 +29,13 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.compiere.Adempiere;
+import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
 /**
- *  Adempiere Cache Management
+ *  iDempiere global Cache Manager
  *
  *  @author Jorg Janke
  *  @version $Id: CacheMgt.java,v 1.2 2006/07/30 00:54:35 jjanke Exp $
@@ -42,7 +43,7 @@ import org.idempiere.distributed.IClusterService;
 public class CacheMgt
 {
 	/**
-	 * 	Get Cache Management
+	 * 	Get global Cache Manager
 	 * 	@return Cache Manager
 	 */
 	public static synchronized CacheMgt get()
@@ -81,7 +82,7 @@ public class CacheMgt
 	{
 		try 
 		{
-			String maxSize = System.getProperty("Cache.MaxSize");
+			String maxSize = SystemProperties.getCacheMaxSize();
 			if (maxSize != null && maxSize.trim().length() > 0)
 			{
 				int max = 0;
@@ -95,11 +96,12 @@ public class CacheMgt
 		} catch (Throwable t) {}
 	}
 	
-	/**************************************************************************
-	 * 	Create Cache Instance
+	/**
+	 * 	Register new CCache Instance.<br/>
+	 *  This is use by {@link CCache} and developer usually shouldn't use this class directly.
 	 *	@param instance Cache
 	 *  @param distributed
-	 *	@return true if added
+	 *	@return map for CCache
 	 */
 	public synchronized <K,V>Map<K, V> register (CCache<K, V> instance, boolean distributed)
 	{
@@ -305,7 +307,7 @@ public class CacheMgt
 		CacheInterface[] instances = getInstancesAsArray();
 		for (CacheInterface stored : instances)
 		{
-			if (stored != null && stored instanceof CCache)
+			if (stored != null && stored instanceof CCache && stored.size() > 0)
 			{
 				CCache<?, ?> cc = (CCache<?, ?>)stored;
 				if (cc.getTableName() != null && cc.getTableName().startsWith(tableName))		//	reset lines/dependent too

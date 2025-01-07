@@ -136,7 +136,7 @@ public class SetGetUtil
 					boolean ok = false;
 					obj = rs.getObject(columnName);
 					//
-					// Date Columns are retuned as Date -> convert to java.sql.Timestamp
+					// Date Columns are returned as Date -> convert to java.sql.Timestamp
 					if (obj instanceof java.sql.Date)
 					{
 						obj = new java.sql.Timestamp(((java.sql.Date)obj).getTime());
@@ -714,7 +714,7 @@ public class SetGetUtil
 	
 	/**
 	 * Get Info for given table and ID.
-	 * This method calls {@link MLookupFactory#getLookup_TableDirEmbed(Language, String, String, String) to
+	 * This method calls {@link MLookupFactory#getLookup_TableDirEmbed(Language, String, String, String)} to
 	 * generate the info string.
 	 * @param ctx context
 	 * @param tableName tablename

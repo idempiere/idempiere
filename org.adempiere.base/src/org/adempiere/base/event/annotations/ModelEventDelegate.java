@@ -28,8 +28,9 @@ import org.compiere.model.PO;
 import org.osgi.service.event.Event;
 
 /**
- * 
- * event delegate for PO related event (po_before_change, doc_before_complete, etc)
+ * Event delegate for PO related event.<br/>
+ * To handle a model event, create a subclass of this and uses the model event annotation (BeforeChange, BeforeComplete, etc)
+ * to annotate the event handling method.
  * @author hengsin
  *
  * @param <T>
@@ -39,7 +40,6 @@ public class ModelEventDelegate<T extends PO> extends EventDelegate {
 	private T model;
 	
 	/**
-	 * 
 	 * @param po
 	 * @param event
 	 */
@@ -49,8 +49,8 @@ public class ModelEventDelegate<T extends PO> extends EventDelegate {
 	}
 
 	/**
-	 * 
-	 * @return po model (mbpartner, morder, etc)
+	 * Get PO model for event
+	 * @return PO model (MBPartner, MOrder, etc)
 	 */
 	protected T getModel() {
 		return model;

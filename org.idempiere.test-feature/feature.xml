@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.test.feature"
       label="Require bundle for org.idempiere.test"
-      version="10.0.0.qualifier"
+      version="11.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -18,35 +18,35 @@
    </license>
 
    <plugin
-         id="org.junit.jupiter.api"
+         id="junit-jupiter-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.jupiter.engine"
+         id="junit-jupiter-engine"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.jupiter.params"
+         id="junit-jupiter-params"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.platform.commons"
+         id="junit-platform-commons"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.platform.engine"
+         id="junit-platform-engine"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -60,7 +60,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apiguardian"
+         id="org.apiguardian.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -88,35 +88,70 @@
          unpack="false"/>
 
    <plugin
-         id="org.junit.jupiter.migrationsupport"
+         id="junit-jupiter-migrationsupport"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.platform.launcher"
+         id="junit-platform-launcher"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.platform.runner"
+         id="junit-platform-runner"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.platform.suite.api"
+         id="junit-platform-suite-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.junit.vintage.engine"
+         id="junit-vintage-engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="junit-platform-suite-engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="junit-platform-suite-commons"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="junit-platform-runner"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="assertj-core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.idempiere.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

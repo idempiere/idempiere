@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -17,13 +38,10 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	implements UseLife
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2436949294592742530L;
 
-	/**
-	 * Get Asset Group Accountings for given group
-	 */
 	/**
 	 * @param ctx
 	 * @param A_Asset_Group_ID
@@ -49,6 +67,11 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 
 	/**
 	 * Get Asset Group Accountings for given group
+	 * @param ctx
+	 * @param A_Asset_Group_ID
+	 * @param postingType
+	 * @param trxName
+	 * @return list of MAssetGroupAcct
 	 */
 	public static List<MAssetGroupAcct>  forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType, String trxName)
 	{
@@ -64,6 +87,16 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 					.list();
 	}
 	
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param A_Asset_Group_Acct_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MAssetGroupAcct(Properties ctx, String A_Asset_Group_Acct_UU, String trxName) {
+        super(ctx, A_Asset_Group_Acct_UU, trxName);
+    }
+
 	/**
 	 * 	Default ConstructorX_A_Asset_Group_Acct
 	 *	@param ctx context
@@ -89,6 +122,7 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	
 	/**
 	 * Get Asset Group
+	 * @return MAssetGroup
 	 */
 	public MAssetGroup getParent()
 	{
@@ -100,6 +134,7 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 		return m_parent;
 	}
 	
+	@Override
 	public Timestamp getAssetServiceDate()
 	{
 		return null;
@@ -118,6 +153,7 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 		return newAcct;
 	}
 
+	@Override
 	public boolean beforeSave(boolean newRecord)
 	{
 		if (! UseLifeImpl.get(this).validate())
@@ -131,26 +167,37 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 		return true;
 	}
 	
+	@Override
 	public boolean set_AttrValue(String ColumnName, Object value) {
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 			return false;
 		return set_ValueNoCheck(ColumnName, value);
 	}
+	
+	@Override
 	public Object get_AttrValue(String ColumnName) {
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 			return null;
 		return get_Value(index);
 	}
+	
+	@Override
 	public boolean is_AttrValueChanged(String ColumnName) {
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 			return false;
 		return is_ValueChanged(index);
 	}
+	
 	/**
 	 * Get Asset Group Accountings for given group
+	 * @param ctx
+	 * @param A_Asset_Group_ID
+	 * @param postingType
+	 * @param C_AcctSchema_ID
+	 * @return MAssetGroupAcct
 	 */
 	public static MAssetGroupAcct forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType,
 			int C_AcctSchema_ID) {
@@ -159,7 +206,5 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 					.setParameters(new Object[]{A_Asset_Group_ID, postingType, C_AcctSchema_ID})
 					.firstOnly();
 	}
-
 	
-
 }	//	MAssetGroupAcct

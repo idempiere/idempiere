@@ -29,9 +29,9 @@ import org.adempiere.base.event.LoginEventData;
 import org.osgi.service.event.Event;
 
 /**
- * 
+ * Event delegate for login event.<br/>
+ * To handle login event, create a subclass of this and implement the {@link #onAfterLogin(LoginEventData)} method.
  * @author hengsin
- * 
  */
 public abstract class AfterLoginEventDelegate extends EventDelegate {
 
@@ -43,7 +43,7 @@ public abstract class AfterLoginEventDelegate extends EventDelegate {
 	}
 
 	/**
-	 * 
+	 * Get data object for login event
 	 * @return {@link LoginEventData}
 	 */
 	protected LoginEventData getLoginEventData() {

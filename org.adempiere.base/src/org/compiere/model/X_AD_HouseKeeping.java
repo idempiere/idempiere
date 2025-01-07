@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_HouseKeeping
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_HouseKeeping")
-public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persistent 
+public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_HouseKeeping (Properties ctx, int AD_HouseKeeping_ID, String trxName)
@@ -58,6 +58,30 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_HouseKeeping (Properties ctx, String AD_HouseKeeping_UU, String trxName)
+    {
+      super (ctx, AD_HouseKeeping_UU, trxName);
+      /** if (AD_HouseKeeping_UU == null)
+        {
+			setAD_HouseKeeping_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_HouseKeeping (Properties ctx, String AD_HouseKeeping_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_HouseKeeping_UU, trxName, virtualColumns);
+      /** if (AD_HouseKeeping_UU == null)
+        {
+			setAD_HouseKeeping_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_HouseKeeping (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +89,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -211,10 +235,10 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	public boolean isExportXMLBackup()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExportXMLBackup);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -233,10 +257,10 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	public boolean isSaveInHistoric()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSaveInHistoric);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -294,7 +318,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -312,10 +336,10 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

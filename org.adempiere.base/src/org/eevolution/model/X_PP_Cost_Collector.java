@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Cost_Collector
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Cost_Collector")
-public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Persistent 
+public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_Cost_Collector (Properties ctx, int PP_Cost_Collector_ID, String trxName)
@@ -91,6 +91,60 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Cost_Collector (Properties ctx, String PP_Cost_Collector_UU, String trxName)
+    {
+      super (ctx, PP_Cost_Collector_UU, trxName);
+      /** if (PP_Cost_Collector_UU == null)
+        {
+			setC_DocType_ID (0);
+// 0
+			setC_DocTypeTarget_ID (0);
+			setCostCollectorType (null);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setM_Locator_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setMovementQty (Env.ZERO);
+// 0
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPosted (false);
+			setPP_Cost_Collector_ID (0);
+			setPP_Order_ID (0);
+			setProcessed (false);
+			setS_Resource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Cost_Collector (Properties ctx, String PP_Cost_Collector_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Cost_Collector_UU, trxName, virtualColumns);
+      /** if (PP_Cost_Collector_UU == null)
+        {
+			setC_DocType_ID (0);
+// 0
+			setC_DocTypeTarget_ID (0);
+			setCostCollectorType (null);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setM_Locator_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setMovementQty (Env.ZERO);
+// 0
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPosted (false);
+			setPP_Cost_Collector_ID (0);
+			setPP_Order_ID (0);
+			setProcessed (false);
+			setS_Resource_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Cost_Collector (Properties ctx, ResultSet rs, String trxName)
     {
@@ -98,7 +152,7 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -539,10 +593,10 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	public boolean isBatchTime()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBatchTime);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -561,10 +615,10 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	public boolean isSubcontracting()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSubcontracting);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -692,7 +746,7 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_ID()));
     }
@@ -739,10 +793,10 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -908,10 +962,10 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -949,10 +1003,10 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

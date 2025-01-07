@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.model.*;
 
 /** Generated Model for PP_WF_Node_Asset
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_WF_Node_Asset")
-public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Persistent 
+public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Asset (Properties ctx, int PP_WF_Node_Asset_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_WF_Node_Asset (Properties ctx, String PP_WF_Node_Asset_UU, String trxName)
+    {
+      super (ctx, PP_WF_Node_Asset_UU, trxName);
+      /** if (PP_WF_Node_Asset_UU == null)
+        {
+			setA_Asset_ID (0);
+			setAD_WF_Node_ID (0);
+			setPP_WF_Node_Asset_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_WF_Node_Asset (Properties ctx, String PP_WF_Node_Asset_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_WF_Node_Asset_UU, trxName, virtualColumns);
+      /** if (PP_WF_Node_Asset_UU == null)
+        {
+			setA_Asset_ID (0);
+			setAD_WF_Node_ID (0);
+			setPP_WF_Node_Asset_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_WF_Node_Asset (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

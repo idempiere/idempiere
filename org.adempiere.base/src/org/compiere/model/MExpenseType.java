@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
  *	Expense Type Model
  *	
@@ -28,11 +27,20 @@ import java.util.Properties;
  */
 public class MExpenseType extends X_S_ExpenseType
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -5721855125106737886L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param S_ExpenseType_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MExpenseType(Properties ctx, String S_ExpenseType_UU, String trxName) {
+        super(ctx, S_ExpenseType_UU, trxName);
+    }
 
 	/**
 	 * 	Default Constructor
@@ -61,7 +69,7 @@ public class MExpenseType extends X_S_ExpenseType
 	
 	/**
 	 * 	Get Product
-	 *	@return product
+	 *	@return first product that uses this expense type
 	 */
 	public MProduct getProduct()
 	{
@@ -74,14 +82,14 @@ public class MExpenseType extends X_S_ExpenseType
 		}
 		return m_product;
 	}	//	getProduct
-	
-	
+		
 	/**
 	 * 	beforeSave
 	 *	@see org.compiere.model.PO#beforeSave(boolean)
 	 *	@param newRecord
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord)
@@ -100,6 +108,7 @@ public class MExpenseType extends X_S_ExpenseType
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -111,6 +120,5 @@ public class MExpenseType extends X_S_ExpenseType
 		
 		return success;
 	}	//	afterSave
-	
-	
+		
 }	//	MExpenseType

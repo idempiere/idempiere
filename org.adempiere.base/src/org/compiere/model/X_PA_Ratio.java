@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Ratio
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_Ratio")
-public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent 
+public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_Ratio (Properties ctx, int PA_Ratio_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_Ratio (Properties ctx, String PA_Ratio_UU, String trxName)
+    {
+      super (ctx, PA_Ratio_UU, trxName);
+      /** if (PA_Ratio_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setName (null);
+			setPA_Ratio_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Ratio (Properties ctx, String PA_Ratio_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Ratio_UU, trxName, virtualColumns);
+      /** if (PA_Ratio_UU == null)
+        {
+			setC_AcctSchema_ID (0);
+			setName (null);
+			setPA_Ratio_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_Ratio (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -164,7 +188,7 @@ public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

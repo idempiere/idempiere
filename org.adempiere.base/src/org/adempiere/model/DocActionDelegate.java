@@ -38,6 +38,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.model.MDocType;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProjectIssue;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -49,9 +50,9 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
- * 
+ * Helper class to simplify the implementation of {@link DocAction} interface.
+ * @see {@link MProjectIssue} for example usage.
  * @author hengsin
- *
  */
 public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 
@@ -66,6 +67,9 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	/**	Logger							*/
 	protected transient CLogger	log = CLogger.getCLogger (getClass());
 	
+	/**
+	 * @param po
+	 */
 	public DocActionDelegate(T po) {
 		this.po = po;
 	}

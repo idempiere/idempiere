@@ -15,10 +15,12 @@
 package org.adempiere.webui.event;
 
 import org.compiere.util.WebUtil;
+
 import org.idempiere.broadcast.BroadCastMsg;
 import org.idempiere.broadcast.BroadCastUtil;
 import org.idempiere.broadcast.BroadcastMsgUtil;
 import org.idempiere.distributed.ITopicSubscriber;
+
 /**
  * Class Manages Broadcast Messages across webui cluster
  * @author Deepak Pansheriya
@@ -26,12 +28,20 @@ import org.idempiere.distributed.ITopicSubscriber;
  */
 public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>{
 
+	/** Global share singleton instance */
 	private final static ZKBroadCastManager broadCastMgr = new ZKBroadCastManager();
 	
+	/**
+	 * Get singleton instance
+	 * @return ZKBroadCastManager
+	 */
 	public static ZKBroadCastManager getBroadCastMgr()  {		
 		return broadCastMgr;
 	}
 		
+	/**
+	 * Default constructor
+	 */
 	private ZKBroadCastManager(){
 		BroadCastUtil.subscribe(this);
 	}

@@ -34,12 +34,12 @@ public class TableValueChangeEvent extends ValueChangeEvent
 	/**
 	 * Constructor for the event.
 	 * 
-	 * @param source		The object that changed
-	 * @param propertyName	The column name of the changed object 
-	 * @param row			The row of the changed object
-	 * @param column		The column of the changed object 
-	 * @param oldValue		The new value of the object 
-	 * @param newValue		The old value of the object (often just a copy of the new value)
+	 * @param source		Source of event
+	 * @param propertyName	Column name 
+	 * @param row			Row index
+	 * @param column		Column index 
+	 * @param oldValue		The old value of the object 
+	 * @param newValue		The new value of the object (often just a copy of the new value)
 	 */
 	public TableValueChangeEvent(Object source, String propertyName, 
 								int row, int column,  

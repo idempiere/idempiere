@@ -25,15 +25,14 @@ import java.sql.Timestamp;
 
 import javax.sql.DataSource;
 
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 
-//import org.compiere.util.CPreparedStatement;
-
 /**
- *  Interface for Adempiere Databases
+ *  Interface for database adapter
  *
  *  @author     Jorg Janke
  *  @version    $Id: AdempiereDatabase.java,v 1.5 2006/09/22 23:35:19 jjanke Exp $
@@ -43,7 +42,10 @@ public interface AdempiereDatabase
 	
 	/** default lock timeout, 60 seconds **/
 	static final int LOCK_TIME_OUT = 60;
-	
+
+	/* PostgreSQL restricts object names to 63 characters */
+	public final static int MAX_OBJECT_NAME_LENGTH = 63;
+
 	/**
 	 *  Get Database Name
 	 *  @return database short name
@@ -89,10 +91,10 @@ public interface AdempiereDatabase
 		String userName);
 
 	/**
-	 *  Get Database Connection String
+	 *  Get Database Connection URL
 	 *  @param connectionURL Connection URL
 	 *  @param userName user name
-	 *  @return connection String
+	 *  @return connection URL
 	 */
 	public String getConnectionURL (String connectionURL, String userName);
 
@@ -119,44 +121,37 @@ public interface AdempiereDatabase
 	 *  @return info
 	 */
 	public String toString();
-
 	
-	/**************************************************************************
-	 *  Convert an individual Oracle Style statements to target database statement syntax
+	/**
+	 *  Convert an individual Oracle syntax statements to target database statement syntax
 	 *
 	 *  @param oraStatement oracle statement
 	 *  @return converted Statement
 	 */
 	public String convertStatement (String oraStatement);
 
-	
-
 	/**
 	 *  Check if DBMS support the sql statement
-	 *  @sql SQL statement
+	 *  @param sql SQL statement
 	 *  @return true: yes
 	 */
 	public boolean isSupported(String sql);
 
-	
-	
-
 	/**
 	 *  Get constraint type associated with the index
-	 *  @conn connection
-	 *  @tableName table name
-	 *  @IXName Index name
+	 *  @param conn connection
+	 *  @param tableName table name
+	 *  @param IXName Index name
 	 *  @return String[0] = 0: do not know, 1: Primary Key  2: Foreign Key
 	 *  		String[1] - String[n] = Constraint Name
 	 */
 	public String getConstraintType(Connection conn, String tableName, String IXName);
-	
 
 	/**
 	 *  Check and generate an alternative SQL
-	 *  @reExNo number of re-execution
-	 *  @msg previous execution error message
-	 *  @sql previous executed SQL
+	 *  @param reExNo number of re-execution
+	 *  @param msg previous execution error message
+	 *  @param sql previous executed SQL
 	 *  @return String, the alternative SQL, null if no alternative
 	 */
 	public String getAlternativeSQL(int reExNo, String msg, String sql);
@@ -174,13 +169,12 @@ public interface AdempiereDatabase
 	 */
 	public String getSystemDatabase(String databaseName);
 	
-
 	/**
-	 *  Create SQL TO Date String from Timestamp
+	 *  Create SQL TO Date statement for Timestamp
 	 *
 	 *  @param  time Date to be converted
-	 *  @param  dayOnly true if time set to 00:00:00
-	 *  @return date function
+	 *  @param  dayOnly true if time should be set to 00:00:00
+	 *  @return to date function
 	 */
 	public String TO_DATE (Timestamp time, boolean dayOnly);
 
@@ -210,25 +204,29 @@ public interface AdempiereDatabase
 	
 	
 	/**
-	 * 	Return next sequence this Sequence
-	 *	@param Name Sequence
-	 *  @param trxName Transaction
+	 * 	Get next sequence number in this Sequence
+	 *	@param Name Sequence name
+	 *  @param trxName Transaction name
 	 */
 	public int getNextID(String Name, String trxName);
 	
 	/**
-	 * 	Return next sequence this Sequence
-	 *	@param Name Sequence
+	 * 	Get next sequence number in this Sequence
+	 *	@param Name Sequence name
 	 */
 	public int getNextID(String Name);
 	
-	/*
+	/**
 	 * Create Native Sequence
-	 * @param Sequence Name
+	 * @param name Sequence Name
+	 * @param increment
+	 * @param minvalue
+	 * @param maxvalue
+	 * @param start
+	 * @param trxName
 	 */
 	public boolean createSequence(String name , int increment , int minvalue , int maxvalue ,int  start, String trxName);
-	
-	
+		
 	/** Create User commands					*/
 	public static final int		CMD_CREATE_USER = 0;
 	/** Create Database/Schema Commands			*/
@@ -238,22 +236,21 @@ public interface AdempiereDatabase
 	
 	/**
 	 * 	Get SQL Commands.
-	 *  <code>
+	 *  <pre>
 	 * 	The following variables are resolved:
 	 * 	@SystemPassword@, @AdempiereUser@, @AdempierePassword@
 	 * 	@SystemPassword@, @DatabaseName@, @DatabaseDevice@
-	 *  </code>
-	 *	@param cmdType CMD_*
+	 *  </pre>
+	 *	@param cmdType {@link #CMD_CREATE_USER}, {@link #CMD_CREATE_DATABASE} or {@link #CMD_DROP_DATABASE}
 	 *	@return array of commands to be executed
 	 */
 	public String[] getCommands (int cmdType);
-
 	
 	/**
 	 * 	Get Cached Connection on Server
 	 *	@param connection info
 	 *  @param autoCommit true if autocommit connection
-	 *  @param transactionIsolation Connection transaction level
+	 *  @param transactionIsolation transaction isolation level
 	 *	@return connection or null
 	 *  @throws Exception
 	 */
@@ -282,7 +279,7 @@ public interface AdempiereDatabase
 	/**
 	 * 	Create DataSource
 	 *	@param connection connection
-	 *	@return data dource
+	 *	@return data source
 	 */
 	public DataSource getDataSource(CConnection connection);
 
@@ -297,6 +294,10 @@ public interface AdempiereDatabase
 	 */
 	public void close();
 	
+	/**
+	 * Get {@link Convert} implementation for this DB adapter
+	 * @return Convert instance
+	 */
 	public Convert getConvert();
 
 	/**
@@ -305,13 +306,8 @@ public interface AdempiereDatabase
 	public boolean isQueryTimeoutSupported();
 
 	/**
-	 * Default sql use to test whether a connection is still valid
-	 */
-	//public final static String DEFAULT_CONN_TEST_SQL = "SELECT Version FROM AD_System";
-
-	/**
 	 * Is the database have sql extension that return a subset of the query result
-	 * @return boolean
+	 * @return true if DB support paging SQL
 	 */
 	public boolean isPagingSupported();
 
@@ -320,7 +316,7 @@ public interface AdempiereDatabase
 	 * @param sql
 	 * @param start
 	 * @param end
-	 * @return
+	 * @return SQL with added paging clause
 	 */
 	public String addPagingSQL(String sql, int start, int end);
 	
@@ -332,7 +328,31 @@ public interface AdempiereDatabase
 	 */
 	public boolean forUpdate(PO po, int timeout);
 	
+	/**
+	 * @param e
+	 * @return unique constraint name
+	 */
 	public String getNameOfUniqueConstraintError(Exception e);
+
+	/**
+     * <p>
+     * The "child record found error" contains the 
+     * foreign key constraint name after the second occurrence
+     * of the opening double quote: ["].
+     * </p>
+     * 
+     * <h3>Example:</h3>
+     * <p>
+     * ERROR: update or delete on table "m_product_category" 
+     * violates foreign key constraint "mprodcategory_mdiscountsbreak" 
+     * on table "m_discountschemabreak" 
+     * Detail: Key (m_product_category_id)=(50000) is still referenced from table "m_discountschemabreak".
+     * </p>
+     * 
+     * @param e
+     * @return constraint name
+     */
+	public String getForeignKeyConstraint(Exception e);
 
 	/**
 	 * @param columnName
@@ -344,7 +364,7 @@ public interface AdempiereDatabase
 	/**
 	 * @param columnName
 	 * @param csv comma separated value
-	 * @return subset sql clause
+	 * @return intersect sql clause
 	 */
 	public String intersectClauseForCSV(String columnName, String csv);
 	
@@ -352,7 +372,7 @@ public interface AdempiereDatabase
 	 * @param columnName
 	 * @param csv comma separated value
 	 * @param isNotClause
-	 * @return subset sql clause
+	 * @return intersect sql clause
 	 */
 	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause);
 	
@@ -366,7 +386,6 @@ public interface AdempiereDatabase
 	}
 	
 	/**
-	 * 
 	 * @return true if using native dialect, false if using oracle dialect
 	 */
 	public default boolean isNativeMode() {
@@ -379,13 +398,11 @@ public interface AdempiereDatabase
 	public String getNumericDataType();
 	
 	/**
-	 * 
-	 * @return fixed lenght character data type name
+	 * @return fixed length character data type name
 	 */
 	public String getCharacterDataType();
 	
 	/**
-	 * 
 	 * @return variable length character data type name
 	 */
 	public String getVarcharDataType();
@@ -398,30 +415,27 @@ public interface AdempiereDatabase
 	};
 
 	/**
-	 * 
 	 * @return binary large object data type name
 	 */
 	public String getBlobDataType();
 	
 	/**
-	 * 
 	 * @return character large object data type name
 	 */
 	public String getClobDataType();
 	
 	/**
-	 * 
 	 * @return time stamp data type name
 	 */
 	public String getTimestampDataType();
 	
 	/**
-	 * 
 	 * @return timestamp with time zone type name
 	 */
 	public String getTimestampWithTimezoneDataType();
+	
 	/**
-	 * Get SQL Create
+	 * Get create table SQL statement 
 	 * @param table
 	 * @return create table DDL
 	 */
@@ -459,36 +473,40 @@ public interface AdempiereDatabase
 	}	//	getSQLCreate
 	
 	/**
-	 * 
 	 * @param column
-	 * @return ddl sql for column
+	 * @return DDL SQL statement for column
 	 */
 	public String getSQLDDL(MColumn column);
 	
 	/**
-	 * 
 	 * @param table
 	 * @param column
-	 * @return add column sql
+	 * @return add column SQL statement
 	 */
 	public String getSQLAdd(MTable table, MColumn column);
 	
 	/**
-	 * 
 	 * @param table
 	 * @param column
 	 * @param setNullOption
-	 * @return alter column sql
+	 * @return alter column SQL statement
 	 */
 	public String getSQLModify (MTable table, MColumn column, boolean setNullOption);
 
 	/**
-	 * 
 	 * @param ex
 	 * @return true if ex is caused by query timeout
 	 */
 	public default boolean isQueryTimeout(SQLException ex) {
 		return ex instanceof SQLTimeoutException;
+	}
+	
+	/**
+	 * Get DB specific table partition support
+	 * @return ITablePartitionService instance
+	 */
+	public default ITablePartitionService getTablePartitionService() {
+		return null;
 	}
 }   //  AdempiereDatabase
 

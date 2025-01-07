@@ -28,7 +28,9 @@ import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.GridTabRowRenderer;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
@@ -39,6 +41,8 @@ import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Paymentbox;
+import org.adempiere.webui.component.WListItemRenderer;
+import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -61,6 +65,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
@@ -68,17 +73,22 @@ import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- *
+ * Base class for field editor.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
  * @version $Revision: 0.10 $
  */
 public abstract class WEditor implements EventListener<Event>, PropertyChangeListener, IInputValidator
 {
-    private static final String[] lISTENER_EVENTS = {};
+	/** Component attribute to store reference to WEditor instance */
+    public static final String IDEMPIERE_EDITOR_ATTR = "idempiere.editor";
 
+	private static final String[] lISTENER_EVENTS = {};
+
+    /** Max display length for string editor */
     public static final int MAX_DISPLAY_LENGTH = 35;
 
+    /** Event to indicate start of editing a text field */
     public static final String INIT_EDIT_EVENT = "onInitEdit";
     
     protected GridField gridField;
@@ -86,13 +96,15 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     protected GridTab gridTab;
 
     protected Label label;
-
+    
+    /** Component of this editor */
     protected Component component;
 
     protected boolean mandatory;
 
     protected ArrayList<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();
 
+    /** label text */
     private String strLabel;
 
     private String description;
@@ -100,19 +112,23 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     protected boolean readOnly;
 
     private String columnName;
-
+    
+    /** Context menu */
 	protected WEditorPopupMenu popupMenu;
-
+	
+	/** true if it is use inside a grid/list view */
 	protected boolean tableEditor;
 	
+	/** true if this is use for process parameter field */
 	private boolean isProcessParameter;
 	
+	/** Optional expected input string */
 	private String sValidInput;
 	
 	private final List<DynamicDisplayListener> dynamicDisplayListeners = new ArrayList<>();
 
 	/**
-	 * call to show context menu of this field.
+	 * call to show context menu of this field.<br/>
 	 * must call after append component of this field to parent
 	 */
 	public void showMenu() {		
@@ -235,21 +251,19 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
     
     /**
-     * Normal zk component just fire onChange event when user loss focus
-     * call this method with true value let component fire event when user type first character
-     * 
-     * remark: editor set true for this method also need handle INIT_EDIT_EVENT to take effect, 
-     * can refer implement at {@link WStringEditor#onEvent(Event)}
+     * By default, zk component fire onChange event when component loss focus.<br/>
+     * Call this method with true value let component fire event when user type first character.
+     * <br/>
+     * Note: editor that set this to true also need to handle INIT_EDIT_EVENT to take effect, 
+     * please see implementation at {@link WStringEditor#onEvent(Event)} for reference.
      * @param isChangeEventWhenEditing
      */
     public void setChangeEventWhenEditing (boolean isChangeEventWhenEditing){
     	this.component.setWidgetOverride("isChangeEventWhenEditing", String.valueOf(isChangeEventWhenEditing));
     }
     
-
     /**
-     * Method is used to distinguish between 2 similar WSearchEditors
-     *
+     * @return description
      */
     public String getDescription()
     {
@@ -258,37 +272,28 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
 
 	/**
-	 * Constructor for use if a grid field is unavailable
+	 * Constructor to use if a grid field is unavailable
 	 *
 	 * @param comp			The editor's component
-	 * @param label			column name (not displayed)
+	 * @param label			field label
 	 * @param description	description of component
-	 * @param mandatory		whether a selection must be made
+	 * @param mandatory		whether field is mandatory
 	 * @param readonly		whether or not the editor is read only
 	 * @param updateable	whether the editor contents can be changed
 	 */
     public WEditor(Component comp, String label, String description, boolean mandatory, boolean readonly, boolean updateable)
     {
-    	if (comp == null)
-        {
-            throw new IllegalArgumentException("Component cannot be null");
-        }
-
-    	this.setComponent(comp);
-    	this.setMandatory(mandatory);
-        this.readOnly = readonly;
-        this.description = description;
-        this.strLabel = label;
-        init();
+    	this(comp, null, label, description, mandatory, readonly, updateable);
     }
 
     /**
-	 * Constructor for use if a grid field is unavailable
+	 * Constructor to use if a grid field is unavailable
 	 *
 	 * @param comp			The editor's component
-	 * @param label			column name (not displayed)
+	 * @param columnName	column name
+	 * @param label			field label
 	 * @param description	description of component
-	 * @param mandatory		whether a selection must be made
+	 * @param mandatory		whether field is mandatory
 	 * @param readonly		whether or not the editor is read only
 	 * @param updateable	whether the editor contents can be changed
 	 */
@@ -318,6 +323,9 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         this.component = comp;
     }
 
+    /**
+     * Init label and component
+     */
     private void init()
     {
         label = new Label("");
@@ -338,7 +346,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         }
         
         component.addEventListener(INIT_EDIT_EVENT, this);
-        component.setAttribute("idempiere.editor", this);
+        component.setAttribute(IDEMPIERE_EDITOR_ATTR, this);
         
         component.addEventListener(Events.ON_FOCUS, e -> {
         	ADWindow adwindow = ADWindow.findADWindow(component);
@@ -349,7 +357,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
 
     /**
-     *
      * @return grid field for this editor ( can be null )
      */
     public GridField getGridField()
@@ -358,8 +365,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
 
     /**
-     *
-     * @return columnNames
+     * @return column name
      */
     public String getColumnName()
     {
@@ -368,10 +374,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     /**
      * Remove the table qualifier from the supplied column name.
-     *
+     * <p>
      * The column name may be prefixed with the table name
      * i.e. <code>[table name].[column name]</code>.
-     * The function returns
+     * The function returns the [column name] part.
      *
      * @param originalColumnName	The column name to clean
      * @return 	the column name with any table qualifier removed
@@ -391,6 +397,9 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		return cleanColumnName;
 	}
 
+    /**
+     * @param columnName
+     */
     protected void setColumnName(String columnName)
     {
     	String cleanColumnName = cleanColumnName(columnName);
@@ -424,6 +433,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
 
     /**
+     * Handle PropertyChangeEvent from {@link #gridField}.
      * @param evt
      */
     public void propertyChange(final PropertyChangeEvent evt)
@@ -444,7 +454,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
 
     /**
-     * @param listener
+     * @param listener ValueChangeListener
      */
     public void addValueChangeListener(ValueChangeListener listener)
     {
@@ -457,12 +467,20 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     		listeners.add(listener);
     }
 
+    /**
+     * @param listener
+     * @return true if listener is found and remove from {@link #listeners}
+     */
     public boolean removeValuechangeListener(ValueChangeListener listener)
     {
     	return listeners.remove(listener);
     }
 
-    protected void fireValueChange(ValueChangeEvent event)
+    /**
+     * Fire ValueChangeEvent to ValueChangeListener in {@link #listeners}
+     * @param event
+     */
+    public void fireValueChange(ValueChangeEvent event)
     {
     	//copy to array to avoid concurrent modification exception
     	ValueChangeListener[] vcl = new ValueChangeListener[listeners.size()];
@@ -490,7 +508,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     /**
      *
-     * @return editable
+     * @return true if editable
      */
     public abstract boolean isReadWrite();
 
@@ -505,8 +523,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     
     /**
      *
-     * @param visible
-     * @param labelVisible
+     * @param visible visibility for component
+     * @param labelVisible visibility for label
      */
     public void setVisible(boolean visible, boolean labelVisible)
     {
@@ -516,7 +534,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     /**
      *
-     * @return is visible
+     * @return true if component is visible
      */
     public boolean isVisible()
     {
@@ -524,7 +542,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
 
     /**
-     * Indicating error with changing the style.
+     * Indicating error with changing the style.<br/>
+     * No op. here, for subclass to implement.
      * @param error
      */
     public void setBackground(boolean error)
@@ -532,11 +551,17 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     }
 
+    /**
+     * Set background color of component.<br/>
+     * No op. here, for subclass to implement.
+     * @param color
+     */
     public void setBackground(Color color)
     {
 
     }
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder(30);
@@ -548,14 +573,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     }
 
     /**
-     *
+     * Set editor value
      * @param value
      */
     abstract public void setValue(Object value);
 
     /**
-     *
-     * @return Object
+     * @return Object, current value of editor
      */
     abstract public Object getValue();
 
@@ -565,10 +589,19 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      */
     abstract public String getDisplay();
     
+    /**
+     * @param value
+     * @return display text for grid view, for consumption by {@link #getDisplayComponent()}
+     */
     public String getDisplayTextForGridView(Object value) {
     	return getDisplayTextForGridView(null, value);
     }
     
+    /**
+     * @param gridRowCtx {@link GridRowCtx}
+     * @param value
+     * @return display text for grid view, for consumption by {@link #getDisplayComponent()}
+     */
     public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
     	this.setValue(value);
     	String s = getDisplay();
@@ -580,7 +613,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     /**
      *
-     * @return list of events
+     * @return list of {@link #component} events that this editor will listen to  
      */
     public String[] getEvents()
     {
@@ -605,20 +638,24 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 
     /**
      *
-     * @return boolean
+     * @return true if field is mandatory
      */
     public boolean isMandatory()
     {
         return this.mandatory;
     }
 
+    /**
+     * Dynamic update of component state
+     */
     public void dynamicDisplay()
     {
     	dynamicDisplay(gridField != null ? gridField.getVO().ctx : Env.getCtx());
     }
     
     /**
-     * allow subclass to perform dynamic loading of data
+     * Dynamic update of component state
+     * @param ctx
      */
     public void dynamicDisplay(Properties ctx)
     {
@@ -627,20 +664,31 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     		updateStyle();
     	}
 
-	if (!dynamicDisplayListeners.isEmpty())
-		dynamicDisplayListeners.stream().forEach(e -> e.onDynamicDisplay(ctx, this));
+    	if (!dynamicDisplayListeners.isEmpty())
+    		dynamicDisplayListeners.stream().forEach(e -> e.onDynamicDisplay(ctx, this));
     }
 
+    /**
+     * Update label and component style
+     * @param applyDictionaryStyle
+     */
 	public void updateStyle(boolean applyDictionaryStyle) {
 		applyLabelStyles(applyDictionaryStyle);
 		applyFieldStyles(applyDictionaryStyle);
 	}
 
+	/**
+	 * Update label and component style
+	 */
 	public void updateStyle() {
 		applyLabelStyles(true);
 		applyFieldStyles(true);
 	}
 
+	/**
+	 * Update label styles
+	 * @param applyDictionaryStyle
+	 */
 	protected void applyLabelStyles(boolean applyDictionaryStyle) {
 		if (label != null) {
 			boolean zoomable = isZoomable();
@@ -673,6 +721,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		}
 	}
 	
+	/**
+	 * Set label style
+	 * @param style sclass name (@sclass=) or zclass name (@zclass=) or css style string
+	 */
 	protected void setLabelStyle(String style) {
 		if (label != null) {
 			if (style != null && style.toLowerCase().startsWith(MStyle.SCLASS_PREFIX)) {
@@ -684,11 +736,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			} else {
 				label.setStyle(style);
 			}
-//			if (this instanceof WRadioGroupEditor)
-//				System.out.println(getComponent().getUuid() + " label stype="+label.getStyle());
 		}
 	}
 
+	/**
+	 * Update field styles
+	 * @param applyDictionaryStyle
+	 */
 	protected void applyFieldStyles(boolean applyDictionaryStyle) {
 		String style = null;
 		if (applyDictionaryStyle && gridField.getAD_FieldStyle_ID() > 0) 
@@ -699,6 +753,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		setFieldMandatoryStyle(applyDictionaryStyle);
 	}
 	
+	/**
+	 * Add mandatory style to field
+	 * @param applyStyle
+	 */
 	private void setFieldMandatoryStyle(boolean applyStyle) {
 		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
 		if (component != null) {
@@ -709,6 +767,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		}
 	}
 
+	/**
+	 * Set field style
+	 * @param style sclass name (@sclass=) or zclass name (@zclass=) or css style string
+	 */
 	protected void setFieldStyle(String style) {
 		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
 		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
@@ -744,13 +806,18 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		return true;
 	}
 
+	/**
+	 * Build css inline style from AD_Style record
+	 * @param AD_Style_ID
+	 * @return css inline style string
+	 */
 	protected String buildStyle(int AD_Style_ID) {
 		MStyle style = MStyle.get(Env.getCtx(), AD_Style_ID);
 		return style.buildStyle(ThemeManager.getTheme(), getStyleEvaluatee());
 	}
 	
     /**
-     * Stretch editor component to fill container
+     * Stretch editor component to fill parent
      */
     public void fillHorizontal() {
     	//stretch component to fill grid cell
@@ -811,15 +878,24 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		updateStyle();
 	}
 	
+	/**
+	 * @return true if mandatory style should be added to editor
+	 */
 	public boolean isMandatoryStyle() {
 		return mandatory && !readOnly && (isProcessParameter || getGridField().isEditable(true)) && isNullOrEmpty();
 	}
 
+	/**
+	 * @return true if current value of editor is null or empty
+	 */
 	public boolean isNullOrEmpty() {
 		Object value = getValue();
-		return value == null || value.toString().trim().length() == 0;
+		return value == null || value.toString().length() == 0;
 	}
 	
+	/**
+	 * @return true if editor support zoom command
+	 */
 	public boolean isZoomable() {
 		WEditorPopupMenu menu = getPopupMenu();
 		if (menu != null && menu.isZoomEnabled() && this instanceof IZoomableEditor) {
@@ -829,12 +905,16 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		}
 	}
 
-	public void setTableEditor(boolean b) {
-		tableEditor = b;
+	/**
+	 * Set grid view mode. Have no effect if editor doesn't has a separate grid view mode.
+	 * @param tableEditorMode
+	 */
+	public void setTableEditor(boolean tableEditorMode) {
+		tableEditor = tableEditorMode;
 	}
 
 	/**
-	 * @return boolean
+	 * @return true if preference dialog is available and accessible
 	 */
 	protected boolean isShowPreference() {
 		return MRole.getDefault() != null && MRole.getDefault().isShowPreference() && gridField != null && !gridField.isEncrypted() 
@@ -842,6 +922,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	}
 
 	/**
+	 * Add record info entry to context menu
 	 * @param popupMenu
 	 */
     protected void addChangeLogMenu(WEditorPopupMenu popupMenu) {
@@ -852,6 +933,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	}
 
     /**
+     * Add text editor dialog entry to context menu
      * @param popupMenu
      */
 	protected void addTextEditorMenu(WEditorPopupMenu popupMenu) {
@@ -866,6 +948,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		popupMenu.appendChild(editor);
 	}
 	
+	/**
+	 * @param comp
+	 * @return true if comp is own by this editor instance
+	 */
 	public boolean isComponentOfEditor(Component comp) {
 		if (comp == getComponent())
 			return true;
@@ -904,24 +990,38 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		return false;
 	}
 	
+	/**
+	 * @return true if editor is use for process parameter field
+	 */
 	public boolean isProcessParameter() {
 		return isProcessParameter;
 	}
 
+	/**
+	 * Set to true if editor is use for process parameter field
+	 * @param isProcessParameter
+	 */
 	public void setProcessParameter(boolean isProcessParameter) {
 		this.isProcessParameter = isProcessParameter;
 	}
 
 	/**
-	 * return component use for display value in grid view mode in non edit status
-	 * if return null, a label will replace.
-	 * because each row must has one instance of this component, don't cache it. just create new instance
-	 * @return
+	 * Return component use for display mode in {@link ADTabpanel} grid view ({@link GridTabRowRenderer}) or custom editor 
+	 * of {@link WListItemRenderer}.<br/>
+	 * For {@link GridTabRowRenderer}, only {@link Html} is supported and will use content 
+	 * from {@link #getDisplayTextForGridView(GridRowCtx, Object)}.<br/>
+	 * For {@link WListItemRenderer}, {@link Html}, {@link Label} and {@link InputElement} is supported.<br/>
+	 * Return null to use the default of {@link ADTabpanel} or {@link WListbox}.<br/>
+	 * Note: because each row must has one instance of this component, don't reuse, must always create new instance.<br/>
+	 * @return Display {@link Component}
 	 */
 	public Component getDisplayComponent() {
 		return null;
 	}
 
+	/**
+	 * Set focus to next editor
+	 */
 	protected void focusNext() {
 		Component comp = getComponent();
 		Component parent = comp.getParent();
@@ -934,6 +1034,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		}
 	}
 
+	/**
+	 * Return Evaluatee for {@link #buildStyle(int)} use.
+	 * @return Evaluatee
+	 */
 	protected Evaluatee getStyleEvaluatee() {
 		return new EvaluateeWrapper(this, gridField, tableEditor);
 	}
@@ -988,24 +1092,23 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	}
 	
 	/**
-	 * add listener
-	 * @param listener
+	 * add listener for {@link #dynamicDisplay(Properties)}
+	 * @param listener {@link DynamicDisplayListener}
 	 */
 	public void addDynamicDisplayListener(DynamicDisplayListener listener) {
 		dynamicDisplayListeners.add(listener);
 	}
 
 	/**
-	 *
-	 * @param listener
-	 * @return true if listener is found and remove from listener list
+	 * @param listener {@link DynamicDisplayListener}
+	 * @return true if listener is found and remove from listener list ({@link #dynamicDisplayListeners}).
 	 */
 	public boolean removeDynamicDisplayListener(DynamicDisplayListener listener) {
 		return dynamicDisplayListeners.remove(listener);
 	}
 
 	/**
-	 * interface for dynamic display event
+	 * interface for dynamic display listener
 	 */
 	public static interface DynamicDisplayListener {
 		/**

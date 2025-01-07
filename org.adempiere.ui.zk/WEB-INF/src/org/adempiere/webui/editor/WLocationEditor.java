@@ -17,7 +17,6 @@
 
 package org.adempiere.webui.editor;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 
@@ -38,6 +37,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.MLocation;
 import org.compiere.model.MLocationLookup;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -46,11 +46,12 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 
 /**
+ * Default editor for {@link DisplayType#Location}.<br/>
+ * Implemented with {@link Locationbox} component and {@link WLocationDialog}.
  * @author Sendy Yagambrum
  * @date July 16, 2007
  * 
- * This class is based on VLocation written by Jorg Janke
- **/
+ */
 public class WLocationEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener, IZoomableEditor
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
@@ -97,6 +98,9 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
         init();
 	}
 
+    /**
+     * Init component and context menu
+     */
     private void init()
     {
     	if (ThemeManager.isUseFontIconForImage())
@@ -164,7 +168,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 
 	/**
      *  Return Editor value
-     *  @return value
+     *  @return C_Location_ID
      */
     public int getC_Location_ID()
     {
@@ -172,36 +176,26 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
             return 0;
         return m_value.getC_Location_ID();
     }   
-    
-    /**
-     *  Property Change Listener
-     *  @param evt PropertyChangeEvent
-     */
-    public void propertyChange (PropertyChangeEvent evt)
-    {
-        if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
-            setValue(evt.getNewValue());
-    }
-    
+
+    @Override
     public void onEvent(Event event) throws Exception
     {    
-        //
         if ("onClick".equals(event.getName()))
         {
-            if (log.isLoggable(Level.CONFIG)) log.config( "actionPerformed - " + m_value);
+            if (log.isLoggable(Level.CONFIG)) log.config( "onEvent - " + m_value);
             final WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value, gridField);
             final int oldValue = m_value == null ? 0 : m_value.getC_Location_ID();
             ld.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 
 				@Override
 				public void onEvent(Event event) throws Exception {
-					getComponent().getTextbox().focus();
-					m_value = ld.getValue();
+					getComponent().getTextbox().focus();					
 		            //
 					if (!ld.isChanged())
 		                return;
 		    
 		            //  Data Binding
+					m_value = ld.getValue();
 		            int C_Location_ID = 0;
 		            if (m_value != null)
 		                C_Location_ID = m_value.getC_Location_ID();
@@ -212,7 +206,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		                ValueChangeEvent vc = new ValueChangeEvent(WLocationEditor.this,getColumnName(),null,ii);
 		                fireValueChange(vc);
 		            }
-		            setValue(ii);					
+		            getComponent().setText(m_value != null ? m_value.toString() : null);				
 				}
 			});
             ld.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {

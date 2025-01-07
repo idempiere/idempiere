@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLine
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportLine")
-public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent 
+public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -73,6 +73,44 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_ReportLine (Properties ctx, String PA_ReportLine_UU, String trxName)
+    {
+      super (ctx, PA_ReportLine_UU, trxName);
+      /** if (PA_ReportLine_UU == null)
+        {
+			setIsInverseDebitCreditOnly (false);
+// N
+			setIsPrinted (true);
+// Y
+			setLineType (null);
+			setName (null);
+			setPA_ReportLine_ID (0);
+			setPA_ReportLineSet_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_ReportLine WHERE PA_ReportLineSet_ID=@PA_ReportLineSet_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportLine (Properties ctx, String PA_ReportLine_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportLine_UU, trxName, virtualColumns);
+      /** if (PA_ReportLine_UU == null)
+        {
+			setIsInverseDebitCreditOnly (false);
+// N
+			setIsPrinted (true);
+// Y
+			setLineType (null);
+			setName (null);
+			setPA_ReportLine_ID (0);
+			setPA_ReportLineSet_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_ReportLine WHERE PA_ReportLineSet_ID=@PA_ReportLineSet_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_ReportLine (Properties ctx, ResultSet rs, String trxName)
     {
@@ -80,7 +118,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -185,10 +223,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public boolean isInverseDebitCreditOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInverseDebitCreditOnly);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -208,10 +246,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -231,10 +269,10 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public boolean isShowOppositeSign()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowOppositeSign);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -302,7 +340,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

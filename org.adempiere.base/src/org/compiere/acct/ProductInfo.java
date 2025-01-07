@@ -39,7 +39,7 @@ public class ProductInfo
 	/**
 	 *  Constructor
 	 *  @param  M_Product_ID Product
-	 * 	@param trxName transcation
+	 * 	@param trxName transaction
 	 */
 	public ProductInfo (int M_Product_ID, String trxName)
 	{
@@ -124,7 +124,7 @@ public class ProductInfo
 
 	/**
 	 *  Is Product/Item
-	 *  @return true if product
+	 *  @return true if product is of item type
 	 */
 	public boolean isProduct()
 	{

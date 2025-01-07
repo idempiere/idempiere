@@ -30,10 +30,10 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
+import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -44,17 +44,21 @@ import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.expression.logic.LogicEvaluator;
 
 /**
- *	Persistent Column Model
+ *	Column Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MColumn.java,v 1.6 2006/08/09 05:23:49 jjanke Exp $
  */
 public class MColumn extends X_AD_Column implements ImmutablePOSupport
 {
+	public static final String VIRTUAL_SEARCH_COLUMN_PREFIX = "@SQLFIND=";
+
+	public static final String VIRTUAL_UI_COLUMN_PREFIX = "@SQL=";
+
 	/**
-	 * 
+	 * generated serial id 
 	 */
-	private static final long serialVersionUID = 4379933682905553553L;
+	private static final long serialVersionUID = -528009647661217241L;
 
 	/**
 	 * 	Get MColumn from Cache (immutable)
@@ -142,6 +146,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return table.getColumn(columnName);
 	}	//	get
 
+	/**
+	 * @param ctx
+	 * @param AD_Column_ID
+	 * @return Column name or null
+	 */
 	public static String getColumnName (Properties ctx, int AD_Column_ID)
 	{
 		return getColumnName (ctx, AD_Column_ID, null);
@@ -165,7 +174,19 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Column_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MColumn(Properties ctx, String AD_Column_UU, String trxName) {
+        super(ctx, AD_Column_UU, trxName);
+		if (Util.isEmpty(AD_Column_UU))
+			setInitialDefaults();
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Column_ID
@@ -175,19 +196,24 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	{
 		super (ctx, AD_Column_ID, trxName);
 		if (AD_Column_ID == 0)
-		{
-			setIsAlwaysUpdateable (false);	// N
-			setIsEncrypted (false);
-			setIsIdentifier (false);
-			setIsKey (false);
-			setIsMandatory (false);
-			setIsParent (false);
-			setIsSelectionColumn (false);
-			setIsTranslated (false);
-			setIsUpdateable (true);	// Y
-			setVersion (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MColumn
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsAlwaysUpdateable (false);	// N
+		setIsEncrypted (false);
+		setIsIdentifier (false);
+		setIsKey (false);
+		setIsMandatory (false);
+		setIsParent (false);
+		setIsSelectionColumn (false);
+		setIsTranslated (false);
+		setIsUpdateable (true);	// Y
+		setVersion (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -213,7 +239,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}	//	MColumn
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MColumn(MColumn copy) 
@@ -222,7 +248,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -232,7 +258,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -242,9 +268,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		this(ctx, 0, trxName);
 		copyPO(copy);
 	}
+	
 	/**
 	 * 	Is Standard Column
-	 *	@return true for AD_Client_ID, etc.
+	 *	@return true if this column is one of the 8 standard column that should exists in every table.<br/>
+	 *  - AD_Client_ID, AD_Org_ID, IsActive, Created, Created By, Updated, Updated By or Processing
 	 */
 	public boolean isStandardColumn()
 	{
@@ -272,7 +300,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Is Virtual Column
-	 *	@return true if virtual column
+	 *	@return true if virtual column (using column SQL)
 	 */
 	public boolean isVirtualColumn()
 	{
@@ -282,32 +310,32 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Is Virtual DB Column
-	 *	@return true if virtual DB column
+	 *	@return true if virtual DB column (using column SQL and is not using @SQL= or @SQLFIND=)
 	 */
 	public boolean isVirtualDBColumn()
 	{
 		String s = getColumnSQL();
-		return s != null && s.length() > 0 && !s.startsWith("@SQL=");
+		return s != null && s.length() > 0 && !s.startsWith(VIRTUAL_UI_COLUMN_PREFIX) && !s.startsWith(VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}	//	isVirtualDBColumn
 
 	/**
 	 * 	Is Virtual UI Column
-	 *	@return true if virtual UI column
+	 *	@return true if virtual UI column (using column SQL that starts with @SQL=)
 	 */
 	public boolean isVirtualUIColumn()
 	{
 		String s = getColumnSQL();
-		return s != null && s.length() > 0 && s.startsWith("@SQL=");
+		return s != null && s.length() > 0 && s.startsWith(VIRTUAL_UI_COLUMN_PREFIX);
 	}	//	isVirtualUIColumn
 	
 	/**
 	 * 	Is Virtual Search Column
-	 *	@return true if virtual search column
+	 *	@return true if virtual search column (using column SQL that starts with @SQLFIND=)
 	 */
 	public boolean isVirtualSearchColumn()
 	{
 		String s = getColumnSQL();
-		return s != null && s.length() > 0 && s.startsWith("@SQLFIND=");
+		return s != null && s.length() > 0 && s.startsWith(VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}	//	isVirtualSearchColumn
 
 	/**
@@ -334,6 +362,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 *	@param newRecord new
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		String error = Database.isValidIdentifier(getColumnName());
@@ -371,7 +400,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
-		if (displayType == DisplayType.Table && getAD_Reference_Value_ID() <= 0)
+		if ((displayType == DisplayType.Table || displayType == DisplayType.TableUU) && getAD_Reference_Value_ID() <= 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Reference_Value_ID"));
 			return false;
@@ -515,7 +544,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 		//validate readonly logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
-			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getReadOnlyLogic());
 			}
 		}
@@ -537,7 +566,49 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (getAD_Reference_ID() != DisplayType.Button && get_Value(COLUMNNAME_AD_InfoWindow_ID) != null) {
 			set_Value(COLUMNNAME_AD_InfoWindow_ID, null);
 		}
+
+		if (DisplayType.isUUID(getAD_Reference_ID())) {
+			set_Value(COLUMNNAME_FieldLength, 36);
+			if (! getColumnName().endsWith("_UU")) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "UUColumnsMustEndWithUU"));
+				return false;
+			}
+		}
 		
+		if (getAD_Reference_ID() == DisplayType.YesNo) {
+ 			setIsMandatory(true);
+			if (Util.isEmpty(getDefaultValue(), true)) {
+				if (getAD_Element_ID() == SystemIDs.ELEMENT_ISACTIVE)
+					setDefaultValue("Y");
+				else
+					setDefaultValue("N");
+			}
+ 		}
+		
+		if (isActive() && isPartitionKey() && getSeqNoPartition() <= 0)
+		{
+			String sql = "SELECT COALESCE(MAX(SeqNoPartition),0)+10 AS DefaultValue FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' AND IsPartitionKey='Y'";
+			int ii = DB.getSQLValue(get_TrxName(), sql, getAD_Table_ID());
+			setSeqNoPartition(ii);
+		}
+		
+		if (is_ValueChanged(COLUMNNAME_IsPartitionKey) 
+				|| is_ValueChanged(COLUMNNAME_PartitioningMethod)
+				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_IsActive))
+				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_SeqNoPartition))
+				|| (isPartitionKey() && is_ValueChanged(COLUMNNAME_RangePartitionInterval))) {
+			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
+			if (service == null) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "DBAdapterNoTablePartitionSupport"));
+				return false;
+			}
+			error = service.isValidConfiguration(this);
+			if (!Util.isEmpty(error)) {
+				log.saveError("Error", Msg.getMsg(getCtx(), error));
+				return false;				
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 	
@@ -547,6 +618,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 *	@param success success
 	 *	@return success
 	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
@@ -583,7 +655,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 	Get SQL Add command
 	 *	@param table table
-	 *	@return sql
+	 *	@return SQL to add new column
 	 */
 	public String getSQLAdd (MTable table)
 	{
@@ -596,7 +668,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Get SQL DDL
-	 *	@return columnName datataype ..
+	 *	@return DDL for column
 	 */
 	public String getSQLDDL()
 	{
@@ -614,7 +686,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 * 	Get SQL Modify command
 	 *	@param table table
 	 *	@param setNullOption generate null / not null statement
-	 *	@return sql separated by ;
+	 *	@return SQL to modify existing column
 	 */
 	public String getSQLModify (MTable table, boolean setNullOption)
 	{
@@ -627,7 +699,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 
 	/**
 	 * 	Get SQL Data Type
-	 *	@return e.g. NVARCHAR2(60)
+	 *	@return SQL data type (e.g. NVARCHAR2(60))
 	 */
 	public String getSQLDataType()
 	{
@@ -639,15 +711,14 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**
 	 * 	Get Table Constraint
 	 *	@param tableName table name
-	 *	@return table constraint
+	 *	@return table constraint clause
 	 */
 	public String getConstraint(String tableName)
 	{
 		if (isKey()) {
 			StringBuilder constraintName;
-			if (tableName.length() > 26)
-				// Oracle restricts object names to 30 characters
-				constraintName = new StringBuilder(tableName.substring(0, 26)).append("_Key");
+			if (tableName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 4)
+				constraintName = new StringBuilder(tableName.substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 4)).append("_Key");
 			else
 				constraintName = new StringBuilder(tableName).append("_Key");
 			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(constraintName).append(" PRIMARY KEY (").append(getColumnName()).append(")");
@@ -660,23 +731,26 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				+ " FOREIGN KEY (" + getColumnName() + ") REFERENCES "
 				+ AD_Table(AD_Table_ID) ON DELETE CASCADE
 		**/
+		MTable table = MTable.get(getAD_Table_ID());
 		// IDEMPIERE-965
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
-			StringBuilder indexName = new StringBuilder().append(getColumnName()).append("_idx");
-			if (indexName.length() > 30) {
-				indexName = new StringBuilder().append(getColumnName().substring(0, 25));
-				indexName.append("uuidx");
-			}
-			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" UNIQUE (").append(getColumnName()).append(")");
+			String indexName = MTable.getUUIDIndexName(tableName);
+			String constraintType;
+			if (table.isUUIDKeyTable())
+				constraintType = "PRIMARY KEY";
+			else
+				constraintType = "UNIQUE";
+			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" ").append(constraintType).append(" (").append(getColumnName()).append(")");
 			return msgreturn.toString();
 		}
 		return "";
 	}	//	getConstraint
-	
+
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MColumn[");
@@ -688,7 +762,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 * 	get Column ID
 	 *  @param TableName
 	 *	@param columnName
-	 *	@return int retValue
+	 *	@return AD_Column_ID
 	 */
 	public static int getColumn_ID(String TableName,String columnName) {
 		MTable table = MTable.get(Env.getCtx(), TableName);
@@ -701,19 +775,23 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}
 	
 	/**
-	* Get Table Id for a column
-	* @param ctx context
-	* @param AD_Column_ID id
-	* @param trxName transaction
-	* @return MColumn
-	*/
+	 * Get Table Id for a column
+	 * @param ctx context
+	 * @param AD_Column_ID id
+	 * @param trxName transaction
+	 * @return AD_Table_ID
+	 */
 	public static int getTable_ID(Properties ctx, int AD_Column_ID, String trxName)
 	{
 		String sqlStmt = "SELECT AD_Table_ID FROM AD_Column WHERE AD_Column_ID=?";
 		return DB.getSQLValue(trxName, sqlStmt, AD_Column_ID);
 	}
 
-
+	/**
+	 * @param columnName
+	 * @param caseSensitive
+	 * @return true if column should be included as selection column
+	 */
 	public static boolean isSuggestSelectionColumn(String columnName, boolean caseSensitive)
 	{
 		if (Util.isEmpty(columnName, true))
@@ -734,26 +812,59 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
         	return false;
 	}
 
-	public String getReferenceTableName() {
-		String foreignTable = null;
+	final private static String sqlTableNameReference = ""
+			+ "SELECT tb.TableName "
+			+ "FROM   AD_Column c "
+			+ "       JOIN AD_Ref_Table rt ON ( rt.AD_Reference_ID = c.AD_Reference_Value_ID ) "
+			+ "       JOIN AD_Table tb ON ( tb.AD_Table_ID = rt.AD_Table_ID ) "
+			+ "WHERE  c.AD_Column_ID = ? "
+			+ "       AND rt.IsActive = 'Y' "
+			+ "       AND tb.IsActive = 'Y'";
+
+	final private static String sqlTableNameSelectionGrid = ""
+			+ "SELECT tb.TableName "
+			+ "FROM   AD_Column c "
+			+ "       JOIN AD_Field f ON ( f.AD_Column_ID = c.AD_Column_ID ) "
+			+ "       JOIN AD_Tab t ON ( t.AD_Tab_ID = f.Included_Tab_ID ) "
+			+ "       JOIN AD_Table tb ON ( tb.AD_Table_ID = t.AD_Table_ID ) "
+			+ "WHERE  c.AD_Column_ID = ? "
+			+ "       AND t.IsActive = 'Y' "
+			+ "       AND tb.IsActive = 'Y' "
+			+ "       AND f.IsActive = 'Y'";
+	private String foreignTableMulti = null;
+	
+	/**
+	 * Get the foreign table name that relates to this column when the column is multi selection
+	 * @return foreign table name or null
+	 */
+	public String getMultiReferenceTableName() {
+		if (foreignTableMulti != null)
+			return foreignTableMulti;
 		int refid = getAD_Reference_ID();
-		if (DisplayType.TableDir == refid || (DisplayType.Search == refid && getAD_Reference_Value_ID() == 0)) {
+		if (DisplayType.ChosenMultipleSelectionList == refid) {
+			foreignTableMulti = "AD_Ref_List";
+		} else if (DisplayType.ChosenMultipleSelectionTable == refid || DisplayType.ChosenMultipleSelectionSearch == refid) {
+			foreignTableMulti = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameReference, getAD_Column_ID());
+		} else if (DisplayType.SingleSelectionGrid == refid || DisplayType.MultipleSelectionGrid == refid) {
+			foreignTableMulti = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameSelectionGrid, getAD_Column_ID());
+		}
+		return foreignTableMulti;
+	}
+
+	private String foreignTable = null;
+	
+	/**
+	 * Get the foreign table name that relates to this column
+	 * @return foreign table name or null
+	 */
+	public String getReferenceTableName() {
+		if (foreignTable != null)
+			return foreignTable;
+		int refid = getAD_Reference_ID();
+		if (DisplayType.TableDir == refid || DisplayType.TableDirUU == refid || ((DisplayType.Search == refid || DisplayType.SearchUU == refid) && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
-		} else if (DisplayType.Table == refid || DisplayType.Search == refid) {
-			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
-				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
-				if (cnt == 1) {
-					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-					if (rt != null) {
-						MTable table = MTable.get(getCtx(), rt.getAD_Table_ID(), get_TrxName());
-						if (table == null) {
-							throw new AdempiereException("Table " + rt.getAD_Table_ID() + " not found");
-						}
-						foreignTable = table.getTableName();
-					}
-				}
-			}
+		} else if (DisplayType.Table == refid || DisplayType.TableUU == refid || DisplayType.Search == refid || DisplayType.SearchUU == refid) {
+			foreignTable = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameReference, getAD_Column_ID());
 		} else if (DisplayType.Button == refid) {
 			// C_BPartner.AD_OrgBP_ID and C_Project.C_ProjectType_ID are defined as buttons
 			if ("AD_OrgBP_ID".equalsIgnoreCase(getColumnName()))
@@ -791,6 +902,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return foreignTable;
 	}
 
+	/**
+	 * Set default values for new column
+	 */
 	public void setSmartDefaults() { // IDEMPIERE-1649 - dup code on Callout_AD_Column.columnName
 		if (MColumn.isSuggestSelectionColumn(getColumnName(), true))
 			setIsSelectionColumn(true);
@@ -894,6 +1008,17 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return table;
 	}
 
+	/**
+	 * @param md
+	 * @param catalog
+	 * @param schema
+	 * @param tableName
+	 * @param table
+	 * @param column
+	 * @param isNoTable
+	 * @return SQL to add or replace foreign key constraint
+	 * @throws Exception
+	 */
 	public static String getForeignKeyConstraintSql(DatabaseMetaData md, String catalog, String schema, String tableName, MTable table, MColumn column, boolean isNoTable) throws Exception
 	{
 		StringBuilder fkConstraintSql = new StringBuilder();
@@ -963,8 +1088,15 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 						DatabaseKey dbForeignKey = htForeignKeys.get(key);
 						if (dbForeignKey.getKeyColumns()[0].equalsIgnoreCase(column.getColumnName()))
 						{
-							DatabaseKey primaryKey = getPrimaryKey(md, referenceTableName);
-							if (primaryKey != null)
+							DatabaseKey primaryKey = null;
+							String uuidKey = null;
+							if (column.getColumnName().endsWith("_UU")) {
+								uuidKey = PO.getUUIDColumnName(referenceTableName);
+							} else {
+								primaryKey = MColumn.getPrimaryKey(md, referenceTableName);
+							}
+
+							if (primaryKey != null || uuidKey != null)
 							{
 								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
 								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
@@ -976,7 +1108,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 								else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull)
 									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_SetNull;
 								else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction || dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict)
-									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction;
+									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 								String fkConstraintType = column.getFKConstraintType();
 								if (fkConstraintType == null) {
 									fkConstraintType = dbDeleteRule;
@@ -986,12 +1118,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 											|| "CreatedBy".equals(column.getColumnName())
 											|| "UpdatedBy".equals(column.getColumnName())
 										   )
-											fkConstraintType = MColumn.FKCONSTRAINTTYPE_DoNotCreate;
+											fkConstraintType = MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore;
 										else
-											fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+											fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 									}
 								}
-								if (!fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
+								if (!fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore))
 								{
 									String fkConstraintName = column.getFKConstraintName();						
 									if (fkConstraintName == null || fkConstraintName.trim().length() == 0)
@@ -1000,16 +1132,20 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 									StringBuilder fkConstraint = new StringBuilder();
 									fkConstraint.append("CONSTRAINT ").append(fkConstraintName);
 									fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
-									fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
-									for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
-									{
-										if (primaryKey.getKeyColumns()[i] == null)
-											break;
-										fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+									if (uuidKey != null) {
+										fkConstraint.append(referenceTableName).append("(").append(uuidKey);
+									} else {
+										fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
+										for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
+										{
+											if (primaryKey.getKeyColumns()[i] == null)
+												break;
+											fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+										}
 									}
 									fkConstraint.append(")");
 
-									if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction))
+									if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion))
 										;
 									else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_Cascade))
 										fkConstraint.append(" ON DELETE CASCADE");
@@ -1031,8 +1167,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 									if (   dbForeignKey.getKeyName().equalsIgnoreCase(column.getFKConstraintName())
 										&& (   (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyCascade && MColumn.FKCONSTRAINTTYPE_Cascade.equals(column.getFKConstraintType()))
 										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull && MColumn.FKCONSTRAINTTYPE_SetNull.equals(column.getFKConstraintType()))
-										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction && MColumn.FKCONSTRAINTTYPE_NoAction.equals(column.getFKConstraintType()))
-										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict && MColumn.FKCONSTRAINTTYPE_NoAction.equals(column.getFKConstraintType()))
+										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction && MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion.equals(column.getFKConstraintType()))
+										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict && MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion.equals(column.getFKConstraintType()))
 										   )
 									   ) {
 										// nothing changed
@@ -1062,6 +1198,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return fkConstraintSql.toString();
 	}
 
+	/**
+	 * @param md
+	 * @param primaryTableName
+	 * @return primary key
+	 * @throws Exception
+	 */
 	public static DatabaseKey getPrimaryKey(DatabaseMetaData md, String primaryTableName) throws Exception 
 	{
 		DatabaseKey primaryKey = null;
@@ -1101,15 +1243,22 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return primaryKey;
 	}
 
+	/**
+	 * @param md
+	 * @param table
+	 * @param column
+	 * @return Foreign key constraint clause
+	 * @throws Exception
+	 */
 	public static String getForeignKeyConstraint(DatabaseMetaData md, MTable table, MColumn column) throws Exception 
 	{		
 		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())))
 		{
 			String fkConstraintType = column.getFKConstraintType();
 			if (fkConstraintType == null)
-				fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+				fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 			
-			if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
+			if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore))
 				return "";
 
 			int refid = column.getAD_Reference_ID();
@@ -1118,9 +1267,15 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)
 				{
-					DatabaseKey primaryKey = MColumn.getPrimaryKey(md, referenceTableName);
+					DatabaseKey primaryKey = null;
+					String uuidKey = null;
+					if (column.getColumnName().endsWith("_UU")) {
+						uuidKey = PO.getUUIDColumnName(referenceTableName);
+					} else {
+						primaryKey = MColumn.getPrimaryKey(md, referenceTableName);
+					}
 					
-					if (primaryKey != null)
+					if (primaryKey != null || uuidKey != null)
 					{
 						String fkConstraintName = column.getFKConstraintName();						
 						if (fkConstraintName == null || fkConstraintName.trim().length() == 0)
@@ -1133,24 +1288,40 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 							constraintName.append(columnName.replace("_", ""));
 							constraintName.append("_");
 							constraintName.append(table.getTableName().replace("_", ""));
-							if (constraintName.length() > 30)
-								constraintName = new StringBuilder(constraintName.substring(0, 30));
+							if (constraintName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH)
+								constraintName = new StringBuilder(constraintName.substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH));
 							fkConstraintName = constraintName.toString();
+							
+							int duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+							int loop = 0;
+							while (duplicateId > 0) 
+							{
+								loop++;
+								String suffix = "" + loop;
+								if (fkConstraintName.length() + suffix.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH)
+									fkConstraintName = fkConstraintName.substring(0, fkConstraintName.length() - (fkConstraintName.length() + suffix.length() - AdempiereDatabase.MAX_OBJECT_NAME_LENGTH));
+								fkConstraintName = fkConstraintName + loop;
+								duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+							}
 						}
 						
 						StringBuilder fkConstraint = new StringBuilder();
 						fkConstraint.append("CONSTRAINT ").append(fkConstraintName);
 						fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
-						fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
-						for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
-						{
-							if (primaryKey.getKeyColumns()[i] == null)
-								break;
-							fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+						if (uuidKey != null) {
+							fkConstraint.append(referenceTableName).append("(").append(uuidKey);
+						} else {
+							fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
+							for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
+							{
+								if (primaryKey.getKeyColumns()[i] == null)
+									break;
+								fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+							}
 						}
 						fkConstraint.append(")");
 						
-						if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction))
+						if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion))
 							;
 						else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_Cascade))
 							fkConstraint.append(" ON DELETE CASCADE");
@@ -1187,23 +1358,36 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return cnt > 0;
 	}
 
+	/**
+	 * @param nullForUI true to return the string "NULL" for @SQL=
+	 * @return column SQL (without the @SQL= or @SQLFIND= prefix) or null
+	 */
 	public String getColumnSQL(boolean nullForUI) {
 		return getColumnSQL(nullForUI, true);
 	}
 	
+	/**
+	 * @param nullForUI true to return the string "NULL" for @SQL=
+	 * @param nullForSearch true to return the string "NULL" for @SQLFIND=
+	 * @return column SQL (without the @SQL= or @SQLFIND= prefix) or null
+	 */
 	public String getColumnSQL(boolean nullForUI, boolean nullForSearch) {
 		String query = getColumnSQL();
 		if (query != null && query.length() > 0) {
-			if (query.startsWith("@SQL=") && nullForUI)
+			if (query.startsWith(VIRTUAL_UI_COLUMN_PREFIX) && nullForUI)
 				query = "NULL";
-			else if (query.startsWith("@SQLFIND=") && nullForSearch)
+			else if (query.startsWith(VIRTUAL_SEARCH_COLUMN_PREFIX) && nullForSearch)
 				query = "NULL";
-			else if (query.startsWith("@SQLFIND=") && !nullForSearch)
+			else if (query.startsWith(VIRTUAL_SEARCH_COLUMN_PREFIX) && !nullForSearch)
 				query = query.substring(9);
 		}
 		return query;
 	}
 
+	/**
+	 * @param newColumnName
+	 * @return new column name + " - " + SQL executed to rename column
+	 */
 	public String renameDBColumn(String newColumnName) {
 		int rvalue = -1;
 		String sql;

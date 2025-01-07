@@ -32,6 +32,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	Cash Journal Model
@@ -52,19 +53,18 @@ import org.compiere.util.TimeUtil;
 public class MCash extends X_C_Cash implements DocAction
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7632011237765946083L;
 
-
 	/**
-	 * 	Get Cash Journal for currency, org and date
+	 * 	Get or create new Cash Journal for currency, org and date
 	 *	@param ctx context
 	 *	@param C_Currency_ID currency
 	 *	@param AD_Org_ID org
 	 *	@param dateAcct date
 	 *	@param trxName transaction
-	 *	@return cash
+	 *	@return MCash
 	 */
 	public static MCash get (Properties ctx, int AD_Org_ID, 
 		Timestamp dateAcct, int C_Currency_ID, String trxName)
@@ -99,7 +99,7 @@ public class MCash extends X_C_Cash implements DocAction
 	}	//	get
 
 	/**
-	 * 	Get Cash Journal for CashBook and date
+	 * 	Get or create new Cash Journal for CashBook and date
 	 *	@param ctx context
 	 *	@param C_CashBook_ID cashbook
 	 *	@param dateAcct date
@@ -137,9 +137,20 @@ public class MCash extends X_C_Cash implements DocAction
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MCash.class);
-
 	
-	/**************************************************************************
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Cash_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MCash(Properties ctx, String C_Cash_UU, String trxName) {
+        super(ctx, C_Cash_UU, trxName);
+		if (Util.isEmpty(C_Cash_UU))
+			setInitialDefaults(ctx);
+    }
+
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param C_Cash_ID id
@@ -149,25 +160,30 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		super (ctx, C_Cash_ID, trxName);
 		if (C_Cash_ID == 0)
-		{
-			setBeginningBalance (Env.ZERO);
-			setEndingBalance (Env.ZERO);
-			setStatementDifference(Env.ZERO);
-			setDocAction(DOCACTION_Complete);
-			setDocStatus(DOCSTATUS_Drafted);
-			//
-			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-			setStatementDate (today);	// @#Date@
-			setDateAcct (today);	// @#Date@
-			
-			StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
-			.append(" ").append(MOrg.get(ctx, getAD_Org_ID()).getValue());
-			setName (name.toString());
-			setIsApproved(false);
-			setPosted (false);	// N
-			setProcessed (false);
-		}
+			setInitialDefaults(ctx);
 	}	//	MCash
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults(Properties ctx) {
+		setBeginningBalance (Env.ZERO);
+		setEndingBalance (Env.ZERO);
+		setStatementDifference(Env.ZERO);
+		setDocAction(DOCACTION_Complete);
+		setDocStatus(DOCSTATUS_Drafted);
+		//
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		setStatementDate (today);	// @#Date@
+		setDateAcct (today);	// @#Date@
+		
+		StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
+		.append(" ").append(MOrg.get(ctx, getAD_Org_ID()).getValue());
+		setName (name.toString());
+		setIsApproved(false);
+		setPosted (false);	// N
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -201,6 +217,12 @@ public class MCash extends X_C_Cash implements DocAction
 		m_book = cb;
 	}	//	MCash
 
+	/**
+	 * @param ctx
+	 * @param C_Cash_ID
+	 * @param trxName
+	 * @param virtualColumns
+	 */
 	public MCash(Properties ctx, int C_Cash_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_Cash_ID, trxName, virtualColumns);
 	}
@@ -212,7 +234,7 @@ public class MCash extends X_C_Cash implements DocAction
 	
 	/**
 	 * 	Get Lines
-	 *	@param requery requery
+	 *	@param requery true to reload from DB
 	 *	@return lines
 	 */
 	public MCashLine[] getLines (boolean requery)
@@ -248,6 +270,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Get Document No 
 	 *	@return name
 	 */
+	@Override
 	public String getDocumentNo()
 	{
 		return getName();
@@ -257,6 +280,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Get Document Info
 	 *	@return document info (untranslated)
 	 */
+	@Override
 	public String getDocumentInfo()
 	{
 		StringBuilder msgreturn = new StringBuilder().append(Msg.getElement(getCtx(), "C_Cash_ID")).append(" ").append(getDocumentNo());
@@ -265,8 +289,9 @@ public class MCash extends X_C_Cash implements DocAction
 
 	/**
 	 * 	Create PDF
-	 *	@return File or null
+	 *	@return PDF File or null
 	 */
+	@Override
 	public File createPDF ()
 	{
 		try
@@ -285,7 +310,7 @@ public class MCash extends X_C_Cash implements DocAction
 	/**
 	 * 	Create PDF file
 	 *	@param file output file
-	 *	@return file if success
+	 *	@return not implemented, always return null
 	 */
 	public File createPDF (File file)
 	{
@@ -297,6 +322,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 *	@param newRecord
 	 *	@return true
 	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		setAD_Org_ID(getCashBook().getAD_Org_ID());
@@ -309,13 +335,13 @@ public class MCash extends X_C_Cash implements DocAction
 		setEndingBalance(getBeginningBalance().add(getStatementDifference()));
 		return true;
 	}	//	beforeSave
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	Process document
 	 *	@param processAction document action
 	 *	@return true if performed
 	 */
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -332,6 +358,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Unlock Document.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -343,6 +370,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Invalidate Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -353,7 +381,7 @@ public class MCash extends X_C_Cash implements DocAction
 	/**
 	 *	Prepare Document
 	 * 	@return new status (In Progress or Invalid) 
-	 */
+	 */@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -412,6 +440,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Approve Document
 	 * 	@return true if success 
 	 */
+	 @Override
 	public boolean  approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -423,6 +452,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Reject Approval
 	 * 	@return true if success 
 	 */
+	 @Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -434,6 +464,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
+	 @Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -562,8 +593,9 @@ public class MCash extends X_C_Cash implements DocAction
 	/**
 	 * 	Void Document.
 	 * 	Same as Close.
-	 * 	@return true if success 
+	 * 	@return true if successfully voided 
 	 */
+	 @Override
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -586,8 +618,7 @@ public class MCash extends X_C_Cash implements DocAction
 		return retValue;
 	}	//	voidIt
 	
-	//FR [ 1866214 ]
-	/**************************************************************************
+	/**
 	 * 	Reverse Cash
 	 * 	Period needs to be open
 	 *	@return true if reversed
@@ -675,6 +706,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Cancel not delivered Quantities
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean closeIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -696,6 +728,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Reverse Correction
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -721,6 +754,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Reverse Accrual - none
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -741,6 +775,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Re-activate
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean reActivateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -764,6 +799,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Set Processed
 	 *	@param processed processed
 	 */
+	@Override
 	public void setProcessed (boolean processed)
 	{
 		super.setProcessed (processed);
@@ -779,6 +815,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MCash[");
@@ -794,6 +831,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
+	@Override
 	public String getSummary()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -814,6 +852,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Get Process Message
 	 *	@return clear text error message
 	 */
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -823,6 +862,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Get Document Owner (Responsible)
 	 *	@return AD_User_ID
 	 */
+	@Override
 	public int getDoc_User_ID()
 	{
 		return getCreatedBy();
@@ -832,6 +872,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Get Document Approval Amount
 	 *	@return amount difference
 	 */
+	@Override
 	public BigDecimal getApprovalAmt()
 	{
 		return getStatementDifference();
@@ -841,13 +882,14 @@ public class MCash extends X_C_Cash implements DocAction
 	 * 	Get Currency
 	 *	@return Currency
 	 */
+	@Override
 	public int getC_Currency_ID ()
 	{
 		return getCashBook().getC_Currency_ID();
 	}	//	getC_Currency_ID
 
 	/**
-	 * 	Document Status is Complete or Closed
+	 * 	Document Status is Complete, Closed or Reversed
 	 *	@return true if CO, CL or RE
 	 */
 	public boolean isComplete()

@@ -25,9 +25,8 @@ import java.util.logging.Level;
 import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.util.DB;
 
-
 /**
- *	Import Format Model 
+ *	Extended Import Format Model for AD_ImpFormat
  *	
  *  @author Jorg Janke
  *  @version $Id: MImpFormat.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -36,9 +35,19 @@ public class MImpFormat extends X_AD_ImpFormat
 {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3768339618622673968L;
+
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ImpFormat_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MImpFormat(Properties ctx, String AD_ImpFormat_UU, String trxName) {
+        super(ctx, AD_ImpFormat_UU, trxName);
+    }
 
 	/**
 	 * 	Standard Constructor

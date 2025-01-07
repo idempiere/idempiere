@@ -22,7 +22,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz (sponsored by FH)                                     *
  **********************************************************************/
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
@@ -38,9 +37,19 @@ import org.compiere.util.Env;
  */
 public class MMFARegistration extends X_MFA_Registration {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1441495978065471474L;
+
+	/**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param MFA_Registration_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MMFARegistration(Properties ctx, String MFA_Registration_UU, String trxName) {
+        super(ctx, MFA_Registration_UU, trxName);
+    }
 
 	/**
 	 * Read/Create empty MFA Registration
@@ -68,7 +77,7 @@ public class MMFARegistration extends X_MFA_Registration {
 	 * Validate if a method is already registered for this user
 	 * @param method
 	 * @param prm 
-	 * @return
+	 * @return true if valid registration exists
 	 */
 	public static boolean alreadyExistsValid(MMFAMethod method, String prm) {
 		List<Object> params = new ArrayList<Object>();
@@ -91,6 +100,12 @@ public class MMFARegistration extends X_MFA_Registration {
 		return cnt != 0;
 	}
 
+	/**
+	 * Mark previous invalid registration as inactive.
+	 * @param method
+	 * @param prm
+	 * @param reg
+	 */
 	public static void invalidatePreviousPending(MMFAMethod method, String prm, MMFARegistration reg) {
 		List<Object> params = new ArrayList<Object>();
 		params.add(Env.getAD_User_ID(method.getCtx()));
@@ -136,7 +151,7 @@ public class MMFARegistration extends X_MFA_Registration {
 
 	/**
 	 * Get the valid registrations from this user
-	 * @return
+	 * @return list of valid registrations
 	 */
 	public static List<MMFARegistration> getValidRegistrationsFromUser() {
 		final String where = "IsValid ='Y' AND AD_User_ID=? AND AD_Client_ID IN (0,?)";
@@ -150,7 +165,7 @@ public class MMFARegistration extends X_MFA_Registration {
 
 	/**
 	 * If the user has valid registration mechanisms
-	 * @return
+	 * @return true if user has valid registration
 	 */
 	public static boolean userHasValidRegistration() {
 		final String sql = ""
@@ -166,8 +181,8 @@ public class MMFARegistration extends X_MFA_Registration {
 
 	/**
 	 * Generate a validation code using the registered method
-	 * @param reg
-	 * @return
+	 * @param reg registration record
+	 * @return validation code
 	 */
 	public String generateValidationCode(MMFARegistration reg) {
 		MMFAMethod method = new MMFAMethod(getCtx(), getMFA_Method_ID(), get_TrxName());
@@ -178,10 +193,10 @@ public class MMFARegistration extends X_MFA_Registration {
 
 	/**
 	 * Validate the code using the registered method
-	 * @param reg
-	 * @param code
+	 * @param reg registration record
+	 * @param code validation code
 	 * @param setPreferred
-	 * @return
+	 * @return message on error, null when OK
 	 */
 	public String validateCode(MMFARegistration reg, String code, boolean setPreferred) {
 		MMFAMethod method = new MMFAMethod(getCtx(), getMFA_Method_ID(), get_TrxName());

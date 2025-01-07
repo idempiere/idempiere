@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StorageProvider
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_StorageProvider")
-public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_Persistent 
+public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_StorageProvider (Properties ctx, int AD_StorageProvider_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_StorageProvider (Properties ctx, String AD_StorageProvider_UU, String trxName)
+    {
+      super (ctx, AD_StorageProvider_UU, trxName);
+      /** if (AD_StorageProvider_UU == null)
+        {
+			setAD_StorageProvider_ID (0);
+			setIsDefault (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_StorageProvider (Properties ctx, String AD_StorageProvider_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_StorageProvider_UU, trxName, virtualColumns);
+      /** if (AD_StorageProvider_UU == null)
+        {
+			setAD_StorageProvider_ID (0);
+			setIsDefault (false);
+// N
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_StorageProvider (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -153,10 +179,10 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -203,7 +229,7 @@ public class X_AD_StorageProvider extends PO implements I_AD_StorageProvider, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

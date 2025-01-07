@@ -76,13 +76,8 @@ public class FavouriteController
 			vTree.setAD_Org_ID(user.getAD_Org_ID());
 			// Support for System user
 			vTree.set_ValueNoCheck(MTreeFavorite.COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
-			try {
-				PO.setCrossTenantSafe();
-				if (!vTree.save())
-					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FavTreeNotCreate"));
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			if (!vTree.saveCrossTenantSafe())
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FavTreeNotCreate"));
 
 			m_AD_Tree_Favorite_ID = vTree.getAD_Tree_Favorite_ID();
 		}

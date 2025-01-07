@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Workflow
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Workflow")
-public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent 
+public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20231222L;
 
     /** Standard Constructor */
     public X_AD_Workflow (Properties ctx, int AD_Workflow_ID, String trxName)
@@ -94,6 +94,64 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Workflow (Properties ctx, String AD_Workflow_UU, String trxName)
+    {
+      super (ctx, AD_Workflow_UU, trxName);
+      /** if (AD_Workflow_UU == null)
+        {
+			setAccessLevel (null);
+			setAD_Workflow_ID (0);
+			setAuthor (null);
+			setCost (Env.ZERO);
+			setDuration (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+// N
+			setIsDefault (false);
+			setIsValid (false);
+			setName (null);
+			setPublishStatus (null);
+// U
+			setValue (null);
+			setVersion (0);
+			setWaitingTime (0);
+			setWorkflowType (null);
+// G
+			setWorkingTime (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Workflow (Properties ctx, String AD_Workflow_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Workflow_UU, trxName, virtualColumns);
+      /** if (AD_Workflow_UU == null)
+        {
+			setAccessLevel (null);
+			setAD_Workflow_ID (0);
+			setAuthor (null);
+			setCost (Env.ZERO);
+			setDuration (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsBetaFunctionality (false);
+// N
+			setIsDefault (false);
+			setIsValid (false);
+			setName (null);
+			setPublishStatus (null);
+// U
+			setValue (null);
+			setVersion (0);
+			setWaitingTime (0);
+			setWorkflowType (null);
+// G
+			setWorkingTime (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Workflow (Properties ctx, ResultSet rs, String trxName)
     {
@@ -101,7 +159,7 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -511,10 +569,10 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	public boolean isBetaFunctionality()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBetaFunctionality);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -534,10 +592,10 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -557,10 +615,10 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
 	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -622,7 +680,7 @@ public class X_AD_Workflow extends PO implements I_AD_Workflow, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }

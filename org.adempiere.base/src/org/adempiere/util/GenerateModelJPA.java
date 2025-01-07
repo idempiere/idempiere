@@ -36,7 +36,9 @@ import org.compiere.util.Env;
  *
  *  @author Jorg Janke, Victor Perez (JPA variation)
  *  @version $Id$
+ *  @deprecated
  */
+@Deprecated(forRemoval = true, since = "11")
 public class GenerateModelJPA
 {
 	/**

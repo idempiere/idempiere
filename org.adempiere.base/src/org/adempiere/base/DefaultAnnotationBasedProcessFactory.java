@@ -27,9 +27,11 @@ package org.adempiere.base;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * 
+ * Default implementation of {@link AnnotationBasedProcessFactory} that would scan the following packages:<br/>
+ * "org.adempiere.process","org.compiere.impexp","org.compiere.print","org.compiere.process",
+ * "org.compiere.report","org.compiere.sla","org.compiere.wf","org.eevolution.process",
+ * "org.globalqss.process","org.idempiere.broadcast.process","org.idempiere.fa.process" and "org.idempiere.process" 
  * @author hengsin
- *
  */
 @Component(immediate = true, service = IProcessFactory.class, property = {"service.ranking:Integer=-1"})
 public final class DefaultAnnotationBasedProcessFactory extends AnnotationBasedProcessFactory {
