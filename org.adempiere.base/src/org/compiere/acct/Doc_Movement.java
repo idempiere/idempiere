@@ -193,6 +193,8 @@ public class Doc_Movement extends Doc
 			if (dr == null)
 				continue;
 			dr.setM_Locator_ID(line.getM_Locator_ID());
+			dr.setM_AttributeSetInstance_ID(line.getM_AttributeSetInstance_ID());
+			dr.setM_Warehouse_ID(getM_Warehouse_ID());
 			dr.setQty(line.getQty().negate());	//	outgoing
 			if (isReversal(line))
 			{
@@ -212,6 +214,8 @@ public class Doc_Movement extends Doc
 			if (cr == null)
 				continue;
 			cr.setM_Locator_ID(line.getM_LocatorTo_ID());
+			cr.setM_AttributeSetInstance_ID(line.getM_AttributeSetInstanceTo_ID());
+			cr.setM_Warehouse_ID(getM_WarehouseTo_ID());
 			cr.setQty(line.getQty());
 			if (isReversal(line))
 			{

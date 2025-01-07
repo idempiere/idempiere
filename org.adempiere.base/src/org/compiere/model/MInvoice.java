@@ -554,6 +554,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setC_Activity_ID(line.getC_Activity_ID());
 		setUser1_ID(line.getUser1_ID());
 		setUser2_ID(line.getUser2_ID());
+		setC_CostCenter_ID(line.getC_CostCenter_ID());
+		setC_Department_ID(line.getC_Department_ID());
 		//
 		setC_DocTypeTarget_ID(line.getC_DocType_ID());
 		setDateInvoiced(line.getDateInvoiced());
@@ -707,6 +709,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setC_Activity_ID(order.getC_Activity_ID());
 		setUser1_ID(order.getUser1_ID());
 		setUser2_ID(order.getUser2_ID());
+		setC_CostCenter_ID(order.getC_CostCenter_ID());
+		setC_Department_ID(order.getC_Department_ID());
 	}	//	setOrder
 
 	/**
@@ -737,6 +741,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setC_Activity_ID(ship.getC_Activity_ID());
 		setUser1_ID(ship.getUser1_ID());
 		setUser2_ID(ship.getUser2_ID());
+		setC_CostCenter_ID(ship.getC_CostCenter_ID());
+		setC_Department_ID(ship.getC_Department_ID());
 		//
 		if (ship.getC_Order_ID() != 0)
 		{
@@ -2940,6 +2946,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
         setC_Campaign_ID(originalInvoice.getC_Campaign_ID());
         setUser1_ID(originalInvoice.getUser1_ID());
         setUser2_ID(originalInvoice.getUser2_ID());
+		setC_CostCenter_ID(originalInvoice.getC_CostCenter_ID());
+		setC_Department_ID(originalInvoice.getC_Department_ID());
 	}
 
 	/**
