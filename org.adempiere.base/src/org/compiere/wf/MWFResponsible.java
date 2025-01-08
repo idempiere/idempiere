@@ -103,13 +103,6 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 		resp = new Query(ctx, Table_Name, "AD_Client_ID=? AND Override_ID=?", null).setOnlyActiveRecords(true)
 					.setParameters(Env.getAD_Client_ID(ctx), AD_WF_Responsible_ID).first();
 		
-		MWFResponsible oResp=MWFResponsible.get(ctx, AD_WF_Responsible_ID);
-		if(clientID!=0 && oResp.getAD_Client_ID()==0){
-			//If system responsible for Role or Human, must overridden in tenant
-			if(RESPONSIBLETYPE_Role.equalsIgnoreCase(oResp.getResponsibleType()) || oResp.isHuman())
-				throw new AdempiereException(Msg.getMsg(ctx, "IncompeteWorkflowResponsible", new Object[] {oResp.getName()}));
-		}
-	
 		//if no override then put null value so it reduce query to check is over ride
 		s_cacheCliWFResp.put(key, resp);
 		return resp;

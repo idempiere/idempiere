@@ -665,6 +665,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	{
 		//	Responsible
 		int AD_WF_Responsible_ID = getNode().getAD_WF_Responsible_ID();
+		// get Client WF Responsible from the cache
+		MWFResponsible ovrResp = MWFResponsible.getClientWFResp(p_ctx, AD_WF_Responsible_ID);
+		if (ovrResp != null)
+		{
+			AD_WF_Responsible_ID = ovrResp.getAD_WF_Responsible_ID();
+		}
+				
 		if (AD_WF_Responsible_ID == 0)	//	not defined on Node Level
 			AD_WF_Responsible_ID = process.getAD_WF_Responsible_ID();
 		setAD_WF_Responsible_ID (AD_WF_Responsible_ID);

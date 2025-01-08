@@ -793,26 +793,4 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		return retValue;
 	}	//	getWFNodes
 	
-	/**
-	 * Get Overridden Workflow Responsible from client
-	 */
-	@Override
-	public int getAD_WF_Responsible_ID() {
-		int AD_Client_ID = Env.getAD_Client_ID(p_ctx);
-		int AD_WF_Responsible_ID = super.getAD_WF_Responsible_ID();
-
-		// If Logged in Client is system then default WF Responsible will return
-		if (AD_Client_ID == 0) {
-			return AD_WF_Responsible_ID;
-		}
-
-		// get Client WF Responsible from the cache
-		MWFResponsible ovrResp = MWFResponsible.getClientWFResp(p_ctx, AD_WF_Responsible_ID);
-
-		if (ovrResp != null) {
-			AD_WF_Responsible_ID = ovrResp.getAD_WF_Responsible_ID();
-		}
-
-		return AD_WF_Responsible_ID;
-	}
 }
