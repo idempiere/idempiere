@@ -605,15 +605,15 @@ public class MWFProcess extends X_AD_WF_Process
 						MWFResponsible cResp = MWFResponsible.getClientWFResp(getCtx(), resp.getAD_WF_Responsible_ID());
 						if(cResp==null) {
 							if(sbMsg==null) {
-								sbMsg = new StringBuilder().append(Msg.getMsg(getCtx(),"IncompeteWorkflowResponsible"));
-							}
-							sbMsg.append("\n").append(ind++).append(". ").append(resp.getName());
+								sbMsg = new StringBuilder().append(ind++).append(". ").append(resp.getName());
+							}else
+								sbMsg.append("\n").append(ind++).append(". ").append(resp.getName());
 						}
 					}
 				}
 			}
 			if(sbMsg!=null)
-				throw new AdempiereException(sbMsg.toString());
+				throw new AdempiereException(Msg.getMsg(getCtx(), "IncompeteWorkflowResponsible", new Object[] {sbMsg.toString()}));
 		}
 
 		if (log.isLoggable(Level.FINE)) log.fine("AD_WF_Node_ID=" + AD_WF_Node_ID);

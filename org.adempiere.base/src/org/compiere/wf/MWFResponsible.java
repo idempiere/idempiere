@@ -19,7 +19,6 @@ package org.compiere.wf;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Responsible;
