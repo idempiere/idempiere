@@ -773,11 +773,11 @@ public class DocLine
 			if (cd != null)
 			{
 				BigDecimal amt = cd.getAmt();
-				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK);
+				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK, cd);
 				if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
-					return amt.negate();
+					return amt.signum() > 0 ? pcost.negate() : pcost;
 				else
-					return amt;
+					return pcost;
 			}
 		}
 		return getProductCosts(as, AD_Org_ID, zeroCostsOK);
@@ -793,11 +793,25 @@ public class DocLine
 	 */
 	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, boolean zeroCostsOK)
 	{
+		return getProductCosts(as, AD_Org_ID, zeroCostsOK, (MCostDetail) null);
+	}
+	
+	/**
+	 * Get Total Product Costs
+	 * @param as accounting schema
+	 * @param AD_Org_ID trx org
+	 * @param zeroCostsOK zero/no costs are OK
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @return costs
+	 */
+	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, boolean zeroCostsOK, MCostDetail costDetail)
+	{
 		ProductCost pc = getProductCost();
 		int C_OrderLine_ID = getC_OrderLine_ID();
 		String costingMethod = null;
 		BigDecimal costs = pc.getProductCosts(as, AD_Org_ID, costingMethod, 
-			C_OrderLine_ID, zeroCostsOK);
+			C_OrderLine_ID, zeroCostsOK, 
+			getDateAcct(), costDetail, m_doc.isInBackDatePostingProcess());
 		if (costs != null)
 			return costs;
 		return Env.ZERO;

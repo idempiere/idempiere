@@ -235,22 +235,40 @@ public class Doc_Movement extends Doc
 				String description = line.getDescription();
 				if (description == null)
 					description = "";
+				
 				//	Cost Detail From
+				int Ref_CostDetail_ID = 0;
+				if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+				{
+					MCostDetail cd = MCostDetail.getMovement(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+							line.getReversalLine_ID(), 0, true, getTrxName());
+					if (cd != null)
+						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				}
 				if (!MCostDetail.createMovement(as, dr.getAD_Org_ID(), 	//	locator org
 					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 					line.get_ID(), 0,
 					costs.negate(), line.getQty().negate(), true,
-					description + "(|->)", getTrxName()))
+					description + "(|->)", line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 				{
 					p_Error = "Failed to create cost detail record";
 					return null;
 				}
+				
 				//	Cost Detail To
+				Ref_CostDetail_ID = 0;
+				if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+				{
+					MCostDetail cd = MCostDetail.getMovement(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+							line.getReversalLine_ID(), 0, false, getTrxName());
+					if (cd != null)
+						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				}
 				if (!MCostDetail.createMovement(as, cr.getAD_Org_ID(),	//	locator org
 					line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 					line.get_ID(), 0,
 					costs, line.getQty(), false,
-					description + "(|<-)", getTrxName()))
+					description + "(|<-)", line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 				{
 					p_Error = "Failed to create cost detail record";
 					return null;

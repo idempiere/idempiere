@@ -357,11 +357,19 @@ public class Doc_InOut extends Doc
 										amt = amt.negate();
 									}
 								}
+								int Ref_CostDetail_ID = 0;
+								if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+								{
+									MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+											line.getReversalLine_ID(), 0, getTrxName());
+									if (cd != null)
+										Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								}
 								if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										amt, qty,
-										line.getDescription(), true, getTrxName()))
+										line.getDescription(), true, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 								{
 									p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 									return null;
@@ -377,11 +385,19 @@ public class Doc_InOut extends Doc
 							BigDecimal amt = costs;
 							if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 								amt = amt.negate();
+							int Ref_CostDetail_ID = 0;
+							if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+							{
+								MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+										line.getReversalLine_ID(), 0, getTrxName());
+								if (cd != null)
+									Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+							}
 							if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), true, getTrxName()))
+								line.getDescription(), true, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 							{
 								p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 								return null;
@@ -397,11 +413,19 @@ public class Doc_InOut extends Doc
 						BigDecimal amt = costs;
 						if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 							amt = amt.negate();
+						int Ref_CostDetail_ID = 0;
+						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						{
+							MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+									line.getReversalLine_ID(), 0, getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
 						if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,
 							amt, line.getQty(),
-							line.getDescription(), true, getTrxName()))
+							line.getDescription(), true, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 						{
 							p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 							return null;
@@ -547,11 +571,19 @@ public class Doc_InOut extends Doc
 										amt = amt.negate();
 									}
 								}
+								int Ref_CostDetail_ID = 0;
+								if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+								{
+									MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+											line.getReversalLine_ID(), 0, getTrxName());
+									if (cd != null)
+										Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								}
 								if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										amt, qty,
-										line.getDescription(), true, getTrxName()))
+										line.getDescription(), true, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 								{
 									p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 									return null;
@@ -565,11 +597,19 @@ public class Doc_InOut extends Doc
 							BigDecimal amt = costs;
 							if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 								amt = amt.negate();
+							int Ref_CostDetail_ID = 0;
+							if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+							{
+								MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+										line.getReversalLine_ID(), 0, getTrxName());
+								if (cd != null)
+									Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+							}
 							if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), true, getTrxName()))
+								line.getDescription(), true, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 							{
 								p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 								return null;
@@ -584,11 +624,19 @@ public class Doc_InOut extends Doc
 						BigDecimal amt = costs;
 						if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 							amt = amt.negate();
+						int Ref_CostDetail_ID = 0;
+						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						{
+							MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+									line.getReversalLine_ID(), 0, getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
 						if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,
 							amt, line.getQty(),
-							line.getDescription(), true, getTrxName()))
+							line.getDescription(), true, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 						{
 							p_Error = Msg.getMsg(getCtx(),"Failed to create cost detail record");
 							return null;
@@ -1122,26 +1170,50 @@ public class Doc_InOut extends Doc
 					for (int j = 0; j < mas.length; j++)
 					{
 						MInOutLineMA ma = mas[j];
+						int Ref_CostDetail_ID = 0;
+						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						{
+							MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+									line.getReversalLine_ID(), 0, getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
 						if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
 								ma.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, ma.getMovementQty().negate(), 
-								line.getDescription(), false, getTrxName()))
+								line.getDescription(), false, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 							return "SaveError";
 					}
 				}
 			} 
 			else
 			{
+				int Ref_CostDetail_ID = 0;
+				if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+				{
+					MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+							line.getReversalLine_ID(), 0, getTrxName());
+					if (cd != null)
+						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				}
 				if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
 						line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
-						line.getDescription(), false, getTrxName()))
+						line.getDescription(), false, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 					return "SaveError";
 			}
 		} 
 		else
 		{
+			int Ref_CostDetail_ID = 0;
+			if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+			{
+				MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+						line.getReversalLine_ID(), 0, getTrxName());
+				if (cd != null)
+					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+			}
 			if (!MCostDetail.createShipment(as, line.getAD_Org_ID(), line.getM_Product_ID(), 
 					line.getM_AttributeSetInstance_ID(), line.get_ID(), 0, tAmt, tQty, 
-					line.getDescription(), false, getTrxName()))
+					line.getDescription(), false, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 				return "SaveError";
 		}
 		return "";
