@@ -34,3 +34,4 @@ Automatic-Module-Name: org.idempiere.felix.webconsole
 Bundle-Vendor: iDempiere Community
 Export-Package: org.idempiere.felix.webconsole;x-internal:=true
 Require-Bundle: org.adempiere.base;bundle-version="13.0.0"
+Eclipse-BundleShape: dir
