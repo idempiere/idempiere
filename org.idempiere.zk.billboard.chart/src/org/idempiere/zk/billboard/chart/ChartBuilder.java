@@ -450,10 +450,7 @@ public class ChartBuilder {
 
 	private Billboard newBillboard(String type) {
 		Billboard billboard = new Billboard();
-		if (mChart.isDisplayLegend()) {
-			billboard.setLegend(true, false);
-			billboard.addLegendOptions("location", "bottom"); //bottom, right
-		}
+		billboard.setLegend(mChart.isDisplayLegend(), false);
 		billboard.setTickAxisLabel(mChart.get_Translation(MChart.COLUMNNAME_DomainLabel));
 		billboard.setValueAxisLabel(mChart.get_Translation(MChart.COLUMNNAME_RangeLabel));
 		billboard.setTitle(mChart.get_Translation(MChart.COLUMNNAME_Name));
