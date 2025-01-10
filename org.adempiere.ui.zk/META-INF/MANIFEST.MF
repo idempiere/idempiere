@@ -224,3 +224,4 @@ Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.adempiere.ui.zk
 Bundle-Vendor: iDempiere Community
+Eclipse-BundleShape: dir

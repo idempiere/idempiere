@@ -36,4 +36,5 @@ Service-Component: OSGI-INF/*.xml
 Bundle-Activator: org.adempiere.server.AdempiereServerActivator
 Automatic-Module-Name: org.adempiere.server
 Bundle-Vendor: iDempiere Community
+Eclipse-BundleShape: dir
 
