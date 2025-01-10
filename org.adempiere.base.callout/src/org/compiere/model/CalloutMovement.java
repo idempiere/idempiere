@@ -18,7 +18,9 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.Env;
 
@@ -36,7 +38,7 @@ public class CalloutMovement extends CalloutEngine
 	/**
 	 *  Product modified
 	 * 		Set Attribute Set Instance
-	 *
+	 *		Set UOM
 	 *  @param ctx      Context
 	 *  @param WindowNo current Window No
 	 *  @param mTab     Model Tab
@@ -55,10 +57,57 @@ public class CalloutMovement extends CalloutEngine
 			mTab.setValue("M_AttributeSetInstance_ID", Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID"));
 		else
 			mTab.setValue("M_AttributeSetInstance_ID", 0);
-		 
+		
+		MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
+		mTab.setValue("C_UOM_ID", product.getC_UOM_ID());
+
 		checkQtyAvailable(ctx, mTab, WindowNo, M_Product_ID, null);
 		return "";
 	}   //  product
+	
+	/**
+	 *  Movement Line - QtyEntered modified
+	 *                - enforces qty UOM relationship
+	 *  @param ctx      Context
+	 *  @param WindowNo current Window No
+	 *  @param mTab     Model Tab
+	 *  @param mField   Model Field
+	 *  @param value    The new value
+	 *  @return Error message or ""
+	 */
+	public String qtyEntered(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
+		if (isCalloutActive() || value == null)
+			return "";
+
+		BigDecimal movementQty = Env.ZERO;
+		BigDecimal qtyEntered = Env.ZERO;
+		int C_UOM_To_ID = 0;
+		
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
+		//		UOM Changed - convert from Entered -> Product
+		if (mField.getColumnName().equals("C_UOM_ID")) {
+			C_UOM_To_ID = ((Integer)value).intValue();
+			qtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
+		} else if (mField.getColumnName().equals("QtyEntered")) //	QtyEntered changed - calculate MovementQty
+		{
+			C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
+			qtyEntered = (BigDecimal)value;
+		}
+		
+		BigDecimal qtyEntered1 = qtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
+		if (qtyEntered.compareTo(qtyEntered1) != 0) {
+			if (log.isLoggable(Level.FINE)) log.fine("Corrected QtyEntered Scale UOM=" + C_UOM_To_ID
+					+ "; QtyEntered=" + qtyEntered + "->" + qtyEntered1);
+			qtyEntered = qtyEntered1;
+			mTab.setValue("QtyEntered", qtyEntered);
+		}
+		movementQty = MUOMConversion.convertProductFrom (ctx, M_Product_ID,C_UOM_To_ID, qtyEntered);
+		if (movementQty == null)
+			movementQty = qtyEntered;
+
+		mTab.setValue("MovementQty", movementQty);
+		return "";
+	} //  qty
 	
 	// Begin Armen 2006/10/01
 	/**
