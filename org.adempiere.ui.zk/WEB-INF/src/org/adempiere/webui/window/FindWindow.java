@@ -2362,6 +2362,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	}
 	            	continue;
 	            }
+	            if(Operator.equals(MQuery.LIKE))
+	            {
+	            	ColumnSQL = "UPPER("+ColumnSQL+")";
+	            	value = String.valueOf(value).toUpperCase();
+	            }
 	            Object parsedValue = null;
 	            //Parse AttributeValue
 	            if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
@@ -3092,7 +3097,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addHistoryRestriction(historyCombo.getSelectedItem());
         }
         
-        if (getNoOfRecords(m_query, true) != 0) {
+        if (getNoOfRecords(getQuery(), true) != 0) {
         	dispose();
         }
     }   //  cmd_ok_Advanced
