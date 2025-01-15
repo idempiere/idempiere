@@ -672,19 +672,13 @@ public class QuickGridTabRowRenderer
 		}
 
 		int pgIndex = row >= 0 ? row % paging.getPageSize() : 0;
-		if (row != currentRowIndex || pgIndex != currentRowIndex) {
-			if (currentRow != null)
-				LayoutUtils.removeSclass("current-row", currentRow);
-			if (grid.getRows().getChildren().size() <= 0) {
-				currentCell = null;
-				return;
-			}
-			gridTab.setCurrentRow(pgIndex + paging.getActivePage() * paging.getPageSize());
-			currentRow = ((Row) grid.getRows().getChildren().get(pgIndex));
-			currentRowIndex = gridTab.getCurrentRow();
-			LayoutUtils.addSclass("current-row", currentRow);
-		}
 		
+		currentRow.setStyle(null);
+        gridTab.setCurrentRow(pgIndex + paging.getActivePage() * paging.getPageSize());
+        currentRow = ((Row) grid.getRows().getChildren().get(pgIndex));
+        currentRowIndex = gridTab.getCurrentRow();
+        currentRow.setStyle(CURRENT_ROW_STYLE);
+        
 		setCurrentRow(currentRow);
 		
 		if (isAddRemoveListener(code))
