@@ -389,41 +389,53 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		return null;
 	}
 	
-	private  String vFormatToRegex(String vFormat) {
-        StringBuilder regex = new StringBuilder();
-        for (char c : vFormat.toCharArray()) {
-            switch (c) {
-                case '0':
-                    regex.append("[0-9]");
-                    break;
-                case '9':
-                    regex.append("[ 0-9]");
-                    break;
-                case 'a':
-                    regex.append("[A-Za-z0-9]");
-                    break;
-                case 'A':
-                    regex.append("[A-Z0-9]");
-                    break;
-                case 'l':
-                    regex.append("[A-Za-z]");
-                    break;
-                case 'L':
-                    regex.append("[A-Z]");
-                    break;
-                case 'U':
-                    regex.append("[^a-z]");
-                    break;
-                default:
-                    if ("()[]{}.+*?^$|\\".indexOf(c) != -1) {
-                        regex.append("\\").append(c);
-                    } else {
-                        regex.append(c);
-                    }
-                    break;
-            }
-        }
-        return regex.toString();
-    }
+	private String vFormatToRegex(String vFormat) {
+		StringBuilder regex = new StringBuilder();
+		for (char c : vFormat.toCharArray()) {
+			switch (c) {
+			case '0':
+				regex.append("[0-9]");
+				break;
+			case '9':
+				regex.append("[ 0-9]");
+				break;
+			case 'a':
+				regex.append("[A-Za-z0-9]");
+				break;
+			case 'A':
+				regex.append("[A-Z0-9]");
+				break;
+			case 'c':
+				regex.append("[ A-Za-z0-9]");
+				break;
+			case 'C':
+				regex.append("[ A-Z0-9]");
+				break;
+			case 'l':
+				regex.append("[A-Za-z]");
+				break;
+			case 'L':
+				regex.append("[A-Z]");
+				break;
+			case 'o':
+				regex.append("[ A-Za-z]");
+				break;
+			case 'O':
+				regex.append("[ A-Z]");
+				break;
+			case 'U':
+				regex.append("[^a-z]");
+				break;
+			default:
+				if ("()[]{}.+*?^$|\\".indexOf(c) != -1) {
+					regex.append("\\").append(c);
+				} else {
+					regex.append(c);
+				}
+				break;
+			}
+		}
+		return regex.toString();
+	}
 
 }
