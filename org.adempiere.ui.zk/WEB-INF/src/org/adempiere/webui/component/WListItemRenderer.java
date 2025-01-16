@@ -113,9 +113,9 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		for (String columnName : columnNames)
 		{
 			tableColumn = new WTableColumn();
-			ValueNamePair msgInfo = Msg.getMsgInfo(columnName);
-			tableColumn.setHeaderValue(Util.cleanAmp(msgInfo.getValue()));
-			tableColumn.setTooltipText(Util.cleanAmp(msgInfo.getName()));
+			ValueNamePair msgTipPair = Msg.splitToMsgTip(columnName);
+			tableColumn.setHeaderValue(Util.cleanAmp(msgTipPair.getValue()));
+			tableColumn.setTooltipText(Util.cleanAmp(msgTipPair.getName()));
 			m_tableColumns.add(tableColumn);
 		}
 	}

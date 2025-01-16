@@ -367,12 +367,12 @@ public final class Msg
 
 	/**
 	 * Text returned by the getMsg/translator function is usually in the format message + SEPARATOR + tip.<br/>
-	 * This function is used for separating these parts
+	 * This function is used for separating these parts <br/>
 	 * This function help to separate it 
-	 * @param msgFull
-	 * @return
+	 * @param msgFull a message received from getMsg or translate function
+	 * @return a (Msg,Tip) ValueNamePair
 	 */
-	public static ValueNamePair getMsgInfo (String msgFull) {
+	public static ValueNamePair splitToMsgTip (String msgFull) {
 		int pos = msgFull.indexOf(SEPARATOR);
 		String msg = "";
 		String tip = "";
@@ -398,11 +398,11 @@ public final class Msg
 	public static String getMsg (String ad_language, String AD_Message, boolean getText)
 	{
 		String retStr = getMsg (ad_language, AD_Message);
-		ValueNamePair msgInfo = getMsgInfo (retStr);
+		ValueNamePair msgTipPair = splitToMsgTip (retStr);
 		if (getText)
-			return msgInfo.getValue();
+			return msgTipPair.getValue();
 		else
-			return msgInfo.getName();
+			return msgTipPair.getName();
 	}	//	getMsg
 
 	/**
