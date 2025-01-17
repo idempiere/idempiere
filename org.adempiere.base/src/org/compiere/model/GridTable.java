@@ -1171,6 +1171,7 @@ public class GridTable extends AbstractTableModel
 			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
 			//adjust row count
 			m_rowCount = m_sort.size();
+			m_rowLoadTimeout = true; // at this moment this must be set, but just to be sure that the warning is raised at doRun
 		}
 	}
 
