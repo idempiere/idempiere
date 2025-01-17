@@ -22,7 +22,7 @@
  * Contributors:                                                       *
  * - Nicolas Micoud (TGI)              								   *
  **********************************************************************/
-package org.idempiere.test.util;
+package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,10 +35,23 @@ public class AmtInWordsTest extends AbstractTestCase {
 
 	public AmtInWordsTest() {
 	}
+
+	@Test
+	public void testAmtInWordsIntegerES() {
+
+		try {
+			AmtInWords_ES aiw = new AmtInWords_ES();
+			String val = aiw.getAmtInWords("9223372036854775807");
+			assertTrue(val.equals("NUEVE TRILLONES DOSCIENTOS VEINTITRES BILLARDOS TRESCIENTOS SETENTA Y DOS BILLONES TREINTA Y SEIS MILLARDOS OCHOCIENTOS CINCUENTA Y CUATRO MILLONES SETECIENTOS SETENTA Y CINCO MIL OCHOCIENTOS SIETE"));
+		}
+		catch (Exception e) {
+			throw new AdempiereException(e);
+		}
+	}
 	
 	@Test
-	public void testAmtInWordsES() {
-
+	public void testAmtInWordsDecimalsES() {
+		
 		try {
 			AmtInWords_ES aiw = new AmtInWords_ES();
 			String val = aiw.getAmtInWords("9223372036854775807.99");
