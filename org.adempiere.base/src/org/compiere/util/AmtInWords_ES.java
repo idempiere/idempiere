@@ -257,9 +257,10 @@ public class AmtInWords_ES implements AmtInWords
 			if (pos == i) //	we are done
 			{
 				String cents = oldamt.substring (i + 1);
-				long centsL = Long.parseLong(cents);
-				sb.append (" COMA ")
-					.append (convert (centsL));
+				sb.append (' ')
+					.append (cents)
+					.append ("/100");
+				//	.append ("/100 PESOS");
 				break;
 			}
 		}
