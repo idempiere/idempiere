@@ -128,7 +128,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		// Set From_C_BPartner_ID from From_C_BankAccount_ID (through C_BPartner.AD_OrgBP_ID)
 		if (getFrom_C_BPartner_ID() == 0) {
 			String sql = "SELECT bp.C_BPartner_ID FROM C_BPartner bp "
-					+ "WHERE bp.AD_OrgBP_ID IN (SELECT ba.AD_Org_ID FROM C_BankAccount ba WHERE ba.C_BankAccount_ID = ?)) "
+					+ "WHERE bp.AD_OrgBP_ID IN (SELECT ba.AD_Org_ID FROM C_BankAccount ba WHERE ba.C_BankAccount_ID = ?) "
 					+ "AND bp.IsActive = 'Y'";
 			int C_BPartner_ID = DB.getSQLValue(get_TrxName(), sql, getFrom_C_BankAccount_ID());
 			if (C_BPartner_ID > 0)
@@ -137,7 +137,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		// Set To_C_BPartner_ID from To_C_BankAccount_ID (through C_BPartner.AD_OrgBP_ID) or From_C_BPartner_ID
 		if (getTo_C_BPartner_ID() == 0) {
 			String sql = "SELECT bp.C_BPartner_ID FROM C_BPartner bp "
-					+ "WHERE bp.AD_OrgBP_ID IN (SELECT ba.AD_Org_ID FROM C_BankAccount ba WHERE ba.C_BankAccount_ID = ?)) "
+					+ "WHERE bp.AD_OrgBP_ID IN (SELECT ba.AD_Org_ID FROM C_BankAccount ba WHERE ba.C_BankAccount_ID = ?) "
 					+ "AND bp.IsActive = 'Y'";
 			int C_BPartner_ID = DB.getSQLValue(get_TrxName(), sql, getTo_C_BankAccount_ID());
 			if (C_BPartner_ID > 0) {
