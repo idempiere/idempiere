@@ -99,12 +99,12 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 			return false;
 		// from and to bank account must be different
 		if (getTo_C_BankAccount_ID() == getFrom_C_BankAccount_ID()) {
-			log.saveError("From Bank Account and To Bank Account must be different", toString());
+			log.saveError("Error", Msg.getMsg(getCtx(), "FromToBankAccountMustDifferent", new Object[] {toString()}));
 			return false;
 		}
 		// From bank account and bank transfer document must belongs to the same organization
 		if (getFrom_C_BankAccount().getAD_Org_ID() != 0 && getFrom_C_BankAccount().getAD_Org_ID() != getFrom_AD_Org_ID()) {
-			log.saveError("From Organization does not matches the organization of the From Bank Account", toString());
+			log.saveError("Error", Msg.getMsg(getCtx(), "FromOrgNotMatchBankAccount", new Object[] {toString()}));
 			return false;
 		}
 		// Set From Currency from From_C_BankAccount_ID
