@@ -3590,7 +3590,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			m_onlyCurrentRows = false;
 			adTabbox.getSelectedGridTab().setQuery(query);
 			try {
-				adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+				adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, adTabbox.getSelectedTabpanel().getGridTab().getMaxQueryRecords());   //  autoSize
 			} catch (Exception e) {
 				if (   e.getCause() != null 
 					&& e.getCause() instanceof SQLException
