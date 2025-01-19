@@ -6,6 +6,6 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 ;
 
 -- Jan 19, 2025, 11:31:24 AM WIB
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','From Organization does not matches the organization of the From Bank Account {0}',0,0,'Y',TO_TIMESTAMP('2025-01-19 11:31:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-01-19 11:31:24','YYYY-MM-DD HH24:MI:SS'),100,200929,'FromOrgNotMatchBankAccount','D','f62be846-b504-41c2-91b1-165e3b0b4d10')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','From Organization does not match the organization of the From Bank Account {0}',0,0,'Y',TO_TIMESTAMP('2025-01-19 11:31:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-01-19 11:31:24','YYYY-MM-DD HH24:MI:SS'),100,200929,'FromOrgNotMatchBankAccount','D','f62be846-b504-41c2-91b1-165e3b0b4d10')
 ;
 
