@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
+import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.model.DocActionDelegate;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocOptions;
@@ -45,7 +46,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	/**
 	 * generated serial id 
 	 */
-	private static final long serialVersionUID = 1653681817205265764L;
+	private static final long serialVersionUID = -3899186445864400047L;
 	
 	private DocActionDelegate<MProjectIssue> docActionDelegate = null;
 	
@@ -187,6 +188,15 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			log.log(Level.SEVERE, "No Product");
 			return "No Product";
 		}
+		
+		if (!isReversal())
+		{
+			try {
+				periodClosedCheckForBackDateTrx(null);
+			} catch (PeriodClosedException e) {
+				return e.getLocalizedMessage();
+			}
+		}
 
 		MProduct product = MProduct.get (getCtx(), getM_Product_ID());
 
@@ -282,6 +292,13 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 * @return error message or null
 	 */
 	private String doReverse(boolean accrual) {
+		Timestamp reversalDate = accrual ? new Timestamp(System.currentTimeMillis()) : getMovementDate();
+		try {
+			periodClosedCheckForBackDateTrx(reversalDate);
+		} catch (PeriodClosedException e) {
+			return "Reversal ERROR: " + e.getLocalizedMessage();
+		}
+		
 		MProject project = getParent();
 		MProjectIssue reversal = new MProjectIssue (project);
 		reversal.set_TrxName(get_TrxName());
@@ -289,10 +306,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		reversal.setM_Product_ID(getM_Product_ID());
 		reversal.setM_AttributeSetInstance_ID(getM_AttributeSetInstance_ID());
 		reversal.setMovementQty(getMovementQty().negate());
-		if (accrual)
-			reversal.setMovementDate(new Timestamp(System.currentTimeMillis()));
-		else
-			reversal.setMovementDate(getMovementDate());
+		reversal.setMovementDate(reversalDate);
 		reversal.setDescription("Reversal for Line No " + getLine() + "<"+getC_ProjectIssue_ID()+">");
 		
 		reversal.setReversal_ID(getC_ProjectIssue_ID());
@@ -458,11 +472,78 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		// Complete                    ..  CO
 		if (AD_Table_ID == get_Table_ID() && docStatus.equals(DocumentEngine.STATUS_Completed)) {
 			boolean periodOpen = MPeriod.isOpen(Env.getCtx(), getMovementDate(), MDocType.DOCBASETYPE_ProjectIssue, getAD_Org_ID());
-			if (periodOpen) {
+			boolean isBackDateTrxAllowed = MAcctSchema.isBackDateTrxAllowed(Env.getCtx(), getMovementDate(), get_TrxName());
+			if (periodOpen && isBackDateTrxAllowed) {
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 			}
 			options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 		}
 		return index;
+	}
+	
+	/**
+	 * Period Closed Check for Back-Date Transaction
+	 * @param reversalDate reversal date - null when it is not a reversal
+	 * @return false when failed the period closed check
+	 */
+	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
+	{
+		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+		MAcctSchema as = info.getMAcctSchema1();
+		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
+				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+			return true;
+		
+		if (as.getBackDateDay() == 0)
+			return true;
+		
+		Timestamp dateAcct = reversalDate != null ? reversalDate : getMovementDate();
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT COUNT(*) FROM M_CostDetail ");
+		sql.append("WHERE M_Product_ID IN (SELECT M_Product_ID FROM C_ProjectIssue WHERE C_ProjectIssue_ID=?) ");
+		sql.append("AND Processed='Y' ");
+		sql.append(reversalDate != null ? "AND DateAcct>=? " : "AND DateAcct>? ");
+		int no = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ID(), get_ID(), dateAcct);
+		if (no <= 0)
+			return true;
+		
+		int AD_Org_ID = getAD_Org_ID();
+		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
+
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+		{
+			AD_Org_ID = 0;
+			M_AttributeSetInstance_ID = 0;
+		}
+		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+			M_AttributeSetInstance_ID = 0;
+		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+			AD_Org_ID = 0;
+		
+		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
+		
+		int M_CostDetail_ID = 0;
+		int C_ProjectIssue_ID = getC_ProjectIssue_ID();
+		if (getReversal_ID() > 0 && get_ID() > getReversal_ID())
+			C_ProjectIssue_ID = getReversal_ID();
+		
+		MCostDetail cd = MCostDetail.getProjectIssue(as, getM_Product_ID(), M_AttributeSetInstance_ID, 
+				C_ProjectIssue_ID, 0, get_TrxName());
+		if (cd != null)
+			M_CostDetail_ID = cd.getM_CostDetail_ID();
+		else {
+			MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+					M_AttributeSetInstance_ID, dateAcct, get_TrxName());
+			if (history != null)
+				M_CostDetail_ID = history.getM_CostDetail_ID();
+		}
+		
+		if (M_CostDetail_ID > 0) {
+			MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+					getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
+		}
+		return true;
 	}
 }	//	MProjectIssue

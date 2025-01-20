@@ -1108,8 +1108,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					total = total.add(iol.getBase(lc.getLandedCostDistribution()));
 				}
 				if (total.signum() == 0){
-					msgreturn = new StringBuilder("Total of Base values is 0 - ").append(lc.getLandedCostDistribution());
-					return msgreturn.toString();
+					return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {lc.getLandedCostDistribution()});
 				}	
 				//	Create Allocations
 				for (int i = 0; i < list.size(); i++)
@@ -1155,7 +1154,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				lca.setM_InOutLine_ID(iol.getM_InOutLine_ID());
 				BigDecimal base = iol.getBase(lc.getLandedCostDistribution()); 
 				if (base.signum() == 0)
-					return "Base value is 0 - " + lc.getLandedCostDistribution();
+					return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {lc.getLandedCostDistribution()});
 				lca.setBase(base);
 				lca.setAmt(getLineNetAmt());
 				// MZ Goodwill
@@ -1243,8 +1242,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			total = total.add(iol.getBase(LandedCostDistribution));
 		}
 		if (total.signum() == 0){
-			msgreturn = new StringBuilder("Total of Base values is 0 - ").append(LandedCostDistribution);
-			return msgreturn.toString();
+			return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {LandedCostDistribution});
 		}	
 		//	Create Allocations
 		for (int i = 0; i < list.size(); i++)

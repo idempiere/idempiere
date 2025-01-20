@@ -2458,9 +2458,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(p1price.add(p1a1.divide(p1QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
-			p1mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			assertEquals(p2price.add(p2a1.divide(p2QtyOnHand, 2, RoundingMode.HALF_UP))
-					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
+					.setScale(1, RoundingMode.HALF_UP), p2mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			//so and shipment
 			MBPartner customer = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
@@ -2531,12 +2531,28 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
 			List<MFactAcct> rFactAccts = query.list();
-			MAccount varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
-			expected = Arrays.asList(new FactAcct(varianceAccount, p1a1, 2, false),
-					new FactAcct(assetAccount, p2a1.divide(new BigDecimal(2), RoundingMode.HALF_UP), 2, false),
+			expected = Arrays.asList(new FactAcct(assetAccount, p1a1, 2, false),
+					new FactAcct(assetAccount, p2a1, 2, false),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, true));
 			assertFactAcctEntries(rFactAccts, expected);
-
+			
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			
+			BigDecimal p1cogs = p1mcost.getCurrentCostPrice().multiply(p1ShipQty);
+			BigDecimal p2cogs = p2mcost.getCurrentCostPrice().multiply(p2ShipQty);
+			
+			ProductCost pc1 = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
+			MAccount cogsAccount1 = pc1.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			ProductCost pc2 = new ProductCost(Env.getCtx(), p2.get_ID(), 0, getTrxName());
+			MAccount cogsAccount2 = pc2.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.get_ID(), as.get_ID(), getTrxName());
+			factAccts = query.list();
+			expected = Arrays.asList(new FactAcct(cogsAccount1, p1cogs, 2, true),
+					new FactAcct(cogsAccount2, p2cogs, 2, true),
+					new FactAcct(assetAccount, p1cogs, 2, false),
+					new FactAcct(assetAccount, p2cogs, 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		} finally {
 			rollback();
 			

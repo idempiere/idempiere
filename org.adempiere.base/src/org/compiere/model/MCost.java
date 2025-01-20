@@ -55,12 +55,12 @@ import org.compiere.util.Util;
  *  	<li>BF [ 2847648 ] Manufacture and shipment cost errors
  *  		https://sourceforge.net/p/adempiere/libero/237/
  */
-public class MCost extends X_M_Cost
+public class MCost extends X_M_Cost implements ICostInfo
 {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -9054858267574839079L;
+	private static final long serialVersionUID = 7669971447038015333L;
 
 	/**
 	 * @param product
@@ -95,6 +95,33 @@ public class MCost extends X_M_Cost
 		BigDecimal qty, int C_OrderLine_ID,
 		boolean zeroCostsOK, String trxName)
 	{
+		return getCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID, costingMethod, qty, C_OrderLine_ID, zeroCostsOK, null, null, false, trxName);
+	}
+	
+	/**
+	 * Retrieve/Calculate Cost Price
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID asi for batchlot costing level
+	 * @param as schema
+	 * @param AD_Org_ID org for organization costing level
+	 * @param costingMethod AcctSchema.COSTINGMETHOD_*
+	 * @param qty qty
+	 * @param C_OrderLine_ID optional order line
+	 * @param zeroCostsOK zero/no costs are OK
+	 * @param dateAcct account date
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @param isInBackDatePostingProcess in a back-date posting process
+	 * @param trxName trx
+	 * @return cost price or null
+	 */
+	protected static BigDecimal getCost (MProduct product,
+			int M_AttributeSetInstance_ID,
+			MAcctSchema as, int AD_Org_ID, String costingMethod,
+			BigDecimal qty, int C_OrderLine_ID,
+			boolean zeroCostsOK, 
+			Timestamp dateAcct, MCostDetail costDetail, boolean isInBackDatePostingProcess,
+			String trxName)
+	{
 		String CostingLevel = product.getCostingLevel(as);
 		if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
 		{
@@ -116,21 +143,32 @@ public class MCost extends X_M_Cost
 		}
 
 		//	Create/Update Costs
-		MCostDetail.processProduct (product, trxName);
+		if (!isInBackDatePostingProcess) // skip if is in a back-date posting process
+			MCostDetail.processProduct (as, product, dateAcct, trxName);
+		 
+		MCostHistory history = null;
+		if (costDetail != null) // get the latest cost history record of the cost detail
+			history = MCostHistory.get(product.getCtx(), AD_Org_ID, 
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, costDetail, trxName);
+		if (history == null && dateAcct != null) {	// get cost history record based on the account date
+			history = MCostHistory.get(product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(),
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, dateAcct, trxName);
+		}
 
-		return getCurrentCost (
+		return getCost (
 			product, M_AttributeSetInstance_ID,
 			as, AD_Org_ID, as.getM_CostType_ID(), costingMethod, qty,
-			C_OrderLine_ID, zeroCostsOK, trxName);
+			C_OrderLine_ID, zeroCostsOK, 
+			history == null ? null : history.getNewCostPrice(), trxName);
 	}	//	getCurrentCost
 
 	/**
 	 * 	Calculate and Get Current Cost Price for Costing Level
 	 *	@param product product
 	 *	@param M_ASI_ID M_AttributeSetInstance_ID for batchlot costing level
+	 *	@param as AcctSchema
 	 *	@param Org_ID AD_Org_ID for organization costing level
 	 *	@param M_CostType_ID cost type
-	 *	@param as AcctSchema
 	 *	@param costingMethod method
 	 *	@param qty quantity
 	 *	@param C_OrderLine_ID optional order line
@@ -142,6 +180,30 @@ public class MCost extends X_M_Cost
 		MAcctSchema as, int Org_ID, int M_CostType_ID,
 		String costingMethod, BigDecimal qty, int C_OrderLine_ID,
 		boolean zeroCostsOK, String trxName)
+	{
+		return getCost(product, M_ASI_ID, as, Org_ID, M_CostType_ID, costingMethod, qty, C_OrderLine_ID, zeroCostsOK, null, trxName);
+	}
+	
+	/**
+	 * Calculate and Get Cost Price for Costing Level
+	 * @param product product
+	 * @param M_ASI_ID M_AttributeSetInstance_ID for batchlot costing level
+	 * @param as AcctSchema
+	 * @param Org_ID AD_Org_ID for organization costing level
+	 * @param M_CostType_ID cost type
+	 * @param costingMethod method
+	 * @param qty quantity
+	 * @param C_OrderLine_ID optional order line
+	 * @param zeroCostsOK zero/no costs are OK
+	 * @param dateAcct account date
+	 * @param historyCostPrice optional cost price from the cost history
+	 * @param trxName trx
+	 * @return cost price or null
+	 */
+	private static BigDecimal getCost (MProduct product, int M_ASI_ID,
+			MAcctSchema as, int Org_ID, int M_CostType_ID,
+			String costingMethod, BigDecimal qty, int C_OrderLine_ID,
+			boolean zeroCostsOK, BigDecimal historyCostPrice, String trxName)
 	{
 		String costElementType = null;
 		BigDecimal percent = null;
@@ -188,12 +250,15 @@ public class MCost extends X_M_Cost
 					+ ", CurrentCostPriceLL=" + currentCostPriceLL
 					+ ", CostElementType=" + costElementType
 					+ ", CostingMethod=" + cm
-					+ ", Percent=" + percent);
-				//
+					+ ", Percent=" + percent);				
+				
 				if (currentCostPrice != null && currentCostPrice.signum() != 0)
 				{
 					if (cm != null)
 					{
+						// use the cost price from the cost history record
+						if (historyCostPrice != null && historyCostPrice.compareTo(currentCostPrice) != 0)
+							currentCostPrice = historyCostPrice;
 						materialCostEach = materialCostEach.add(currentCostPrice);
 					}
 					else
@@ -1371,28 +1436,14 @@ public class MCost extends X_M_Cost
 	 *	@param as accounting schema
 	 *	@param AD_Org_ID costing level org
 	 *	@param M_CostElement_ID element
+	 *	@param trxName transaction name
 	 *	@return cost price or null
 	 */
 	public static MCost get (MProduct product, int M_AttributeSetInstance_ID,
 		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, String trxName)
 	{
-		MCost cost = null;
-		//FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
-		final String whereClause = "AD_Client_ID=? AND AD_Org_ID=?"
-			+ " AND M_Product_ID=?"
-			+ " AND M_AttributeSetInstance_ID=?"
-			+ " AND M_CostType_ID=? AND C_AcctSchema_ID=?"
-			+ " AND M_CostElement_ID=?";
-		cost = new Query(product.getCtx(), I_M_Cost.Table_Name, whereClause, trxName)
-		.setParameters(	product.getAD_Client_ID(),
-						AD_Org_ID,
-						product.getM_Product_ID(),
-						M_AttributeSetInstance_ID,
-						as.getM_CostType_ID(),
-						as.getC_AcctSchema_ID(),
-						M_CostElement_ID)
-		.firstOnly();
-		//FR: [ 2214883 ] - end -
+		MCost cost = get (product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(), 
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, trxName);
 		//	New
 		if (cost == null)
 		{
@@ -1400,7 +1451,36 @@ public class MCost extends X_M_Cost
 				as, AD_Org_ID, M_CostElement_ID);
 			cost.set_TrxName(trxName);
 		}
-		return cost;
+		return cost;	
+	}
+	
+	/**
+	 * Get/Create Costing Record from MCostHistory/MCost
+	 * CostingLevel is not validated.
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID costing level asi
+	 * @param as accounting schema
+	 * @param AD_Org_ID costing level org
+	 * @param M_CostElement_ID element
+	 * @param dateAcct account date
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @param trxName transaction name
+	 * @return ICostInfo or null
+	 */
+	public static ICostInfo getCostInfo (MProduct product, int M_AttributeSetInstance_ID,
+		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, Timestamp dateAcct, MCostDetail costDetail, String trxName)
+	{
+		ICostInfo costInfo = getCostInfo (product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(), 
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, dateAcct, costDetail, trxName);
+		//	New
+		if (costInfo == null)
+		{
+			MCost cost = new MCost (product, M_AttributeSetInstance_ID,
+				as, AD_Org_ID, M_CostElement_ID);
+			cost.set_TrxName(trxName);
+			return cost;
+		}
+		return costInfo;
 	}	//	get
 
 	@Deprecated
@@ -1429,18 +1509,57 @@ public class MCost extends X_M_Cost
 		String trxName)
 	{
 		final String whereClause = "AD_Client_ID=? AND AD_Org_ID=?"
-									+" AND "+COLUMNNAME_M_Product_ID+"=?"
-									+" AND "+COLUMNNAME_M_CostType_ID+"=?"
-									+" AND "+COLUMNNAME_C_AcctSchema_ID+"=?"
-									+" AND "+COLUMNNAME_M_CostElement_ID+"=?"
-									+" AND "+COLUMNNAME_M_AttributeSetInstance_ID+"=?";
+				+" AND "+COLUMNNAME_M_Product_ID+"=?"
+				+" AND "+COLUMNNAME_M_CostType_ID+"=?"
+				+" AND "+COLUMNNAME_C_AcctSchema_ID+"=?"
+				+" AND "+COLUMNNAME_M_CostElement_ID+"=?"
+				+" AND "+COLUMNNAME_M_AttributeSetInstance_ID+"=?";
 		final Object[] params = new Object[]{AD_Client_ID, AD_Org_ID, M_Product_ID,
-												M_CostType_ID, C_AcctSchema_ID,
-												M_CostElement_ID, M_AttributeSetInstance_ID};
+							M_CostType_ID, C_AcctSchema_ID,
+							M_CostElement_ID, M_AttributeSetInstance_ID};
 		return new Query(ctx, Table_Name, whereClause, trxName)
-					.setOnlyActiveRecords(true)
-					.setParameters(params)
-					.firstOnly();
+				.setOnlyActiveRecords(true)
+				.setParameters(params)
+				.firstOnly();
+	}
+	
+	/**
+	 * Get Costing Record from MCostHistory/MCost
+	 * @param ctx context
+	 * @param AD_Client_ID client
+	 * @param AD_Org_ID org
+	 * @param M_Product_ID product
+	 * @param M_CostType_ID cost type
+	 * @param C_AcctSchema_ID as
+	 * @param M_CostElement_ID cost element
+	 * @param M_AttributeSetInstance_ID asi
+	 * @param dateAcct account date
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @param trxName transaction name
+	 * @return ICostInfo or null
+	 */
+	public static ICostInfo getCostInfo (Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
+			int M_CostType_ID, int C_AcctSchema_ID, int M_CostElement_ID,
+			int M_AttributeSetInstance_ID,  
+			Timestamp dateAcct, MCostDetail costDetail,
+			String trxName)
+	{
+		MCostElement ce = MCostElement.get(M_CostElement_ID);
+		String costingMethod = ce.getCostingMethod();
+		MCostHistory history = null;
+		if (costDetail != null) // get the latest cost history record of the cost detail
+ 			history = MCostHistory.get(ctx, AD_Org_ID, 
+					M_CostType_ID, C_AcctSchema_ID, costingMethod, M_CostElement_ID, M_AttributeSetInstance_ID, costDetail, trxName);
+		if (history == null && dateAcct != null) {	// get cost history record based on the account date
+			history = MCostHistory.get(ctx, AD_Client_ID, AD_Org_ID, M_Product_ID, M_CostType_ID, C_AcctSchema_ID, costingMethod, M_CostElement_ID,
+					M_AttributeSetInstance_ID, dateAcct, trxName);
+		}
+		
+		if (history != null)
+			return history;
+		
+		// get from MCost
+		return get(ctx, AD_Client_ID, AD_Org_ID, M_Product_ID, M_CostType_ID, C_AcctSchema_ID, M_CostElement_ID, M_AttributeSetInstance_ID, trxName);
 	}	//	get
 
 	@Deprecated
@@ -1453,7 +1572,7 @@ public class MCost extends X_M_Cost
 				M_AttributeSetInstance_ID,
 				null); // trxName
 	}
-
+	
 	/**	Logger	*/
 	private static CLogger 	s_log = CLogger.getCLogger (MCost.class);
 
@@ -1563,6 +1682,10 @@ public class MCost extends X_M_Cost
 	 */
 	public void setWeightedAverage (BigDecimal amt, BigDecimal qty)
 	{
+		//do nothing when amt and qty is zero
+		if (amt.signum() == 0 && qty.signum() == 0)
+			return; 
+		
 		//amount must follow the sign of qty
 		if (amt.signum() != 0 && qty.signum() != 0 && amt.signum() != qty.signum())
 		{

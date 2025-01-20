@@ -516,10 +516,13 @@ public class MLookupFactory
 				}
 			}
 			realSQL.append(",").append(TableName).append(".IsActive");
+
+			String realKeyColumn = KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU") ? KeyColumn : (MTable.get(ctx, TableName).isUUIDKeyTable() ? PO.getUUIDColumnName(TableName) : TableName + "_ID");
+
 			realSQL.append(" FROM ").append(TableName)
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
-				.append(TableName).append(".").append(KeyColumn)
-				.append("=").append(TableName).append("_Trl.").append(KeyColumn)
+				.append(TableName).append(".").append(realKeyColumn)
+				.append("=").append(TableName).append("_Trl.").append(realKeyColumn)
 				.append(" AND ").append(TableName).append("_Trl.AD_Language='")
 				.append(language.getAD_Language()).append("')");
 		}

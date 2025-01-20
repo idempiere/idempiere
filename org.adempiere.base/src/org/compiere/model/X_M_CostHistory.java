@@ -19,6 +19,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
 
@@ -40,6 +41,9 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
       super (ctx, M_CostHistory_ID, trxName);
       /** if (M_CostHistory_ID == 0)
         {
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
 			setM_CostElement_ID (0);
@@ -59,6 +63,9 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
       super (ctx, M_CostHistory_ID, trxName, virtualColumns);
       /** if (M_CostHistory_ID == 0)
         {
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
 			setM_CostElement_ID (0);
@@ -78,6 +85,9 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
       super (ctx, M_CostHistory_UU, trxName);
       /** if (M_CostHistory_UU == null)
         {
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
 			setM_CostElement_ID (0);
@@ -97,6 +107,9 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
       super (ctx, M_CostHistory_UU, trxName, virtualColumns);
       /** if (M_CostHistory_UU == null)
         {
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
 			setM_CostElement_ID (0);
@@ -137,6 +150,60 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Back-Date Processed On.
+		@param BackDateProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn)
+	{
+		set_Value (COLUMNNAME_BackDateProcessedOn, BackDateProcessedOn);
+	}
+
+	/** Get Back-Date Processed On.
+		@return The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_BackDateProcessedOn);
+	}
+
+	/** Set Account Date.
+		@param DateAcct Accounting Date
+	*/
+	public void setDateAcct (Timestamp DateAcct)
+	{
+		set_Value (COLUMNNAME_DateAcct, DateAcct);
+	}
+
+	/** Get Account Date.
+		@return Accounting Date
+	  */
+	public Timestamp getDateAcct()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
+	}
+
+	/** Set Back-Date.
+		@param IsBackDate Back-Date
+	*/
+	public void setIsBackDate (boolean IsBackDate)
+	{
+		set_Value (COLUMNNAME_IsBackDate, Boolean.valueOf(IsBackDate));
+	}
+
+	/** Get Back-Date.
+		@return Back-Date	  */
+	public boolean isBackDate()
+	{
+		Object oo = get_Value(COLUMNNAME_IsBackDate);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{

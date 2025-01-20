@@ -220,7 +220,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     		Timestamp currentValue = oldValue;
     		oldValue = null;
     		getComponent().setValue(null);
-    		if (currentValue != null)
+    		if (currentValue != null && !readOnly)
     		{
     			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, null);
     			super.fireValueChange(changeEvent);
@@ -235,7 +235,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     			ZonedDateTime zdt = ts.toInstant().atZone(getComponent().getDatebox().getTimeZone().toZoneId());
     			getComponent().setValueInZonedDateTime(zdt);
     			oldValue = Timestamp.from(zdt.toInstant());
-    			if (!Objects.equal(currentValue, oldValue))
+    			if (!Objects.equal(currentValue, oldValue) && !readOnly)
     			{
     				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
     				super.fireValueChange(changeEvent);
@@ -247,7 +247,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 	    		LocalDateTime localTime = ts.toLocalDateTime();
 	    		getComponent().setValueInLocalDateTime(localTime);
 	    		oldValue = Timestamp.valueOf(localTime);
-    			if (!Objects.equal(currentValue, oldValue))
+	    		if (!Objects.equal(currentValue, oldValue) && !readOnly)
     			{
     				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
     				super.fireValueChange(changeEvent);
@@ -267,7 +267,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     				oldValue = Timestamp.from(getComponent().getDatebox().getValue().toInstant());
     			else
     				oldValue = Timestamp.valueOf(getComponent().getDatebox().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-    			if (!Objects.equal(currentValue, oldValue))
+    			if (!Objects.equal(currentValue, oldValue) && !readOnly)
     			{
     				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
     				super.fireValueChange(changeEvent);
@@ -276,7 +276,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     		else
     		{
     			oldValue = null;
-    			if (currentValue != null)
+    			if (currentValue != null && !readOnly)
         		{
         			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, null);
         			super.fireValueChange(changeEvent);

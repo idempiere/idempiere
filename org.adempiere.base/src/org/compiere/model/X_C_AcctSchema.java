@@ -246,6 +246,25 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return false;
 	}
 
+	/** Set Back-Date Days.
+		@param BackDateDay Number of days to be able to post a back-date transaction (based on system date)
+	*/
+	public void setBackDateDay (int BackDateDay)
+	{
+		set_Value (COLUMNNAME_BackDateDay, Integer.valueOf(BackDateDay));
+	}
+
+	/** Get Back-Date Days.
+		@return Number of days to be able to post a back-date transaction (based on system date)
+	  */
+	public int getBackDateDay()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BackDateDay);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID Rules for accounting
 	*/

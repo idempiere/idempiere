@@ -175,7 +175,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     		Timestamp currentValue = oldValue;
     		oldValue = null;
     		getComponent().setValue(null);
-    		if (currentValue != null)
+    		if (currentValue != null && !readOnly)
     		{
     			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, null);
     			super.fireValueChange(changeEvent);
@@ -187,7 +187,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     		LocalDateTime localDateTime = ((Timestamp)value).toLocalDateTime();
             getComponent().setValueInLocalDateTime(localDateTime);            
             oldValue = Timestamp.valueOf(localDateTime);
-            if (!Objects.equals(currentValue, oldValue)) 
+			if (!Objects.equals(currentValue, oldValue) && !readOnly) 
             {
             	ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
             	super.fireValueChange(changeEvent);
@@ -203,7 +203,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
         			oldValue = Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         		else
         			oldValue = null;
-    			if (!Objects.equals(currentValue, oldValue))
+    			if (!Objects.equals(currentValue, oldValue) && !readOnly)
     			{
 	    			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), currentValue, oldValue);
 	                super.fireValueChange(changeEvent);

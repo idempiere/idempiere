@@ -232,7 +232,7 @@
 							if (legend.show == true) {
 								model.legend.show = true;
 							} else if (legend.show == false) {
-								model.legend.show = true;
+								model.legend.show = false;
 							}
 							if (legend.placement) {
 								if (legend.placement == "insideGrid") {
