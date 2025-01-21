@@ -60,6 +60,7 @@ public class CalloutMovement extends CalloutEngine
 		
 		MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
 		mTab.setValue("C_UOM_ID", product.getC_UOM_ID());
+		mTab.setValue("MovementQty", mTab.getValue("QtyEntered"));
 
 		checkQtyAvailable(ctx, mTab, WindowNo, M_Product_ID, null);
 		return "";
@@ -83,14 +84,14 @@ public class CalloutMovement extends CalloutEngine
 		BigDecimal qtyEntered = Env.ZERO;
 		int C_UOM_To_ID = 0;
 		
-		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
+		int M_Product_ID = (Integer) mTab.getValue(MMovementLine.COLUMNNAME_M_Product_ID);
 		//		UOM Changed - convert from Entered -> Product
 		if (mField.getColumnName().equals("C_UOM_ID")) {
 			C_UOM_To_ID = ((Integer)value).intValue();
 			qtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
 		} else if (mField.getColumnName().equals("QtyEntered")) //	QtyEntered changed - calculate MovementQty
 		{
-			C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
+			C_UOM_To_ID = (Integer) mTab.getValue(MMovementLine.COLUMNNAME_C_UOM_ID);
 			qtyEntered = (BigDecimal)value;
 		}
 		
@@ -104,6 +105,12 @@ public class CalloutMovement extends CalloutEngine
 		movementQty = MUOMConversion.convertProductFrom (ctx, M_Product_ID,C_UOM_To_ID, qtyEntered);
 		if (movementQty == null)
 			movementQty = qtyEntered;
+		
+		boolean conversion = qtyEntered.compareTo(movementQty) != 0;
+		if (log.isLoggable(Level.FINE))
+		log.fine("UOM=" + C_UOM_To_ID + ", qtyEntered=" + qtyEntered + " -> " + conversion + " movementQty="
+				+ movementQty);
+		Env.setContext(ctx, WindowNo, "UOMConversion", conversion ? "Y" : "N");
 
 		mTab.setValue("MovementQty", movementQty);
 		return "";

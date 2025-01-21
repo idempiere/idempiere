@@ -143,6 +143,11 @@ UPDATE AD_Field SET IsDisplayed='Y', SeqNo=140, AD_FieldGroup_ID=102, XPosition=
 UPDATE AD_Field SET SeqNo=150, IsReadOnly='Y',Updated=TO_TIMESTAMP('2025-01-10 12:37:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2738
 ;
 
+-- Updated Movement Line's Movement Qty field's display logic 
+-- Jan 16, 2025, 7:07:00 PM IST	
+UPDATE AD_Field SET DisplayLogic='@UOMConversion@=Y | @Processed@=Y', AD_Reference_ID=NULL, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, Included_Tab_ID=NULL, IsToolbarButton=NULL, AD_LabelStyle_ID=NULL, AD_FieldStyle_ID=NULL, AD_Val_Rule_Lookup_ID=NULL,Updated=TO_TIMESTAMP('2022-11-28 19:07:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2738
+;
+
 -- Jan 10, 2025, 12:37:18 PM CET
 UPDATE AD_Field SET SeqNo=160,Updated=TO_TIMESTAMP('2025-01-10 12:37:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=9226
 ;
