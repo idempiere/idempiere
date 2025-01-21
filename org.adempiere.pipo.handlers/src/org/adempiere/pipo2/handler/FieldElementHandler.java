@@ -33,6 +33,7 @@ import org.compiere.model.I_AD_Field;
 import org.compiere.model.I_AD_FieldGroup;
 import org.compiere.model.I_AD_Reference;
 import org.compiere.model.I_AD_Tab;
+import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Val_Rule;
 import org.compiere.model.MField;
 import org.compiere.model.X_AD_Field;
@@ -133,23 +134,42 @@ public class FieldElementHandler extends AbstractElementHandler {
 			throw new SAXException(e);
 		}
 
-		if (!isPackOutElement(ctx, m_Field))
-			return;
 
-		verifyPackOutRequirement(m_Field);
-		
-		AttributesImpl atts = new AttributesImpl();
-		addTypeName(atts, "table");
-		document.startElement("", "", X_AD_Field.Table_Name, atts);
-		createFieldBinding(ctx, document, m_Field);
-		packOut.getCtx().ctx.put("Table_Name",X_AD_Field.Table_Name);
-		try {
-			new CommonTranslationHandler().packOut(packOut,document,null,m_Field.get_ID());
-		} catch(Exception e) {
-			if (log.isLoggable(Level.INFO)) log.info(e.toString());
+		boolean createElement = isPackOutElement(ctx, m_Field);
+		if (createElement)
+		{
+			verifyPackOutRequirement(m_Field);
+
+			AttributesImpl atts = new AttributesImpl();
+			addTypeName(atts, "table");
+			document.startElement("", "", X_AD_Field.Table_Name, atts);
+			createFieldBinding(ctx, document, m_Field);
+			packOut.getCtx().ctx.put("Table_Name", X_AD_Field.Table_Name);
+			try
+			{
+				new CommonTranslationHandler().packOut(packOut, document, null, m_Field.get_ID());
+			}
+			catch (Exception e)
+			{
+				if (log.isLoggable(Level.INFO))
+					log.info(e.toString());
+			}
 		}
 
-		document.endElement("", "", X_AD_Field.Table_Name);
+		packOut.getCtx().ctx.put("Table_Name", X_AD_Field.Table_Name);
+		try
+		{
+			ElementHandler handler = packOut.getHandler(I_AD_TableAttribute.Table_Name);
+			handler.packOut(packOut, document, null, m_Field.get_ID());
+		}
+		catch (Exception e)
+		{
+			if (log.isLoggable(Level.INFO))
+				log.info(e.toString());
+		}
+
+		if (createElement)
+			document.endElement("", "", X_AD_Field.Table_Name);	
 	}
 
 	private void createFieldBinding(PIPOContext ctx, TransformerHandler document,

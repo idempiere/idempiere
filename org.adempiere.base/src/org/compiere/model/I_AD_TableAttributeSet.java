@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_AttributeUse
+/** Generated Interface for AD_TableAttributeSet
  *  @author iDempiere (generated) 
  *  @version Release 12
  */
-public interface I_M_AttributeUse 
+public interface I_AD_TableAttributeSet 
 {
 
-    /** TableName=M_AttributeUse */
-    public static final String Table_Name = "M_AttributeUse";
+    /** TableName=AD_TableAttributeSet */
+    public static final String Table_Name = "AD_TableAttributeSet";
 
-    /** AD_Table_ID=563 */
-    public static final int Table_ID = 563;
+    /** AD_Table_ID=200423 */
+    public static final int Table_ID = 200423;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client 
+    /** AccessLevel = 4 - System 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(6);
+    BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
 
@@ -62,6 +62,39 @@ public interface I_M_AttributeUse
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_TableAttributeSet_ID */
+    public static final String COLUMNNAME_AD_TableAttributeSet_ID = "AD_TableAttributeSet_ID";
+
+	/** Set Table Attribute Set	  */
+	public void setAD_TableAttributeSet_ID (int AD_TableAttributeSet_ID);
+
+	/** Get Table Attribute Set	  */
+	public int getAD_TableAttributeSet_ID();
+
+    /** Column name AD_TableAttributeSet_UU */
+    public static final String COLUMNNAME_AD_TableAttributeSet_UU = "AD_TableAttributeSet_UU";
+
+	/** Set AD_TableAttributeSet_UU	  */
+	public void setAD_TableAttributeSet_UU (String AD_TableAttributeSet_UU);
+
+	/** Get AD_TableAttributeSet_UU	  */
+	public String getAD_TableAttributeSet_UU();
+
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -77,21 +110,6 @@ public interface I_M_AttributeUse
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name DefaultValue */
-    public static final String COLUMNNAME_DefaultValue = "DefaultValue";
-
-	/** Set Default Logic.
-	  * Default value hierarchy, separated by ;
-
-	  */
-	public void setDefaultValue (String DefaultValue);
-
-	/** Get Default Logic.
-	  * Default value hierarchy, separated by ;
-
-	  */
-	public String getDefaultValue();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -120,45 +138,6 @@ public interface I_M_AttributeUse
 	public int getM_AttributeSet_ID();
 
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
-
-    /** Column name M_AttributeUse_UU */
-    public static final String COLUMNNAME_M_AttributeUse_UU = "M_AttributeUse_UU";
-
-	/** Set M_AttributeUse_UU	  */
-	public void setM_AttributeUse_UU (String M_AttributeUse_UU);
-
-	/** Get M_AttributeUse_UU	  */
-	public String getM_AttributeUse_UU();
-
-    /** Column name M_Attribute_ID */
-    public static final String COLUMNNAME_M_Attribute_ID = "M_Attribute_ID";
-
-	/** Set Attribute.
-	  * Product Attribute
-	  */
-	public void setM_Attribute_ID (int M_Attribute_ID);
-
-	/** Get Attribute.
-	  * Product Attribute
-	  */
-	public int getM_Attribute_ID();
-
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
-
-    /** Column name SeqNo */
-    public static final String COLUMNNAME_SeqNo = "SeqNo";
-
-	/** Set Sequence.
-	  * Method of ordering records;
- lowest number comes first
-	  */
-	public void setSeqNo (int SeqNo);
-
-	/** Get Sequence.
-	  * Method of ordering records;
- lowest number comes first
-	  */
-	public int getSeqNo();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -31,7 +31,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20240718L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
@@ -100,7 +100,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -250,6 +250,22 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	public String getDateFormat()
 	{
 		return (String)get_Value(COLUMNNAME_DateFormat);
+	}
+
+	/** Set Default Logic.
+		@param DefaultValue Default value hierarchy, separated by ;
+	*/
+	public void setDefaultValue (String DefaultValue)
+	{
+		set_Value (COLUMNNAME_DefaultValue, DefaultValue);
+	}
+
+	/** Get Default Logic.
+		@return Default value hierarchy, separated by ;
+	  */
+	public String getDefaultValue()
+	{
+		return (String)get_Value(COLUMNNAME_DefaultValue);
 	}
 
 	/** Set Description.

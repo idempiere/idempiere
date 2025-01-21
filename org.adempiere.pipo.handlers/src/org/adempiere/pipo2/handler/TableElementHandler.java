@@ -34,9 +34,11 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.MColumn;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableAttributeSet;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.MViewComponent;
 import org.compiere.model.Query;
@@ -56,6 +58,8 @@ public class TableElementHandler extends AbstractElementHandler {
 	private ColumnElementHandler columnHandler = new ColumnElementHandler();
 	private TableIndexElementHandler tableIndexHandler = new TableIndexElementHandler();
 	private ViewComponentElementHandler viewComponentHandler = new ViewComponentElementHandler();
+	private TableAttributeSetElementHandler tableAttributeSetElementHandler = new TableAttributeSetElementHandler();
+
 
 	private List<Integer>tables = new ArrayList<Integer>();
 
@@ -186,6 +190,18 @@ public class TableElementHandler extends AbstractElementHandler {
 			document.startElement("","",I_AD_Table.Table_Name,atts);
 			createTableBinding(ctx,document,m_Table);
 		}
+		
+		packOut.getCtx().ctx.put("Table_Name", I_AD_Table.Table_Name);
+		try
+		{
+			ElementHandler handler = packOut.getHandler(I_AD_TableAttribute.Table_Name);
+			handler.packOut(packOut, document, null, m_Table.get_ID());
+		}
+		catch (Exception e)
+		{
+			if (log.isLoggable(Level.INFO))
+				log.info(e.toString());
+		}
 
 		try {
 			List<MColumn> cols = new Query(ctx.ctx, MColumn.Table_Name, "AD_Table_ID=?", getTrxName(ctx))
@@ -253,6 +269,23 @@ public class TableElementHandler extends AbstractElementHandler {
 				createViewComponent(ctx, document, vc.getAD_ViewComponent_ID());
 			}
 		} catch (Exception e)	{
+			throw new AdempiereException(e);
+		}
+		
+		List<MTableAttributeSet> mTableAttributeSets = new Query(ctx.ctx, MTableAttributeSet.Table_Name, "AD_Table_ID=?", getTrxName(ctx))
+						.setParameters(AD_Table_ID)
+						.list();
+		try
+		{
+			for (MTableAttributeSet attributeSet : mTableAttributeSets)
+			{
+				Env.setContext(ctx.ctx, MTableAttributeSet.COLUMNNAME_AD_TableAttributeSet_UU, attributeSet.getAD_TableAttributeSet_UU());
+				tableAttributeSetElementHandler.packOut(ctx.packOut, document, null, 0, attributeSet.getAD_TableAttributeSet_UU());
+				ctx.ctx.remove(MTableAttributeSet.COLUMNNAME_AD_TableAttributeSet_UU);
+			}
+		}
+		catch (Exception e)
+		{
 			throw new AdempiereException(e);
 		}
 		

@@ -31,7 +31,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20240718L;
 
     /** Standard Constructor */
     public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName)
@@ -92,7 +92,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -112,6 +112,50 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
         .append(get_UUID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
+
+	/** Set Attribute.
+		@param M_Attribute_ID Product Attribute
+	*/
+	public void setM_Attribute_ID (int M_Attribute_ID)
+	{
+		if (M_Attribute_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
+	}
+
+	/** Get Attribute.
+		@return Product Attribute
+	  */
+	public int getM_Attribute_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Default Logic.
+		@param DefaultValue Default value hierarchy, separated by ;
+	*/
+	public void setDefaultValue (String DefaultValue)
+	{
+		set_Value (COLUMNNAME_DefaultValue, DefaultValue);
+	}
+
+	/** Get Default Logic.
+		@return Default value hierarchy, separated by ;
+	  */
+	public String getDefaultValue()
+	{
+		return (String)get_Value(COLUMNNAME_DefaultValue);
+	}
 
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
 	{
@@ -162,34 +206,6 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	public String getM_AttributeUse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeUse_UU);
-	}
-
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
-			.getPO(getM_Attribute_ID(), get_TrxName());
-	}
-
-	/** Set Attribute.
-		@param M_Attribute_ID Product Attribute
-	*/
-	public void setM_Attribute_ID (int M_Attribute_ID)
-	{
-		if (M_Attribute_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
-	}
-
-	/** Get Attribute.
-		@return Product Attribute
-	  */
-	public int getM_Attribute_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Sequence.
