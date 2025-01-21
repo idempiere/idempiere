@@ -26,17 +26,24 @@ div.body{
 .toolBar{
 	width: 100%;
 	position: absolute;
+	display: flex;
+	justify-content: space-between;
 	background-color:#000000;
 }
 .toolBar-title{
 	margin-left: 10px;
-    float: left; 
-    width: 50%;
+	padding: 10px 0px;
+	float: left;
+	width: 50%;
+}
+#title p {
+	margin: 10px 0px;
 }
 .toolBar-tools {
-	bottom: 10px;
-    position: absolute;
-    right: 10px; 
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	margin-right: 10px;
 }
 .toolBar-tools img{
 	filter:alpha(opacity=60);
@@ -48,7 +55,7 @@ div.body{
 }
 
 .main{
-	padding-top: 60px;
+	padding-top: 70px;
 }
 #main-background{
 	height: 95%;
@@ -56,8 +63,6 @@ div.body{
     top: 0;
     width: 100%;
     z-index: -1000;
-    filter:alpha(opacity=60);
- 	opacity: 0.6;
 }
 #main-background img{
 	height: 100%;
@@ -84,23 +89,23 @@ div.body{
   justify-content: center;
 }
 #main-docuBtns ul {
-  margin:0;
+  margin: 60px auto;
   padding:28px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: center;
+  align-content: flex-end;
   align-items: flex-start;
   justify-content: flex-start;
-  height: 450px;
+  height: 400px;
   width: 700px;
 }
 #main-docuBtns ul li {
   display: inline-flex;
   flex-direction: column;
-  height:120px;
-  width:130px;
-  padding: 9px 0;
+  padding: 12px 0;
+  height:114px;
+  width:106px;
   text-align:center;
   background-color: #111;
   margin: 5px;
@@ -108,17 +113,17 @@ div.body{
 #main-docuBtns ul li > a {
 	width: 100%;
 	flex-grow: 1;
-	display: inline-block;
+	display: flex;
+	flex-direction: column;
 }
 #main-docuBtns ul li > a > img {
 	position: relative;
   	transform: translate(0%,5%);
 }
 .main-txt-btn {
-	padding-top:2px;
-	padding-bottom:2px;
+	padding: 5px 0px;
 	color: #fff;
-	flex-grow: 0;
+	font-size: 0.9em;
 }
 #main-requestBtns-btnLogin{
 	overflow: hidden;

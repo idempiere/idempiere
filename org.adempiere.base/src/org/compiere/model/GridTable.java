@@ -98,7 +98,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3948220810042370826L;
+	private static final long serialVersionUID = 1852095729689900949L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
@@ -106,6 +106,9 @@ public class GridTable extends AbstractTableModel
 	public static final int DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS = 1;
 
 	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
+	public static final String COUNT_QUERY_TIMEOUT_ERROR_MESSAGE = "CountQueryTimeoutLoadBackground";
+	public static final String FIND_OVER_MAX_ERROR_MESSAGE = "FindOverMax";
+	public static final String BACKGROUND_LOAD_FINISHED_INFO_MESSAGE = "BackgroundLoadFinished";
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -1168,7 +1171,7 @@ public class GridTable extends AbstractTableModel
 			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
 			//adjust row count
 			m_rowCount = m_sort.size();
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), LOAD_TIMEOUT_ERROR_MESSAGE));
+			m_rowLoadTimeout = true; // at this moment this must be set, but just to be sure that the warning is raised at doRun
 		}
 	}
 
@@ -3182,7 +3185,7 @@ public class GridTable extends AbstractTableModel
 						{
 							DataStatusEvent evt = createDSE();
 							evt.setLoading(m_sort.size());
-							evt.setInfo("CountQueryTimeoutLoadBackground", null, false, true);
+							evt.setInfo(COUNT_QUERY_TIMEOUT_ERROR_MESSAGE, null, false, false);
 							fireDataStatusChanged(evt);
 						}
 					}
@@ -3223,7 +3226,21 @@ public class GridTable extends AbstractTableModel
 				DataStatusEvent evt = createDSE();
 				evt.setLoading(m_sort.size());
 				if (isFindOverMax)
-					evt.setInfo("FindOverMax", " > " + m_sort.size(), false, true);
+					evt.setInfo(FIND_OVER_MAX_ERROR_MESSAGE, " > " + m_sort.size(), false, true);
+				else
+					evt.setInfo(BACKGROUND_LOAD_FINISHED_INFO_MESSAGE, null, false, false);
+				fireDataStatusChanged(evt);
+			} else if (m_rowLoadTimeout)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				evt.setInfo(LOAD_TIMEOUT_ERROR_MESSAGE, null, false, true);
+				fireDataStatusChanged(evt);
+			} else if (isFindOverMax)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				evt.setInfo(FIND_OVER_MAX_ERROR_MESSAGE, " > " + m_sort.size(), false, true);
 				fireDataStatusChanged(evt);
 			}
 

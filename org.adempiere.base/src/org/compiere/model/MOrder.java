@@ -3137,10 +3137,9 @@ public class MOrder extends X_C_Order implements DocAction
 			// delete Cost Detail if the Matched PO has been deleted
 			if (mPO.length == 0)
 			{
-				MCostDetail cd = MCostDetail.get(getCtx(), "C_OrderLine_ID=?", 
-						line.getC_OrderLine_ID(), line.getM_AttributeSetInstance_ID(), 
-						as.getC_AcctSchema_ID(), get_TrxName());
-				if (cd !=  null)
+				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", 
+						line.getC_OrderLine_ID(), 0, as.get_ID(), get_TrxName());
+				for (MCostDetail cd : cds)
 				{
 					cd.setProcessed(false);
 					cd.delete(true);

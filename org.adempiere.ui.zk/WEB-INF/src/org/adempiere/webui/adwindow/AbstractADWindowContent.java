@@ -650,7 +650,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					IADTabpanel gc = null;
 					gc = adTabbox.findADTabpanel(gTab);
 					gc.createUI();
-					gc.query(false, 0, 0);
+					gc.query(false, 0, gTab.getMaxQueryRecords());
 
 					int zoomColumnIndex = -1;
 					GridTable table = gTab.getTableModel();
@@ -1842,7 +1842,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (Executions.getCurrent() == null)
     	{
     		// Re-post incremental loading event to UI thread
-    		if (e.isLoading() && e.getSource() != null && e.getSource().equals(adTabbox.getSelectedGridTab().getTableModel()))
+    		if (   e.isLoading() && e.getSource() != null
+    			&& (   e.getSource().equals(adTabbox.getSelectedGridTab().getTableModel())
+    				|| (   adTabbox.getSelectedDetailADTabpanel() != null 
+    				    && adTabbox.getSelectedDetailADTabpanel().getGridTab() != null
+    				    && e.getSource().equals(adTabbox.getSelectedDetailADTabpanel().getGridTab().getTableModel()))))
     		{
     			Executions.schedule(getComponent().getDesktop(), evt -> {
     				this.dataStatusChanged(e);
@@ -1866,14 +1870,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     	//update window title
         String adInfo = e.getAD_Message();
-        if (   adInfo == null
+        if (!detailTab
+        	&& (   adInfo == null
         	|| GridTab.DEFAULT_STATUS_MESSAGE.equals(adInfo)
         	|| GridTable.DATA_REFRESH_MESSAGE.equals(adInfo)
         	|| GridTable.DATA_INSERTED_MESSAGE.equals(adInfo)
         	|| GridTable.DATA_IGNORED_MESSAGE.equals(adInfo)
         	|| GridTable.DATA_UPDATE_COPIED_MESSAGE.equals(adInfo)
         	|| GridTable.DATA_SAVED_MESSAGE.equals(adInfo)
-           ) {
+           )) {
 
 	        String prefix = null;
 	        if (adTabbox.needSave(true, false) ||
@@ -2039,6 +2044,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	                }
 	            }
         	}
+        } else if (detailTab && e.isLoading()) {
+			String msg = e.getMessage();
+        	adTabbox.setDetailPaneStatusMessage(msg, false);
         }
 
         IADTabpanel tabPanel = detailTab ? adTabbox.getSelectedDetailADTabpanel()
@@ -2389,7 +2397,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	onRefresh(true, false);
     	if (gridTab.isSortTab()) { // refresh is not refreshing sort tabs
     		IADTabpanel tabPanel = adTabbox.getSelectedTabpanel();
-    		tabPanel.query(false, 0, 0);
+    		tabPanel.query(false, 0, gridTab.getMaxQueryRecords());
     	}
     }
 	
@@ -3594,7 +3602,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			m_onlyCurrentRows = false;
 			adTabbox.getSelectedGridTab().setQuery(query);
 			try {
-				adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, MRole.getDefault().getMaxQueryRecords());   //  autoSize
+				adTabbox.getSelectedTabpanel().query(m_onlyCurrentRows, m_onlyCurrentDays, adTabbox.getSelectedTabpanel().getGridTab().getMaxQueryRecords());   //  autoSize
 			} catch (Exception e) {
 				if (   e.getCause() != null 
 					&& e.getCause() instanceof SQLException

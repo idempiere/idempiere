@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -55,7 +56,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6847265056758898333L;
+	private static final long serialVersionUID = 5086571475777568115L;
 
 	/**
 	 * 	Get MProduct from Cache (immutable)
@@ -1107,7 +1108,6 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 */
 	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
-		
 		String costingLevel = getCostingLevel(as);
 		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
 		{
@@ -1128,6 +1128,38 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		}
 		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), get_TrxName());
 		return cost.is_new() ? null : cost;
+	}
+	
+	/**
+	 * @param as
+	 * @param AD_Org_ID
+	 * @param M_ASI_ID
+	 * @param costingMethod
+	 * @param dateAcct
+	 * @return ICostInfo or null
+	 */
+	public ICostInfo getCostInfo(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
+	{		
+		String costingLevel = getCostingLevel(as);
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+		{
+			AD_Org_ID = 0;
+			M_ASI_ID = 0;
+		}
+		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+			M_ASI_ID = 0;
+		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+		{
+			AD_Org_ID = 0;
+			if (M_ASI_ID == 0)
+				return null;
+		}
+		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
+		if (ce == null) {
+			return null;
+		}
+		return MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, dateAcct, null, get_TrxName());
 	}
 	
 	@Override
