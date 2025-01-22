@@ -113,6 +113,7 @@ public class CalloutMovement extends CalloutEngine
 		Env.setContext(ctx, WindowNo, "UOMConversion", conversion ? "Y" : "N");
 
 		mTab.setValue("MovementQty", movementQty);
+		checkQtyAvailable(ctx, mTab, WindowNo, M_Product_ID, movementQty);
 		return "";
 	} //  qty
 	
