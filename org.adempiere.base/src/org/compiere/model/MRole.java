@@ -3490,14 +3490,17 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public String getPredefinedContextVariables() {
 		StringBuilder predefinedContextVariables = new StringBuilder();
-		if (get_Value(COLUMNNAME_PredefinedContextVariables) != null)
-			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
 		for (MRole role : getIncludedRoles(false)) {
 			if (role.get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
 				if (predefinedContextVariables.length() > 0)
 					predefinedContextVariables.append("\n");
 				predefinedContextVariables.append(role.get_Value(COLUMNNAME_PredefinedContextVariables).toString());
 			}
+		}
+		if (get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+			if (predefinedContextVariables.length() > 0)
+				predefinedContextVariables.append("\n");
+			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
 		}
 		return predefinedContextVariables.toString();
 	}
