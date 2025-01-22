@@ -149,6 +149,26 @@ public class InventoryMoveTest extends AbstractTestCase {
 		assertTrue(newQtyOnHandStore.compareTo(qtyOnHandStore.add(movementQty)) == 0);
 		
 		rollback();
+		
+		//Inventory Move - Setting not default UOM with no QtyEntered but positive MovementQty
+		mh = new MMovement (Env.getCtx(), 0, getTrxName());
+		mh.setM_Warehouse_ID(HQ_WAREHOUSE_ID);
+		mh.setM_WarehouseTo_ID(STORE_WAREHOUSE_ID);
+		mh.saveEx();
 
+		//Movement Line
+		ml = new MMovementLine(mh);
+		ml.setM_Product_ID(ELM_PRODUCT_ID);
+		ml.setM_LocatorTo_ID(MWarehouse.get(STORE_WAREHOUSE_ID).getDefaultLocator().get_ID());
+		//	From
+		ml.setM_Locator_ID(MWarehouse.get(HQ_WAREHOUSE_ID).getDefaultLocator().get_ID());
+
+		ml.setMovementQty(qtyMove);
+		ml.setC_UOM_ID(UOM_SIXPACK_ID); //Six Pack
+		boolean success = ml.save();
+
+		assertFalse(success);
+
+		rollback();
 	}
 }

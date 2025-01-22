@@ -231,6 +231,15 @@ public class MMovementLine extends X_M_MovementLine
 				return false;
 			}
 		}
+		
+		//Validate UOM and Quantities
+		// If UOM is not the default one and Movement Qty > 0 and QtyEntered = 0 - wrong call
+		int C_UOM_ID = MProduct.get(getCtx(), getM_Product_ID()).getC_UOM_ID();
+		if (getC_UOM_ID() != C_UOM_ID && getMovementQty().compareTo(BigDecimal.ZERO) != 0 && 
+				(getQtyEntered() == null || getQtyEntered().compareTo(BigDecimal.ZERO) == 0)) {
+			log.saveError("SaveError", "Please provide a valid Entered Quantity or use the default UOM");
+			return false;
+		}
 
 		if (newRecord) {
 			//Backward compatibility for potential processes creating movements in code 
