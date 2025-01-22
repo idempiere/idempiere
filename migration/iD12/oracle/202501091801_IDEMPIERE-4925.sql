@@ -162,3 +162,7 @@ UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.qtyEntered; org
 UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.qtyEntered',Updated=TO_TIMESTAMP('2025-01-10 15:39:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217031
 ;
 
+-- Jan 22, 2025, 3:06:49 PM CET
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.locator',Updated=TO_TIMESTAMP('2025-01-22 15:06:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=3591
+;
+
