@@ -22,6 +22,7 @@ UPDATE AD_Column SET FKConstraintName='CUOM_MMovementLine', FKConstraintType='N'
 
 -- Jan 9, 2025, 6:06:48 PM CET
 ALTER TABLE M_MovementLine ADD C_UOM_ID NUMBER(10) DEFAULT NULL 
+;
 
 UPDATE M_MovementLine SET C_UOM_ID = (select c_uom_id from m_product where m_product_id=m_movementline.m_product_id)
 ;
