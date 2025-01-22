@@ -167,3 +167,15 @@ UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.qtyEntered',Upd
 UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.locator',Updated=TO_TIMESTAMP('2025-01-22 15:06:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=3591
 ;
 
+-- Jan 22, 2025, 6:42:24 PM CET
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.qty',Updated=TO_TIMESTAMP('2025-01-22 18:42:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8551
+;
+
+-- Jan 22, 2025, 6:43:39 PM CET
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.qty',Updated=TO_TIMESTAMP('2025-01-22 18:43:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217031
+;
+
+-- Jan 22, 2025, 6:44:54 PM CET
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutMovement.qty',Updated=TO_TIMESTAMP('2025-01-22 18:44:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217029
+;
+
