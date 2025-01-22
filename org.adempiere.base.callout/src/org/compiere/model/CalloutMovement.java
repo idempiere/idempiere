@@ -77,7 +77,7 @@ public class CalloutMovement extends CalloutEngine
 	 *  @return Error message or ""
 	 */
 	public String qtyEntered(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
-		if (isCalloutActive() || value == null)
+		if (isCalloutActive() || value == null || mTab.getValue(MMovementLine.COLUMNNAME_M_Product_ID) == null)
 			return "";
 
 		BigDecimal movementQty = Env.ZERO;
