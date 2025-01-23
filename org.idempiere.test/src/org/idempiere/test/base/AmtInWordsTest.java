@@ -24,7 +24,7 @@
  **********************************************************************/
 package org.idempiere.test.base;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.AmtInWords_ES;
@@ -42,20 +42,25 @@ public class AmtInWordsTest extends AbstractTestCase {
 		try {
 			AmtInWords_ES aiw = new AmtInWords_ES();
 			String val = aiw.getAmtInWords("9223372036854775807");
-			assertTrue(val.equals("NUEVE TRILLONES DOSCIENTOS VEINTITRES BILLARDOS TRESCIENTOS SETENTA Y DOS BILLONES TREINTA Y SEIS MILLARDOS OCHOCIENTOS CINCUENTA Y CUATRO MILLONES SETECIENTOS SETENTA Y CINCO MIL OCHOCIENTOS SIETE"));
+			String expectedValue = "NUEVE TRILLONES DOSCIENTOS VEINTITRES BILLARDOS TRESCIENTOS SETENTA Y DOS BILLONES TREINTA Y SEIS MILLARDOS OCHOCIENTOS CINCUENTA Y CUATRO MILLONES SETECIENTOS SETENTA Y CINCO MIL OCHOCIENTOS SIETE";
+
+			assertEquals(val, expectedValue, "AmtInWords_ES.getAmtInWords is not working as expected (without decimals)");
+
 		}
 		catch (Exception e) {
 			throw new AdempiereException(e);
 		}
 	}
-	
+
 	@Test
 	public void testAmtInWordsDecimalsES() {
-		
+
 		try {
 			AmtInWords_ES aiw = new AmtInWords_ES();
 			String val = aiw.getAmtInWords("9223372036854775807.99");
-			assertTrue(val.equals("NUEVE TRILLONES DOSCIENTOS VEINTITRES BILLARDOS TRESCIENTOS SETENTA Y DOS BILLONES TREINTA Y SEIS MILLARDOS OCHOCIENTOS CINCUENTA Y CUATRO MILLONES SETECIENTOS SETENTA Y CINCO MIL OCHOCIENTOS SIETE 99/100"));
+			String expectedValue = "NUEVE TRILLONES DOSCIENTOS VEINTITRES BILLARDOS TRESCIENTOS SETENTA Y DOS BILLONES TREINTA Y SEIS MILLARDOS OCHOCIENTOS CINCUENTA Y CUATRO MILLONES SETECIENTOS SETENTA Y CINCO MIL OCHOCIENTOS SIETE 99/100";
+
+			assertEquals(val, expectedValue, "AmtInWords_ES.getAmtInWords is not working as expected (with decimals)");
 		}
 		catch (Exception e) {
 			throw new AdempiereException(e);
