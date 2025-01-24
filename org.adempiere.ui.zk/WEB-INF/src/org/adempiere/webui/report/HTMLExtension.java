@@ -29,8 +29,10 @@ import org.compiere.model.MSysConfig;
 import org.compiere.print.IHTMLExtension;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Executions;
 
 /**
@@ -39,6 +41,9 @@ import org.zkoss.zk.ui.Executions;
  */
 public class HTMLExtension implements IHTMLExtension {
 
+	/**	Logger				*/
+	private static CLogger log = CLogger.getCLogger(HTMLExtension.class);
+			
 	private String classPrefix;
 	private String componentId;
 	private String scriptURL;
@@ -202,6 +207,17 @@ public class HTMLExtension implements IHTMLExtension {
 		if (!theme.endsWith("/"))
 			theme = theme + "/";
 		String resFile = theme + "css/report.css";
+		
+		// Support to Parse Context Variable
+		if (resFile.contains("@"))
+		{
+			resFile = Env.parseContext(Env.getCtx(), 0, resFile, false);
+			if (Util.isEmpty(resFile))
+			{
+				log.warning("Report theme URL '"+ theme +"' failed to parse, Defaulting to default report.css url");
+				resFile = "/css/report.css"; // default
+			}
+		}
 		
 		// translate ~./ url to classpath url
 		if (theme.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE))
