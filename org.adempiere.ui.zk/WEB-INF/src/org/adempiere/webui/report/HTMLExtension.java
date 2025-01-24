@@ -214,7 +214,7 @@ public class HTMLExtension implements IHTMLExtension {
 			resFile = Env.parseContext(Env.getCtx(), 0, resFile, false);
 			if (Util.isEmpty(resFile))
 			{
-				log.warning("Report theme URL parsing Failed, Defaulting to default report.css url");
+				log.warning("Report theme URL '"+ theme +"' failed to parse, Defaulting to default report.css url");
 				resFile = "/css/report.css"; // default
 			}
 		}
