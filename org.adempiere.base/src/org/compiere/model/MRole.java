@@ -67,7 +67,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 7266911648463503849L;
+	private static final long serialVersionUID = -8473945674135719367L;
 
 	/**
 	 * 	Get role for current session/context
@@ -3484,4 +3484,25 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), recordId) == 1;
 		}
 	}
+
+	/** Get Predefined Context Variables from this role and included roles
+	 * @return Predefined context variables to inject when opening a menu entry or a window
+	 */
+	public String getPredefinedContextVariables() {
+		StringBuilder predefinedContextVariables = new StringBuilder();
+		for (MRole role : getIncludedRoles(false)) {
+			if (role.get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+				if (predefinedContextVariables.length() > 0)
+					predefinedContextVariables.append("\n");
+				predefinedContextVariables.append(role.get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+			}
+		}
+		if (get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+			if (predefinedContextVariables.length() > 0)
+				predefinedContextVariables.append("\n");
+			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+		}
+		return predefinedContextVariables.toString();
+	}
+
 }	//	MRole
