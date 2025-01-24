@@ -2160,6 +2160,7 @@ public final class Env
 	 *   VAR='VALUE'
 	 *  The + prefix is not required, is added here to the defined variables.
 	 * </pre>
+	 * NOTE that any line that doesn't contain an equal sign (=) is ignored, can be used simply as a comment
 	 * @param ctx
 	 * @param windowNo window number or -1 to global level
 	 * @param predefinedVariables
