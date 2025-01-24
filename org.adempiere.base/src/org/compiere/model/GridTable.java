@@ -1151,10 +1151,13 @@ public class GridTable extends AbstractTableModel
 		int loops = 0;
 		//wait for [timeout] seconds
 		int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
-		if (timeout <= 0)
-			timeout = 120; /* wait max 2 minutes if the load timeout is not set, WARNING, this is not recommended as the query keeps running in the database */
-		else
+		if (timeout <= 0) {
+			timeout = 120;
+			log.warning("Setting GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 0 is not recommended as long queries can keep running in the database and affects performance, "
+					+ " in this case the system assigns a wait of 2 minutes to load records of a window");
+		} else {
 			timeout += 5; /* give 5 seconds extra for the query to timeout first in the database */
+		}
 		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && !m_rowLoadTimeout && loops < timeout)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
