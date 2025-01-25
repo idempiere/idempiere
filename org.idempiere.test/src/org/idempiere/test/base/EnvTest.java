@@ -258,6 +258,11 @@ public class EnvTest extends AbstractTestCase {
 		expr = "@C_BPartner_ID:0.Created<yyyy-MM-dd>@='"+created+"'";
 		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
 		assertTrue(evaluation, "Unexpected logic evaluation result");
+
+		//@AD_Client_ID@
+		expr = "@AD_Client_ID@";
+		parsedText = Env.parseContext(Env.getCtx(), -1, expr, false, true); // like in GridFieldVO parsing ColumnSQL
+		assertEquals("11", parsedText, "Unexpected parsed text for "+expr);
 		
 		//custom context
 		Properties ctx = new Properties();
