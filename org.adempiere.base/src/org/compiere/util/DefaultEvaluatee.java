@@ -237,9 +237,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		
 		//try context if no data provider and not only window and not only tab
 		if (!globalVariable && m_dataProvider == null && Util.isEmpty(value) && !m_onlyWindow && (m_onlyTab == null || !m_onlyTab.booleanValue())) {
-			value = Env.getContext(ctx, m_windowNo, variableName);
-			if (Util.isEmpty(value))
-				value = Env.getContext(ctx, variableName);
+			value = Env.getContext(ctx, variableName);
 		}
 		
 		//fall back to default (if define)

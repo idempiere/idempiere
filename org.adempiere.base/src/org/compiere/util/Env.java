@@ -604,7 +604,10 @@ public final class Env
 				retValue = "";
 			return retValue;
 		}
-		return ctx.getProperty(context, "");
+		String value = ctx.getProperty(context, "");
+		if (Util.isEmpty(value) && !context.startsWith("#"))
+			value = ctx.getProperty("#"+context, "");
+		return value;
 	}	//	getContext
 
 	/**
