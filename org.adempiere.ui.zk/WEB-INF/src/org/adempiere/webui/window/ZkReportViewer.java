@@ -269,16 +269,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");
 		m_reportEngine = re;
 		m_AD_Table_ID = re.getPrintFormat().getAD_Table_ID();
+		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " +
+				m_reportEngine.getPrintFormat().get_Translation(MPrintFormat.COLUMNNAME_Name)));
 		if (!MRole.getDefault().isCanReport(m_AD_Table_ID))
 		{
 			Dialog.error(m_WindowNo, "AccessCannotReport", m_reportEngine.getName());
 			this.onClose();
+			return;
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
-		
-		setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report") + ": " +
-				m_reportEngine.getPrintFormat().get_Translation(MPrintFormat.COLUMNNAME_Name)));
-		
+
 		addEventListener(ON_RENDER_REPORT_EVENT, this);
 		addEventListener("onPostInit", e -> {
 			postRenderReportEvent();
@@ -323,7 +323,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
-		if (newpage != null && !init) {
+		if (newpage != null && !init && m_reportEngine != null) {
 			try
 			{
 				m_ctx = m_reportEngine.getCtx();
