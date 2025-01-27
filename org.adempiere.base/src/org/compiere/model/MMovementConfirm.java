@@ -324,6 +324,12 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getUpdated(), get_TrxName()))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
+			return DocAction.STATUS_Invalid;
+		}
+		
 		MMovementLineConfirm[] lines = getLines(true);
 		if (lines.length == 0)
 		{
