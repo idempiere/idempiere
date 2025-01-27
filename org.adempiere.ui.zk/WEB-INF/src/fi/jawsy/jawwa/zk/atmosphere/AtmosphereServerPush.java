@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.atmosphere.cpr.AtmosphereResource;
@@ -199,14 +200,36 @@ public class AtmosphereServerPush implements ServerPush {
     	}    	
     }
 
+    private static class EventListenerWrapper<T extends Event> implements EventListener<T> {
+    	private EventListener<T> wrappedListener;
+    	private AtomicBoolean runOnce;
+
+    	private EventListenerWrapper(EventListener<T> wrappedListener) {
+    		this.wrappedListener=wrappedListener;
+    		this.runOnce = new AtomicBoolean(false);
+    	}
+
+    	@Override
+    	public void onEvent(T event) throws Exception {
+    		//if the wrapped event listener throws exception, the scheduled listener is not clean up
+    		//this atomic boolean help prevent repeated call when that happens
+    		if (!runOnce.compareAndSet(false, true))
+    			return;
+
+    		wrappedListener.onEvent(event);
+    	}
+
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
     	
+    	EventListenerWrapper<T> wrapper = new EventListenerWrapper<T>(task);
     	if (Executions.getCurrent() == null) {
     		//schedule and execute in desktop's onPiggyBack listener
-    		scheduler.schedule(task, event);
+    		scheduler.schedule(wrapper, event);
 	        try {
 	        	commitResponse();
 			} catch (IOException e) {
@@ -215,7 +238,7 @@ public class AtmosphereServerPush implements ServerPush {
     	} else {
     		// in event listener thread, use echo to execute async
     		synchronized (schedules) {
-				schedules.add(new Schedule(task, event, scheduler));
+				schedules.add(new Schedule(wrapper, event, scheduler));
 			}
     		if (Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) == null) {
     			Executions.getCurrent().setAttribute(ATMOSPHERE_SERVER_PUSH_ECHO, Boolean.TRUE);
