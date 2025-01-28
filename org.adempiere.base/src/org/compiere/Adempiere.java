@@ -760,4 +760,13 @@ public final class Adempiere
 		for (int i = 0; i < listeners.length; i++)
         	listeners[i].stateChange(e);
 	}
+	
+	public static boolean isDemo(String serverName)
+	{
+		return serverName.equals("127.0.0.1") 
+    			|| serverName.startsWith("demo")
+    			|| serverName.startsWith("test")
+    			|| serverName.startsWith("test-")
+    			|| serverName.startsWith("triage");
+	}   //  isDemo
 }	//	Adempiere

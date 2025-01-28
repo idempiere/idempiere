@@ -25,6 +25,7 @@ package org.adempiere.webui.panel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -114,12 +115,14 @@ public class LoginPanel extends Window implements EventListener<Event>
     private static final CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
     protected Properties ctx;
+    protected Label lblDemoUser;
     protected Label lblUserId;
     protected Label lblPassword;
     protected Label lblLanguage;
     protected Label lblLogin;    
     protected Textbox txtUserId;
     protected Textbox txtPassword;
+    protected Combobox lstDemoUser;
     protected Combobox lstLanguage;
     protected LoginWindow wndLogin;
     protected Checkbox chkRememberMe;
@@ -127,7 +130,9 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected A btnResetPassword;
     protected ConfirmPanel pnlButtons; 
     protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+    protected boolean is_demo = false;
     protected String validLstLanguage = null;
+    HashMap<String, String> demoUsers = new HashMap<>();
 
 	/* Number of failures to calculate an incremental delay on every trial */
 	private int failures = 0;
@@ -140,6 +145,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     {
         this.ctx = ctx;
         this.wndLogin = loginWindow;
+        checkIsDemo();
         initComponents();
         init();
         this.setId("loginPanel");
@@ -152,7 +158,12 @@ public class LoginPanel extends Window implements EventListener<Event>
         this.addEventListener(ON_LOAD_TOKEN, this);
     }
 
-    /**
+    private void checkIsDemo() {
+    	String serverName = Executions.getCurrent().getServerName();
+    	is_demo = Adempiere.isDemo(serverName);
+	}
+
+	/**
      * Layout panel
      */
     private void init()
@@ -275,6 +286,20 @@ public class LoginPanel extends Window implements EventListener<Event>
         image.setSrc(ThemeManager.getLargeLogo());
         td.appendChild(image);
 
+        if(is_demo) {
+	    	tr = new Tr();
+	        tr.setId("rowDemoUser");
+	        table.appendChild(tr);
+	    	td = new Td();
+	    	tr.appendChild(td);
+	    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+	    	td.appendChild(lblDemoUser);
+	    	td = new Td();
+	    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+	    	tr.appendChild(td);
+	    	td.appendChild(lstDemoUser);
+        }
+
         tr = new Tr();
         tr.setId("rowUser");
         table.appendChild(tr);
@@ -390,6 +415,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         lblLanguage.setId("lblLanguage");
         lblLanguage.setValue("Language");
 
+        lblDemoUser = new Label();
+        lblDemoUser.setId("lblDemoUser");
+        lblDemoUser.setValue("Demo User");
+
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
@@ -408,6 +437,22 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
+
+        if(is_demo) {
+	        lstDemoUser = new Combobox();
+	        getDemoUsers();
+	        lstDemoUser.appendItem("Select Demo User", "");
+	        for (String username : demoUsers.keySet()) {
+	        	lstDemoUser.appendItem(username, username);
+	        }
+	        lstDemoUser.setSelectedIndex(0);
+
+	        lstDemoUser.setAutocomplete(true);
+	        lstDemoUser.setAutodrop(true);
+	        lstDemoUser.setId("lstDemoUser");
+	        lstDemoUser.addEventListener(Events.ON_SELECT, this);
+        }
+        
 
         // Update Language List
         lstLanguage.getItems().clear();
@@ -434,7 +479,21 @@ public class LoginPanel extends Window implements EventListener<Event>
         }                 
     }
 
-    @Override
+    private void getDemoUsers() {
+    	if(email_login) {
+        	demoUsers.put("admin @ gardenworld.com", "GardenAdmin");
+            demoUsers.put("user @ gardenworld.com", "GardenUser");
+            demoUsers.put("superuser @ idempiere.com", "System");
+            demoUsers.put("system @ idempiere.com", "System");
+    	}else {
+        	demoUsers.put("GardenAdmin", "GardenAdmin");
+            demoUsers.put("GardenUser", "GardenUser");
+            demoUsers.put("SuperUser", "System");
+            demoUsers.put("System", "System");
+    	}
+	}
+
+	@Override
     public void onEvent(Event event)
     {
         Component eventComp = event.getTarget();
@@ -457,6 +516,11 @@ public class LoginPanel extends Window implements EventListener<Event>
             	}
             	           	
             	languageChanged(validLstLanguage);
+            }else if(eventComp.getId().equals(lstDemoUser.getId())){
+            	String username = lstDemoUser.getSelectedItem().getValue();
+            	String password = demoUsers.get(username);
+            	txtUserId.setValue(username);
+            	txtPassword.setValue(password);
             }
         }
         else if (event.getTarget() == btnResetPassword)

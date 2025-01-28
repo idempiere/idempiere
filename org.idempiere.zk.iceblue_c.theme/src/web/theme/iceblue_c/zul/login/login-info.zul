@@ -3,7 +3,12 @@
 Copyright (C) 2009 Low Heng Sin
 Copyright (C) 2009 Idalica Corporation
 -->
-<html>
+<zk>
+<zscript>
+	import org.compiere.Adempiere;
+	var isDemo = Adempiere.isDemo(desktop.execution.serverName);
+</zscript>
+<html if="${isDemo == true}">
 <![CDATA[
 <style>
 	.section-head {
@@ -63,3 +68,4 @@ Copyright (C) 2009 Idalica Corporation
 </div>
 ]]>
 </html>
+</zk>
