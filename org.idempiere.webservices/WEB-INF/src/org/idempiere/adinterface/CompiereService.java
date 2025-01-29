@@ -16,9 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,8 +56,8 @@ public class CompiereService {
 	private int m_expiryMinutes;
 	private long m_lastAuthorizationTime;
 	private String m_IPAddress;
-	private static Map<String,CompiereService> csMap = new HashMap<String, CompiereService>();
-	private static Map<String,Properties> ctxMap = new HashMap<String, Properties>();
+	private static ConcurrentHashMap<String,CompiereService> csMap = new ConcurrentHashMap<String, CompiereService>();
+	private static ConcurrentHashMap<String,Properties> ctxMap = new ConcurrentHashMap<String, Properties>();
 
 	private boolean m_loggedin = false; 
 	
@@ -303,26 +302,24 @@ public class CompiereService {
 		session.saveEx();
 				
 		m_loggedin = true;		
-		
-		synchronized (csMap) {
-			//save session in cache
-			String key = getKey(m_AD_Client_ID,
-					m_AD_Org_ID,
-					m_userName,
-					m_AD_Role_ID,
-					m_M_Warehouse_ID,
-					m_locale,
-					m_password,
-					m_IPAddress);
-			if (! csMap.containsKey(key)) {				
-				csMap.put(key.toString(), this);
-				Properties savedCache = new Properties();
-				savedCache.putAll(Env.getCtx());
-				ctxMap.put(key.toString(), savedCache);
-				if (log.isLoggable(Level.INFO)) log.info("Saving " + this + " in cache");
-			}
-		}		
-		
+
+		//save session in cache
+		String key = getKey(m_AD_Client_ID,
+				m_AD_Org_ID,
+				m_userName,
+				m_AD_Role_ID,
+				m_M_Warehouse_ID,
+				m_locale,
+				m_password,
+				m_IPAddress);
+		if (! csMap.containsKey(key)) {				
+			csMap.put(key.toString(), this);
+			Properties savedCache = new Properties();
+			savedCache.putAll(Env.getCtx());
+			ctxMap.put(key.toString(), savedCache);
+			if (log.isLoggable(Level.INFO)) log.info("Saving " + this + " in cache");
+		}
+
 		return true;
 	}
 
@@ -412,17 +409,15 @@ public class CompiereService {
 				loginRequest.getPass(),
 				req.getRemoteAddr());
 		CompiereService l_cs = null;
-		synchronized (csMap) {
-			if (csMap.containsKey(key)) {
-				l_cs = csMap.get(key);
-				if (l_cs != null) {
-					if (l_cs.expungeIfExpire()) {						
-						l_cs = null;
-					} else {
-						Properties cachedCtx = ctxMap.get(key);
-						Env.getCtx().putAll(cachedCtx);
-						if (log.isLoggable(Level.INFO)) log.info("Reusing " + l_cs);
-					}
+		if (csMap.containsKey(key)) {
+			l_cs = csMap.get(key);
+			if (l_cs != null) {
+				if (l_cs.expungeIfExpire()) {						
+					l_cs = null;
+				} else {
+					Properties cachedCtx = ctxMap.get(key);
+					Env.getCtx().putAll(cachedCtx);
+					if (log.isLoggable(Level.INFO)) log.info("Reusing " + l_cs);
 				}
 			}
 		}
@@ -458,35 +453,33 @@ public class CompiereService {
 			   );
 		if (m_connectCount==0 && expired) 
 		{
-			synchronized (csMap) {
-				String key = getKey(m_AD_Client_ID,
-						m_AD_Org_ID,
-						m_userName,
-						m_AD_Role_ID,
-						m_M_Warehouse_ID,
-						m_locale,
-						m_password,
-						m_IPAddress);
-				if (csMap.containsKey(key)) {
-					csMap.remove(key);
-				}
-				if (ctxMap.containsKey(key)) {
-					Properties cachedCtx = ctxMap.remove(key);
-					Properties currentCtx = ServerContext.getCurrentInstance();
-					try {
-						ServerContext.setCurrentInstance(cachedCtx);
-						if (log.isLoggable(Level.INFO)) log.info("Closing expired/invalid " + this);
-						Env.logout();
-					} finally {
-						if (currentCtx == cachedCtx) {
-							ServerContext.dispose();
-						} else {
-							ServerContext.setCurrentInstance(currentCtx);
-						}
-					}
-				}				
-				m_loggedin = false;
+			String key = getKey(m_AD_Client_ID,
+					m_AD_Org_ID,
+					m_userName,
+					m_AD_Role_ID,
+					m_M_Warehouse_ID,
+					m_locale,
+					m_password,
+					m_IPAddress);
+			if (csMap.containsKey(key)) {
+				csMap.remove(key);
 			}
+			if (ctxMap.containsKey(key)) {
+				Properties cachedCtx = ctxMap.remove(key);
+				Properties currentCtx = ServerContext.getCurrentInstance();
+				try {
+					ServerContext.setCurrentInstance(cachedCtx);
+					if (log.isLoggable(Level.INFO)) log.info("Closing expired/invalid " + this);
+					Env.logout();
+				} finally {
+					if (currentCtx == cachedCtx) {
+						ServerContext.dispose();
+					} else {
+						ServerContext.setCurrentInstance(currentCtx);
+					}
+				}
+			}				
+			m_loggedin = false;
 		}
 		return expired;
 	}
