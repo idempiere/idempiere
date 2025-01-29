@@ -25,9 +25,9 @@ package org.adempiere.webui.panel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -132,7 +132,6 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
     protected boolean is_demo = false;
     protected String validLstLanguage = null;
-    HashMap<String, String> demoUsers = new HashMap<>();
 
 	/* Number of failures to calculate an incremental delay on every trial */
 	private int failures = 0;
@@ -420,10 +419,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
-
-        if(is_demo) {
-	        getDemoUsers();
-        }
         
 
         // Update Language List
@@ -450,20 +445,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         	validLstLanguage = (String)lstLanguage.getItems().get(0).getLabel();
         }                 
     }
-
-    private void getDemoUsers() {
-    	if(email_login) {
-        	demoUsers.put("admin @ gardenworld.com", "GardenAdmin");
-            demoUsers.put("user @ gardenworld.com", "GardenUser");
-            demoUsers.put("superuser @ idempiere.com", "System");
-            demoUsers.put("system @ idempiere.com", "System");
-    	}else {
-        	demoUsers.put("GardenAdmin", "GardenAdmin");
-            demoUsers.put("GardenUser", "GardenUser");
-            demoUsers.put("SuperUser", "System");
-            demoUsers.put("System", "System");
-    	}
-	}
 
 	@Override
     public void onEvent(Event event)
@@ -507,11 +488,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         }
         else if (event.getName().equals(ON_LOGIN_AS))
         {
-        	Object data = event.getData();
-        	String username = data.toString();
-        	String password = demoUsers.get(username);
-        	txtUserId.setValue(username);
-        	txtPassword.setValue(password);
+        	@SuppressWarnings("unchecked")
+			Map<String, String> data = (Map<String, String>) event.getData();
+        	txtUserId.setValue(data.get("username"));
+        	txtPassword.setValue(data.get("password"));
         }
         //
     }
