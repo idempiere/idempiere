@@ -764,9 +764,6 @@ public final class Adempiere
 	public static boolean isDemo(String serverName)
 	{
 		return serverName.equals("127.0.0.1") 
-    			|| serverName.startsWith("demo")
-    			|| serverName.startsWith("test")
-    			|| serverName.startsWith("test-")
-    			|| serverName.startsWith("triage");
+    			|| serverName.startsWith(MSysConfig.getValue(MSysConfig.DEMO_URL_PREFIX, "test"));
 	}   //  isDemo
 }	//	Adempiere

@@ -6,7 +6,10 @@ Copyright (C) 2009 Idalica Corporation
 <zk>
 <zscript>
 	import org.compiere.Adempiere;
+	import org.compiere.model.MSysConfig;
+    
 	var isDemo = Adempiere.isDemo(desktop.execution.serverName);
+	var isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 </zscript>
 <html if="${isDemo == true}">
 <![CDATA[
@@ -34,32 +37,27 @@ Copyright (C) 2009 Idalica Corporation
 
 <tbody>
 <tr valign="top">
-<th><b>User</b></th>
-<th><b>Email</b></th>
-<th><b>Password</b></th>
+<td><b>${isEmailLogin?"Email":"User"}</b></td>
+<td><b>Password</b></td>
 </tr>
 
 <tr valign="top">
-<td>GardenAdmin</td>
-<td>admin @ gardenworld.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', '${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}'))">${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}</a></td>
 <td>GardenAdmin</td>
 </tr>
 
 <tr valign="top">
-<td>GardenUser</td>
-<td>user @ gardenworld.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', '${isEmailLogin?"user @ gardenworld.com":"GardenUser"}'))">${isEmailLogin?"user @ gardenworld.com":"GardenUser"}</a></td>
 <td>GardenUser</td>
 </tr>
 
 <tr valign="top">
-<td>SuperUser</td>
-<td>superuser @ idempiere.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', '${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}'))">${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}</a></td>
 <td>System</td>
 </tr>
 
 <tr valign="top">
-<td>System</td>
-<td>system @ idempiere.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', '${isEmailLogin?"system @ idempiere.com":"System"}'))">${isEmailLogin?"system @ idempiere.com":"System"}</a></td>
 <td>System</td>
 </tr>
 

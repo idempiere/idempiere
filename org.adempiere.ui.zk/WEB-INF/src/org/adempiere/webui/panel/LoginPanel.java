@@ -112,17 +112,17 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
+	private static final String ON_LOGIN_AS = "onLoginAs";
     private static final CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
+
     protected Properties ctx;
-    protected Label lblDemoUser;
     protected Label lblUserId;
     protected Label lblPassword;
     protected Label lblLanguage;
     protected Label lblLogin;    
     protected Textbox txtUserId;
     protected Textbox txtPassword;
-    protected Combobox lstDemoUser;
     protected Combobox lstLanguage;
     protected LoginWindow wndLogin;
     protected Checkbox chkRememberMe;
@@ -156,6 +156,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setEnabled(false);
         Events.echoEvent(ON_LOAD_TOKEN, this, null);
         this.addEventListener(ON_LOAD_TOKEN, this);
+        this.addEventListener(ON_LOGIN_AS, this);
     }
 
     private void checkIsDemo() {
@@ -286,20 +287,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         image.setSrc(ThemeManager.getLargeLogo());
         td.appendChild(image);
 
-        if(is_demo) {
-	    	tr = new Tr();
-	        tr.setId("rowDemoUser");
-	        table.appendChild(tr);
-	    	td = new Td();
-	    	tr.appendChild(td);
-	    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-	    	td.appendChild(lblDemoUser);
-	    	td = new Td();
-	    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
-	    	tr.appendChild(td);
-	    	td.appendChild(lstDemoUser);
-        }
-
         tr = new Tr();
         tr.setId("rowUser");
         table.appendChild(tr);
@@ -415,10 +402,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         lblLanguage.setId("lblLanguage");
         lblLanguage.setValue("Language");
 
-        lblDemoUser = new Label();
-        lblDemoUser.setId("lblDemoUser");
-        lblDemoUser.setValue("Demo User");
-
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
@@ -439,18 +422,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.addEventListener(Events.ON_SELECT, this);
 
         if(is_demo) {
-	        lstDemoUser = new Combobox();
 	        getDemoUsers();
-	        lstDemoUser.appendItem("Select Demo User", "");
-	        for (String username : demoUsers.keySet()) {
-	        	lstDemoUser.appendItem(username, username);
-	        }
-	        lstDemoUser.setSelectedIndex(0);
-
-	        lstDemoUser.setAutocomplete(true);
-	        lstDemoUser.setAutodrop(true);
-	        lstDemoUser.setId("lstDemoUser");
-	        lstDemoUser.addEventListener(Events.ON_SELECT, this);
         }
         
 
@@ -516,11 +488,6 @@ public class LoginPanel extends Window implements EventListener<Event>
             	}
             	           	
             	languageChanged(validLstLanguage);
-            }else if(eventComp.getId().equals(lstDemoUser.getId())){
-            	String username = lstDemoUser.getSelectedItem().getValue();
-            	String password = demoUsers.get(username);
-            	txtUserId.setValue(username);
-            	txtPassword.setValue(password);
             }
         }
         else if (event.getTarget() == btnResetPassword)
@@ -537,6 +504,14 @@ public class LoginPanel extends Window implements EventListener<Event>
             
         	AuFocus auf = new AuFocus(txtUserId);
             Clients.response(auf);
+        }
+        else if (event.getName().equals(ON_LOGIN_AS))
+        {
+        	Object data = event.getData();
+        	String username = data.toString();
+        	String password = demoUsers.get(username);
+        	txtUserId.setValue(username);
+        	txtPassword.setValue(password);
         }
         //
     }
