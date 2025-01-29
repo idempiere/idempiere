@@ -115,7 +115,6 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private static final String ON_LOGIN_AS = "onLoginAs";
     private static final CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
-
     protected Properties ctx;
     protected Label lblUserId;
     protected Label lblPassword;
@@ -144,7 +143,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     {
         this.ctx = ctx;
         this.wndLogin = loginWindow;
-        checkIsDemo();
+        this.is_demo = Adempiere.isDemo(Executions.getCurrent().getServerName());
         initComponents();
         init();
         this.setId("loginPanel");
@@ -157,11 +156,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         this.addEventListener(ON_LOAD_TOKEN, this);
         this.addEventListener(ON_LOGIN_AS, this);
     }
-
-    private void checkIsDemo() {
-    	String serverName = Executions.getCurrent().getServerName();
-    	is_demo = Adempiere.isDemo(serverName);
-	}
 
 	/**
      * Layout panel
@@ -420,7 +414,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
         
-
         // Update Language List
         lstLanguage.getItems().clear();
         ArrayList<String> supported = Env.getLoginLanguages();
