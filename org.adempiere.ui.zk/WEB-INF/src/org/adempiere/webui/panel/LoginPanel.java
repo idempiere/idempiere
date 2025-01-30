@@ -129,7 +129,6 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected A btnResetPassword;
     protected ConfirmPanel pnlButtons; 
     protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
-    protected boolean is_demo = false;
     protected String validLstLanguage = null;
 
 	/* Number of failures to calculate an incremental delay on every trial */
@@ -143,7 +142,6 @@ public class LoginPanel extends Window implements EventListener<Event>
     {
         this.ctx = ctx;
         this.wndLogin = loginWindow;
-        this.is_demo = Adempiere.isDemo(Executions.getCurrent().getServerName());
         initComponents();
         init();
         this.setId("loginPanel");
@@ -154,10 +152,11 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setEnabled(false);
         Events.echoEvent(ON_LOAD_TOKEN, this, null);
         this.addEventListener(ON_LOAD_TOKEN, this);
-        this.addEventListener(ON_LOGIN_AS, this);
+        if (Adempiere.isLoginInfoShown())
+        	this.addEventListener(ON_LOGIN_AS, this);
     }
 
-	/**
+    /**
      * Layout panel
      */
     private void init()
@@ -413,7 +412,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
-        
+
         // Update Language List
         lstLanguage.getItems().clear();
         ArrayList<String> supported = Env.getLoginLanguages();
@@ -439,7 +438,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         }                 
     }
 
-	@Override
+    @Override
     public void onEvent(Event event)
     {
         Component eventComp = event.getTarget();
