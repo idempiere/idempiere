@@ -37,7 +37,6 @@ import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MRole;
 import org.compiere.model.X_C_Order;
 import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
