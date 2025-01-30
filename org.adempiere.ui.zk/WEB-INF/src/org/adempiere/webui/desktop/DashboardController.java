@@ -422,7 +422,7 @@ public class DashboardController implements EventListener<Event> {
 		}
 		
 		panel.setCollapsible(dc.isCollapsible());
-		panel.setOpen(!dp.isCollapsedByDefault());
+		panel.setOpen(!dc.isCollapsible() || !dp.isCollapsedByDefault());
 		panel.addEventListener(Events.ON_OPEN, this);
 		if (!ClientInfo.isMobile()) {
 			panel.setDroppable("true");
