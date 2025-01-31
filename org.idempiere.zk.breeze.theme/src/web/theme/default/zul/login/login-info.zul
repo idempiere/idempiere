@@ -3,7 +3,14 @@
 Copyright (C) 2009 Low Heng Sin
 Copyright (C) 2009 Idalica Corporation
 -->
-<html>
+<zk>
+<zscript>
+    import org.compiere.Adempiere;
+	import org.compiere.model.MSysConfig;
+	var isLoginInfoShown = Adempiere.isLoginInfoShown();
+	var isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+</zscript>
+<html if="${isLoginInfoShown == true}">
 <![CDATA[
 <style>
 	.section-head {
@@ -21,43 +28,40 @@ Copyright (C) 2009 Idalica Corporation
 	}
 </style>
 <div class="loginInfoBox">
-<span class="section-head">Initially you can log into the system with the following users:
+<span class="section-head">Initially, you can log in with:
 </span>
 
-<table cellpadding="5" cellspacing="0" style="margin-top: 10px; font-size: 8pt; background-color: transparent;">
+<table cellpadding="5" cellspacing="0" style="width: 100%; margin-top: 10px; font-size: 8pt; background-color: transparent;">
 
-<tbody><tr valign="top">
-</th><th><i><b>User</b></i>
-</th><th><i><b>EMail</b></i>
-</th><th><i><b>Password</b></i>
-</th></tr>
+<tbody>
+<tr valign="top">
+<td><b>${isEmailLogin?"Email":"User"}</b></td>
+<td><b>Password</b></td>
+</tr>
 
 <tr valign="top">
-</td><td>GardenAdmin
-</td><td>admin @ gardenworld.com
-</td><td>GardenAdmin
-</td></tr>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}',password:'GardenAdmin'}))">${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}</a></td>
+<td>GardenAdmin</td>
+</tr>
 
 <tr valign="top">
-</td><td>GardenUser
-</td><td>user @ gardenworld.com
-</td><td>GardenUser
-</td></tr>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"user @ gardenworld.com":"GardenUser"}',password:'GardenUser'}))">${isEmailLogin?"user @ gardenworld.com":"GardenUser"}</a></td>
+<td>GardenUser</td>
+</tr>
 
 <tr valign="top">
-</td><td>SuperUser
-</td><td>superuser @ idempiere.com
-</td><td>System
-</td></tr>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}',password:'System'}))">${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}</a></td>
+<td>System</td>
+</tr>
 
 <tr valign="top">
-</td><td>System
-</td><td>system @ idempiere.com
-</td><td>System
-</td></tr>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"system @ idempiere.com":"System"}',password:'System'}))">${isEmailLogin?"system @ idempiere.com":"System"}</a></td>
+<td>System</td>
+</tr>
 
 </tbody>
 </table>
 </div>
 ]]>
 </html>
+</zk>

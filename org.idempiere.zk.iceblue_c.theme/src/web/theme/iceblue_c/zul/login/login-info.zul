@@ -3,7 +3,14 @@
 Copyright (C) 2009 Low Heng Sin
 Copyright (C) 2009 Idalica Corporation
 -->
-<html>
+<zk>
+<zscript>
+    import org.compiere.Adempiere;
+	import org.compiere.model.MSysConfig;
+	var isLoginInfoShown = Adempiere.isLoginInfoShown();
+	var isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+</zscript>
+<html if="${isLoginInfoShown == true}">
 <![CDATA[
 <style>
 	.section-head {
@@ -29,32 +36,27 @@ Copyright (C) 2009 Idalica Corporation
 
 <tbody>
 <tr valign="top">
-<th><b>User</b></th>
-<th><b>Email</b></th>
-<th><b>Password</b></th>
+<td><b>${isEmailLogin?"Email":"User"}</b></td>
+<td><b>Password</b></td>
 </tr>
 
 <tr valign="top">
-<td>GardenAdmin</td>
-<td>admin @ gardenworld.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}',password:'GardenAdmin'}))">${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}</a></td>
 <td>GardenAdmin</td>
 </tr>
 
 <tr valign="top">
-<td>GardenUser</td>
-<td>user @ gardenworld.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"user @ gardenworld.com":"GardenUser"}',password:'GardenUser'}))">${isEmailLogin?"user @ gardenworld.com":"GardenUser"}</a></td>
 <td>GardenUser</td>
 </tr>
 
 <tr valign="top">
-<td>SuperUser</td>
-<td>superuser @ idempiere.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}',password:'System'}))">${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}</a></td>
 <td>System</td>
 </tr>
 
 <tr valign="top">
-<td>System</td>
-<td>system @ idempiere.com</td>
+<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"system @ idempiere.com":"System"}',password:'System'}))">${isEmailLogin?"system @ idempiere.com":"System"}</a></td>
 <td>System</td>
 </tr>
 
@@ -63,3 +65,4 @@ Copyright (C) 2009 Idalica Corporation
 </div>
 ]]>
 </html>
+</zk>

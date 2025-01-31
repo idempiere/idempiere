@@ -180,14 +180,15 @@ public final class Adempiere
 	 * @return true if application version should be shown to user
 	 */
 	public static boolean isVersionShown(){ 
-		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_MAIN_VERSION_SHOWN, true);
+		boolean defaultVal = MSystem.SYSTEMSTATUS_Evaluation.equals(MSystem.get(Env.getCtx()).getSystemStatus());
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_MAIN_VERSION_SHOWN, defaultVal);
 	}
 
 	/**
 	 * @return true if iDempiere AD version should be shown to user
 	 */
 	public static boolean isDBVersionShown(){
-		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		boolean defaultVal = MSystem.SYSTEMSTATUS_Evaluation.equals(MSystem.get(Env.getCtx()).getSystemStatus());
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_DATABASE_VERSION_SHOWN, defaultVal);
 	}
 
@@ -202,7 +203,7 @@ public final class Adempiere
 	 * @return true if JVM info should be shown to user
 	 */
 	public static boolean isJVMShown(){
-		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		boolean defaultVal = MSystem.SYSTEMSTATUS_Evaluation.equals(MSystem.get(Env.getCtx()).getSystemStatus());
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_JVM_VERSION_SHOWN, defaultVal);
 	}
 
@@ -210,7 +211,7 @@ public final class Adempiere
 	 * @return true if OS information should be shown to user
 	 */
 	public static boolean isOSShown(){
-		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		boolean defaultVal = MSystem.SYSTEMSTATUS_Evaluation.equals(MSystem.get(Env.getCtx()).getSystemStatus());
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_OS_INFO_SHOWN, defaultVal);
 	}
 
@@ -219,8 +220,17 @@ public final class Adempiere
 	 */
 	public static boolean isHostShown() 
 	{
-		boolean defaultVal = MSystem.get(Env.getCtx()).getSystemStatus().equalsIgnoreCase("P") ? false : true;
+		boolean defaultVal = MSystem.SYSTEMSTATUS_Evaluation.equals(MSystem.get(Env.getCtx()).getSystemStatus());
 		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_HOST_SHOWN, defaultVal);
+	}
+
+	/**
+	 * Defines if this server is used for demo purposes, to show the login information at the left panel and provide quick fill of User/Password
+	 * @return
+	 */
+	public static boolean isLoginInfoShown() {
+		boolean inEvaluation = MSystem.SYSTEMSTATUS_Evaluation.equals(MSystem.get(Env.getCtx()).getSystemStatus());
+		return MSysConfig.getBooleanValue(MSysConfig.APPLICATION_LOGIN_INFO_SHOWN, false) && inEvaluation;
 	}
 
 	/**
