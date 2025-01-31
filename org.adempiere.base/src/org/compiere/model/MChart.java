@@ -158,7 +158,7 @@ public class MChart extends X_AD_Chart {
 			json.addProperty("domainLabel", get_Translation(COLUMNNAME_DomainLabel));
 			json.addProperty("rangeLabel", get_Translation(COLUMNNAME_RangeLabel));
 			json.addProperty("displayLegend", isDisplayLegend());
-			json.addProperty("orientation", getChartOrientation());
+			json.addProperty("chartOrientation", getChartOrientation());
 			json.addProperty("chartType", getChartType());
 			CategoryDataset cds = (CategoryDataset) ds;
 			int rowCount = cds.getRowCount();
@@ -180,7 +180,7 @@ public class MChart extends X_AD_Chart {
 			json.addProperty("domainLabel", get_Translation(COLUMNNAME_DomainLabel));
 			json.addProperty("rangeLabel", get_Translation(COLUMNNAME_RangeLabel));
 			json.addProperty("displayLegend", isDisplayLegend());
-			json.addProperty("orientation", getChartOrientation());
+			json.addProperty("chartOrientation", getChartOrientation());
 			json.addProperty("chartType", getChartType());
 			XYDataset xyds = (XYDataset) ds;
 			int seriesCount = xyds.getSeriesCount();
