@@ -16,11 +16,19 @@
 }
 
 .desktop-header {
-	background-color: #E4E4E4;
 	width: 100%;
 	height: 46px;
 	border-bottom: 1px solid #C5C5C5 !important;
 	padding-left: 4px;
+}
+.desktop-headerP {
+	background-color: #E4E4E4;
+}
+.desktop-headerE {
+	background-color: #90EE90;
+}
+.desktop-headerI {
+	background-color: #FA8072;
 }
 .desktop-header.mobile {
 	height: 36px;
