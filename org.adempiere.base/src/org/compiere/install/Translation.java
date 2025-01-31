@@ -113,9 +113,6 @@ public class Translation implements IApplication
 	public static final String	XML_VALUE_ATTRIBUTE_COLUMN = "column";
 	/** XML Value Original			*/
 	public static final String	XML_VALUE_ATTRIBUTE_ORIGINAL = "original";
-
-	/**	Table is centrally maintained	*/
-	private boolean			m_IsCentrallyMaintained = false;
 	/**	Logger						*/
 	private static final CLogger	log = CLogger.getCLogger(Translation.class);
 	/** Properties					*/
@@ -209,7 +206,7 @@ public class Translation implements IApplication
 
 		MTable baseTable = MTable.get(Env.getCtx(), Base_Table);
 		String keyColumn = baseTable.getKeyColumns()[0];
-		String uuidColumn = PO.getUUIDColumnName(Base_Table);
+		String uuidColumn = PO.getUUIDColumnName(Base_Table); 
 		String[] trlColumns = getTrlColumns (Base_Table);
 		//
 		StringBuilder sql = null;
@@ -252,9 +249,9 @@ public class Translation implements IApplication
 				sql.append(" WHERE t.AD_Language=?");
 				haveWhere = true;
 			}
-			if (m_IsCentrallyMaintained)
+			if (onlyCentralized)
 			{
-				sql.append (haveWhere ? " AND " : " WHERE ").append ("o.IsCentrallyMaintained='N'");
+				sql.append (haveWhere ? " AND " : " WHERE ").append ("o.IsCentrallyMaintained='Y'");
 				haveWhere = true;
 			}
 			if (AD_Client_ID >= 0) {
@@ -346,38 +343,15 @@ public class Translation implements IApplication
 	 */
 	private String[] getTrlColumns (String Base_Table)
 	{
-		m_IsCentrallyMaintained = false;
-		String sql = "SELECT TableName FROM AD_Table t"
-			+ " INNER JOIN AD_Column c ON (c.AD_Table_ID=t.AD_Table_ID AND c.ColumnName='IsCentrallyMaintained') "
-			+ "WHERE t.TableName=? AND c.IsActive='Y'";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, Base_Table);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				m_IsCentrallyMaintained = true;
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-
-		sql = "SELECT ColumnName "
+		String sql = "SELECT ColumnName "
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
 			+ "WHERE t.TableName=?"
 			+ " AND c.ColumnName NOT LIKE ? "
 			+ " AND c.AD_Reference_ID IN (10,14,36) "
 			+ "ORDER BY IsMandatory DESC, ColumnName";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		ArrayList<String> list = new ArrayList<String>();
 		try
 		{
