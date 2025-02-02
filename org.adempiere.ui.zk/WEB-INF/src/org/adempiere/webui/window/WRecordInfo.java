@@ -61,8 +61,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
-import org.zkoss.zhtml.Pre;
-import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
