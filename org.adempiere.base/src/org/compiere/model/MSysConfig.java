@@ -47,7 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8636352432923806208L;
+	private static final long serialVersionUID = 8914318115137037899L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -67,6 +67,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_IMPLEMENTATION_VENDOR = "APPLICATION_IMPLEMENTATION_VENDOR";
     public static final String APPLICATION_IMPLEMENTATION_VENDOR_SHOWN = "APPLICATION_IMPLEMENTATION_VENDOR_SHOWN";
     public static final String APPLICATION_JVM_VERSION_SHOWN = "APPLICATION_JVM_VERSION_SHOWN";
+    public static final String APPLICATION_LOGIN_INFO_SHOWN = "APPLICATION_LOGIN_INFO_SHOWN";
     public static final String APPLICATION_LOGIN_LEFT_PANEL_SHOWN = "APPLICATION_LOGIN_LEFT_PANEL_SHOWN";
     public static final String APPLICATION_MAIN_VERSION = "APPLICATION_MAIN_VERSION";
     public static final String APPLICATION_MAIN_VERSION_SHOWN = "APPLICATION_MAIN_VERSION_SHOWN";
