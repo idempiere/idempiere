@@ -2882,13 +2882,44 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return false;
 
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+
+		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+		if (allocations.length > 0) {
+			setProcessMessage(Msg.parseTranslation(getCtx(), "PaymentInvoiceReactivationFailedAllocationLine"));
+			return false;
+		}
+
+		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID()); // if authorized, the next completion will override the number and create sequence holes
+		if (dt.isOverwriteSeqOnComplete()) {
+			setProcessMessage(Msg.parseTranslation(getCtx(), "PaymentInvoiceReactivationFailedSequenceIsOverwriteOnComplete"));
+			return false;
+		}
+		
+		// Several business logics - to be set on plugins?
+		if (!dt.getDocBaseType().equals(MDocType.DOCBASETYPE_ARProFormaInvoice)) {
+			for (MInvoiceLine line : getLines()) {
+
+				if (line.getC_OrderLine_ID() != 0) {
+					MOrderLine  ol = new MOrderLine (getCtx(), line.getC_OrderLine_ID(), get_TrxName());
+					if (line.getQtyInvoiced() != null)
+						ol.setQtyInvoiced(ol.getQtyInvoiced().subtract(line.getQtyInvoiced()));
+					ol.saveEx();
+				}
+			}
+		}
+
+		MFactAcct.deleteEx(MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
+		setPosted(false);
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
+
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 
-
-		return false;
+		return true;
 	}	//	reActivateIt
 
 	/**
