@@ -73,6 +73,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.North;
@@ -187,11 +188,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	private void init (boolean showTable) throws Exception
 	{
 		Div div = new Div();
-		div.setStyle("width: 100%; height: 100%");
-		Pre pre = new Pre();
-		Text text = new Text(m_info.toString());
-		text.setParent(pre);
-		pre.setParent(div);			
+		div.setStyle("width: 100%; height: 100%; line-height:1.3em;");
+		div.appendChild(new Html(m_info.toString()));
 		//
 		
 		Borderlayout layout = new Borderlayout();
@@ -235,8 +233,10 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		south.setSclass("dialog-footer");
 		south.setParent(layout);
 		//
+		m_permalink.setStyle("text-decoration:underline; color:#0093F9;");
 		m_permalink.setLabel(Msg.getMsg(Env.getCtx(), "Permalink"));
 		m_permalink.setTooltiptext(Msg.getMsg(Env.getCtx(), "Permalink_tooltip"));
+		m_copySelect.setStyle("text-decoration:underline; color:#0093F9;");
 		m_copySelect.setLabel(Msg.getMsg(Env.getCtx(), "CopySelect"));
 		m_copySelect.setTooltiptext(Msg.getMsg(Env.getCtx(), "CopySelect_tooltip"));
 		Hbox hbox = new Hbox();
@@ -302,8 +302,8 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		MUser user = MUser.get(Env.getCtx(), dse.CreatedBy.intValue());
 		m_info.append(" ")
 			.append(Msg.getElement(Env.getCtx(), "CreatedBy"))
-			.append(": ").append(user.getName())
-			.append(" - ").append(m_dateTimeFormat.format(dse.Created)).append("\n");
+			.append(" ").append(user.getName())
+			.append(" &commat; ").append(m_dateTimeFormat.format(dse.Created)).append("<br/>");
 		
 		// get user preference
 		userPreference = new UserPreference();
@@ -316,11 +316,11 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				user = MUser.get(Env.getCtx(), dse.UpdatedBy.intValue());
 			m_info.append(" ")
 				.append(Msg.getElement(Env.getCtx(), "UpdatedBy"))
-				.append(": ").append(user.getName())
-				.append(" - ").append(m_dateTimeFormat.format(dse.Updated)).append("\n");
+				.append(" ").append(user.getName())
+				.append(" &commat; ").append(m_dateTimeFormat.format(dse.Updated)).append("<br/>");
 		}
 		if (dse.Info != null && dse.Info.length() > 0)
-			m_info.append("\n ").append(dse.Info).append("");
+			m_info.append(dse.Info);
 		
 		//get uuid
 		GridTable gridTable = null;
@@ -367,7 +367,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				if (!Util.isEmpty(Record_UU)) {
 					StringBuilder uuinfo = new StringBuilder(uuidcol).append("=").append(Record_UU);
 					if (! m_info.toString().contains(uuinfo))
-						m_info.append("\n ").append(uuinfo);
+						m_info.append("<br/> ").append(uuinfo);
 				}
 				String ticketURL;
 				if (Record_ID <= 0)
