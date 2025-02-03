@@ -36,6 +36,7 @@ import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MRole;
 import org.compiere.model.X_C_Order;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -518,6 +519,8 @@ public class PaySelect
 					if (paymentRule != null && X_C_Order.PAYMENTRULE_DirectDebit.equals(paymentRule.getValue()))
 						isSOTrx = true;
 					//
+					if (OpenAmt == null || PayAmt == null)
+						throw new AdempiereSystemError(Msg.getMsg(Env.getCtx(), "PaymentSelectAmtNull"));
 					psl.setInvoice(C_Invoice_ID, isSOTrx,
 						OpenAmt, PayAmt, DiscountAmt, WriteOffAmt);
 					psl.saveEx(trxName);
