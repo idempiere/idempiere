@@ -8,13 +8,13 @@
     if (! "P".equals(systemStatus))
         statusLabel = MRefList.getListName(Env.getCtx(), 374, systemStatus);
 </zscript>
-	<div sclass="desktop-header${systemStatus}" use="org.adempiere.webui.panel.HeaderPanel" id="header">
+	<div sclass="desktop-header status-${systemStatus}" use="org.adempiere.webui.panel.HeaderPanel" id="header">
 		<hbox vflex="1" hflex="1" align="center">
 			<hbox  height="100%" pack="start" align="center" sclass="desktop-header-left" hflex="1">
 					<image id="logo"/>
 					<div id="menuLookup"/>
 					<button id="menuButton" sclass="btn-small"/>
-					${statusLabel}
+					<span class="systemStatus">${statusLabel}</span>
 			</hbox>
 			<vbox  hflex="min" apply="org.adempiere.webui.panel.UserPanel" align="end"
 					sclass="desktop-user-panel">

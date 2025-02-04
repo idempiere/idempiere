@@ -21,18 +21,21 @@
 	border-bottom: 1px solid #C5C5C5 !important;
 	padding-left: 4px;
 }
-.desktop-headerP {
+.status-P {
 	background-color: #E4E4E4;
 }
-.desktop-headerE {
+.status-E {
 	background-color: #90EE90;
 }
-.desktop-headerI {
+.status-I {
 	background-color: #FA8072;
 }
 .desktop-header.mobile {
 	height: 36px;
 	padding: 4px 4px;
+}
+.desktop-header.mobile .systemStatus {
+	display:none;
 }
 
 .desktop-header-font {
