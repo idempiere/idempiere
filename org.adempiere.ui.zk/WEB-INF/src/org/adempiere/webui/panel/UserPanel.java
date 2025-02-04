@@ -51,7 +51,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
-import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.LabelImageElement;
 
@@ -365,10 +364,8 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 			layout.appendChild(new Label(warehouse));
 		String systemStatus = MSystem.get(Env.getCtx()).getSystemStatus();
 		String status = MRefList.getListName(Env.getCtx(), 374, systemStatus);
-		if(!"P".equals(systemStatus) && isMobile())
+		if(!MSystem.SYSTEMSTATUS_Production.equals(systemStatus))
 			layout.appendChild(new Label(status));
-		else
-			layout.appendChild(new Space());
 		layout.appendChild(userPanelLinksContainer);
 		
 		popup.appendChild(layout);
