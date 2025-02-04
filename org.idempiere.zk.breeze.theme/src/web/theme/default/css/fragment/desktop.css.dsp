@@ -16,15 +16,26 @@
 }
 
 .desktop-header {
-	background-color: #E4E4E4;
 	width: 100%;
 	height: 46px;
 	border-bottom: 1px solid #C5C5C5 !important;
 	padding-left: 4px;
 }
+.status-P {
+	background-color: #E4E4E4;
+}
+.status-E {
+	background-color: #90EE90;
+}
+.status-I {
+	background-color: #FA8072;
+}
 .desktop-header.mobile {
 	height: 36px;
 	padding: 4px 4px;
+}
+.desktop-header.mobile .systemStatus {
+	display:none;
 }
 
 .desktop-header-font {
