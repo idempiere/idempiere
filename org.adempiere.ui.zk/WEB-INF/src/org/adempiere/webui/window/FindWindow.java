@@ -2362,6 +2362,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	}
 	            	continue;
 	            }
+	            if(Operator.equals(MQuery.LIKE) && isSearchLike(field))
+	            {
+	            	ColumnSQL = "UPPER("+ColumnSQL+")";
+	            }
 	            Object parsedValue = null;
 	            //Parse AttributeValue
 	            if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID))
@@ -2690,7 +2694,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     // Be more permissive for String columns
                     if (isSearchLike(field))
                     {
-                    	StringBuilder valueStr = new StringBuilder(value.toString().toUpperCase());
+                    	StringBuilder valueStr = new StringBuilder(value.toString());
                         if (!valueStr.toString().endsWith("%"))
                             valueStr.append("%");
                         //
@@ -3092,7 +3096,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addHistoryRestriction(historyCombo.getSelectedItem());
         }
         
-        if (getNoOfRecords(m_query, true) != 0) {
+        if (getNoOfRecords(getQuery(), true) != 0) {
         	dispose();
         }
     }   //  cmd_ok_Advanced
