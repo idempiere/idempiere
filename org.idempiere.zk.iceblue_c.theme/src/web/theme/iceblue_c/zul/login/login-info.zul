@@ -41,28 +41,42 @@ Copyright (C) 2009 Idalica Corporation
 </tr>
 
 <tr valign="top">
-<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}',password:'GardenAdmin'}))">${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}</a></td>
+<td><a href="#" onclick="loginAs('${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}','GardenAdmin')">${isEmailLogin?"admin @ gardenworld.com":"GardenAdmin"}</a></td>
 <td>GardenAdmin</td>
 </tr>
 
 <tr valign="top">
-<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"user @ gardenworld.com":"GardenUser"}',password:'GardenUser'}))">${isEmailLogin?"user @ gardenworld.com":"GardenUser"}</a></td>
+<td><a href="#" onclick="loginAs('${isEmailLogin?"user @ gardenworld.com":"GardenUser"}','GardenUser')">${isEmailLogin?"user @ gardenworld.com":"GardenUser"}</a></td>
 <td>GardenUser</td>
 </tr>
 
 <tr valign="top">
-<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}',password:'System'}))">${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}</a></td>
+<td><a href="#" onclick="loginAs('${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}','System')">${isEmailLogin?"superuser @ idempiere.com":"SuperUser"}</a></td>
 <td>System</td>
 </tr>
 
 <tr valign="top">
-<td><a href="#" onclick="zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:'${isEmailLogin?"system @ idempiere.com":"System"}',password:'System'}))">${isEmailLogin?"system @ idempiere.com":"System"}</a></td>
+<td><a href="#" onclick="loginAs('${isEmailLogin?"system @ idempiere.com":"System"}','System')">${isEmailLogin?"system @ idempiere.com":"System"}</a></td>
 <td>System</td>
 </tr>
 
 </tbody>
 </table>
 </div>
+<script>
+function loginAs(username,password){
+	zAu.send(new zk.Event(zk.Widget.$('$loginPanel'), 'onLoginAs', {username:username,password:password}));
+	let bodyEl = document.querySelector('body');
+	if (bodyEl.classList.contains('mobile')) {
+		const westPanel = zk.Widget.$(jq('.z-west')[0]);
+		if(westPanel.isOpen()) {
+		    westPanel.setOpen(false);
+		}else if (westPanel.isSlide()) {
+		    westPanel.setSlide(false);
+		}
+	}
+}
+</script>
 ]]>
 </html>
 </zk>
