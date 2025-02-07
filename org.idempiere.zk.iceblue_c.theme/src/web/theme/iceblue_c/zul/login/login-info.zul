@@ -69,9 +69,9 @@ function loginAs(username,password){
 	let bodyEl = document.querySelector('body');
 	if (bodyEl.classList.contains('mobile')) {
 		const westPanel = zk.Widget.$(jq('.z-west')[0]);
+		if(westPanel.isOpen()) {
 		    westPanel.setOpen(false);
-		}
-		if (westPanel.isSlide()) {
+		}else if (westPanel.isSlide()) {
 		    westPanel.setSlide(false);
 		}
 	}
