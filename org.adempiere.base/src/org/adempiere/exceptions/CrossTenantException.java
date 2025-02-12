@@ -32,6 +32,8 @@ import org.compiere.util.Env;
 public class CrossTenantException extends AdempiereException {
 
 	private static final long serialVersionUID = 2869354491846765492L;
+	private String fkColumn = null;
+	private Object fkValue = null;
 
 	/**
      * Constructs a new CrossTenantException indicating a cross-tenant access violation
@@ -68,4 +70,24 @@ public class CrossTenantException extends AdempiereException {
 		super("Cross tenant UUID " + recordUU + " not allowed in " + tableName);
 	}
 	
+	/**
+	 * Exception thrown when a foreign key references an entity from a different tenant.
+	 *
+	 * @param fkValue  The foreign key value that caused the exception.
+	 * @param fkColumn The column name where the cross-tenant reference was detected.
+	 */
+	public CrossTenantException(Object fkValue, String fkColumn) {
+		super("Cross tenant ID " + fkValue + " not allowed in " + fkColumn);
+		this.fkColumn = fkColumn;
+		this.fkValue = fkValue;
+	}
+
+	public String getFKColumn() {
+		return fkColumn;
+	}
+
+	public Object getFKValue() {
+		return fkValue;
+	}
+
 }
