@@ -2384,6 +2384,10 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	private void setDefiniteDocumentNo() {
 		if (isReversal() && ! MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID())) // IDEMPIERE-1771
 			return;
+
+		if (getProcessedOn().signum() > 0) // IDEMPIERE-6067 - if > 0, invoice has already has been reactivated and dates/documentno should not be updated
+			return;
+
 		MDocType dt = MDocType.get(getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setDateInvoiced(TimeUtil.getDay(0));
@@ -2886,27 +2890,20 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (allocations.length > 0) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "PaymentInvoiceReactivationFailedAllocationLine"));
+			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedAllocationLine"));
 			return false;
 		}
 
-		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID()); // if authorized, the next completion will override the number and create sequence holes
-		if (dt.isOverwriteSeqOnComplete()) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "PaymentInvoiceReactivationFailedSequenceIsOverwriteOnComplete"));
+		MMatchInv[] matchInvs = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+		if (matchInvs.length > 0) {
+			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchInvoice"));
 			return false;
 		}
-		
-		// Several business logics - to be set on plugins?
-		if (!dt.getDocBaseType().equals(MDocType.DOCBASETYPE_ARProFormaInvoice)) {
-			for (MInvoiceLine line : getLines()) {
 
-				if (line.getC_OrderLine_ID() != 0) {
-					MOrderLine  ol = new MOrderLine (getCtx(), line.getC_OrderLine_ID(), get_TrxName());
-					if (line.getQtyInvoiced() != null)
-						ol.setQtyInvoiced(ol.getQtyInvoiced().subtract(line.getQtyInvoiced()));
-					ol.saveEx();
-				}
-			}
+		MMatchPO[] matchPos = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+		if (matchPos.length > 0) {
+			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchPO"));
+			return false;
 		}
 
 		MFactAcct.deleteEx(MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
