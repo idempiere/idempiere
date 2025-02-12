@@ -55,6 +55,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.CrossTenantException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
@@ -6002,10 +6003,7 @@ public abstract class PO
 					+" PO.AD_Client_ID="+poClientID
 					+" writing="+writing
 					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
-				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
-						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
-						+ " Record_ID=" + get_ID();
-				throw new AdempiereException(message);
+				throw new CrossTenantException(writing, get_TableName(), get_ID());
 			}
 		}
 	}
@@ -6124,7 +6122,7 @@ public abstract class PO
 			throw new AdempiereException("System ID " + recordId + " cannot be used in " + ft.getTableName());
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
-			throw new AdempiereException("Cross tenant ID " + recordId + " not allowed in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordId);
 	}
 
 	/**
@@ -6177,7 +6175,7 @@ public abstract class PO
 			throw new AdempiereException("System UUID " + recordUU + " cannot be used in " + ft.getTableName());
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
-			throw new AdempiereException("Cross tenant UUID " + recordUU + " not allowed in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(),recordUU);
 	}
 
 	/**
