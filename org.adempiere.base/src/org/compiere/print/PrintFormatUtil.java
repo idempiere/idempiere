@@ -25,13 +25,13 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- *	Print Format Utilities.
- *	- Add Missing Columns for all Print Format
+ *	Print Format Utilities.<br/>
+ *	- Add Missing Columns for all Print Format.
  *	
  *  @author Jorg Janke
  *  @version $Id: PrintFormatUtil.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1841834 ] PrintFormatUtil: work in transaction
  */
 public class PrintFormatUtil
@@ -51,10 +51,10 @@ public class PrintFormatUtil
 	/** Context					*/
 	private Properties		m_ctx;
 	
-
 	/**
 	 * @deprecated use {@link #addMissingColumns(String)}
 	 */
+	@Deprecated
 	public void addMissingColumns ()
 	{
 		addMissingColumns((String)null);

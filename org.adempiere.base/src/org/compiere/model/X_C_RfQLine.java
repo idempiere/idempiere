@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQLine")
 public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_RfQLine (Properties ctx, int C_RfQLine_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
       super (ctx, C_RfQLine_ID, trxName);
       /** if (C_RfQLine_ID == 0)
         {
-			setC_RfQ_ID (0);
 			setC_RfQLine_ID (0);
+			setC_RfQ_ID (0);
 			setLine (0);
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_RfQLine WHERE C_RfQ_ID=@C_RfQ_ID@
 			setM_AttributeSetInstance_ID (0);
@@ -54,8 +54,8 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
       super (ctx, C_RfQLine_ID, trxName, virtualColumns);
       /** if (C_RfQLine_ID == 0)
         {
-			setC_RfQ_ID (0);
 			setC_RfQLine_ID (0);
+			setC_RfQ_ID (0);
 			setLine (0);
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_RfQLine WHERE C_RfQ_ID=@C_RfQ_ID@
 			setM_AttributeSetInstance_ID (0);
@@ -68,8 +68,8 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
       super (ctx, C_RfQLine_UU, trxName);
       /** if (C_RfQLine_UU == null)
         {
-			setC_RfQ_ID (0);
 			setC_RfQLine_ID (0);
+			setC_RfQ_ID (0);
 			setLine (0);
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_RfQLine WHERE C_RfQ_ID=@C_RfQ_ID@
 			setM_AttributeSetInstance_ID (0);
@@ -82,8 +82,8 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
       super (ctx, C_RfQLine_UU, trxName, virtualColumns);
       /** if (C_RfQLine_UU == null)
         {
-			setC_RfQ_ID (0);
 			setC_RfQLine_ID (0);
+			setC_RfQ_ID (0);
 			setLine (0);
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_RfQLine WHERE C_RfQ_ID=@C_RfQ_ID@
 			setM_AttributeSetInstance_ID (0);
@@ -116,42 +116,6 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
       StringBuilder sb = new StringBuilder ("X_C_RfQLine[")
         .append(get_ID()).append("]");
       return sb.toString();
-    }
-
-	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_RfQ)MTable.get(getCtx(), org.compiere.model.I_C_RfQ.Table_ID)
-			.getPO(getC_RfQ_ID(), get_TrxName());
-	}
-
-	/** Set RfQ.
-		@param C_RfQ_ID Request for Quotation
-	*/
-	public void setC_RfQ_ID (int C_RfQ_ID)
-	{
-		if (C_RfQ_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, Integer.valueOf(C_RfQ_ID));
-	}
-
-	/** Get RfQ.
-		@return Request for Quotation
-	  */
-	public int getC_RfQ_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_RfQ_ID()));
     }
 
 	/** Set RfQ Line.
@@ -190,6 +154,42 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQLine_UU);
 	}
+
+	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_RfQ)MTable.get(getCtx(), org.compiere.model.I_C_RfQ.Table_ID)
+			.getPO(getC_RfQ_ID(), get_TrxName());
+	}
+
+	/** Set RfQ.
+		@param C_RfQ_ID Request for Quotation
+	*/
+	public void setC_RfQ_ID (int C_RfQ_ID)
+	{
+		if (C_RfQ_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_RfQ_ID, Integer.valueOf(C_RfQ_ID));
+	}
+
+	/** Get RfQ.
+		@return Request for Quotation
+	  */
+	public int getC_RfQ_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_RfQ_ID()));
+    }
 
 	/** Set Work Complete.
 		@param DateWorkComplete Date when work is (planned to be) complete

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2009 Low Heng Sin
+Copyright (C) 2009 Idalica Corporation
+-->
+<zk>
+<zscript>
+    import org.compiere.Adempiere;
+	var isLoginInfoShown = Adempiere.isLoginInfoShown();
+	var isVersionShown = Adempiere.isVersionShown();
+</zscript>
+<div style="margin: 5px;">
+	<hbox align="center">
+		<a href="http://www.idempiere.org" target="_blank"><image src="~./theme/iceblue_c/images/login-logo.png" style="height: 85px;"/></a>
+		<div style="margin-left: 15px; margin-right: 5px;">
+			<label multiline="true" value="iDempiere 13 Dev Build Online Demonstration" if="${isVersionShown == true}"
+				style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; color:#578BB8; font-size:1.3em; font-weight: bold;" />
+		</div>	
+	</hbox>
+</div>
+</zk>

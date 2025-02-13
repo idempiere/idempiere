@@ -317,7 +317,9 @@ public class MInventoryLine extends X_M_InventoryLine
 	}	//	toString
 	
 	/**
-	 * 	Before Save
+	 * 	Set Line (if not set yet).<br/>
+	 *  Check mandatory fields by document type.<br/>
+	 *  Cost adjustment document: set current cost price.
 	 *	@param newRecord new
 	 *	@return true if can be saved
 	 */
@@ -337,7 +339,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			setLine (ii);
 		}
 
-		//	Enforce Qty UOM
+		//	Enforce Qty UOM precision
 		if (newRecord || is_ValueChanged("QtyCount"))
 			setQtyCount(getQtyCount());
 		if (newRecord || is_ValueChanged("QtyInternalUse"))
@@ -351,13 +353,13 @@ public class MInventoryLine extends X_M_InventoryLine
 			// Internal Use Inventory validations
 			if (!INVENTORYTYPE_ChargeAccount.equals(getInventoryType()))
 				setInventoryType(INVENTORYTYPE_ChargeAccount);
-			//
+			// Charge is mandatory for internal use
 			if (getC_Charge_ID() == 0)
 			{
 				log.saveError("InternalUseNeedsCharge", "");
 				return false;
 			}
-			// error if book or count are filled on an internal use inventory
+			// Error if book or count are filled on an internal use inventory document
 			// i.e. coming from import or web services
 			if (getQtyBook().signum() != 0) {
 				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyBook));
@@ -367,6 +369,7 @@ public class MInventoryLine extends X_M_InventoryLine
 				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyCount));
 				return false;
 			}
+			// QtyInternalUse is mandatory for internal use
 			if (getQtyInternalUse().signum() == 0 && !getParent().getDocAction().equals(DocAction.ACTION_Void)) {
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_QtyInternalUse));
 				return false;
@@ -386,6 +389,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			else if (getC_Charge_ID() != 0) {
 				setC_Charge_ID(0);
 			}
+			// Error is QtyInternalUse is fill for physical inventory document
 			if (getQtyInternalUse().signum() != 0) {
 				log.saveError("Quantity", Msg.getElement(getCtx(), COLUMNNAME_QtyInternalUse));
 				return false;
@@ -396,6 +400,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			MClient client = MClient.get(getCtx());
 			MAcctSchema as = client.getAcctSchema();
 			String costingLevel = product.getCostingLevel(as);
+			// M_AttributeSetInstance_ID is mandatory for COSTINGLEVEL_BatchLot 
 			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {				
 				if (M_ASI_ID == 0) {
 					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
@@ -403,9 +408,8 @@ public class MInventoryLine extends X_M_InventoryLine
 				}
 			}
 			
-			//check currency and as
+			// Find accounting schema via currency
 			int C_Currency_ID = getParent().getC_Currency_ID();
-
 			if (as.getC_Currency_ID() != C_Currency_ID) 
 			{
 				MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), client.get_ID());
@@ -417,10 +421,12 @@ public class MInventoryLine extends X_M_InventoryLine
 				}
 			}
 			
+			// Set current cost price
 			String costingMethod = getParent().getCostingMethod();
 			int AD_Org_ID = getAD_Org_ID();
-			MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
+			ICostInfo cost = product.getCostInfo(as, AD_Org_ID, M_ASI_ID, costingMethod, getParent().getMovementDate());					
 			if (cost == null) {
+				// Error if no costing record (except standard costing)
 				if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
 					log.saveError("NoCostingRecord", "");
 					return false;
@@ -431,6 +437,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			}
 			setM_Locator_ID(0);
 		} else {
+			//unknown subtype, should never reach here
 			log.saveError("Error", "Document inventory subtype not configured, cannot complete");
 			return false;
 		}

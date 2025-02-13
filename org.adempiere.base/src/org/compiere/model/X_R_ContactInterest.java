@@ -24,7 +24,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for R_ContactInterest
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="R_ContactInterest")
 public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_R_ContactInterest extends PO implements I_R_ContactInterest, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_R_ContactInterest (Properties ctx, int R_ContactInterest_ID, String trxName)

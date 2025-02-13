@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Replication Server
 Bundle-SymbolicName: org.adempiere.replication.server;singleton:=true
-Bundle-Version: 11.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
-Require-Bundle: org.adempiere.server;bundle-version="0.0.0",
- org.adempiere.replication;bundle-version="0.0.0",
- org.adempiere.base;bundle-version="0.0.0"
+Require-Bundle: org.adempiere.server;bundle-version="13.0.0",
+ org.adempiere.replication;bundle-version="13.0.0",
+ org.adempiere.base;bundle-version="13.0.0"
 Import-Package: javax.jms;version="1.1.0",
- org.apache.activemq
+ org.apache.activemq;version="5.16.7"
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

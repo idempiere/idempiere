@@ -33,7 +33,9 @@ import org.compiere.model.POInfo;
  *  Instead of modifying DocumentEngine, you could simply extend DocOptions interface and use customizeValidActions 
  *  @author Jorg Janke
  *  @version $Id: DocActionTemplate.java,v 1.3 2006/07/30 00:54:44 jjanke Exp $
+ *  @deprecated not fully implemented
  */
+@Deprecated
 public class DocActionTemplate extends PO implements DocAction
 {
 	/**

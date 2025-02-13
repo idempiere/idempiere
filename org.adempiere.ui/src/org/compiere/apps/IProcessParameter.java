@@ -14,7 +14,7 @@
 package org.compiere.apps;
 
 /**
- * 
+ * Process parameter controller interface
  * @author Low Heng Sin
  *
  */

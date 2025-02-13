@@ -181,17 +181,6 @@ public abstract class AbstractXLSXExporter
 	}
 
 	/**
-	 * Remove diacritics from str 
-	 * @param str
-	 * @return fix string for Excel
-	 */
-	private String fixString(String str)
-	{
-		// ms excel doesn't support UTF8 charset
-		return Util.stripDiacritics(str);
-	}
-
-	/**
 	 * @return Language
 	 */
 	protected Language getLanguage()
@@ -444,7 +433,7 @@ public abstract class AbstractXLSXExporter
 				// header row
 				XSSFCellStyle style = getHeaderStyle(col);
 				cell.setCellStyle(style);
-				String str = fixString(getHeaderName(col));
+				String str = getHeaderName(col);
 				cell.setCellValue(new XSSFRichTextString(str));
 				colnum++;
 			} // printed
@@ -567,7 +556,7 @@ public abstract class AbstractXLSXExporter
 						{
 							row = getFormRow(sheet, col);
 							cell = getFormCell(row, col);
-							String label = fixString(getHeaderName(col));
+							String label = getHeaderName(col);
 							if (!Util.isEmpty(label, true))
 							{
 								cell.setCellValue(new XSSFRichTextString(label));
@@ -633,7 +622,7 @@ public abstract class AbstractXLSXExporter
 					}
 					else
 					{
-						String value = fixString(obj.toString()); // formatted
+						String value = obj.toString(); // formatted
 						cell.setCellValue(new XSSFRichTextString(value));
 					}
 					//
@@ -648,7 +637,7 @@ public abstract class AbstractXLSXExporter
 					if (isPageBreak(rownum, col))
 					{
 						isPageBreak = true;
-						sheetName = fixString(cell.getRichStringCellValue().getString());
+						sheetName = cell.getRichStringCellValue().getString();
 					}
 					//
 					colnum++;

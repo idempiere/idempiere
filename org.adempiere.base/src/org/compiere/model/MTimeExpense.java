@@ -46,17 +46,16 @@ import org.compiere.util.Util;
 public class MTimeExpense extends X_S_TimeExpense implements DocAction
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1567303438502090279L;
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param S_TimeExpense_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param S_TimeExpense_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTimeExpense(Properties ctx, String S_TimeExpense_UU, String trxName) {
         super(ctx, S_TimeExpense_UU, trxName);
 		if (Util.isEmpty(S_TimeExpense_UU))
@@ -104,7 +103,6 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	/** Cached User					*/
 	private int					m_AD_User_ID = 0;
 	
-
 	/**
 	 * 	Get Lines Convenience Wrapper
 	 *	@return array of lines
@@ -116,7 +114,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 
 	/**
 	 * 	Get Lines
-	 * 	@param requery true requeries
+	 * 	@param requery true to reload from DB
 	 *	@return array of lines
 	 */
 	public MTimeExpenseLine[] getLines (boolean requery)
@@ -210,9 +208,10 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 
 	/**
 	 * 	Set Processed.
-	 * 	Propergate to Lines/Taxes
+	 * 	Propagate to Lines.
 	 *	@param processed processed
 	 */
+	@Override
 	public void setProcessed (boolean processed)
 	{
 		super.setProcessed (processed);
@@ -230,6 +229,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Get Document Info
 	 *	@return document info
 	 */
+	@Override
 	public String getDocumentInfo()
 	{
 		return Msg.getElement(getCtx(), "S_TimeExpense_ID") + " " + getDocumentNo();
@@ -239,6 +239,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Create PDF
 	 *	@return File or null
 	 */
+	@Override
 	public File createPDF ()
 	{
 		try
@@ -263,11 +264,12 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		return null;
 	}	//	createPDF
 	
-	/**************************************************************************
+	/**
 	 * 	Process document
 	 *	@param processAction document action
 	 *	@return true if performed
 	 */
+	@Override
 	public boolean processIt (String processAction)
 	{
 		m_processMsg = null;
@@ -284,6 +286,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Unlock Document.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
@@ -295,6 +298,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Invalidate Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
@@ -306,6 +310,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 *	Prepare Document
 	 * 	@return new status (In Progress or Invalid) 
 	 */
+	@Override
 	public String prepareIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
@@ -360,6 +365,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Approve Document
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean  approveIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("approveIt - " + toString());
@@ -371,6 +377,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Reject Approval
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean rejectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("rejectIt - " + toString());
@@ -382,6 +389,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Complete Document
 	 * 	@return new status (Complete, In Progress, Invalid, Waiting ..)
 	 */
+	@Override
 	public String completeIt()
 	{
 		//	Re-Check
@@ -421,6 +429,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Same as Close.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
@@ -443,9 +452,10 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	
 	/**
 	 * 	Close Document.
-	 * 	Cancel not delivered Qunatities
+	 * 	Cancel not delivered Quantities.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean closeIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("closeIt - " + toString());
@@ -462,9 +472,11 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	}	//	closeIt
 	
 	/**
-	 * 	Reverse Correction
+	 * 	Reverse Correction.<br/>
+	 *  Not implemented, always return false.
 	 * 	@return false 
 	 */
+	@Override
 	public boolean reverseCorrectIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseCorrectIt - " + toString());
@@ -482,9 +494,11 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	}	//	reverseCorrectionIt
 	
 	/**
-	 * 	Reverse Accrual - none
+	 * 	Reverse Accrual. <br/>
+	 *  Not implemented, always return false.
 	 * 	@return false 
 	 */
+	@Override
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reverseAccrualIt - " + toString());
@@ -502,9 +516,11 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	}	//	reverseAccrualIt
 	
 	/** 
-	 * 	Re-activate
+	 * 	Re-activate. <br/>
+	 *  Not implemented, always return false.
 	 * 	@return true if success 
 	 */
+	@Override
 	public boolean reActivateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("reActivateIt - " + toString());
@@ -518,15 +534,14 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		if (m_processMsg != null)
 			return false;
 		
-	//	setProcessed(false);
 		return false;
 	}	//	reActivateIt
-	
-	
-	/*************************************************************************
+		
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */
+	@Override
 	public String getSummary()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -545,6 +560,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Get Process Message
 	 *	@return clear text error message
 	 */
+	@Override
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -554,6 +570,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	 * 	Get Document Owner (Responsible)
 	 *	@return AD_User_ID
 	 */
+	@Override
 	public int getDoc_User_ID()
 	{
 		if (m_AD_User_ID != 0)
@@ -569,12 +586,12 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		}
 		return getCreatedBy();
 	}	//	getDoc_User_ID
-
 	
 	/**
 	 * 	Get Document Currency
-	 *	@return C_Currency_ID
+	 *	@return C_Currency_ID of price list
 	 */
+	@Override
 	public int getC_Currency_ID()
 	{
 		MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID(), get_TrxName());
@@ -582,7 +599,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 	}	//	getC_Currency_ID
 
 	/**
-	 * 	Document Status is Complete or Closed
+	 * 	Document Status is Complete, Closed or Reverse
 	 *	@return true if CO, CL or RE
 	 */
 	public boolean isComplete()

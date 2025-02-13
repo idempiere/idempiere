@@ -36,6 +36,7 @@ import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MRole;
 import org.compiere.model.X_C_Order;
+import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -46,7 +47,9 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 
-
+/**
+ * Create Manual Payments From (AP) Invoices or (AR) Credit Memos.
+ */
 public class PaySelect
 {
 	/**	Window No			*/
@@ -122,7 +125,7 @@ public class PaySelect
 	}
 	
 	/**
-	 * Get list of business partners with open vendor invoice
+	 * Get list of business partners (C_BPartner_ID, Name) with open vendor invoice
 	 * @return list of business partners
 	 */
 	public ArrayList<KeyNamePair> getBPartnerData()
@@ -168,7 +171,7 @@ public class PaySelect
 	}
 	
 	/**
-	 * Get document types for invoice and credit memo
+	 * Get document types (C_DocType_ID, Name) for invoice and credit memo
 	 * @return list of document types
 	 */
 	public ArrayList<KeyNamePair> getDocTypeData()
@@ -317,7 +320,7 @@ public class PaySelect
 	}
 
 	/**
-	 * Load open documents into miniTable
+	 * Load open invoice and credit memo documents into miniTable
 	 * @param bi
 	 * @param payDate
 	 * @param paymentRule
@@ -435,8 +438,7 @@ public class PaySelect
 	}   //  loadTableInfo
 
 	/**
-	 *  Calculate selected rows.
-	 *  - add up selected rows
+	 *  Calculate total of selected rows.
 	 *  @param miniTable
 	 *  @return info message
 	 */
@@ -468,7 +470,7 @@ public class PaySelect
 	}   //  calculateSelection
 	
 	/**
-	 * Generate PaySelection
+	 * Create Pay Selection (C_PaySelection and C_PaySelectionLine) records
 	 * @param miniTable
 	 * @param paymentRule
 	 * @param payDate
@@ -517,6 +519,8 @@ public class PaySelect
 					if (paymentRule != null && X_C_Order.PAYMENTRULE_DirectDebit.equals(paymentRule.getValue()))
 						isSOTrx = true;
 					//
+					if (OpenAmt == null || PayAmt == null)
+						throw new AdempiereSystemError(Msg.getMsg(Env.getCtx(), "PaymentSelectAmtNull"));
 					psl.setInvoice(C_Invoice_ID, isSOTrx,
 						OpenAmt, PayAmt, DiscountAmt, WriteOffAmt);
 					psl.saveEx(trxName);
@@ -551,7 +555,7 @@ public class PaySelect
 		return m_bankBalance;
 	}
 	
-	/**************************************************************************
+	/**
 	 *  Bank Account Info
 	 */
 	public static class BankInfo

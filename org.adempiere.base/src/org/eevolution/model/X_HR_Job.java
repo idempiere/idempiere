@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Job
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="HR_Job")
 public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_HR_Job (Properties ctx, int HR_Job_ID, String trxName)
@@ -208,16 +208,16 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 		return false;
 	}
 
-	/** Set Job Cant.
-		@param JobCant Job Cant
+	/** Set Job Qty.
+		@param JobCant Job Qty
 	*/
 	public void setJobCant (int JobCant)
 	{
 		set_Value (COLUMNNAME_JobCant, Integer.valueOf(JobCant));
 	}
 
-	/** Get Job Cant.
-		@return Job Cant	  */
+	/** Get Job Qty.
+		@return Job Qty	  */
 	public int getJobCant()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_JobCant);

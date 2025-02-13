@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -107,14 +108,15 @@ public class XMLBeansJSONProvider extends XMLBeansElementProvider {
     protected XmlObject parseXmlBean(Class<?> type, XMLStreamReader xsr) {
         XmlObject result = null;
 
-        Class<?> factory = getFactory(type);
+        // get static XMLBeans Factory field
+        Field factory = getFactory(type);
 
         try {
 
             // get factory method parse(InputStream)
-            Method m = factory.getMethod("parse", XMLStreamReader.class);
+            Method m = factory.getType().getMethod("parse", XMLStreamReader.class);
             Object[] args = {xsr};
-            Object obj = m.invoke(type, args);
+            Object obj = m.invoke(factory.get(type), args);
 
             if (obj instanceof XmlObject) {            	            	
                 result = (XmlObject)obj;                
@@ -132,40 +134,22 @@ public class XMLBeansJSONProvider extends XMLBeansElementProvider {
     }
     
     /**
-     * Locate the XMLBean <code>Factory</code> inner class.
+     * Locate the static XMLBean <code>Factory</code> field.
      * 
      * @param type
-     * @return the Factory class if present, otherwise null.
+     * @return the Factory field if present, otherwise null.
      */
-    private Class<?> getFactory(Class<?> type) {
-        Class<?> result = null;
-
-        Class<?>[] declared = type.getDeclaredClasses();
-        for (Class<?> c : declared) {
-
-            if (c.getSimpleName().equals("Factory")) {
-                result = c;
-            }
-        }
+    private Field getFactory(Class<?> type) {
+        Field factory = null;
+        try {
+        	factory = type.getDeclaredField("Factory");
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
         
-        if (result == null) {
-	        Class<?>[] interfaces = type.getInterfaces();
-	
-	        // look for XMLBeans inner class Factory
-	        for (Class<?> inter : interfaces) {
-	
-	            declared = inter.getDeclaredClasses();
-	
-	            for (Class<?> c : declared) {
-	
-	                if (c.getSimpleName().equals("Factory")) {
-	                    result = c;
-	                }
-	            }
-	        }
-        }
-
-        return result;
+        return factory;
     }
     
     /** {@inheritDoc} */

@@ -104,7 +104,6 @@ public class MTableIndex extends X_AD_TableIndex {
 	public MTableIndex(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-		m_ddl = createDDL();
 	}
 	
 	/**
@@ -255,13 +254,9 @@ public class MTableIndex extends X_AD_TableIndex {
 		return sql;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate index name is valid DB identifier
 		String error = Database.isValidIdentifier(getName());
 		if (!Util.isEmpty(error)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [Name]");

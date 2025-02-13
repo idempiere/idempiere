@@ -32,12 +32,12 @@ import org.compiere.util.Task;
  */
 public class MTask extends X_AD_Task
 {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = 5286481246615520755L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6296104559348441444L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Task_UU  UUID key
@@ -139,12 +139,6 @@ public class MTask extends X_AD_Task
 		return sb.toString ();
 	}	//	toString
 
-	/**
-	 *  After Save.
-	 *  @param newRecord new record
-	 *  @param success success
-	 *  @return true if save complete (if not overwritten true)
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -153,7 +147,7 @@ public class MTask extends X_AD_Task
 			return success;
 		if (! newRecord)
 		{
-			//	Menu/Workflow
+			//	Update Menu
 			if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
 				|| is_ValueChanged("Description"))
 			{
@@ -170,5 +164,13 @@ public class MTask extends X_AD_Task
 
 		return success;
 	}   //  afterSave
+
+	/**
+	 * Get the task executed
+	 * @return
+	 */
+	public Task getExecutedTask() {
+		return m_task;
+	}
 
 }	//	MTask

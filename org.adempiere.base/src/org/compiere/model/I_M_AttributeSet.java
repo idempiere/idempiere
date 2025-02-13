@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_AttributeSet 
 {
@@ -243,19 +243,6 @@ public interface I_M_AttributeSet
 	  */
 	public String getLotCharSOverwrite();
 
-    /** Column name MandatoryType */
-    public static final String COLUMNNAME_MandatoryType = "MandatoryType";
-
-	/** Set Mandatory Type.
-	  * The specification of a Product Attribute Instance is mandatory
-	  */
-	public void setMandatoryType (String MandatoryType);
-
-	/** Get Mandatory Type.
-	  * The specification of a Product Attribute Instance is mandatory
-	  */
-	public String getMandatoryType();
-
     /** Column name M_AttributeSet_ID */
     public static final String COLUMNNAME_M_AttributeSet_ID = "M_AttributeSet_ID";
 
@@ -316,6 +303,19 @@ public interface I_M_AttributeSet
 	public int getM_SerNoCtl_ID();
 
 	public org.compiere.model.I_M_SerNoCtl getM_SerNoCtl() throws RuntimeException;
+
+    /** Column name MandatoryType */
+    public static final String COLUMNNAME_MandatoryType = "MandatoryType";
+
+	/** Set Mandatory Type.
+	  * The specification of a Product Attribute Instance is mandatory
+	  */
+	public void setMandatoryType (String MandatoryType);
+
+	/** Get Mandatory Type.
+	  * The specification of a Product Attribute Instance is mandatory
+	  */
+	public String getMandatoryType();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

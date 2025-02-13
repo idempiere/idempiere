@@ -21,9 +21,8 @@ import java.util.Properties;
 
 import org.compiere.model.X_PA_ReportSource;
 
-
 /**
- *	Report Line Source Model
+ *	Financial Report Line Source Model
  *
  *  @author Jorg Janke
  *  @version $Id: MReportSource.java,v 1.3 2006/08/03 22:16:52 jjanke Exp $
@@ -31,17 +30,16 @@ import org.compiere.model.X_PA_ReportSource;
 public class MReportSource extends X_PA_ReportSource
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6085437491271873555L;
 
-
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param PA_ReportSource_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param PA_ReportSource_UU  UUID key
+     * @param trxName Transaction
+     */
     public MReportSource(Properties ctx, String PA_ReportSource_UU, String trxName) {
         super(ctx, PA_ReportSource_UU, trxName);
     }
@@ -67,7 +65,6 @@ public class MReportSource extends X_PA_ReportSource
 	{
 		super(ctx, rs, trxName);
 	}	//	MReportSource
-
 
 	/**
 	 * 	Get SQL where clause
@@ -121,7 +118,7 @@ public class MReportSource extends X_PA_ReportSource
 	/**
 	 * Obtain where clause for the combination type
 	 * @param PA_Hierarchy_ID
-	 * @return
+	 * @return where clause
 	 */
 	private String getWhereCombination(int PA_Hierarchy_ID) {
 		StringBuilder whcomb = new StringBuilder();
@@ -252,11 +249,11 @@ public class MReportSource extends X_PA_ReportSource
 		return whcomb.toString();
 	}
 
-
 	/**
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MReportSource[")
@@ -266,16 +263,15 @@ public class MReportSource extends X_PA_ReportSource
 		return sb.toString ();
 	}	//	toString
 
-
-	/**************************************************************************
-	 * 	Copy Constructor
+	/**
+	 * 	Create a new Report Source instance from source
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID parent
 	 * 	@param AD_Org_ID parent
 	 * 	@param PA_ReportLine_ID parent
-	 * 	@param source copy source
+	 * 	@param source source to copy from
 	 * 	@param trxName transaction
-	 * 	@return Report Source
+	 * 	@return new Report Source instance
 	 */
 	public static MReportSource copy (Properties ctx, int AD_Client_ID, int AD_Org_ID, 
 		int PA_ReportLine_ID, MReportSource source, String trxName)

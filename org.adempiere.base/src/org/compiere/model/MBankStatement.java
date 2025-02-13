@@ -254,23 +254,20 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		return null;
 	}	//	createPDF
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getC_DocType_ID() <= 0) {
 			setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_BankStatement));
 		}
+		// Set beginning balance
 		if (! isProcessed() && getBeginningBalance().compareTo(Env.ZERO) == 0)
 		{
 			MBankAccount ba = getBankAccount();
 			ba.load(get_TrxName());
 			setBeginningBalance(ba.getCurrentBalance());
 		}
+		// Calculate ending balance
 		setEndingBalance(getBeginningBalance().add(getStatementDifference()));
 		return true;
 	}	//	beforeSave
@@ -426,8 +423,26 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			if (line.getC_Payment_ID() != 0)
 			{
 				MPayment payment = new MPayment (getCtx(), line.getC_Payment_ID(), get_TrxName());
+				if (payment.isReconciled()) {
+					m_processMsg = Msg.getMsg(getCtx(), "PaymentIsAlreadyReconciled") + payment;
+					return DocAction.STATUS_Invalid;
+				}
 				payment.setIsReconciled(true);
 				payment.saveEx(get_TrxName());
+			}
+			else if (line.getC_DepositBatch_ID() != 0)
+			{
+				MDepositBatchLine[] depositBatchLines = ((MDepositBatch)line.getC_DepositBatch()).getLines();
+				for (MDepositBatchLine mDepositBatchLine : depositBatchLines)
+				{
+					MPayment payment= new MPayment(getCtx(),mDepositBatchLine.getC_Payment_ID(),get_TrxName());
+					if (payment.isReconciled()) {
+						m_processMsg = Msg.getMsg(getCtx(), "PaymentIsAlreadyReconciled") + payment;
+						return DocAction.STATUS_Invalid;
+					}
+					payment.setIsReconciled(true);
+					payment.saveEx(get_TrxName());
+				}
 			}
 		}
 		//	Update Bank Account
@@ -556,8 +571,18 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 					MPayment payment = new MPayment (getCtx(), line.getC_Payment_ID(), get_TrxName());
 					payment.setIsReconciled(false);
 					payment.saveEx();
-					line.setC_Payment_ID(0);
 				}
+				else if (line.getC_DepositBatch_ID() != 0)
+				{
+					MDepositBatchLine[] depositBatchLines = ((MDepositBatch)line.getC_DepositBatch()).getLines();
+					for (MDepositBatchLine mDepositBatchLine : depositBatchLines)
+					{
+						MPayment payment=new MPayment(getCtx(), mDepositBatchLine.getC_Payment_ID(),get_TrxName());
+						payment.setIsReconciled(false);
+						payment.saveEx();
+					}
+				}
+				line.setC_Payment_ID(0);
 				line.saveEx();
 			}
 		}
@@ -640,7 +665,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	
 	/** 
 	 * 	Re-activate
-	 * 	@return false 
+	 *  @return true if success 
 	 */
 	public boolean reActivateIt()
 	{
@@ -649,12 +674,47 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;		
-		
+
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
+
+		MFactAcct.deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
+		setPosted(false);
+
+		MBankStatementLine[] lines = getLines(true);
+		for (int i = 0; i < lines.length; i++) {
+			MBankStatementLine line = lines[i];
+			line.setProcessed(false);
+
+			if (line.getC_Payment_ID() != 0) {
+				MPayment payment = new MPayment (getCtx(), line.getC_Payment_ID(), get_TrxName());
+				payment.setIsReconciled(false);
+				payment.saveEx();
+			}
+			else if (line.getC_DepositBatch_ID() != 0)
+			{
+				MDepositBatchLine[] depositBatchLines = ((MDepositBatch)line.getC_DepositBatch()).getLines();
+				for (MDepositBatchLine mDepositBatchLine : depositBatchLines)
+				{
+					MPayment payment=new MPayment(getCtx(), mDepositBatchLine.getC_Payment_ID(),get_TrxName());
+					payment.setIsReconciled(false);
+					payment.saveEx(get_TrxName());
+				}
+			}
+		}
+
+		MBankAccount ba = getBankAccount();
+		ba.load(get_TrxName());
+		ba.setCurrentBalance(ba.getCurrentBalance().subtract(getStatementDifference()));
+		ba.saveEx();
+
+		setDocAction(X_C_BankStatement.DOCACTION_Complete);
+		setProcessed(false);
+
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;		
-		return false;
+		return true;
 	}	//	reActivateIt
 		
 	/**

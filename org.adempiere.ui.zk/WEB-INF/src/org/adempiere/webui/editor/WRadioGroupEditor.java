@@ -508,19 +508,23 @@ public class WRadioGroupEditor extends WEditor implements ContextMenuListener, L
 		/**
 		 * generated serial id
 		 */
-		private static final long serialVersionUID = 6356574816984519621L;
+		private static final long serialVersionUID = 4264576861510186396L;
 		private Radiogroup radioGroup;
 		private boolean enabled;
 		
 		/**
 		 * Default constructor
 		 */
-		private RadioGroupEditor() {
+		public RadioGroupEditor() {
 			newRadioGroup();
 			appendChild(radioGroup);
 			enabled = true;
 			setSpacing("0");
 			setStyle("white-space: normal");
+		}
+
+		public Radiogroup getRadiogroup() {
+			return radioGroup;
 		}
 
 		/**

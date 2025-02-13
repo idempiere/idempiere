@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_DistributionLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="GL_DistributionLine")
 public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_GL_DistributionLine (Properties ctx, int GL_DistributionLine_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
       super (ctx, GL_DistributionLine_ID, trxName);
       /** if (GL_DistributionLine_ID == 0)
         {
-			setGL_Distribution_ID (0);
 			setGL_DistributionLine_ID (0);
+			setGL_Distribution_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_DistributionLine WHERE GL_Distribution_ID=@GL_Distribution_ID@
 			setOverwriteAcct (false);
@@ -68,8 +68,8 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
       super (ctx, GL_DistributionLine_ID, trxName, virtualColumns);
       /** if (GL_DistributionLine_ID == 0)
         {
-			setGL_Distribution_ID (0);
 			setGL_DistributionLine_ID (0);
+			setGL_Distribution_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_DistributionLine WHERE GL_Distribution_ID=@GL_Distribution_ID@
 			setOverwriteAcct (false);
@@ -95,8 +95,8 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
       super (ctx, GL_DistributionLine_UU, trxName);
       /** if (GL_DistributionLine_UU == null)
         {
-			setGL_Distribution_ID (0);
 			setGL_DistributionLine_ID (0);
+			setGL_Distribution_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_DistributionLine WHERE GL_Distribution_ID=@GL_Distribution_ID@
 			setOverwriteAcct (false);
@@ -122,8 +122,8 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
       super (ctx, GL_DistributionLine_UU, trxName, virtualColumns);
       /** if (GL_DistributionLine_UU == null)
         {
-			setGL_Distribution_ID (0);
 			setGL_DistributionLine_ID (0);
+			setGL_Distribution_ID (0);
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_DistributionLine WHERE GL_Distribution_ID=@GL_Distribution_ID@
 			setOverwriteAcct (false);
@@ -171,28 +171,6 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
       return sb.toString();
     }
 
-	/** Set Account.
-		@param Account_ID Account used
-	*/
-	public void setAccount_ID (int Account_ID)
-	{
-		if (Account_ID < 1)
-			set_Value (COLUMNNAME_Account_ID, null);
-		else
-			set_Value (COLUMNNAME_Account_ID, Integer.valueOf(Account_ID));
-	}
-
-	/** Get Account.
-		@return Account used
-	  */
-	public int getAccount_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Account_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Trx Organization.
 		@param AD_OrgTrx_ID Performing or initiating organization
 	*/
@@ -210,6 +188,28 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public int getAD_OrgTrx_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Account.
+		@param Account_ID Account used
+	*/
+	public void setAccount_ID (int Account_ID)
+	{
+		if (Account_ID < 1)
+			set_Value (COLUMNNAME_Account_ID, null);
+		else
+			set_Value (COLUMNNAME_Account_ID, Integer.valueOf(Account_ID));
+	}
+
+	/** Get Account.
+		@return Account used
+	  */
+	public int getAccount_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Account_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -427,34 +427,6 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public org.compiere.model.I_GL_Distribution getGL_Distribution() throws RuntimeException
-	{
-		return (org.compiere.model.I_GL_Distribution)MTable.get(getCtx(), org.compiere.model.I_GL_Distribution.Table_ID)
-			.getPO(getGL_Distribution_ID(), get_TrxName());
-	}
-
-	/** Set GL Distribution.
-		@param GL_Distribution_ID General Ledger Distribution
-	*/
-	public void setGL_Distribution_ID (int GL_Distribution_ID)
-	{
-		if (GL_Distribution_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_GL_Distribution_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_GL_Distribution_ID, Integer.valueOf(GL_Distribution_ID));
-	}
-
-	/** Get GL Distribution.
-		@return General Ledger Distribution
-	  */
-	public int getGL_Distribution_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Distribution_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set GL Distribution Line.
 		@param GL_DistributionLine_ID General Ledger Distribution Line
 	*/
@@ -490,6 +462,34 @@ public class X_GL_DistributionLine extends PO implements I_GL_DistributionLine, 
 	public String getGL_DistributionLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_GL_DistributionLine_UU);
+	}
+
+	public org.compiere.model.I_GL_Distribution getGL_Distribution() throws RuntimeException
+	{
+		return (org.compiere.model.I_GL_Distribution)MTable.get(getCtx(), org.compiere.model.I_GL_Distribution.Table_ID)
+			.getPO(getGL_Distribution_ID(), get_TrxName());
+	}
+
+	/** Set GL Distribution.
+		@param GL_Distribution_ID General Ledger Distribution
+	*/
+	public void setGL_Distribution_ID (int GL_Distribution_ID)
+	{
+		if (GL_Distribution_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_GL_Distribution_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_GL_Distribution_ID, Integer.valueOf(GL_Distribution_ID));
+	}
+
+	/** Get GL Distribution.
+		@return General Ledger Distribution
+	  */
+	public int getGL_Distribution_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Distribution_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Line No.

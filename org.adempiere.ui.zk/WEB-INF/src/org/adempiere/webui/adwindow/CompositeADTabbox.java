@@ -56,19 +56,18 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Vlayout;
 
 /**
- * Header and detail UI for AD_Tabs.
- * This class manage a list of tabs with the current selected tab as the visible {@link ADTabpanel} instance.
+ * Header and detail controller for AD_Tabs.<br/>
+ * This class manage a list of tabs with the current selected tab as the visible {@link ADTabpanel} instance.<br/>
  * Child tabs of selected tab is shown in {@link DetailPane} using {@link Tabbox}.
  * 
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class CompositeADTabbox extends AbstractADTabbox
 {
 	/**
-	 * DetailPane attribute to hold list of child tabs.
+	 * DetailPane attribute to hold list of child tabs.<br/>
 	 * List of Object[] of tabIndex, tabPanel, tabLabel, enable.
 	 */
 	private static final String DETAILPANE_TABLIST_ATTR = "detailpane.tablist";
@@ -313,7 +312,7 @@ public class CompositeADTabbox extends AbstractADTabbox
     }
     
     /**
-     * defer execution of adTabPanel.focus()
+     * Defer execution of adTabPanel.focus()
      * @param adTabPanel
      */
     private void focusToTabpanel(IADTabpanel adTabPanel ) {
@@ -324,7 +323,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
     
     /**
-     * Edit current row of selected detail tab.
+     * Edit current row of selected detail tab.<br/>
      * Make selected detail tab the new header tab.
      * @param row
      * @param formView
@@ -363,7 +362,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
     
     /**
-     * Create layout and setup listeners for bread crumb.
+     * Create layout and setup listeners for bread crumb.<br/>
      * Vertical layout with {@link ADTabpanel} as the only child component.
      */
     @Override
@@ -1068,7 +1067,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			if (!tabPanel.getGridTab().isSortTab()) {
 				currentRow = tabPanel.getGridTab().getCurrentRow();
 			}
-			tabPanel.query(false, 0, 0);			
+			tabPanel.query(false, 0, tabPanel.getGridTab().getMaxQueryRecords());
 			if (currentRow >= 0 && currentRow != tabPanel.getGridTab().getCurrentRow() 
 				&& currentRow < tabPanel.getGridTab().getRowCount()) {
 				tabPanel.getGridTab().setCurrentRow(currentRow, false);

@@ -245,7 +245,8 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 			
 			if (isOfx1)
 			{
-				m_reader = new BufferedReader(new InputStreamReader(new OFX1ToXML(reader)));
+				OFX1ToXML in = new OFX1ToXML(reader);
+				m_reader = new BufferedReader(new InputStreamReader(in));
 			}
 			else
 			{
@@ -257,8 +258,11 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 		{
 			m_errorMessage = new StringBuffer("ErrorReadingData");
 			m_errorDescription = new StringBuffer(e.getMessage());
-			closeBufferedReader();
 			return result;
+		}
+		finally
+		{
+			closeBufferedReader();
 		}
 
 		return result;

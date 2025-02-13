@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.adempiere.base.feature_11.0.0.qualifier.jar" id="org.adempiere.base.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.base.feature_13.0.0.qualifier.jar" id="org.adempiere.base.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.adempiere.payment.processor.feature_11.0.0.qualifier.jar" id="org.adempiere.payment.processor.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.payment.processor.feature_13.0.0.qualifier.jar" id="org.adempiere.payment.processor.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.adempiere.pipo.feature_11.0.0.qualifier.jar" id="org.adempiere.pipo.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.pipo.feature_13.0.0.qualifier.jar" id="org.adempiere.pipo.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.adempiere.replication.feature_11.0.0.qualifier.jar" id="org.adempiere.replication.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.replication.feature_13.0.0.qualifier.jar" id="org.adempiere.replication.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.adempiere.replication.server.feature_11.0.0.qualifier.jar" id="org.adempiere.replication.server.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.replication.server.feature_13.0.0.qualifier.jar" id="org.adempiere.replication.server.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.adempiere.report.jasper.feature_11.0.0.qualifier.jar" id="org.adempiere.report.jasper.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.report.jasper.feature_13.0.0.qualifier.jar" id="org.adempiere.report.jasper.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.adempiere.server.feature_11.0.0.qualifier.jar" id="org.adempiere.server.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.server.feature_13.0.0.qualifier.jar" id="org.adempiere.server.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.adempiere.ui.zk.feature_11.0.0.qualifier.jar" id="org.adempiere.ui.zk.feature" version="11.0.0.qualifier">
+   <feature url="features/org.adempiere.ui.zk.feature_13.0.0.qualifier.jar" id="org.adempiere.ui.zk.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.compiere.db.provider.feature_11.0.0.qualifier.jar" id="org.compiere.db.provider.feature" version="11.0.0.qualifier">
+   <feature url="features/org.compiere.db.provider.feature_13.0.0.qualifier.jar" id="org.compiere.db.provider.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.idempiere.eclipse.platform.feature_11.0.0.qualifier.jar" id="org.idempiere.eclipse.platform.feature" version="11.0.0.qualifier">
+   <feature url="features/org.idempiere.eclipse.platform.feature_13.0.0.qualifier.jar" id="org.idempiere.eclipse.platform.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.idempiere.equinox.p2.director.feature_11.0.0.qualifier.jar" id="org.idempiere.equinox.p2.director.feature" version="11.0.0.qualifier">
+   <feature url="features/org.idempiere.equinox.p2.director.feature_13.0.0.qualifier.jar" id="org.idempiere.equinox.p2.director.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.idempiere.felix.webconsole.feature_11.0.0.qualifier.jar" id="org.idempiere.felix.webconsole.feature" version="11.0.0.qualifier">
+   <feature url="features/org.idempiere.felix.webconsole.feature_13.0.0.qualifier.jar" id="org.idempiere.felix.webconsole.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.idempiere.hazelcast.service.feature_11.0.0.qualifier.jar" id="org.idempiere.hazelcast.service.feature" version="11.0.0.qualifier">
+   <feature url="features/org.idempiere.hazelcast.service.feature_13.0.0.qualifier.jar" id="org.idempiere.hazelcast.service.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.idempiere.zk.feature_11.0.0.qualifier.jar" id="org.idempiere.zk.feature" version="11.0.0.qualifier">
+   <feature url="features/org.idempiere.zk.feature_13.0.0.qualifier.jar" id="org.idempiere.zk.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.idempiere.webservices.feature_11.0.0.qualifier.jar" id="org.idempiere.webservices.feature" version="11.0.0.qualifier">
+   <feature url="features/org.idempiere.webservices.feature_13.0.0.qualifier.jar" id="org.idempiere.webservices.feature" version="13.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
    <feature id="org.idempiere.test.feature">

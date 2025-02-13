@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Job
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 @SuppressWarnings("all")
 public interface I_HR_Job 
@@ -151,10 +151,10 @@ public interface I_HR_Job
     /** Column name JobCant */
     public static final String COLUMNNAME_JobCant = "JobCant";
 
-	/** Set Job Cant	  */
+	/** Set Job Qty	  */
 	public void setJobCant (int JobCant);
 
-	/** Get Job Cant	  */
+	/** Get Job Qty	  */
 	public int getJobCant();
 
     /** Column name Name */

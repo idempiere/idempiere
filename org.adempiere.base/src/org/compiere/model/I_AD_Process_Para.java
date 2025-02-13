@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_Para
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Process_Para 
 {
@@ -504,7 +504,7 @@ public interface I_AD_Process_Para
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public void setVFormat (String VFormat);
 
@@ -512,7 +512,7 @@ _lLoOaAcCa09&quot;
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public String getVFormat();
 

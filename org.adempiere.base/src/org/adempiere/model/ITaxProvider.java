@@ -23,7 +23,7 @@ import org.compiere.model.MTaxProvider;
 import org.compiere.process.ProcessInfo;
 
 /**
- * Tax provider interface
+ * Tax calculation interface
  * @author Elaine
  *
  * @contributor Murilo H. Torquato <muriloht@devcoffee.com.br>

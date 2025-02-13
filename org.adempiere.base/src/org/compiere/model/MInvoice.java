@@ -25,7 +25,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -36,6 +38,7 @@ import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.model.ITaxProvider;
@@ -77,7 +80,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 9166700544471146864L;
+	private static final long serialVersionUID = 3638956335920347393L;
 
 	public static final String MATCH_TO_RECEIPT_SQL =
 			"""
@@ -1131,22 +1134,15 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 	private volatile static boolean recursiveCall = false;
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("");
-		//	No Partner Info - set Template
-		if (getC_BPartner_ID() == 0)
-			setBPartner(MBPartner.getTemplate(getCtx(), getAD_Client_ID()));
+		// Set default from business partner
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
 
-		//	Price List
+		//	Set default Price List
 		if (getM_PriceList_ID() == 0)
 		{
 			int ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
@@ -1166,7 +1162,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 
-		//	Currency
+		//	Set Currency from price list or environment context
 		if (getC_Currency_ID() == 0)
 		{
 			String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
@@ -1177,7 +1173,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
-		//	Sales Rep
+		//	Set Sales Rep from environment context
 		if (getSalesRep_ID() == 0)
 		{
 			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
@@ -1185,13 +1181,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				setSalesRep_ID (ii);
 		}
 
-		//	Document Type
+		//	Set default Document Type
 		if (getC_DocType_ID() == 0)
 			setC_DocType_ID (0);	//	make sure it's set to 0
 		if (getC_DocTypeTarget_ID() == 0)
 			setC_DocTypeTarget_ID(isSOTrx() ? MDocType.DOCBASETYPE_ARInvoice : MDocType.DOCBASETYPE_APInvoice);
 
-		//	Payment Term
+		//	Set default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
 			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
@@ -1206,7 +1202,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 		
-		// assign cash plan line from order
+		// Set cash plan line from order
 		if (getC_Order_ID() > 0 && getC_CashPlanLine_ID() <= 0) {
 			MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
 			if (order.getC_CashPlanLine_ID() > 0)
@@ -1217,10 +1213,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (!newRecord && (is_ValueChanged(COLUMNNAME_M_PriceList_ID) || is_ValueChanged(COLUMNNAME_DateInvoiced))) {
 			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM C_InvoiceLine WHERE C_Invoice_ID=? AND M_Product_ID>0", getC_Invoice_ID());
 			if (cnt > 0) {
+				// Disallow change of price list if there are existing product lines
 				if (is_ValueChanged(COLUMNNAME_M_PriceList_ID)) {
 					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangePlIn"));
 					return false;
 				}
+				// Validate price list is valid for updated DateInvoiced
 				if (is_ValueChanged(COLUMNNAME_DateInvoiced)) {
 					MPriceList pList =  MPriceList.get(getCtx(), getM_PriceList_ID(), null);
 					MPriceListVersion plOld = pList.getPriceListVersion((Timestamp)get_ValueOld(COLUMNNAME_DateInvoiced));
@@ -1233,6 +1231,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 
+		// Validate payment term and update IsPayScheduleValid
 		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
 			recursiveCall = true;
 			try {
@@ -1246,6 +1245,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 
+		// Validate IsOverrideCurrencyRate and CurrencyRate
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
@@ -1274,26 +1274,17 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
 		if (getC_Order_ID() != 0)
 		{
-			//Load invoice lines for afterDelete()
+			// Load invoice lines for afterDelete()
 			getLines();	
 		}
 		return true;
 	}	//	beforeDelete
 	
-	/**
-	 * After Delete
-	 * @param success success
-	 * @return true if deleted
-	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
 		// If delete invoice failed then do nothing
@@ -1301,7 +1292,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			return success;
 		
 		if (getC_Order_ID() != 0) {
-			// reset shipment line invoiced flag
+			// Reset shipment line IsInvoiced flag
 			MInvoiceLine[] lines = getLines(false);
 			for (int i = 0; i < lines.length; i++) {
 				if (lines[i].getM_InOutLine_ID() > 0) {
@@ -1347,18 +1338,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		return msgreturn.toString();
 	}	//	getDocumentInfo
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
 			return success;
 
+		// Propagate AD_Org_ID change to lines
 		if (is_ValueChanged("AD_Org_ID"))
 		{
 			StringBuilder sql = new StringBuilder("UPDATE C_InvoiceLine ol")
@@ -1629,6 +1615,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 			pi.setRecord_ID ( getC_Invoice_ID() );
 			pi.setIsBatch(true);
+			pi.setTransientObject(format);
 			
 			ServerProcessCtl.process(pi, null);
 			
@@ -1722,6 +1709,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			return DocAction.STATUS_Invalid;
 
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocTypeTarget_ID(), getAD_Org_ID());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 
 		//	Lines
 		MInvoiceLine[] lines = getLines(true);
@@ -1794,6 +1782,19 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		// Check if Order is Valid load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM C_InvoiceLine il "
+		    		+ " JOIN C_OrderLine ol ON (il.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE il.C_Invoice_ID=?", getC_Invoice_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
+		}
+		
 		//	Add up Amounts
 		m_justPrepared = true;
 		if (!DOCACTION_Complete.equals(getDocAction()))
@@ -1971,6 +1972,17 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (!isApproved())
 			approveIt();
 		if (log.isLoggable(Level.INFO)) log.info(toString());
+		
+		if (!isReversal())
+		{
+			try {
+				periodClosedCheckForBackDateTrx(null);
+			} catch (PeriodClosedException e) {
+				m_processMsg = e.getLocalizedMessage();
+				return DocAction.STATUS_Invalid;
+			}
+		}
+		
 		StringBuilder info = new StringBuilder();
 		
 		// POS supports multiple payments
@@ -2322,8 +2334,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				}
 			}
 		}
-
-		if (PAYMENTRULE_Cash.equals(getPaymentRule())) {
+		MOrder order = getC_Order_ID() > 0 ? new MOrder(getCtx(), getC_Order_ID(), get_TrxName()) : null;
+		MDocType orderDocType = order != null ? MDocType.get(getCtx(), order.getC_DocType_ID()) : null;
+		if (PAYMENTRULE_Cash.equals(getPaymentRule())
+				|| (orderDocType != null && MDocType.DOCSUBTYPESO_PrepayOrder.equals(orderDocType.getDocSubTypeSO()) && !orderDocType.isAutoGenerateInvoice() && allocateFromOrder()))
+		{
 			if (testAllocation(true)) {
 				saveEx();
 			}
@@ -2375,6 +2390,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			if (getDateAcct().before(getDateInvoiced())) {
 				setDateAcct(getDateInvoiced());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -2538,6 +2554,15 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				accrual = true;
 			}
 			
+			try
+			{
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
+			}
+			catch (BackDateTrxNotAllowedException e)
+			{
+				accrual = true;
+			}
+			
 			if (accrual)
 				return reverseAccrualIt();
 			else
@@ -2617,6 +2642,15 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateInvoiced();
 		
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
+		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
+		
+		try {
+			periodClosedCheckForBackDateTrx(reversalDate);
+		} catch (PeriodClosedException e) {
+			m_processMsg = e.getLocalizedMessage();
+			return null;
+		}
+		
 		//
 		reverseAllocations(accrual, getC_Invoice_ID());
 		//	Reverse/Delete Matching
@@ -3350,4 +3384,162 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 	}
+	
+	/**
+	 * Allocate Invoice for Completed Unallocated Pre-payments
+	 */
+	private boolean allocateFromOrder() {
+		// Get Set Of OrderIds from Lines
+		HashSet<Integer> orderIDSet = new HashSet<>();
+
+		if(getC_Order_ID() > 0)
+			orderIDSet.add(getC_Order_ID());
+
+		MInvoiceLine[] lines = getLines();
+		for(MInvoiceLine line : lines) {
+			if (line.getC_OrderLine_ID() > 0)
+			     orderIDSet.add(line.getC_OrderLine().getC_Order_ID());
+		   }
+
+		if(orderIDSet.isEmpty())
+			return false;
+
+		StringBuilder whereClause = new StringBuilder("docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' AND C_Invoice_ID IS NULL ");
+
+		// Parse Orders
+		whereClause.append(" AND C_Order_ID IN ( ");
+		Iterator<Integer> iterator = orderIDSet.iterator();
+		while(iterator.hasNext()) {
+			iterator.next();
+			whereClause.append("?");
+			if(iterator.hasNext())
+				whereClause.append(", ");
+		}
+
+		whereClause.append(" ) ");
+
+		List<MPayment> paymentsList = new Query(getCtx(), MPayment.Table_Name, whereClause.toString(), get_TrxName())
+		.setParameters(orderIDSet.toArray())
+		.setOrderBy(MPayment.COLUMNNAME_DateAcct)
+		.list();
+
+		for(MPayment payment : paymentsList) {
+			payment.setC_Invoice_ID(getC_Invoice_ID());
+			if(!payment.allocateIt())
+				throw new AdempiereException(Msg.getMsg(getCtx(), "PaymentNotAllocated"));
+
+			payment.saveEx();
+		}
+
+		return paymentsList.size() > 0;
+
+	}
+	
+	/**
+	 * Period Closed Check for Back-Date Transaction
+	 * @param reversalDate reversal date - null when it is not a reversal
+	 * @return false when failed the period closed check
+	 */
+	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
+	{
+		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+		MAcctSchema as = info.getMAcctSchema1();
+		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
+				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+			return true;
+		
+		if (as.getBackDateDay() == 0)
+			return true;
+		
+		Timestamp dateAcct = reversalDate != null ? reversalDate : getDateAcct();
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT COUNT(*) FROM M_CostDetail ");
+		sql.append("WHERE (M_Product_ID IN (SELECT M_Product_ID FROM C_InvoiceLine WHERE C_Invoice_ID=?) OR ");
+		sql.append("M_Product_ID IN (SELECT lca.M_Product_ID FROM C_LandedCostAllocation lca, C_InvoiceLine il ");
+		sql.append("WHERE lca.C_InvoiceLine_ID=il.C_InvoiceLine_ID AND il.C_Invoice_ID=?)) ");
+		sql.append("AND Processed='Y' ");
+		sql.append(reversalDate != null ? "AND DateAcct>=? " : "AND DateAcct>? ");
+		int no = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ID(), get_ID(), dateAcct);
+		if (no <= 0)
+			return true;
+		
+		MInvoiceLine[] iLines = getLines(false);
+		MInvoiceLine[] reversalLines = null;
+		if (getReversal_ID() > 0)
+		{
+			MInvoice reversal = new MInvoice(getCtx(), getReversal_ID(), get_TrxName());
+			reversalLines = reversal.getLines(false);		
+		}
+		
+		for (int i = 0; i < iLines.length; i++) {
+			MInvoiceLine iLine = iLines[i];
+			int C_InvoiceLine_ID = iLine.get_ID();
+			
+			int AD_Org_ID = iLine.getAD_Org_ID();
+			int M_AttributeSetInstance_ID = iLine.getM_AttributeSetInstance_ID();
+
+			if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+			{
+				AD_Org_ID = 0;
+				M_AttributeSetInstance_ID = 0;
+			}
+			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+				M_AttributeSetInstance_ID = 0;
+			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+				AD_Org_ID = 0;
+			
+			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
+			
+			int M_CostDetail_ID = 0;
+			
+			int ReversalLine_ID = 0;
+			if (getReversal_ID() > 0 && reversalLines != null)
+				ReversalLine_ID = reversalLines[i].get_ID();
+			if (ReversalLine_ID > 0 && iLine.get_ID() > ReversalLine_ID)
+				C_InvoiceLine_ID = ReversalLine_ID;
+			
+			MLandedCostAllocation[] lcas = MLandedCostAllocation.getOfInvoiceLine(getCtx(), C_InvoiceLine_ID, get_TrxName());
+			if (lcas.length > 0) {
+				for (MLandedCostAllocation lca : lcas)
+				{
+					if (lca.getBase().signum() == 0)
+						continue;
+					MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), M_AttributeSetInstance_ID, 
+							C_InvoiceLine_ID, lca.getM_CostElement_ID(), getDateAcct(), get_TrxName());
+					if (cd != null)
+						M_CostDetail_ID = cd.getM_CostDetail_ID();
+					else {
+						MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(), 
+								as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+								M_AttributeSetInstance_ID, dateAcct, get_TrxName());
+						if (history != null)
+							M_CostDetail_ID = history.getM_CostDetail_ID();
+					}
+					if (M_CostDetail_ID > 0) {
+						MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+								lca.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
+					}
+				}
+			} else {
+				MCostDetail cd = MCostDetail.getInvoice(as, iLine.getM_Product_ID(), M_AttributeSetInstance_ID, 
+						C_InvoiceLine_ID, 0, dateAcct, get_TrxName());
+				if (cd != null)
+					M_CostDetail_ID = cd.getM_CostDetail_ID();
+				else {
+					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, iLine.getM_Product_ID(), 
+							as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
+					if (history != null)
+						M_CostDetail_ID = history.getM_CostDetail_ID();
+				}
+				if (M_CostDetail_ID > 0) {
+					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+							iLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
+				}
+			}			
+		}
+		return true;
+	}
+	
 }	//	MInvoice

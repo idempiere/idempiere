@@ -396,12 +396,6 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 		return msgreturn.toString();
 	}   //  toString
 
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

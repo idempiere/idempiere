@@ -33,6 +33,7 @@ public class Urlbox extends Div
 	 */
 	private static final long serialVersionUID = -5493978668402134644L;
 	
+	@Deprecated
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	protected Textbox txt;
 	protected A btn;
@@ -90,6 +91,7 @@ public class Urlbox extends Div
 	}
 
 	/**
+	 * Set URL
 	 * @param value URL text
 	 */
 	public void setText(String value) {
@@ -109,6 +111,7 @@ public class Urlbox extends Div
 	}
 
 	/**
+	 * Get URL
 	 * @return URL text
 	 */
 	public String getText() {
@@ -151,12 +154,15 @@ public class Urlbox extends Div
 	
 	/**
 	 * @param l PropertyChangeListener
+	 * @deprecated not implemented
 	 */
+	@Deprecated
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}
 
 	/**
+	 * Set tooltip text of text box
 	 * @param tooltiptext
 	 */
 	public void setToolTipText(String tooltiptext) {
@@ -186,6 +192,9 @@ public class Urlbox extends Div
 		}			
 	}
 
+	/**
+	 * Set focus to text box
+	 */
 	@Override
 	public void focus() {
 		txt.focus();

@@ -16,14 +16,27 @@ package org.compiere.print.util;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Report data matrix (Nested list)
+ * @param <T>
+ */
 public interface SerializableMatrix<T extends Serializable> {
 
+	/**
+	 * Add row
+	 * @param data
+	 */
 	public void addRow(List<T> data);
 
+	/**
+	 * Set current row pointer index
+	 * @param row
+	 * @return true if set successfully
+	 */
 	public boolean setRowIndex(int row);
 
 	/**
-	 * 	Set Row Index to next
+	 * 	Move current row pointer index to next position (i.e +1)
 	 * 	@return true if success
 	 */
 	public boolean setRowNext(); //	setRowNext
@@ -35,12 +48,20 @@ public interface SerializableMatrix<T extends Serializable> {
 	public int getRowCount(); //	getRowCount
 
 	/**
-	 * 	Get Current Row Index
-	 * 	@return row index
+	 * 	Get Current Row Pointer Index
+	 * 	@return current row pointer index
 	 */
 	public int getRowIndex(); //	getRowIndex
 
+	/**
+	 * Get data of current row
+	 * @return data of currrent row
+	 */
 	public List<T> getRowData();
 
+	/**
+	 * Set data of current row
+	 * @param data
+	 */
 	public void setRowData(List<T> data);
 }

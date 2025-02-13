@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -55,7 +56,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6847265056758898333L;
+	private static final long serialVersionUID = 5086571475777568115L;
 
 	/**
 	 * 	Get MProduct from Cache (immutable)
@@ -372,7 +373,8 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	private MProductDownload[] m_downloads = null;
 	
 	/**
-	 * 	Set Expense Type
+	 * 	Set Expense Type.<br/>
+	 *  Copy over value, name, description, UOM, product category and tax category.
 	 *	@param parent expense type
 	 *	@return true if changed
 	 */
@@ -431,7 +433,8 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	}	//	setExpenseType
 	
 	/**
-	 * 	Set Resource
+	 * 	Set Resource.<br/>
+	 *  Copy over IsActive, Value, Name and Description.
 	 *	@param parent resource
 	 *	@return true if changed
 	 */
@@ -665,13 +668,14 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Check Storage
+		// Validate changes to make a product inactive or non-stocked
 		if (!newRecord && 	//	
 			((is_ValueChanged("IsActive") && !isActive())		//	now not active 
 			|| (is_ValueChanged("IsStocked") && !isStocked())	//	now not stocked
-			|| (is_ValueChanged("ProductType") 					//	from Item
+			|| (is_ValueChanged("ProductType") 					//	from Item to non-Item
 				&& PRODUCTTYPE_Item.equals(get_ValueOld("ProductType")))))
 		{
+			// Disallow change if there are on hand, ordered or reserved quantity
 			String errMsg = verifyStorage();
 			if (! Util.isEmpty(errMsg))
 			{
@@ -681,7 +685,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 						
 			removeStorageRecords();
 			
-			// check bom
+			// Disallow change if product is part of an active BOM
 			if (is_ValueChanged("IsActive") && !isActive())
 			{
 				errMsg = verifyBOM();
@@ -693,28 +697,28 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			}
 		}	//	storage
 	
-		// it checks if UOM has been changed , if so disallow the change if the condition is true.
+		// Validate UOM change
 		if ((!newRecord) && is_ValueChanged("C_UOM_ID") && hasInventoryOrCost ()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "SaveUomError"));
 			return false; 
 		}
 		
-		//	Reset Stocked if not Item
-		//AZ Goodwill: Bug Fix isStocked always return false
+		// Reset IsStocked to false if not Item product type
 		if (!PRODUCTTYPE_Item.equals(getProductType()))
 			setIsStocked(false);
 		
-		//	UOM reset
+		// reset UOM precision 
 		if (m_precision != null && is_ValueChanged("C_UOM_ID"))
 			m_precision = null;
 		
-		// AttributeSetInstance reset
+		// Validate whether need to reset M_AttributeSetInstance_ID to zero after change of M_AttributeSet_ID
 		if (getM_AttributeSetInstance_ID() > 0 && is_ValueChanged(COLUMNNAME_M_AttributeSet_ID))
 		{
 			MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
 			if (asi.getM_AttributeSet_ID() != getM_AttributeSet_ID())
 				setM_AttributeSetInstance_ID(0);
 		}
+		// Delete old M_AttributeSetInstance_ID record if not reference by other product
 		if (!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID))
 		{
 			// IDEMPIERE-2752 check if the ASI is referenced in other products before trying to delete it
@@ -864,11 +868,11 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		if (!success)
 			return success;
 		
-		//	Value/Name change in Account
+		//	Value/Name change, update Combination and Description of C_ValidCombination records
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 			MAccount.updateValueDescription(getCtx(), "M_Product_ID=" + getM_Product_ID(), get_TrxName());
 		
-		//	Name/Description Change in Asset	MAsset.setValueNameDescription
+		//	Name/Description Change, update Asset
 		if (!newRecord && (is_ValueChanged("Name") || is_ValueChanged("Description")))
 		{
 			String sql = "UPDATE A_Asset a "
@@ -882,7 +886,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			if (log.isLoggable(Level.FINE)) log.fine("Asset Description updated #" + no);
 		}
 		
-		//	New - Acct, Tree, Old Costing
+		//	New - Create accounting and tree record
 		if (newRecord)
 		{
 			insert_Accounting("M_Product_Acct", "M_Product_Category_Acct",
@@ -892,14 +896,15 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 				 : getM_Product_Category_ID()));
 			insert_Tree(X_AD_Tree.TREETYPE_Product);
 		}
+		// Update driven by value tree
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 			update_Tree(MTree_Base.TREETYPE_Product);
 		
-		//	New Costing
+		//	Create New Costing record
 		if (newRecord || is_ValueChanged("M_Product_Category_ID"))
 			MCost.create(this);
 
-
+		// Make BOM in-active after product have been changed to in-active 
 		if (!newRecord && success && is_ValueChanged(COLUMNNAME_IsActive))
 		{
 			if (!isActive() && isBOM())
@@ -924,11 +929,12 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	@Override
 	protected boolean beforeDelete ()
 	{
+		// Can't delete if this is a resource product (with S_Resource_ID reference)
 		if (PRODUCTTYPE_Resource.equals(getProductType()) && getS_Resource_ID() > 0)
 		{
 			throw new AdempiereException("@S_Resource_ID@<>0");
 		}
-		//	Check Storage
+		// Can't delete product has on hand, ordered or reserved quanttiy
 		if (isStocked() || PRODUCTTYPE_Item.equals(getProductType()))
 		{
 			String errMsg = verifyStorage();
@@ -939,7 +945,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			}
 			
 		}
-		//	delete costing		
+		// Delete costing		
 		MCost.delete(this);
 		
 		//
@@ -949,6 +955,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(X_AD_Tree.TREETYPE_Product);
 		return success;
@@ -1101,7 +1108,6 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 */
 	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
-		
 		String costingLevel = getCostingLevel(as);
 		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
 		{
@@ -1122,6 +1128,38 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		}
 		MCost cost = MCost.get(this, M_ASI_ID, as, AD_Org_ID, ce.getM_CostElement_ID(), get_TrxName());
 		return cost.is_new() ? null : cost;
+	}
+	
+	/**
+	 * @param as
+	 * @param AD_Org_ID
+	 * @param M_ASI_ID
+	 * @param costingMethod
+	 * @param dateAcct
+	 * @return ICostInfo or null
+	 */
+	public ICostInfo getCostInfo(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
+	{		
+		String costingLevel = getCostingLevel(as);
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+		{
+			AD_Org_ID = 0;
+			M_ASI_ID = 0;
+		}
+		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+			M_ASI_ID = 0;
+		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+		{
+			AD_Org_ID = 0;
+			if (M_ASI_ID == 0)
+				return null;
+		}
+		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
+		if (ce == null) {
+			return null;
+		}
+		return MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, dateAcct, null, get_TrxName());
 	}
 	
 	@Override

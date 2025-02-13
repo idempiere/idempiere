@@ -24,6 +24,7 @@ import org.adempiere.model.IInfoColumn;
 import org.compiere.db.Database;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -167,11 +168,8 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 		if (getDisplayLogic() == null || getDisplayLogic().trim().length() == 0)
 			return true;
 		
-		Evaluatee evaluatee = new Evaluatee() {
-			public String get_ValueAsString(String variableName) {
-				return Env.getContext (ctx, windowNo, variableName, true);
-			}
-		};
+		DefaultEvaluatee de = new DefaultEvaluatee(null, windowNo, -1, true);
+		Evaluatee evaluatee = (variableName) -> {return de.get_ValueAsString(ctx, variableName);};
 		
 		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
 		if (log.isLoggable(Level.FINEST)) log.finest(getName() 
@@ -181,26 +179,27 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate column name is valid DB identifier
 		String error = Database.isValidIdentifier(getColumnName());
 		if (!Util.isEmpty(error)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
 			return false;
 		}
-		// Sync Terminology
+		// Sync Terminology with AD_Element
 		if ((newRecord || is_ValueChanged ("AD_Element_ID")) 
 			&& getAD_Element_ID() != 0 && isCentrallyMaintained())
 		{
 			M_Element element = new M_Element (getCtx(), getAD_Element_ID (), get_TrxName());
 			setName (element.getName());
 		}
-
+		// Set SeqNoSelection
 		if (isQueryCriteria() && getSeqNoSelection() <= 0) {
 			int next = DB.getSQLValueEx(get_TrxName(),
 					"SELECT ROUND((COALESCE(MAX(SeqNoSelection),0)+10)/10,0)*10 FROM AD_InfoColumn WHERE AD_InfoWindow_ID=? AND IsQueryCriteria='Y' AND IsActive='Y'",
 					getAD_InfoWindow_ID());
 			setSeqNoSelection(next);
 		}
-
+		// Reset IsQueryAfterChange and IsMandatory to false if IsQueryCriteria is false  
 		if (!isQueryCriteria()) {
 			if (isQueryAfterChange())
 				setIsQueryAfterChange(false);
@@ -211,18 +210,15 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 		return true;
 	}
 	
-	/**
-	 * when change field relate to sql, call valid from infoWindow
-	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if (!success)
 			return success;
 	
-		// evaluate need valid
+		// Evaluate the need to re-validate info window
 		boolean isNeedValid = getParent().isValidateEachColumn() && (newRecord || is_ValueChanged (MInfoColumn.COLUMNNAME_SelectClause));
 		
-		// call valid of parent
+		// Validate info window
 		if (isNeedValid){
 			getParent().validate();
 			getParent().saveEx(get_TrxName());

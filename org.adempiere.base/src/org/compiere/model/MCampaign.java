@@ -64,40 +64,28 @@ public class MCampaign extends X_C_Campaign
 		super(ctx, rs, trxName);
 	}	//	MCampaign
 	
-	/**
-	 *  <pre>
-	 *  After Save.
-	 *  - Create or update tree.
-	 *  - Update value description of combination
-	 *  </pre>
-	 *	@param newRecord insert
-	 *	@param success save success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Create Tree Record
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_Campaign);
+		// Update Driven by Value Tree
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 			update_Tree(MTree_Base.TREETYPE_Campaign);
-		//	Value/Name change
+		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 			MAccount.updateValueDescription(getCtx(), "C_Campaign_ID=" + getC_Campaign_ID(), get_TrxName());
 
 		return true;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(MTree_Base.TREETYPE_Campaign);
 		return success;

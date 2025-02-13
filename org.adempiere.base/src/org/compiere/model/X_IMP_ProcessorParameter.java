@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorParameter
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="IMP_ProcessorParameter")
 public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParameter, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorParameter (Properties ctx, int IMP_ProcessorParameter_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
       super (ctx, IMP_ProcessorParameter_ID, trxName);
       /** if (IMP_ProcessorParameter_ID == 0)
         {
-			setIMP_Processor_ID (0);
 			setIMP_ProcessorParameter_ID (0);
+			setIMP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -51,8 +51,8 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
       super (ctx, IMP_ProcessorParameter_ID, trxName, virtualColumns);
       /** if (IMP_ProcessorParameter_ID == 0)
         {
-			setIMP_Processor_ID (0);
 			setIMP_ProcessorParameter_ID (0);
+			setIMP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -64,8 +64,8 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
       super (ctx, IMP_ProcessorParameter_UU, trxName);
       /** if (IMP_ProcessorParameter_UU == null)
         {
-			setIMP_Processor_ID (0);
 			setIMP_ProcessorParameter_ID (0);
+			setIMP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -77,8 +77,8 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
       super (ctx, IMP_ProcessorParameter_UU, trxName, virtualColumns);
       /** if (IMP_ProcessorParameter_UU == null)
         {
-			setIMP_Processor_ID (0);
 			setIMP_ProcessorParameter_ID (0);
+			setIMP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -144,33 +144,6 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException
-	{
-		return (org.compiere.model.I_IMP_Processor)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor.Table_ID)
-			.getPO(getIMP_Processor_ID(), get_TrxName());
-	}
-
-	/** Set Import Processor.
-		@param IMP_Processor_ID Import Processor
-	*/
-	public void setIMP_Processor_ID (int IMP_Processor_ID)
-	{
-		if (IMP_Processor_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, Integer.valueOf(IMP_Processor_ID));
-	}
-
-	/** Get Import Processor.
-		@return Import Processor	  */
-	public int getIMP_Processor_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_Processor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Import Processor Parameter.
 		@param IMP_ProcessorParameter_ID Import Processor Parameter
 	*/
@@ -205,6 +178,33 @@ public class X_IMP_ProcessorParameter extends PO implements I_IMP_ProcessorParam
 	public String getIMP_ProcessorParameter_UU()
 	{
 		return (String)get_Value(COLUMNNAME_IMP_ProcessorParameter_UU);
+	}
+
+	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException
+	{
+		return (org.compiere.model.I_IMP_Processor)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor.Table_ID)
+			.getPO(getIMP_Processor_ID(), get_TrxName());
+	}
+
+	/** Set Import Processor.
+		@param IMP_Processor_ID Import Processor
+	*/
+	public void setIMP_Processor_ID (int IMP_Processor_ID)
+	{
+		if (IMP_Processor_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, Integer.valueOf(IMP_Processor_ID));
+	}
+
+	/** Get Import Processor.
+		@return Import Processor	  */
+	public int getIMP_Processor_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_Processor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.

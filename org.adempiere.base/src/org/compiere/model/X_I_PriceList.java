@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_PriceList
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="I_PriceList")
 public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_I_PriceList (Properties ctx, int I_PriceList_ID, String trxName)
@@ -269,6 +269,22 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return false;
 	}
 
+	/** Set ISO Currency Code.
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
+	public void setISO_Code (String ISO_Code)
+	{
+		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
+	}
+
+	/** Get ISO Currency Code.
+		@return Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code()
+	{
+		return (String)get_Value(COLUMNNAME_ISO_Code);
+	}
+
 	/** Set Import Error Message.
 		@param I_ErrorMsg Messages generated from import process
 	*/
@@ -342,22 +358,6 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 	public String getI_PriceList_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_PriceList_UU);
-	}
-
-	/** Set ISO Currency Code.
-		@param ISO_Code Three letter ISO 4217 Code of the Currency
-	*/
-	public void setISO_Code (String ISO_Code)
-	{
-		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
-	}
-
-	/** Get ISO Currency Code.
-		@return Three letter ISO 4217 Code of the Currency
-	  */
-	public String getISO_Code()
-	{
-		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Sales Price list.

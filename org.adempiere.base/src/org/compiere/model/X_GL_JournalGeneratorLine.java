@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalGeneratorLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGeneratorLine")
 public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGeneratorLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorLine (Properties ctx, int GL_JournalGeneratorLine_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
       super (ctx, GL_JournalGeneratorLine_ID, trxName);
       /** if (GL_JournalGeneratorLine_ID == 0)
         {
-			setGL_JournalGenerator_ID (0);
 			setGL_JournalGeneratorLine_ID (0);
+			setGL_JournalGenerator_ID (0);
 			setIsCopyAllDimensions (false);
 // N
 			setIsSameProduct (false);
@@ -58,8 +58,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
       super (ctx, GL_JournalGeneratorLine_ID, trxName, virtualColumns);
       /** if (GL_JournalGeneratorLine_ID == 0)
         {
-			setGL_JournalGenerator_ID (0);
 			setGL_JournalGeneratorLine_ID (0);
+			setGL_JournalGenerator_ID (0);
 			setIsCopyAllDimensions (false);
 // N
 			setIsSameProduct (false);
@@ -75,8 +75,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
       super (ctx, GL_JournalGeneratorLine_UU, trxName);
       /** if (GL_JournalGeneratorLine_UU == null)
         {
-			setGL_JournalGenerator_ID (0);
 			setGL_JournalGeneratorLine_ID (0);
+			setGL_JournalGenerator_ID (0);
 			setIsCopyAllDimensions (false);
 // N
 			setIsSameProduct (false);
@@ -92,8 +92,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
       super (ctx, GL_JournalGeneratorLine_UU, trxName, virtualColumns);
       /** if (GL_JournalGeneratorLine_UU == null)
         {
-			setGL_JournalGenerator_ID (0);
 			setGL_JournalGeneratorLine_ID (0);
+			setGL_JournalGenerator_ID (0);
 			setIsCopyAllDimensions (false);
 // N
 			setIsSameProduct (false);
@@ -287,41 +287,6 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public org.compiere.model.I_GL_JournalGenerator getGL_JournalGenerator() throws RuntimeException
-	{
-		return (org.compiere.model.I_GL_JournalGenerator)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGenerator.Table_ID)
-			.getPO(getGL_JournalGenerator_ID(), get_TrxName());
-	}
-
-	/** Set GL Journal Generator.
-		@param GL_JournalGenerator_ID GL Journal Generator
-	*/
-	public void setGL_JournalGenerator_ID (int GL_JournalGenerator_ID)
-	{
-		if (GL_JournalGenerator_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, Integer.valueOf(GL_JournalGenerator_ID));
-	}
-
-	/** Get GL Journal Generator.
-		@return GL Journal Generator	  */
-	public int getGL_JournalGenerator_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalGenerator_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getGL_JournalGenerator_ID()));
-    }
-
 	/** Set Generator Line.
 		@param GL_JournalGeneratorLine_ID Generator Line
 	*/
@@ -357,6 +322,41 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	{
 		return (String)get_Value(COLUMNNAME_GL_JournalGeneratorLine_UU);
 	}
+
+	public org.compiere.model.I_GL_JournalGenerator getGL_JournalGenerator() throws RuntimeException
+	{
+		return (org.compiere.model.I_GL_JournalGenerator)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGenerator.Table_ID)
+			.getPO(getGL_JournalGenerator_ID(), get_TrxName());
+	}
+
+	/** Set GL Journal Generator.
+		@param GL_JournalGenerator_ID GL Journal Generator
+	*/
+	public void setGL_JournalGenerator_ID (int GL_JournalGenerator_ID)
+	{
+		if (GL_JournalGenerator_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, Integer.valueOf(GL_JournalGenerator_ID));
+	}
+
+	/** Get GL Journal Generator.
+		@return GL Journal Generator	  */
+	public int getGL_JournalGenerator_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalGenerator_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getGL_JournalGenerator_ID()));
+    }
 
 	/** Set Comment/Help.
 		@param Help Comment or Hint

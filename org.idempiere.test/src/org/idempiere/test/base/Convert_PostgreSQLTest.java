@@ -201,6 +201,32 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
         sqe = "ALTER TABLE C_InvoiceTax ADD COLUMN Created TIMESTAMP DEFAULT statement_timestamp() NOT NULL";
         r = DB.getDatabase().convertStatement(sql);
         assertEquals(sqe, r.trim());
+
+        sql = "ALTER TABLE M_FreightCategory MODIFY Description VARCHAR2(255 CHAR) DEFAULT 'Test Default with  Spaces'";
+        sqe = "INSERT INTO t_alter_column values('m_freightcategory','Description','VARCHAR(255)',null,'Test Default with  Spaces')";
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r.trim());
+
+        sql = "ALTER TABLE M_FreightCategory ADD Description VARCHAR2(255 CHAR) DEFAULT 'Test Default with  Spaces'";
+        sqe = "ALTER TABLE M_FreightCategory ADD COLUMN Description VARCHAR(255) DEFAULT 'Test Default with  Spaces'";
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r.trim());
+
+        sql = "ALTER TABLE M_FreightCategory ADD JsonData CLOB DEFAULT NULL  CONSTRAINT M_FreightCategory_JsonData_isjson CHECK (JsonData IS JSON)";
+        sqe = "ALTER TABLE M_FreightCategory ADD COLUMN JsonData JSONB DEFAULT NULL";
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r.trim());
+
+        sql = "ALTER TABLE M_FreightCategory ADD JsonData CLOB DEFAULT '{   \"color\": \"red\"  }' CONSTRAINT M_FreightCategory_JsonData_isjson CHECK (JsonData IS JSON) NOT NULL";
+        sqe = "ALTER TABLE M_FreightCategory ADD COLUMN JsonData JSONB DEFAULT '{   \"color\": \"red\"  }' NOT NULL";
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r.trim());
+
+        sql = "ALTER TABLE M_FreightCategory MODIFY JsonData CLOB DEFAULT '{   \"color\": \"red\"  }' CONSTRAINT M_FreightCategory_JsonData_isjson CHECK (JsonData IS JSON)";
+        sqe = "INSERT INTO t_alter_column values('m_freightcategory','JsonData','JSONB',null,'{   \"color\": \"red\"  }')";
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r.trim());
+
 	  } finally {
 		Ini.setProperty(P_POSTGRE_SQL_NATIVE, originalNative);
 	  }

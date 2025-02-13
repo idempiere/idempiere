@@ -24,7 +24,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-
 /**
  *	Handler that publish log record to server log file
  *
@@ -209,7 +208,7 @@ public class CLogFile extends Handler
 	}	//	getFileNameDate
 
 	/**
-	 * 	Rotate Log when day changes
+	 * 	Rotate Log file when day changes
 	 *	@param time time
 	 */
 	private void rotateLog (long time)
@@ -221,8 +220,8 @@ public class CLogFile extends Handler
 	}	//	rotateLog
 
 	/**
-	 * 	Rotate Log
-	 * 	Called after Initialization
+	 * 	Rotate Log file.<br/>
+	 * 	Called after Initialization.
 	 */
 	public void rotateLog ()
 	{
@@ -398,6 +397,7 @@ public class CLogFile extends Handler
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("CLogFile[");

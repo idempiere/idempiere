@@ -61,7 +61,7 @@ public class PP_Product_BOM_Check extends SvrProcess
 	} // prepare
 
 	/**
-	 * Process
+	 * Validate BOM
 	 *
 	 * @return message
 	 * @throws Exception

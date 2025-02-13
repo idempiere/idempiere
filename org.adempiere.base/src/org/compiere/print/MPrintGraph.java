@@ -26,20 +26,22 @@ import org.compiere.model.X_AD_PrintGraph;
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintGraph.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
+ *  @deprecated not fully implemented
  */
+@Deprecated
 public class MPrintGraph extends X_AD_PrintGraph
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4827755559898685764L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_PrintGraph_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PrintGraph_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPrintGraph(Properties ctx, String AD_PrintGraph_UU, String trxName) {
         super(ctx, AD_PrintGraph_UU, trxName);
     }

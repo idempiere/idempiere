@@ -383,6 +383,8 @@ public class MGoal extends X_PA_Goal
 	public boolean updateGoal(boolean force)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Force=" + force);
+		if (Env.isReadOnlySession())
+			return false;
 		MMeasure measure = MMeasure.get(getPA_Measure_ID());
 		
 		boolean isUpdateByInterfal = false;
@@ -542,15 +544,10 @@ public class MGoal extends X_PA_Goal
 		return sb.toString ();
 	}	//	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Measure required if nor Summary
+		//	Measure required if not Summary
 		if (!isSummary() && getPA_Measure_ID() == 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "PA_Measure_ID"));
@@ -559,7 +556,7 @@ public class MGoal extends X_PA_Goal
 		if (isSummary() && getPA_Measure_ID() != 0)
 			setPA_Measure_ID(0);
 		
-		//	User/Role Check
+		//	Validate user and role
 		if ((newRecord || is_ValueChanged("AD_User_ID") || is_ValueChanged("AD_Role_ID"))
 			&& getAD_User_ID() != 0)
 		{
@@ -594,12 +591,6 @@ public class MGoal extends X_PA_Goal
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return true
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{

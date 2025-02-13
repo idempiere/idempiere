@@ -257,10 +257,9 @@ public final class DataStatusEvent extends EventObject implements Serializable
 			retValue.append(m_currentRow+1);
 		//  of
 		retValue.append("/");
-		if (m_allLoaded)
-			retValue.append(m_totalRows);
-		else
-			retValue.append(m_loadedRows).append("->").append(m_totalRows);
+		if (! m_allLoaded)
+			retValue.append(m_loadedRows).append("->");
+		retValue.append(m_totalRows);
 		//
 		return retValue.toString();
 	}	//	getMessage
@@ -358,6 +357,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 			   e.m_changedColumn == m_changedColumn &&
 			   Util.equals(e.m_columnName, m_columnName) &&
 			   e.m_currentRow == m_currentRow &&
+			   e.m_loadedRows == m_loadedRows &&
 			   e.isInitEdit == isInitEdit;
 	}
 

@@ -209,15 +209,10 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 		this.engine = copy.engine;
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		// Validate format for scripts
+		// Validate format for Value
 		// must be engine:name
 		// where engine can be groovy, jython or beanshell
 		if (getRuleType().equals(RULETYPE_JSR223ScriptingAPIs)) {
@@ -257,6 +252,7 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 	}
 
 	/**
+	 * Get engine name from Value (format is engineName:scriptSearchKey)
 	 * @return script engine name or null
 	 */
 	public String getEngineName() {

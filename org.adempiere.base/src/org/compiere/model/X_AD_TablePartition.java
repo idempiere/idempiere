@@ -30,7 +30,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231227L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_TablePartition (Properties ctx, int AD_TablePartition_ID, String trxName)
@@ -148,34 +148,6 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
-			.getPO(getAD_Table_ID(), get_TrxName());
-	}
-
-	/** Set Table.
-		@param AD_Table_ID Database Table information
-	*/
-	public void setAD_Table_ID (int AD_Table_ID)
-	{
-		if (AD_Table_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
-	}
-
-	/** Get Table.
-		@return Database Table information
-	  */
-	public int getAD_Table_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Table Partition.
 		@param AD_TablePartition_ID Database Table Partition information
 	*/
@@ -213,12 +185,40 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_TablePartition_UU);
 	}
 
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
+
+	/** Set Table.
+		@param AD_Table_ID Database Table information
+	*/
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Expression.
 		@param ExpressionPartition SQL clause for partition
 	*/
 	public void setExpressionPartition (String ExpressionPartition)
 	{
-		set_Value (COLUMNNAME_ExpressionPartition, ExpressionPartition);
+		set_ValueNoCheck (COLUMNNAME_ExpressionPartition, ExpressionPartition);
 	}
 
 	/** Get Expression.
@@ -257,7 +257,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	*/
 	public void setName (String Name)
 	{
-		set_Value (COLUMNNAME_Name, Name);
+		set_ValueNoCheck (COLUMNNAME_Name, Name);
 	}
 
 	/** Get Name.

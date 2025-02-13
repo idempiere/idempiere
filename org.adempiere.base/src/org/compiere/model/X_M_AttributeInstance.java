@@ -26,7 +26,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_AttributeInstance
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeInstance")
 public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
       super (ctx, M_AttributeInstance_ID, trxName);
       /** if (M_AttributeInstance_ID == 0)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSetInstance_ID (0);
+			setM_Attribute_ID (0);
         } */
     }
 
@@ -53,8 +53,8 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
       super (ctx, M_AttributeInstance_ID, trxName, virtualColumns);
       /** if (M_AttributeInstance_ID == 0)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSetInstance_ID (0);
+			setM_Attribute_ID (0);
         } */
     }
 
@@ -64,8 +64,8 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
       super (ctx, M_AttributeInstance_UU, trxName);
       /** if (M_AttributeInstance_UU == null)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSetInstance_ID (0);
+			setM_Attribute_ID (0);
         } */
     }
 
@@ -75,8 +75,8 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
       super (ctx, M_AttributeInstance_UU, trxName, virtualColumns);
       /** if (M_AttributeInstance_UU == null)
         {
-			setM_Attribute_ID (0);
 			setM_AttributeSetInstance_ID (0);
+			setM_Attribute_ID (0);
         } */
     }
 
@@ -107,34 +107,6 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
         .append(get_UUID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
-			.getPO(getM_Attribute_ID(), get_TrxName());
-	}
-
-	/** Set Attribute.
-		@param M_Attribute_ID Product Attribute
-	*/
-	public void setM_Attribute_ID (int M_Attribute_ID)
-	{
-		if (M_Attribute_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
-	}
-
-	/** Get Attribute.
-		@return Product Attribute
-	  */
-	public int getM_Attribute_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set M_AttributeInstance_UU.
 		@param M_AttributeInstance_UU M_AttributeInstance_UU
@@ -215,6 +187,34 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
         return new ValueNamePair(get_UUID(), String.valueOf(getM_AttributeValue_ID()));
     }
 
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
+
+	/** Set Attribute.
+		@param M_Attribute_ID Product Attribute
+	*/
+	public void setM_Attribute_ID (int M_Attribute_ID)
+	{
+		if (M_Attribute_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
+	}
+
+	/** Get Attribute.
+		@return Product Attribute
+	  */
+	public int getM_Attribute_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Search Key.
 		@param Value Search key for the record in the format required - must be unique
 	*/
@@ -244,6 +244,22 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	public Timestamp getValueDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValueDate);
+	}
+
+	/** Set Value Multiple Selection.
+		@param ValueMultipleSelection Comma separated values.
+	*/
+	public void setValueMultipleSelection (String ValueMultipleSelection)
+	{
+		set_Value (COLUMNNAME_ValueMultipleSelection, ValueMultipleSelection);
+	}
+
+	/** Get Value Multiple Selection.
+		@return Comma separated values.
+	  */
+	public String getValueMultipleSelection()
+	{
+		return (String)get_Value(COLUMNNAME_ValueMultipleSelection);
 	}
 
 	/** Set Value.

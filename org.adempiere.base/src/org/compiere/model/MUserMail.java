@@ -32,16 +32,16 @@ import org.compiere.util.Env;
 public class MUserMail extends X_AD_UserMail
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6933973466878945692L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserMail_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserMail_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserMail(Properties ctx, String AD_UserMail_UU, String trxName) {
         super(ctx, AD_UserMail_UU, trxName);
     }
@@ -83,7 +83,7 @@ public class MUserMail extends X_AD_UserMail
 	}	//	MUserMail
 	
 	/**
-	 * 	New User Mail (no trx)
+	 * 	New User Mail record (not using trx from po)
 	 *	@param po persistent object
 	 *	@param AD_User_ID recipient user
 	 *	@param mail email
@@ -96,6 +96,11 @@ public class MUserMail extends X_AD_UserMail
 		setMailValues(mail);
 	}	//	MUserMail
 	
+	/**
+	 * New user mail record
+	 * @param ctx
+	 * @param mail
+	 */
 	public MUserMail (Properties ctx, EMail mail)
 	{
 		this (ctx, 0, null);
@@ -104,8 +109,8 @@ public class MUserMail extends X_AD_UserMail
 	}	//	MUserMail
 	
 	/**
-	 * Sets all columns related to the EMail
-	 * Subject - Mail Text - Sender - Recipient - Message ID - IsDelivered
+	 * Sets all columns related to the EMail.<br/>
+	 * Subject - Mail Text - Sender - Recipient - Message ID - IsDelivered.
 	 * @param mail
 	 */
 	private void setMailValues(EMail mail) {
@@ -134,7 +139,7 @@ public class MUserMail extends X_AD_UserMail
 
 	/**
 	 * 	Is it not Delivered
-	 *	@return true if null or no
+	 *	@return true if deliver status is null or no
 	 */
 	public boolean isDeliveredNo()
 	{
@@ -145,7 +150,7 @@ public class MUserMail extends X_AD_UserMail
 
 	/**
 	 * 	Is Delivered unknown
-	 *	@return true if null
+	 *	@return true if deliver status is null
 	 */
 	public boolean isDeliveredUnknown()
 	{
@@ -153,7 +158,10 @@ public class MUserMail extends X_AD_UserMail
 		return s == null;
 	}	//	isDeliveredUnknown
 
-	/** Fill sender and recipients fields */
+	/** 
+	 * Fill sender and recipients fields
+	 * @param mail 
+	 */
 	public void setSenderAndRecipient(EMail mail)
 	{
 		setEMailFrom(mail.getFrom().toString());
@@ -162,6 +170,11 @@ public class MUserMail extends X_AD_UserMail
 		setRecipientBcc(getRecipientWithCommaSeparator(mail.getBccs()));
 	}
 
+	/**
+	 * Get comma separated list of recipients
+	 * @param recipients
+	 * @return comma separated list of recipients
+	 */
 	static public String getRecipientWithCommaSeparator(InternetAddress[] recipients)
 	{
 		StringBuilder retValue = new StringBuilder("");

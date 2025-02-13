@@ -26,36 +26,33 @@ import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
-
 /**
- *	User overrides for tab model
+ *	User, role, organization or tenant overrides of tab model
  *  @author Dirk Niemeyer, action 42 GmbH
  *  @version $Id$
- *  
  */
 public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 20120403111900L;
 
-	/**	Cache of selected MUserDefTab entries 					**/
+	/**	Cache of selected MUserDefTab entries 					*/
 	private static ImmutablePOCache<String,MUserDefTab> s_cache = new ImmutablePOCache<String,MUserDefTab>(Table_Name, 10);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Tab_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Tab_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefTab(Properties ctx, String AD_UserDef_Tab_UU, String trxName) {
         super(ctx, AD_UserDef_Tab_UU, trxName);
     }
 
 	/**
 	 * 	Standard constructor.
-	 * 	You must implement this constructor for Adempiere Persistency
 	 *	@param ctx context
 	 *	@param ID the primary key ID
 	 *	@param trxName transaction
@@ -66,11 +63,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	}	//	MUserDefTab
 
 	/**
-	 * 	Optional Load Constructor.
-	 * 	You would use this constructor to load several business objects.
-	 *  <code>
-	 * 	SELECT * FROM MyModelExample WHERE ...
-	 *  </code> 
+	 * 	Load Constructor.
 	 *  @param ctx context
 	 *  @param rs result set
 	 *	@param trxName transaction
@@ -81,7 +74,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	}	//	MUserDefTab
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MUserDefTab(MUserDefTab copy) 
@@ -90,7 +83,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -100,7 +93,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -112,15 +105,14 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Get matching MUserDefTab related to current tab and user definition for window
+	 * Get MUserDefTab for tab and user definition for window
 	 * @param ctx
 	 * @param AD_Tab_ID
 	 * @param AD_UserDefWin_ID
-	 * @return
+	 * @return MUserDefTab or null
 	 */
 	public static MUserDefTab getMatch (Properties ctx, int AD_Tab_ID, int AD_UserDefWin_ID )
 	{
-
 		MUserDefTab retValue = null;
 		
 		//  Check Cache
@@ -130,7 +122,6 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 		if (s_cache.containsKey(key))
 			return s_cache.get(ctx, key, e -> new MUserDefTab(ctx, e));
 		
-
 		StringBuilder sql = new StringBuilder("SELECT * "
 				+ " FROM AD_UserDef_Tab " 
 				+ " WHERE AD_UserDef_Win_ID=? AND IsActive='Y' "
@@ -168,11 +159,11 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	}
 
 	/**
-	 * Get matching MUserDefTab related to current tab and window 
+	 * Get best matching MUserDefTab for tab and window 
 	 * @param ctx
 	 * @param AD_Tab_ID
 	 * @param AD_Window_ID
-	 * @return
+	 * @return MUserDefTab or null
 	 */
 	public static MUserDefTab get (Properties ctx, int AD_Tab_ID, int AD_Window_ID) {
 		
@@ -180,8 +171,7 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 		if (userdefWin == null)
 			return null;
 		
-		return getMatch(ctx, AD_Tab_ID, userdefWin.getAD_UserDef_Win_ID());
-		
+		return getMatch(ctx, AD_Tab_ID, userdefWin.getAD_UserDef_Win_ID());		
 	}
 
 	@Override

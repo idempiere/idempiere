@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BOM_Indented
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="T_BOM_Indented")
 public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_T_BOM_Indented (Properties ctx, int T_BOM_Indented_ID, String trxName)
@@ -379,7 +379,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Quantity.
-		@param QtyBOM Indicate the Quantity  use in this BOM
+		@param QtyBOM Indicate the Quantity use in this BOM
 	*/
 	public void setQtyBOM (BigDecimal QtyBOM)
 	{
@@ -387,7 +387,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Get Quantity.
-		@return Indicate the Quantity  use in this BOM
+		@return Indicate the Quantity use in this BOM
 	  */
 	public BigDecimal getQtyBOM()
 	{

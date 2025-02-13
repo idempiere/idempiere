@@ -298,19 +298,13 @@ public class MArchive extends X_AD_Archive {
 		super.setBinaryData(BinaryData);
 	}
 
-	/**
-	 * Before Save
-	 * 
-	 * @param newRecord
-	 *            new
-	 * @return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Binary Data is Mandatory
 		byte[] data = super.getBinaryData();
 		if (data == null || data.length == 0)
 			return false;
+		// Set Record_UU from Record_ID
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());
@@ -428,6 +422,7 @@ public class MArchive extends X_AD_Archive {
 	 * @return int[], [0] = report count and [1] = document count
 	 * @deprecated - use {@link #getReportAndDocumentCountByRecordId(int, int, String, String)} instead
 	 */
+	@Deprecated
 	public static int[] getReportAndDocumentCountByRecordId(int AD_Table_ID, int Record_ID, String trxName) {
 		return getReportAndDocumentCountByRecordId(AD_Table_ID, Record_ID, null, trxName);
 	}

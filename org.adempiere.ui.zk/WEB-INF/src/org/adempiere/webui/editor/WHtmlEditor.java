@@ -45,7 +45,6 @@ import org.zkoss.zul.Html;
  * Implemented with {@link Html} component and html editor dialog ({@link WTextEditorDialog}) to show and edit HTML content.
  * 
  * @author muriloht (muriloht@devcoffee.com.br, http://www.devcoffee.com.br)
- * @version $Id: WHTMLEditor.java, v1.0 11/11/2014 20:25:06, muriloht Exp $
  */
 public class WHtmlEditor extends WEditor implements ContextMenuListener
 {

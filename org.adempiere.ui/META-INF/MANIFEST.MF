@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere UI base
 Bundle-SymbolicName: org.adempiere.ui;singleton:=true
-Bundle-Version: 11.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
-Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.apache.servicemix.bundles.xerces;bundle-version="0.0.0",
- org.eclipse.equinox.app;bundle-version="0.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="13.0.0",
+ org.apache.servicemix.bundles.xerces;bundle-version="2.12.1",
+ org.eclipse.equinox.app;bundle-version="1.6.300"
 Export-Package: org.compiere.apps,
  org.compiere.apps.form,
  org.compiere.apps.wf,
@@ -33,4 +33,4 @@ Bundle-ClassPath: .,
  lib/org-openide-util-lookup.jar
 Automatic-Module-Name: org.adempiere.ui
 Bundle-Vendor: iDempiere Community
-Import-Package: com.lowagie.text.pdf
+Import-Package: com.lowagie.text.pdf;version="1.3.39"

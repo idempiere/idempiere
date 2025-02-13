@@ -24,7 +24,9 @@
  **********************************************************************/
 package org.adempiere.webui.panel;
 
-
+/**
+ * Interface for AD Form controller
+ */
 public interface IFormController 
 {
 	/**

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PackageLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_PackageLine")
 public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_PackageLine (Properties ctx, int M_PackageLine_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
       /** if (M_PackageLine_ID == 0)
         {
 			setM_InOutLine_ID (0);
-			setM_Package_ID (0);
 			setM_PackageLine_ID (0);
+			setM_Package_ID (0);
 			setQty (Env.ZERO);
         } */
     }
@@ -55,8 +55,8 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
       /** if (M_PackageLine_ID == 0)
         {
 			setM_InOutLine_ID (0);
-			setM_Package_ID (0);
 			setM_PackageLine_ID (0);
+			setM_Package_ID (0);
 			setQty (Env.ZERO);
         } */
     }
@@ -68,8 +68,8 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
       /** if (M_PackageLine_UU == null)
         {
 			setM_InOutLine_ID (0);
-			setM_Package_ID (0);
 			setM_PackageLine_ID (0);
+			setM_Package_ID (0);
 			setQty (Env.ZERO);
         } */
     }
@@ -81,8 +81,8 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
       /** if (M_PackageLine_UU == null)
         {
 			setM_InOutLine_ID (0);
-			setM_Package_ID (0);
 			setM_PackageLine_ID (0);
+			setM_Package_ID (0);
 			setQty (Env.ZERO);
         } */
     }
@@ -159,42 +159,6 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Package)MTable.get(getCtx(), org.compiere.model.I_M_Package.Table_ID)
-			.getPO(getM_Package_ID(), get_TrxName());
-	}
-
-	/** Set Package.
-		@param M_Package_ID Shipment Package
-	*/
-	public void setM_Package_ID (int M_Package_ID)
-	{
-		if (M_Package_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Package_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Package_ID, Integer.valueOf(M_Package_ID));
-	}
-
-	/** Get Package.
-		@return Shipment Package
-	  */
-	public int getM_Package_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Package_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getM_Package_ID()));
-    }
-
 	/** Set Package Line.
 		@param M_PackageLine_ID The detail content of the Package
 	*/
@@ -258,6 +222,42 @@ public class X_M_PackageLine extends PO implements I_M_PackageLine, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
+
+	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Package)MTable.get(getCtx(), org.compiere.model.I_M_Package.Table_ID)
+			.getPO(getM_Package_ID(), get_TrxName());
+	}
+
+	/** Set Package.
+		@param M_Package_ID Shipment Package
+	*/
+	public void setM_Package_ID (int M_Package_ID)
+	{
+		if (M_Package_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Package_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Package_ID, Integer.valueOf(M_Package_ID));
+	}
+
+	/** Get Package.
+		@return Shipment Package
+	  */
+	public int getM_Package_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Package_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getM_Package_ID()));
+    }
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{

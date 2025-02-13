@@ -171,26 +171,17 @@ public class MColumnAccess extends X_AD_Column_Access
 		return m_columnName;
 	}	//	getColumnName
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
+		// Reset cache for role
 		if (success)
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		return success;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
+		// Reset cache for role
 		if (success)
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		return success;

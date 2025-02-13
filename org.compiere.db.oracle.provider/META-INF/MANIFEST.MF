@@ -2,16 +2,16 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Oracle Provider
 Bundle-SymbolicName: org.compiere.db.oracle.provider;singleton:=true
-Bundle-Version: 11.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
-Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
- org.adempiere.install;bundle-version="0.0.0";resolution:=optional,
+Require-Bundle: org.adempiere.base;bundle-version="13.0.0",
+ org.adempiere.install;bundle-version="13.0.0";resolution:=optional,
  com.zaxxer.HikariCP;bundle-version="5.1.0",
- wrapped.com.oracle.database.jdbc.ojdbc10;bundle-version="19.21.0.0"
+ wrapped.com.oracle.database.jdbc.ojdbc10;bundle-version="19.21.0"
 Bundle-ClassPath: .
-Import-Package: org.osgi.framework,
- org.slf4j;version="1.7.2"
+Import-Package: org.osgi.framework;version="1.10.0",
+ org.slf4j;version="2.0.12"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.adempiere.db.oracle.OracleBundleActivator
 Service-Component: OSGI-INF/*.xml

@@ -67,10 +67,12 @@ public class CStatementVO implements Serializable
 	private String 				m_sql;
 	/** Transaction Name **/
 	private String				m_trxName = null;	
+	
 	/**
 	 * 	String representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("CStatementVO[");
@@ -92,8 +94,6 @@ public class CStatementVO implements Serializable
 
 	/**
 	 * 	Set SQL.
-	 * 	Replace ROWID with TRIM(ROWID) for remote SQL
-	 * 	to convert into String as ROWID is not serialized
 	 *	@param sql sql
 	 */
 	public void setSql(String sql)
@@ -135,6 +135,7 @@ public class CStatementVO implements Serializable
 	}
 	
 	/**
+	 * Get transaction name
 	 * @return transaction name
 	 */
 	public String getTrxName() 

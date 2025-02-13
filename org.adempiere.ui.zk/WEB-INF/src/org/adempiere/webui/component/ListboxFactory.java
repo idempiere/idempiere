@@ -15,7 +15,7 @@ package org.adempiere.webui.component;
 import org.adempiere.webui.util.ZKUpdateUtil;
 
 /**
- * 
+ * Static method to create new list box instance
  * @author Low Heng Sin
  *
  */

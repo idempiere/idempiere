@@ -167,6 +167,10 @@ public class ImportInventoryMove extends SvrProcess
 		processAll();
 	}
 	
+	/**
+	 * Add movement id for document action processing
+	 * @param id M_Movement_ID
+	 */
 	private void addForProcess(int id)
 	{
 		String ids = String.valueOf(id);
@@ -180,6 +184,9 @@ public class ImportInventoryMove extends SvrProcess
 			idsPr.add(ids);
 	}
 	
+	/**
+	 * Process document actions for all imported movement records
+	 */
 	private void processAll()
 	{
 		for(String idx : idsPr)
@@ -231,7 +238,7 @@ public class ImportInventoryMove extends SvrProcess
 	}
 	
 	/**
-	 * get MMovementLine unique instance based on  X_I_M_Movement data
+	 * Get MMovementLine unique instance based on  X_I_M_Movement data
 	 * @param move MMovement
 	 * @param imove X_I_M_Movement
 	 * @return  unique instance of MMovementLine

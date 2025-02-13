@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for MFA_Registration
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_MFA_Registration 
 {
@@ -190,6 +190,37 @@ public interface I_MFA_Registration
 	/** Get Last MFA Secret	  */
 	public String getMFALastSecret();
 
+    /** Column name MFASecret */
+    public static final String COLUMNNAME_MFASecret = "MFASecret";
+
+	/** Set MFA Secret.
+	  * Multi-factor Authentication Secret
+	  */
+	public void setMFASecret (String MFASecret);
+
+	/** Get MFA Secret.
+	  * Multi-factor Authentication Secret
+	  */
+	public String getMFASecret();
+
+    /** Column name MFAUnregisteredAt */
+    public static final String COLUMNNAME_MFAUnregisteredAt = "MFAUnregisteredAt";
+
+	/** Set Unregistered at	  */
+	public void setMFAUnregisteredAt (Timestamp MFAUnregisteredAt);
+
+	/** Get Unregistered at	  */
+	public Timestamp getMFAUnregisteredAt();
+
+    /** Column name MFAValidatedAt */
+    public static final String COLUMNNAME_MFAValidatedAt = "MFAValidatedAt";
+
+	/** Set Validated at	  */
+	public void setMFAValidatedAt (Timestamp MFAValidatedAt);
+
+	/** Get Validated at	  */
+	public Timestamp getMFAValidatedAt();
+
     /** Column name MFA_Method_ID */
     public static final String COLUMNNAME_MFA_Method_ID = "MFA_Method_ID";
 
@@ -222,37 +253,6 @@ public interface I_MFA_Registration
 
 	/** Get MFA_Registration_UU	  */
 	public String getMFA_Registration_UU();
-
-    /** Column name MFASecret */
-    public static final String COLUMNNAME_MFASecret = "MFASecret";
-
-	/** Set MFA Secret.
-	  * Multi-factor Authentication Secret
-	  */
-	public void setMFASecret (String MFASecret);
-
-	/** Get MFA Secret.
-	  * Multi-factor Authentication Secret
-	  */
-	public String getMFASecret();
-
-    /** Column name MFAUnregisteredAt */
-    public static final String COLUMNNAME_MFAUnregisteredAt = "MFAUnregisteredAt";
-
-	/** Set Unregistered at	  */
-	public void setMFAUnregisteredAt (Timestamp MFAUnregisteredAt);
-
-	/** Get Unregistered at	  */
-	public Timestamp getMFAUnregisteredAt();
-
-    /** Column name MFAValidatedAt */
-    public static final String COLUMNNAME_MFAValidatedAt = "MFAValidatedAt";
-
-	/** Set Validated at	  */
-	public void setMFAValidatedAt (Timestamp MFAValidatedAt);
-
-	/** Get Validated at	  */
-	public Timestamp getMFAValidatedAt();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

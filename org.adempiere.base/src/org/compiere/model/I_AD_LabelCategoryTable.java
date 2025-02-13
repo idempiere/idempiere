@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LabelCategoryTable
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_LabelCategoryTable 
 {
@@ -49,21 +49,6 @@ public interface I_AD_LabelCategoryTable
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_LabelCategory_ID */
-    public static final String COLUMNNAME_AD_LabelCategory_ID = "AD_LabelCategory_ID";
-
-	/** Set Label Category.
-	  * Category of a Label
-	  */
-	public void setAD_LabelCategory_ID (int AD_LabelCategory_ID);
-
-	/** Get Label Category.
-	  * Category of a Label
-	  */
-	public int getAD_LabelCategory_ID();
-
-	public org.compiere.model.I_AD_LabelCategory getAD_LabelCategory() throws RuntimeException;
-
     /** Column name AD_LabelCategoryTable_ID */
     public static final String COLUMNNAME_AD_LabelCategoryTable_ID = "AD_LabelCategoryTable_ID";
 
@@ -81,6 +66,21 @@ public interface I_AD_LabelCategoryTable
 
 	/** Get Label Category Table Access	  */
 	public String getAD_LabelCategoryTable_UU();
+
+    /** Column name AD_LabelCategory_ID */
+    public static final String COLUMNNAME_AD_LabelCategory_ID = "AD_LabelCategory_ID";
+
+	/** Set Label Category.
+	  * Category of a Label
+	  */
+	public void setAD_LabelCategory_ID (int AD_LabelCategory_ID);
+
+	/** Get Label Category.
+	  * Category of a Label
+	  */
+	public int getAD_LabelCategory_ID();
+
+	public org.compiere.model.I_AD_LabelCategory getAD_LabelCategory() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

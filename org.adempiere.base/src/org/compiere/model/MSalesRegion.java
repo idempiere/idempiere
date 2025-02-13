@@ -133,38 +133,28 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	After Save.
-	 * 	Insert
-	 * 	- create tree
-	 *	@param newRecord insert
-	 *	@param success save success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Create tree record
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_SalesRegion);
+		// Update driven by value tree
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 			update_Tree(MTree_Base.TREETYPE_SalesRegion);
-		//	Value/Name change
+		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 			MAccount.updateValueDescription(getCtx(), "C_SalesRegion_ID=" + getC_SalesRegion_ID(), get_TrxName());
 
 		return true;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(MTree_Base.TREETYPE_SalesRegion);
 		return success;

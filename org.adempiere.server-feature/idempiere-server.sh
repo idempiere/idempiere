@@ -13,8 +13,10 @@ else
   echo Set JAVA_HOME to the directory of your local JDK.
 fi
 
+DEBUG_PORT=${DEBUG_PORT:-4554}
+
 if [ "$1" = "debug" ]; then
-  DEBUG="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=4554,server=y,suspend=n"
+  DEBUG="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=$DEBUG_PORT,server=y,suspend=n"
 fi
 
 echo ===================================
@@ -30,7 +32,7 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 -Dosgi.compatibility.bootdelegation=true
 -Djetty.home=$BASE/jettyhome
 -Djetty.base=$BASE/jettyhome
--Djetty.etc.config.urls=etc/jetty.xml,etc/jetty-deployer.xml,etc/jetty-ssl.xml,etc/jetty-ssl-context.xml,etc/jetty-http.xml,etc/jetty-https.xml,etc/jetty-threadpool.xml,etc/jetty-http-forwarded.xml
+-Djetty.etc.config.urls=etc/jetty-bytebufferpool.xml,etc/jetty-threadpool.xml,etc/jetty.xml,etc/jetty-http.xml,etc/jetty-deploy.xml,etc/jetty-ssl-context.xml,etc/jetty-ssl.xml,etc/jetty-https.xml,etc/jetty-http-forwarded.xml
 -Dorg.apache.cxf.osgi.http.transport.disable=true
 -Dosgi.console=$HOST:$TELNET_PORT
 -Dmail.mime.encodefilename=true
@@ -52,4 +54,8 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED
 --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED"
 
-"$JAVA" ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar "$BASE"/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
+IDEMPIERE_JAVA_OPTIONS=${JAVA_OPTS:-$IDEMPIERE_JAVA_OPTIONS}
+
+echo "Starting iDempiere: $JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application"
+
+$JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application

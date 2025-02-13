@@ -27,8 +27,11 @@ import org.zkoss.zul.event.ListDataEvent;
  */
 public class WTableModelEvent extends ListDataEvent
 {
-
-    /** Specifies all rows. */
+	/**
+	 * generated serial id
+	 */
+    private static final long serialVersionUID = 8787799536970587401L;
+	/** Specifies all rows. */
     public static final int ALL_ROWS = -1;
 	/** Specifies all columns in a row or rows. */
 	public static final int ALL_COLUMNS = -1;
@@ -41,8 +44,8 @@ public class WTableModelEvent extends ListDataEvent
 	protected int m_column;
 
 	/**
-	 * All row data in the table has changed, listeners should discard any state
-	 * that was based on the rows and requery the <code>TableModel</code> to
+	 * All rows in the table has changed, listeners should discard any state
+	 * that was based on the rows and re-query the <code>TableModel</code> to
 	 * get the new row count and all the appropriate values.<br/> 
 	 * The <code>WListbox</code> will initiate repaint on receiving this event, 
 	 * querying the model for the cell values that are visible.<br/> 
@@ -82,9 +85,9 @@ public class WTableModelEvent extends ListDataEvent
 	}
 
 	/**
-	 * The cells from (firstRow, column) to (lastRow, column) have been changed.
+	 * The cells from (firstRow, column) to (lastRow, column) have been changed.<br/>
 	 * The <I>column</I> refers to the column index of the cell in the model's
-	 * co-ordinate system. When <I>column</I> is ALL_COLUMNS, all cells in the
+	 * coordinate system. When <I>column</I> is ALL_COLUMNS, all cells in the
 	 * specified range of rows are considered changed.
 	 * <p>
 	 * The <I>type</I> should be one of: CONTENTS_CHANGED,  INTERVAL_ADDED, INTERVAL_REMOVED.

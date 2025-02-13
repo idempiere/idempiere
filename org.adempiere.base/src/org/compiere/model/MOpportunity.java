@@ -68,6 +68,7 @@ public class MOpportunity extends X_C_Opportunity {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Set OpportunityAmt to GrandTotal of order.
 		if ( getC_Order_ID() > 0 )
 		{
 			I_C_Order order = getC_Order();

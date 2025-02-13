@@ -170,15 +170,10 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	/**	Cash Business Partner			*/
 	private MBPartner	m_template = null;
 			
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Org Consistency
+		// Validate that bank account and this record belongs to the same organization
 		if (newRecord || is_ValueChanged("C_BankAccount_ID"))
 		{
 			MBankAccount cb = MBankAccount.get(getCtx(), getC_BankAccount_ID());
@@ -188,6 +183,7 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 				return false;
 			}
 		}
+		// Validate that warehouse and this record belongs to the same organization
 		if (newRecord || is_ValueChanged("M_Warehouse_ID"))
 		{
 			MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID(), get_TrxName());

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectTask
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_ProjectTask 
 {
@@ -62,19 +62,6 @@ public interface I_C_ProjectTask
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name CommittedAmt */
-    public static final String COLUMNNAME_CommittedAmt = "CommittedAmt";
-
-	/** Set Committed Amount.
-	  * The (legal) commitment amount
-	  */
-	public void setCommittedAmt (BigDecimal CommittedAmt);
-
-	/** Get Committed Amount.
-	  * The (legal) commitment amount
-	  */
-	public BigDecimal getCommittedAmt();
-
     /** Column name C_ProjectPhase_ID */
     public static final String COLUMNNAME_C_ProjectPhase_ID = "C_ProjectPhase_ID";
 
@@ -112,6 +99,34 @@ public interface I_C_ProjectTask
 	/** Get C_ProjectTask_UU	  */
 	public String getC_ProjectTask_UU();
 
+    /** Column name C_Task_ID */
+    public static final String COLUMNNAME_C_Task_ID = "C_Task_ID";
+
+	/** Set Standard Task.
+	  * Standard Project Type Task
+	  */
+	public void setC_Task_ID (int C_Task_ID);
+
+	/** Get Standard Task.
+	  * Standard Project Type Task
+	  */
+	public int getC_Task_ID();
+
+	public org.compiere.model.I_C_Task getC_Task() throws RuntimeException;
+
+    /** Column name CommittedAmt */
+    public static final String COLUMNNAME_CommittedAmt = "CommittedAmt";
+
+	/** Set Committed Amount.
+	  * The (legal) commitment amount
+	  */
+	public void setCommittedAmt (BigDecimal CommittedAmt);
+
+	/** Get Committed Amount.
+	  * The (legal) commitment amount
+	  */
+	public BigDecimal getCommittedAmt();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -127,21 +142,6 @@ public interface I_C_ProjectTask
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_Task_ID */
-    public static final String COLUMNNAME_C_Task_ID = "C_Task_ID";
-
-	/** Set Standard Task.
-	  * Standard Project Type Task
-	  */
-	public void setC_Task_ID (int C_Task_ID);
-
-	/** Get Standard Task.
-	  * Standard Project Type Task
-	  */
-	public int getC_Task_ID();
-
-	public org.compiere.model.I_C_Task getC_Task() throws RuntimeException;
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";

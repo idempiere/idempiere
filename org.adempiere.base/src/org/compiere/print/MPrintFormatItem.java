@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -38,7 +39,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Print Format Item Model.
- * 	Caches Column Name
+ * 	Caches Column Name.
  *	(Add missing Items with PrintFormatUtil)
  *
  * 	@author 	Jorg Janke
@@ -47,16 +48,16 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2950704375830865408L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_PrintFormatItem_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PrintFormatItem_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPrintFormatItem(Properties ctx, String AD_PrintFormatItem_UU, String trxName) {
         super(ctx, AD_PrintFormatItem_UU, trxName);
 		if (Util.isEmpty(AD_PrintFormatItem_UU))
@@ -122,7 +123,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}
 
 	/**
-	 *	Constructor
+	 *	Load Constructor
 	 *  @param ctx context
 	 *  @param rs ResultSet
 	 *	@param trxName transaction
@@ -133,7 +134,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}	//	MPrintFormatItem
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPrintFormatItem(MPrintFormatItem copy) 
@@ -142,7 +143,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -152,7 +153,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -179,8 +180,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 
 	private static CLogger		s_log = CLogger.getCLogger (MPrintFormatItem.class);
 
-	
-	/**************************************************************************
+	/**
 	 *	Get print name with language
 	 * 	@param language language - ignored if IsMultiLingualDocument not 'Y'
 	 * 	@return print name
@@ -196,8 +196,8 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return retValue;
 	}	//	getPrintName
 
-	/**************************************************************************
-	 *	Set print name on language
+	/**
+	 *	Set print name for language
 	 * 	@param language language - ignored if IsMultiLingualDocument not 'Y'
 	 */
 	public void setPrintName (Language language, String printName)
@@ -267,8 +267,8 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}	//	loadTranslations
 
 	/**
-	 * 	Type Script
-	 *	@return true if script
+	 * 	Is of Type Script
+	 *	@return true if of type script
 	 */
 	public boolean isTypeScript()
 	{
@@ -276,40 +276,44 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}
 
 	/**
-	 * 	Type Field
-	 *	@return true if field
+	 * 	Is of Type Field
+	 *	@return true if of type field
 	 */
 	public boolean isTypeField()
 	{
 		return getPrintFormatType().equals(PRINTFORMATTYPE_Field);
 	}
+	
 	/**
-	 * 	Type Text
-	 *	@return true if text
+	 * 	Is of Type Text
+	 *	@return true if of type text
 	 */
 	public boolean isTypeText()
 	{
 		return getPrintFormatType().equals(PRINTFORMATTYPE_Text);
 	}
+	
 	/**
-	 * 	Type Print Format
-	 *	@return true if print format
+	 * 	Is of Type Print Format
+	 *	@return true if of type print format
 	 */
 	public boolean isTypePrintFormat()
 	{
 		return getPrintFormatType().equals(PRINTFORMATTYPE_PrintFormat);
 	}
+	
 	/**
-	 * 	Type Image
-	 *	@return true if image
+	 * 	Is of Type Image
+	 *	@return true if of type image
 	 */
 	public boolean isTypeImage()
 	{
 		return getPrintFormatType().equals(PRINTFORMATTYPE_Image);
 	}
+	
 	/**
-	 * 	Type Box
-	 *	@return true if box
+	 * 	Is of Type Box (Line or Rectangle)
+	 *	@return true if of type box
 	 */
 	public boolean isTypeBox()
 	{
@@ -318,64 +322,71 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}
 
 	/**
-	 * 	Field Center
-	 *	@return true if center
+	 * 	Is Field Alignment Center
+	 *	@return true if field alignment is center
 	 */
 	public boolean isFieldCenter()
 	{
 		return getFieldAlignmentType().equals(FIELDALIGNMENTTYPE_Center);
 	}
+	
 	/**
-	 * 	Field Align Leading
-	 *	@return true if leading
+	 * 	Is Field Alignment Leading Left
+	 *	@return true if field alignment is leading left
 	 */
 	public boolean isFieldAlignLeading()
 	{
 		return getFieldAlignmentType().equals(FIELDALIGNMENTTYPE_LeadingLeft);
 	}
+	
 	/**
-	 * 	Field Align Trailing
-	 *	@return true if trailing
+	 * 	Field Alignment Trailing Right
+	 *	@return true if field alignment is trailing right
 	 */
 	public boolean isFieldAlignTrailing()
 	{
 		return getFieldAlignmentType().equals(FIELDALIGNMENTTYPE_TrailingRight);
 	}
+	
 	/**
-	 * 	Field Align Block
-	 *	@return true if block
+	 * 	Is Field Alignment Block
+	 *	@return true if field alignment is block
 	 */
 	public boolean isFieldAlignBlock()
 	{
 		return getFieldAlignmentType().equals(FIELDALIGNMENTTYPE_Block);
 	}
+	
 	/**
-	 * 	Field Align Default
-	 *	@return true if default alignment
+	 * 	Is Field Alignment Default
+	 *	@return true if field is with default alignment
 	 */
 	public boolean isFieldAlignDefault()
 	{
 		return getFieldAlignmentType().equals(FIELDALIGNMENTTYPE_Default);
 	}
+	
 	/**
-	 * 	Line Align Center
-	 *	@return true if center
+	 * 	Is Line Alignment Center
+	 *	@return true if line alignment is center
 	 */
 	public boolean isLineAlignCenter()
 	{
 		return getLineAlignmentType().equals(LINEALIGNMENTTYPE_Center);
 	}
+	
 	/**
-	 * 	Line Align Leading
-	 *	@return true if leading
+	 * 	Is Line Alignment Leading Left
+	 *	@return true if line alignment is leading left
 	 */
 	public boolean isLineAlignLeading()
 	{
 		return getLineAlignmentType().equals(LINEALIGNMENTTYPE_LeadingLeft);
 	}
+	
 	/**
-	 * 	Line Align Trailing
-	 *	@return true if trailing
+	 * 	Is Line Alignment Trailing Right
+	 *	@return true if line alignment is trailing right
 	 */
 	public boolean isLineAlignTrailing()
 	{
@@ -383,7 +394,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}
 
 	/**
-	 * 	Header
+	 * 	Is Header Area
 	 *	@return true if area is header
 	 */
 	public boolean isHeader()
@@ -391,15 +402,15 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return getPrintAreaType().equals(PRINTAREATYPE_Header);
 	}
 	/**
-	 * 	Content
-	 *	@return true if area is centent
+	 * 	Is Content Area
+	 *	@return true if area is content
 	 */
 	public boolean isContent()
 	{
 		return getPrintAreaType().equals(PRINTAREATYPE_Content);
 	}
 	/**
-	 * 	Footer
+	 * 	Is Footer Area
 	 *	@return true if area is footer
 	 */
 	public boolean isFooter()
@@ -408,20 +419,20 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	}
 	
 	/**
-	 * 	Barcode
-	 *	@return true if barcode selected
+	 * 	Is Type Barcode 
+	 *	@return true if item is of type barcode
 	 */
 	public boolean isBarcode()
 	{
 		String s = getBarcodeType();
 		return s != null && s.length() > 0;
 	}
-	
-	
-	/**************************************************************************
+		
+	/**
 	 * 	String representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MPrintFormatItem[");
@@ -464,10 +475,6 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return sb.toString();
 	}	//	toString
 
-
-	/*************************************************************************/
-
-
 	/**	Lookup Map of AD_Column_ID for ColumnName	*/
 	private static CCache<Integer,String>	s_columns = new CCache<Integer,String>(Table_Name, 200);
 
@@ -503,10 +510,9 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		}
 		return retValue;
 	}	//	getColumnName
-
 	
-	/**************************************************************************
-	 * 	Create Print Format Item from Column
+	/**
+	 * 	Create and Save Print Format Item from Column
 	 *  @param format parent
 	 * 	@param AD_Column_ID column
 	 *  @param seqNo sequence of display if 0 it is not printed
@@ -582,6 +588,13 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 					pfi.setIsOrderBy(true);
 					pfi.setSortNo(idSeqNo);
 				}
+				if (displayType == DisplayType.ImageURL)
+				{
+					pfi.setPrintFormatType(PRINTFORMATTYPE_Image);
+					pfi.setIsImageField(true);
+					pfi.setMaxWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx())));
+					pfi.setMaxHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx())));
+				}
 			}
 			else
 				s_log.log(Level.SEVERE, "Not Found AD_Column_ID=" + AD_Column_ID
@@ -601,6 +614,13 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return pfi;
 	}	//	createFromColumn
 	
+	/**
+	 * Create and save print format item from GridField
+	 * @param format
+	 * @param gridField
+	 * @param seqNo
+	 * @return new print format item instance
+	 */
 	public static MPrintFormatItem createFromGridField (MPrintFormat format, GridField gridField, int seqNo)
 	{
 		if (gridField.getAD_Column_ID() <= 0)
@@ -668,6 +688,13 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 					pfi.setIsOrderBy(true);
 					pfi.setSortNo(idSeqNo);
 				}
+				if (displayType == DisplayType.ImageURL)
+				{
+					pfi.setPrintFormatType(PRINTFORMATTYPE_Image);
+					pfi.setIsImageField(true);
+					pfi.setMaxWidth(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_WIDTH, 100, Env.getAD_Client_ID(Env.getCtx())));
+					pfi.setMaxHeight(MSysConfig.getIntValue(MSysConfig.ZK_THUMBNAIL_IMAGE_HEIGHT, 100, Env.getAD_Client_ID(Env.getCtx())));
+				}
 			}
 			else
 				s_log.log(Level.SEVERE, "Not Found AD_Column_ID=" + gridField.getAD_Column_ID()
@@ -714,22 +741,16 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return to;
 	}	//	copyToClient
 
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if ok
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Order
+		// Reset SortNo, IsGroupBy and IsPageBreak if IsOrderBy=false
 		if (!isOrderBy())
 		{
 			setSortNo(0);
 			setIsGroupBy(false);
 			setIsPageBreak(false);
 		}
-		//	Rel Position
 		if (isRelativePosition())
 		{
 			setXPosition(0);
@@ -740,7 +761,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			setXSpace(0);
 			setYSpace(0);
 		}
-		//	Image
+		// Reset ImageIsAttached and ImageURL if IsImageField=true
 		if (isImageField())
 		{
 			setImageIsAttached(false);
@@ -754,7 +775,8 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			setScript(null);
 		}
 		
-		if(   !Util.isEmpty(getScript())
+		// Only advanced role can edit Script field
+		if(!Util.isEmpty(getScript())
 		   && is_ValueChanged(MPrintFormatItem.COLUMNNAME_Script)
 		   && !MRole.getDefault().isAccessAdvanced()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
@@ -764,12 +786,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		//	Set Translation from Element
@@ -795,6 +812,7 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 			if (log.isLoggable(Level.FINE)) log.fine("translations updated #" + no);
 		}
 		
+		// Update AD_PrintFormatItem_Trl.PrintName with m_newTranslationLabel
 		if (m_translationLabelChanged) {
 			String sql = "UPDATE AD_PrintFormatItem_Trl "
 					+ "SET PrintName = ? "

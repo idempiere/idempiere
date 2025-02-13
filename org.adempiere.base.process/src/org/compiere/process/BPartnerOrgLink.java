@@ -24,7 +24,6 @@ import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MLocator;
 import org.compiere.model.MOrg;
 import org.compiere.model.MOrgInfo;
-import org.compiere.model.MProcessPara;
 import org.compiere.model.MRole;
 import org.compiere.model.MRoleOrgAccess;
 import org.compiere.model.MWarehouse;
@@ -57,23 +56,7 @@ public class BPartnerOrgLink extends SvrProcess
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
-	protected void prepare()
-	{
-		ProcessInfoParameter[] para = getParameter();
-		for (int i = 0; i < para.length; i++)
-		{
-			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;
-			else if (name.equals("AD_Org_ID"))
-				p_AD_Org_ID = para[i].getParameterAsInt();
-			else if (name.equals("AD_OrgType_ID"))
-				p_AD_OrgType_ID = para[i].getParameterAsInt();
-			else if (name.equals("AD_Role_ID"))
-				p_AD_Role_ID = para[i].getParameterAsInt();
-			else
-				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
-		}
+	protected void prepare(){
 		p_C_BPartner_ID = getRecord_ID();
 	}	//	prepare
 

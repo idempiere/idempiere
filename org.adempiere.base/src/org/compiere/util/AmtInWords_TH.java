@@ -15,17 +15,15 @@ package org.compiere.util;
 
 
 /**
- *      Amount in Words for Thai
+ *  Amount in Words for Thai
  *
- *  @author Sureeraya Limpaibul - http://www.rgagnon.com/javadetails/java-0426.h
-tml
+ *  @author Sureeraya Limpaibul - http://www.rgagnon.com/javadetails/java-0426.html
  *  @version $Id: AmtInWords_TH.java,v 1.2 2005/04/19 04:43:31 jjanke Exp $
  */
 public class AmtInWords_TH implements AmtInWords
 {
-
         /**
-         *      AmtInWords_TH
+         *  AmtInWords_TH
 		 *
 		 *	0.23 = \u0e28\u0e39\u0e19\u0e22\u0e4c 23/100
 		 *	1.23 = \u0e2b\u0e19\u0e36\u0e48\u0e07\u0e1a\u0e32\u0e17 23/100
@@ -145,14 +143,6 @@ public class AmtInWords_TH implements AmtInWords
         private String convertLessThanOneMillion (int number)
         {
                 String soFar = new String();
-                // Esta dentro de los 1os. diecinueve?? ISCAP
-                System.out.println("[convertLessThanOneMillion] number = " + number);
-/*                if (number % 100 < 20)
-                {
-                        soFar = numNames[(number % 100)];
-                        number /= 100;
-                }
-*/
                 if (number != 0)
                 {
                         soFar = numNames[number % 10];
@@ -196,9 +186,6 @@ public class AmtInWords_TH implements AmtInWords
                         return "\u0e28\u0e39\u0e19\u0e22\u0e4c";
                 }
                 String prefix = "";
-                // \u0e1a\u0e32\u0e17
-//                String subfix = "\u0e1a\u0e32\u0e17";
-
                 if (number < 0)
                 {
                         number = -number;
@@ -222,16 +209,14 @@ public class AmtInWords_TH implements AmtInWords
                 } while (number > 0);
 
                 return (prefix + soFar).trim ();
-//                return (prefix + soFar + subfix).trim ();
         }       //      convert
 
-
-        /***********************************************************************
-***
+        /**
          *      Get Amount in Words
          *      @param amount numeric amount (352.80)
          *      @return amount in words (three*five*two 80/100)
          */
+        @Override
         public String getAmtInWords (String amount) throws Exception
         {
                 if (amount == null)
@@ -258,7 +243,6 @@ public class AmtInWords_TH implements AmtInWords
                             } else {
                                 sb.append("\u0e16\u0e49\u0e27\u0e19");
                             }
-//                                sb.append (' ').append (cents).append ("/100");
                             break;
                         }
                     }
@@ -269,8 +253,7 @@ public class AmtInWords_TH implements AmtInWords
                 return sb.toString ();
         }       //      getAmtInWords
 
-        /***********************************************************************
-***
+        /**
          *      Get Amount in Words
          *      @param amount numeric amount (352.80)
          *      @return amount in words (three*five*two 80/100)
@@ -302,7 +285,6 @@ public class AmtInWords_TH implements AmtInWords
                                 } else {
                                     sb.append("\u0e16\u0e49\u0e27\u0e19");
                                 }
-//                                sb.append (' ').append (cents).append ("/100");
                                 break;
                             }
                         }
@@ -346,21 +328,6 @@ public class AmtInWords_TH implements AmtInWords
                         e.printStackTrace();
                 }
         }       //      print
-        /**
-         *      Test Print
-         *      @param amt amount
-         */
-        /*private void print (String amt, String currency)
-        {
-                try
-                {
-                        System.out.println(amt + " = " + getAmtInWords(amt));
-                }
-                catch (Exception e)
-                {
-                        e.printStackTrace();
-                }
-        }       //      print*/
 
         /**
          *      Test
@@ -369,23 +336,8 @@ public class AmtInWords_TH implements AmtInWords
         public static void main (String[] args)
         {
                 AmtInWords_TH aiw = new AmtInWords_TH();
-        //      aiw.print (".23");      Error
-//                aiw.print ("0.23");
-//                aiw.print ("1.23");
-//                aiw.print ("11.45");
-//                aiw.print ("121.45");
                 aiw.print ("3,026.00");
                 aiw.print ("65341.78");
-//                aiw.print ("123451.89");
-//                aiw.print ("12234571.90");
-//                aiw.print ("123234571.90");
-//                aiw.print ("1,987,234,571.90");
-//              aiw.print ("11123234571.90");
-//              aiw.print ("123123234571.90");
-//              aiw.print ("2123123234571.90");
-//              aiw.print ("23,123,123,234,571.90");
-//              aiw.print ("100,000,000,000,000.90");
-//                aiw.print ("0.00");
         }       //      main
 
 }       //      AmtInWords_TH

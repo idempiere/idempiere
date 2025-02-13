@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Locator
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_Locator 
 {
@@ -104,6 +104,17 @@ public interface I_M_Locator
 	  */
 	public boolean isDefault();
 
+    /** Column name M_LocatorType_ID */
+    public static final String COLUMNNAME_M_LocatorType_ID = "M_LocatorType_ID";
+
+	/** Set Locator Type	  */
+	public void setM_LocatorType_ID (int M_LocatorType_ID);
+
+	/** Get Locator Type	  */
+	public int getM_LocatorType_ID();
+
+	public org.compiere.model.I_M_LocatorType getM_LocatorType() throws RuntimeException;
+
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
 
@@ -116,17 +127,6 @@ public interface I_M_Locator
 	  * Warehouse Locator
 	  */
 	public int getM_Locator_ID();
-
-    /** Column name M_LocatorType_ID */
-    public static final String COLUMNNAME_M_LocatorType_ID = "M_LocatorType_ID";
-
-	/** Set Locator Type	  */
-	public void setM_LocatorType_ID (int M_LocatorType_ID);
-
-	/** Get Locator Type	  */
-	public int getM_LocatorType_ID();
-
-	public org.compiere.model.I_M_LocatorType getM_LocatorType() throws RuntimeException;
 
     /** Column name M_Locator_UU */
     public static final String COLUMNNAME_M_Locator_UU = "M_Locator_UU";

@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.InfoSchedule;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -150,7 +151,15 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 				btnViewItem.setSclass("link");
 				btnViewItem.setLabel(name);
 
-				if (ThemeManager.isUseFontIconForImage()) 
+				if (MAttachment.isAttachmentURLPath(image))
+				{
+					btnViewItem.setImage(MAttachment.getImageAttachmentURLFromPath(null, image));
+				}
+				else if (image.indexOf("://") > 0)
+				{
+					btnViewItem.setImage(image);
+				}
+				else if (ThemeManager.isUseFontIconForImage()) 
 				{
 					if (image.endsWith("16.png"))
 						image = image.replace("16.png", "");

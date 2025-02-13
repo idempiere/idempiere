@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Hazelcast Service
 Bundle-SymbolicName: org.idempiere.hazelcast.service
-Bundle-Version: 11.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-Activator: org.idempiere.hazelcast.service.Activator
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.crypto,
@@ -17,8 +17,8 @@ Import-Package: javax.crypto,
  javax.xml.transform.dom,
  javax.xml.transform.stream,
  javax.xml.xpath,
- org.osgi.framework;version="1.3.0",
- org.slf4j;version="1.6.1",
+ org.osgi.framework;version="1.10.0",
+ org.slf4j;version="2.0.12",
  org.w3c.dom
 DynamicImport-Package: org.*, com.*, javax.*
 Bundle-ClassPath: .,
@@ -26,7 +26,7 @@ Bundle-ClassPath: .,
 Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
-Require-Bundle: org.eclipse.osgi,
- org.adempiere.base;bundle-version="0.0.0"
+Require-Bundle: org.eclipse.osgi;bundle-version="3.18.500",
+ org.adempiere.base;bundle-version="13.0.0"
 Automatic-Module-Name: org.idempiere.hazelcast.service
 Bundle-Vendor: iDempiere Community

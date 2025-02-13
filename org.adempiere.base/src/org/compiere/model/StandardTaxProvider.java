@@ -24,11 +24,10 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Standard tax provider
+ * Standard tax calculation implementation
  * @author Elaine
  *
  * @contributor Murilo H. Torquato <muriloht@devcoffee.com.br>
- *
  */
 public class StandardTaxProvider implements ITaxProvider {
 

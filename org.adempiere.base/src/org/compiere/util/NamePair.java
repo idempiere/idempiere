@@ -21,7 +21,7 @@ import java.text.Collator;
 import java.util.Comparator;
 
 /**
- *  Abstract Name Pair class
+ *  Abstract Name ID Pair class
  *
  *  @author     Jorg Janke
  *  @version    $Id: NamePair.java,v 1.3 2006/07/30 00:52:23 jjanke Exp $
@@ -58,7 +58,7 @@ public abstract class NamePair implements Comparator<Object>, Serializable, Comp
 
 	/**
 	 *  Returns Key or Value as String
-	 *  @return String or null
+	 *  @return String ID or null
 	 */
 	public abstract String getID();
 

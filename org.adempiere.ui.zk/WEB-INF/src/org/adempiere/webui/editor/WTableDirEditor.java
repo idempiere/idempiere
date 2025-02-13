@@ -23,6 +23,8 @@ package org.adempiere.webui.editor;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -43,6 +45,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
+import org.compiere.Adempiere;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTable;
 import org.compiere.model.Lookup;
@@ -83,7 +86,6 @@ import org.zkoss.zul.Menuitem;
  * Implemented with {@link EditorCombobox} or {@link EditorAutoComplete} (AD_Field.IsAutoComplete=Y) component.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class WTableDirEditor extends WEditor implements ListDataListener, 
 ContextMenuListener, IZoomableEditor
@@ -464,10 +466,13 @@ ContextMenuListener, IZoomableEditor
             getComponent().setValue(null);
             getComponent().setSelectedItem(null);
             oldValue = value;
+            if (gridField!=null)
+        		gridField.setLockedRecord(false);
             
             if (getComponent() instanceof EditorAutoComplete && gridField!=null)	// IDEMPIERE-4442 Fix NPE, for Autocomplete in non Grid Usage.
             	updateStyle();
-        }                                
+        }       
+		popupMenu.showDrillAssistant(value != null);                         
     }
     
     @Override
@@ -1085,6 +1090,7 @@ ContextMenuListener, IZoomableEditor
 		 */
 		private static final long serialVersionUID = 7813673017009600392L;
 		private WTableDirEditor editor;
+		private Future<?> refreshTask = null;
 		
 		protected CCacheListener(String tableName, WTableDirEditor editor) {
 			super(tableName, tableName+"|CCacheListener", 0, 0, false);
@@ -1093,16 +1099,39 @@ ContextMenuListener, IZoomableEditor
 
 		@Override
 		public int reset() {			
-			refreshLookupList();
+			scheduleRefreshTask();
 			return 0;					
 		}
 
 		@Override
 		public int reset(int recordId) {
-			refreshLookupList();
+			scheduleRefreshTask();
 			return 0;
 		}
 
+		@Override
+		public void newRecord(int record_ID) {
+			scheduleRefreshTask();
+		}
+		
+		/**
+		 * Schedule refresh task with 500ms delay.<br/>
+		 * The delay provide the gap that make it possible to combine adjacent refresh request trigger by cache reset call.
+		 */
+		private void scheduleRefreshTask() {
+			if (refreshTask != null && !refreshTask.isDone() && !refreshTask.isCancelled()) {
+				refreshTask.cancel(true);
+				refreshTask = null;
+			}
+			
+			refreshTask = Adempiere.getThreadPoolExecutor().schedule(() -> {
+				refreshLookupList();
+			}, 500, TimeUnit.MILLISECONDS);
+		}
+		
+		/**
+		 * Refresh lookup list
+		 */
 		private void refreshLookupList() {
 			if (editor.getComponent().getDesktop() == null || !editor.isReadWrite())
 				return;
@@ -1126,11 +1155,11 @@ ContextMenuListener, IZoomableEditor
 				}
 			}, new Event("onResetLookupList"));
 		}
-				
+
 		@Override
-		public void newRecord(int record_ID) {
-			refreshLookupList();
-		}
+		public int size() {
+			return 1;
+		}						
 	}
 
 	/**

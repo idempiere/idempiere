@@ -26,6 +26,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 
+/**
+ * Form to Merge source/from record to target/to record
+ */
 public class Merge 
 {
 	/**	Window No			*/
@@ -64,7 +67,7 @@ public class Merge
 	protected String[]	m_deleteTables = null;
 	
 	/**
-	 * Determine the list of tables to delete records from columnName 
+	 * Determine the list of tables to delete records by key columnName 
 	 * @param columnName
 	 */
 	protected void updateDeleteTable(String columnName)
@@ -82,10 +85,10 @@ public class Merge
 
 
 	/**
-	 * 	Merge.
+	 * 	Execute Merge.
 	 *	@param ColumnName ID column (M_Product_ID, AD_Org_ID, C_BPartner_ID or AD_User_ID)
-	 *	@param from_ID from
-	 *	@param to_ID to
+	 *	@param from_ID from id
+	 *	@param to_ID to id
 	 *	@return true if merged
 	 */
 	public boolean merge (String ColumnName, int from_ID, int to_ID)
@@ -179,14 +182,13 @@ public class Merge
 		return success;
 	}	//	merge
 
-
 	/**
-	 * 	Merge Table
-	 * 	@param TableName table
-	 * 	@param ColumnName column
-	 * 	@param from_ID from
-	 * 	@param to_ID to
-	 * 	@return -1 for error or number of changes
+	 * 	Execute Merge for record in a Table
+	 * 	@param TableName table name
+	 * 	@param ColumnName key column name
+	 * 	@param from_ID from id
+	 * 	@param to_ID to id
+	 * 	@return -1 for error or number of records updated
 	 */
 	protected int mergeTable (String TableName, String ColumnName, int from_ID, int to_ID)
 	{
@@ -230,9 +232,9 @@ public class Merge
 	}	//	mergeTable
 
 	/**
-	 * 	Post Merge
-	 *	@param ColumnName column name
-	 *	@param to_ID ID
+	 * 	Post Merge Operations
+	 *	@param ColumnName key column name
+	 *	@param to_ID to id
 	 */
 	public void postMerge (String ColumnName, int to_ID)
 	{

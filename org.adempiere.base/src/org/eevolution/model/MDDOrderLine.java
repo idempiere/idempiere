@@ -528,13 +528,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 		super.setQtyOrdered(QtyOrdered);
 	}	//	setQtyOrdered
 	
-	
-
-	/**************************************************************************
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if it can be sabed
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord && getParent().isProcessed()) {
@@ -542,30 +536,25 @@ public class MDDOrderLine extends X_DD_OrderLine
 			return false;
 		}
 		//	Get Defaults from Parent
-		/*if (getC_BPartner_ID() == 0 || getC_BPartner_Location_ID() == 0
-			|| getM_Warehouse_ID() == 0)
-			setOrder (getParent());*/
 		if (m_M_PriceList_ID == 0)
 			setHeaderInfo(getParent());
 		
-		//	R/O Check - Product/Warehouse Change
+		//	Validate Product/Warehouse/Locator Change
 		if (!newRecord 
 			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Locator_ID") || is_ValueChanged("M_LocatorTo_ID"))) 
 		{
 			if (!canChangeWarehouse())
 				return false;
-		}	//	Product Changed
+		}
 		
-		//	Charge
+		//	Charge line, set M_Product_ID to 0
 		if (getC_Charge_ID() != 0 && getM_Product_ID() != 0)
 				setM_Product_ID(0);
-		//	No Product
+		//	No Product, set M_AttributeSetInstance_ID to 0
 		if (getM_Product_ID() == 0)
 			setM_AttributeSetInstance_ID(0);
-		//	Product
 		
-
-		//	UOM
+		//	Default UOM
 		if (getC_UOM_ID() == 0 
 			&& (getM_Product_ID() != 0 
 				|| getC_Charge_ID() != 0))
@@ -574,13 +563,13 @@ public class MDDOrderLine extends X_DD_OrderLine
 			if (C_UOM_ID > 0)
 				setC_UOM_ID (C_UOM_ID);
 		}
-		//	Qty Precision
+		//	Enforce Qty Precision
 		if (newRecord || is_ValueChanged("QtyEntered"))
 			setQtyEntered(getQtyEntered());
 		if (newRecord || is_ValueChanged("QtyOrdered"))
 			setQtyOrdered(getQtyOrdered());
 		
-		//	Qty on instance ASI for SO
+		// Validate on hand for product line with ASI
 		if (m_IsSOTrx 
 			&& getM_AttributeSetInstance_ID() != 0
 			&& (newRecord || is_ValueChanged("M_Product_ID")
@@ -597,7 +586,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 					MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
 					isInstance = mas.isInstanceAttribute();
 				}
-				//	Max
+				// Validate on hand >= QtyOrdered if product has instance attribute 
 				if (isInstance)
 				{
 					MLocator locator_from = MLocator.get(getCtx(), getM_Locator_ID());
@@ -625,8 +614,7 @@ public class MDDOrderLine extends X_DD_OrderLine
 		if (Env.ZERO.compareTo(getFreightAmt()) != 0)
 			setFreightAmt(Env.ZERO);
 
-
-		//	Get Line No
+		//	Set Line No
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM C_OrderLine WHERE C_Order_ID=?";
@@ -634,23 +622,19 @@ public class MDDOrderLine extends X_DD_OrderLine
 			setLine (ii);
 		}
 
-
 		return true;
 	}	//	beforeSave
 
-	
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
+	@Override
 	protected boolean beforeDelete ()
 	{
-		//	R/O Check - Something delivered. etc.
+		// Can't delete if QtyDelivered is not 0
 		if (Env.ZERO.compareTo(getQtyDelivered()) != 0)
 		{
 			log.saveError("DeleteError", Msg.translate(getCtx(), "QtyDelivered") + "=" + getQtyDelivered());
 			return false;
 		}
+		// Can't delete if QtyReserved is not 0
 		if (Env.ZERO.compareTo(getQtyReserved()) != 0)
 		{
 			//	For PO should be On Order
@@ -659,33 +643,6 @@ public class MDDOrderLine extends X_DD_OrderLine
 		}
 		return true;
 	}	//	beforeDelete
-	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return saved
-	 */
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		if (!success)
-			return success;
-		
-		return true;
-	}	//	afterSave
-
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return deleted
-	 */
-	protected boolean afterDelete (boolean success)
-	{
-		if (!success)
-			return success;
-
-		return true;
-	}	//	afterDelete
 	
 	/**
 	 * Quantity To Deliver

@@ -24,11 +24,11 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
@@ -71,7 +71,6 @@ import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
 import org.zkoss.web.servlet.Servlets;
@@ -90,7 +89,6 @@ import com.lowagie.text.DocumentException;
  *  Static application environment and utilities methods.
  *
  *  @author 	Jorg Janke
- *  @version 	$Id: AEnv.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *
  *  Colin Rooney (croo) and kstan_79 RFE#1670185
  */
@@ -121,7 +119,7 @@ public final class AEnv
 	}   //  showCenterScreen
 
 	/**
-	 *  Set window position ({@link org.zkoss.zul.Window#setPosition(String)}) and show it.
+	 *  Show window at position ({@link org.zkoss.zul.Window#setPosition(String)}) and show it.
 	 * 	@param window Window to position
 	 * 	@param position
 	 */
@@ -131,7 +129,7 @@ public final class AEnv
 	}   //  showScreen
 
 	/**
-	 *	Position window in center of the parent window.
+	 *	Show window in center of the parent window.
 	 * 	@param parent Parent Window
 	 * 	@param window Window to position
 	 */
@@ -156,8 +154,7 @@ public final class AEnv
 
 	}   //  getMnemonic
 
-
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
@@ -176,7 +173,7 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
 	 *	@param AD_Table_ID
 	 *	@param Record_UU
@@ -196,7 +193,7 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
@@ -212,7 +209,7 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
-	/*************************************************************************
+	/**
 	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
 	 *	@param AD_Table_ID
 	 *	@param Record_UU
@@ -254,14 +251,11 @@ public final class AEnv
 	public static void logout()
 	{
 		String sessionID = Env.getContext(Env.getCtx(), Env.AD_SESSION_ID);
-		synchronized (windowCache)
+		CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
+		if (cache != null)
 		{
-			CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
-			if (cache != null)
-			{
-				cache.clear();
-				CacheMgt.get().unregister(cache);
-			}
+			cache.clear();
+			CacheMgt.get().unregister(cache);
 		}
 		windowCache.remove(sessionID);
 		//	End Session
@@ -301,7 +295,7 @@ public final class AEnv
 	private static final CLogger log = CLogger.getCLogger(AEnv.class);
 
 	/**	Register AD Window Cache */
-	private static Map<String, CCache<Integer,GridWindowVO>> windowCache = new HashMap<String, CCache<Integer,GridWindowVO>>();
+	private static Map<String, CCache<Integer,GridWindowVO>> windowCache = new ConcurrentHashMap<String, CCache<Integer,GridWindowVO>>();
 
 	/**
 	 *  Get VO for AD_Window
@@ -316,20 +310,17 @@ public final class AEnv
 		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = null;
 		String sessionID = Env.getContext(Env.getCtx(), Env.AD_SESSION_ID);
-		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
+		if (AD_Window_ID > 0)	//	try cache
 		{
-			synchronized (windowCache)
+			CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
+			if (cache != null)
 			{
-				CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
-				if (cache != null)
+				mWindowVO = cache.get(AD_Window_ID);
+				if (mWindowVO != null)
 				{
-					mWindowVO = cache.get(AD_Window_ID);
-					if (mWindowVO != null)
-					{
-						mWindowVO = mWindowVO.clone(WindowNo);
-						if (log.isLoggable(Level.INFO))
-							log.info("Cached=" + mWindowVO);
-					}
+					mWindowVO = mWindowVO.clone(WindowNo);
+					if (log.isLoggable(Level.INFO))
+						log.info("Cached=" + mWindowVO);
 				}
 			}
 		}
@@ -340,18 +331,15 @@ public final class AEnv
 			if (log.isLoggable(Level.CONFIG))
 				log.config("create local");
 			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
-			if (mWindowVO != null && Ini.isCacheWindow())
+			if (mWindowVO != null)
 			{
-				synchronized (windowCache)
+				CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
+				if (cache == null)
 				{
-					CCache<Integer,GridWindowVO> cache = windowCache.get(sessionID);
-					if (cache == null)
-					{
-						cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO|Session|"+sessionID, 10);
-						windowCache.put(sessionID, cache);
-					}
-					cache.put(AD_Window_ID, mWindowVO);
+					cache = new CCache<Integer, GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO|Session|"+sessionID, 10, 0, false, 0);
+					windowCache.put(sessionID, cache);
 				}
+				cache.put(AD_Window_ID, mWindowVO);
 			}
 		}	//	from Client
 		if (mWindowVO == null)
@@ -379,7 +367,7 @@ public final class AEnv
 	}   //  getWindow
 
 	/**
-	 *  Post Immediate.
+	 *  Post Immediate.<br/>
 	 *  Call {@link Doc#manualPosting(int, int, int, int, boolean)}.
 	 *  @param  WindowNo 		window
 	 *  @param  AD_Table_ID     Table ID of Document
@@ -431,7 +419,7 @@ public final class AEnv
             lookup.fillComboBox(mandatory, true, false, false, shortList); // IDEMPIERE 90
     }
     /**
-     * zoom to AD Window
+     * Zoom to AD Window
      * @param lookup lookup for zoom destination table
      * @param value record key
      */
@@ -542,7 +530,7 @@ public final class AEnv
     }
     
     /**
-     * open zoom window with query
+     * Open zoom window with query
      * @param AD_Window_ID
      * @param query
      */
@@ -626,7 +614,9 @@ public final class AEnv
 
     /**
      * @return true if client browser is firefox 2+
+     * @deprecated
      */
+    @Deprecated
     public static boolean isFirefox2() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -645,6 +635,7 @@ public final class AEnv
      * @return boolean
      * @deprecated See IDEMPIERE-1022
      */
+    @Deprecated
     public static boolean isBrowserSupported() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -676,7 +667,9 @@ public final class AEnv
 
     /**
      * @return true if user agent is internet explorer
+     * @deprecated
      */
+    @Deprecated
     public static boolean isInternetExplorer()
     {
     	Execution execution = Executions.getCurrent();
@@ -695,6 +688,7 @@ public final class AEnv
     }
 
     /**
+     * Is parent == child or parent is ancestor of child.
      * @param parent
      * @param child
      * @return true if parent == child or parent is ancestor of child.
@@ -754,6 +748,7 @@ public final class AEnv
 	}	//	getHeader
 
 	/**
+	 * Get language of context
 	 * @param ctx
 	 * @return {@link Language}
 	 */
@@ -762,6 +757,7 @@ public final class AEnv
 	}
 
 	/**
+	 * Get locale of context
 	 * @param ctx
 	 * @return {@link Locale}
 	 */
@@ -820,7 +816,7 @@ public final class AEnv
 	}
 	
 	/**
-	 * Execute synchronous task in UI thread.
+	 * Execute synchronous task in UI thread.<br/>
 	 * Use {@link Executions#activate(Desktop)} and {@link Executions#deactivate(Desktop)} pair if current thread is not UI/Listener thread.
 	 * @param runnable
 	 */
@@ -851,7 +847,9 @@ public final class AEnv
 	}
 	
 	/**
-	 * Get current desktop
+	 * Get current desktop.<br/>
+	 * Get from current executions (Executions.getCurrent()) if current thread is UI thread.<br/>
+	 * Otherwise, get from {@link DesktopRunnable#getThreadLocalDesktop()}.
 	 * @return {@link Desktop}
 	 */
 	public static Desktop getDesktop() {
@@ -894,7 +892,7 @@ public final class AEnv
 	}
 	
 	/**
-	 * 
+	 * Create WTableDirEditor for language with IsLoginLocale=Y.
 	 * @param client
 	 * @return {@link WTableDirEditor} for Language if client is with IsMultiLingualDocument=Y
 	 * @throws Exception
@@ -933,24 +931,27 @@ public final class AEnv
 	}
 
 	/**
+	 * Get link for direct access to the record using AD_Table_ID+Record_UUID
 	 * @param po
 	 * @return URL link for direct access to the record using AD_Table_ID+Record_UUID
 	 */
 	public static String getZoomUrlTableUU(PO po)
 	{
-		return getApplicationUrl() + "?Action=Zoom&AD_Table_ID=" + po.get_Table_ID() + "&Record_UU=" + po.get_UUID();
+		return getApplicationUrl() + "?Action=Zoom&TableName=" + po.get_TableName() + "&Record_UU=" + po.get_UUID();
 	}
 
 	/**
+	 * Get link for direct access to the record using AD_Table_ID+Record_ID
 	 * @param po
 	 * @return URL link for direct access to the record using AD_Table_ID+Record_ID
 	 */
 	public static String getZoomUrlTableID(PO po)
 	{
-		return getApplicationUrl() + "?Action=Zoom&AD_Table_ID=" + po.get_Table_ID() + "&Record_ID=" + po.get_ID();
+		return getApplicationUrl() + "?Action=Zoom&TableName=" + po.get_TableName() + "&Record_ID=" + po.get_ID();
 	}
 
 	/**
+	 * Get link for direct access to the record using TableName+Record_ID
 	 * @param po
 	 * @return URL link for direct access to the record using TableName+Record_ID
 	 */

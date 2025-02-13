@@ -23,10 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 
  * Iterator implementation to fetch PO one at a time using a prefetch ID list.
  * @author Low Heng Sin
- *
  */
 public class POIterator<T extends PO> implements Iterator<T> {
 
@@ -52,6 +50,7 @@ public class POIterator<T extends PO> implements Iterator<T> {
 	/**
 	 * @see java.util.Iterator#hasNext()
 	 */
+	@Override
 	public boolean hasNext() {
 		return ( iteratorIndex < (idList.size() - 1));
 	}
@@ -59,6 +58,7 @@ public class POIterator<T extends PO> implements Iterator<T> {
 	/**
 	 * @see java.util.Iterator#next()
 	 */
+	@Override
 	public T next() {
 		if ( iteratorIndex < (idList.size() - 1)) {
 			iteratorIndex ++;
@@ -71,11 +71,13 @@ public class POIterator<T extends PO> implements Iterator<T> {
 	/**
 	 * not supported.
 	 */
+	@Override
 	public void remove() {
 		throw new UnsupportedOperationException("Remove operatiotn not supported.");
 	}
 	
 	/**
+	 * Get number of records
 	 * @return number of records
 	 */
 	public int size() {
@@ -83,6 +85,7 @@ public class POIterator<T extends PO> implements Iterator<T> {
 	}
 	
 	/**
+	 * Get PO at index
 	 * @param index
 	 * @return PO or null if index is invalid
 	 */

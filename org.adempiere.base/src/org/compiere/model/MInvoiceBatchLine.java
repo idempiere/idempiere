@@ -90,16 +90,10 @@ public class MInvoiceBatchLine extends X_C_InvoiceBatchLine
 		super (ctx, rs, trxName);
 	}	//	MInvoiceBatchLine
 	
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		// Amount
+		// PriceEntered is mandatory
 		if (getPriceEntered().signum() == 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "PriceEntered"));
@@ -108,18 +102,12 @@ public class MInvoiceBatchLine extends X_C_InvoiceBatchLine
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save.
-	 * 	Update Header.
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (success)
 		{
+			// Update DocumentAmt of Invoice Batch
 			StringBuilder sql = new StringBuilder("UPDATE C_InvoiceBatch h ")
 				.append("SET DocumentAmt = NVL((SELECT SUM(LineTotalAmt) FROM C_InvoiceBatchLine l ")
 					.append("WHERE h.C_InvoiceBatch_ID=l.C_InvoiceBatch_ID AND l.IsActive='Y'),0) ")

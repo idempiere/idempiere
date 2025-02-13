@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Env;
 
 /**
- * 
+ * Payment form for on credit tender type
  * @author Elaine
  *
  */
@@ -36,7 +36,6 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 	protected int 				m_C_PaymentTerm_ID = 0;
 	
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
 	 */
@@ -53,8 +52,8 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 	protected KeyNamePair selectedPaymentTerm = null;
 	
 	/**
-	 * set selected payment term and return list of payment term records
-	 * @return list of active payment terms
+	 * Set selected payment term and return list of payment term records
+	 * @return list of active payment terms (C_PaymentTerm_ID, Name)
 	 */
 	public ArrayList<KeyNamePair> getPaymentTermList() {
 		selectedPaymentTerm = null;

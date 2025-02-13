@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tab
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tab")
 public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -185,34 +185,6 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
-			.getPO(getAD_Column_ID(), get_TrxName());
-	}
-
-	/** Set Column.
-		@param AD_Column_ID Column in the table
-	*/
-	public void setAD_Column_ID (int AD_Column_ID)
-	{
-		if (AD_Column_ID < 1)
-			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
-	}
-
-	/** Get Column.
-		@return Column in the table
-	  */
-	public int getAD_Column_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_Column getAD_ColumnSortOrder() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -264,6 +236,34 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public int getAD_ColumnSortYesNo_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ColumnSortYesNo_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
+
+	/** Set Column.
+		@param AD_Column_ID Column in the table
+	*/
+	public void setAD_Column_ID (int AD_Column_ID)
+	{
+		if (AD_Column_ID < 1)
+			set_Value (COLUMNNAME_AD_Column_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
+	}
+
+	/** Get Column.
+		@return Column in the table
+	  */
+	public int getAD_Column_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -352,6 +352,29 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return ii.intValue();
 	}
 
+	/** AD_TabType AD_Reference_ID=200117 */
+	public static final int AD_TABTYPE_AD_Reference_ID=200117;
+	/** Form = FORM */
+	public static final String AD_TABTYPE_Form = "FORM";
+	/** Sort = SORT */
+	public static final String AD_TABTYPE_Sort = "SORT";
+	/** Set Tab Type.
+		@param AD_TabType Defines Tab Type
+	*/
+	public void setAD_TabType (String AD_TabType)
+	{
+
+		set_Value (COLUMNNAME_AD_TabType, AD_TabType);
+	}
+
+	/** Get Tab Type.
+		@return Defines Tab Type
+	  */
+	public String getAD_TabType()
+	{
+		return (String)get_Value(COLUMNNAME_AD_TabType);
+	}
+
 	/** Set Tab.
 		@param AD_Tab_ID Tab within a Window
 	*/
@@ -372,6 +395,21 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set AD_Tab_UU.
+		@param AD_Tab_UU AD_Tab_UU
+	*/
+	public void setAD_Tab_UU (String AD_Tab_UU)
+	{
+		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
+	}
+
+	/** Get AD_Tab_UU.
+		@return AD_Tab_UU	  */
+	public String getAD_Tab_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
@@ -400,44 +438,6 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** AD_TabType AD_Reference_ID=200117 */
-	public static final int AD_TABTYPE_AD_Reference_ID=200117;
-	/** Form = FORM */
-	public static final String AD_TABTYPE_Form = "FORM";
-	/** Sort = SORT */
-	public static final String AD_TABTYPE_Sort = "SORT";
-	/** Set Tab Type.
-		@param AD_TabType Defines Tab Type
-	*/
-	public void setAD_TabType (String AD_TabType)
-	{
-
-		set_Value (COLUMNNAME_AD_TabType, AD_TabType);
-	}
-
-	/** Get Tab Type.
-		@return Defines Tab Type
-	  */
-	public String getAD_TabType()
-	{
-		return (String)get_Value(COLUMNNAME_AD_TabType);
-	}
-
-	/** Set AD_Tab_UU.
-		@param AD_Tab_UU AD_Tab_UU
-	*/
-	public void setAD_Tab_UU (String AD_Tab_UU)
-	{
-		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
-	}
-
-	/** Get AD_Tab_UU.
-		@return AD_Tab_UU	  */
-	public String getAD_Tab_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException

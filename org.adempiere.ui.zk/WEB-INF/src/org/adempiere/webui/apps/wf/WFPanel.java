@@ -55,7 +55,7 @@ import org.zkoss.zul.South;
 public class WFPanel extends Borderlayout implements EventListener<Event>, IHelpContext
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3748544216557474367L;
 
@@ -85,7 +85,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	}	//	WFPanel
 
 	/**	Window No			*/
-	@SuppressWarnings("unused")
 	private int         m_WindowNo = 0;
 
 
@@ -95,15 +94,14 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	/**	Logger			*/
 	private static final CLogger	log = CLogger.getCLogger(WFPanel.class);
 	
-	//	IO
+	/** Workflow node container */
 	private WFNodeContainer nodeContainer = new WFNodeContainer();
 	
 	private Html infoTextPane = new Html();
 	private Div contentPanel = new Div();
 	//
 	private Table table;
-	
-	
+		
 	/**
 	 * 	Static Init
 	 *  <pre>
@@ -154,7 +152,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	{
 		SessionManager.getAppDesktop().closeActiveWindow();
 	}	//	dispose
-
 	
 	/**
 	 * 	Load Workflow and Nodes
@@ -189,7 +186,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 			}
 		}
 				
-		
+		// render workflow graph as image
 		Dimension dimension = nodeContainer.getDimension();
 		BufferedImage bi = new BufferedImage (dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = bi.createGraphics();
@@ -202,6 +199,8 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 			for(int i = 0; i < row; i++) {
 				Tr tr = new Tr();
 				table.appendChild(tr);
+				
+				// get image for each node and add to html table
 				for(int c = 0; c < maxCol; c++) {
 					BufferedImage t = new BufferedImage(WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 					Graphics2D tg = t.createGraphics();
@@ -258,6 +257,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("WorkflowPanel[");
@@ -267,11 +267,16 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		return sb.toString();
 	}	//	toString
 	
+	/**
+	 * Get workflow model
+	 * @return workflow model
+	 */
 	public MWorkflow getWorkflow() 
 	{
 		return m_wf;
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_CLICK.equals(event.getName())) {
 			Integer id = (Integer) event.getTarget().getAttribute("AD_WF_Node_ID");
@@ -302,6 +307,10 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
         }
 	}
 
+	/**
+	 * Launch action for workflow node
+	 * @param wfn
+	 */
 	private void start(MWFNode wfn) {
 		String action = wfn.getAction();
 		if (MWFNode.ACTION_UserWindow.equals(action) && wfn.getAD_Window_ID() > 0) {

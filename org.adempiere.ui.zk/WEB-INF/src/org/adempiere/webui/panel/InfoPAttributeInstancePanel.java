@@ -310,8 +310,6 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 		}
 	}
 
-
- 
 	/**
 	 * 	Table selection changed
 	 *	@param e event

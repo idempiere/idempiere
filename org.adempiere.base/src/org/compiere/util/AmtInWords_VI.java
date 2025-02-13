@@ -80,6 +80,7 @@ public class AmtInWords_VI implements AmtInWords
 		" triệu ",
 		" tỉ "
 	};
+	
 	/** numbers to 99				*/
 	private static final String[]	numNames	= { 
 		"", 
@@ -188,8 +189,7 @@ public class AmtInWords_VI implements AmtInWords
 	 * 	Convert Less Than One Thousand
 	 *	@param number
 	 *	@return amt
-	 */
-	
+	 */	
 	private String convertLessThanOneThousand (int number)
 	{
 		String soFar = "";
@@ -226,7 +226,7 @@ public class AmtInWords_VI implements AmtInWords
 		String soFar = "";
 		
 		int place = 0;
-	do
+		do
 		{
 			long n = number % 1000;
 			if (n != 0)
@@ -254,14 +254,14 @@ public class AmtInWords_VI implements AmtInWords
 		}
 		return (prefix + soFar).trim ();
 	}	//	convert
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)
@@ -326,7 +326,7 @@ public class AmtInWords_VI implements AmtInWords
 			dollars = Long.parseLong(amount.substring(0,amount.length()));
 			sb.append (convert(dollars));
 		}
-	return sb.toString ().replaceAll("  ", " ").replaceAll("linh nghìn", "nghìn").replaceAll("linh triệu","triệu").replaceAll("linh tỉ","tỉ");
+		return sb.toString ().replaceAll("  ", " ").replaceAll("linh nghìn", "nghìn").replaceAll("linh triệu","triệu").replaceAll("linh tỉ","tỉ");
 	}	//	getAmtInWords
 
 	/**
@@ -352,7 +352,6 @@ public class AmtInWords_VI implements AmtInWords
 	public static void main (String[] args)
 	{
 		AmtInWords_VI aiw = new AmtInWords_VI();
-	//	aiw.print (".23");	Error
 		aiw.print ("0.23");
 		aiw.print ("1.23");
 		aiw.print ("12,345");

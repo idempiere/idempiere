@@ -36,14 +36,13 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Separator;
 
 /**
- * 
+ * Window to show and print shipping label image from attachment
  * @author Elaine
- *
  */
 public class FedexLabelWindow extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 8850485069628076246L;
 	private List<MAttachmentEntry> images;
@@ -60,6 +59,9 @@ public class FedexLabelWindow extends Window implements EventListener<Event>
 		init();
 	}
 	
+	/**
+	 * Layout window
+	 */
 	private void init()
 	{
 		this.setBorder("normal");
@@ -100,6 +102,10 @@ public class FedexLabelWindow extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Get shipping label image from attachment
+	 * @throws Exception
+	 */
 	private void loadContent() throws Exception 
 	{
 		MAttachmentEntry entry = (MAttachmentEntry) lbx.getSelectedItem().getValue();
@@ -120,6 +126,7 @@ public class FedexLabelWindow extends Window implements EventListener<Event>
 		content.setContent(media);
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception 
 	{
 		if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
@@ -128,6 +135,7 @@ public class FedexLabelWindow extends Window implements EventListener<Event>
 			loadContent();
 		else if (event.getTarget().getId().equals(ConfirmPanel.A_PRINT))
 		{
+			// Send script to call browser's print dialog
 			content.focus();
 			String script = "frames['" + content.getUuid() + "'].contentWindow.print()";
 			if (Executions.getCurrent() != null)

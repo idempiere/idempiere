@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PackageMPS
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_PackageMPS")
 public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_PackageMPS (Properties ctx, int M_PackageMPS_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
       super (ctx, M_PackageMPS_ID, trxName);
       /** if (M_PackageMPS_ID == 0)
         {
-			setM_Package_ID (0);
 			setM_PackageMPS_ID (0);
+			setM_Package_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -54,8 +54,8 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
       super (ctx, M_PackageMPS_ID, trxName, virtualColumns);
       /** if (M_PackageMPS_ID == 0)
         {
-			setM_Package_ID (0);
 			setM_PackageMPS_ID (0);
+			setM_Package_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -67,8 +67,8 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
       super (ctx, M_PackageMPS_UU, trxName);
       /** if (M_PackageMPS_UU == null)
         {
-			setM_Package_ID (0);
 			setM_PackageMPS_ID (0);
+			setM_Package_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -80,8 +80,8 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
       super (ctx, M_PackageMPS_UU, trxName, virtualColumns);
       /** if (M_PackageMPS_UU == null)
         {
-			setM_Package_ID (0);
 			setM_PackageMPS_ID (0);
+			setM_Package_ID (0);
 			setProcessed (false);
 // N
         } */
@@ -114,22 +114,6 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	/** Set Create lines from.
-		@param CreateFrom Process which will generate a new document lines based on an existing document
-	*/
-	public void setCreateFrom (String CreateFrom)
-	{
-		set_Value (COLUMNNAME_CreateFrom, CreateFrom);
-	}
-
-	/** Get Create lines from.
-		@return Process which will generate a new document lines based on an existing document
-	  */
-	public String getCreateFrom()
-	{
-		return (String)get_Value(COLUMNNAME_CreateFrom);
-	}
 
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
 	{
@@ -185,6 +169,22 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Create lines from.
+		@param CreateFrom Process which will generate a new document lines based on an existing document
+	*/
+	public void setCreateFrom (String CreateFrom)
+	{
+		set_Value (COLUMNNAME_CreateFrom, CreateFrom);
+	}
+
+	/** Get Create lines from.
+		@return Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateFrom()
+	{
+		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
 	/** Set Description.
@@ -256,19 +256,40 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 		return bd;
 	}
 
-	/** Set Master Tracking No.
-		@param MasterTrackingNo Master Tracking No
+	/** Set Package MPS.
+		@param M_PackageMPS_ID Package MPS
 	*/
-	public void setMasterTrackingNo (String MasterTrackingNo)
+	public void setM_PackageMPS_ID (int M_PackageMPS_ID)
 	{
-		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
+		if (M_PackageMPS_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_PackageMPS_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_PackageMPS_ID, Integer.valueOf(M_PackageMPS_ID));
 	}
 
-	/** Get Master Tracking No.
-		@return Master Tracking No	  */
-	public String getMasterTrackingNo()
+	/** Get Package MPS.
+		@return Package MPS	  */
+	public int getM_PackageMPS_ID()
 	{
-		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_PackageMPS_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set M_PackageMPS_UU.
+		@param M_PackageMPS_UU M_PackageMPS_UU
+	*/
+	public void setM_PackageMPS_UU (String M_PackageMPS_UU)
+	{
+		set_Value (COLUMNNAME_M_PackageMPS_UU, M_PackageMPS_UU);
+	}
+
+	/** Get M_PackageMPS_UU.
+		@return M_PackageMPS_UU	  */
+	public String getM_PackageMPS_UU()
+	{
+		return (String)get_Value(COLUMNNAME_M_PackageMPS_UU);
 	}
 
 	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException
@@ -307,40 +328,19 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
         return new KeyNamePair(get_ID(), String.valueOf(getM_Package_ID()));
     }
 
-	/** Set Package MPS.
-		@param M_PackageMPS_ID Package MPS
+	/** Set Master Tracking No.
+		@param MasterTrackingNo Master Tracking No
 	*/
-	public void setM_PackageMPS_ID (int M_PackageMPS_ID)
+	public void setMasterTrackingNo (String MasterTrackingNo)
 	{
-		if (M_PackageMPS_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_PackageMPS_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_PackageMPS_ID, Integer.valueOf(M_PackageMPS_ID));
+		set_Value (COLUMNNAME_MasterTrackingNo, MasterTrackingNo);
 	}
 
-	/** Get Package MPS.
-		@return Package MPS	  */
-	public int getM_PackageMPS_ID()
+	/** Get Master Tracking No.
+		@return Master Tracking No	  */
+	public String getMasterTrackingNo()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_PackageMPS_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set M_PackageMPS_UU.
-		@param M_PackageMPS_UU M_PackageMPS_UU
-	*/
-	public void setM_PackageMPS_UU (String M_PackageMPS_UU)
-	{
-		set_Value (COLUMNNAME_M_PackageMPS_UU, M_PackageMPS_UU);
-	}
-
-	/** Get M_PackageMPS_UU.
-		@return M_PackageMPS_UU	  */
-	public String getM_PackageMPS_UU()
-	{
-		return (String)get_Value(COLUMNNAME_M_PackageMPS_UU);
+		return (String)get_Value(COLUMNNAME_MasterTrackingNo);
 	}
 
 	/** Set Price.

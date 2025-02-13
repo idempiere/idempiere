@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_TransactionAllocation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_TransactionAllocation")
 public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllocation, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_TransactionAllocation (Properties ctx, int M_TransactionAllocation_ID, String trxName)

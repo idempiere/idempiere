@@ -62,8 +62,8 @@ import org.zkoss.zul.South;
  * This class represents the Custom Form for generating charges
  * from natural accounts.
  * <br/>
- * The form is comprised of two parts.
- * The upper portion can be used to create new charges using the general charge accounts.
+ * The form is comprised of two parts.<br/>
+ * The upper portion can be used to create new charges using the general charge accounts.<br/>
  * The lower portion can be used to create charges based on the natural account.
  *
  * @author Andrew Kimball
@@ -356,7 +356,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 
     /**
      *  Creates Charges from Accounts.<br/>
-     *  Charges are created for the selected accounts.
+     *  Charges are created for the selected accounts.<br/>
      *  The selection is cleared upon completion.
      */
     private void createAccount()

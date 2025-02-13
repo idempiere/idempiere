@@ -16,14 +16,13 @@ package org.adempiere.webui.util;
 import org.zkoss.zul.Treeitem;
 
 /**
- * 
+ * Interface for action on {@link Treeitem}
  * @author hengsin
- *
  */
 public interface TreeItemAction {
 
 	/**
-	 * 
+	 * Perform action on treeItem 
 	 * @param treeItem
 	 */
 	public void run(Treeitem treeItem);

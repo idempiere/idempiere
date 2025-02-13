@@ -12,11 +12,16 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.util.logging.Level;
+
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
+/**
+ * Process to drop a DB view
+ */
 @org.adempiere.base.annotation.Process
 public class DatabaseViewDrop extends SvrProcess {
 
@@ -32,7 +37,7 @@ public class DatabaseViewDrop extends SvrProcess {
 	protected String doIt() throws Exception 
 	{
 		MTable table = new MTable(getCtx(), p_AD_Table_ID, get_TrxName());
-		log.info(table.toString());
+		if (log.isLoggable(Level.INFO)) log.info(table.toString());
 		if (!table.isView() || !table.isActive())
 			throw new AdempiereException(Msg.getMsg(getCtx(), "NotActiveDatabaseView"));
 

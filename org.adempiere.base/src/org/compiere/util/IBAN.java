@@ -15,13 +15,15 @@ package org.compiere.util;
 
 import org.apache.commons.validator.routines.IBANValidator;
 
+/**
+ * https://www.swift.com/standards/data-standards/iban-international-bank-account-number
+ */
 public class IBAN {
 	
 	/**
 	 * @param iban
 	 * @return normalized IBAN
-	 */
-	
+	 */	
 	public static String normalizeIBAN(String iban)
 	{
 		if (iban!=null)
@@ -34,8 +36,7 @@ public class IBAN {
 	/**
 	 * @param iban
 	 * @return boolean indicating if specific IBAN is valid
-	 */
-	
+	 */	
 	public static boolean isValid(String iban) {
 		IBANValidator iBANValidator = IBANValidator.getInstance() ;
 		

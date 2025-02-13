@@ -25,7 +25,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for C_ProjectIssueMA
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssueMA")
 public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_ProjectIssueMA (Properties ctx, int C_ProjectIssueMA_ID, String trxName)
@@ -111,6 +111,21 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
       return sb.toString();
     }
 
+	/** Set C_ProjectIssueMA_UU.
+		@param C_ProjectIssueMA_UU C_ProjectIssueMA_UU
+	*/
+	public void setC_ProjectIssueMA_UU (String C_ProjectIssueMA_UU)
+	{
+		set_Value (COLUMNNAME_C_ProjectIssueMA_UU, C_ProjectIssueMA_UU);
+	}
+
+	/** Get C_ProjectIssueMA_UU.
+		@return C_ProjectIssueMA_UU	  */
+	public String getC_ProjectIssueMA_UU()
+	{
+		return (String)get_Value(COLUMNNAME_C_ProjectIssueMA_UU);
+	}
+
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_ID)
@@ -146,21 +161,6 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
     {
         return new ValueNamePair(get_UUID(), String.valueOf(getC_ProjectIssue_ID()));
     }
-
-	/** Set C_ProjectIssueMA_UU.
-		@param C_ProjectIssueMA_UU C_ProjectIssueMA_UU
-	*/
-	public void setC_ProjectIssueMA_UU (String C_ProjectIssueMA_UU)
-	{
-		set_Value (COLUMNNAME_C_ProjectIssueMA_UU, C_ProjectIssueMA_UU);
-	}
-
-	/** Get C_ProjectIssueMA_UU.
-		@return C_ProjectIssueMA_UU	  */
-	public String getC_ProjectIssueMA_UU()
-	{
-		return (String)get_Value(COLUMNNAME_C_ProjectIssueMA_UU);
-	}
 
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{

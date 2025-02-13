@@ -55,7 +55,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>${url.file.srv}/extra.jar/idempiere-xmlbeans-1.0.jar</url>
+							<url>${url.file.srv}/extra.jar/idempiere-xmlbeans-2.0.jar</url>
 							<unpack>false</unpack>
 							<outputDirectory>lib</outputDirectory>
 							<retries>5</retries>

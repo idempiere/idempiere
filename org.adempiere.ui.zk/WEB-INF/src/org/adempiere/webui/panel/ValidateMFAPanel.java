@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereIdGenerator;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
@@ -368,13 +369,8 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			rd.setMFADeviceIdentifier(cookieValue);
 			long daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
 			rd.setExpiration(new Timestamp(System.currentTimeMillis() + (daysExpire * 86400000L)));
-			// TODO: rd.setHelp -> add information about the browser, device and IP address (fingerprint)
-			try {
-				PO.setCrossTenantSafe();
-				rd.saveEx();
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			rd.setHelp(ClientInfo.get().userAgent);
+			rd.saveCrossTenantSafeEx();
 		}
 		Env.setContext(m_ctx, "#MFA_Registration_ID", registrationId);
 

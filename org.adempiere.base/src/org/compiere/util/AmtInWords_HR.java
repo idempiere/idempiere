@@ -1,12 +1,3 @@
-package org.compiere.util;
-
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-import static java.math.BigDecimal.valueOf;
-import java.util.HashMap;
-import java.util.Map;
 /******************************************************************************
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
@@ -23,8 +14,14 @@ import java.util.Map;
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
+package org.compiere.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
+import static java.math.BigDecimal.valueOf;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *	Amount in Words for Croatian
@@ -65,8 +62,7 @@ public class AmtInWords_HR implements AmtInWords
   // private final static String RAZMAK = "";
 
   /**
-   * Vraća dani broj napisan slovima, u valuti (kune). Broj mora biti
-između
+   * Vraća dani broj napisan slovima, u valuti (kune). Broj mora biti između
    * -10^100 i 10^100. Bit će automatski zaokružen na dvije decimale.
    *
    * @param broj
@@ -92,8 +88,7 @@ između
   }
 
   /**
-   * Vraća dani broj napisan slovima. Broj mora biti između -10^100 i
-10^100.
+   * Vraća dani broj napisan slovima. Broj mora biti između -10^100 i 10^100.
    * Decimale se ignoriraju (dakle režu, a ne zaokružuju).
    *
    * @param broj
@@ -104,46 +99,31 @@ između
   }
 
   /**
-   * Vraća dani broj napisan slovima. Broj mora biti između -10^100 i
-10^100.
+   * Vraća dani broj napisan slovima. Broj mora biti između -10^100 i 10^100.
    * Decimale se ignoriraju (dakle režu, a ne zaokružuju).
    *
    * @param broj
-   * @param jedinica u nominativu ("kuna", "lipa", "tisuća",
-"milijun"); može
+   * @param jedinica u nominativu ("kuna", "lipa", "tisuća", "milijun"); može
    *        biti null
    * @return broj napisan slovima
    */
-  public static StringBuilder slovima(BigDecimal broj, String
-jedinica) {
+  public static StringBuilder slovima(BigDecimal broj, String jedinica) {
     return slovima(broj, jedinica, false, false);
   }
 
   /**
-   * Privatne i cacheirane varijable - pune se samo kod prvog
-instanciranja
+   * Privatne i cacheirane varijable - pune se samo kod prvog instanciranja
    * klase.
    */
-
   private final static BigDecimal googol = valueOf(10).pow(100);
 
   private final static BigDecimal dvadeset = valueOf(20);
 
-  private final static Map<Integer, String> brojevi = new
-HashMap<Integer, String>(39);
+  private final static Map<Integer, String> brojevi = new HashMap<Integer, String>(39);
 
-  private final static Map<Integer, String> potencije = new
-HashMap<Integer, String>(27);
+  private final static Map<Integer, String> potencije = new HashMap<Integer, String>(27);
 
   private final static String[][] nominativi = {
-    // redom:
-    // sufiks nominativa (-a za "tisuća")
-    // sufiks kad je jedan ali bez broja ispred (-u za "tisuću")
-    // sufiks kad ide nakon broja jedan (-a za "jedna tisuća")
-    // sufiks kad ide nakon brojeva dva do pet (-e za "dvije tisuće")
-    // sufiks koji ide nakon svih ostalih brojeva (-a za "nula
-//tisuća",
-    // "pet tisuća")
     { "da", "a", "a", "e",  "i"  },
     { "a",  "u", "a", "e",  "a"  },
     { "n",  "n", "n", "na", "na" },
@@ -151,11 +131,6 @@ HashMap<Integer, String>(27);
 
   // statički blok za napuniti hashmapove kod učitavanja klase
   static {
-    // izuzeci za slučaj kad je imenica iza broja ženskog roda, stavit
-//ćemo
-    // kao negativne da iskoristimo istu mapu; svi ostali brojevi su
-//za
-    // ženski rod isti kao i za muški
     brojevi.put(-1, "jedna");
     brojevi.put(-2, "dvije");
 
@@ -242,22 +217,18 @@ HashMap<Integer, String>(27);
   }
 
   /**
-   * Vraća dani broj napisan slovima. Broj mora biti između -10^66 i
-10^66.
+   * Vraća dani broj napisan slovima. Broj mora biti između -10^66 i 10^66.
    * Decimale se ignoriraju (dakle režu, a ne zaokružuju).
    *
    * @param broj
-   * @param jedinica u nominativu ("kuna", "lipa", "tisuća",
-"milijun"); može
+   * @param jedinica u nominativu ("kuna", "lipa", "tisuća", "milijun"); može
    *        biti null
-   * @param jediniceBezBroja false kada je jedinica valuta, a ne
-brojčana
+   * @param jediniceBezBroja false kada je jedinica valuta, a ne brojčana
    *        jedinica
    * @param rekurzija true kad ova metoda poziva samu sebe
    * @return broj napisan slovima
    */
-  private static StringBuilder slovima(BigDecimal broj, String
-jedinica, boolean jediniceBezBroja, boolean rekurzija) {
+  private static StringBuilder slovima(BigDecimal broj, String jedinica, boolean jediniceBezBroja, boolean rekurzija) {
     StringBuilder rezultat = new StringBuilder();
 
     // za negativne iznose - stavi minus i radi dalje s pozitivnim
@@ -311,75 +282,67 @@ jedinica, boolean jediniceBezBroja, boolean rekurzija) {
       // "i" ispred jedinica - ista logika kao i gore, s tim da je
       // još dodana provjera koja osigurava da se "i" dodaje samo za
       // jedinice a ne i veće brojeve
-      if (!jediniceBezBroja && rekurzija &&
-broj.compareTo(valueOf(10)) == -1)
+      if (!jediniceBezBroja && rekurzija && broj.compareTo(valueOf(10)) == -1)
         rezultat.append(I.length() > 1 ? I.substring(1) : I);
 
-      rezultat.append(dekliniraj(broj.intValue(), jedinica, false));
-    } else if (potencija < 2) {
-      // brojevi od 20 do 99
+        rezultat.append(dekliniraj(broj.intValue(), jedinica, false));
+      } else if (potencija < 2) {
+	      // brojevi od 20 do 99
+	
+	      // .movePointRight je brži način potenciranja ako se radi
+	      // potenciranje broja 10; ostatak je u ovom slučaju zadnja
+	      // znamenka (npr. 4 za 34)
+	      int ostatak = broj.remainder(valueOf(1).movePointRight(potencija)).intValue();
+	
+	      // "dvadeset", "trideset"...
+	
+	rezultat.append(brojevi.get(broj.subtract(valueOf(ostatak)).intValue()));
+	      if (ostatak > 0) {
+	        // "i" ispred jedinica - "dvadeset i jedan" ili "dvadeset
+	//jedan"
+	        rezultat.append(I.length() > 0 ? I : RAZMAK);
+	
+	        // deklinirani ostatak i jedinica (kuna, lipa, tisuća...)
+	        rezultat.append(dekliniraj(ostatak, jedinica, false));
+	      } else if (jedinica != null) {
+	        // ako nema ostatka, onda samo stavi "kuna", "lipa",
+	//"tisuća"...
+	        rezultat.append(RAZMAK);
+	        rezultat.append(jedinica);
+	      }
+      } else if (potencija < 3) {
+	      // brojevi od 100 do 999
+	      BigDecimal ostatak = broj.remainder(valueOf(1).movePointRight(potencija));
+	      if (ostatak.compareTo(valueOf(0)) == 1) {
+	        // "sto", "dvjesto"...
+	
+	    	rezultat.append(brojevi.get(broj.subtract(ostatak).intValue()));
+	        rezultat.append(RAZMAK);
+	        rezultat.append(slovima(ostatak, jedinica, jediniceBezBroja, true));
+	      } else {
+	        rezultat.append(dekliniraj(broj.subtract(ostatak).intValue(), jedinica, false));
+	      }
+	  } else {
+	      // svi ostali brojevi
+	
+	      // prva niža potencija djeljiva sa tri (dakle ona za koju
+	//postoji
+	      // ekvivalent u mapi s potencijama)
+	      int punaPotencija = potencija - potencija % 3;
+	      BigDecimal ostatak = broj.remainder(valueOf(1).movePointRight(punaPotencija));
+	
+	      rezultat.append(slovima(broj.subtract(ostatak).movePointLeft(punaPotencija),
+	    		  potencije.get(punaPotencija), true, true));
+	      if (ostatak.compareTo(valueOf(0)) == 1) {
+	        rezultat.append(RAZMAK);
+	        rezultat.append(slovima(ostatak, jedinica, jediniceBezBroja, true));
+	      } else if (jedinica != null) {
+	        rezultat.append(RAZMAK);
+	        rezultat.append(jedinica);
+	      }
+     }
 
-      // .movePointRight je brži način potenciranja ako se radi
-      // potenciranje broja 10; ostatak je u ovom slučaju zadnja
-      // znamenka (npr. 4 za 34)
-      int ostatak =
-broj.remainder(valueOf(1).movePointRight(potencija)).intValue();
-
-      // "dvadeset", "trideset"...
-
-rezultat.append(brojevi.get(broj.subtract(valueOf(ostatak)).intValue()));
-      if (ostatak > 0) {
-        // "i" ispred jedinica - "dvadeset i jedan" ili "dvadeset
-//jedan"
-        rezultat.append(I.length() > 0 ? I : RAZMAK);
-
-        // deklinirani ostatak i jedinica (kuna, lipa, tisuća...)
-        rezultat.append(dekliniraj(ostatak, jedinica, false));
-      } else if (jedinica != null) {
-        // ako nema ostatka, onda samo stavi "kuna", "lipa",
-//"tisuća"...
-        rezultat.append(RAZMAK);
-        rezultat.append(jedinica);
-      }
-    } else if (potencija < 3) {
-      // brojevi od 100 do 999
-      BigDecimal ostatak =
-broj.remainder(valueOf(1).movePointRight(potencija));
-      if (ostatak.compareTo(valueOf(0)) == 1) {
-        // "sto", "dvjesto"...
-
-rezultat.append(brojevi.get(broj.subtract(ostatak).intValue()));
-        rezultat.append(RAZMAK);
-        rezultat.append(slovima(ostatak, jedinica, jediniceBezBroja,
-true));
-      } else {
-        rezultat.append(dekliniraj(broj.subtract(ostatak).intValue(),
-jedinica, false));
-      }
-    } else {
-      // svi ostali brojevi
-
-      // prva niža potencija djeljiva sa tri (dakle ona za koju
-//postoji
-      // ekvivalent u mapi s potencijama)
-      int punaPotencija = potencija - potencija % 3;
-      BigDecimal ostatak =
-broj.remainder(valueOf(1).movePointRight(punaPotencija));
-
-rezultat.append(slovima(broj.subtract(ostatak).movePointLeft(punaPotencija),
-potencije.get(punaPotencija),
-          true, true));
-      if (ostatak.compareTo(valueOf(0)) == 1) {
-        rezultat.append(RAZMAK);
-        rezultat.append(slovima(ostatak, jedinica, jediniceBezBroja,
-true));
-      } else if (jedinica != null) {
-        rezultat.append(RAZMAK);
-        rezultat.append(jedinica);
-      }
-    }
-
-    return rezultat;
+     return rezultat;
   }
 
   /**
@@ -395,31 +358,24 @@ true));
     // varijanta na: je li broj veći ili jednak deset - ako je,
 //povećaj
     // potenciju; je li broj veći ili jednak od sto...
-    for (BigDecimal i = deset; i.compareTo(broj) < 1; i =
-i.multiply(deset))
+    for (BigDecimal i = deset; i.compareTo(broj) < 1; i = i.multiply(deset))
       potencija++;
 
     return potencija;
   }
 
   /**
-   * Deklinira imenice koje završavaju na -a ili -n u nominativu. Ako
-je
+   * Deklinira imenice koje završavaju na -a ili -n u nominativu. Ako je
    * nominativ null, onda vraća samo broj u muškom rodu.
    *
    * @param znamenka 0-20
-   * @param nominativ ("kuna", "lipa", "tisuća", "milijun"); može biti
-null
-   * @param jedinceBezBroja ako je ovaj flag dignut, onda se preskače
-broj i
-   *        vraća se samo jedinica, npr. "milijarda" umjesto "jedna
-milijarda"
+   * @param nominativ ("kuna", "lipa", "tisuća", "milijun"); može biti null
+   * @param jedinceBezBroja ako je ovaj flag dignut, onda se preskače broj i
+   *        vraća se samo jedinica, npr. "milijarda" umjesto "jedna milijarda"
    * @return broj i imenicu dekliniranu s obzirom na broj ispred nje
-   * @throws IllegalArgumentException ako nominativ ne završava na -n
-ili -a
+   * @throws IllegalArgumentException ako nominativ ne završava na -n ili -a
    */
-  private static String dekliniraj(int znamenka, String nominativ,
-boolean jedinceBezBroja) {
+  private static String dekliniraj(int znamenka, String nominativ, boolean jedinceBezBroja) {
     if (nominativ == null)
       // nema nominativa - vrati samo broj u muškom rodu
       return brojevi.get(znamenka);
@@ -428,8 +384,7 @@ boolean jedinceBezBroja) {
 //nominativi
       for (int i = 0; i < nominativi.length; i++) {
         if (nominativ.endsWith(nominativi[i][0])) {
-          String korijen = nominativ.substring(0, nominativ.length() -
-1);
+          String korijen = nominativ.substring(0, nominativ.length() - 1);
           String broj = null;
 
           // je li nominativ u ženskom rodu?
@@ -460,13 +415,13 @@ boolean jedinceBezBroja) {
     throw new IllegalArgumentException("nominativ '" + nominativ + "'ne znam deklinirati!");
   }
 
-
-	/**************************************************************************
+    /**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+    @Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)
@@ -505,7 +460,6 @@ boolean jedinceBezBroja) {
 	public static void main (String[] args)
 	{
 		AmtInWords_HR aiw = new AmtInWords_HR();
-	//	aiw.print (".23");	Error
 		aiw.print("263.52");
         aiw.print ("0.23");
 		aiw.print ("1.23");

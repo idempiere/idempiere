@@ -302,13 +302,10 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 
 	}
 	
-	/**
-	 * 	Before Delete
-	 *	@return true of it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
+		// Delete lines
 		int[] ids =MEXPFormatLine.getAllIDs(MEXPFormatLine.Table_Name, "EXP_Format_ID="+getEXP_Format_ID(), get_TrxName());
 		for (int id : ids)
 		{

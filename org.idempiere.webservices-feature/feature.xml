@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.webservices.feature"
       label="Web Service Feature"
-      version="11.0.0.qualifier"
+      version="13.0.0.qualifier"
       provider-name="iDempiere">
 
    <description url="http://www.example.com/description">
@@ -99,7 +99,7 @@
 
    <plugin
          id="org.glassfish.hk2.osgi-resource-locator"
-         version="1.0.3"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.glassfish.hk2.utils"
@@ -119,10 +119,6 @@
 
    <plugin
          id="org.glassfish.jersey.media.jersey-media-json-jackson"
-         version="0.0.0"/>
-
-   <plugin
-         id="com.google.gson"
          version="0.0.0"/>
 
    <plugin
@@ -186,11 +182,19 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.codehaus.jettison.jettison"
+         id="org.idempiere.webservices.resources"
          version="0.0.0"/>
 
    <plugin
-         id="org.idempiere.webservices.resources"
+         id="javassist"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.cxf.cxf-rt-rs-extension-providers"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.cxf.cxf-rt-databinding-xmlbeans"
          version="0.0.0"/>
 
 </feature>

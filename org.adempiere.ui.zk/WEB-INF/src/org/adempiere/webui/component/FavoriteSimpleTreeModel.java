@@ -15,19 +15,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.adwindow.ADTabpanel;
-import org.adempiere.webui.adwindow.ADWindow;
-import org.adempiere.webui.desktop.AbstractDesktop;
 import org.adempiere.webui.desktop.FavouriteController;
-import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MMenu;
-import org.compiere.model.MQuery;
-import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CLogger;
@@ -331,27 +324,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 	{
 		try
 		{
-			MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(menuID, null);
-			IDesktop desktop = SessionManager.getAppDesktop();
-			if (desktop instanceof AbstractDesktop)
-				((AbstractDesktop)desktop).setPredefinedContextVariables(menu.getPredefinedContextVariables());
-
-			MQuery query = new MQuery("");
-			query.addRestriction("1=2");
-			query.setRecordCount(0);
-
-			SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {
-				@Override
-				public void onCallback(ADWindow result)
-				{
-					if (result == null)
-						return;
-
-					result.getADWindowContent().onNew();
-					ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
-					adtabpanel.focusToFirstEditor(false);
-				}
-			});
+			SessionManager.getAppDesktop().onNewRecord(menuID);
 		}
 		catch (Exception e)
 		{

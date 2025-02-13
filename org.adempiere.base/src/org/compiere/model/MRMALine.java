@@ -117,16 +117,16 @@ public class MRMALine extends X_M_RMALine
     protected int taxId = 0;
     
     /**
-     * Initialise instance variables
+     * Initialise precision, unitAmount, originalQty and taxId
      */
     protected void init()
     {
+    	// Load m_ioLine
         getShipLine();
         
         if (m_ioLine != null)
         {        	
-            // Get pricing details (Based on invoice if found, on order otherwise)
-            //   --> m_ioLine.isInvoiced just work for sales orders - so it doesn't work for purchases
+            // Set unitAmount and originalQty from invoice or order line
             if (getInvoiceLineId() != 0)
             {
                 MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getInvoiceLineId(), get_TrxName());
@@ -150,6 +150,7 @@ public class MRMALine extends X_M_RMALine
         }
         else if (getC_Charge_ID() != 0)
         {
+        	// Set unitAmount to Charge Amount
             MCharge charge = MCharge.get(this.getCtx(), getC_Charge_ID());
             unitAmount = charge.getChargeAmt();
             
@@ -175,12 +176,17 @@ public class MRMALine extends X_M_RMALine
         }
         else if (getM_Product_ID() != 0)
         {
+        	// Set unitAmount to standard product price of price list
         	IProductPricing pp = Core.getProductPricing();
     		pp.setRMALine(this, get_TrxName());
         	
         	MInvoice invoice = getParent().getOriginalInvoice();
         	if (invoice != null)
         	{
+        		int dropshipLocationId = -1;
+        		MOrder order = invoice.getOriginalOrder();
+        		if (order != null)
+        			dropshipLocationId = order.getDropShip_Location_ID();
         		pp.setM_PriceList_ID(invoice.getM_PriceList_ID());
         		pp.setPriceDate(invoice.getDateInvoiced());
         		
@@ -192,7 +198,7 @@ public class MRMALine extends X_M_RMALine
         		taxId = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), invoice.getDateInvoiced(), invoice.getDateInvoiced(),
             			getAD_Org_ID(), getParent().getShipment().getM_Warehouse_ID(),
             			invoice.getC_BPartner_Location_ID(),		//	should be bill to
-            			invoice.getC_BPartner_Location_ID(), getParent().isSOTrx(), deliveryViaRule, get_TrxName());
+            			invoice.getC_BPartner_Location_ID(), dropshipLocationId, getParent().isSOTrx(), deliveryViaRule, get_TrxName());
         	}
         	else 
         	{
@@ -206,7 +212,7 @@ public class MRMALine extends X_M_RMALine
         			taxId = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), order.getDateOrdered(), order.getDateOrdered(),
                 			getAD_Org_ID(), order.getM_Warehouse_ID(),
                 			order.getC_BPartner_Location_ID(),		//	should be bill to
-                			order.getC_BPartner_Location_ID(), getParent().isSOTrx(), order.getDeliveryViaRule(), get_TrxName());
+                			order.getC_BPartner_Location_ID(), order.getDropShip_Location_ID(), getParent().isSOTrx(), order.getDeliveryViaRule(), get_TrxName());
         		}
             	else
             		throw new IllegalStateException("No Invoice/Order found the Shipment/Receipt associated");
@@ -303,12 +309,15 @@ public class MRMALine extends X_M_RMALine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_RMA_ID"));
 			return false;
 		}
+		
+		// Must fill one of M_InOutLine_ID or C_Charge_ID or M_Product_ID
         if (getM_InOutLine_ID() == 0 && getC_Charge_ID() == 0 && getM_Product_ID() == 0)
         {
             log.saveError("FillShipLineOrProductOrCharge", "");
             return false;
         }
         
+        // Fill either M_Product_ID or C_Charge_ID, not both
         if (getM_Product_ID() != 0 && getC_Charge_ID() != 0)
         {
             log.saveError("JustProductOrCharge", "");
@@ -318,12 +327,14 @@ public class MRMALine extends X_M_RMALine
         init();
         if (m_ioLine != null)
         {
+        	// Validate line quantity
         	if (! checkQty()) 
         	{
                 log.saveError("AmtReturned>Shipped", "");
                 return false;
         	}
         	
+        	// Validate duplicate RMA line for 1 M_InOutLine record
             if (newRecord || is_ValueChanged(COLUMNNAME_M_InOutLine_ID))
             {
                 String whereClause = "M_RMA_ID=" + getM_RMA_ID() + " AND M_InOutLine_ID=" + getM_InOutLine_ID() + " AND M_RMALine_ID!=" + getM_RMALine_ID();
@@ -356,7 +367,7 @@ public class MRMALine extends X_M_RMALine
                 this.setAmt(getUnitAmt());
         }
         
-        // Set amount for products
+        // Set amount and qty for product or charge from shipment line
         if (this.getM_InOutLine_ID() != 0 && !MRMA.DOCACTION_Void.equals(getParent().getDocAction()))
         {
         	this.setM_Product_ID(m_ioLine.getM_Product_ID());
@@ -371,7 +382,7 @@ public class MRMALine extends X_M_RMALine
         if (this.getC_Tax_ID() == 0)
         	this.setC_Tax_ID(taxId);
         
-        // Get Line No
+        // Set Line No
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM M_RMALine WHERE M_RMA_ID=?";

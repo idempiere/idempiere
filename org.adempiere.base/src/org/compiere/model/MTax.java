@@ -374,8 +374,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (isDefault()) {
-			// @Trifon - Ensure that only one tax rate is set as Default!
-			// @Mckay - Allow edits to the Default tax rate
+			// Ensure that only one tax rate is set as Default for a tax category
 			String whereClause = MTax.COLUMNNAME_C_TaxCategory_ID+"=? AND " + 
 								 MTax.COLUMNNAME_C_Tax_ID+"<>? AND "+
 								 "IsDefault='Y'";
@@ -388,6 +387,7 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 				return false;
 			}
 		}
+		// Ensure parent tax id is zero for summary tax
 		if (isSummary()) {
 			if (getParent_Tax_ID() > 0) {
 				setParent_Tax_ID(0);
@@ -396,15 +396,10 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		return super.beforeSave(newRecord);
 	}
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create accounting record
 		if (newRecord && success)
 			insert_Accounting("C_Tax_Acct", "C_AcctSchema_Default", null);
 

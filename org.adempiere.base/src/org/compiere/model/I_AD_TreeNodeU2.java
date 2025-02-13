@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_TreeNodeU2
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_TreeNodeU2 
 {
@@ -62,6 +62,15 @@ public interface I_AD_TreeNodeU2
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_TreeNodeU2_UU */
+    public static final String COLUMNNAME_AD_TreeNodeU2_UU = "AD_TreeNodeU2_UU";
+
+	/** Set AD_TreeNodeU2_UU	  */
+	public void setAD_TreeNodeU2_UU (String AD_TreeNodeU2_UU);
+
+	/** Get AD_TreeNodeU2_UU	  */
+	public String getAD_TreeNodeU2_UU();
+
     /** Column name AD_Tree_ID */
     public static final String COLUMNNAME_AD_Tree_ID = "AD_Tree_ID";
 
@@ -76,15 +85,6 @@ public interface I_AD_TreeNodeU2
 	public int getAD_Tree_ID();
 
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException;
-
-    /** Column name AD_TreeNodeU2_UU */
-    public static final String COLUMNNAME_AD_TreeNodeU2_UU = "AD_TreeNodeU2_UU";
-
-	/** Set AD_TreeNodeU2_UU	  */
-	public void setAD_TreeNodeU2_UU (String AD_TreeNodeU2_UU);
-
-	/** Get AD_TreeNodeU2_UU	  */
-	public String getAD_TreeNodeU2_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

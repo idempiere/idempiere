@@ -209,14 +209,10 @@ public class MColorSchema extends X_PA_ColorSchema implements ImmutablePOSupport
 		setAD_PrintColor3_ID (103);		//	green
 	}	//	setDefault
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Ensure mark 1, 2, 3, 4 percent is in ascending order
 		if (getMark1Percent() > getMark2Percent())
 			setMark1Percent(getMark2Percent());
 		if (getMark2Percent() > getMark3Percent() && getMark3Percent() != 0)

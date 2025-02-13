@@ -374,12 +374,14 @@ public class Billboard extends XulElement {
 	public void setLegend(boolean show, boolean insideGrid) {
 		if (show) {
 			addLegendOptions("show", Boolean.TRUE);
+			addLegendOptions("location", "bottom"); //bottom, right
 			if (insideGrid) {
 				addLegendOptions("placement", "insideGrid");
 			} else {
 				addLegendOptions("placement", "outsideGrid");
 			}
-		}
+		} else
+			addLegendOptions("show", Boolean.FALSE);
 	}
 
 	/**

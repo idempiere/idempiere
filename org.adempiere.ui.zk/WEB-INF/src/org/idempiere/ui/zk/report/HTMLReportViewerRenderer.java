@@ -88,8 +88,6 @@ public class HTMLReportViewerRenderer implements IReportViewerRenderer {
 		try {
 			String path = System.getProperty("java.io.tmpdir");
 			String prefix = makePrefix(reportEngine.getName());
-			if (prefix.length() < 3)
-				prefix += "_".repeat(3-prefix.length());
 			if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 			File file = FileUtil.createTempFile(prefix, "."+getFileExtension(), new File(path));
 			String contextPath = Executions.getCurrent().getContextPath();
@@ -98,7 +96,8 @@ public class HTMLReportViewerRenderer implements IReportViewerRenderer {
 					.setLanguage(reportEngine.getPrintFormat().getLanguage())
 					.setOutputFile(file)
 					.setExport(export)
-					.setExtension(new HTMLExtension(contextPath, "rp", viewer.getUuid()));
+					.setExtension(new HTMLExtension(contextPath, "rp", viewer.getUuid()))
+					.setContextPath(contextPath);
 			renderer.renderReport(reportEngine, config);
 			return new AMedia(file.getName(), getFileExtension(), getContentType(), file, false);
 		} catch (Exception e) {

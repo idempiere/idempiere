@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.print;
 
 import static org.compiere.model.SystemIDs.PROCESS_RPT_C_DUNNING;
@@ -27,8 +48,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 
-
-
+/**
+ * Static method for running of report at server side
+ */
 public class ServerReportCtl {
 
 	/**
@@ -43,11 +65,11 @@ public class ServerReportCtl {
 	
 	/**
 	 * Start Document Print for Type with specified printer.
-	 * @param type
+	 * @param type report engine document type
 	 * @param customPrintFormat
 	 * @param Record_ID
 	 * @param printerName
-	 * @return
+	 * @return true if success
 	 */
 	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, String printerName)
 	{
@@ -85,7 +107,10 @@ public class ServerReportCtl {
 			// ==============================
 			if(format.getJasperProcess_ID() > 0)	
 			{
-				boolean result = runJasperProcess(Record_ID, re, true, printerName, pi);
+				int jasperRecordId = Record_ID;
+				if (re.getPrintInfo() != null && re.getPrintInfo().getRecord_ID() > 0)
+					jasperRecordId = re.getPrintInfo().getRecord_ID();
+				boolean result = runJasperProcess(jasperRecordId, re, true, printerName, pi);
 				return(result);
 			}
 			else
@@ -94,6 +119,7 @@ public class ServerReportCtl {
 			{
 				if (pi != null && pi.isBatch() && pi.isPrintPreview())
 				{
+					re.setProcessInfo(pi);
 					if ("HTML".equals(pi.getReportType())) 
 					{
 						pi.setExport(true);
@@ -163,11 +189,13 @@ public class ServerReportCtl {
 		if (pi != null) {
 			jasperProcessInfo.setPrintPreview(pi.isPrintPreview());
 			jasperProcessInfo.setIsBatch(pi.isBatch());
+		    jasperProcessInfo.setPDFFileName(pi.getPDFFileName());
 		} else {
 			jasperProcessInfo.setPrintPreview( !IsDirectPrint );
 		}
 		jasperProcessInfo.setRecord_ID ( Record_ID );
 		jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
+		jasperProcessInfo.setSerializableObject(format);
 		ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 		ProcessInfoParameter pip;
 		if (printerName!=null && printerName.trim().length()>0) {
@@ -205,12 +233,11 @@ public class ServerReportCtl {
 		}
 		re.print();
 	}
-	
-	
+		
 	/**
-	 *	Create Report.
-	 *	Called from ProcessCtl.
-	 *	- Check special reports first, if not, create standard Report
+	 *	Create Report.<br/>
+	 *	Called from ProcessCtl.<br/>
+	 *	- Check special reports first (via AD_ProcesS_ID), if not, create standard Report
 	 *
 	 *  @param pi process info
 	 *  @return true if created
@@ -260,8 +287,8 @@ public class ServerReportCtl {
 		}
 	}	//	create
 
-	/**************************************************************************
-	 *	Start Standard Report.
+	/**
+	 *	Start Standard Report.<br/>
 	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
@@ -273,8 +300,8 @@ public class ServerReportCtl {
 		return startStandardReport(pi);
 	}
 	
-	/**************************************************************************
-	 *	Start Standard Report.
+	/**
+	 *	Start Standard Report.<br/>
 	 *  - Get Table Info and submit.<br>
 	 *  A report can be created from:
 	 *  <ol>
@@ -448,6 +475,5 @@ public class ServerReportCtl {
 		}
 		return true;
 	}	//	startFinReport
-	
-	
+		
 }

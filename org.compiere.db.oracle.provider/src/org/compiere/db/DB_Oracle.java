@@ -31,6 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HexFormat;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -536,7 +537,23 @@ public class DB_Oracle implements AdempiereDatabase
         }
         return result.toString();
     }   //  TO_NUMBER
+    
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast () {
+		return "?";
+	}
 
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as json
+	 */
+	public String TO_JSON (String value)
+	{
+		return value;
+	}
 
     /**
      *  Get SQL Commands.
@@ -784,6 +801,7 @@ public class DB_Oracle implements AdempiereDatabase
      *  @return data type
      *  @deprecated
      */
+    @Deprecated
     public String getDataType (String columnName, int displayType, int precision,
         boolean defaultValue)
     {
@@ -1026,6 +1044,11 @@ public class DB_Oracle implements AdempiereDatabase
 	public String getClobDataType() {
 		return "CLOB";
 	}
+	
+	@Override
+	public String getJsonDataType() {
+		return getClobDataType();
+	}
 
 	@Override
 	public String getTimestampDataType() {
@@ -1072,6 +1095,8 @@ public class DB_Oracle implements AdempiereDatabase
 		//	Inline Constraint
 		if (column.getAD_Reference_ID() == DisplayType.YesNo)
 			sql.append(" CHECK (").append(column.getColumnName()).append(" IN ('Y','N'))");
+		else if (column.getAD_Reference_ID() == DisplayType.JSON)
+			sql.append(" CONSTRAINT ").append(column.getAD_Table().getTableName()).append("_").append(column.getColumnName()).append("_isjson CHECK (").append(column.getColumnName()).append(" IS JSON)");
 
 		//	Null
 		if (column.isMandatory())
@@ -1146,6 +1171,8 @@ public class DB_Oracle implements AdempiereDatabase
 		sql.append(sqlDefault);
 		
 		//	Constraint
+		if (column.getAD_Reference_ID() == DisplayType.JSON)
+			sql.append(" CONSTRAINT ").append(column.getAD_Table().getTableName()).append("_").append(column.getColumnName()).append("_isjson CHECK (").append(column.getColumnName()).append(" IS JSON)");
 
 		//	Null Values
 		if (column.isMandatory() && defaultValue != null && defaultValue.length() > 0)
@@ -1192,5 +1219,10 @@ public class DB_Oracle implements AdempiereDatabase
 	@Override
 	public ITablePartitionService getTablePartitionService() {
 		return new TablePartitionService();
+	}
+
+	@Override
+	public String TO_Blob(byte[] blob) {
+		return "HEXTORAW('"+HexFormat.of().formatHex(blob)+"')";
 	}
 }   //  DB_Oracle

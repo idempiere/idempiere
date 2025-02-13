@@ -23,11 +23,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 
 import org.atmosphere.cpr.AtmosphereResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.compiere.util.CLogger;
 import org.zkoss.lang.Library;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.au.out.AuScript;
@@ -58,7 +59,7 @@ public class AtmosphereServerPush implements ServerPush {
 
     private final AtomicReference<Desktop> desktop = new AtomicReference<Desktop>();
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final CLogger log = CLogger.getCLogger(getClass());
     /** asynchronous request reference as AtmosphereResource **/
     private final AtomicReference<AtmosphereResource> resource = new AtomicReference<AtmosphereResource>();
     private final int timeout;
@@ -199,23 +200,47 @@ public class AtmosphereServerPush implements ServerPush {
     	}    	
     }
 
+    private static class EventListenerWrapper<T extends Event> implements EventListener<T> {
+    	private EventListener<T> wrappedListener;
+    	private AtomicBoolean runOnce;
+
+    	private EventListenerWrapper(EventListener<T> wrappedListener) {
+    		this.wrappedListener=wrappedListener;
+    		this.runOnce = new AtomicBoolean(false);
+    	}
+
+    	@Override
+    	public void onEvent(T event) throws Exception {
+    		//if the wrapped event listener throws exception, the scheduled listener is not clean up
+    		//this atomic boolean help prevent repeated call when that happens
+    		if (!runOnce.compareAndSet(false, true))
+    			return;
+
+    		wrappedListener.onEvent(event);
+    	}
+
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public <T extends Event> void schedule(EventListener<T> task, T event,
-			Scheduler<T> scheduler) {
+			Scheduler<T> scheduler) {    	
+    	if (log.isLoggable(Level.FINE))
+    		log.fine(event.toString());
     	
+    	EventListenerWrapper<T> wrapper = new EventListenerWrapper<T>(task);
     	if (Executions.getCurrent() == null) {
     		//schedule and execute in desktop's onPiggyBack listener
-    		scheduler.schedule(task, event);
+    		scheduler.schedule(wrapper, event);
 	        try {
 	        	commitResponse();
 			} catch (IOException e) {
-				log.error(e.getMessage(), e);
+				log.log(Level.SEVERE, e.getMessage(), e);
 			}
     	} else {
     		// in event listener thread, use echo to execute async
     		synchronized (schedules) {
-				schedules.add(new Schedule(task, event, scheduler));
+				schedules.add(new Schedule(wrapper, event, scheduler));
 			}
     		if (Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) == null) {
     			Executions.getCurrent().setAttribute(ATMOSPHERE_SERVER_PUSH_ECHO, Boolean.TRUE);
@@ -229,12 +254,12 @@ public class AtmosphereServerPush implements ServerPush {
     public void start(Desktop desktop) {
         Desktop oldDesktop = this.desktop.getAndSet(desktop);
         if (oldDesktop != null) {
-            log.warn("Server push already started for desktop " + desktop.getId());
+            log.warning("Server push already started for desktop " + desktop.getId());
             return;
         }
 
-        if (log.isDebugEnabled())
-        	log.debug("Starting server push for " + desktop);
+        if (log.isLoggable(Level.FINE))
+        	log.fine("Starting server push for " + desktop);
         startClientPush(desktop);
     }
 
@@ -251,7 +276,7 @@ public class AtmosphereServerPush implements ServerPush {
     public void stop() {
         Desktop desktop = this.desktop.getAndSet(null);
         if (desktop == null) {
-            log.warn("Server push hasn't been started or has already stopped");
+            log.warning("Server push hasn't been started or has already stopped");
             return;
         }
 
@@ -268,8 +293,8 @@ public class AtmosphereServerPush implements ServerPush {
         }
                 
         if (Executions.getCurrent() != null) {
-	        if (log.isDebugEnabled())
-	        	log.debug("Stopping server push for " + desktop);
+	        if (log.isLoggable(Level.FINE))
+	        	log.fine("Stopping server push for " + desktop);
 	        Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.stopServerPush('" + desktop.getId() + "');"));        
         }
     }
@@ -279,13 +304,13 @@ public class AtmosphereServerPush implements ServerPush {
      * @param resource
      */
     public void onRequest(AtmosphereResource resource) {
-    	if (log.isTraceEnabled()) {
-	  		log.trace(resource.transport().name());
+    	if (log.isLoggable(Level.FINEST)) {
+	  		log.finest(resource.transport().name());
 	  	}
     	
     	DesktopCtrl desktopCtrl = (DesktopCtrl) this.desktop.get();
         if (desktopCtrl == null) {
-        	log.error("No desktop available");
+        	log.severe("No desktop available");
             return;
         }
 

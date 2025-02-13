@@ -16,17 +16,13 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-
 
 /**
  *	User Org Access
@@ -39,8 +35,7 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 11601583764711895L;
-
+	private static final long serialVersionUID = -6016959957385716517L;
 
 	/**
 	 * 	Get Organizational Access of User
@@ -50,49 +45,32 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	 */
 	public static MUserOrgAccess[] getOfUser (Properties ctx, int AD_User_ID)
 	{
-		return get (ctx, "SELECT * FROM AD_User_OrgAccess WHERE AD_User_ID=?", AD_User_ID);	
+		return get (ctx, "AD_User_ID=?", AD_User_ID);
 	}	//	getOfUser
 
 	/**
-	 * 	Get Organizational Info
+	 * 	Get Organizational Access of User
 	 *	@param ctx context
-	 *	@param sql sql command
-	 *	@param id id
+	 *	@param where SQL where clause
+	 *	@param id user id
 	 *	@return array of User Org Access
 	 */
-	private static MUserOrgAccess[] get (Properties ctx, String sql, int id)
+	private static MUserOrgAccess[] get (Properties ctx, String where, int id)
 	{
-		ArrayList<MUserOrgAccess> list = new ArrayList<MUserOrgAccess>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, id);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-				list.add (new MUserOrgAccess(ctx, rs, null));
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
+		List<MUserOrgAccess> list = new Query(ctx, Table_Name, where, null)
+				.setParameters(id)
+				.setOnlyActiveRecords(true)
+				.list();
 		MUserOrgAccess[] retValue = new MUserOrgAccess[list.size ()];
 		list.toArray (retValue);
 		return retValue;
 	}	//	get
-	
-	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (MUserOrgAccess.class);
 
+	/**	Static Logger	*/
+	@SuppressWarnings("unused")
+	private static CLogger	s_log	= CLogger.getCLogger (MUserOrgAccess.class);
 	
-	/**************************************************************************
+	/**
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
@@ -104,11 +82,11 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	}	//	MUserOrgAccess
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_User_OrgAccess_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_User_OrgAccess_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserOrgAccess(Properties ctx, String AD_User_OrgAccess_UU, String trxName) {
         super(ctx, AD_User_OrgAccess_UU, trxName);
 		if (Util.isEmpty(AD_User_OrgAccess_UU))
@@ -116,7 +94,7 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
     }
 
 	/**
-	 * 	Persistency Constructor
+	 * 	New Record Constructor
 	 *	@param ctx context
 	 *	@param ignored ignored
 	 *	@param trxName transaction
@@ -152,6 +130,7 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MUserOrgAccess[");
@@ -162,9 +141,8 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 		sb.append("]");
 		return sb.toString();
 	}	//	toString
-
 	
-	/**************************************************************************
+	/**
 	 * 	Extended String Representation
 	 * 	@param ctx context
 	 *	@return extended info
@@ -181,46 +159,24 @@ public class MUserOrgAccess extends X_AD_User_OrgAccess
 	private String	m_orgName;
 	
 	/**
-	 * 	Get Client Name
-	 *	@return name
+	 * 	Get Tenant Name
+	 *	@return tenant name
 	 */
 	public String getClientName()
 	{
 		if (m_clientName == null)
 		{
-			String sql = "SELECT c.Name, o.Name "
-				+ "FROM AD_Client c INNER JOIN AD_Org o ON (c.AD_Client_ID=o.AD_Client_ID) "
-				+ "WHERE o.AD_Org_ID=?";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql, null);
-				pstmt.setInt(1, getAD_Org_ID());
-				rs = pstmt.executeQuery();
-				if (rs.next())
-				{
-					m_clientName = rs.getString(1);
-					m_orgName = rs.getString(2);
-				}
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, sql, e);
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null;
-				pstmt = null;
-			}
+			MOrg org = MOrg.get(getAD_Org_ID());
+			MClient client = MClient.get(org.getAD_Client_ID());
+			m_clientName = client.getName();
+			m_orgName = org.getName();
 		}
 		return m_clientName;
 	}	//	getClientName
 	
 	/**
-	 * 	Get Client Name
-	 *	@return name
+	 * 	Get Organization Name
+	 *	@return organization name
 	 */
 	public String getOrgName()
 	{

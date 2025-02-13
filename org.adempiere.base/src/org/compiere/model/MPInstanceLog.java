@@ -47,7 +47,7 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 	  int P_ID, BigDecimal P_Number, String P_Msg)
 	{
-		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, 0, 0, X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
+		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, 0, 0, null, X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
 	}	//	MPInstance_Log
 
 	/**
@@ -63,7 +63,7 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID)
 	{
-		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
+		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, null, X_AD_PInstance_Log.PINSTANCELOGTYPE_Result);
 	}	//	MPInstance_Log
 	
 	/**
@@ -78,9 +78,9 @@ public class MPInstanceLog
 	 * @param PInstanceLogType Log Type X_AD_PInstance_Log.PINSTANCELOGTYPE_*
 	 */
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
-			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
+			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String jsonData, String PInstanceLogType)
 	{
-		this("", AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, PInstanceLogType);
+		this("", AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, jsonData, PInstanceLogType);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class MPInstanceLog
 	 * @param PInstanceLogType Log Type X_AD_PInstance_Log.PINSTANCELOGTYPE_*
 	 */
 	public MPInstanceLog (String AD_PInstance_Log_UU, int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
-			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
+			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String jsonData, String PInstanceLogType)
 	{
 		setAD_PInstance_ID(AD_PInstance_ID);
 		setLog_ID(Log_ID);
@@ -107,6 +107,7 @@ public class MPInstanceLog
 		setP_Msg(P_Msg);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
+		setJsonData(jsonData);
 		setPInstanceLogType(PInstanceLogType);
 		if(!Util.isEmpty(AD_PInstance_Log_UU))
 			setAD_PInstance_Log_UU(AD_PInstance_Log_UU);
@@ -127,6 +128,7 @@ public class MPInstanceLog
 		setP_Msg(rs.getString(X_AD_PInstance_Log.COLUMNNAME_P_Msg));
 		setAD_Table_ID(rs.getInt(X_AD_PInstance_Log.COLUMNNAME_AD_Table_ID));
 		setRecord_ID(rs.getInt(X_AD_PInstance_Log.COLUMNNAME_Record_ID));
+		setJsonData(rs.getString(X_AD_PInstance_Log.COLUMNNAME_JsonData));
 		setPInstanceLogType(rs.getString(X_AD_PInstance_Log.COLUMNNAME_PInstanceLogType));
 		setAD_PInstance_Log_UU(rs.getString(X_AD_PInstance_Log.COLUMNNAME_AD_PInstance_Log_UU));
 	}	//	MPInstance_Log
@@ -139,6 +141,7 @@ public class MPInstanceLog
 	private String m_P_Msg;
 	private int m_AD_Table_ID;
 	private int m_Record_ID;
+	private String m_jsonData;
 	private String m_PInstanceLogType;
 	private String m_AD_PInstance_Log_UU;
 
@@ -159,13 +162,15 @@ public class MPInstanceLog
 			sb.append(",Number=").append(m_P_Number);
 		if (m_P_Msg != null)
 			sb.append(",").append(m_P_Msg);
+		if (m_jsonData != null)
+			sb.append(",").append(m_jsonData);
 		sb.append("]");
 		return sb.toString();
 	}	//	toString
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
-			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, PInstanceLogType)"
-			+ " VALUES (?,?,?,?,?,?,?,?,?,?) ";
+			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, JsonData, PInstanceLogType)"
+			+ " VALUES (?,?,?,?,?,?,?,?,?," + DB.getJSONCast() + ",?) ";
 	
 	private final static String updateSql = "UPDATE AD_PInstance_Log "
 			+ " SET P_Date = ?, "
@@ -174,6 +179,7 @@ public class MPInstanceLog
 			+ " 	P_Msg = ?, "
 			+ " 	AD_Table_ID = ?, "
 			+ " 	Record_ID = ?, "
+			+ " 	JsonData = " + DB.getJSONCast() + ", "
 			+ " 	PInstanceLogType = ? "
 			+ " WHERE AD_PInstance_Log_UU = ? ";
 
@@ -246,6 +252,8 @@ public class MPInstanceLog
 		
 		if(isInsert)
 			params.add(getAD_PInstance_Log_UU());
+		
+		params.add(m_jsonData);
 		
 		params.add(m_PInstanceLogType);
 		
@@ -397,6 +405,21 @@ public class MPInstanceLog
 	public void setRecord_ID(int recordId)
 	{
 		m_Record_ID = recordId;
+	}
+
+	/**
+	 * Get JsonData
+	 * @return JsonData
+	 */
+	public String getJsonData() {
+		return m_jsonData;
+	}
+	/**
+	 * Set JsonData
+	 * @param jsonData
+	 */
+	public void setJsonData(String jsonData) {
+		this.m_jsonData = jsonData;
 	}
 
 	/**

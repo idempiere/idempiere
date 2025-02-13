@@ -16,15 +16,29 @@ package org.compiere.minigrid;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 
+/**
+ * Info window embedded in another info window
+ */
 public class EmbedWinInfo {
+	/** info window model */
 	private MInfoWindow infowin;
+	/** list view of data */
 	private IMiniTable infoTbl;
+	/** SQL to retrieve data */
 	private String infoSql;
 	private String linkColumnSql;
 	private MInfoColumn linkInfoColumn;
 	private String linkColumnName;
 	private int parentLinkColumnID;
 
+	/**
+	 * @param iw
+	 * @param mt
+	 * @param isql
+	 * @param linkName
+	 * @param linkColumn
+	 * @param parentLinkColumnID
+	 */
 	public EmbedWinInfo(MInfoWindow iw, IMiniTable mt, String isql, String linkName, MInfoColumn linkColumn, int parentLinkColumnID) {
 		this.parentLinkColumnID = parentLinkColumnID;
 		infowin=iw;
@@ -64,6 +78,10 @@ public class EmbedWinInfo {
 		return parentLinkColumnID;
 	}
 	
+	/**
+	 * Get data type of link column 
+	 * @return data type of link column (integer or string)
+	 */
 	public Class<?> getTypeDataOfLink (){
 		if (linkInfoColumn.getColumnName().lastIndexOf("_ID") > 0){
 			return int.class;

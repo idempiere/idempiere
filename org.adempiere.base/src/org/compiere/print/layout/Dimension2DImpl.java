@@ -69,6 +69,7 @@ public class Dimension2DImpl extends Dimension2D implements Serializable
 	 * 	@param Width width
 	 * 	@param Height height
 	 */
+	@Override
 	public void setSize (double Width, double Height)
 	{
 		this.width = Width;
@@ -115,7 +116,6 @@ public class Dimension2DImpl extends Dimension2D implements Serializable
 		height = Math.ceil(height);
 	}	//	roundUp
 
-
 	/**
 	 * 	Get Width
 	 * 	@return width
@@ -134,12 +134,11 @@ public class Dimension2DImpl extends Dimension2D implements Serializable
 		return height;
 	}	//	getHeight
 
-	/*************************************************************************/
-
 	/**
 	 * 	Hash Code
 	 * 	@return hash code
 	 */
+	@Override
 	public int hashCode()
 	{
 		long bits = Double.doubleToLongBits(width);
@@ -152,6 +151,7 @@ public class Dimension2DImpl extends Dimension2D implements Serializable
 	 * 	@param obj object
 	 * 	@return true if w/h is same
 	 */
+	@Override
 	public boolean equals (Object obj)
 	{
 		if (obj != null && obj instanceof Dimension2D)
@@ -167,6 +167,7 @@ public class Dimension2DImpl extends Dimension2D implements Serializable
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder();

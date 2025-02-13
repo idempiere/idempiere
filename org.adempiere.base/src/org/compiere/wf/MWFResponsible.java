@@ -201,14 +201,10 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 			&& getAD_Org_ID() != 0;
 	}	//	isOrg
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// AD_Role_ID mandatory for role responsible type
 		if (RESPONSIBLETYPE_Role.equals(getResponsibleType()) 
 			&& getAD_Role_ID() == 0
 			&& getAD_Client_ID() > 0)
@@ -223,7 +219,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 		//	Role not used
 		if (!RESPONSIBLETYPE_Role.equals(getResponsibleType()) && getAD_Role_ID() > 0)
 			setAD_Role_ID(0);
-		
+		//  User and role not used for manual responsible type
 		if (RESPONSIBLETYPE_Manual.equals(getResponsibleType())) {
 		    setAD_User_ID(0);
 		    setAD_Role_ID(0);

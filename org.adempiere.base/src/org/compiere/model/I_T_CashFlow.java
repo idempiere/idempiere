@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_CashFlow
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_T_CashFlow 
 {
@@ -106,24 +106,6 @@ public interface I_T_CashFlow
 	public int getC_Activity_ID();
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
-
-    /** Column name CashFlowSource */
-    public static final String COLUMNNAME_CashFlowSource = "CashFlowSource";
-
-	/** Set Cash Flow Source	  */
-	public void setCashFlowSource (String CashFlowSource);
-
-	/** Get Cash Flow Source	  */
-	public String getCashFlowSource();
-
-    /** Column name CashFlowType */
-    public static final String COLUMNNAME_CashFlowType = "CashFlowType";
-
-	/** Set Cash Flow Type	  */
-	public void setCashFlowType (String CashFlowType);
-
-	/** Get Cash Flow Type	  */
-	public String getCashFlowType();
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -240,6 +222,24 @@ public interface I_T_CashFlow
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name CashFlowSource */
+    public static final String COLUMNNAME_CashFlowSource = "CashFlowSource";
+
+	/** Set Cash Flow Source	  */
+	public void setCashFlowSource (String CashFlowSource);
+
+	/** Get Cash Flow Source	  */
+	public String getCashFlowSource();
+
+    /** Column name CashFlowType */
+    public static final String COLUMNNAME_CashFlowType = "CashFlowType";
+
+	/** Set Cash Flow Type	  */
+	public void setCashFlowType (String CashFlowType);
+
+	/** Get Cash Flow Type	  */
+	public String getCashFlowType();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

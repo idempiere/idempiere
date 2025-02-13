@@ -134,11 +134,6 @@ public class MPrivateAccess extends X_AD_Private_Access
 		return sb.toString();
 	}
 
-	/**
-	 * 	Called before Save for Pre-Save Operation
-	 * 	@param newRecord new record
-	 *	@return true if record can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (!canUpdate()) {
@@ -148,10 +143,6 @@ public class MPrivateAccess extends X_AD_Private_Access
 		return true;
 	}
 
-	/**
-	 * 	Executed before Delete operation.
-	 *	@return true if record can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete() {
 		if (!canUpdate()) {
@@ -162,10 +153,10 @@ public class MPrivateAccess extends X_AD_Private_Access
 	}
 
 	/**
-	 * Validate if the current user/role can update private access
-	 * - the user owner of the record can update it
+	 * Validate if the current user/role can update this private access record<br/>
+	 * - the owner of the record can update it<br/>
 	 * - the role with IsPersonalAccess permission can update it
-	 * @return
+	 * @return true if can update
 	 */
 	private boolean canUpdate() {
 		if (Env.getAD_User_ID(getCtx()) == getAD_User_ID())

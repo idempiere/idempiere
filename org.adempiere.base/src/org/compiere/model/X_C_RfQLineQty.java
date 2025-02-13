@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQLineQty
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQLineQty")
 public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_RfQLineQty (Properties ctx, int C_RfQLineQty_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
       /** if (C_RfQLineQty_ID == 0)
         {
 			setBenchmarkPrice (Env.ZERO);
-			setC_RfQLine_ID (0);
 			setC_RfQLineQty_ID (0);
+			setC_RfQLine_ID (0);
 			setC_UOM_ID (0);
 			setIsOfferQty (false);
 			setIsPurchaseQty (false);
@@ -61,8 +61,8 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
       /** if (C_RfQLineQty_ID == 0)
         {
 			setBenchmarkPrice (Env.ZERO);
-			setC_RfQLine_ID (0);
 			setC_RfQLineQty_ID (0);
+			setC_RfQLine_ID (0);
 			setC_UOM_ID (0);
 			setIsOfferQty (false);
 			setIsPurchaseQty (false);
@@ -80,8 +80,8 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
       /** if (C_RfQLineQty_UU == null)
         {
 			setBenchmarkPrice (Env.ZERO);
-			setC_RfQLine_ID (0);
 			setC_RfQLineQty_ID (0);
+			setC_RfQLine_ID (0);
 			setC_UOM_ID (0);
 			setIsOfferQty (false);
 			setIsPurchaseQty (false);
@@ -99,8 +99,8 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
       /** if (C_RfQLineQty_UU == null)
         {
 			setBenchmarkPrice (Env.ZERO);
-			setC_RfQLine_ID (0);
 			setC_RfQLineQty_ID (0);
+			setC_RfQLine_ID (0);
 			setC_UOM_ID (0);
 			setIsOfferQty (false);
 			setIsPurchaseQty (false);
@@ -177,34 +177,6 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 		return bd;
 	}
 
-	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_RfQLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQLine.Table_ID)
-			.getPO(getC_RfQLine_ID(), get_TrxName());
-	}
-
-	/** Set RfQ Line.
-		@param C_RfQLine_ID Request for Quotation Line
-	*/
-	public void setC_RfQLine_ID (int C_RfQLine_ID)
-	{
-		if (C_RfQLine_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_RfQLine_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_RfQLine_ID, Integer.valueOf(C_RfQLine_ID));
-	}
-
-	/** Get RfQ Line.
-		@return Request for Quotation Line
-	  */
-	public int getC_RfQLine_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set RfQ Line Quantity.
 		@param C_RfQLineQty_ID Request for Quotation Line Quantity
 	*/
@@ -240,6 +212,34 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 	public String getC_RfQLineQty_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQLineQty_UU);
+	}
+
+	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_RfQLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQLine.Table_ID)
+			.getPO(getC_RfQLine_ID(), get_TrxName());
+	}
+
+	/** Set RfQ Line.
+		@param C_RfQLine_ID Request for Quotation Line
+	*/
+	public void setC_RfQLine_ID (int C_RfQLine_ID)
+	{
+		if (C_RfQLine_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_RfQLine_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_RfQLine_ID, Integer.valueOf(C_RfQLine_ID));
+	}
+
+	/** Get RfQ Line.
+		@return Request for Quotation Line
+	  */
+	public int getC_RfQLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException

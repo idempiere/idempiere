@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_ActivityResult
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_WF_ActivityResult 
 {
@@ -62,21 +62,6 @@ public interface I_AD_WF_ActivityResult
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_WF_Activity_ID */
-    public static final String COLUMNNAME_AD_WF_Activity_ID = "AD_WF_Activity_ID";
-
-	/** Set Workflow Activity.
-	  * Workflow Activity
-	  */
-	public void setAD_WF_Activity_ID (int AD_WF_Activity_ID);
-
-	/** Get Workflow Activity.
-	  * Workflow Activity
-	  */
-	public int getAD_WF_Activity_ID();
-
-	public org.compiere.model.I_AD_WF_Activity getAD_WF_Activity() throws RuntimeException;
-
     /** Column name AD_WF_ActivityResult_ID */
     public static final String COLUMNNAME_AD_WF_ActivityResult_ID = "AD_WF_ActivityResult_ID";
 
@@ -98,6 +83,21 @@ public interface I_AD_WF_ActivityResult
 
 	/** Get AD_WF_ActivityResult_UU	  */
 	public String getAD_WF_ActivityResult_UU();
+
+    /** Column name AD_WF_Activity_ID */
+    public static final String COLUMNNAME_AD_WF_Activity_ID = "AD_WF_Activity_ID";
+
+	/** Set Workflow Activity.
+	  * Workflow Activity
+	  */
+	public void setAD_WF_Activity_ID (int AD_WF_Activity_ID);
+
+	/** Get Workflow Activity.
+	  * Workflow Activity
+	  */
+	public int getAD_WF_Activity_ID();
+
+	public org.compiere.model.I_AD_WF_Activity getAD_WF_Activity() throws RuntimeException;
 
     /** Column name AttributeName */
     public static final String COLUMNNAME_AttributeName = "AttributeName";

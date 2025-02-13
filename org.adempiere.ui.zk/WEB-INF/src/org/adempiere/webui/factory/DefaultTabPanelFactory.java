@@ -25,6 +25,9 @@ import org.compiere.model.MTab;
 public class DefaultTabPanelFactory implements IADTabPanelFactory
 {
 
+	/**
+	 * Default implementation that support type sort and form (AD_Tab+AD_Field)
+	 */
 	@Override
 	public IADTabpanel getInstance(String type)
 	{

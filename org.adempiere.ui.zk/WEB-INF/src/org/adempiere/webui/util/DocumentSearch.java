@@ -35,9 +35,8 @@ import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MQuery;
 
 /**
- *
+ * Document search service for web client
  * @author hengsin
- *
  */
 public class DocumentSearch extends AbstractDocumentSearch {
 

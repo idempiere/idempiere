@@ -114,9 +114,8 @@ public class FileUtil
 	private int				m_actions = 0;
 	private int				m_actionIndex = -1;
 
-	static final String[] ACTIONS = new String[]
+	protected static final String[] ACTIONS = new String[]
 		{"List", "Replace", "Latex", "License"};
-
 
 	/**
 	 * 	Is Action Valid
@@ -137,7 +136,7 @@ public class FileUtil
 	}	//	validAction
 
 	/**
-	 * 	Process File
+	 * 	Process File with set action
 	 *	@param file file
 	 * 	@param p1 parameter 1
 	 * 	@param p2 parameter 2
@@ -186,8 +185,7 @@ public class FileUtil
 		}
 	}	//	processFileAction
 
-	
-	/**************************************************************************
+	/**
 	 * 	Replace String in File.
 	 * 	@param file file
 	 * 	@param from old String
@@ -247,10 +245,8 @@ public class FileUtil
 		}
 	}	//	replaceString
 
-	
-	
-	/**************************************************************************
-	 * 	Strip Latex specifics.
+	/**
+	 * 	Strip Latex specifics.<br/>
 	 * 	 \textsl{\colorbox{yellow}{\textbf{Important:}}} For more information on the
 		installation of the Adempiere Server and the Adempiere Client please refer to
 		\href{http://www.adempiere.org/support/index.html}{Adempiere Support} for more details and the latest
@@ -467,22 +463,15 @@ public class FileUtil
 
     public static File createTempFile(String prefix, String suffix, File directory) throws IOException
 	{
-        if (prefix.length() < 3) {
-            throw new IllegalArgumentException("Prefix string \"" + prefix +
-                "\" too short: length must be at least 3");
-        }
+        if (Util.isEmpty(prefix))
+            throw new IllegalArgumentException("Prefix is required");
 
         prefix = Util.setFilenameCorrect(prefix);
 
         if (suffix == null)
             suffix = ".tmp";
 
-        Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		String dt = sdf.format(cal.getTime());
-		String tmpdirname = (directory != null) ? directory.getCanonicalPath() : System.getProperty("java.io.tmpdir");
-		tmpdirname += System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
-
+		String tmpdirname = getTempFolderName(directory);
 		File tmpdir = new File(tmpdirname);
 		tmpdir.mkdirs();
 
@@ -492,11 +481,74 @@ public class FileUtil
 
         return f;	
 	}
+    
+    /**
+     * Generates a unique temporary folder name based on the current timestamp and session ID. <br/>
+     * The folder name is either within the specified directory or the default temporary directory.
+     *
+     * @param directory the base directory where the temporary folder will be created; 
+     *                  if null, the system's default temporary directory is used
+     * @return a string representing the path to the unique temporary folder
+     * @throws IOException
+     */
+    public static String getTempFolderName(File directory) throws IOException {
+    	Calendar cal = Calendar.getInstance();
+ 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+ 		String dt = sdf.format(cal.getTime());
+ 		String tmpdirname = (directory != null) ? directory.getCanonicalPath() : System.getProperty("java.io.tmpdir");
+ 		tmpdirname += System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
+
+    	return tmpdirname;
+    }
 
     public static File createTempFile(String prefix, String suffix) throws IOException
     {
         return createTempFile(prefix, suffix, null);
     }
+    
+    /**
+     * Creates a file with the given filename. <br/>
+     * If the filename includes the path, the file is created as requested. <br/>
+     * If it only includes the name, the file is created in a thread-safe temporary folder.
+     * @param fileName
+     * @return file
+     * @throws IOException
+     */
+    public static File createFile(String fileName) throws IOException {
+    	if (Util.isEmpty(fileName))
+    		throw new IllegalArgumentException("Name is required");
+
+    	File file = null;
+    	if (fileName.contains(System.getProperty("file.separator"))) {
+    		file = new File(fileName);
+    	} else {
+    		String tmpdirname = getTempFolderName(null);
+    		File tmpdir = new File(tmpdirname);
+    		tmpdir.mkdirs();
+
+    		file = new File(tmpdirname, fileName);
+    	}
+
+    	return file;	
+    }
+    
+	/**
+	 * Creates a valid file name prefix from "name"
+	 * @param name
+	 * @return file name prefix
+	 */
+    public static String makePrefix(String name) {
+		StringBuilder prefix = new StringBuilder();
+		char[] nameArray = name.toCharArray();
+		for (char ch : nameArray) {
+			if (Character.isLetterOrDigit(ch)) {
+				prefix.append(ch);
+			} else {
+				prefix.append("_");
+			}
+		}
+		return prefix.toString();
+	}
 	
 	/**
 	 * 

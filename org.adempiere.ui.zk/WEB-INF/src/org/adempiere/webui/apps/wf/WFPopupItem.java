@@ -50,6 +50,9 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 
+/**
+ * Popup menu item for workflow node
+ */
 public class WFPopupItem extends Menuitem {
 	/**
 	 * generated serial id

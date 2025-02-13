@@ -81,7 +81,6 @@ import org.zkoss.zul.impl.LabelImageElement;
  * Toolbar of AD_Window
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  *
  * @author Cristina Ghita, www.arhipac.ro
  * 				<li>FR [ 2076330 ] Add new methods in CWindowToolbar class
@@ -172,7 +171,6 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     /** List of toolbar button with IsAdvanced=Y **/
     private List<String> advancedList;
 
-	// Elaine 2008/12/04
 	/** Show Personal Lock								*/
 	public boolean isPersonalLock = MRole.getDefault().isPersonalLock();
 	private boolean isAllowProductInfo = MRole.getDefault().canAccess_Info_Product();
@@ -270,10 +268,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         if (MRole.getDefault().isCanReport()) {
             btnReport = createButton("Report", "Report", "Report");
             btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+            btnArchive = createButton("Archive", "Archive", "Archive");
+            btnPrint = createButton("Print", "Print", "Print");
+            btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
         }
-        btnArchive = createButton("Archive", "Archive", "Archive");
-        btnPrint = createButton("Print", "Print", "Print");
-        btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
         if (isPersonalLock) {
             btnLock = createButton("Lock", "Lock", "Lock"); // Elaine 2008/12/04
             btnLock.setDisabled(!isPersonalLock); // Elaine 2008/12/04
@@ -305,7 +303,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
         btnActiveWorkflows.setDisabled(false); // Elaine 2008/07/17
         btnRequests.setDisabled(false); // Elaine 2008/07/22
-        btnArchive.setDisabled(false); // Elaine 2008/07/28
+		if (btnArchive != null)
+			btnArchive.setDisabled(false); // Elaine 2008/07/28
 
         if (MRole.getDefault().isCanExport())
         {
@@ -504,6 +503,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
      */
     private void configureKeyMap()
     {
+    	//Alt + Key
 		altKeyMap.put(VK_H, btnHelp);
 		altKeyMap.put(VK_N, btnNew);
 		altKeyMap.put(VK_D, btnDelete);
@@ -518,7 +518,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		altKeyMap.put(VK_Z, btnIgnore);
 		if (btnReport != null)
 			altKeyMap.put(VK_R, btnReport);		
-		altKeyMap.put(VK_P, btnPrint);
+		if (btnPrint != null)
+			altKeyMap.put(VK_P, btnPrint);
 		altKeyMap.put(VK_O, btnProcess);
 		altKeyMap.put(VK_L, btnCustomize);
 	}
@@ -603,7 +604,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     }
 
     /**
-     * Handle ON_Click event for button.
+     * Handle ON_Click event for button.<br/>
      * Call register {@link ToolbarListener}.
      * @param event
      */
@@ -690,6 +691,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     }
 
     /**
+     * Is save button enable
      * @return true if Save button is enable
      */
     public boolean isSaveEnable() {
@@ -706,6 +708,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     }
     
     /**
+     * Is delete button enable
      * @return true if Delete button is enable
      */
     public boolean isDeleteEnable()
@@ -714,6 +717,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     }
     
     /**
+     * Is create new record button enable
      * @return true if New button is enable
      */
 	public boolean isNewEnabled() {
@@ -772,7 +776,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
      */
     public void enablePrint(boolean enabled)
     {
-    	this.btnPrint.setDisabled(!enabled);
+		if (btnPrint != null)
+			this.btnPrint.setDisabled(!enabled);
     }
 
     /**
@@ -818,7 +823,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
      */
     public void enableArchive(boolean enabled)
     {
-    	btnArchive.setDisabled(!enabled);
+		if (btnArchive != null)
+			btnArchive.setDisabled(!enabled);
     }
     
     /**
@@ -904,6 +910,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     }
 
     /**
+     * Get source event
      * @return ON_Click event that's being handle
      */
     public Event getEvent()
@@ -1054,6 +1061,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private boolean ToolBarMenuRestictionLoaded = false;
 	
 	/**
+	 * Is current login user has access to buttonName
 	 * @param buttonName
 	 * @return true if current login user has access to buttonName
 	 */
@@ -1118,7 +1126,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
-	 * Dynamic update of each toolbar button state (Check restrictions).
+	 * Dynamic update of each toolbar button state (Check restrictions).<br/>
 	 * For custom button, call {@link ToolbarCustomButton#dynamicDisplay()}, process pressedLogic and readOnlyLogic.
 	 */
 	public void dynamicDisplay() {
@@ -1328,7 +1336,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
-	 * Populate overflow popup.
+	 * Populate overflow popup.<br/>
 	 * Use for both desktop and mobile client.
 	 */
 	private void populateOverflowPopup() {
@@ -1378,7 +1386,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
-	 * Enable show more feature for desktop client.
+	 * Enable show more feature for desktop client.<br/>
 	 * Overflow for mobile client is initialise differently in {@link #mobileInit()}.
 	 */
 	private void enableShowMore() {
@@ -1391,7 +1399,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
-	 * Show overflow popup after {@link #btnShowMore}.
+	 * Show overflow popup after {@link #btnShowMore}.<br/>
 	 * For desktop client only.
 	 */
 	private void onShowMore() {
@@ -1427,7 +1435,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
-	 * Create overflow popup. 
+	 * Create overflow popup. <br/>
 	 * For both desktop and mobile client.
 	 */
 	private void newOverflowPopup() {
@@ -1446,7 +1454,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 	
 	/**
-	 * Post after size event handler for mobile client.
+	 * Post after size event handler for mobile client.<br/>
 	 * Calculate which toolbar buttons should overflow to show more popup.
 	 */
 	public void onPostAfterSize() {
@@ -1468,6 +1476,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     }
 
 	/**
+	 * Get parent tab level for quick form
 	 * @return parent tab level for quick form
 	 */
 	public int getQuickFormTabHrchyLevel()
@@ -1476,6 +1485,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	}
 
 	/**
+	 * Set parent tab level for quick form
 	 * @param quickFormHrchyTabLevel
 	 */
 	public void setQuickFormTabHrchyLevel(int quickFormHrchyTabLevel)

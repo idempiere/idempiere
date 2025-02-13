@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -130,8 +131,7 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 			MOrderLine orderLine = (MOrderLine) lines[0].getC_OrderLine();
 			BigDecimal base = orderLine.getBase(getLandedCostDistribution());
 			if (base.signum() == 0){
-				StringBuilder msgreturn = new StringBuilder("Total of Base values is 0 - ").append(getLandedCostDistribution());
-				return msgreturn.toString();
+				return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {getLandedCostDistribution()}); 
 			}
 			lines[0].setBase(base);
 			lines[0].setQty(orderLine.getQtyOrdered());
@@ -146,8 +146,7 @@ public class MOrderLandedCost extends X_C_OrderLandedCost {
 				total = total.add(orderLine.getBase(getLandedCostDistribution()));
 			}
 			if (total.signum() == 0){
-				StringBuilder msgreturn = new StringBuilder("Total of Base values is 0 - ").append(getLandedCostDistribution());
-				return msgreturn.toString();
+				return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {getLandedCostDistribution()}); 
 			}	
 			//	Create Allocations
 			for (MOrderLandedCostAllocation allocation : lines)

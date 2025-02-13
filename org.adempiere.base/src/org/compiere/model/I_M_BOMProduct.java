@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_BOMProduct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_BOMProduct 
 {
@@ -212,21 +212,6 @@ public interface I_M_BOMProduct
 
 	public org.compiere.model.I_M_BOMAlternative getM_BOMAlternative() throws RuntimeException;
 
-    /** Column name M_BOM_ID */
-    public static final String COLUMNNAME_M_BOM_ID = "M_BOM_ID";
-
-	/** Set BOM.
-	  * Bill of Material
-	  */
-	public void setM_BOM_ID (int M_BOM_ID);
-
-	/** Get BOM.
-	  * Bill of Material
-	  */
-	public int getM_BOM_ID();
-
-	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException;
-
     /** Column name M_BOMProduct_ID */
     public static final String COLUMNNAME_M_BOMProduct_ID = "M_BOMProduct_ID";
 
@@ -248,6 +233,21 @@ public interface I_M_BOMProduct
 
 	/** Get M_BOMProduct_UU	  */
 	public String getM_BOMProduct_UU();
+
+    /** Column name M_BOM_ID */
+    public static final String COLUMNNAME_M_BOM_ID = "M_BOM_ID";
+
+	/** Set BOM.
+	  * Bill of Material
+	  */
+	public void setM_BOM_ID (int M_BOM_ID);
+
+	/** Get BOM.
+	  * Bill of Material
+	  */
+	public int getM_BOM_ID();
+
+	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException;
 
     /** Column name M_ChangeNotice_ID */
     public static final String COLUMNNAME_M_ChangeNotice_ID = "M_ChangeNotice_ID";

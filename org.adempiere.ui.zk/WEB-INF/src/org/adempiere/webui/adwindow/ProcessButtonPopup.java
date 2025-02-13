@@ -48,6 +48,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menuseparator;
 
 /**
+ * Popup menu for process buttons and document actions
  * @author hengsin
  */
 public class ProcessButtonPopup extends Menupopup implements EventListener<Event> {
@@ -67,7 +68,7 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 	private static final long serialVersionUID = 304878472233552113L;
 
 	/**
-	 * Render buttons as menu items.
+	 * Render buttons as menu items.<br/>
 	 * Special treatment for DocAction - render each available document action as a sub menu item.
 	 * @param buttons
 	 */
@@ -110,6 +111,8 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 				if (this.getChildren().size() > 0)
 					appendChild(new Menuseparator());
 				Menu menu = new Menu(Msg.getElement(Env.getCtx(), "DocAction"));
+				if (docActionBtn.isDisabled())
+					menu.setDisabled(true);
 				appendChild(menu);
 				Menupopup popup = new Menupopup();
 				popup.setAttribute(BUTTON_ATTRIBUTE, docActionBtn);

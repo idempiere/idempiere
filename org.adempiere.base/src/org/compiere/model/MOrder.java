@@ -41,12 +41,9 @@ import org.adempiere.model.ITaxProvider;
 import org.adempiere.process.SalesOrderRateInquiryProcess;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -887,16 +884,7 @@ public class MOrder extends X_C_Order implements DocAction
 	@Override
 	public File createPDF ()
 	{
-		try
-		{
-			File temp = File.createTempFile(get_TableName()+get_ID()+"_", ".pdf");
-			return createPDF (temp);
-		}
-		catch (Exception e)
-		{
-			log.severe("Could not create PDF - " + e.getMessage());
-		}
-		return null;
+		return createPDF (null);
 	}	//	getPDF
 
 	/**
@@ -909,21 +897,6 @@ public class MOrder extends X_C_Order implements DocAction
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.ORDER, getC_Order_ID(), get_TrxName());
 		if (re == null)
 			return null;
-		MPrintFormat format = re.getPrintFormat();
-		// We have a Jasper Print Format
-		// ==============================
-		if(format.getJasperProcess_ID() > 0)
-		{
-			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-			pi.setRecord_ID ( getC_Order_ID() );
-			pi.setIsBatch(true);
-			
-			ServerProcessCtl.process(pi, null);
-			
-			return pi.getPDFReport();
-		}
-		// Standard Print Format (Non-Jasper)
-		// ==================================
 		return re.getPDF(file);
 	}	//	createPDF
 	
@@ -1206,11 +1179,6 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	private volatile static boolean recursiveCall = false;
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -1246,7 +1214,7 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
-		//	Warehouse Org
+		//	Validate warehouse and order document belong to the same organization
 		if (newRecord 
 			|| is_ValueChanged("AD_Org_ID") || is_ValueChanged("M_Warehouse_ID"))
 		{
@@ -1254,7 +1222,7 @@ public class MOrder extends X_C_Order implements DocAction
 				log.saveWarning("WarehouseOrgConflict", "");
 		}
 
-		//	Reservations in Warehouse
+		//	Validate change of warehouse against existing order line
 		if (!newRecord && is_ValueChanged("M_Warehouse_ID"))
 		{
 			MOrderLine[] lines = getLines(false,null);
@@ -1265,7 +1233,7 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 
-		// IDEMPIERE-6046 - verify if the locations pertain to the BP
+		// Validate C_BPartner_Location_ID and AD_User_ID after edit of C_BPartner_ID
 		final String sqlBPIdFromLoc  = "SELECT C_BPartner_ID FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?";
 		final String sqlBPIdFromUser = "SELECT C_BPartner_ID FROM AD_User WHERE AD_User_ID=?";
 		if (is_new() || is_ValueChanged(COLUMNNAME_C_BPartner_ID)) {
@@ -1275,13 +1243,14 @@ public class MOrder extends X_C_Order implements DocAction
 					set_ValueNoCheck(COLUMNNAME_C_BPartner_Location_ID, null);
 				}
 			}
-			if (getAD_User_ID() > 0) {
+			if (getAD_User_ID() >= 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getAD_User_ID());
 				if (bpId != getC_BPartner_ID()) {
 					set_Value(COLUMNNAME_AD_User_ID, null);
 				}
 			}
 		}
+		// Validate Bill_Location_ID and Bill_User_ID after edit of Bill_BPartner_ID
 		if (is_new() || is_ValueChanged(COLUMNNAME_Bill_BPartner_ID)) {
 			if (getBill_Location_ID() > 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromLoc, getBill_Location_ID());
@@ -1289,25 +1258,23 @@ public class MOrder extends X_C_Order implements DocAction
 					set_Value(COLUMNNAME_Bill_Location_ID, null);
 				}
 			}
-			if (getBill_User_ID() > 0) {
+			if (getBill_User_ID() >= 0) {
 				int bpId = DB.getSQLValueEx(get_TrxName(), sqlBPIdFromUser, getBill_User_ID());
 				if (bpId != getBill_BPartner_ID()) {
 					setBill_User_ID(-1);
 				}
 			}
 		}
-
-		//	No Partner Info - set Template
-		if (getC_BPartner_ID() == 0)
-			setBPartner(MBPartner.getTemplate(getCtx(), getAD_Client_ID()));
+		
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
-		//	No Bill - get from Ship
+		//	Default Bill_BPartner_ID to C_BPartner_ID
 		if (getBill_BPartner_ID() == 0)
 		{
 			setBill_BPartner_ID(getC_BPartner_ID());
 			setBill_Location_ID(getC_BPartner_Location_ID());
 		}
+		//	Default Bill_Location_ID to C_BPartner_Location_ID
 		if (getBill_Location_ID() == 0)
 			setBill_Location_ID(getC_BPartner_Location_ID());
 
@@ -1360,9 +1327,9 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		// IDEMPIERE-63
-		// for documents that can be reactivated we cannot allow changing 
-		// C_DocTypeTarget_ID or C_DocType_ID if they were already processed and isOverwriteSeqOnComplete
-		// neither change the Date if isOverwriteDateOnComplete
+		// If document have been processed, we can't change 
+		// C_DocTypeTarget_ID or C_DocType_ID if DocType.IsOverwriteSeqOnComplete=Y.
+		// Also, can't change DateDoc if DocType.IsOverwriteDateOnComplete=Y.
 		BigDecimal previousProcessedOn = (BigDecimal) get_ValueOld(COLUMNNAME_ProcessedOn);
 		if (! newRecord && previousProcessedOn != null && previousProcessedOn.signum() > 0) {
 			int previousDocTypeID = (Integer) get_ValueOld(COLUMNNAME_C_DocTypeTarget_ID);
@@ -1385,10 +1352,12 @@ public class MOrder extends X_C_Order implements DocAction
 		if (!newRecord && (is_ValueChanged(COLUMNNAME_M_PriceList_ID) || is_ValueChanged(COLUMNNAME_DateOrdered))) {
 			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM C_OrderLine WHERE C_Order_ID=? AND M_Product_ID>0", getC_Order_ID());
 			if (cnt > 0) {
+				// Disallow change of price list if there are existing order lines
 				if (is_ValueChanged(COLUMNNAME_M_PriceList_ID)) {
 					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangePl"));
 					return false;
 				}
+				// Validate price list is valid for updated DateInvoiced
 				if (is_ValueChanged(COLUMNNAME_DateOrdered)) {
 					MPriceList pList =  MPriceList.get(getCtx(), getM_PriceList_ID(), null);
 					MPriceListVersion plOld = pList.getPriceListVersion((Timestamp)get_ValueOld(COLUMNNAME_DateOrdered));
@@ -1409,6 +1378,7 @@ public class MOrder extends X_C_Order implements DocAction
 			return false;
 		}
 
+		// Validate payment term and update IsPayScheduleValid
 		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
 			recursiveCall = true;
 			try {
@@ -1425,19 +1395,13 @@ public class MOrder extends X_C_Order implements DocAction
 		return true;
 	}	//	beforeSave
 		
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
 			return success;
 
-		// Propagate changes to not-completed/reversed/closed invoices
+		// Propagate changes to not completed/reversed/closed invoices
 		String propagateColsSysCfg = MSysConfig.getValue(MSysConfig.ORDER_COLUMNS_TO_COPY_TO_NOT_COMPLETED_INVOICES,
 				"Description,POReference,PaymentRule,C_PaymentTerm_ID,DateAcct", getAD_Client_ID(), getAD_Org_ID());
 		if (!Util.isEmpty(propagateColsSysCfg, true)) {
@@ -1506,10 +1470,6 @@ public class MOrder extends X_C_Order implements DocAction
 		return true;
 	}	//	afterSave
 	
-	/**
-	 * 	Before Delete
-	 *	@return true of it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
@@ -2207,7 +2167,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)		//	(W)illCall(I)nvoice
 			|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)	//	(W)illCall(P)ickup	
 			|| MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)			//	(W)alkIn(R)eceipt
-			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO)) 
+			|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInout())) 
 		{
 			if (!DELIVERYRULE_Force.equals(getDeliveryRule()))
 			{
@@ -2229,7 +2189,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Create SO Invoice - Always invoice complete Order
 		if ( MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)
 			|| MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO) 	
-			|| MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO)) 
+			|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInvoice())) 
 		{
 			MInvoice invoice = createInvoice (dt, shipment, realTimePOS ? null : getDateOrdered());
 			if (invoice == null)
@@ -3177,10 +3137,9 @@ public class MOrder extends X_C_Order implements DocAction
 			// delete Cost Detail if the Matched PO has been deleted
 			if (mPO.length == 0)
 			{
-				MCostDetail cd = MCostDetail.get(getCtx(), "C_OrderLine_ID=?", 
-						line.getC_OrderLine_ID(), line.getM_AttributeSetInstance_ID(), 
-						as.getC_AcctSchema_ID(), get_TrxName());
-				if (cd !=  null)
+				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", 
+						line.getC_OrderLine_ID(), 0, as.get_ID(), get_TrxName());
+				for (MCostDetail cd : cds)
 				{
 					cd.setProcessed(false);
 					cd.delete(true);

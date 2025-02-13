@@ -28,6 +28,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Maintain AD_Table_ID/Record_ID constraint
@@ -37,7 +38,7 @@ import org.compiere.util.Msg;
  */
 public class PO_Record
 {
-	/* Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
+	/** Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
 	private static final CCache<String, KeyNamePair[]> s_po_record_tables_cache = new CCache<>(null, "PORecordTables", 100, 120, false);
 
 	/**	Logger	*/
@@ -47,10 +48,11 @@ public class PO_Record
 	 * 	Delete Cascade including (selected)parent relationships
 	 *	@param AD_Table_ID table
 	 *	@param Record_IDorUU record ID (int) or UUID (String)
+	 *  @param whereTables filter for the Tables
 	 *	@param trxName transaction
 	 *	@return false if could not be deleted
 	 */
-	protected static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String trxName)
+	protected static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String whereTables, String trxName)
 	{
 		int refId;
 		String columnName;
@@ -63,7 +65,7 @@ public class PO_Record
 		} else {
 			throw new IllegalArgumentException(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
 		}
-		KeyNamePair[] cascades = getTablesWithConstraintType(refId, MColumn.FKCONSTRAINTTYPE_ModelCascade, trxName);
+		KeyNamePair[] cascades = getTablesWithConstraintType(refId, MColumn.FKCONSTRAINTTYPE_ModelCascade, whereTables, trxName);
 		//	Table Loop
 		StringBuilder whereClause = new StringBuilder("AD_Table_ID=? AND ").append(columnName).append("=?");
 		for (KeyNamePair table : cascades)
@@ -93,6 +95,8 @@ public class PO_Record
 
 	//IDEMPIERE-2060
 	/**
+	 * Delete dependent records.<br/>
+	 * This is model class implementation of the delete cascade option of foreign key constraint.
 	 * @param tableName
 	 * @param Record_IDorUU record ID (int) or UUID (String)
 	 * @param trxName
@@ -122,10 +126,11 @@ public class PO_Record
 	}
 
 	/**
+	 * Get dependent tables
 	 * @param refId AD_Reference_ID - Record_ID or Record_UU
 	 * @param tableName
 	 * @param trxName
-	 * @return
+	 * @return array of dependent tables (dependentTableId, dependentColumnName)
 	 */
 	private static KeyNamePair[] getTablesWithModelCascade(int refId, String tableName, String trxName) {
 		int refTableDirId;
@@ -146,21 +151,21 @@ public class PO_Record
 		KeyNamePair[] tables = s_po_record_tables_cache.get(key.toString());
 		if (tables != null)
 			return tables;
-		final String sql = ""
-				+ "SELECT t.AD_Table_ID, "
-				+ "       c.ColumnName "
-				+ "FROM   AD_Column c "
-				+ "       JOIN AD_Table t ON c.AD_Table_ID = t.AD_Table_ID "
-				+ "       LEFT JOIN AD_Ref_Table r ON c.AD_Reference_Value_ID = r.AD_Reference_ID "
-				+ "       LEFT JOIN AD_Table tr ON r.AD_Table_ID = tr.AD_Table_ID "
-				+ "WHERE  t.IsView = 'N' "
-				+ "       AND t.IsActive = 'Y' "
-				+ "       AND c.IsActive = 'Y' "
-				+ "       AND ( ( c.AD_Reference_ID = ? "
-				+ "               AND c.ColumnName = ? || '_ID' ) "
-				+ "              OR ( c.AD_Reference_ID IN (? , ?) "
-				+ "                   AND ( tr.TableName = ? OR ( tr.TableName IS NULL AND c.ColumnName = ? || '_ID' ) ) ) ) "
-				+ "       AND c.FKConstraintType = ?";
+		final String sql = """
+			SELECT t.AD_Table_ID, 
+			       c.ColumnName 
+			FROM   AD_Column c 
+			       JOIN AD_Table t ON c.AD_Table_ID = t.AD_Table_ID 
+			       LEFT JOIN AD_Ref_Table r ON c.AD_Reference_Value_ID = r.AD_Reference_ID 
+			       LEFT JOIN AD_Table tr ON r.AD_Table_ID = tr.AD_Table_ID 
+			WHERE  t.IsView = 'N' 
+			       AND t.IsActive = 'Y' 
+			       AND c.IsActive = 'Y' 
+			       AND ( ( c.AD_Reference_ID = ? 
+			               AND c.ColumnName = ? || '_ID' ) 
+			              OR ( c.AD_Reference_ID IN (? , ?) 
+			                   AND ( tr.TableName = ? OR ( tr.TableName IS NULL AND c.ColumnName = ? || '_ID' ) ) ) ) 
+			       AND c.FKConstraintType = ?""";
 		List<List<Object>> dependents = DB.getSQLArrayObjectsEx(trxName, sql, 
 				refTableDirId, tableName, refTableId, refTableSearchId, tableName, tableName, MColumn.FKCONSTRAINTTYPE_ModelCascade);
 		if (dependents != null) {
@@ -180,7 +185,8 @@ public class PO_Record
 	}
 	
 	/**
-	 * If a referencing Record ID or Record UU exists to the deleted record, set it to NULL 
+	 * If a referencing Record ID or Record UU exists to the deleted record, set it to NULL.<br/>
+	 * This is model class implementation of the set null option of foreign key constraint. 
 	 * @param AD_Table_ID
 	 * @param Record_IDorUU record ID (int) or UUID (String)
 	 * @param trxName
@@ -231,7 +237,7 @@ public class PO_Record
 	}
 	
 	/**
-	 * 	An entry Exists for restrict table/record combination
+	 * 	Check if dependent records with delete restrict condition exists for a table/record combination.
 	 *	@param AD_Table_ID table
 	 *	@param Record_IDorUU record ID (int) or UUID (String)
 	 *	@param trxName transaction
@@ -275,6 +281,18 @@ public class PO_Record
 	 * @return array of KeyNamePair<AD_Table_ID, TableName> 
 	 */
 	private static KeyNamePair[] getTablesWithConstraintType(int refId, String constraintType, String trxName) {
+		return getTablesWithConstraintType(refId, constraintType, null, trxName);
+	}
+
+	/**
+	 * Get array of tables which has a refId column with the defined Constraint Type
+	 * @param refId AD_Reference_ID - Record_ID or Record_UU
+	 * @param constraintType - FKConstraintType of AD_Column
+	 * @param whereTables - optional filter
+	 * @param trxName
+	 * @return array of KeyNamePair<AD_Table_ID, TableName> 
+	 */
+	private static KeyNamePair[] getTablesWithConstraintType(int refId, String constraintType, String whereTables, String trxName) {
 		String columnName;
 		if (refId == DisplayType.RecordID) {
 			columnName = "Record_ID";
@@ -284,11 +302,14 @@ public class PO_Record
 			log.warning(refId + " not supported for ID/UUID");
 			return null;
 		}
-		StringBuilder key = new StringBuilder(constraintType).append("|").append(refId);
+		StringBuilder key = new StringBuilder(constraintType).append("|").append(refId).append("|").append(whereTables);
 		KeyNamePair[] tables = s_po_record_tables_cache.get(key.toString());
 		if (tables != null)
 			return tables;
-		List<MTable> listTables = new Query(Env.getCtx(), MTable.Table_Name, "c.AD_Reference_ID=? AND c.FKConstraintType=? AND AD_Table.IsView='N' AND c.ColumnName=?", trxName)
+		String whereClause = "c.AD_Reference_ID=? AND c.FKConstraintType=? AND AD_Table.IsView='N' AND c.ColumnName=?";
+		if (! Util.isEmpty(whereTables))
+			whereClause = whereClause + " AND (" + whereTables + ")";
+		List<MTable> listTables = new Query(Env.getCtx(), MTable.Table_Name, whereClause, trxName)
 				.addJoinClause("JOIN AD_Column c ON (c.AD_Table_ID=AD_Table.AD_Table_ID)")
 				.setOnlyActiveRecords(true)
 				.setParameters(refId, constraintType, columnName)

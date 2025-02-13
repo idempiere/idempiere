@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ActivityResult
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_ActivityResult")
 public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityResult (Properties ctx, int AD_WF_ActivityResult_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
       super (ctx, AD_WF_ActivityResult_ID, trxName);
       /** if (AD_WF_ActivityResult_ID == 0)
         {
-			setAD_WF_Activity_ID (0);
 			setAD_WF_ActivityResult_ID (0);
+			setAD_WF_Activity_ID (0);
 			setAttributeName (null);
         } */
     }
@@ -51,8 +51,8 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
       super (ctx, AD_WF_ActivityResult_ID, trxName, virtualColumns);
       /** if (AD_WF_ActivityResult_ID == 0)
         {
-			setAD_WF_Activity_ID (0);
 			setAD_WF_ActivityResult_ID (0);
+			setAD_WF_Activity_ID (0);
 			setAttributeName (null);
         } */
     }
@@ -63,8 +63,8 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
       super (ctx, AD_WF_ActivityResult_UU, trxName);
       /** if (AD_WF_ActivityResult_UU == null)
         {
-			setAD_WF_Activity_ID (0);
 			setAD_WF_ActivityResult_ID (0);
+			setAD_WF_Activity_ID (0);
 			setAttributeName (null);
         } */
     }
@@ -75,8 +75,8 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
       super (ctx, AD_WF_ActivityResult_UU, trxName, virtualColumns);
       /** if (AD_WF_ActivityResult_UU == null)
         {
-			setAD_WF_Activity_ID (0);
 			setAD_WF_ActivityResult_ID (0);
+			setAD_WF_Activity_ID (0);
 			setAttributeName (null);
         } */
     }
@@ -107,42 +107,6 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
       StringBuilder sb = new StringBuilder ("X_AD_WF_ActivityResult[")
         .append(get_ID()).append("]");
       return sb.toString();
-    }
-
-	public org.compiere.model.I_AD_WF_Activity getAD_WF_Activity() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_WF_Activity)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Activity.Table_ID)
-			.getPO(getAD_WF_Activity_ID(), get_TrxName());
-	}
-
-	/** Set Workflow Activity.
-		@param AD_WF_Activity_ID Workflow Activity
-	*/
-	public void setAD_WF_Activity_ID (int AD_WF_Activity_ID)
-	{
-		if (AD_WF_Activity_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, Integer.valueOf(AD_WF_Activity_ID));
-	}
-
-	/** Get Workflow Activity.
-		@return Workflow Activity
-	  */
-	public int getAD_WF_Activity_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Activity_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Activity_ID()));
     }
 
 	/** Set Workflow Activity Result.
@@ -181,6 +145,42 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_ActivityResult_UU);
 	}
+
+	public org.compiere.model.I_AD_WF_Activity getAD_WF_Activity() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_WF_Activity)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Activity.Table_ID)
+			.getPO(getAD_WF_Activity_ID(), get_TrxName());
+	}
+
+	/** Set Workflow Activity.
+		@param AD_WF_Activity_ID Workflow Activity
+	*/
+	public void setAD_WF_Activity_ID (int AD_WF_Activity_ID)
+	{
+		if (AD_WF_Activity_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, Integer.valueOf(AD_WF_Activity_ID));
+	}
+
+	/** Get Workflow Activity.
+		@return Workflow Activity
+	  */
+	public int getAD_WF_Activity_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Activity_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Activity_ID()));
+    }
 
 	/** Set Attribute Name.
 		@param AttributeName Name of the Attribute

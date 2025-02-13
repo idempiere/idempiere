@@ -21,18 +21,34 @@
  **********************************************************************/
 package org.compiere.model;
 
+import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.apps.graph.ChartBuilder;
 import org.compiere.util.Env;
+import org.jfree.chart.ChartRenderingInfo;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.data.xy.XYDataset;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+/**
+ * Extended model class for AD_Chart
+ */
 public class MChart extends X_AD_Chart {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 5720760885280644477L;
-	
+	private static final long serialVersionUID = -6709381648397609341L;
+
 	private int windowNo=0;
 
     /**
@@ -86,5 +102,118 @@ public class MChart extends X_AD_Chart {
 	 */
 	public int getWindowNo() {
 		return windowNo;
+	}
+
+	/**
+	 * Get chart image
+	 * @param id
+	 * @param width
+	 * @param height
+	 * @return chart image
+	 */
+	public BufferedImage getChartImage(int width, int height) {
+		if (width <= 0)
+			width = getWinHeight();
+		if (width <= 0)
+			width = 100; // default
+		if (height <= 0)
+			height = getWinHeight(); // default to make a square
+		if (height <= 0)
+			height = 100; // default to make a square of 100px
+		ChartBuilder chartBuilder = new ChartBuilder(this);
+		JFreeChart chart = chartBuilder.createChart();
+		chart.getPlot().setForegroundAlpha(0.8f);
+		ChartRenderingInfo info = new ChartRenderingInfo();
+		BufferedImage bi = chart.createBufferedImage(width, height, BufferedImage.TRANSLUCENT, info);
+		return bi;
+	}
+
+	/**
+	 * Get the data from the chart on JSON format
+	 * @return
+	 */
+	public JsonObject getData() {
+		JsonObject json = new JsonObject();
+		ChartBuilder cb = new ChartBuilder(this);
+		Dataset ds;
+		JsonArray array = new JsonArray();
+		String type = getChartType();
+		if (   isTimeSeries()
+			&& (   MChart.CHARTTYPE_BarChart.equals(type)
+				|| MChart.CHARTTYPE_LineChart.equals(type)
+				|| MChart.CHARTTYPE_StackedBarChart.equals(type)
+				)
+			) {
+			ds = cb.getXYDataset();
+		} else if (   MChart.CHARTTYPE_3DPieChart.equals(type)
+				   || MChart.CHARTTYPE_PieChart.equals(type)
+				   || MChart.CHARTTYPE_RingChart.equals(type)
+				  ) {
+			ds = cb.getPieDataset();
+		} else {
+			ds = cb.getCategoryDataset();
+		}
+		if (ds instanceof CategoryDataset) {
+			json.addProperty("name", get_Translation(COLUMNNAME_Name));
+			json.addProperty("domainLabel", get_Translation(COLUMNNAME_DomainLabel));
+			json.addProperty("rangeLabel", get_Translation(COLUMNNAME_RangeLabel));
+			json.addProperty("displayLegend", isDisplayLegend());
+			json.addProperty("chartOrientation", getChartOrientation());
+			json.addProperty("chartType", getChartType());
+			CategoryDataset cds = (CategoryDataset) ds;
+			int rowCount = cds.getRowCount();
+			int columnCount = cds.getColumnCount();
+			for (int row = 0; row < rowCount; row++) {
+			    for (int col = 0; col < columnCount; col++) {
+			        Number value = cds.getValue(row, col);
+			        Comparable<?> rowKey = cds.getRowKey(row);
+			        Comparable<?> colKey = cds.getColumnKey(col);
+					JsonObject rec = new JsonObject();
+					rec.addProperty("row", rowKey.toString());
+					rec.addProperty("column", colKey.toString());
+					rec.addProperty("value", value);
+					array.add(rec);
+			    }
+			}
+		} else if (ds instanceof XYDataset) {
+			json.addProperty("name", get_Translation(COLUMNNAME_Name));
+			json.addProperty("domainLabel", get_Translation(COLUMNNAME_DomainLabel));
+			json.addProperty("rangeLabel", get_Translation(COLUMNNAME_RangeLabel));
+			json.addProperty("displayLegend", isDisplayLegend());
+			json.addProperty("chartOrientation", getChartOrientation());
+			json.addProperty("chartType", getChartType());
+			XYDataset xyds = (XYDataset) ds;
+			int seriesCount = xyds.getSeriesCount();
+			for (int series = 0; series < seriesCount; series++) {
+			    Comparable<?> seriesKey = xyds.getSeriesKey(series);
+			    int itemCount = xyds.getItemCount(series);
+			    for (int item = 0; item < itemCount; item++) {
+			        Number xValue = xyds.getX(series, item);
+			        Date date = new Date((long) xValue);
+			        String strDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+			        Number yValue = xyds.getY(series, item);
+					JsonObject rec = new JsonObject();
+					rec.addProperty("series", seriesKey.toString());
+					rec.addProperty("x", strDate);
+					rec.addProperty("y", yValue);
+					array.add(rec);
+			    }
+			}
+		} else if (ds instanceof PieDataset) {
+			json.addProperty("name", get_Translation(COLUMNNAME_Name));
+			json.addProperty("displayLegend", isDisplayLegend());
+			json.addProperty("chartType", getChartType());
+			PieDataset pds = (PieDataset) ds;
+			for (int i = 0; i < pds.getKeys().size(); i++) {
+				Comparable<?> key = pds.getKey(i);
+				Number value = pds.getValue(key);
+				JsonObject rec = new JsonObject();
+				rec.addProperty("key", key.toString());
+				rec.addProperty("value", value);
+				array.add(rec);
+			}
+		}
+		json.add("data", array);
+		return json;
 	}
 }

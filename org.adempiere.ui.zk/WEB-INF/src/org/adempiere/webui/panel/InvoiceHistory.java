@@ -53,7 +53,7 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 /**
- * Price History for BPartner/Product
+ * Invoice Price History for BPartner/Product
  * @author <a href="mailto:elaine.tan@idalica.com">Elaine</a>
  */
 public class InvoiceHistory extends Window implements EventListener<Event>
@@ -600,7 +600,7 @@ public class InvoiceHistory extends Window implements EventListener<Event>
 	}	//	initUnconfirmedTab
 
 	/**
-	 *	Query ATP
+	 *	Query ATP (available to promise)
 	 */
 	private void initAtpTab ()
 	{

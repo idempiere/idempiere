@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for TestUU
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="TestUU")
 public class X_TestUU extends PO implements I_TestUU, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_TestUU extends PO implements I_TestUU, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_TestUU (Properties ctx, String TestUU_UU, String trxName)

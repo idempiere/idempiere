@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Group
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_Group")
 public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BP_Group (Properties ctx, int C_BP_Group_ID, String trxName)

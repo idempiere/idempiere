@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Role 
 {
@@ -144,10 +144,10 @@ public interface I_AD_Role
     /** Column name Allow_Info_InOut */
     public static final String COLUMNNAME_Allow_Info_InOut = "Allow_Info_InOut";
 
-	/** Set Allow Info InOut	  */
+	/** Set Allow Shipment Info	  */
 	public void setAllow_Info_InOut (boolean Allow_Info_InOut);
 
-	/** Get Allow Info InOut	  */
+	/** Get Allow Shipment Info	  */
 	public boolean isAllow_Info_InOut();
 
     /** Column name Allow_Info_Invoice */

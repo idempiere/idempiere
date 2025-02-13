@@ -166,29 +166,27 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 		return id < s_maxAD_EntityType_ID;
 	}	//	isSystemMaintained
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (!newRecord)
 		{
 			int id = getAD_EntityType_ID();
+			// Disallow edit of ENTITYTYPE_DICTIONARY and ENTITYTYPE_ADEMPIERE records
 			boolean systemMaintained = (id == ENTITYTYPE_DICTIONARY || id == ENTITYTYPE_ADEMPIERE);	//	C/D
 			if (systemMaintained)
 			{
 				log.saveError("Error", "You cannot modify a System maintained entity");
 				return false;
 			}
+			// Disallow edit of EntityType column
 			systemMaintained = is_ValueChanged("EntityType");
 			if (systemMaintained)
 			{
 				log.saveError("Error", "You cannot modify EntityType");
 				return false;
 			}
+			// Disallow edit of name, description, help and active column if this is a system maintained record
 			systemMaintained = isSystemMaintained()
 				&&	(is_ValueChanged("Name") || is_ValueChanged("Description") 
 					|| is_ValueChanged("Help") || is_ValueChanged("IsActive"));
@@ -202,10 +200,6 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{

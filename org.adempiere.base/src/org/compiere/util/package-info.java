@@ -22,6 +22,7 @@
 
 /**
  * Provide implementation for conversion of amount to word.<br/>
- * Provide global cache, server log, JDBC interface, Transaction and Email implementation. <br/>
+ * Provide cache, server log, JDBC interface, field display/data type, transaction, email, INI properties, security key store, 
+ * encryption and environment context implementation. <br/>
  */
 package org.compiere.util;

@@ -25,7 +25,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- *	(Disk) Tree Node Model Menu
+ *	Tree Node Model for Menu
  *	
  *  @author Jorg Janke
  *  @version $Id: MTree_NodeMM.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
@@ -33,7 +33,7 @@ import org.compiere.util.DB;
 public class MTree_NodeMM extends X_AD_TreeNodeMM
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3786314890360604549L;
 
@@ -75,11 +75,11 @@ public class MTree_NodeMM extends X_AD_TreeNodeMM
 	private static CLogger	s_log	= CLogger.getCLogger (MTree_NodeMM.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_TreeNodeMM_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_TreeNodeMM_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTree_NodeMM(Properties ctx, String AD_TreeNodeMM_UU, String trxName) {
         super(ctx, AD_TreeNodeMM_UU, trxName);
     }

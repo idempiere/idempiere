@@ -14,7 +14,7 @@
 package org.compiere.util;
 
 /**
- * Defines an action that should be ran inside an transaction, 
+ * Defines an action that should be ran inside a transaction, 
  * using {@link Trx#run(TrxRunnable)} or {@link Trx#run(String, TrxRunnable)} methods.
  * 
  * @author Teo Sarca, http://www.arhipac.ro
@@ -22,7 +22,7 @@ package org.compiere.util;
 public interface TrxRunnable
 {
 	/**
-	 * Run action inside trx denote by trxName
+	 * Run action inside transaction denoted by trxName
 	 * @param trxName
 	 */
 	public void run(String trxName);

@@ -495,9 +495,8 @@ public final class FactLine extends X_Fact_Acct
 		super.setM_Locator_ID (M_Locator_ID);
 		setAD_Org_ID(0);	//	reset
 	}   //  setM_Locator_ID
-
 	
-	/**************************************************************************
+	/**
 	 *  Set Location
 	 *  @param C_Location_ID location
 	 *  @param isFrom true - from, false - to.
@@ -874,16 +873,19 @@ public final class FactLine extends X_Fact_Acct
 	}   //  setAD_Org_ID
 
 	/**
-	 *	Get/derive Sales Region
+	 *	If not set yet(still 0), get/derive Sales Region from Doc, DocLine or Account Combination.
 	 *	@return C_SalesRegion_ID
 	 */
+	@Override
 	public int getC_SalesRegion_ID ()
 	{
 		if (super.getC_SalesRegion_ID() != 0)
 			return super.getC_SalesRegion_ID();
-		//
+		// Get from DocLine
 		if (m_docLine != null)
 			setC_SalesRegion_ID (m_docLine.getC_SalesRegion_ID());
+		
+		// If No DocLine or DocLine.C_SalesRegion_ID is 0, get from parent Doc
 		if (m_doc != null)
 		{
 			if (super.getC_SalesRegion_ID() == 0)
@@ -895,20 +897,22 @@ public final class FactLine extends X_Fact_Acct
 				&& m_doc.getC_BPartner_Location_ID() != 0
 				&& m_doc.getBP_C_SalesRegion_ID() == -1)	//	never tried
 			{
+				// fist, from C_BPartner_Location 
 				String sql = "SELECT COALESCE(C_SalesRegion_ID,0) FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?";
 				setC_SalesRegion_ID (DB.getSQLValue(null,
 					sql, m_doc.getC_BPartner_Location_ID()));
-				if (super.getC_SalesRegion_ID() != 0)		//	save in VO
+				if (super.getC_SalesRegion_ID() != 0)		//	update parent Doc.BP_C_SalesRegion_ID
 				{
 					m_doc.setBP_C_SalesRegion_ID(super.getC_SalesRegion_ID());
 					if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + super.getC_SalesRegion_ID() + " (from BPL)" );
 				}
-				else	//	From Sales Rep of Document -> Sales Region
+				else	
 				{
+					// second, from Sales Rep of Document -> Sales Region
 					sql = "SELECT COALESCE(MAX(C_SalesRegion_ID),0) FROM C_SalesRegion WHERE SalesRep_ID=?";
 					setC_SalesRegion_ID (DB.getSQLValue(null,
 						sql, m_doc.getSalesRep_ID()));
-					if (super.getC_SalesRegion_ID() != 0)		//	save in VO
+					if (super.getC_SalesRegion_ID() != 0)		//	update parent Doc.BP_C_SalesRegion_ID
 					{
 						m_doc.setBP_C_SalesRegion_ID(super.getC_SalesRegion_ID());
 						if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + super.getC_SalesRegion_ID() + " (from SR)" );
@@ -917,18 +921,15 @@ public final class FactLine extends X_Fact_Acct
 						m_doc.setBP_C_SalesRegion_ID(-2);	//	don't try again
 				}
 			}
+			
+			// still 0, try account combination
 			if (m_acct != null && super.getC_SalesRegion_ID() == 0)
 				setC_SalesRegion_ID (m_acct.getC_SalesRegion_ID());
 		}
 		return super.getC_SalesRegion_ID();
 	}	//	getC_SalesRegion_ID
 
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord)
@@ -937,7 +938,8 @@ public final class FactLine extends X_Fact_Acct
 			//
 			getAD_Org_ID();
 			getC_SalesRegion_ID();
-			//  Set Default Account Info
+			
+			//  Set Default from Account Combination
 			if (getM_Product_ID() == 0)
 				setM_Product_ID (m_acct.getM_Product_ID());
 			if (getC_LocFrom_ID() == 0)
@@ -959,7 +961,7 @@ public final class FactLine extends X_Fact_Acct
 			if (getUser2_ID() == 0)
 				setUser2_ID (m_acct.getUser2_ID());
 			
-			//  Revenue Recognition for AR/AP Invoices
+			//  Create Revenue Recognition for AR/AP Invoices
 			if ((m_doc.getDocumentType().equals(Doc.DOCTYPE_ARInvoice) || m_doc.getDocumentType().equals(Doc.DOCTYPE_APInvoice)) 
 				&& m_docLine != null 
 				&& m_docLine.getC_RevenueRecognition_ID() != 0)
@@ -983,8 +985,8 @@ public final class FactLine extends X_Fact_Acct
 	}	//	beforeSave
 		
 	/**
-	 *  Revenue Recognition.
-	 *  Called from FactLine.save
+	 *  Revenue Recognition.<br/>
+	 *  Called from FactLine.beforeSave.
 	 *  <p>
 	 *  Create Revenue recognition plan and return Unearned Revenue account
 	 *  to be used instead of Revenue Account. If not found, it returns

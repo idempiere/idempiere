@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Billboard
 Bundle-SymbolicName: org.idempiere.zk.billboard
-Bundle-Version: 11.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-Vendor: iDempiere
 Automatic-Module-Name: org.idempiere.zk.billboard
 Bundle-RequiredExecutionEnvironment: JavaSE-17
@@ -12,12 +12,11 @@ Export-Package: metainfo.zk,
  web.js.zul.billboard.css,
  web.js.zul.billboard.ext,
  web.js.zul.billboard.mold
-Require-Bundle: zcommon,
- zel,
- zhtml,
- zjavassist,
- zk,
- zkbind,
- zkplus,
- zul,
- zweb
+Require-Bundle: zcommon;bundle-version="10.0.1",
+ zel;bundle-version="10.0.1",
+ zhtml;bundle-version="10.0.1",
+ zk;bundle-version="10.0.1",
+ zkbind;bundle-version="10.0.1",
+ zkplus;bundle-version="10.0.1",
+ zul;bundle-version="10.0.1",
+ zweb;bundle-version="10.0.1"

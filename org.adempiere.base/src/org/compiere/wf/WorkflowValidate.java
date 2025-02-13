@@ -22,7 +22,6 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Msg;
 
-
 /**
  *	Process to Validate Workflow
  *	

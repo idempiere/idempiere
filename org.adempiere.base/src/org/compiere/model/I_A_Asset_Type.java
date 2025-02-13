@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Type
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_A_Asset_Type 
 {
@@ -40,24 +40,6 @@ public interface I_A_Asset_Type
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name A_Asset_Type_ID */
-    public static final String COLUMNNAME_A_Asset_Type_ID = "A_Asset_Type_ID";
-
-	/** Set Asset Type	  */
-	public void setA_Asset_Type_ID (int A_Asset_Type_ID);
-
-	/** Get Asset Type	  */
-	public int getA_Asset_Type_ID();
-
-    /** Column name A_Asset_Type_UU */
-    public static final String COLUMNNAME_A_Asset_Type_UU = "A_Asset_Type_UU";
-
-	/** Set A_Asset_Type_UU	  */
-	public void setA_Asset_Type_UU (String A_Asset_Type_UU);
-
-	/** Get A_Asset_Type_UU	  */
-	public String getA_Asset_Type_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -79,6 +61,24 @@ public interface I_A_Asset_Type
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_Asset_Type_ID */
+    public static final String COLUMNNAME_A_Asset_Type_ID = "A_Asset_Type_ID";
+
+	/** Set Asset Type	  */
+	public void setA_Asset_Type_ID (int A_Asset_Type_ID);
+
+	/** Get Asset Type	  */
+	public int getA_Asset_Type_ID();
+
+    /** Column name A_Asset_Type_UU */
+    public static final String COLUMNNAME_A_Asset_Type_UU = "A_Asset_Type_UU";
+
+	/** Set A_Asset_Type_UU	  */
+	public void setA_Asset_Type_UU (String A_Asset_Type_UU);
+
+	/** Get A_Asset_Type_UU	  */
+	public String getA_Asset_Type_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

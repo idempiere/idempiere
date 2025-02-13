@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_JobRemuneration
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_JobRemuneration 
 {
@@ -62,21 +62,6 @@ public interface I_C_JobRemuneration
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_Job_ID */
-    public static final String COLUMNNAME_C_Job_ID = "C_Job_ID";
-
-	/** Set Position.
-	  * Job Position
-	  */
-	public void setC_Job_ID (int C_Job_ID);
-
-	/** Get Position.
-	  * Job Position
-	  */
-	public int getC_Job_ID();
-
-	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException;
-
     /** Column name C_JobRemuneration_ID */
     public static final String COLUMNNAME_C_JobRemuneration_ID = "C_JobRemuneration_ID";
 
@@ -99,21 +84,20 @@ public interface I_C_JobRemuneration
 	/** Get C_JobRemuneration_UU	  */
 	public String getC_JobRemuneration_UU();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
+    /** Column name C_Job_ID */
+    public static final String COLUMNNAME_C_Job_ID = "C_Job_ID";
 
-	/** Get Created.
-	  * Date this record was created
+	/** Set Position.
+	  * Job Position
 	  */
-	public Timestamp getCreated();
+	public void setC_Job_ID (int C_Job_ID);
 
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
+	/** Get Position.
+	  * Job Position
 	  */
-	public int getCreatedBy();
+	public int getC_Job_ID();
+
+	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException;
 
     /** Column name C_Remuneration_ID */
     public static final String COLUMNNAME_C_Remuneration_ID = "C_Remuneration_ID";
@@ -129,6 +113,22 @@ public interface I_C_JobRemuneration
 	public int getC_Remuneration_ID();
 
 	public org.compiere.model.I_C_Remuneration getC_Remuneration() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
