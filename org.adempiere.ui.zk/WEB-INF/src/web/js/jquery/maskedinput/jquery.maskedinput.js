@@ -142,10 +142,7 @@
                     for (i = start; end > i && len > i; i++) tests[i] && (buffer[i] = getPlaceholder(i));
                 }
                 function writeBuffer() {
-					if(defaultBuffer == buffer.join(""))
-                    	input.val("");
-                    else 
-                    	input.val(buffer.join(""));
+                    input.val(buffer.join(""));
                 }
                 function checkVal(allow) {
                     var i, c, pos, test = input.val(), lastMatch = -1;
