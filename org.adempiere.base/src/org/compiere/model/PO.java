@@ -6058,16 +6058,13 @@ public abstract class PO
 							.append("=?");
 					int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), fkval);
 					if (pocid < 0) {
-						log.saveError("Error", "Foreign ID " + fkval + " not found in " + fkcol);
 						throw new AdempiereException("Foreign ID " + fkval + " not found in " + fkcol);
 					}
 					if (pocid == 0 && !systemAccess) {
-						log.saveError("Error", "System ID " + fkval + " cannot be used in " + fkcol);
 						throw new CrossTenantException(fkval, fkcol);
 					}
 					int curcid = Env.getAD_Client_ID(getCtx());
 					if (pocid > 0 && pocid != curcid) {
-						log.saveError("Error", "Cross tenant ID " + fkval + " not allowed in " + fkcol);
 						throw new CrossTenantException(fkval, fkcol);
 					}
 				}
@@ -6100,6 +6097,7 @@ public abstract class PO
 		try {
 			validForeignKeysEx();
 		} catch (Exception e) {
+			log.saveError("Error", e.getMessage());
 			return false;
 		}
 		return true;
