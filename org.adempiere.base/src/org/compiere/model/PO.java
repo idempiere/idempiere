@@ -6205,10 +6205,10 @@ public abstract class PO
 		if (pocid < 0)
 			throw new AdempiereException("Foreign UUID " + recordUU + " not found in " + ft.getTableName());
 		if (pocid == 0 && !systemAccess)
-			throw new AdempiereException("System UUID " + recordUU + " cannot be used in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordUU);
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
-			throw new CrossTenantException(ft.getTableName(),recordUU);
+			throw new CrossTenantException(ft.getTableName(), recordUU);
 	}
 
 	/**
