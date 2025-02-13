@@ -6152,7 +6152,7 @@ public abstract class PO
 		if (pocid < 0)
 			throw new AdempiereException("Foreign ID " + recordId + " not found in " + ft.getTableName());
 		if (pocid == 0 && !systemAccess)
-			throw new AdempiereException("System ID " + recordId + " cannot be used in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordId);
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
 			throw new CrossTenantException(ft.getTableName(), recordId);
