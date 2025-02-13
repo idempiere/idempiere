@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Felix Web Console
 Bundle-SymbolicName: org.idempiere.felix.webconsole
-Bundle-Version: 12.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-Activator: org.idempiere.felix.webconsole.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
@@ -33,4 +33,5 @@ Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.felix.webconsole
 Bundle-Vendor: iDempiere Community
 Export-Package: org.idempiere.felix.webconsole;x-internal:=true
-Require-Bundle: org.adempiere.base;bundle-version="12.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="13.0.0"
+Eclipse-BundleShape: dir

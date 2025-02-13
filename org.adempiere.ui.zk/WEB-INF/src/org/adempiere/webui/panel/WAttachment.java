@@ -250,7 +250,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 		}
 
-		if (m_attachment.isReadOnly()) {
+		if (m_attachment.isReadOnly(false)) {
 			toolBar.removeChild(bLoad);
 			toolBar.removeChild(bDelete);
 			confirmPanel.removeChild(bDeleteAll);

@@ -75,6 +75,19 @@ public interface I_M_CostDetail
 	  */
 	public BigDecimal getAmt();
 
+    /** Column name BackDateProcessedOn */
+    public static final String COLUMNNAME_BackDateProcessedOn = "BackDateProcessedOn";
+
+	/** Set Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn);
+
+	/** Get Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn();
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
@@ -203,6 +216,19 @@ public interface I_M_CostDetail
 	  */
 	public BigDecimal getCurrentQty();
 
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
+
+	/** Set Account Date.
+	  * Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct);
+
+	/** Get Account Date.
+	  * Accounting Date
+	  */
+	public Timestamp getDateAcct();
+
     /** Column name DeltaAmt */
     public static final String COLUMNNAME_DeltaAmt = "DeltaAmt";
 
@@ -254,6 +280,15 @@ public interface I_M_CostDetail
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsBackDate */
+    public static final String COLUMNNAME_IsBackDate = "IsBackDate";
+
+	/** Set Back-Date	  */
+	public void setIsBackDate (boolean IsBackDate);
+
+	/** Get Back-Date	  */
+	public boolean isBackDate();
 
     /** Column name IsSOTrx */
     public static final String COLUMNNAME_IsSOTrx = "IsSOTrx";
@@ -459,6 +494,15 @@ public interface I_M_CostDetail
 	  * Quantity
 	  */
 	public BigDecimal getQty();
+
+    /** Column name Ref_CostDetail_ID */
+    public static final String COLUMNNAME_Ref_CostDetail_ID = "Ref_CostDetail_ID";
+
+	/** Set Referenced Cost Detail	  */
+	public void setRef_CostDetail_ID (int Ref_CostDetail_ID);
+
+	/** Get Referenced Cost Detail	  */
+	public int getRef_CostDetail_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

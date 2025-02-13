@@ -88,6 +88,19 @@ public interface I_C_AcctSchema
 	  */
 	public boolean isAutoPeriodControl();
 
+    /** Column name BackDateDay */
+    public static final String COLUMNNAME_BackDateDay = "BackDateDay";
+
+	/** Set Back-Date Days.
+	  * Number of days to be able to post a back-date transaction (based on system date)
+	  */
+	public void setBackDateDay (int BackDateDay);
+
+	/** Get Back-Date Days.
+	  * Number of days to be able to post a back-date transaction (based on system date)
+	  */
+	public int getBackDateDay();
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 

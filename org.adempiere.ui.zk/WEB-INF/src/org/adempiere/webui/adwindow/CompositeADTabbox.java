@@ -1067,7 +1067,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			if (!tabPanel.getGridTab().isSortTab()) {
 				currentRow = tabPanel.getGridTab().getCurrentRow();
 			}
-			tabPanel.query(false, 0, 0);			
+			tabPanel.query(false, 0, tabPanel.getGridTab().getMaxQueryRecords());
 			if (currentRow >= 0 && currentRow != tabPanel.getGridTab().getCurrentRow() 
 				&& currentRow < tabPanel.getGridTab().getRowCount()) {
 				tabPanel.getGridTab().setCurrentRow(currentRow, false);

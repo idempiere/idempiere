@@ -87,6 +87,11 @@ public class PrintWithinProcess extends AbstractTestCase {
 		MProcess process = null;
 		try {
 			String fileName = putResourceInTempFolder("org/idempiere/test/jasper/AR_Invoice.jrxml");
+			boolean windowsPath = fileName.matches("^[a-zA-Z]:\\\\.*");
+			if(windowsPath) {
+				fileName = fileName.replace("\\", "/");
+				fileName = "/" + fileName;
+			}
 			process = setupProcess(ctx, trxName, "file://" + fileName);
 
 			List<MInvoice> invoices = new Query(ctx, MInvoice.Table_Name, "C_Invoice_ID IN (?,?)", trxName)

@@ -191,8 +191,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 			}
 			if (!chekIPFormat(ipOnly)) {
 				// verify with the local hostname
-				String retVal = InetAddress.getLocalHost().getHostName();
-				retVal = InetAddress.getLocalHost().getCanonicalHostName();
+				String retVal = InetAddress.getLocalHost().getCanonicalHostName();
 				if (ipOnly.equals(retVal)) {
 					if (log.isLoggable(Level.INFO)) log.info("Allowed here - IP=" + retVal+ " match");
 					return true;

@@ -67,7 +67,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 7266911648463503849L;
+	private static final long serialVersionUID = -8473945674135719367L;
 
 	/**
 	 * 	Get role for current session/context
@@ -1723,7 +1723,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 					+ "             AND ce.AD_Process_ID IS NOT NULL "
 					+ "             AND ce.AD_Process_Para_ID IS NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter;
+			String noReportsFilter = "";
+			if (! isCanReport())
+				noReportsFilter = " AND AD_Process_ID NOT IN (SELECT p.AD_Process_ID FROM AD_Process p WHERE IsReport='Y')";
+			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter + noReportsFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
@@ -1922,7 +1925,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 							m_formAccess.remove(formId);
 						}
 					} else {
-						directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
+						if ( ! (formId == SystemIDs.FORM_ARCHIVEVIEWER && !isCanReport()) )
+							directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -3484,4 +3488,25 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), recordId) == 1;
 		}
 	}
+
+	/** Get Predefined Context Variables from this role and included roles
+	 * @return Predefined context variables to inject when opening a menu entry or a window
+	 */
+	public String getPredefinedContextVariables() {
+		StringBuilder predefinedContextVariables = new StringBuilder();
+		for (MRole role : getIncludedRoles(false)) {
+			if (role.get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+				if (predefinedContextVariables.length() > 0)
+					predefinedContextVariables.append("\n");
+				predefinedContextVariables.append(role.get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+			}
+		}
+		if (get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+			if (predefinedContextVariables.length() > 0)
+				predefinedContextVariables.append("\n");
+			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+		}
+		return predefinedContextVariables.toString();
+	}
+
 }	//	MRole

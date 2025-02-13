@@ -1135,7 +1135,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				{
 					columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true), infoColumn.isReadOnly() || haveNotProcess);
 				}
-				columnInfo.setColDescription(infoColumn.getNameTrl());
+				columnInfo.setColDescription(infoColumn.getDescriptionTrl());
 				columnInfo.setAD_Reference_ID(infoColumn.getAD_Reference_ID());
 				columnInfo.setAD_Reference_Value_ID(infoColumn.getAD_Reference_Value_ID());
 				columnInfo.setGridField(gridFields.get(i));
@@ -3363,7 +3363,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	    exportButton.setEnabled(false);       
 	    exportButton.addEventListener(Events.ON_CLICK, new XlsxExportAction());
 	
-	    confirmPanel.addComponentsLeft(exportButton);
+	    if (MRole.getDefault().isCanExport())
+	    	confirmPanel.addComponentsLeft(exportButton);
 	}
 
 	/**
@@ -3373,8 +3374,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	{
 		if(exportButton == null)
 			return;
-		
-		exportButton.setEnabled(contentPanel.getRowCount() > 0);		
+
+		exportButton.setEnabled(contentPanel.getRowCount() > 0 && MRole.getDefault().isCanExport());
 	}
 
 	/**

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -308,6 +309,25 @@ public class ProductCost
 	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, 
 		String costingMethod, int C_OrderLine_ID, boolean zeroCostsOK)
 	{
+		return getProductCosts(as, AD_Org_ID, costingMethod, C_OrderLine_ID, zeroCostsOK, null, null, false);
+	}
+	
+	/**
+	 * Get Total Costs (amt*qty) in Accounting Schema Currency
+	 * @param as accounting schema
+	 * @param AD_Org_ID trx org
+	 * @param costingMethod if null uses Accounting Schema - AcctSchema.COSTINGMETHOD_*
+	 * @param C_OrderLine_ID optional order line
+	 * @param zeroCostsOK zero/no costs are OK
+	 * @param dateAcct account date
+	 * @param costDetail optional cost detail - use to retrieve the cost history
+	 * @param isInBackDatePostingProcess in a back-date posting process
+	 * @return cost or null, if qty or costs cannot be determined
+	 */
+	public BigDecimal getProductCosts (MAcctSchema as, int AD_Org_ID, 
+		String costingMethod, int C_OrderLine_ID, boolean zeroCostsOK, 
+		Timestamp dateAcct, MCostDetail costDetail, boolean isInBackDatePostingProcess)
+	{
 		if (m_qty == null)
 		{
 			log.fine("No Qty");
@@ -321,8 +341,8 @@ public class ProductCost
 			return null;
 		}
 		//
-		BigDecimal cost = MCost.getCurrentCost (m_product, m_M_AttributeSetInstance_ID, 
-			as, AD_Org_ID, costingMethod, m_qty, C_OrderLine_ID, zeroCostsOK, m_trxName);
+		BigDecimal cost = MCost.getCost (m_product, m_M_AttributeSetInstance_ID, 
+			as, AD_Org_ID, costingMethod, m_qty, C_OrderLine_ID, zeroCostsOK, dateAcct, costDetail, isInBackDatePostingProcess, m_trxName);
 		if (cost == null)
 		{
 			log.fine("No Costs");
