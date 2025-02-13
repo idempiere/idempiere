@@ -275,20 +275,4 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	public void setTooltipText(String tooltipText) {
 		bandbox.setTooltiptext(tooltipText);
 	}
-
-	/**
-	 * Set place holder text for global search input box
-	 * @param placeHolder
-	 */
-	public void setPlaceHolderText(String placeHolder) {
-		bandbox.setPlaceholder(placeHolder);
-	}
-	
-	/**
-	 * Set tooltip text for global search input box
-	 * @param tooltipText
-	 */
-	public void setTooltipText(String tooltipText) {
-		bandbox.setTooltiptext(tooltipText);
-	}
 }

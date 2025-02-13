@@ -589,10 +589,11 @@ public abstract class SvrProcess implements ProcessCall
 			retValue = m_pi.getParameter();
 		}
 		
-		return Stream.concat(
-				Arrays.stream(m_pi.getDefaultParameters()), 
-				Arrays.stream(retValue)
-				).toArray(ProcessInfoParameter[]::new);
+		return retValue;
+//		return Stream.concat(
+//				Arrays.stream(m_pi.getDefaultParameters()), 
+//				Arrays.stream(retValue)
+//				).toArray(ProcessInfoParameter[]::new);
 	}	//	getParameter
 
 	/**

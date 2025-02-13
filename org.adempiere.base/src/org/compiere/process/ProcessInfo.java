@@ -97,7 +97,7 @@ public class ProcessInfo implements Serializable
 		else
 			m_printPreview = false;
         
-        setDefaultParameters();
+//		setDefaultParameters();
 	}   //  ProcessInfo
 
 	/** Process UUID			*/
