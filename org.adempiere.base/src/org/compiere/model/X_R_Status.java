@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Status
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="R_Status")
 public class X_R_Status extends PO implements I_R_Status, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_R_Status (Properties ctx, int R_Status_ID, String trxName)

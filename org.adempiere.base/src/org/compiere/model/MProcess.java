@@ -153,9 +153,9 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	}	//	getFromMenu
 
 	/**	Cache ID						*/
-	private static ImmutableIntPOCache<Integer,MProcess>	s_cache	= new ImmutableIntPOCache<Integer,MProcess>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MProcess>	s_cache	= new ImmutableIntPOCache<Integer,MProcess>(Table_Name, 20, 0, false, 0);
 	/**	Cache UUID						*/
-	private static ImmutablePOCache<String,MProcess>	s_cacheUU	= new ImmutablePOCache<String,MProcess>(Table_Name, Table_Name+"|AD_Process_UU", 20);
+	private static ImmutablePOCache<String,MProcess>	s_cacheUU	= new ImmutablePOCache<String,MProcess>(Table_Name, Table_Name+"|AD_Process_UU", 20, 0, false, 0);
 	
     /**
      * UUID based Constructor
@@ -327,6 +327,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		//	Unlock
 		pInstance.setResult(ok ? MPInstance.RESULT_OK : MPInstance.RESULT_ERROR);
 		pInstance.setErrorMsg(processInfo.getSummary());
+		pInstance.setJsonData(processInfo.getJsonData());
 		pInstance.setIsProcessing(false);
 		pInstance.saveEx();
 		//
@@ -379,6 +380,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 				String errmsg = pi.getSummary();
 				pinstance.setResult(!pi.isError());
 				pinstance.setErrorMsg(errmsg);
+				pinstance.setJsonData(pi.getJsonData());
 				pinstance.saveEx();
 				ok = !pi.isError();
 			}
@@ -502,19 +504,14 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		setStatistic_Seconds(getStatistic_Seconds() + seconds);
 	}	//	addStatistics
 		
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		if (newRecord)	//	Add to all automatic roles
+		if (newRecord)	
 		{
+			// Create new Process Access record for all automatic role
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");
 			for (int i = 0; i < roles.length; i++)
 			{
@@ -527,6 +524,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		else if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
 			|| is_ValueChanged("Description") || is_ValueChanged("Help"))
 		{
+			// Update Menu
 			MMenu[] menues = MMenu.get(getCtx(), "AD_Process_ID=" + getAD_Process_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
 			{
@@ -535,7 +533,8 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 				menues[i].setDescription(getDescription());
 				menues[i].saveEx();
 			}
-			MWFNode[] nodes = MWindow.getWFNodes(getCtx(), "AD_Process_ID=" + getAD_Process_ID(), get_TrxName());
+			// Update workflow node
+			MWFNode[] nodes = MWFNode.getWFNodes(getCtx(), "AD_Process_ID=" + getAD_Process_ID(), get_TrxName());
 			for (int i = 0; i < nodes.length; i++)
 			{
 				boolean changed = false;
@@ -629,11 +628,6 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		return this;
 	}
 
-	/**
-	 * 	Called before Save for Pre-Save Operation
-	 * 	@param newRecord new record
-	 *	@return true if record can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getAllowMultipleExecution() == null)

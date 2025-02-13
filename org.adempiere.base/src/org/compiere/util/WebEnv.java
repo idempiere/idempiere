@@ -195,8 +195,7 @@ public class WebEnv
 		return s_initOK;
 	}	//	initWeb
 
-
-	/**************************************************************************
+	/**
 	 *  Get Base Directory entry.
 	 *  <br>
 	 *  /adempiere/
@@ -303,7 +302,7 @@ public class WebEnv
 		return String.valueOf(content);
 	}	//	getCellContent
 
-	/**************************************************************************
+	/**
 	 * 	Dump Servlet Config
 	 * 	@param config config
 	 */
@@ -480,14 +479,15 @@ public class WebEnv
 		log.finer("- Class=" + request.getClass().getName());
 	}	//	dump (Request)
 
-
-	/**************************************************************************
+	/**
 	 *  Add Footer (with diagnostics)
 	 *  @param request request
 	 *  @param response response
 	 *  @param servlet servlet
 	 *  @param body - Body to add footer
+	 *  @deprecated
 	 */
+	@Deprecated
 	public static void addFooter(HttpServletRequest request, HttpServletResponse response,
 		HttpServlet servlet, body body)
 	{

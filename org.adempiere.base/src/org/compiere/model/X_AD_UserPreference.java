@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserPreference
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserPreference")
 public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -38,8 +38,12 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
       super (ctx, AD_UserPreference_ID, trxName);
       /** if (AD_UserPreference_ID == 0)
         {
-			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setAD_User_ID (0);
+			setIsReadOnlySession (false);
+// N
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -51,8 +55,12 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
       super (ctx, AD_UserPreference_ID, trxName, virtualColumns);
       /** if (AD_UserPreference_ID == 0)
         {
-			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setAD_User_ID (0);
+			setIsReadOnlySession (false);
+// N
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -64,8 +72,12 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
       super (ctx, AD_UserPreference_UU, trxName);
       /** if (AD_UserPreference_UU == null)
         {
-			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setAD_User_ID (0);
+			setIsReadOnlySession (false);
+// N
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -77,8 +89,12 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
       super (ctx, AD_UserPreference_UU, trxName, virtualColumns);
       /** if (AD_UserPreference_UU == null)
         {
-			setAD_User_ID (0);
 			setAD_UserPreference_ID (0);
+			setAD_User_ID (0);
+			setIsReadOnlySession (false);
+// N
+			setIsShowTechnicalInfOnHelp (false);
+// N
 			setViewFindResult (null);
 // 0
         } */
@@ -111,34 +127,6 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
-			.getPO(getAD_User_ID(), get_TrxName());
-	}
-
-	/** Set User/Contact.
-		@param AD_User_ID User within the system - Internal or Business Partner Contact
-	*/
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
-	}
-
-	/** Get User/Contact.
-		@return User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set AD_UserPreference_ID.
 		@param AD_UserPreference_ID AD_UserPreference_ID
@@ -176,19 +164,70 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_UserPreference_UU);
 	}
 
-	/** Set Automatic Commit.
-		@param AutoCommit Automatic Commit
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
+
+	/** Set User/Contact.
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+	}
+
+	/** Get User/Contact.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Save on Navigate.
+		@param AutoCommit Automatically save changes to the current record upon user navigation.
 	*/
 	public void setAutoCommit (boolean AutoCommit)
 	{
 		set_Value (COLUMNNAME_AutoCommit, Boolean.valueOf(AutoCommit));
 	}
 
-	/** Get Automatic Commit.
-		@return Automatic Commit	  */
+	/** Get Save on Navigate.
+		@return Automatically save changes to the current record upon user navigation.
+	  */
 	public boolean isAutoCommit()
 	{
 		Object oo = get_Value(COLUMNNAME_AutoCommit);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Automatic New Record.
+		@param AutoNew Automatic New Record
+	*/
+	public void setAutoNew (boolean AutoNew)
+	{
+		set_Value (COLUMNNAME_AutoNew, Boolean.valueOf(AutoNew));
+	}
+
+	/** Get Automatic New Record.
+		@return Automatic New Record	  */
+	public boolean isAutoNew()
+	{
+		Object oo = get_Value(COLUMNNAME_AutoNew);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
@@ -215,28 +254,6 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Automatic New Record.
-		@param AutoNew Automatic New Record
-	*/
-	public void setAutoNew (boolean AutoNew)
-	{
-		set_Value (COLUMNNAME_AutoNew, Boolean.valueOf(AutoNew));
-	}
-
-	/** Get Automatic New Record.
-		@return Automatic New Record	  */
-	public boolean isAutoNew()
-	{
-		Object oo = get_Value(COLUMNNAME_AutoNew);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	/** Set Threshold.
@@ -271,6 +288,50 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	public boolean isDetailedZoomAcross()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDetailedZoomAcross);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Read Only Session.
+		@param IsReadOnlySession Read Only Session
+	*/
+	public void setIsReadOnlySession (boolean IsReadOnlySession)
+	{
+		set_Value (COLUMNNAME_IsReadOnlySession, Boolean.valueOf(IsReadOnlySession));
+	}
+
+	/** Get Read Only Session.
+		@return Read Only Session	  */
+	public boolean isReadOnlySession()
+	{
+		Object oo = get_Value(COLUMNNAME_IsReadOnlySession);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Technical Information on Help.
+		@param IsShowTechnicalInfOnHelp Show Technical Information on Help
+	*/
+	public void setIsShowTechnicalInfOnHelp (boolean IsShowTechnicalInfOnHelp)
+	{
+		set_Value (COLUMNNAME_IsShowTechnicalInfOnHelp, Boolean.valueOf(IsShowTechnicalInfOnHelp));
+	}
+
+	/** Get Show Technical Information on Help.
+		@return Show Technical Information on Help	  */
+	public boolean isShowTechnicalInfOnHelp()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowTechnicalInfOnHelp);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

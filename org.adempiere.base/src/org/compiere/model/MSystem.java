@@ -83,7 +83,7 @@ public class MSystem extends X_AD_System
 	}	//	get
 	
 	/** System - cached					*/
-	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1);
+	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, 0, false, 0);
 	
     /**
      * UUID based Constructor
@@ -252,15 +252,10 @@ public class MSystem extends X_AD_System
 		return s;
 	}	//	getProfileInfo
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true/false
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Mandatory Values
+		// Mandatory Values
 		if (get_Value(COLUMNNAME_IsAutoErrorReport) == null)
 			setIsAutoErrorReport (true);
 		//
@@ -358,7 +353,7 @@ public class MSystem extends X_AD_System
 	}	//	isPDFLicense
 		
 	/**
-	 * 	Update System Info if more then a day old
+	 * 	Update System Info if last update (Updated) is more then a day old
 	 * 	@return true if updated
 	 */
 	public boolean setInfo()

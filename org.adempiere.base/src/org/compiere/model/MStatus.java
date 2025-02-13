@@ -264,11 +264,6 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -276,9 +271,10 @@ public class MStatus extends X_R_Status implements ImmutablePOSupport
 			setIsClosed(false);
 		if (isFinalClose() && !isClosed())
 			setIsFinalClose(false);
-		//
+		// Update_Status_ID only for web update
 		if (!isWebCanUpdate() && getUpdate_Status_ID() != 0)
 			setUpdate_Status_ID(0);
+		// Next status only for time out
 		if (getTimeoutDays() == 0 && getNext_Status_ID() != 0)
 			setNext_Status_ID(0);
 		//

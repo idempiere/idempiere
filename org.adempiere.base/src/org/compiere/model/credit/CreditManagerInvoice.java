@@ -31,7 +31,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Credit Manager for Invoice
+ * Credit Status Management for Invoice
  * 
  * @author Logilite Technologies
  * @since  June 25, 2023

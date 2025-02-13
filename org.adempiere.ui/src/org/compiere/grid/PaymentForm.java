@@ -34,9 +34,8 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
 
 /**
- * 
+ * Base class for payment form
  * @author Elaine
- *
  */
 public abstract class PaymentForm implements IPaymentForm {
 
@@ -70,7 +69,6 @@ public abstract class PaymentForm implements IPaymentForm {
 	protected boolean				m_isSOTrx = true;
 	
 	/**
-	 * 
 	 * @param WindowNo
 	 * @param mTab
 	 */
@@ -164,7 +162,7 @@ public abstract class PaymentForm implements IPaymentForm {
 	}
 	
 	/**
-	 * after save and trx committed/rollback
+	 * After save and transaction have been committed/rollback
 	 * @param success
 	 */
 	protected abstract void afterSave(boolean success);
@@ -218,7 +216,7 @@ public abstract class PaymentForm implements IPaymentForm {
 	}
 	
 	/**
-	 * 
+	 * Is online payment processor have been configured for bank account
 	 * @param ctx
 	 * @param tender
 	 * @param CCType
@@ -275,7 +273,6 @@ public abstract class PaymentForm implements IPaymentForm {
 	}
 	
 	/**
-	 * 
 	 * @return {@link GridTab}
 	 */
 	public GridTab getGridTab()
@@ -296,7 +293,6 @@ public abstract class PaymentForm implements IPaymentForm {
 	}
 	
 	/**
-	 * 
 	 * @return window no
 	 */
 	public int getWindowNo()

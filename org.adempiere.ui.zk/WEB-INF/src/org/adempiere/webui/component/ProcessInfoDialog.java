@@ -82,6 +82,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 * @param header
 	 * @param m_logs
 	 */
+	@Deprecated
 	public ProcessInfoDialog(String title, String header,
 			ProcessInfoLog[] m_logs) {
 		init(title, header, null, m_logs);
@@ -95,6 +96,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 * @param pi
 	 * @param needFillLogFromDb
 	 */
+	@Deprecated
 	public ProcessInfoDialog(String title, String header, ProcessInfo pi, boolean needFillLogFromDb) {
 		this(pi, needFillLogFromDb);
 	}

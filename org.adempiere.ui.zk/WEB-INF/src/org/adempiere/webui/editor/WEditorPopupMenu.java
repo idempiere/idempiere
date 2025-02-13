@@ -44,7 +44,6 @@ import org.zkoss.zul.Menuitem;
  * Popup context menu for {@link WEditor}.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
- * @version $Revision: 0.10 $
  */
 public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 {
@@ -372,6 +371,14 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 			appendChild(editor);
 		}
 	}
+
+	/**
+	 * Remove drill assistant menu item
+	 */
+	public void showDrillAssistant(boolean show) {
+        if (drillItem != null)
+            drillItem.setVisible(show);
+	}	
 
 	/**
 	 * Remove the new and update items from the menu - for ChosenList

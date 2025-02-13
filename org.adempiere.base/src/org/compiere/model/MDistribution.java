@@ -511,15 +511,10 @@ public class MDistribution extends X_GL_Distribution
 		}
 	}	//	distribute
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Reset not selected Any
+		//	Reset corresponding field to 0 if IsAny* is true
 		if (isAnyAcct() && getAccount_ID() != 0)
 			setAccount_ID(0);
 		if (isAnyActivity() && getC_Activity_ID() != 0)

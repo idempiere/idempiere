@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_LdapProcessorLog
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_LdapProcessorLog")
 public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_LdapProcessorLog (Properties ctx, int AD_LdapProcessorLog_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
       super (ctx, AD_LdapProcessorLog_ID, trxName);
       /** if (AD_LdapProcessorLog_ID == 0)
         {
-			setAD_LdapProcessor_ID (0);
 			setAD_LdapProcessorLog_ID (0);
+			setAD_LdapProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -50,8 +50,8 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
       super (ctx, AD_LdapProcessorLog_ID, trxName, virtualColumns);
       /** if (AD_LdapProcessorLog_ID == 0)
         {
-			setAD_LdapProcessor_ID (0);
 			setAD_LdapProcessorLog_ID (0);
+			setAD_LdapProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -62,8 +62,8 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
       super (ctx, AD_LdapProcessorLog_UU, trxName);
       /** if (AD_LdapProcessorLog_UU == null)
         {
-			setAD_LdapProcessor_ID (0);
 			setAD_LdapProcessorLog_ID (0);
+			setAD_LdapProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -74,8 +74,8 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
       super (ctx, AD_LdapProcessorLog_UU, trxName, virtualColumns);
       /** if (AD_LdapProcessorLog_UU == null)
         {
-			setAD_LdapProcessor_ID (0);
 			setAD_LdapProcessorLog_ID (0);
+			setAD_LdapProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -107,34 +107,6 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_LdapProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_LdapProcessor.Table_ID)
-			.getPO(getAD_LdapProcessor_ID(), get_TrxName());
-	}
-
-	/** Set Ldap Processor.
-		@param AD_LdapProcessor_ID LDAP Server to authenticate and authorize external systems based on iDempiere
-	*/
-	public void setAD_LdapProcessor_ID (int AD_LdapProcessor_ID)
-	{
-		if (AD_LdapProcessor_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_LdapProcessor_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_LdapProcessor_ID, Integer.valueOf(AD_LdapProcessor_ID));
-	}
-
-	/** Get Ldap Processor.
-		@return LDAP Server to authenticate and authorize external systems based on iDempiere
-	  */
-	public int getAD_LdapProcessor_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LdapProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Ldap Processor Log.
 		@param AD_LdapProcessorLog_ID LDAP Server Log
@@ -171,6 +143,34 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
 	public String getAD_LdapProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_LdapProcessorLog_UU);
+	}
+
+	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_LdapProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_LdapProcessor.Table_ID)
+			.getPO(getAD_LdapProcessor_ID(), get_TrxName());
+	}
+
+	/** Set Ldap Processor.
+		@param AD_LdapProcessor_ID LDAP Server to authenticate and authorize external systems based on iDempiere
+	*/
+	public void setAD_LdapProcessor_ID (int AD_LdapProcessor_ID)
+	{
+		if (AD_LdapProcessor_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_LdapProcessor_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_LdapProcessor_ID, Integer.valueOf(AD_LdapProcessor_ID));
+	}
+
+	/** Get Ldap Processor.
+		@return LDAP Server to authenticate and authorize external systems based on iDempiere
+	  */
+	public int getAD_LdapProcessor_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LdapProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Binary Data.

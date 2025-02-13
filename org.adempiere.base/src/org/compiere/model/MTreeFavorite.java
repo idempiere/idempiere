@@ -31,7 +31,7 @@ import org.compiere.util.Util;
 public class MTreeFavorite extends X_AD_Tree_Favorite
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1468891496751650494L;
 
@@ -48,11 +48,11 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	private MTreeNode						root						= null;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Tree_Favorite_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Tree_Favorite_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTreeFavorite(Properties ctx, String AD_Tree_Favorite_UU, String trxName) {
         super(ctx, AD_Tree_Favorite_UU, trxName);
 		if (! Util.isEmpty(AD_Tree_Favorite_UU))
@@ -74,11 +74,20 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 			loadNode();
 	}
 
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MTreeFavorite(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * Get root node
+	 * @return root node
+	 */
 	public MTreeNode getRoot()
 	{
 		return root;
@@ -86,8 +95,6 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 
 	/**
 	 * Load Node Into Tree
-	 * 
-	 * @param AD_Tree_Favorite_ID
 	 */
 	private void loadNode()
 	{
@@ -149,7 +156,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	} // loadNode
 
 	/**
-	 * Adding Node Into Tree
+	 * Add Node Into Tree
 	 * 
 	 * @param favNodeID
 	 * @param parentID
@@ -224,10 +231,10 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	} // checkBuffer
 
 	/**
-	 * Get Favorite Tree ID for a specific User and Role Wise
+	 * Get Favorite Tree ID for a specific User
 	 * 
 	 * @param  userID
-	 * @return        Favorite Tree_ID
+	 * @return Favorite Tree_ID
 	 */
 	public static int getFavoriteTreeID(int userID)
 	{
@@ -241,11 +248,11 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	} // getFavoriteTreeID
 
 	/**
-	 * get access for the menu from specified role
+	 * Get access for the menu from specified role
 	 * 
 	 * @param  role
 	 * @param  menu
-	 * @return
+	 * @return true if role can access the menu item
 	 */
 	public static Boolean getAccessForMenuItem(MRole role, I_AD_Menu menu)
 	{

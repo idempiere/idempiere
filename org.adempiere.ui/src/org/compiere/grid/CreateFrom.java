@@ -34,7 +34,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /**
- * 
+ * Base class for Create From form (Create invoice lines from PO, Create shipment lines from PO, etc).<br/>
+ * This have been replaced by Info Window based implementation in Core.
  * @author hengsin
  *
  */

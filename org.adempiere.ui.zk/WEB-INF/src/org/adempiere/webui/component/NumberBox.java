@@ -42,7 +42,6 @@ import org.zkoss.zul.Vbox;
  * Composite component of {@link Decimalbox} and {@link Button}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  * 
  * @author Low Heng Sin
  */
@@ -470,7 +469,7 @@ public class NumberBox extends Div
 	}
 	
 	/**
-	 * Set enable/disable.
+	 * Set enable/disable.<br/>
 	 * Hide calculator button if set to disable.
 	 * @param enabled
 	 */
@@ -505,7 +504,7 @@ public class NumberBox extends Div
 	}
 	
 	/**
-	 * If evtnm is ON_CLICK, add listener to {@link #btn}.
+	 * If evtnm is ON_CLICK, add listener to {@link #btn}.<br/>
 	 * Otherwise, add listener to {@link #decimalBox}.
 	 * @param evtnm
 	 * @param listener

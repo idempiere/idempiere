@@ -24,7 +24,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz                                                       *
  **********************************************************************/
-
 package org.compiere.process;
 
 import java.util.logging.Level;
@@ -38,7 +37,7 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.Msg;
 
 /**
- *	IDEMPIERE-4782
+ *	IDEMPIERE-4782 Multi-factor authentication
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
 @org.adempiere.base.annotation.Process

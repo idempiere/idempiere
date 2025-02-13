@@ -54,6 +54,7 @@ public class AmtInWords_FA implements AmtInWords {
         "هشتصد",
         "نهصد"
     };
+    
     /** Ten to Ninety				*/
     private static final String[]	tensNames	= {
         "",
@@ -148,14 +149,14 @@ public class AmtInWords_FA implements AmtInWords {
         while (number > 0);
         return (prefix + soFar).trim();
     }	//	convert
-    
-    
-    /**************************************************************************
+        
+    /**
      * 	Get Amount in Words
      * 	@param amount numeric amount (352.80)
      * 	@return amount in words (three*five*two 80/100)
      * 	@throws Exception
      */
+    @Override
     public String getAmtInWords(String amount) throws Exception {
         if (amount == null)
             return amount;
@@ -199,7 +200,6 @@ public class AmtInWords_FA implements AmtInWords {
      */
     public static void main(String[] args) {
         AmtInWords_FA aiw = new AmtInWords_FA();
-        //	aiw.print (".23");	Error
         aiw.print("0.23");
         aiw.print("1.23");
         aiw.print("12.345");

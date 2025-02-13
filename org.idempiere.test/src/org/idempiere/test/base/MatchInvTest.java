@@ -31,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -63,9 +65,11 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -223,17 +227,10 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
-				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID())
-					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
-			}
+			Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, credMatchAmt, 2, false), new FactAcct(acctInvClr, credMatchAmt, 2, true));
+			assertFactAcctEntries(factAccts, expected);
 		}
 		
 		rollback();
@@ -334,17 +331,10 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
-				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID())
-					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
-			}
+			Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, invMatchAmt, 2, true), new FactAcct(acctInvClr, invMatchAmt, 2, false));
+			assertFactAcctEntries(factAccts, expected);
 		}
 		
 		rollback();
@@ -452,21 +442,11 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
-					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
-					assertEquals(mi.getQty(), fa.getQty(), "Accounting fact quantity incorrect");
-				}
-				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
-					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
-					assertEquals(mi.getQty().negate().setScale(2, RoundingMode.HALF_UP), fa.getQty().setScale(2, RoundingMode.HALF_UP), "Accounting fact quantity incorrect");
-				}
-			}
+			Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(acctInvClr, invMatchAmt, 2, false, mi.getQty().negate()), 
+					new FactAcct(acctNIR, invMatchAmt, 2, true, mi.getQty()));
+			assertFactAcctEntries(factAccts, expected);
 		}
 		
 		MInvoice creditMemo = new MInvoice(Env.getCtx(), 0, getTrxName());
@@ -513,26 +493,11 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			BigDecimal amtAcctDrInvClr = BigDecimal.ZERO;
-			BigDecimal amtAcctCrInvClr = BigDecimal.ZERO;
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) < 0) {
-					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
-					amtAcctCrInvClr = amtAcctCrInvClr.add(fa.getAmtAcctCr());
-					assertEquals(mi.getQty(), fa.getQty(), "Accounting fact quantity incorrect");
-				}
-				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) > 0) {
-					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
-					amtAcctDrInvClr = amtAcctDrInvClr.add(fa.getAmtAcctDr());
-					assertEquals(mi.getQty().negate(), fa.getQty(), "Accounting fact quantity incorrect");
-				}
-			}			
-			assertTrue(amtAcctDrInvClr.compareTo(amtAcctCrInvClr) == 0);
+			Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(acctInvClr, credMatchAmt, 2, false, mi.getQty()),
+					new FactAcct(acctInvClr, credMatchAmt, 2, true, mi.getQty().negate()));
+			assertFactAcctEntries(factAccts, expected);
 		}
 		
 		rollback();
@@ -679,25 +644,14 @@ public class MatchInvTest extends AbstractTestCase {
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 	
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
-						assertTrue(fa.getAmtAcctDr().compareTo(Env.ZERO) >= 0);
-						assertEquals(acctAmount, fa.getAmtAcctDr(), fa.getAmtAcctDr().toPlainString() + " != " + acctAmount.toPlainString());
-						// verify source amt and currency
-						assertTrue(fa.getC_Currency_ID() == japaneseYen.getC_Currency_ID());												
-						assertEquals(acctSource, fa.getAmtSourceDr(), fa.getAmtSourceDr().toPlainString() + " != " + acctSource.toPlainString());
-					} else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
-						assertTrue(fa.getAmtAcctCr().compareTo(Env.ZERO) >= 0);
-						assertEquals(acctAmount, fa.getAmtAcctCr(), fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());
-						// verify source amt and currency
-						assertTrue(fa.getC_Currency_ID() == japaneseYen.getC_Currency_ID());
-						assertEquals(acctSource, fa.getAmtSourceCr(), fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
-					}
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, true), 
+						new FactAcct(acctInvClr, acctAmount, acctSource, 2, false));
+				assertFactAcctEntries(factAccts, expected);
+				assertTrue(acctAmount.compareTo(Env.ZERO) >= 0);
+				for (MFactAcct fa : factAccts) {
+					assertTrue(fa.getC_Currency_ID() == japaneseYen.getC_Currency_ID());
 				}
 			}
 		} finally {
@@ -1042,26 +996,205 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MMatchInv.Table_ID
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + mi.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
-					if (mi.isReversal())
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
-					else
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
-					assertEquals(mi.getQty(), fa.getQty(), "Accounting fact quantity incorrect");
+			Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, invMatchAmt, 2, !mi.isReversal(), mi.getQty()),
+					new FactAcct(acctInvClr, invMatchAmt, 2, mi.isReversal(), mi.getQty().negate()));
+			assertFactAcctEntries(factAccts, expected);
+		}
+	}
+	
+	@Test
+	public void testReversalPostingWithZeroOnHand() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		
+		MProduct product = null;
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		Timestamp today = TimeUtil.getDay(null);
+		try {			
+			product = new MProduct(Env.getCtx(), 0, null);
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			product.setName("testReversalPostingWithZeroOnHand");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.saveEx();
+			
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			BigDecimal orderPrice = new BigDecimal("2.00");
+			pp.setPriceStd(orderPrice);
+			pp.setPriceList(orderPrice);
+			pp.saveEx();
+			
+			int purchaseId = DictionaryIDs.M_PriceList.PURCHASE.id; // Purchase Price List			
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(bpartner);
+			order.setIsSOTrx(false);
+			order.setC_DocTypeTarget_ID();
+			order.setM_PriceList_ID(purchaseId);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.saveEx();
+			
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			orderLine.setQty(BigDecimal.TEN);
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			
+			MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
+			receipt.saveEx();
+			
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setC_OrderLine_ID(orderLine.get_ID());
+			receiptLine.setLine(10);
+			receiptLine.setProduct(product);
+			receiptLine.setQty(orderLine.getQtyOrdered());			
+			MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+			int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+			receiptLine.setM_Locator_ID(M_Locator_ID);
+			receiptLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			receipt.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+			
+			if (!receipt.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), MInOut.Table_ID, receipt.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			receipt.load(getTrxName());
+			assertTrue(receipt.isPosted());
+			
+			//customer shipment
+			MOrder salesOrder = new MOrder(Env.getCtx(), 0, getTrxName());
+			salesOrder.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			salesOrder.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			salesOrder.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			salesOrder.setDocStatus(DocAction.STATUS_Drafted);
+			salesOrder.setDocAction(DocAction.ACTION_Complete);
+			salesOrder.setDatePromised(today);
+			salesOrder.saveEx();
+			
+			MOrderLine salesLine1 = new MOrderLine(salesOrder);
+			salesLine1.setLine(10);
+			salesLine1.setProduct(product);
+			salesLine1.setQty(orderLine.getQtyOrdered());
+			salesLine1.setDatePromised(today);
+			salesLine1.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(salesOrder, DocAction.ACTION_Complete);
+			salesOrder.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, salesOrder.getDocStatus(), "Unexpected Document Status");
+			
+			MInOut shipment = new MInOut(salesOrder, DictionaryIDs.C_DocType.MM_SHIPMENT.id, salesOrder.getDateOrdered());
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+			
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setOrderLine(salesLine1, 0, orderLine.getQtyOrdered());
+			shipmentLine.setQty(orderLine.getQtyOrdered());
+			shipmentLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Unexpected Document Status");
+			
+			MInvoice invoice = new MInvoice(receipt, receipt.getMovementDate());
+			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+			
+			//MR invoice
+			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+			invoiceLine.setM_InOutLine_ID(receiptLine.get_ID());
+			invoiceLine.setLine(10);
+			invoiceLine.setProduct(product);
+			invoiceLine.setQty(orderLine.getQtyOrdered());
+			invoiceLine.setPrice(orderPrice.add(BigDecimal.ONE));
+			invoiceLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+			
+			if (!invoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			BigDecimal invMatchAmt = invoiceLine.getMatchedQty().multiply(invoiceLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
+			BigDecimal poMatchAmt = invoiceLine.getMatchedQty().multiply(orderLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
+			
+			invoice.load(getTrxName());
+			assertTrue(invoice.isPosted());
+			
+			//reverse MR invoice
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus());
+			
+			MInvoice reversalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), getTrxName());
+			if (!reversalInvoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), reversalInvoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			
+			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			assertEquals(2, miList.length);
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertTrue(error == null, error);
 				}
-				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
-					if (mi.isReversal())
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
-					else
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
-					assertEquals(mi.getQty().negate(), fa.getQty(), "Accounting fact quantity incorrect");
+				mi.load(getTrxName());
+				assertTrue(mi.isPosted());
+				MMatchInv mir = new MMatchInv(Env.getCtx(), mi.getReversal_ID(), getTrxName());
+				if (!mir.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mir.getAD_Client_ID(), MMatchInv.Table_ID, mir.get_ID(), false, getTrxName());
+					assertTrue(error == null, error);
 				}
+				mir.load(getTrxName());
+				assertTrue(mir.isPosted());
+				
+				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
+				doc.setC_BPartner_ID(mi.getC_InvoiceLine().getC_Invoice().getC_BPartner_ID());
+				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				
+				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				MAccount acctIPV = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, poMatchAmt, 2, !mi.isReversal(), mi.getQty()),
+						new FactAcct(acctInvClr, invMatchAmt, 2, mi.isReversal(), mi.getQty().negate()),
+						new FactAcct(acctIPV, invMatchAmt.subtract(poMatchAmt), 2, !mi.isReversal()));
+				assertFactAcctEntries(factAccts, expected);
+			}
+		} finally {
+			rollback();
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
 			}
 		}
 	}

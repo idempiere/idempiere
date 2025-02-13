@@ -28,7 +28,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
 
 /**
- * Simple wrapper over jdbc resultset
+ * Simple wrapper over JDBC result set
  * @author Low Heng Sin
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1984834 ] Add POResultSet.hasNext convenient method
@@ -44,9 +44,10 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	private T currentPO = null;
 	/** Should we close the statement and resultSet on any exception that occur ? */
 	private boolean closeOnError = true;
+	private String[] selectColumns;
 
 	/**
-	 * Constructs the POResultSet.
+	 * Constructs the POResultSet.<br/>
 	 * By default, closeOnError option is false. You need to set it explicitly.
 	 * @param table
 	 * @param ps
@@ -62,7 +63,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	}
 	
 	/**
-	 * 
+	 * Is result set has next record
 	 * @return true if it has next, false otherwise
 	 * @throws DBException
 	 */
@@ -74,8 +75,8 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	}
 	
 	/**
-	 * 
-	 * @return PO or null if reach the end of resultset
+	 * Get next record
+	 * @return PO or null if reach the end of result set
 	 * @throws DBException
 	 */
 	@SuppressWarnings("unchecked")
@@ -87,7 +88,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 		}
 		try {
 			if ( resultSet.next() ) {
-				return (T) table.getPO(resultSet, trxName);
+				return (T) (selectColumns != null && selectColumns.length > 0 ? table.getPartialPO(resultSet, selectColumns, trxName) : table.getPO(resultSet, trxName));
 			} else {
 				this.close(); // close it if there is no more data to read
 				return null;
@@ -118,7 +119,7 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	}
 
 	/**
-	 * Will be the {@link PreparedStatement} and {@link ResultSet} closed on any database exception
+	 * Will the {@link PreparedStatement} and {@link ResultSet} closed on any database exception
 	 * @return true if yes, false otherwise
 	 */
 	public boolean isCloseOnError() {
@@ -128,10 +129,19 @@ public class POResultSet<T extends PO> implements AutoCloseable {
 	/**
 	 * Release database resources.
 	 */
+	@Override
 	public void close() {
 		DB.close(this.resultSet, this.statement);
 		this.resultSet = null;
 		this.statement = null;
 		currentPO = null;
+	}
+
+	/**
+	 * Set columns for result set. Use for loading of partial PO. 
+	 * @param selectColumns
+	 */
+	public void setSelectColumns(String[] selectColumns) {
+		this.selectColumns = selectColumns;
 	}
 }

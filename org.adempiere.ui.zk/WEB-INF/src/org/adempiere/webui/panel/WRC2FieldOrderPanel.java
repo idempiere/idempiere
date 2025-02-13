@@ -42,7 +42,7 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Vbox;
 
 /**
- * Panel to edit order of printed print format items
+ * Wizard panel to edit order of printed print format items
  */
 public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Event> {
 	/**

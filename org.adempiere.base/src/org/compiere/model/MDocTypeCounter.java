@@ -443,17 +443,13 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 		return sb.toString ();
 	}	//	toString
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
 			setAD_Org_ID(0);
-		
+
+		// Reset IsValid tp false if C_DocType_ID or Counter_C_DocType_ID have been changed
 		if (!newRecord
 			&& (is_ValueChanged("C_DocType_ID") || is_ValueChanged("Counter_C_DocType_ID")))
 			setIsValid(false);

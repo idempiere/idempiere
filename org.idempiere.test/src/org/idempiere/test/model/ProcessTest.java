@@ -151,6 +151,8 @@ public class ProcessTest extends AbstractTestCase {
 		pi.setAD_User_ID(getAD_User_ID());
 		pi.setRecord_ID(Patio_Chair);
 		pi.setTransactionName(getTrxName());
+		if(process.getAD_PrintFormat_ID() > 0)
+			pi.setTransientObject(process.getAD_PrintFormat());
 		ServerProcessCtl.process(pi, getTrx());
 		if (pi.isError()) {
 			fail("Error running Verify BOM process" + (Util.isEmpty(pi.getSummary()) ? "" : " : "+pi.getSummary()));

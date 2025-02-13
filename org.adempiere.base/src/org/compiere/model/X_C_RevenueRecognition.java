@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecognition")
 public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_RevenueRecognition extends PO implements I_C_RevenueRecognition
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition (Properties ctx, int C_RevenueRecognition_ID, String trxName)

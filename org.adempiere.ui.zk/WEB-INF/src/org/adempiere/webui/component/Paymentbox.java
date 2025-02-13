@@ -26,7 +26,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 
 /**
- * Composite component of {@link Combobox} and {@link Button}.
+ * Composite component of {@link Combobox} and {@link Button}.<br/>
  * For Payment Rule editor.
  * @author Elaine
  */
@@ -35,6 +35,7 @@ public class Paymentbox extends Div {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1807586169091171780L;
+	@Deprecated
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	/** List of payment rules */
 	protected Combobox combo;
@@ -142,7 +143,7 @@ public class Paymentbox extends Div {
 	}
 	
 	/**
-	 * If evtnm is ON_CLICK, add listener to {@link #btn}.
+	 * If evtnm is ON_CLICK, add listener to {@link #btn}.<br/>
 	 * Otherwise add listener to {@link #combo}.
 	 * @param evtnm
 	 * @param listener
@@ -158,7 +159,9 @@ public class Paymentbox extends Div {
 	
 	/**
 	 * @param l PropertyChangeListener
+	 * @deprecated not implemented
 	 */
+	@Deprecated
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}

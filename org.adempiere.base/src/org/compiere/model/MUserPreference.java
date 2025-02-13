@@ -22,40 +22,60 @@
 * Contributors:                                                       *
 * - Diego Ruiz - BX Service GmbH                                      *
 **********************************************************************/
-
 package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 
+/**
+ * Extended model class for AD_UserPreference
+ */
 public class MUserPreference extends X_AD_UserPreference {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4313636387666521703L;
 
 	/**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserPreference_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserPreference_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserPreference(Properties ctx, String AD_UserPreference_UU, String trxName) {
         super(ctx, AD_UserPreference_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param AD_UserPreference_ID
+     * @param trxName
+     */
 	public MUserPreference(Properties ctx, int AD_UserPreference_ID, String trxName) {
 		super(ctx, AD_UserPreference_ID, trxName);
 
 	} //MUserPreference
 	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MUserPreference(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
 	} //MUserPreference
 
+	/**
+	 * Create and save user preference record
+	 * @param AD_User_ID
+	 * @param AD_Client_ID
+	 * @param trxName
+	 * @return new MUserPreference record
+	 */
 	private static MUserPreference createUserPreferences(int AD_User_ID, int AD_Client_ID, String trxName){
 		MUserPreference preferences = new MUserPreference(Env.getCtx(), 0, trxName);
 		preferences.setAD_User_ID(AD_User_ID);
@@ -65,10 +85,23 @@ public class MUserPreference extends X_AD_UserPreference {
 		return preferences;
 	} //createUserPreferences
 
+	/**
+	 * Get user preference for user and tenant
+	 * @param AD_User_ID
+	 * @param AD_Client_ID
+	 * @return MUserPreference or null
+	 */
 	public static MUserPreference getUserPreference(int AD_User_ID, int AD_Client_ID){
 		return getUserPreference(AD_User_ID, AD_Client_ID, null);
 	}
 
+	/**
+	 * Get user preference for user and tenant
+	 * @param AD_User_ID
+	 * @param AD_Client_ID
+	 * @param trxName
+	 * @return MUserPreference or null
+	 */
 	public static MUserPreference getUserPreference(int AD_User_ID, int AD_Client_ID, String trxName){
 		Query query = new Query(Env.getCtx(), MUserPreference.Table_Name, "AD_User_ID=? AND AD_Client_ID=?", trxName);
 		MUserPreference preferences = query.setParameters(new Object[]{AD_User_ID, AD_Client_ID}).firstOnly();
@@ -80,10 +113,20 @@ public class MUserPreference extends X_AD_UserPreference {
 		return preferences;
 	}
 	
+	/**
+	 * Convert boolean value to "Y" or "N"
+	 * @param value
+	 * @return "Y" or "N"
+	 */
 	private static String convert(boolean value) {
 		return value ? "Y" : "N";
 	}
 	
+	/**
+	 * Get preference value for key
+	 * @param key preference key
+	 * @return preference value
+	 */
 	public String getPreference(String key){
 		Object value = get_Value(key);
 		if( value!=null ){
@@ -96,6 +139,9 @@ public class MUserPreference extends X_AD_UserPreference {
 		return "";
 	}
 
+	/**
+	 * Fill environment/session context with values from this user preference record
+	 */
 	public void fillPreferences(){
 		for (int i=0; i < get_ColumnCount(); i++) {
 			String colName = get_ColumnName(i);
@@ -124,8 +170,17 @@ public class MUserPreference extends X_AD_UserPreference {
 
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
-		if (success)
+		if (success) {
 			fillPreferences();
+			if (is_ValueChanged(COLUMNNAME_IsReadOnlySession)) {
+				// Cache reset in same thread
+				CacheMgt.get().reset(MRole.Table_Name);
+				// reset cache to re-read the ReadOnly logic
+				CacheMgt.get().reset(MWindow.Table_Name);
+				CacheMgt.get().reset(MTab.Table_Name);
+				CacheMgt.get().reset(MField.Table_Name);
+			}
+		}
 		return success;
 	}
 

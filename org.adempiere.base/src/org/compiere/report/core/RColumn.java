@@ -27,7 +27,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 
 /**
- *  Report Column
+ *  Report column model
  *
  *  @author Jorg Janke
  *  @version  $Id: RColumn.java,v 1.3 2006/08/10 01:00:13 jjanke Exp $
@@ -72,6 +72,7 @@ public class RColumn
 	{
 		this (ctx, columnName, displayType, sql, 0, null);
 	}
+	
 	/**
 	 *  Create Report Column
 	 *	@param ctx context 
@@ -133,15 +134,6 @@ public class RColumn
 		else if (displayType == DisplayType.ID) {
 			m_colClass = Integer.class;
 		}
-		/**  Table
-		else if (displayType == DisplayType.Table)
-		{
-			Language language = Language.getLanguage(Env.getAD_Language(ctx));
-			m_colSQL += ",(" + MLookupFactory.getLookup_TableEmbed(
-				language, columnName, RModel.TABLE_ALIAS, AD_Reference_Value_ID) + ")";
-			m_colClass = String.class;
-			m_isIDcol = false;
-		}	**/
 		//  TableDir, Search,...
 		else
 		{
@@ -200,7 +192,6 @@ public class RColumn
 		m_colClass = colClass;
 	}   //  RColumn
 
-
 	/** Column Name                 */
 	private String		m_columnName;
 	/** Column Header               */
@@ -221,13 +212,13 @@ public class RColumn
 	private boolean     m_colorColumn = false;
 	private boolean     m_isIDcol = false;
 
-
 	/**
 	 * @return Column Name
 	 */
 	public String getColumnName() {
 		return m_columnName;
 	}
+	
 	/**
 	 *  Column Header
 	 */
@@ -235,24 +226,37 @@ public class RColumn
 	{
 		return m_colHeader;
 	}
+	
+	/**
+	 * Set column header
+	 * @param colHeader
+	 */
 	public void setColHeader(String colHeader)
 	{
 		m_colHeader = colHeader;
 	}
 
 	/**
-	 *  Column SQL
+	 *  Get Column SQL
+	 *  @return column SQL
 	 */
 	public String getColSQL()
 	{
 		return m_colSQL;
 	}
+	
+	/**
+	 * Set column SQL
+	 * @param colSQL
+	 */
 	public void setColSQL(String colSQL)
 	{
 		m_colSQL = colSQL;
 	}
+	
 	/**
-	 *  Column Display SQL
+	 *  Get Column Display SQL
+	 *  @return Column Display SQL
 	 */
 	public String getDisplaySQL()
 	{
@@ -260,8 +264,10 @@ public class RColumn
 			return m_columnName;
 		return m_displaySQL;
 	}
+	
 	/**
-	 *  This column is an ID Column (i.e. two values - int and String are read)
+	 *  Is column an ID Column (i.e. two values - int and String are read)
+	 *  @return true if column is an ID column
 	 */
 	public boolean isIDcol()
 	{
@@ -269,19 +275,26 @@ public class RColumn
 	}
 
 	/**
-	 *  Column Display Class
+	 * Get Column Display Class
+	 * @return Column Display Class
 	 */
 	public Class<?> getColClass()
 	{
 		return m_colClass;
 	}
+	
+	/**
+	 * Set Column Display Class
+	 * @param colClass
+	 */
 	public void setColClass(Class<?> colClass)
 	{
 		m_colClass = colClass;
 	}
 
 	/**
-	 *  Column Size in px
+	 * Get Column Size in px
+	 * @return Column Size in px
 	 */
 	public int getColSize()
 	{
@@ -289,7 +302,8 @@ public class RColumn
 	}   //  getColumnSize
 
 	/**
-	 *  Column Size in px
+	 * Set Column Size in px
+	 * @param colSize
 	 */
 	public void setColSize(int colSize)
 	{
@@ -297,7 +311,8 @@ public class RColumn
 	}   //  getColumnSize
 
 	/**
-	 *  Get DisplayType
+	 * Get Column DisplayType
+	 * @return Column DisplayType
 	 */
 	public int getDisplayType()
 	{
@@ -305,24 +320,36 @@ public class RColumn
 	}   //  getDisplayType
 
 	/**
-	 *  Column is Readonly
+	 *  Is Column Readonly
+	 *  @return true if column is read only
 	 */
 	public boolean isReadOnly()
 	{
 		return m_readOnly;
 	}
+	
+	/**
+	 * Set is column read only
+	 * @param readOnly
+	 */
 	public void setReadOnly(boolean readOnly)
 	{
 		m_readOnly = readOnly;
 	}
 
 	/**
-	 *  This Color Determines the Color of the row
+	 *  Set is this column determines the color of the row
+	 *  @param colorColumn
 	 */
 	public void setColorColumn(boolean colorColumn)
 	{
 		m_colorColumn = colorColumn;
 	}
+	
+	/**
+	 * Is this column determines the color of the row
+	 * @return true if this column determines the color of the row
+	 */
 	public boolean isColorColumn()
 	{
 		return m_colorColumn;
@@ -332,6 +359,7 @@ public class RColumn
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("RColumn[");

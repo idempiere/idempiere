@@ -182,23 +182,14 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 		return getTargetQty().compareTo(getConfirmedQty()) == 0;
 	}	//	isFullyConfirmed
 	
-	
-	/**
-	 * 	Before Delete - do not allow delete
-	 *	@return false 
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
+		// Always disallow delete
 		log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
 		return false;
 	}	//	beforeDelete
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

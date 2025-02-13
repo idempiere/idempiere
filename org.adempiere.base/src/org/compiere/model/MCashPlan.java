@@ -73,14 +73,10 @@ public class MCashPlan extends X_C_CashPlan
 		super(ctx, rs, trxName);
 	}	//	MCashPlan
 
-	/**
-	 * 	Before Delete
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
-		// delete the lines using direct SQL (to avoid logging and updating of header on every step) - same as cascade foreign key
+		// Delete C_CashPlanLine records using direct SQL (to avoid logging and updating of header on every step) - same as cascade foreign key
 		int nodel = DB.executeUpdate("DELETE FROM C_CashPlanLine WHERE C_CashPlan_ID=?", getC_CashPlan_ID(), get_TrxName());
 		return (nodel >= 0);
 	}	//	beforeDelete

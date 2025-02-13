@@ -37,7 +37,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
- *	Report Tree Model
+ *	Financial Report Tree Model
  *	
  *  @author Jorg Janke
  *  @version $Id: MReportTree.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
@@ -102,12 +102,17 @@ public class MReportTree
 	/**	Map with Tree				*/
 	private static CCache<String,MReportTree> s_trees = new CCache<String,MReportTree>(null, "MReportTree", 20, false);
 
+	/**
+	 * @param ctx
+	 * @param PA_Hierarchy_ID
+	 * @param ElementType
+	 */
 	public MReportTree (Properties ctx, int PA_Hierarchy_ID, String ElementType)
 	{
 		this(ctx, PA_Hierarchy_ID, false, ElementType);
 	}
 	
-	/**************************************************************************
+	/**
 	 * 	Report Tree
 	 *	@param ctx context
 	 *	@param PA_Hierarchy_ID optional hierarchy
@@ -151,11 +156,10 @@ public class MReportTree
 	private MTree 		m_tree = null;
 	/**	Logger					*/
 	private CLogger		log = CLogger.getCLogger(getClass());
-
 	
 	/**
 	 * 	Get AD_Tree_ID 
-	 *	@return tree
+	 *	@return AD_Tree_ID
 	 */
 	protected int getAD_Tree_ID ()
 	{
@@ -173,8 +177,8 @@ public class MReportTree
 	
 	/**
 	 * 	Get Default AD_Tree_ID 
-	 * 	see MTree.getDefaultAD_Tree_ID
-	 *	@return tree
+	 * 	@see MTree#getDefaultAD_Tree_ID
+	 *	@return default AD_Tree_ID
 	 */
 	protected int getDefaultAD_Tree_ID()
 	{
@@ -238,7 +242,7 @@ public class MReportTree
 
 	/**
 	 * 	Get Where Clause
-	 *	@param ID start node
+	 *	@param ID start node id
 	 *	@return ColumnName = 1 or ( ColumnName = 1 OR ColumnName = 2 OR ColumnName = 3)
 	 */	
 	public String getWhereClause (int ID)
@@ -285,7 +289,7 @@ public class MReportTree
 	/**
 	 * 	Get Child IDs
 	 *	@param ID start node
-	 *	@return array if IDs
+	 *	@return array of child IDs
 	 */	
 	public Integer[] getChildIDs (int ID)
 	{
@@ -317,12 +321,12 @@ public class MReportTree
 		list.toArray(retValue);
 		return retValue;
 	}	//	getWhereClause
-
 	
 	/**
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("MReportTree[ElementType=");

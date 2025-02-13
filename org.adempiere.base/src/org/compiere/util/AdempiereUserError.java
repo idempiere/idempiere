@@ -16,9 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
-
 /**
- *	iDempiere User Error.
+ *	iDempiere User Error.<br/>
  *	Caused by (lack of) user input/selection.
  *
  *  @author Jorg Janke
@@ -27,7 +26,7 @@ package org.compiere.util;
 public class AdempiereUserError extends RuntimeException
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5318376918072817705L;
 
@@ -65,7 +64,8 @@ public class AdempiereUserError extends RuntimeException
 	private String	m_fixHint = null;
 
 	/**
-	 * @return Returns the fixHint.
+	 * Get hint for user
+	 * @return hint for user
 	 */
 	public String getFixHint ()
 	{
@@ -73,7 +73,7 @@ public class AdempiereUserError extends RuntimeException
 	}	//	getFixHint
 
 	/**
-	 * 	Set Fix Hint
+	 * 	Set Hint for user
 	 *	@param fixHint fix hint
 	 */
 	public void setFixHint (String fixHint)
@@ -86,6 +86,7 @@ public class AdempiereUserError extends RuntimeException
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		super.toString();

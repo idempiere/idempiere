@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CommissionRun
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_CommissionRun 
 {
@@ -62,21 +62,6 @@ public interface I_C_CommissionRun
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_Commission_ID */
-    public static final String COLUMNNAME_C_Commission_ID = "C_Commission_ID";
-
-	/** Set Commission.
-	  * Commission
-	  */
-	public void setC_Commission_ID (int C_Commission_ID);
-
-	/** Get Commission.
-	  * Commission
-	  */
-	public int getC_Commission_ID();
-
-	public org.compiere.model.I_C_Commission getC_Commission() throws RuntimeException;
-
     /** Column name C_CommissionRun_ID */
     public static final String COLUMNNAME_C_CommissionRun_ID = "C_CommissionRun_ID";
 
@@ -98,6 +83,21 @@ public interface I_C_CommissionRun
 
 	/** Get C_CommissionRun_UU	  */
 	public String getC_CommissionRun_UU();
+
+    /** Column name C_Commission_ID */
+    public static final String COLUMNNAME_C_Commission_ID = "C_Commission_ID";
+
+	/** Set Commission.
+	  * Commission
+	  */
+	public void setC_Commission_ID (int C_Commission_ID);
+
+	/** Get Commission.
+	  * Commission
+	  */
+	public int getC_Commission_ID();
+
+	public org.compiere.model.I_C_Commission getC_Commission() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";

@@ -63,8 +63,6 @@ public class PrintDataHandler extends DefaultHandler
 		return m_pd;
 	}	//	getPrintData
 
-	/*************************************************************************/
-
 	/**
 	 * 	Receive notification of the start of an element.
 	 *
@@ -147,13 +145,11 @@ public class PrintDataHandler extends DefaultHandler
 		}
 	}	//	endElement
 
-	/*************************************************************************/
-
 	/**	Stack						*/
 	private ArrayList<PrintData>	m_stack = new ArrayList<PrintData>();
 
 	/**
-	 * 	Push new PD on Stack and set m_cutPD
+	 * 	Push new PD on Stack and set m_curPD
 	 * 	@param newPD new PD
 	 */
 	private void push (PrintData newPD)
@@ -164,7 +160,7 @@ public class PrintDataHandler extends DefaultHandler
 	}	//	push
 
 	/**
-	 * 	Pop last PD from Stack and set m_cutPD
+	 * 	Pop last PD from Stack and set m_curPD
 	 */
 	private void pop ()
 	{

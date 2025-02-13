@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for EXP_ProcessorParameter
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="EXP_ProcessorParameter")
 public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParameter, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_EXP_ProcessorParameter (Properties ctx, int EXP_ProcessorParameter_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
       super (ctx, EXP_ProcessorParameter_ID, trxName);
       /** if (EXP_ProcessorParameter_ID == 0)
         {
-			setEXP_Processor_ID (0);
 			setEXP_ProcessorParameter_ID (0);
+			setEXP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -51,8 +51,8 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
       super (ctx, EXP_ProcessorParameter_ID, trxName, virtualColumns);
       /** if (EXP_ProcessorParameter_ID == 0)
         {
-			setEXP_Processor_ID (0);
 			setEXP_ProcessorParameter_ID (0);
+			setEXP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -64,8 +64,8 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
       super (ctx, EXP_ProcessorParameter_UU, trxName);
       /** if (EXP_ProcessorParameter_UU == null)
         {
-			setEXP_Processor_ID (0);
 			setEXP_ProcessorParameter_ID (0);
+			setEXP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -77,8 +77,8 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
       super (ctx, EXP_ProcessorParameter_UU, trxName, virtualColumns);
       /** if (EXP_ProcessorParameter_UU == null)
         {
-			setEXP_Processor_ID (0);
 			setEXP_ProcessorParameter_ID (0);
+			setEXP_Processor_ID (0);
 			setName (null);
 			setValue (null);
         } */
@@ -128,33 +128,6 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public org.compiere.model.I_EXP_Processor getEXP_Processor() throws RuntimeException
-	{
-		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_ID)
-			.getPO(getEXP_Processor_ID(), get_TrxName());
-	}
-
-	/** Set Export Processor.
-		@param EXP_Processor_ID Export Processor
-	*/
-	public void setEXP_Processor_ID (int EXP_Processor_ID)
-	{
-		if (EXP_Processor_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_EXP_Processor_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_EXP_Processor_ID, Integer.valueOf(EXP_Processor_ID));
-	}
-
-	/** Get Export Processor.
-		@return Export Processor	  */
-	public int getEXP_Processor_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_EXP_Processor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Processor Parameter.
 		@param EXP_ProcessorParameter_ID Processor Parameter
 	*/
@@ -189,6 +162,33 @@ public class X_EXP_ProcessorParameter extends PO implements I_EXP_ProcessorParam
 	public String getEXP_ProcessorParameter_UU()
 	{
 		return (String)get_Value(COLUMNNAME_EXP_ProcessorParameter_UU);
+	}
+
+	public org.compiere.model.I_EXP_Processor getEXP_Processor() throws RuntimeException
+	{
+		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_ID)
+			.getPO(getEXP_Processor_ID(), get_TrxName());
+	}
+
+	/** Set Export Processor.
+		@param EXP_Processor_ID Export Processor
+	*/
+	public void setEXP_Processor_ID (int EXP_Processor_ID)
+	{
+		if (EXP_Processor_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_EXP_Processor_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_EXP_Processor_ID, Integer.valueOf(EXP_Processor_ID));
+	}
+
+	/** Get Export Processor.
+		@return Export Processor	  */
+	public int getEXP_Processor_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_EXP_Processor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Comment/Help.

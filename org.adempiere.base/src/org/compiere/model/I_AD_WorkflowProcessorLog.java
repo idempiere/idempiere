@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WorkflowProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_WorkflowProcessorLog 
 {
@@ -62,21 +62,6 @@ public interface I_AD_WorkflowProcessorLog
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_WorkflowProcessor_ID */
-    public static final String COLUMNNAME_AD_WorkflowProcessor_ID = "AD_WorkflowProcessor_ID";
-
-	/** Set Workflow Processor.
-	  * Workflow Processor Server
-	  */
-	public void setAD_WorkflowProcessor_ID (int AD_WorkflowProcessor_ID);
-
-	/** Get Workflow Processor.
-	  * Workflow Processor Server
-	  */
-	public int getAD_WorkflowProcessor_ID();
-
-	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException;
-
     /** Column name AD_WorkflowProcessorLog_ID */
     public static final String COLUMNNAME_AD_WorkflowProcessorLog_ID = "AD_WorkflowProcessorLog_ID";
 
@@ -98,6 +83,21 @@ public interface I_AD_WorkflowProcessorLog
 
 	/** Get AD_WorkflowProcessorLog_UU	  */
 	public String getAD_WorkflowProcessorLog_UU();
+
+    /** Column name AD_WorkflowProcessor_ID */
+    public static final String COLUMNNAME_AD_WorkflowProcessor_ID = "AD_WorkflowProcessor_ID";
+
+	/** Set Workflow Processor.
+	  * Workflow Processor Server
+	  */
+	public void setAD_WorkflowProcessor_ID (int AD_WorkflowProcessor_ID);
+
+	/** Get Workflow Processor.
+	  * Workflow Processor Server
+	  */
+	public int getAD_WorkflowProcessor_ID();
+
+	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException;
 
     /** Column name BinaryData */
     public static final String COLUMNNAME_BinaryData = "BinaryData";

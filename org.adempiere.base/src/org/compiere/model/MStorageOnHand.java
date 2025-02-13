@@ -1023,15 +1023,10 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return m_M_Warehouse_ID;
 	}	//	getM_Warehouse_ID
 	
-	/**
-	 * Before Save
-	 * @param newRecord new
-	 * @return success
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
-		//	Negative Inventory check
+		//	Negative On Hand check
 		if (newRecord || is_ValueChanged("QtyOnHand"))
 		{
 			MWarehouse wh = new MWarehouse(getCtx(), getM_Warehouse_ID(), get_TrxName());
@@ -1048,7 +1043,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 				if (QtyOnHand == null)
 					QtyOnHand = Env.ZERO;
 				
-				// Add qty onhand for current record
+				// Add on hand of this record
 				QtyOnHand = QtyOnHand.add(getQtyOnHand());
 				
 				if (getQtyOnHand().compareTo(BigDecimal.ZERO) < 0 ||
@@ -1057,14 +1052,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 					log.saveError("Error", new NegativeInventoryDisallowedException(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), 
 							getM_AttributeSetInstance_ID(), getM_Locator_ID(), QtyOnHand.subtract(getQtyOnHand()), getQtyOnHand().negate()));
 					return false;
-				}
-				
-				if (getM_AttributeSetInstance_ID() > 0 && getQtyOnHand().signum() < 0)
-				{
-					log.saveError("Error", new NegativeInventoryDisallowedException(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), 
-							getM_AttributeSetInstance_ID(), getM_Locator_ID(), QtyOnHand.subtract(getQtyOnHand()), getQtyOnHand().negate()));
-					return false;
-				}
+				}				
 			}
 		}
 

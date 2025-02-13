@@ -128,7 +128,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			Label deleteLabel = new Label();
 			recentItemsToolbar.appendChild(deleteLabel);
 			deleteLabel.setSclass("z-icon-Trash trash-font-icon");
-			deleteLabel.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Delete")));
+			deleteLabel.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DeleteRecentItem")));
 			deleteLabel.setDroppable(DELETE_RECENTITEMS_DROPPABLE);		
 			deleteLabel.addEventListener(Events.ON_DROP, this);
 		}
@@ -245,7 +245,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		}
 		if (comp instanceof Image || comp instanceof ToolBarButton) // Refresh button
 		{
-			refresh();
+			refresh(new ServerPushTemplate(bxRecentItems.getDesktop()));
 		}
 	}
 
@@ -314,6 +314,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			riDBremove(AD_RecentItem_ID);
 			bxRecentItems.removeChild(btn);
 			bxRecentItems.invalidate();
+			refresh(new ServerPushTemplate(bxRecentItems.getDesktop()));
 		}
 	}
 

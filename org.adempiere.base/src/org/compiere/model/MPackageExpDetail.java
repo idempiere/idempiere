@@ -72,11 +72,9 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 
 
 
-	/* (non-Javadoc)
-	 * @see org.compiere.model.PO#beforeSave(boolean)
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Set Line
 		if (getLine() == 0) {
 			final String sql = "SELECT max("+COLUMNNAME_Line+")"
 								+ "FROM "+Table_Name

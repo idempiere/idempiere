@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankTransfer
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_BankTransfer 
 {
@@ -198,17 +198,6 @@ public interface I_C_BankTransfer
 	/** Get From Amount	  */
 	public BigDecimal getFrom_Amt();
 
-    /** Column name From_C_BankAccount_ID */
-    public static final String COLUMNNAME_From_C_BankAccount_ID = "From_C_BankAccount_ID";
-
-	/** Set From Bank Account	  */
-	public void setFrom_C_BankAccount_ID (int From_C_BankAccount_ID);
-
-	/** Get From Bank Account	  */
-	public int getFrom_C_BankAccount_ID();
-
-	public org.compiere.model.I_C_BankAccount getFrom_C_BankAccount() throws RuntimeException;
-
     /** Column name From_C_BPartner_ID */
     public static final String COLUMNNAME_From_C_BPartner_ID = "From_C_BPartner_ID";
 
@@ -223,6 +212,17 @@ public interface I_C_BankTransfer
 	public int getFrom_C_BPartner_ID();
 
 	public org.compiere.model.I_C_BPartner getFrom_C_BPartner() throws RuntimeException;
+
+    /** Column name From_C_BankAccount_ID */
+    public static final String COLUMNNAME_From_C_BankAccount_ID = "From_C_BankAccount_ID";
+
+	/** Set From Bank Account	  */
+	public void setFrom_C_BankAccount_ID (int From_C_BankAccount_ID);
+
+	/** Get From Bank Account	  */
+	public int getFrom_C_BankAccount_ID();
+
+	public org.compiere.model.I_C_BankAccount getFrom_C_BankAccount() throws RuntimeException;
 
     /** Column name From_C_Charge_ID */
     public static final String COLUMNNAME_From_C_Charge_ID = "From_C_Charge_ID";
@@ -347,17 +347,6 @@ public interface I_C_BankTransfer
 	/** Get To Amount	  */
 	public BigDecimal getTo_Amt();
 
-    /** Column name To_C_BankAccount_ID */
-    public static final String COLUMNNAME_To_C_BankAccount_ID = "To_C_BankAccount_ID";
-
-	/** Set To Bank Account	  */
-	public void setTo_C_BankAccount_ID (int To_C_BankAccount_ID);
-
-	/** Get To Bank Account	  */
-	public int getTo_C_BankAccount_ID();
-
-	public org.compiere.model.I_C_BankAccount getTo_C_BankAccount() throws RuntimeException;
-
     /** Column name To_C_BPartner_ID */
     public static final String COLUMNNAME_To_C_BPartner_ID = "To_C_BPartner_ID";
 
@@ -372,6 +361,17 @@ public interface I_C_BankTransfer
 	public int getTo_C_BPartner_ID();
 
 	public org.compiere.model.I_C_BPartner getTo_C_BPartner() throws RuntimeException;
+
+    /** Column name To_C_BankAccount_ID */
+    public static final String COLUMNNAME_To_C_BankAccount_ID = "To_C_BankAccount_ID";
+
+	/** Set To Bank Account	  */
+	public void setTo_C_BankAccount_ID (int To_C_BankAccount_ID);
+
+	/** Get To Bank Account	  */
+	public int getTo_C_BankAccount_ID();
+
+	public org.compiere.model.I_C_BankAccount getTo_C_BankAccount() throws RuntimeException;
 
     /** Column name To_C_Charge_ID */
     public static final String COLUMNNAME_To_C_Charge_ID = "To_C_Charge_ID";

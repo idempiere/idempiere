@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_DocBaseGroup
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DocBaseGroup")
 public class X_C_DocBaseGroup extends PO implements I_C_DocBaseGroup, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_DocBaseGroup extends PO implements I_C_DocBaseGroup, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_DocBaseGroup (Properties ctx, int C_DocBaseGroup_ID, String trxName)

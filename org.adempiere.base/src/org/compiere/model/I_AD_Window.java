@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Window
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_Window 
 {
@@ -287,19 +287,6 @@ public interface I_AD_Window
 	  */
 	public int getUpdatedBy();
 
-    /** Column name WindowType */
-    public static final String COLUMNNAME_WindowType = "WindowType";
-
-	/** Set Window Type.
-	  * Type or classification of a Window
-	  */
-	public void setWindowType (String WindowType);
-
-	/** Get Window Type.
-	  * Type or classification of a Window
-	  */
-	public String getWindowType();
-
     /** Column name WinHeight */
     public static final String COLUMNNAME_WinHeight = "WinHeight";
 
@@ -317,4 +304,17 @@ public interface I_AD_Window
 
 	/** Get Window Width	  */
 	public int getWinWidth();
+
+    /** Column name WindowType */
+    public static final String COLUMNNAME_WindowType = "WindowType";
+
+	/** Set Window Type.
+	  * Type or classification of a Window
+	  */
+	public void setWindowType (String WindowType);
+
+	/** Get Window Type.
+	  * Type or classification of a Window
+	  */
+	public String getWindowType();
 }

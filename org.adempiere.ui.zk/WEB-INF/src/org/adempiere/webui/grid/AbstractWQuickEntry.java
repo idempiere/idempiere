@@ -36,8 +36,8 @@ public abstract class AbstractWQuickEntry extends Window implements Component, I
 	private static final long serialVersionUID = 5092377634523789098L;
 
 	/**
-	 * check table is editable in quick entry
-	 * user must have write right and table has at least one input field
+	 * Check table is editable in quick entry.<br/>
+	 * User must have write right and table has at least one input field
 	 * @return true if quick edit form is available, false otherwise
 	 */
 	public abstract boolean isAvailableQuickEdit ();
@@ -50,7 +50,7 @@ public abstract class AbstractWQuickEntry extends Window implements Component, I
 	public abstract boolean loadRecord (int Record_ID);
 
 	/**
-	 * Returns Record_ID
+	 * Get Record_ID
 	 * @return Record_ID (0 = not saved)
 	 */
 	public abstract int getRecord_ID();

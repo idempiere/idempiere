@@ -83,15 +83,10 @@ public class MExpenseType extends X_S_ExpenseType
 		return m_product;
 	}	//	getProduct
 		
-	/**
-	 * 	beforeSave
-	 *	@see org.compiere.model.PO#beforeSave(boolean)
-	 *	@param newRecord
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Create new expense product for new record.
 		if (newRecord)
 		{
 			if (getValue() == null || getValue().length() == 0)
@@ -102,12 +97,6 @@ public class MExpenseType extends X_S_ExpenseType
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{

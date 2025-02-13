@@ -17,7 +17,7 @@
 package org.compiere.util;
 
 /**
- *	Spanish Amount in Words
+ *	Spanish Amount in Words (Catalan)
  *	
  *  @author Jordi Luna
  *  @version $Id: AmtInWords_CA.java,v 1.3 2006/07/30 00:54:36 jjanke Exp $
@@ -106,10 +106,7 @@ public class AmtInWords_CA implements AmtInWords
 			number /= 10;
 		}
 		if (number == 0)
-		//return soFar;
-		// Begin e-Evolution ogi-cd 		
 			return tensNames[number % 10] + soFar; // e-Evolution ogi-cd
-		// End e-Evolution ogi-cd
 		if (number > 1)
 			soFar = "S" + soFar;
 		if (number == 1 && !soFar.equals(""))
@@ -186,32 +183,28 @@ public class AmtInWords_CA implements AmtInWords
 		while (number > 0);
 		return (prefix + soFar).trim ();
 	}	//	convert
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)
 			return amount;
 		//
 		StringBuilder sb = new StringBuilder ();
-    //	int pos = amount.lastIndexOf ('.');    // Old
 		int pos = amount.lastIndexOf (',');  		
-    //  int pos2 = amount.lastIndexOf (',');   // Old		
 		int pos2 = amount.lastIndexOf ('.');
 		if (pos2 > pos)
 			pos = pos2;
 		String oldamt = amount;
 
-    //  amount = amount.replaceAll (",", "");   // Old
 		amount = amount.replaceAll( "\\.","");
 
-	//	int newpos = amount.lastIndexOf ('.');  // Old
 		int newpos = amount.lastIndexOf (',');
 		int pesos = Integer.parseInt (amount.substring (0, newpos));
 		sb.append (convert (pesos));
@@ -223,7 +216,6 @@ public class AmtInWords_CA implements AmtInWords
 				sb.append (' ')
 					.append (cents)
 					.append ("/100");
-				//	.append ("/100 EUROS");
 				break;
 			}
 		}

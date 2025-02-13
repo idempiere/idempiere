@@ -25,7 +25,6 @@ import org.zkoss.zul.Borderlayout;
 /**
  * Abstract base class for UI block controller
  * @author Low Heng Sin
- *
  */
 public abstract class AbstractUIPart implements UIPart, ISupportMask {
 	

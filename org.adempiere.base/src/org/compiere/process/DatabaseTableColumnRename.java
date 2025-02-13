@@ -22,7 +22,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz - globalqss                                           *
  **********************************************************************/
-
 package org.compiere.process;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -33,6 +32,10 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Process to change AD_Element_ID of a AD_Column record.<br/>
+ * Since ColumnName of AD_Column comes from AD_Element, this will trigger the rename of DB column.
+ */
 @org.adempiere.base.annotation.Process
 public class DatabaseTableColumnRename extends SvrProcess {
 

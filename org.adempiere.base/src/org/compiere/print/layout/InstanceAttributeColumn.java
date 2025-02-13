@@ -29,8 +29,8 @@ import org.compiere.print.PrintDataElement;
 import org.compiere.util.DisplayType;
 
 /**
+ * Value object for attribute set instance column (M_AttributeSetInstance)
  * @author hengsin
- *
  */
 public class InstanceAttributeColumn {
 
@@ -38,7 +38,6 @@ public class InstanceAttributeColumn {
 	private InstanceAttributeData data;
 
 	/**
-	 * 
 	 * @param attributeName
 	 * @param data
 	 */
@@ -48,7 +47,7 @@ public class InstanceAttributeColumn {
 	}
 
 	/**
-	 * 
+	 * Get print format item 
 	 * @return {@link MPrintFormatItem}
 	 */
 	public MPrintFormatItem getPrintFormatItem() {
@@ -56,7 +55,7 @@ public class InstanceAttributeColumn {
 	}
 
 	/**
-	 * 
+	 * Get attribute name
 	 * @return name
 	 */
 	public String getName() {
@@ -64,7 +63,7 @@ public class InstanceAttributeColumn {
 	}
 
 	/**
-	 * 
+	 * Get attribute value at rowIndex
 	 * @param rowIndex
 	 * @return attribute value
 	 */
@@ -73,7 +72,7 @@ public class InstanceAttributeColumn {
 	}
 
 	/**
-	 * 
+	 * Get print data element at rowIndex
 	 * @param rowIndex
 	 * @return {@link PrintDataElement}
 	 */

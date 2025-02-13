@@ -109,6 +109,7 @@ public class EMailAuthenticator extends Authenticator
 	 * 	Get String representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		if (m_pass == null)

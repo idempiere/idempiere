@@ -17,6 +17,8 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -304,29 +306,54 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		return get_Translation (COLUMNNAME_PrintName, AD_Language);
 	}	//	getPrintName
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
-	@Override
-	protected boolean beforeSave (boolean newRecord)
-	{
-		return true;
-	}	//	beforeSave
+	/** List of document sub-types which are always auto-generating Shipment */
+	public static final List<String> autoGenerateInOutList = Collections.unmodifiableList(Arrays.asList(
+		DOCSUBTYPESO_POSOrder,
+	    DOCSUBTYPESO_OnCreditOrder,
+	    DOCSUBTYPESO_WarehouseOrder
+	));
+
+	/** List of document sub-types which are always auto-generating Invoice */
+	public static final List<String> autoGenerateInvoiceList = Collections.unmodifiableList(Arrays.asList(
+		DOCSUBTYPESO_POSOrder,
+	    DOCSUBTYPESO_OnCreditOrder
+	));
 	
 	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
+	 * Get AutogenerateInout based on DocSubTypeSO
+	 * @param docSubTypeSO
+	 * @return
 	 */
+	public static boolean getIsAutoGenerateInout(String docSubTypeSO) {
+		return autoGenerateInOutList.contains(docSubTypeSO);
+	}
+	
+	/**
+	 * Get AutogenerateInvoice based on DocSubTypeSO
+	 * @param docSubTypeSO
+	 * @return
+	 */
+	public static boolean getIsAutoGenerateInvoice(String docSubTypeSO) {
+		return autoGenerateInvoiceList.contains(docSubTypeSO);
+	}
+	
+	@Override
+	protected boolean beforeSave (boolean newRecord) {
+		if(newRecord || is_ValueChanged(COLUMNNAME_IsAutoGenerateInout) || is_ValueChanged(COLUMNNAME_IsAutoGenerateInvoice)) {
+			if(!DOCSUBTYPESO_PrepayOrder.equals(getDocSubTypeSO())) {
+				setIsAutoGenerateInout(getIsAutoGenerateInout(getDocSubTypeSO()));
+				setIsAutoGenerateInvoice(getIsAutoGenerateInvoice(getDocSubTypeSO()));
+			}
+		}
+		return true;
+	} // beforeSave
+	
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (newRecord && success)
 		{
-			//	Add doctype/docaction access to all roles of client
+			// Create doctype/docaction access records for all roles of client
 			StringBuilder sqlDocAction = new StringBuilder("INSERT INTO AD_Document_Action_Access ")
 				.append("(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,")
 				.append("C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) ")
@@ -355,15 +382,10 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	Executed before Delete operation.
-	 *
-	 *	@return true if delete is a success
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
-		// delete access records
+		// Delete document action access records
 		StringBuilder msgdb = new StringBuilder("DELETE FROM AD_Document_Action_Access WHERE C_DocType_ID=").append(get_ID());
 		int docactDel = DB.executeUpdate(msgdb.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Delete AD_Document_Action_Access=" + docactDel + " for C_DocType_ID: " + get_ID());

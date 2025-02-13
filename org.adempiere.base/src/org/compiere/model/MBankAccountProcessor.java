@@ -206,6 +206,7 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
+		// Throw exception if payment process is not active
 		if (getC_PaymentProcessor_ID() > 0 && isActive())
 		{
 			MPaymentProcessor pp = new MPaymentProcessor(getCtx(), getC_PaymentProcessor_ID(), get_TrxName());

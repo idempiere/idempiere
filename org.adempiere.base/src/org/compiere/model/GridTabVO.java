@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Util;
@@ -94,127 +95,48 @@ public class GridTabVO implements Evaluatee, Serializable
 	 */
 	private static boolean loadTabDetails (GridTabVO vo, ResultSet rs)
 	{
-		MRole role = MRole.getDefault(vo.ctx, false);
-		boolean showTrl = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_TRANSLATION));
-		boolean showAcct = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ACCOUNTING));
-		boolean showAdvanced = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ADVANCED));
-
 		try
 		{
-			vo.AD_Tab_ID = rs.getInt("AD_Tab_ID");
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_ID, String.valueOf(vo.AD_Tab_ID));
-			vo.AD_Tab_UU = rs.getString("AD_Tab_UU");
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_UU, vo.AD_Tab_UU);
-			// FR IDEMPIERE-177
-			MUserDefTab userDef = MUserDefTab.get(vo.ctx, vo.AD_Tab_ID, vo.AD_Window_ID);
+			vo.AD_Tab_ID = rs.getInt("AD_Tab_ID");			
+			vo.AD_Tab_UU = rs.getString("AD_Tab_UU");			
 			MTab tab = MTab.get(vo.AD_Tab_ID);
 			vo.Name = rs.getString("Name");
-			if (userDef != null) {
-				if(!Util.isEmpty(userDef.getName()))
-					vo.Name = userDef.getName();
-				
-				if(!Util.isEmpty(userDef.getDeleteConfirmationLogic()))
-					vo.deleteConfirmationLogic = userDef.getDeleteConfirmationLogic();
-				else if((tab != null) && (!Util.isEmpty(tab.getDeleteConfirmationLogic())))
-					vo.deleteConfirmationLogic = tab.getDeleteConfirmationLogic();
-					
-			}
-			else if((tab != null) && (!Util.isEmpty(tab.getDeleteConfirmationLogic()))) {
+			if((tab != null) && (!Util.isEmpty(tab.getDeleteConfirmationLogic()))) {
 				vo.deleteConfirmationLogic = tab.getDeleteConfirmationLogic();
-			}
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_Name, vo.Name);
+			}			
 
-			//	Translation Tab	**
-			if (rs.getString("IsTranslationTab").equals("Y"))
-			{
-				//	Document Translation
-				vo.TableName = rs.getString("TableName");
-				if (!Env.isBaseTranslation(vo.TableName)	//	C_UOM, ...
-					&& !Env.isMultiLingualDocument(vo.ctx))
-					showTrl = false;
-				if (!showTrl)
-				{
-					if (CLogger.get().isLoggable(Level.CONFIG))
-						CLogger.get().config("TrlTab Not displayed - AD_Tab_ID=" 
-							+ vo.AD_Tab_ID + "=" + vo.Name + ", Table=" + vo.TableName
-							+ ", BaseTrl=" + Env.isBaseTranslation(vo.TableName)
-							+ ", MultiLingual=" + Env.isMultiLingualDocument(vo.ctx));
-					return false;
-				}
-			}
-			//	Advanced Tab	**
-			if (!showAdvanced && rs.getString("IsAdvancedTab").equals("Y"))
-			{
-				if (CLogger.get().isLoggable(Level.CONFIG))
-					CLogger.get().config("AdvancedTab Not displayed - AD_Tab_ID=" 
-						+ vo.AD_Tab_ID + " " + vo.Name);
-				return false;
-			}
-			//	Accounting Info Tab	**
-			if (!showAcct && rs.getString("IsInfoTab").equals("Y"))
-			{
-				if (CLogger.get().isLoggable(Level.FINE))
-					CLogger.get().fine("AcctTab Not displayed - AD_Tab_ID=" 
-						+ vo.AD_Tab_ID + " " + vo.Name);
-				return false;
-			}
+			vo.IsTranslationTab = rs.getString("IsTranslationTab").equals("Y");
+			vo.TableName = rs.getString("TableName");						
+			vo.IsAdvancedTab = rs.getString("IsAdvancedTab").equals("Y");						
+			vo.IsInfoTab = rs.getString("IsInfoTab").equals("Y");
 			
 			//	DisplayLogic
-			vo.DisplayLogic = rs.getString("DisplayLogic");
-			if (userDef != null && userDef.getDisplayLogic() != null)
-				vo.DisplayLogic = userDef.getDisplayLogic();
+			vo.DisplayLogic = rs.getString("DisplayLogic");			
 			
 			//	Access Level
 			vo.AccessLevel = rs.getString("AccessLevel");
-			if (!role.canView (vo.ctx, vo.AccessLevel))	//	No Access
-			{
-				if (CLogger.get().isLoggable(Level.FINE))
-					CLogger.get().fine("No Role Access - AD_Tab_ID=" + vo.AD_Tab_ID + " " + vo. Name);
-				return false;
-			}	//	Used by MField.getDefault
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AccessLevel, vo.AccessLevel);
 
 			//	Table Access
-			vo.AD_Table_ID = rs.getInt("AD_Table_ID");
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Table_ID, String.valueOf(vo.AD_Table_ID));
-			if (!role.isTableAccess(vo.AD_Table_ID, true))
-			{
-				if (CLogger.get().isLoggable(Level.CONFIG))
-					CLogger.get().config("No Table Access - AD_Tab_ID=" 
-						+ vo.AD_Tab_ID + " " + vo. Name);
-				return false;
-			}
-			vo.AD_Table_UU = rs.getString("AD_Table_UU");
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Table_UU, vo.AD_Table_UU);
+			vo.AD_Table_ID = rs.getInt("AD_Table_ID");				
+			vo.AD_Table_UU = rs.getString("AD_Table_UU");			
 			
 			if (rs.getString("IsReadOnly").equals("Y"))
-				vo.IsReadOnly = true;
-			if (userDef != null && userDef.getIsReadOnly() != null)
-				vo.IsReadOnly = MUserDefTab.ISREADONLY_Yes.equals(userDef.getIsReadOnly());
+				vo.IsReadOnly = true;			
 			vo.ReadOnlyLogic = rs.getString("ReadOnlyLogic");
-			if (userDef != null && userDef.getReadOnlyLogic() != null)
-				vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
-			
+						
 			if (rs.getString("IsInsertRecord").equals("N"))
-				vo.IsInsertRecord = false;
-			
+				vo.IsInsertRecord = false;			
 			//
 			vo.Description = rs.getString("Description");
 			if (vo.Description == null)
 				vo.Description = "";
-			if (userDef != null && userDef.getDescription() != null)
-				vo.Description = userDef.getDescription();
 
 			vo.Help = rs.getString("Help");
 			if (vo.Help == null)
-				vo.Help = "";
-			if (userDef != null && userDef.getHelp() != null)
-				vo.Help = userDef.getHelp();
+				vo.Help = "";			
 
 			if (rs.getString("IsSingleRow").equals("Y"))
-				vo.IsSingleRow = true;
-			if (userDef != null && userDef.getIsSingleRow() != null)
-				vo.IsSingleRow = MUserDefTab.ISSINGLEROW_Yes.equals(userDef.getIsSingleRow());
+				vo.IsSingleRow = true;			
 
 			if (rs.getString("HasTree").equals("Y"))
 				vo.HasTree = true;
@@ -236,21 +158,13 @@ public class GridTabVO implements Evaluatee, Serializable
 				vo.IsDeleteable = true;
 			if (rs.getString("IsHighVolume").equals("Y"))
 				vo.IsHighVolume = true;
-			if (userDef != null && !Util.isEmpty(userDef.getIsHighVolume()))
-				vo.IsHighVolume = "Y".equals(userDef.getIsHighVolume());
-
+			
 			// Lookup Only Selection Fields
 			if (rs.getString("IsLookupOnlySelection").equals("Y"))
-				vo.IsLookupOnlySelection = true;
-			if (userDef != null && userDef.getIsLookupOnlySelection() != null)
-				vo.IsLookupOnlySelection =  "Y".equals(userDef.getIsLookupOnlySelection());
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsLookupOnlySelection, vo.IsLookupOnlySelection);
+				vo.IsLookupOnlySelection = true;			
 			// Allow Advanced Lookup
 			if (rs.getString("IsAllowAdvancedLookup").equals("Y"))
-				vo.IsAllowAdvancedLookup = true;
-			if (userDef != null && userDef.getIsAllowAdvancedLookup() != null)
-				vo.IsAllowAdvancedLookup =  "Y".equals(userDef.getIsAllowAdvancedLookup());
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsAllowAdvancedLookup, vo.IsAllowAdvancedLookup);			
+				vo.IsAllowAdvancedLookup = true;						
 			vo.CommitWarning = rs.getString("CommitWarning");
 			if (vo.CommitWarning == null)
 				vo.CommitWarning = "";
@@ -263,26 +177,17 @@ public class GridTabVO implements Evaluatee, Serializable
 			// Where Clauses should be surrounded by parenthesis - teo_sarca, BF [ 1982327 ] 
 			if (vo.WhereClause.trim().length() > 0) {
 				vo.WhereClause = "("+vo.WhereClause+")";
-			}
-			//	Make sure the tab where is not replaced
-			if (userDef != null && userDef.getWhereClause() != null && !userDef.getWhereClause().trim().isEmpty())
-			{
-				if (vo.WhereClause.trim().length() > 0)
-					vo.WhereClause += " AND ";
-				vo.WhereClause += " (" + userDef.getWhereClause() + ")";
-			}
+			}			
 			
+			vo.EntityType = rs.getString("EntityType");
+
 			vo.OrderByClause = rs.getString("OrderByClause");
 			if (vo.OrderByClause == null)
 				vo.OrderByClause = "";
-			if (userDef != null && userDef.getOrderByClause() != null && !userDef.getOrderByClause().trim().isEmpty())
-				vo.OrderByClause = userDef.getOrderByClause();
-
+			
 			vo.AD_Process_ID = rs.getInt("AD_Process_ID");
 			if (rs.wasNull())
-				vo.AD_Process_ID = 0;
-			if (userDef != null && userDef.getAD_Process_ID() > 0)
-				vo.AD_Process_ID = userDef.getAD_Process_ID();
+				vo.AD_Process_ID = 0;			
 			vo.AD_Image_ID = rs.getInt("AD_Image_ID");
 			if (rs.wasNull())
 				vo.AD_Image_ID = 0;
@@ -294,8 +199,7 @@ public class GridTabVO implements Evaluatee, Serializable
 			if (rs.wasNull())
 				vo.TabLevel = 0;
 			//
-			vo.IsSortTab = rs.getString("IsSortTab").equals("Y");
-			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsSortTab, vo.IsSortTab ? "Y" : "N");
+			vo.IsSortTab = rs.getString("IsSortTab").equals("Y");			
 			if (vo.IsSortTab)
 			{
 				vo.AD_ColumnSortOrder_ID = rs.getInt("AD_ColumnSortOrder_ID");
@@ -324,7 +228,176 @@ public class GridTabVO implements Evaluatee, Serializable
 		return true;
 	}	//	loadTabDetails
 
-	private static final CCache<String, ArrayList<GridFieldVO>> s_gridFieldCache = new CCache<String, ArrayList<GridFieldVO>>(MField.Table_Name, "GridFieldVO Cache", 100, CCache.DEFAULT_EXPIRE_MINUTE, false, 1000);
+	/**
+	 * Check is vo should be visible for current session context and role
+	 * @param vo
+	 * @param role
+	 * @return true if vo is visible for current session context and role
+	 */
+	public static boolean checkAccessAndShowPreference(GridTabVO vo, MRole role) {
+		if (!checkShowTranslation(vo)) return false;
+		if (!checkShowAdvanced(vo)) return false;
+		if (!checkShowAccounting(vo)) return false;
+		if (!checkAccessLevel(vo, role)) return false;
+		if (!checkTableAccess(vo, role)) return false;
+		
+		return true;
+	}
+		
+	/**
+	 * Check show translation preference
+	 * @param vo
+	 * @return true if vo is visible
+	 */
+	private static boolean checkShowTranslation(GridTabVO vo) {
+		boolean showTrl = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_TRANSLATION));
+		//	Translation Tab	**
+		if (vo.IsTranslationTab)
+		{
+			//	Document Translation				
+			if (!Env.isBaseTranslation(vo.TableName)	//	C_UOM, ...
+				&& !Env.isMultiLingualDocument(vo.ctx))
+				showTrl = false;
+			if (!showTrl)
+			{
+				if (CLogger.get().isLoggable(Level.CONFIG))
+					CLogger.get().config("TrlTab Not displayed - AD_Tab_ID=" 
+						+ vo.AD_Tab_ID + "=" + vo.Name + ", Table=" + vo.TableName
+						+ ", BaseTrl=" + Env.isBaseTranslation(vo.TableName)
+						+ ", MultiLingual=" + Env.isMultiLingualDocument(vo.ctx));
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Check show advanced tab preference
+	 * @param vo
+	 * @return true if vo is visible
+	 */
+	private static boolean checkShowAdvanced(GridTabVO vo) {
+		boolean showAdvanced = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ADVANCED));
+		//	Advanced Tab	**
+		if (!showAdvanced && vo.IsAdvancedTab)
+		{
+			if (CLogger.get().isLoggable(Level.CONFIG))
+				CLogger.get().config("AdvancedTab Not displayed - AD_Tab_ID=" 
+					+ vo.AD_Tab_ID + " " + vo.Name);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Check show accounting info preference
+	 * @param vo
+	 * @return true if vo is visible
+	 */
+	private static boolean checkShowAccounting(GridTabVO vo) {
+		boolean showAcct = "Y".equals(Env.getContext(vo.ctx, Env.SHOW_ACCOUNTING));
+		//	Accounting Info Tab	**
+		if (!showAcct && vo.IsInfoTab)
+		{
+			if (CLogger.get().isLoggable(Level.FINE))
+				CLogger.get().fine("AcctTab Not displayed - AD_Tab_ID=" 
+					+ vo.AD_Tab_ID + " " + vo.Name);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Check table access level for role
+	 * @param vo
+	 * @param role
+	 * @return true if vo is visible
+	 */
+	private static boolean checkAccessLevel(GridTabVO vo, MRole role) {
+		if (!role.canView (vo.ctx, vo.AccessLevel))	//	No Access
+		{
+			if (CLogger.get().isLoggable(Level.FINE))
+				CLogger.get().fine("No Role Access - AD_Tab_ID=" + vo.AD_Tab_ID + " " + vo. Name);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Check is role has table access right
+	 * @param vo
+	 * @param role
+	 * @return true if vo is visible
+	 */
+	private static boolean checkTableAccess(GridTabVO vo, MRole role) {
+		if (!role.isTableAccess(vo.AD_Table_ID, true))
+		{
+			if (CLogger.get().isLoggable(Level.CONFIG))
+				CLogger.get().config("No Table Access - AD_Tab_ID=" 
+					+ vo.AD_Tab_ID + " " + vo. Name);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Update environment context (vo.ctx)
+	 * @param vo
+	 */
+	public static void updateContext(GridTabVO vo) {
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_ID, String.valueOf(vo.AD_Tab_ID));
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_UU, vo.AD_Tab_UU);
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_Name, vo.Name);
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AccessLevel, vo.AccessLevel);
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsLookupOnlySelection, vo.IsLookupOnlySelection);
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsAllowAdvancedLookup, vo.IsAllowAdvancedLookup);
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsSortTab, vo.IsSortTab ? "Y" : "N");
+	}
+
+	/**
+	 * Update GridTabVO with values from {@link MUserDefTab}
+	 * @param vo
+	 */
+	public static void loadUserDefTab(GridTabVO vo) {
+		MUserDefTab userDef = MUserDefTab.get(vo.ctx, vo.AD_Tab_ID, vo.AD_Window_ID);
+		if (userDef != null) {
+			if(!Util.isEmpty(userDef.getName()))
+				vo.Name = userDef.getName();			
+			if(!Util.isEmpty(userDef.getDeleteConfirmationLogic()))
+				vo.deleteConfirmationLogic = userDef.getDeleteConfirmationLogic();
+			if (userDef.getDisplayLogic() != null)
+				vo.DisplayLogic = userDef.getDisplayLogic();
+			if (userDef.getIsReadOnly() != null)
+				vo.IsReadOnly = MUserDefTab.ISREADONLY_Yes.equals(userDef.getIsReadOnly());
+			if (userDef.getReadOnlyLogic() != null)
+				vo.ReadOnlyLogic = userDef.getReadOnlyLogic();
+			if (userDef.getDescription() != null)
+				vo.Description = userDef.getDescription();
+			if (userDef.getHelp() != null)
+				vo.Help = userDef.getHelp();
+			if (userDef.getIsSingleRow() != null)
+				vo.IsSingleRow = MUserDefTab.ISSINGLEROW_Yes.equals(userDef.getIsSingleRow());
+			if (!Util.isEmpty(userDef.getIsHighVolume()))
+				vo.IsHighVolume = "Y".equals(userDef.getIsHighVolume());
+			if (userDef.getIsLookupOnlySelection() != null)
+				vo.IsLookupOnlySelection =  "Y".equals(userDef.getIsLookupOnlySelection());
+			if (userDef.getIsAllowAdvancedLookup() != null)
+				vo.IsAllowAdvancedLookup =  "Y".equals(userDef.getIsAllowAdvancedLookup());
+			//	Make sure the tab where is not replaced
+			if (userDef.getWhereClause() != null && !userDef.getWhereClause().trim().isEmpty())
+			{
+				if (vo.WhereClause.trim().length() > 0)
+					vo.WhereClause += " AND ";
+				vo.WhereClause += " (" + userDef.getWhereClause() + ")";
+			}
+			if (userDef.getOrderByClause() != null && !userDef.getOrderByClause().trim().isEmpty())
+				vo.OrderByClause = userDef.getOrderByClause();
+			if (userDef.getAD_Process_ID() > 0)
+				vo.AD_Process_ID = userDef.getAD_Process_ID();
+		}
+	}
+
+	private static final CCache<String, ArrayList<GridFieldVO>> s_gridFieldCache = new CCache<String, ArrayList<GridFieldVO>>(MField.Table_Name, "GridFieldVO Cache", 100, 0, false, 0);
 	
 	/**
 	 *  Create GridFieldVOs
@@ -552,7 +625,8 @@ public class GridTabVO implements Evaluatee, Serializable
 	public int          Included_Tab_ID = 0;
 	/** Replication Type	*/
 	public String		ReplicationType = "L";
-
+	/** EntityType	*/
+	public String		EntityType = null;
 	/** Sort Tab			*/
 	public boolean		IsSortTab = false;
 	/** Column Sort			*/
@@ -566,7 +640,13 @@ public class GridTabVO implements Evaluatee, Serializable
 	public int			onlyCurrentDays = 0;
 	/** Tab type uses by IADTabpanel service to identify implementors*/
 	public String AD_TabType = null;
-
+    /** Is Translation Tab */
+	public boolean IsTranslationTab = false;
+	/** Is Advanced Tab */
+	public boolean IsAdvancedTab = false;
+	/** Is Accounting Info Tab */
+	public boolean IsInfoTab = false;
+	
 	/** Fields contain MFieldVO entities    */
 	private ArrayList<GridFieldVO>	Fields = null;
 
@@ -606,9 +686,11 @@ public class GridTabVO implements Evaluatee, Serializable
 	 *	@param variableName name
 	 *	@return value as string
 	 */
+	@Override
 	public String get_ValueAsString (String variableName)
 	{
-		return Env.getContext (ctx, WindowNo, variableName, false);	// not just window
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, WindowNo, -1, false, false);
+		return evaluatee.get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
 	/**
@@ -622,12 +704,10 @@ public class GridTabVO implements Evaluatee, Serializable
 		GridTabVO clone = new GridTabVO(Ctx, windowNo);
 		clone.AD_Window_ID = AD_Window_ID;
 		clone.TabNo = TabNo;
-		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AD_Tab_ID, String.valueOf(clone.AD_Tab_ID));
 		//
 		clone.AD_Tab_ID = AD_Tab_ID;
 		clone.AD_Tab_UU = AD_Tab_UU;
 		clone.Name = Name;
-		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_Name, clone.Name);
 		clone.Description = Description;
 		clone.Help = Help;
 		clone.IsSingleRow = IsSingleRow;
@@ -658,29 +738,20 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.Included_Tab_ID = Included_Tab_ID;
 		clone.ReplicationType = ReplicationType;
 		clone.deleteConfirmationLogic = deleteConfirmationLogic;
-		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AccessLevel, clone.AccessLevel);
-		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AD_Table_ID, String.valueOf(clone.AD_Table_ID));
-		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsLookupOnlySelection, clone.IsLookupOnlySelection);
-		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsAllowAdvancedLookup, clone.IsAllowAdvancedLookup);
-
+		clone.EntityType = EntityType;
 		//
 		clone.IsSortTab = IsSortTab;
 		clone.AD_ColumnSortOrder_ID = AD_ColumnSortOrder_ID;
 		clone.AD_ColumnSortYesNo_ID = AD_ColumnSortYesNo_ID;
+		//showXXX preference
+		clone.IsAdvancedTab = IsAdvancedTab;
+		clone.IsInfoTab = IsInfoTab;
+		clone.IsTranslationTab = IsTranslationTab;		
 		//  Derived
 		clone.onlyCurrentRows = true;
 		clone.onlyCurrentDays = 0;
-		clone.AD_TabType = AD_TabType;
-		clone.Fields = new ArrayList<GridFieldVO>();
-		for (int i = 0; i < Fields.size(); i++)
-		{
-			GridFieldVO field = Fields.get(i);
-			GridFieldVO cloneField = field.clone(Ctx, windowNo, TabNo, 
-				AD_Window_ID, AD_Tab_ID, IsReadOnly);
-			if (cloneField == null)
-				return null;
-			clone.Fields.add(cloneField);
-		}
+		clone.AD_TabType = AD_TabType;		
+		clone.Fields = null;
 		
 		return clone;
 	}	//	clone

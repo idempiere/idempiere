@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxPostal
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxPostal")
 public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_TaxPostal (Properties ctx, int C_TaxPostal_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
       super (ctx, C_TaxPostal_ID, trxName);
       /** if (C_TaxPostal_ID == 0)
         {
-			setC_Tax_ID (0);
 			setC_TaxPostal_ID (0);
+			setC_Tax_ID (0);
 			setPostal (null);
         } */
     }
@@ -51,8 +51,8 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
       super (ctx, C_TaxPostal_ID, trxName, virtualColumns);
       /** if (C_TaxPostal_ID == 0)
         {
-			setC_Tax_ID (0);
 			setC_TaxPostal_ID (0);
+			setC_Tax_ID (0);
 			setPostal (null);
         } */
     }
@@ -63,8 +63,8 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
       super (ctx, C_TaxPostal_UU, trxName);
       /** if (C_TaxPostal_UU == null)
         {
-			setC_Tax_ID (0);
 			setC_TaxPostal_ID (0);
+			setC_Tax_ID (0);
 			setPostal (null);
         } */
     }
@@ -75,8 +75,8 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
       super (ctx, C_TaxPostal_UU, trxName, virtualColumns);
       /** if (C_TaxPostal_UU == null)
         {
-			setC_Tax_ID (0);
 			setC_TaxPostal_ID (0);
+			setC_Tax_ID (0);
 			setPostal (null);
         } */
     }
@@ -108,34 +108,6 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
-			.getPO(getC_Tax_ID(), get_TrxName());
-	}
-
-	/** Set Tax.
-		@param C_Tax_ID Tax identifier
-	*/
-	public void setC_Tax_ID (int C_Tax_ID)
-	{
-		if (C_Tax_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
-	}
-
-	/** Get Tax.
-		@return Tax identifier
-	  */
-	public int getC_Tax_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Tax ZIP.
 		@param C_TaxPostal_ID Tax Postal/ZIP
@@ -172,6 +144,34 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
 	public String getC_TaxPostal_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxPostal_UU);
+	}
+
+	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
+			.getPO(getC_Tax_ID(), get_TrxName());
+	}
+
+	/** Set Tax.
+		@param C_Tax_ID Tax identifier
+	*/
+	public void setC_Tax_ID (int C_Tax_ID)
+	{
+		if (C_Tax_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
+	}
+
+	/** Get Tax.
+		@return Tax identifier
+	  */
+	public int getC_Tax_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set ZIP.

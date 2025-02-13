@@ -45,6 +45,7 @@ import org.compiere.util.Trx;
  * Generate Invoice (manual) controller class
  * @deprecated ticket IDEMPIERE-1965 replaced this with an Info Window
  */
+@Deprecated
 public class InvoiceGen extends GenForm
 {
 	/**	Logger			*/

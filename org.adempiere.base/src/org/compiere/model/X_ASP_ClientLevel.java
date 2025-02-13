@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_ClientLevel
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="ASP_ClientLevel")
 public class X_ASP_ClientLevel extends PO implements I_ASP_ClientLevel, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_ASP_ClientLevel extends PO implements I_ASP_ClientLevel, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_ASP_ClientLevel (Properties ctx, int ASP_ClientLevel_ID, String trxName)

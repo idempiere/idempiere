@@ -21,8 +21,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.Trx;
 
 /**
- * Generate custom form base class
- * 
+ * Base class for generate form (generate shipment, generate invoices, etc) 
  */
 public abstract class GenForm
 {

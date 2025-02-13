@@ -221,14 +221,10 @@ public class MRecurring extends X_C_Recurring
 		setDateNextRun(next);
 	}	//	setDateNextRun
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Validate mandatory for RecurringType and corresponding field
 		String rt = getRecurringType();
 		if (rt == null)
 		{

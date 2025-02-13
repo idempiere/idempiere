@@ -25,7 +25,6 @@ import java.io.File;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.print.ReportEngine;
 import org.compiere.tools.FileUtil;
@@ -87,14 +86,11 @@ public class CSVReportViewerRenderer implements IReportViewerRenderer {
 		try {
 			String path = System.getProperty("java.io.tmpdir");
 			String prefix = makePrefix(reportEngine.getName());
-			if (log.isLoggable(Level.FINE))
-			{
-				log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-			}
+			if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 			File file = FileUtil.createTempFile(prefix, "."+getFileExtension(), new File(path));
 			IReportRenderer<IReportRendererConfiguration> renderer = Core.getReportRenderer(getId());
 			CSVReportRendererConfiguration config = new CSVReportRendererConfiguration()
-					.setLanguage(AEnv.getLanguage(Env.getCtx()))
+					.setLanguage(reportEngine.getPrintFormat().getLanguage())
 					.setOutputFile(file);
 			renderer.renderReport(reportEngine, config);
 			return new AMedia(file.getName(), getFileExtension(), getContentType(), file, false);

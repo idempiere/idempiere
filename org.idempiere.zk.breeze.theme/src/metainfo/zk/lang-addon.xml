@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language>
+	<addon-name>breeze theme</addon-name>
+	<language-name>xul/html</language-name>
+
+	<!-- this js module doesn't actually exists and it is here for breeze theme version -->
+	<!-- since loading of js module is on demand, it doesn't cause any error as long as you don't try to load it -->
+	<javascript-module name="idempiere.theme.default" version="202412230000" />
+</language>

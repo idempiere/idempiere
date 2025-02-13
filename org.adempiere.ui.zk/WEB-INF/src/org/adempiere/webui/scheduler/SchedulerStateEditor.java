@@ -27,6 +27,7 @@ package org.adempiere.webui.scheduler;
 
 import org.adempiere.base.Core;
 import org.adempiere.util.Callback;
+import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.editor.IEditorConfiguration;
@@ -50,7 +51,6 @@ import org.zkoss.zk.ui.util.Clients;
 /**
  * Field editor for state ({@link DisplayType#SchedulerState}) of scheduler (AD_Scheduler).
  * @author hengsin
- *
  */
 public class SchedulerStateEditor extends WEditor {
 
@@ -61,7 +61,6 @@ public class SchedulerStateEditor extends WEditor {
 	private int schedulerState;
 
 	/**
-	 * 
 	 * @param gridField
 	 */
 	public SchedulerStateEditor(GridField gridField)
@@ -70,7 +69,6 @@ public class SchedulerStateEditor extends WEditor {
 	}
 	
 	/**
-	 * 
 	 * @param gridField
 	 * @param tableEditor
 	 * @param editorConfiguration
@@ -81,7 +79,6 @@ public class SchedulerStateEditor extends WEditor {
     }
 
 	/**
-	 * 
 	 * @param gridField
 	 * @param rowIndex
 	 */
@@ -91,7 +88,6 @@ public class SchedulerStateEditor extends WEditor {
 	}
 	
 	/**
-	 * 
 	 * @param gridField
 	 * @param rowIndex
 	 * @param tableEditor
@@ -239,6 +235,9 @@ public class SchedulerStateEditor extends WEditor {
 
 	}
 
+	/**
+	 * Register and start a scheduler
+	 */
 	private void schedule() {
 		int id = getAD_Scheduler_ID();
     	if (id <= 0)
@@ -255,8 +254,9 @@ public class SchedulerStateEditor extends WEditor {
 		});			
 	}
 	
-	
-
+	/**
+	 * Stop a scheduler
+	 */
 	private void stop() {
 		int id = getAD_Scheduler_ID();
     	if (id <= 0)
@@ -274,6 +274,9 @@ public class SchedulerStateEditor extends WEditor {
 		});
 	}
 	
+	/**
+	 * Start a scheduler
+	 */
 	private void start() {
 		int id = getAD_Scheduler_ID();
     	if (id <= 0)
@@ -347,6 +350,38 @@ public class SchedulerStateEditor extends WEditor {
 		
 		return label;
 	}
+	
+	@Override
+	public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
+		
+		String label = "-";
+		
+		if(value == null)
+			return label;
+		
+		int AD_Scheduler_ID = 0;
+		try {
+			AD_Scheduler_ID = Integer.parseInt(value.toString());
+		}catch (Exception e) {
+			return label;
+		}
+		
+		if(AD_Scheduler_ID <= 0)
+			return label;
+		
+		schedulerState=0;
+		MScheduler scheduler = new MScheduler(Env.getCtx(), AD_Scheduler_ID, null);
+		IServerManager serverMgr = getServerMgr();
+		schedulerState = serverMgr != null ? serverMgr.getServerStatus(scheduler.getServerID()) : -1;
+		if (schedulerState == IServerManager.SERVER_STATE_NOT_SCHEDULE)
+			label = Msg.getMsg(Env.getCtx(), "SchedulerNotSchedule");
+		else if (schedulerState == IServerManager.SERVER_STATE_STARTED)
+			label = Msg.getMsg(Env.getCtx(), "SchedulerStarted");
+		else if (schedulerState == IServerManager.SERVER_STATE_STOPPED)
+			label = Msg.getMsg(Env.getCtx(), "SchedulerStopped");
+		
+		return label;
+	}
 
 	@Override
 	public Button getComponent() {
@@ -361,6 +396,10 @@ public class SchedulerStateEditor extends WEditor {
 		return false;
 	}
 	
+	/**
+	 * Get scheduler server manager instance
+	 * @return scheduler server manager instance
+	 */
 	private IServerManager getServerMgr() {
 		IServerManager serverMgr = null;
 		IClusterService service = Core.getClusterService();

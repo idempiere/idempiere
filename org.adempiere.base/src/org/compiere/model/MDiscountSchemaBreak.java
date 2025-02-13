@@ -137,7 +137,7 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		// If M_Product_ID and M_Product_Category_ID is set, M_Product_ID has priority - teo_sarca [ 2012439 ]
+		// If both M_Product_ID and M_Product_Category_ID is set, reset M_Product_Category_ID to 0 
 		if (getM_Product_ID() > 0 && getM_Product_Category_ID() > 0)
 			setM_Product_Category_ID(I_ZERO);
 		//

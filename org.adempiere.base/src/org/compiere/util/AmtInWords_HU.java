@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.util;
 
 import java.math.BigInteger;
@@ -5,10 +26,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Amount in words for Hungarian locale
+ */
 public class AmtInWords_HU implements AmtInWords {
 	
 	static String thousandseparator=",";
 	static String wholeseparator=".";
+	
+	@Override
 	public String getAmtInWords(String amount) throws Exception {
 		assert(amount!=null);
 		amount = amount.replaceAll(" ", "").replaceAll("\u00A0", "");
@@ -92,6 +118,10 @@ public class AmtInWords_HU implements AmtInWords {
 	String[] majorNames = { "", "ezer", "millió", "billió", "trillió",
 			"kvadrillió", "kvintillió" };
 
+	/**
+	 * @param amount
+	 * @return amount in words
+	 */
 	public String getAmtInWordsTo1000(int amount) {
 		StringBuilder ret = new StringBuilder();
 		int hundred = amount / 100;

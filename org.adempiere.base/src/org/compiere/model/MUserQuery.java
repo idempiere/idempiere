@@ -28,7 +28,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
-
 /**
  *	User Query Model
  *	
@@ -38,7 +37,7 @@ import org.compiere.util.Env;
 public class MUserQuery extends X_AD_UserQuery
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7615897105314639570L;
 
@@ -68,7 +67,7 @@ public class MUserQuery extends X_AD_UserQuery
 	}	//	get
 	
 	/**
-	 * 	Get all active queries of user for Tab
+	 * 	Get all active user only queries for Tab
 	 *	@param ctx context
 	 *	@param AD_Tab_ID tab
 	 *	@return array of queries
@@ -107,7 +106,7 @@ public class MUserQuery extends X_AD_UserQuery
 	}	//	getUserOnlyQueries
 	
 	/**
-	 * 	Get all active queries of the system for Tab
+	 * 	Get all active queries of system tenant for Tab
 	 *	@param ctx context
 	 *	@param AD_Tab_ID tab
 	 *	@return array of queries
@@ -142,7 +141,7 @@ public class MUserQuery extends X_AD_UserQuery
 	}	//	getAllUsersQueries
 	
 	/**
-	 * 	Get all active queries of the client for Tab
+	 * 	Get all active client only queries for Tab
 	 *	@param ctx context
 	 *	@param AD_Tab_ID tab
 	 *	@return array of queries
@@ -179,7 +178,7 @@ public class MUserQuery extends X_AD_UserQuery
 	}	//	getClientQueries
 	
 	/**
-	 * 	Get all active queries of the role for Tab
+	 * 	Get all active role only queries for Tab
 	 *	@param ctx context
 	 *	@param AD_Tab_ID tab
 	 *	@return array of queries
@@ -220,10 +219,10 @@ public class MUserQuery extends X_AD_UserQuery
 	}	//	getRoleQueries
 	
 	/**
-	 * 	Get Specific Tab Query
+	 * 	Get Specific Tab Query via name (use case insensitive like matching).
 	 *	@param ctx context
 	 *	@param AD_Tab_ID tab
-	 *	@param name name
+	 *	@param name query name
 	 *	@return query or null
 	 */
 	public static MUserQuery get (Properties ctx, int AD_Tab_ID, String name)
@@ -262,11 +261,11 @@ public class MUserQuery extends X_AD_UserQuery
 	}	//	get
 	
 	/**
-	 * 	Get Specific Tab Query 
-	 *  Private or globall
+	 * 	Get Tab Query via name (use case insensitive like matching). 
+	 *  Private or global.
 	 *	@param ctx context
 	 *	@param AD_Tab_ID tab
-	 *	@param name name
+	 *	@param name query name
 	 *	@return query or null
 	 */
 	public static MUserQuery getUserQueryByName(Properties ctx, int AD_Tab_ID, String name)
@@ -285,16 +284,16 @@ public class MUserQuery extends X_AD_UserQuery
 	private static CLogger s_log = CLogger.getCLogger (MUserQuery.class);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserQuery_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserQuery_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserQuery(Properties ctx, String AD_UserQuery_UU, String trxName) {
         super(ctx, AD_UserQuery_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_UserQuery_ID id
@@ -319,6 +318,7 @@ public class MUserQuery extends X_AD_UserQuery
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getAD_Tab_ID() > 0) {
+			// Set AD_Window_ID and AD_Table_ID from AD_Tab_ID
 			if (newRecord || is_ValueChanged(COLUMNNAME_AD_Tab_ID)) {
 				MTab tab = new MTab(getCtx(), getAD_Tab_ID(), get_TrxName());
 				setAD_Window_ID(tab.getAD_Window_ID());
@@ -331,8 +331,8 @@ public class MUserQuery extends X_AD_UserQuery
 	}
 	
 	/**
-	 * Returns true if the current user can save the query privately and is not a SQL Query
-	 * @return
+	 * Can user save this query record.
+	 * @return true if the current user can save the query privately and is not a SQL Query
 	 */
 	public boolean userCanSave() {
 		if (getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx()) || //Cannot modify a query from another client (e.g. System) 
@@ -344,9 +344,8 @@ public class MUserQuery extends X_AD_UserQuery
 	}
 	
 	/**
-	 * Returns true if the current users has permission
-	 * to share or modify the query globally and is not a SQL Query
-	 * @return
+	 * Can use share this query record.
+	 * @return true if the current users has permission to share or modify the query globally and is not a SQL Query
 	 */
 	public boolean userCanShare() {
 		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()) || //Share button only works for roles with preference level = Client

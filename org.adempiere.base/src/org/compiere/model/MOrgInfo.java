@@ -111,7 +111,7 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	}
 	
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MOrgInfo>	s_cache	= new ImmutableIntPOCache<Integer, MOrgInfo>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MOrgInfo>	s_cache	= new ImmutableIntPOCache<Integer, MOrgInfo>(Table_Name, 50, 0, false, 0);
 	
     /**
      * UUID based Constructor
@@ -188,6 +188,7 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate that Parent_Org_ID != AD_Org_ID
 		if(!newRecord && getParent_Org_ID()==get_ID()){
 			log.saveError("Error", "Parent_Org_ID=AD_Org_ID");
 			return false;

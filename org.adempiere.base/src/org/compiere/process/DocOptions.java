@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.compiere.process;
 
-
 /**
  *	Document Options Interface
  *	
@@ -25,7 +24,7 @@ package org.compiere.process;
 public interface DocOptions
 {
 	/**
-	 * 	Customize Valid Actions
+	 * Customize Valid Document Actions
 	 * @param docStatus
 	 * @param processing
 	 * @param orderType
@@ -34,7 +33,7 @@ public interface DocOptions
 	 * @param docAction
 	 * @param options
 	 * @param index
-	 * @return Number of valid options
+	 * @return End index of valid options[] (exclusive)
 	 */
 	public int customizeValidActions (String docStatus, Object processing, 
 			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options, int index);

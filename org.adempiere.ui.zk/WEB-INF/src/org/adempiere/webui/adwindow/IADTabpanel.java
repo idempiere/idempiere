@@ -21,9 +21,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Toolbar;
 
 /**
- * Interface for AD_Tab UI (with all the AD_Fields definition)
+ * Interface for AD_Tab panel component (with all the AD_Fields definition)
  * @author Low Heng Sin
- *
  */
 public interface IADTabpanel extends Component, Evaluatee {
 
@@ -34,37 +33,44 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public static final String ATTR_ON_ACTIVATE_POSTED = "org.adempiere.webui.adwindow.IADTabpanel.onActivatePosted";
 
 	/**
+	 * Initialized tab panel
 	 * @param winPanel
 	 * @param gridTab
 	 */
 	public void init(AbstractADWindowContent winPanel, GridTab gridTab);
 
 	/**
+	 * Get display logic
 	 * @return display logic
 	 */
 	public String getDisplayLogic();
 
 	/**
+	 * Get tab level
 	 * @return tab level
 	 */
 	public int getTabLevel();
 
 	/**
+	 * Get table name
 	 * @return table name from GridTab
 	 */
 	public String getTableName();
 
 	/**
+	 * Get record id of current row
 	 * @return record ID of current row
 	 */
 	public int getRecord_ID();
 
 	/**
+	 * Is current row not stall
 	 * @return true if refresh is not needed
 	 */
 	public boolean isCurrent();
 
 	/**
+	 * Get title of tab
 	 * @return title of tab
 	 */
 	public String getTitle();
@@ -75,12 +81,13 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public void createUI();
 
 	/**
+	 * Get GridTab of tab
 	 * @return {@link GridTab} instance that back this IADTabpanel instance
 	 */
 	public GridTab getGridTab();
 
 	/**
-	 * Activate/deactivate this IADTabpanel instance.
+	 * Activate/deactivate this IADTabpanel instance.<br/>
 	 * Call by init or after tab selection changed. 
 	 * @param b
 	 */
@@ -105,9 +112,15 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public void query(boolean currentRows, int currentDays, int maxRows);
 
 	/**
-	 * Switch between grid/list and form view
+	 * Switch between grid and form view
 	 */
 	public void switchRowPresentation();
+
+	/**
+     * After Find window closes switch to grid view if configured
+     * @return void
+     */
+	public void onAfterFind();
 
 	/**
 	 * Dynamic update of every field's UI properties ( visibility, filter and mandatory ).
@@ -128,27 +141,31 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public boolean onEnterKey();
 	
 	/**
+	 * Is tab panel showing grid view
 	 * @return true if current presentation of the tab panel is grid/list view
 	 */
 	public boolean isGridView();
 	
 	/**
+	 * Is tab panel have been activated
 	 * @return true if the tab panel have been activated
 	 */
 	public boolean isActivated();
 
 	/**
-	 * Turn on/off detail mode, i.e either tab panel is currently a header or detail tab of the UI.
+	 * Turn on/off detail mode, i.e whether tab panel is currently a header or detail tab of the window.
 	 * @param detailMode
 	 */
 	public void setDetailPaneMode(boolean detailMode);
 	
 	/**
-	 * @return true if the panel is in detail mode (i.e a detail tab in DetailPane)
+	 * Is tab panel in detail pane mode
+	 * @return true if the panel is in detail mode (i.e a tab in DetailPane)
 	 */
 	public boolean isDetailPaneMode();
 
 	/**
+	 * Get GridView component
 	 * @return {@link GridView} instance
 	 */
 	public GridView getGridView();	
@@ -162,7 +179,7 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public boolean needSave(boolean rowChange, boolean onlyRealChange);
 
 	/**
-	 * Save changes.
+	 * Save changes.<br/>
 	 * Call {@link GridTab#dataSave(boolean)}
 	 * @param onSaveEvent
 	 * @return true if the save operation completed successfully
@@ -176,6 +193,7 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public void setTabNo(int tabNo);
 	
 	/**
+	 * Get tab no
 	 * @return tab no ( ad_tab.tabno )
 	 */
 	public int getTabNo();
@@ -187,22 +205,25 @@ public interface IADTabpanel extends Component, Evaluatee {
 	public void setDetailPane(DetailPane detailPane);
 	
 	/**
+	 * Get parent detail pane
 	 * @return the {@link DetailPane} part that own this IADTabpanel instance
 	 */
 	public DetailPane getDetailPane();
 
 	/**
-	 * Reset detail data grid when parent tab current record is new and not saved yet.
+	 * Reset detail data grid when current record of parent tab is new and not saved yet.<br/>
 	 * Call {@link GridTab#resetDetailForNewParentRecord()}
 	 */
 	public void resetDetailForNewParentRecord();
 	
 	/**
+	 * Get tree panel component
 	 * @return {@link ADTreePanel} instance
 	 */
 	public ADTreePanel getTreePanel();	
 
 	/**
+	 * Is quick form enabled
 	 * @return true if Quick Form Button is Enabled
 	 */
 	public boolean isEnableQuickFormButton();
@@ -216,16 +237,19 @@ public interface IADTabpanel extends Component, Evaluatee {
 	}
 	
 	/**
+	 * Get toolbar buttons
 	 * @return List of toolbar buttons
 	 */
 	public List<Button> getToolbarButtons();
 
 	/**
+	 * Is customize grid button enable
 	 * @return true if customize grid button is enabled
 	 */
 	public boolean isEnableCustomizeButton();
 
 	/**
+	 * Is process button enable
 	 * @return true if process Button is Enabled
 	 */
 	default public boolean isEnableProcessButton() {
@@ -234,14 +258,14 @@ public interface IADTabpanel extends Component, Evaluatee {
 	}
 
 	/**
-	 * Enabled/Disabled ADWindowToolbar buttons
+	 * Update ADWindowToolbar buttons state
 	 * 
 	 * @param toolbar - {@link ADWindowToolbar}
 	 */
 	public void updateToolbar(ADWindowToolbar toolbar);
 
 	/**
-	 * Enabled/Disabled {@link DetailPane} toolbar buttons
+	 * Update {@link DetailPane} toolbar buttons state
 	 * 
 	 * @param toolbar - {@link Toolbar}
 	 */

@@ -10,7 +10,7 @@ BEGIN
 	SELECT	COALESCE (SUM(PriceList), 0)
 	INTO	v_Price
 	FROM	M_ProductPrice
-	WHERE M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
+	WHERE IsActive='Y' AND M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
 
 	--	No Price - Check if BOM
 	IF (v_Price = 0) THEN
@@ -20,6 +20,7 @@ BEGIN
 			WHERE b.M_ProductBOM_ID=p.M_Product_ID
 			AND b.M_Product_ID=Product_ID
 			AND b.M_ProductBOM_ID != Product_ID
+			AND (p.IsBOM='N' OR p.IsVerified='Y')
 			AND b.IsActive='Y'
 		LOOP
 			v_ProductPrice := bomPriceList (bom.M_ProductBOM_ID, PriceList_Version_ID);
@@ -30,7 +31,6 @@ BEGIN
 	RETURN v_Price;
 	
 END;
-
 $BODY$
 LANGUAGE 'plpgsql' STABLE
 ;

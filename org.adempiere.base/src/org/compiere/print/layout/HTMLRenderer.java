@@ -85,12 +85,17 @@ public class HTMLRenderer extends View implements Externalizable
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(HTMLRenderer.class);
 	
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	public HTMLRenderer() {
 		super(null);
 	}
 	
-	/**************************************************************************
-	 * 	Constructor
+	/**
+	 * 	Internal Constructor.<br/>
+	 *  Call {@link #get(String)} instead.
 	 *	@param f factory
 	 *	@param v root view
 	 */
@@ -119,7 +124,6 @@ public class HTMLRenderer extends View implements Externalizable
 	private float m_viewWidth;
 	private float m_viewHeight;
 
-
 	/**
 	 * 	Get Width
 	 *	@return width
@@ -140,7 +144,7 @@ public class HTMLRenderer extends View implements Externalizable
 
 	/**
 	 * 	Get Height for one line
-	 *	@return height
+	 *	@return height (hard coded to 30)
 	 */
 	public float getHeightOneLine()
 	{
@@ -177,12 +181,11 @@ public class HTMLRenderer extends View implements Externalizable
 		return m_allocation;
 	}	//	getAllocation
 
-
 	/**
 	 * Fetches the attributes to use when rendering.  At the root
 	 * level there are no attributes.  If an attribute is resolved
 	 * up the view hierarchy this is the end of the line.
-	 * 	@return attribute set
+	 * @return attribute set
 	 */
 	public AttributeSet getAttributes() 
 	{
@@ -234,7 +237,6 @@ public class HTMLRenderer extends View implements Externalizable
 	{
 		return Integer.MAX_VALUE;
 	}
-
 
 	/**
 	 * Determines the desired alignment for this view along an axis.

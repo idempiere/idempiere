@@ -202,21 +202,16 @@ public class MProjectLine extends X_C_ProjectLine
 		return sb.toString ();
 	}	//	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getLine() == 0)
 			setLine();
 		
-		//	Planned Amount
+		// Calculate Planned Amount
 		setPlannedAmt(getPlannedQty().multiply(getPlannedPrice()));
 		
-		//	Planned Margin
+		// Calculate Planned Margin
 		if (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Product_Category_ID")
 			|| is_ValueChanged("PlannedQty") || is_ValueChanged("PlannedPrice"))
 		{
@@ -233,7 +228,7 @@ public class MProjectLine extends X_C_ProjectLine
 			}
 		}
 		
-		//	Phase/Task
+		//	Set C_ProjectPhase_ID from C_ProjectTask 
 		if (is_ValueChanged("C_ProjectTask_ID") && getC_ProjectTask_ID() != 0)
 		{
 			MProjectTask pt = new MProjectTask(getCtx(), getC_ProjectTask_ID(), get_TrxName());
@@ -245,6 +240,7 @@ public class MProjectLine extends X_C_ProjectLine
 			else
 				setC_ProjectPhase_ID(pt.getC_ProjectPhase_ID());
 		}
+		// Set C_Project_ID from C_ProjectPhase 
 		if (is_ValueChanged("C_ProjectPhase_ID") && getC_ProjectPhase_ID() != 0)
 		{
 			MProjectPhase pp = new MProjectPhase(getCtx(), getC_ProjectPhase_ID(), get_TrxName());
@@ -260,12 +256,6 @@ public class MProjectLine extends X_C_ProjectLine
 		return true;
 	}	//	beforeSave	
 		
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -275,11 +265,6 @@ public class MProjectLine extends X_C_ProjectLine
 		return success;
 	}	//	afterSave
 		
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{

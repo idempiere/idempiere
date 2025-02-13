@@ -10,24 +10,24 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
-		<revision>11.0.0-SNAPSHOT</revision>
+		<revision>12.0.0-SNAPSHOT</revision>
 		<jdk.version>17</jdk.version>
-		<tycho.version>4.0.4</tycho.version>
+		<tycho.version>4.0.8</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
-		<zk.version>9.6.4</zk.version>
-		<maven.dependency.version>3.1.1</maven.dependency.version>
-		<download.maven.version>1.4.1</download.maven.version>
+		<zk.version>10.0.1</zk.version>
+		<maven.dependency.version>3.7.1</maven.dependency.version>
+		<download.maven.version>1.9.0</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
 		<netbeans.lib.version>RELEASE124</netbeans.lib.version>
-		<maven-clean-plugin.version>2.5</maven-clean-plugin.version><!-- get from master, update when mave have update-->
+		<maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.27</idempiere-equinox-url>
-		<idempiere-equinox-repository-id>eclipse-2023-03</idempiere-equinox-repository-id>
-		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository</idempiere-orbit-url>
-		<idempiere-orbit-repository-id>orbit-2021-06-R20210602031627</idempiere-orbit-repository-id>
+		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.29</idempiere-equinox-url>
+		<idempiere-equinox-repository-id>eclipse-2023-09</idempiere-equinox-repository-id>
+		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0</idempiere-orbit-url>
+		<idempiere-orbit-repository-id>orbit-2023-09</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
 		<extra.iu.install>org.eclipse.equinox.p2.director,org.idempiere.equinox.p2.director.feature.feature.group</extra.iu.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
@@ -202,14 +202,33 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											tycho-bnd-plugin
+										</artifactId>
+										<versionRange>
+											[4.0.7,)
+										</versionRange>
+										<goals>
+											<goal>process</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
                 <plugin>
-			        <groupId>org.eclipse.tycho.extras</groupId>
-			        <artifactId>tycho-eclipserun-plugin</artifactId>
-			        <version>${tycho.extras.version}</version>
+			        <groupId>org.eclipse.tycho</groupId>
+			        <artifactId>tycho-eclipse-plugin</artifactId>
+			        <version>${tycho.version}</version>
 			        <configuration>
 				        <repositories>
 				            <repository>
@@ -590,11 +609,6 @@
 	            </repository>
 
 	            <repository>
-		            <id>OpenNMS</id>
-		            <url>https://repo.opennms.org/maven2</url>
-	            </repository>
-
-	            <repository>
 		            <id>jr-ce-releases</id>
 		            <url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
 	            </repository>
@@ -658,7 +672,7 @@
 				            <artifact>
 					            <groupId>org.idempiere</groupId>
 					            <artifactId>${idempiere.target}</artifactId>
-					            <version>11.0.0-SNAPSHOT</version>
+					            <version>12.0.0-SNAPSHOT</version>
 				            </artifact>
 			            </target>
 

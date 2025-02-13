@@ -171,8 +171,8 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	}	//	getProductPrice
 	
 	/**
-	 * 	Set Name to Valid From Date.
-	 * 	If valid from not set, use today.
+	 * 	Set Name to Valid From Date.<br/>
+	 * 	If valid from is null, set valid from to today date.
 	 */
 	public void setName()
 	{
@@ -186,11 +186,6 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 		}
 	}	//	setName
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

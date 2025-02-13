@@ -138,6 +138,8 @@ public class BankStatementMatcher extends SvrProcess
 						bsl.setC_Invoice_ID(info.getC_Invoice_ID());
 					if (info.getC_BPartner_ID() > 0)
 						bsl.setC_BPartner_ID(info.getC_BPartner_ID());
+					if (info.getC_DepositBatch_ID() > 0)
+						bsl.setC_DepositBatch_ID(info.getC_DepositBatch_ID());
 					bsl.saveEx();
 					return "OK";
 				}

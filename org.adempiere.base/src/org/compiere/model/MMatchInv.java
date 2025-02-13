@@ -203,18 +203,13 @@ public class MMatchInv extends X_M_MatchInv
 		setProcessed(true);		//	auto
 	}	//	MMatchInv
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Set Trx Date
+		//	Set DateTrx to today date
 		if (getDateTrx() == null)
 			setDateTrx (new Timestamp(System.currentTimeMillis()));
-		//	Set Acct Date
+		//	Set DateAcct
 		if (getDateAcct() == null)
 		{
 			Timestamp ts = getNewerDateAcct();
@@ -222,6 +217,7 @@ public class MMatchInv extends X_M_MatchInv
 				ts = getDateTrx();
 			setDateAcct (ts);
 		}
+		// Set M_AttributeSetInstance_ID to M_AttributeSetInstance_ID of material receipt line.
 		if (getM_AttributeSetInstance_ID() == 0 && getM_InOutLine_ID() != 0)
 		{
 			MInOutLine iol = new MInOutLine (getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -235,6 +231,7 @@ public class MMatchInv extends X_M_MatchInv
 		if (!success)
 			return false;
 		
+		// Validate total M_MatchInv.Qty for M_InOutLine_ID against M_InOutLine.MovementQty
 		if (getM_InOutLine_ID() > 0)
 		{
 			MInOutLine line = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -251,6 +248,7 @@ public class MMatchInv extends X_M_MatchInv
 			}
 		}
 		
+		// Validate total M_MatchInv.Qty for C_InvoiceLine_ID against M_InOutLine.MovementQty
 		if (getC_InvoiceLine_ID() > 0)
 		{
 			MInvoiceLine line = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
@@ -296,13 +294,10 @@ public class MMatchInv extends X_M_MatchInv
 		return shipDate;
 	}	//	getNewerDateAcct
 		
-	/**
-	 * 	Before Delete
-	 *	@return true if acct was deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
+		// Check is period open and delete postings (Fact_Acct)
 		if (isPosted())
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_MatchInvoice, getAD_Org_ID());
@@ -312,11 +307,6 @@ public class MMatchInv extends X_M_MatchInv
 		return true;
 	}	//	beforeDelete
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{

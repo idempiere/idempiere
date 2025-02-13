@@ -229,6 +229,7 @@ public class MChat extends X_CM_Chat
 	 * @return CM_Chat_ID
  	 * @deprecated Use {@link MChat#getID(int, int, String)} instead
 	 */
+	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_ID=?";
 		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
@@ -250,13 +251,9 @@ public class MChat extends X_CM_Chat
 		return chatID;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Set Record_UU from Record_ID.
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());

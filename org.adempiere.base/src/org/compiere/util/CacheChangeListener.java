@@ -29,7 +29,6 @@ package org.compiere.util;
  * Note that this is ignore by CacheMgt if CCache implementation that implement this interface
  * doesn't return null for getTableName().
  * @author hengsin
- *
  */
 public interface CacheChangeListener {
 	/**

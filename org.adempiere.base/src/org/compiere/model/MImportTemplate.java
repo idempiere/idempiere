@@ -34,13 +34,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.apache.poi.hssf.usermodel.HSSFWorkbookFactory;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -134,10 +133,11 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		// Validate character set vs supported
+		// Set default character set (if not fill yet)
 		if (getCharacterSet() == null) {
 			setCharacterSet(Charset.defaultCharset().displayName());
 		}
+		// Validate character set is fill and supported by current JVM
 		if (getCharacterSet() == null || !Charset.isSupported(getCharacterSet())) {
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Invalid@ @CharacterSet@"));
 			return false;
@@ -238,8 +238,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	 */
 	public InputStream validateFile(InputStream in) {
 
-		if (   MImportTemplate.IMPORTTEMPLATETYPE_XLS.equals(getImportTemplateType())
-			|| MImportTemplate.IMPORTTEMPLATETYPE_XLSX.equals(getImportTemplateType())) {
+		if (MImportTemplate.IMPORTTEMPLATETYPE_ExcelXLSXLSX.equals(getImportTemplateType())) {
 			try {
 				in = convertExcelToCSV(in);
 			} catch (Exception e) {
@@ -308,17 +307,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
      */
 	public InputStream convertExcelToCSV(InputStream excelIs) throws IOException {
 
-		Workbook workbook = null;
-		if (MImportTemplate.IMPORTTEMPLATETYPE_XLS.equals(getImportTemplateType())) {
-			HSSFWorkbookFactory xlsWbf = new HSSFWorkbookFactory();
-			workbook = xlsWbf.create(excelIs);
-		} else if (MImportTemplate.IMPORTTEMPLATETYPE_XLSX.equals(getImportTemplateType())) {
-			XSSFWorkbookFactory xlsxWbf = new XSSFWorkbookFactory();
-			workbook = xlsxWbf.create(excelIs);
-		} else {
-			// unexpected error
-			throw new AdempiereException("Wrong template type -> " + getImportTemplateType());
-		}
+		Workbook workbook = WorkbookFactory.create(excelIs);
 
 		List<Integer> colTypes = calculateAndValidateColumnTypes();
 

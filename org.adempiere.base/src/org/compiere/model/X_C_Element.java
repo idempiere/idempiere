@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Element
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_Element")
 public class X_C_Element extends PO implements I_C_Element, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_Element (Properties ctx, int C_Element_ID, String trxName)
@@ -300,7 +300,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
     }
 
 	/** Set Value Format.
-		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;, or ~regex
 	*/
 	public void setVFormat (String VFormat)
 	{
@@ -308,7 +308,7 @@ public class X_C_Element extends PO implements I_C_Element, I_Persistent
 	}
 
 	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;, or ~regex
 	  */
 	public String getVFormat()
 	{

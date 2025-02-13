@@ -301,15 +301,10 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		if (log.isLoggable(Level.FINE)) log.fine(processed + " - #" + no);
 	}	//	setProcessed
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Changed from Not to Active
+		// Disallow re-activate of deactivated allocation
 		if (!newRecord && is_ValueChanged("IsActive") && isActive())
 		{
 			log.severe ("Cannot Re-Activate deactivated Allocations");
@@ -320,16 +315,13 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 
 	private List<Integer> m_bps_beforeDelete = new ArrayList<Integer>();
 
-	/**
-	 * 	Before Delete.
-	 *	@return true if acct was deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
 		String trxName = get_TrxName();
 		if (trxName == null || trxName.length() == 0)
 			log.warning ("No transaction");
+		// Check is period open and delete posting records (Fact_Acct)
 		if (isPosted())
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_PaymentAllocation, getAD_Org_ID());
@@ -340,9 +332,10 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		setIsActive(false);		//	updated DB for line delete/process
 		this.saveEx();
 
-		//	Unlink
+		// Load allocation lines (m_lines)
 		getLines(true);
 		
+		// Save allocation line BP into a list and delete allocation line records
 		m_bps_beforeDelete.clear();
 		for (int i = 0; i < m_lines.length; i++)
 		{
@@ -357,6 +350,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 
 	@Override
 	protected boolean afterDelete(boolean success) {
+		// Update balance of business partner (list of BP capture in beforeDelete)
 		if (success) {
 			for (int C_BPartner_ID : m_bps_beforeDelete) {
 				MBPartner bpartner = new MBPartner(Env.getCtx(), C_BPartner_ID, get_TrxName());
@@ -368,18 +362,6 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		return super.afterDelete(success);
 	}
 
-	/**
-	 * 	After Save
-	 *	@param newRecord
-	 *	@param success
-	 *	@return success
-	 */
-	@Override
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		return success;
-	}	//	afterSave
-	
 	/**
 	 * 	Process document
 	 *	@param processAction document action
@@ -718,6 +700,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		boolean retValue = reverseIt(true);
 
 		// After reverseAccrual
+		//FIXME: das hier frisst die Fehlermeldung aus den Calls unter 'reverseIt'
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
@@ -1102,8 +1085,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		String sysconfig_desc = MSysConfig.getValue(MSysConfig.ALLOCATION_DESCRIPTION, "@#AD_User_Name@", getAD_Client_ID());
 		String description = "";
 		if (sysconfig_desc.contains("@")) {
-			description = Env.parseVariable(sysconfig_desc, new MBPartner(getCtx(), bpartnerID, null), trxName, true);
-			description = Env.parseVariable(description, this, trxName, true);
+			description = Env.parseVariable(sysconfig_desc, new MBPartner(getCtx(), bpartnerID, null), trxName, false, false, true, true); // keep escape sequence
+			description = Env.parseVariable(description, this, trxName, false, false, true, false);
 			description = Msg.parseTranslation(getCtx(), description);
 		} else
 			description = Env.getContext(getCtx(), Env.AD_USER_NAME); // just to be sure

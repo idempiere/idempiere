@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for IMP_ProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_IMP_ProcessorLog 
 {
@@ -117,17 +117,6 @@ public interface I_IMP_ProcessorLog
 	  */
 	public String getHelp();
 
-    /** Column name IMP_Processor_ID */
-    public static final String COLUMNNAME_IMP_Processor_ID = "IMP_Processor_ID";
-
-	/** Set Import Processor	  */
-	public void setIMP_Processor_ID (int IMP_Processor_ID);
-
-	/** Get Import Processor	  */
-	public int getIMP_Processor_ID();
-
-	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException;
-
     /** Column name IMP_ProcessorLog_ID */
     public static final String COLUMNNAME_IMP_ProcessorLog_ID = "IMP_ProcessorLog_ID";
 
@@ -145,6 +134,17 @@ public interface I_IMP_ProcessorLog
 
 	/** Get IMP_ProcessorLog_UU	  */
 	public String getIMP_ProcessorLog_UU();
+
+    /** Column name IMP_Processor_ID */
+    public static final String COLUMNNAME_IMP_Processor_ID = "IMP_Processor_ID";
+
+	/** Set Import Processor	  */
+	public void setIMP_Processor_ID (int IMP_Processor_ID);
+
+	/** Get Import Processor	  */
+	public int getIMP_Processor_ID();
+
+	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

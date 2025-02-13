@@ -34,19 +34,18 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
+import org.compiere.db.StatementProxy;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 
 /**
- *  <pre>
- *	Transaction Management.
- *	- Create new Transaction by Trx.get(name);
- *	- ..transactions..
- *	- commit();
- *	----	start();
- *	----	commit();
+ *	Transaction Management.<br/>
+ *	- Create new Transaction by Trx.get(name);<br/>
+ *	- ..transactions..<br/>
+ *	- commit();<br/>
+ *	----	start();<br/>
+ *	----	commit();<br/>
  *	- close();
- *	</pre>
  *  @author Jorg Janke
  *  @author Low Heng Sin
  *  <li>added rollback(boolean) and commit(boolean) [20070105]
@@ -63,9 +62,9 @@ import org.compiere.model.PO;
 public class Trx
 {
 	/**
-	 * 	Get Transaction
+	 * 	Get or Create New Transaction
 	 *	@param trxName trx name
-	 *	@param createNew if false, null is returned if not found
+	 *	@param createNew if false, null is returned if trxName not an existing transaction
 	 *	@return Transaction or null
 	 */
 	public static Trx get (String trxName, boolean createNew)
@@ -88,6 +87,7 @@ public class Trx
 	 *	@param createNew if false, null is returned if not found
 	 *	@param con Connection
 	 *	@return Transaction or null
+	 *  @deprecated
 	 */
 	@Deprecated
 	public static Trx get (String trxName, boolean createNew, Connection con)
@@ -164,7 +164,8 @@ public class Trx
 	}	//	createTrxName
 		
 	/**
-	 * 	Transaction Constructor
+	 * 	Private Constructor.<br/>
+	 *  Use {@link #get(String, boolean)} to create new Transaction instance.
 	 * 	@param trxName unique name
 	 */
 	private Trx (String trxName)
@@ -211,7 +212,7 @@ public class Trx
 	}
 
 	/**
-	 * 	Get Connection
+	 * 	Get or Create New Connection
 	 *  @param createNew if true, create new connection if the trx does not have one created yet
 	 *	@return connection
 	 */
@@ -273,7 +274,7 @@ public class Trx
 	}	//	setName
 
 	/**
-	 * 	Get Name
+	 * 	Get Transaction Name
 	 *	@return transaction name
 	 */
 	public String getTrxName()
@@ -307,7 +308,7 @@ public class Trx
 	}
 	
 	/**
-	 * 	Transaction is Active
+	 * 	Is Transaction Active
 	 *	@return true if transaction is active  
 	 */
 	public boolean isActive()
@@ -316,7 +317,7 @@ public class Trx
 	}	//	isActive
 
 	/**
-	 * 	Rollback
+	 * 	Rollback transaction
 	 *  @param throwException if true, re-throws exception
 	 *	@return true if success, false if failed or transaction already rollback
 	 */
@@ -328,7 +329,8 @@ public class Trx
 			if (m_connection != null)
 			{
 				m_connection.rollback();
-				log.log(isLocalTrx(m_trxName) ? Level.FINE : Level.INFO, "**** " + m_trxName);
+				Level logLevel = isLocalTrx(m_trxName) ? Level.FINE : Level.INFO; 
+				if (log.isLoggable(logLevel)) log.log(logLevel, "**** " + m_trxName);
 				m_active = false;
 				fireAfterRollbackEvent(true);
 				return true;
@@ -360,7 +362,7 @@ public class Trx
 	}
 	
 	/**
-	 * Rollback 
+	 * Rollback transaction
 	 * @return true if success, false if failed or transaction already rollback
 	 */
 	public boolean rollback()
@@ -400,7 +402,7 @@ public class Trx
 	}	//	rollback
 	
 	/**
-	 * Commit
+	 * Commit transaction
 	 * @param throwException if true, re-throws exception
 	 * @return true if success
 	 **/
@@ -449,7 +451,7 @@ public class Trx
 	}
 
 	/**
-	 * Commit
+	 * Commit transaction
 	 * @return true if success
 	 */
 	public boolean commit()
@@ -584,7 +586,7 @@ public class Trx
 	}
 
 	/**
-	 * Get last set workflow save point.
+	 * Get last set workflow save point.<br/>
 	 * For workflow engine use, developer usually shouldn't call this method directly.
 	 * @return last set workflow save point or null
 	 */
@@ -593,7 +595,7 @@ public class Trx
 	}
 
 	/**
-	 * Release Savepoint
+	 * Release Transaction Savepoint
 	 * @param savepoint
 	 * @throws SQLException
 	 * @see {@link Connection#releaseSavepoint(Savepoint)}
@@ -651,6 +653,7 @@ public class Trx
 	 * @return Trx[]
 	 * @deprecated - wrong method name fixed with IDEMPIERE-5355 - please use getOpenTransactions
 	 */
+	@Deprecated
 	public static Trx[] getActiveTransactions()
 	{
 		return getOpenTransactions();
@@ -733,8 +736,8 @@ public class Trx
 	}
 	
 	/**
-	 * Get transaction timout value
-	 * @return trx timoue value in second
+	 * Get transaction time out value
+	 * @return transaction time out value in second
 	 */
 	public int getTimeout() {
 		return m_timeout;
@@ -813,7 +816,7 @@ public class Trx
 	
 	/**
 	 * Is there additional changes make by transaction event listener 
-	 * @return true if event listener(s) has flag that additional db changes have been made 
+	 * @return true if event listener(s) has flag that additional DB changes have been made 
 	 */
 	public boolean hasChangesMadeByEventListener()
 	{
@@ -823,7 +826,7 @@ public class Trx
 	/** Transaction timeout monitor class */
 	public static class TrxMonitor implements Runnable
 	{
-
+		@Override
 		public void run()
 		{
 			if (!Trx.s_cache.isEmpty())
@@ -850,14 +853,14 @@ public class Trx
 	}
 
 	/**
+	 * Is trxName a PO local transaction ?
 	 * @param trxName
-	 * @return true if trxName is a local transaction
+	 * @return true if trxName is a PO local transaction
 	 */
 	private boolean isLocalTrx(String trxName)
 	{
 		return trxName == null
-			|| trxName.startsWith(PO.LOCAL_TRX_PREFIX) // TODO: hardcoded
-			;
+			|| trxName.startsWith(PO.LOCAL_TRX_PREFIX);
 	}
 
 	@Override
@@ -876,4 +879,40 @@ public class Trx
 			}, 2, TimeUnit.SECONDS);
 		}
 	}
+
+	/**
+	 * Register a null trx
+	 * @return
+	 */
+	public static String registerNullTrx() {
+		String nullTrxName = "NullTrx_" + UUID.randomUUID().toString();
+		Trx nullTrx = new Trx(nullTrxName);
+		nullTrx.trace = new Exception();
+		nullTrx.m_startTime = System.currentTimeMillis();
+		String displayName = null;
+		StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+		Optional<String> stackName = walker.walk(frames -> frames.map(
+				stackFrame -> stackFrame.getClassName() + "." +
+						stackFrame.getMethodName() + ":" +
+						stackFrame.getLineNumber())
+				.filter(f -> ! (f.startsWith(Trx.class.getName() + ".") || f.startsWith(StatementProxy.class.getName() + ".") || f.startsWith("jdk.proxy") || f.startsWith("org.compiere.util.DB.")))
+				.findFirst());
+		displayName = (stackName.orElse(null));
+		if (displayName != null)
+			nullTrx.setDisplayName(displayName);
+		s_cache.put(nullTrxName, nullTrx);
+		return nullTrxName;
+	}
+
+	/**
+	 * Unregister a null trx
+	 * @param nullTrxName
+	 */
+	public static void unregisterNullTrx(String nullTrxName) {
+		Trx nullTrx = s_cache.get(nullTrxName);
+		nullTrx.setDisplayName(null);
+		nullTrx.trace = null;
+		s_cache.remove(nullTrxName);
+	}
+
 }	//	Trx

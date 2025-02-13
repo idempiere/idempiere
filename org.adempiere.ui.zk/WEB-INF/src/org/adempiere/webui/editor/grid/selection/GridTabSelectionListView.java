@@ -122,6 +122,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 
 	/**
+	 * Initialize listbox with contents from gridTab
 	 * @param gridTab
 	 */
 	public void init(GridTab gridTab)
@@ -137,7 +138,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 
 	/**
-	 * 
+	 * Load grid fields from gridTab and MTabCustomization
 	 * @param gridTab
 	 */
 	private void setupFields(GridTab gridTab) {
@@ -183,7 +184,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 	
 	/**
-	 * 
+	 * Activate list view
 	 * @param gridTab
 	 */
 	public void activate(GridTab gridTab) {		
@@ -278,7 +279,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 	
 	/**
-	 * 
+	 * Get index of column
 	 * @param columnName
 	 * @return column index
 	 */
@@ -333,7 +334,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 
 	/**
-	 * 
+	 * Get list box
 	 * @return Listbox
 	 */
 	public Listbox getListbox() {
@@ -341,7 +342,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 	
 	/**
-	 * 
+	 * Set registered window no
 	 * @param windowNo
 	 */
 	public void setWindowNo(int windowNo) {
@@ -404,7 +405,7 @@ public class GridTabSelectionListView extends Vlayout
 	}
 
 	/**
-	 * 
+	 * Set selected index
 	 * @param selected
 	 */
 	public void setSelectedIndex(int selected) {

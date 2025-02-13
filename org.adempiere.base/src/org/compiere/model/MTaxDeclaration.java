@@ -66,14 +66,10 @@ public class MTaxDeclaration extends X_C_TaxDeclaration
 		super (ctx, rs, trxName);
 	}	//	MTaxDeclaration
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Truncate date
 		if (is_ValueChanged("DateFrom"))
 			setDateFrom(TimeUtil.getDay(getDateFrom()));
 		if (is_ValueChanged("DateTo"))

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ZoomCondition
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_ZoomCondition")
 public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ZoomCondition extends PO implements I_AD_ZoomCondition, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_ZoomCondition (Properties ctx, int AD_ZoomCondition_ID, String trxName)

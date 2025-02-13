@@ -171,11 +171,6 @@ public class MMovementLine extends X_M_MovementLine
 		return m_parent;
 	}	//	getParent
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -183,6 +178,7 @@ public class MMovementLine extends X_M_MovementLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Movement_ID"));
 			return false;
 		}
+		// Disallow create of new movement line or change of MovementQty if there are pending confirmations
 		if (getParent().pendingConfirmations()) {
 			if (  newRecord ||
 				(is_ValueChanged(COLUMNNAME_MovementQty) && !is_ValueChanged(COLUMNNAME_TargetQty))) {
@@ -198,13 +194,14 @@ public class MMovementLine extends X_M_MovementLine
 			setLine (ii);
 		}
 		
-		 //either movement between locator or movement between lot
+		 // Either movement between locator or movement between ASI
 		if (getM_Locator_ID() == getM_LocatorTo_ID() && getM_AttributeSetInstance_ID() == getM_AttributeSetInstanceTo_ID())
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@M_Locator_ID@ == @M_LocatorTo_ID@ and @M_AttributeSetInstance_ID@ == @M_AttributeSetInstanceTo_ID@"));
 			return false;
 		}
 
+		// Validate MovementQty=0
 		if (getMovementQty().signum() == 0)
 		{
 			String docAction = getParent().getDocAction();
@@ -231,30 +228,27 @@ public class MMovementLine extends X_M_MovementLine
 			}
 		}
 
-		//	Qty Precision
+		// Enforce Qty Precision
 		if (newRecord || is_ValueChanged(COLUMNNAME_MovementQty))
 			setMovementQty(getMovementQty());
 
 		if (getM_AttributeSetInstanceTo_ID() == 0)
 		{
-			//instance id default to same for movement between locator 
+			// For movement between locator, default M_AttributeSetInstanceTo_ID to M_AttributeSetInstance_ID   
 			if (getM_Locator_ID() != getM_LocatorTo_ID())
 			{
 				if (getM_AttributeSetInstance_ID() != 0)        //set to from
 					setM_AttributeSetInstanceTo_ID(getM_AttributeSetInstance_ID());
 			}
 
-		}       //      ASI
+		}
 
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete() {
+		// Disallow delete if there are pending confirmation records
 		if (getParent().pendingConfirmations()) {
 			log.saveError("DeleteError", Msg.parseTranslation(getCtx(), "@Open@: @M_MovementConfirm_ID@"));
 			return false;

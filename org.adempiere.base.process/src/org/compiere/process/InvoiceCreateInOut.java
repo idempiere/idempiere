@@ -42,6 +42,7 @@ import org.compiere.util.Env;
 public class InvoiceCreateInOut extends SvrProcess
 {
 	public static final String PARAM_M_Warehouse_ID = MInOut.COLUMNNAME_M_Warehouse_ID;
+	public static final String PARAM_C_DocType_ID = MInOut.COLUMNNAME_C_DocType_ID;
 	
 	/**	Warehouse			*/
 	private int p_M_Warehouse_ID = 0;
@@ -49,7 +50,9 @@ public class InvoiceCreateInOut extends SvrProcess
 	private int p_C_Invoice_ID = 0;
 	/** Receipt				*/
 	private MInOut m_inout = null;
-
+	/** Document Type		*/
+	private int p_C_DocType_ID = 0;
+	
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -62,6 +65,8 @@ public class InvoiceCreateInOut extends SvrProcess
 				;
 			else if (name.equals(PARAM_M_Warehouse_ID))
 				p_M_Warehouse_ID = para.getParameterAsInt();
+			else if (name.equals(PARAM_C_DocType_ID))
+				p_C_DocType_ID = para.getParameterAsInt();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
@@ -110,6 +115,8 @@ public class InvoiceCreateInOut extends SvrProcess
 		if (m_inout != null)
 			return m_inout;
 		m_inout = new MInOut (invoice, 0, null, p_M_Warehouse_ID);
+		if (p_C_DocType_ID != 0)
+			m_inout.setC_DocType_ID(p_C_DocType_ID);
 		m_inout.saveEx();
 		return m_inout;
 	}

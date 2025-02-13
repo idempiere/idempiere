@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Exp_Detail
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Exp_Detail")
 public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Detail, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -755,21 +755,6 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 		return (String)get_Value(COLUMNNAME_ExecCode);
 	}
 
-	/** Set File_Directory.
-		@param File_Directory File_Directory
-	*/
-	public void setFile_Directory (String File_Directory)
-	{
-		set_Value (COLUMNNAME_File_Directory, File_Directory);
-	}
-
-	/** Get File_Directory.
-		@return File_Directory	  */
-	public String getFile_Directory()
-	{
-		return (String)get_Value(COLUMNNAME_File_Directory);
-	}
-
 	/** Set File Name.
 		@param FileName Name of the local file or URL
 	*/
@@ -784,6 +769,21 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public String getFileName()
 	{
 		return (String)get_Value(COLUMNNAME_FileName);
+	}
+
+	/** Set File_Directory.
+		@param File_Directory File_Directory
+	*/
+	public void setFile_Directory (String File_Directory)
+	{
+		set_Value (COLUMNNAME_File_Directory, File_Directory);
+	}
+
+	/** Get File_Directory.
+		@return File_Directory	  */
+	public String getFile_Directory()
+	{
+		return (String)get_Value(COLUMNNAME_File_Directory);
 	}
 
 	/** Set Line No.
@@ -868,8 +868,6 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 
 	/** ReleaseNo AD_Reference_ID=50002 */
 	public static final int RELEASENO_AD_Reference_ID=50002;
-	/** No specific release = all */
-	public static final String RELEASENO_NoSpecificRelease = "all";
 	/** Release 2.5.2a = Release 2.5.2a */
 	public static final String RELEASENO_Release252a = "Release 2.5.2a";
 	/** Release 2.5.2b = Release 2.5.2b */
@@ -890,6 +888,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String RELEASENO_Release320 = "Release 3.2.0";
 	/** Release 3.3.0 = Release 3.3.0 */
 	public static final String RELEASENO_Release330 = "Release 3.3.0";
+	/** No specific release = all */
+	public static final String RELEASENO_NoSpecificRelease = "all";
 	/** Set Release No.
 		@param ReleaseNo Internal Release Number
 	*/

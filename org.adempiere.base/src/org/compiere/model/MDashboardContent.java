@@ -328,14 +328,9 @@ public class MDashboardContent extends X_PA_DashboardContent
 		return emptyPara.toString();
     }
     
-    /*
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if no error
-	 */
     @Override
 	protected boolean beforeSave (boolean newRecord) {
-		// all mandatory process parameters need to be set
+		// For embedded report content, all mandatory process parameters need to be set
 		if (getAD_Process_ID() > 0 && isEmbedReportContent()) {
 			String emptyPara = getEmptyMandatoryProcessPara();
 			if(!Util.isEmpty(emptyPara)) {

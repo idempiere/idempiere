@@ -46,7 +46,7 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 8157805998814206274L;
 	/** Cache */
-	private static ImmutableIntPOCache<Integer, MMenu>	s_cache				= new ImmutableIntPOCache<Integer, MMenu>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer, MMenu>	s_cache				= new ImmutableIntPOCache<Integer, MMenu>(Table_Name, 50, 0, false, 0);
 
 	/**
 	 * Get Menu method from cache (immutable)
@@ -177,15 +177,10 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 		super(ctx, rs, trxName);
 	}	//	MMenu
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Reset info
+		//	Reset action to null and IsCentrallyMaintained to false if IsSummary=Y
 		if (isSummary() && getAction() != null)
 			setAction(null);
 		if (isSummary() && isCentrallyMaintained())
@@ -193,7 +188,7 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 		String action = getAction();
 		if (action == null)
 			action = "";
-		//	Clean up references
+		// Ensure reference field (AD_Window_ID, AD_Form_ID, etc) is reset to null if it is not for the selected action.
 		if (getAD_Window_ID() != 0 && !action.equals(ACTION_Window))
 			setAD_Window_ID(0);
 		if (getAD_Form_ID() != 0 && !action.equals(ACTION_Form))
@@ -210,29 +205,20 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 		
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Create new menu tree record
 		if (newRecord)
 			insert_Tree(MTree_Base.TREETYPE_Menu);
 		return success;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return deleted
-	 */
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(MTree_Base.TREETYPE_Menu);
 		return success;

@@ -305,10 +305,10 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		txt3 = new Textbox();
 		txt4 = new Textbox();
 		
-		txt1.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox1");
-		txt2.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox2");
-		txt3.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox3");
-		txt4.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox4");
+		txt1.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox1");
+		txt2.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox2");
+		txt3.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox3");
+		txt4.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox4");
 
 		lbl1 = new Label();
 		lbl2 = new Label();
@@ -582,7 +582,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				else if (DisplayType.isDate(displayType))
 					colClass = Timestamp.class;
 				//  ignore Binary, Button, ID, RowID
-				else if (displayType == DisplayType.List)
+				else if (displayType == DisplayType.List || displayType == DisplayType.RadiogroupList  || displayType == DisplayType.Payment)
 				{
 					if (Env.isBaseLanguage(Env.getCtx(), "AD_Ref_List"))
 						colSql = new StringBuffer("(SELECT l.Name FROM AD_Ref_List l WHERE l.AD_Reference_ID=")
@@ -602,7 +602,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					list.add(new ColumnInfo(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass, true, columnName ));
 					if (log.isLoggable(Level.FINEST)) log.finest("Added Column=" + columnName);
 				}
-				else if (isDisplayed && DisplayType.isLookup(displayType))
+				else if (isDisplayed && DisplayType.isLookup(displayType)
+						&& !(displayType == DisplayType.ChosenMultipleSelectionTable || displayType == DisplayType.ChosenMultipleSelectionSearch || displayType == DisplayType.ChosenMultipleSelectionList))
 				{
 					ColumnInfo colInfo = createLookupColumnInfo(Msg.translate(Env.getCtx(), columnName), columnName, displayType, AD_Reference_Value_ID, AD_Column_ID, colSql.toString());
 					if (colInfo != null)

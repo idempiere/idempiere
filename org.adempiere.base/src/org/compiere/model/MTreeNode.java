@@ -120,8 +120,6 @@ public class MTreeNode extends DefaultMutableTreeNode
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(MTreeNode.class);
 	
-	/*************************************************************************/
-
 	/**	Window - 1			*/
 	public static int		TYPE_WINDOW = 1;
 	/**	Report - 2			*/
@@ -141,6 +139,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	/** Info - 9            */
 	public static int		TYPE_INFO = 9;
 
+	/** Image path for each node type (TYPE_*) */ 
 	public static String[] 	PATHS = new String[]
 	{
 		null,
@@ -154,7 +153,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 		"mDocAction.png"
 	};
 
-	/** 16* 16 Icons		*/
+	/** 16* 16 Icons for each node type (TYPE_*) */
 	public static Icon[] 	IMAGES = new Icon[]
 	{
 		null,
@@ -168,8 +167,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 		Env.getImageIcon("mDocAction.png")
 	};
 
-
-	/**************************************************************************
+	/**
 	 *  Get Node ID
 	 *  @return node id (e.g. AD_Menu_ID)
 	 */
@@ -234,6 +232,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	 *  Print Name
 	 *  @return info
 	 */
+	@Override
 	public String toString()
 	{
 		return m_name;
@@ -260,7 +259,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 			m_description = description;
 	}   //  setDescription
 
-	/**************************************************************************
+	/**
 	 *  Set Summary (allow children)
 	 *  @param isSummary summary node
 	 */
@@ -274,6 +273,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	 *  Set Summary (allow children)
 	 *  @param isSummary true if summary
 	 */
+	@Override
 	public void setAllowsChildren (boolean isSummary)
 	{
 		super.setAllowsChildren (isSummary);
@@ -309,7 +309,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 		this.m_iscollapsible = m_iscollapsible;
 	}
 
-	/**************************************************************************
+	/**
 	 *  Get Image Indicator/Index
 	 *  @param imageIndicator image indicator (W/X/R/P/F/T/B) MWFNode.ACTION_
 	 *  @return index of image
@@ -396,7 +396,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	}	//	getIcon
 
 	/**
-	 *  Get Shortcut Bar info
+	 *  Is node on favorite bar
 	 *  @return true if node on bar
 	 */
 	public boolean isOnBar()
@@ -434,7 +434,9 @@ public class MTreeNode extends DefaultMutableTreeNode
 	/**
 	 * 	Is Workbench
 	 *	@return true if Workbench
+	 *  @deprecated
 	 */
+	@Deprecated
 	public boolean isWorkbench()
 	{
 		return X_AD_Menu.ACTION_Workbench.equals(m_imageIndicator);
@@ -474,7 +476,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	public boolean isInfo()
 	{
 		return X_AD_Menu.ACTION_Info.equals(m_imageIndicator);
-	}	//	isTask
+	}	//	isInfo
 	
 	/**
 	 * 	Get Color
@@ -487,17 +489,15 @@ public class MTreeNode extends DefaultMutableTreeNode
 		return Color.black;
 	}	//	getColor
 	
-	/*************************************************************************/
-
 	/**	Last found ID				*/
 	private int                 m_lastID = -1;
 	/** Last found Node				*/
 	private MTreeNode           m_lastNode = null;
 
 	/**
-	 *	Return the Node with ID in list of children
+	 *	Find Node with ID in list of children
 	 *  @param ID id
-	 *  @return VTreeNode with ID or null
+	 *  @return MTreeNode with ID or null
 	 */
 	public MTreeNode findNode (int ID)
 	{

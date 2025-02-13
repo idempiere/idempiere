@@ -22,7 +22,7 @@ import org.idempiere.broadcast.BroadcastMsgUtil;
 import org.idempiere.distributed.ITopicSubscriber;
 
 /**
- * Class Manages Broadcast Messages across webui cluster
+ * Class Manages Broadcast Messages across cluster
  * @author Deepak Pansheriya
  *
  */
@@ -46,7 +46,6 @@ public class ZKBroadCastManager implements ITopicSubscriber<BroadCastMsg>{
 		BroadCastUtil.subscribe(this);
 	}
 	
-
 	/**
 	 * MessageService event
 	 */

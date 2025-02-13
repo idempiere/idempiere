@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ElementValue
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_ElementValue")
 public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_ElementValue (Properties ctx, int C_ElementValue_ID, String trxName)
@@ -44,8 +44,8 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 // N
 			setAccountType (null);
 // E
-			setC_Element_ID (0);
 			setC_ElementValue_ID (0);
+			setC_Element_ID (0);
 			setIsDetailBPartner (false);
 // N
 			setIsDetailProduct (false);
@@ -74,8 +74,8 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 // N
 			setAccountType (null);
 // E
-			setC_Element_ID (0);
 			setC_ElementValue_ID (0);
+			setC_Element_ID (0);
 			setIsDetailBPartner (false);
 // N
 			setIsDetailProduct (false);
@@ -104,8 +104,8 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 // N
 			setAccountType (null);
 // E
-			setC_Element_ID (0);
 			setC_ElementValue_ID (0);
+			setC_Element_ID (0);
 			setIsDetailBPartner (false);
 // N
 			setIsDetailProduct (false);
@@ -134,8 +134,8 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 // N
 			setAccountType (null);
 // E
-			setC_Element_ID (0);
 			setC_ElementValue_ID (0);
+			setC_Element_ID (0);
 			setIsDetailBPartner (false);
 // N
 			setIsDetailProduct (false);
@@ -318,34 +318,6 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
-			.getPO(getC_Element_ID(), get_TrxName());
-	}
-
-	/** Set Element.
-		@param C_Element_ID Accounting Element
-	*/
-	public void setC_Element_ID (int C_Element_ID)
-	{
-		if (C_Element_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Element_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
-	}
-
-	/** Get Element.
-		@return Accounting Element
-	  */
-	public int getC_Element_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Account Element.
 		@param C_ElementValue_ID Account Element
 	*/
@@ -381,6 +353,34 @@ public class X_C_ElementValue extends PO implements I_C_ElementValue, I_Persiste
 	public String getC_ElementValue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ElementValue_UU);
+	}
+
+	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
+			.getPO(getC_Element_ID(), get_TrxName());
+	}
+
+	/** Set Element.
+		@param C_Element_ID Accounting Element
+	*/
+	public void setC_Element_ID (int C_Element_ID)
+	{
+		if (C_Element_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Element_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
+	}
+
+	/** Get Element.
+		@return Accounting Element
+	  */
+	public int getC_Element_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

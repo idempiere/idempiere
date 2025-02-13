@@ -47,8 +47,8 @@ public class MTableValRule extends X_AD_TableValRule implements ImmutablePOSuppo
 	private static final long serialVersionUID = -5156583311055069139L;
 
 	/** Cache */
-	private static ImmutablePOCache<String, MTableValRule> s_cache = new ImmutablePOCache<String, MTableValRule>(Table_Name, 20);
-	private static CCache<String, List<MTableValRule>> s_cachesession = new CCache<String, List<MTableValRule>>(Table_Name, 5);
+	private static ImmutablePOCache<String, MTableValRule> s_cache = new ImmutablePOCache<String, MTableValRule>(Table_Name, 20, 0, false, 0);
+	private static CCache<String, List<MTableValRule>> s_cachesession = new CCache<String, List<MTableValRule>>(Table_Name, 5, 0, false, 0);
 
 	/** Static Logger */
 	@SuppressWarnings("unused")
@@ -198,11 +198,6 @@ public class MTableValRule extends X_AD_TableValRule implements ImmutablePOSuppo
 		return this;
 	}
 
-	/**
-	 * 	Called before Save for Pre-Save Operation
-	 * 	@param newRecord new record
-	 *	@return true if record can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getAD_Org_ID() > 0)

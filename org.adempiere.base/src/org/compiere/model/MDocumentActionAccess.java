@@ -71,26 +71,17 @@ public class MDocumentActionAccess extends X_AD_Document_Action_Access {
 		super(ctx, rs, trxName);
 	} // MDocumentActionAccess
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
+		// Reset role cache
 		if (success)
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		return success;
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
+		// Reset role cache
 		if (success)
 			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		return success;

@@ -26,7 +26,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Util;
 
 /**
- *	PO Info Column Info Value Object
+ *	Column Info Value Object
  *	
  *  @author Jorg Janke
  *  @version $Id: POInfoColumn.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
@@ -34,11 +34,10 @@ import org.compiere.util.Util;
 public class POInfoColumn implements Serializable
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6550300505836470875L;
 
-	/** Used by Remote FinReport			*/
 	/**
 	 *  Constructor
 	 *	@param ad_Column_ID Column ID
@@ -205,6 +204,7 @@ public class POInfoColumn implements Serializable
 	 * 	String representation
 	 *  @return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("POInfo.Column[");

@@ -54,7 +54,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 	/**
 	 * MLanguage cache key by AD_Language value
 	 */
-	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"|AD_Language", 100, false);
+	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"|AD_Language", 100, 0, false, 0);
 
 	/**
 	 * 	Get Language Model from Language (immutable)
@@ -303,14 +303,10 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 		}
 	}	//	setAD_Language_ID
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true/false
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Validate DatePattern
 		String dp = getDatePattern();
 		if (is_ValueChanged("DatePattern") && dp != null && dp.length() > 0)
 		{
@@ -343,6 +339,8 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 				return false;
 			}
 		}
+		
+		// Validate TimePattern
 		String tp = getTimePattern();
 		if (is_ValueChanged("TimePattern") && tp != null && tp.length() > 0)
 		{
@@ -380,12 +378,6 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 		return true;
 	}	//	beforeSae
 	
-	/**
-	 * 	AfterSave
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return true if saved
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{

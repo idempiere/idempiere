@@ -38,7 +38,7 @@ public class MAttributeInstance extends X_M_AttributeInstance
 	 */
 	private static final long serialVersionUID = 5697542928282761922L;
 
-
+	
     /**
      * UUID based Constructor
      * @param ctx  Context
@@ -163,6 +163,22 @@ public class MAttributeInstance extends X_M_AttributeInstance
 		this(ctx, M_Attribute_ID, M_AttributeSetInstance_ID, trxName);
 		setValueDate(value);
 	} // MAttributeInstance
+	
+	/**
+	 * Multiple Selection Value Constructor
+	 * @param ctx
+	 * @param M_Attribute_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param multiSelectValue
+	 * @param multiSelectDisplayValue
+	 * @param trxName
+	 */
+	public MAttributeInstance(Properties ctx, int M_Attribute_ID, int M_AttributeSetInstance_ID, String multiSelectValue, String multiSelectDisplayValue,
+			String trxName)
+	{
+		this(ctx, M_Attribute_ID, M_AttributeSetInstance_ID, trxName);
+		setMultiSelectValueAndDisplay(multiSelectValue, multiSelectDisplayValue);
+	} // MAttributeInstance
 
 	/**
 	 * KeyNamePair Value Constructor
@@ -261,6 +277,16 @@ public class MAttributeInstance extends X_M_AttributeInstance
 
 		setValue(sdf.format(valueDate));
 	} // setValueDate
+	
+	/**
+	 * Set valueMultipleSelection
+	 * @param value - comma separated IDs
+	 * @param displayValue - comma separated display values
+	 */
+	public void setMultiSelectValueAndDisplay(String value, String displayValue) {
+		setValueMultipleSelection(value);
+		setValue(displayValue);
+	}
 
 	/**
 	 * Set ValueInt

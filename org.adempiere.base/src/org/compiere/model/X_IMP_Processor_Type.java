@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for IMP_Processor_Type
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="IMP_Processor_Type")
 public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_IMP_Processor_Type (Properties ctx, int IMP_Processor_Type_ID, String trxName)

@@ -15,8 +15,8 @@ package org.idempiere.webservices.resources;
 import javax.servlet.ServletContextEvent;
 
 import org.compiere.util.CLogger;
-import org.eclipse.jetty.osgi.boot.OSGiWebappConstants;
-import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.ee8.webapp.WebAppContext;
+import org.eclipse.jetty.osgi.OSGiWebappConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
 
@@ -38,9 +38,8 @@ public class ContextLoaderListener extends
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		Object bundleContextObj = null;
-		if (event.getSource() != null && event.getSource() instanceof ContextHandler.StaticContext) {
-			ContextHandler.StaticContext staticContext = (ContextHandler.StaticContext)event.getSource();
-			bundleContextObj = staticContext.getAttribute(OSGiWebappConstants.OSGI_BUNDLECONTEXT);
+		if (event.getSource() != null && event.getSource() instanceof WebAppContext.Context context) {
+			bundleContextObj = context.getAttribute(OSGiWebappConstants.OSGI_BUNDLECONTEXT);
 		}
 
 		// get ClassLoader of web app is loading		

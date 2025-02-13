@@ -110,7 +110,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	}	//	get
 
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50, 0, false, 0);
 		
     /**
      * UUID based Constructor
@@ -215,17 +215,12 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 		return orgInfo;
 	}	//	getMOrgInfo
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new Record
-	 *	@param success save success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Create organization tree record
 		if (newRecord)
 		{
 			//	Info
@@ -239,9 +234,10 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 			//	TreeNode
 			insert_Tree(MTree_Base.TREETYPE_Organization);
 		}
+		// Update driven by value organization tree
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 			update_Tree(MTree_Base.TREETYPE_Organization);
-		//	Value/Name change
+		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 		{
 			MAccount.updateValueDescription(getCtx(), "AD_Org_ID=" + getAD_Org_ID(), get_TrxName());
@@ -249,6 +245,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 				MAccount.updateValueDescription(getCtx(), "AD_OrgTrx_ID=" + getAD_Org_ID(), get_TrxName());
 		}
 
+		// Reset role and system cache
 		Trx.get(get_TrxName(), false).addTrxEventListener(new TrxEventListener() {
 			@Override
 			public void afterRollback(Trx trx, boolean success) {
@@ -268,14 +265,10 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 		return true;
 	}	//	afterSave
 	
-	/**
-	 * 	After Delete
-	 *	@param success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
+		// Delete tree record
 		if (success)
 			delete_Tree(MTree_Base.TREETYPE_Organization);
 		return success;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.adempiere.ui.zk.feature"
-      label="Zk Client-feature"
-      version="11.0.0.qualifier"
+      label="iDempiere Web Client"
+      version="12.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -17,58 +17,44 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import feature="org.adempiere.base.feature" version="0.0.0"/>
-   </requires>
-
    <plugin
          id="org.adempiere.ui.zk"
-         download-size="0"
-         install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.atmosphere.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="zweb-dsp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.idempiere.keikai"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.idempiere.printformat.editor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.idempiere.zk.billboard"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.idempiere.zk.billboard.chart"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
+
+   <plugin
+         id="org.idempiere.zk.breeze.theme"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.idempiere.zk.iceblue_c.theme"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.idempiere.zk.datatable"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.idempiere.zk.pivot"
+         version="0.0.0"/>
 
 </feature>

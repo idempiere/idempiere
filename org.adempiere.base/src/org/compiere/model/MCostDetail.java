@@ -864,10 +864,6 @@ public class MCostDetail extends X_M_CostDetail
 			&& getDeltaQty().signum() == 0);
 	}	//	isDelta
 
-	/**
-	 * 	Before Delete
-	 *	@return false if processed
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
@@ -49,7 +50,6 @@ import org.zkoss.zk.ui.event.EventListener;
  * 
  * @author hengsin
  * @contributor red1 IDEMPIERE-1711 with final review by Hengsin
- *
  */
 public class WProcessCtl extends AbstractProcessCtl {
 	
@@ -91,6 +91,8 @@ public class WProcessCtl extends AbstractProcessCtl {
 			}
 			catch (Exception e)
 			{
+				if (Env.isReadOnlySession())
+					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ReadOnlySession"));
 				pi.setSummary (e.getLocalizedMessage());
 				pi.setError (true);
 				log.warning(pi.toString());
@@ -168,6 +170,8 @@ public class WProcessCtl extends AbstractProcessCtl {
 			}
 			catch (Exception e)
 			{
+				if (Env.isReadOnlySession())
+					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ReadOnlySession"));
 				pi.setSummary (e.getLocalizedMessage());
 				pi.setError (true);
 				log.warning(pi.toString());

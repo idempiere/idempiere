@@ -42,7 +42,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MWindow extends X_AD_Window implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7482290667487859946L;
 
@@ -50,7 +50,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MWindow.class);
 
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MWindow> s_cache = new ImmutableIntPOCache<Integer,MWindow>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MWindow> s_cache = new ImmutableIntPOCache<Integer,MWindow>(Table_Name, 20, 0, false, 0);
 
 	/**
 	 * 	Get Window from Cache (immutable)
@@ -84,10 +84,10 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * get Window ID by UU
+	 * Get window record by UUID
 	 * @param ctx context
 	 * @param uu AD_Window_UU
-	 * @return MWindow object
+	 * @return MWindow object or null
 	 */
 	public static MWindow get(Properties ctx, String uu)
 	{
@@ -112,11 +112,11 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	}
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Window_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Window_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWindow(Properties ctx, String AD_Window_UU, String trxName) {
         super(ctx, AD_Window_UU, trxName);
 		if (Util.isEmpty(AD_Window_UU))
@@ -159,7 +159,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	}	//	M_Window
 	
 	/**
-	 * 
+	 * Copy constructor 
 	 * @param copy
 	 */
 	public MWindow(MWindow copy) 
@@ -168,7 +168,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -178,7 +178,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -203,14 +203,14 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		}
 	}	//	setWindowSize
 	
-	/**	The Lines						*/
+	/**	The Tabs						*/
 	private MTab[]		m_tabs	= null;
 
 	/**
-	 * 	Get Fields
-	 *	@param reload reload data
-	 *	@return array of lines
-	 *	@param trxName transaction
+	 * 	Get Tabs
+	 *	@param reload true to reload data
+	 *  @param trxName transaction
+	 *	@return array of tabs
 	 */
 	public MTab[] getTabs (boolean reload, String trxName)
 	{
@@ -227,21 +227,16 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		m_tabs = new MTab[list.size ()];
 		list.toArray (m_tabs);
 		return m_tabs;
-	}	//	getFields
-
+	}	//	getTabs
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		if (newRecord)	//	Add to all automatic roles
+		if (newRecord)	
 		{
+			// Create window access records for all automatic role
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");
 			for (int i = 0; i < roles.length; i++)
 			{
@@ -253,6 +248,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		else if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
 			|| is_ValueChanged("Description") || is_ValueChanged("Help"))
 		{
+			// Update menu
 			MMenu[] menues = MMenu.get(getCtx(), "AD_Window_ID=" + getAD_Window_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
 			{
@@ -261,8 +257,8 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 				menues[i].setIsActive(isActive());
 				menues[i].saveEx();
 			}
-			//
-			MWFNode[] nodes = getWFNodes(getCtx(), "AD_Window_ID=" + getAD_Window_ID(), get_TrxName());
+			// Update workflow node
+			MWFNode[] nodes = MWFNode.getWFNodes(getCtx(), "AD_Window_ID=" + getAD_Window_ID(), get_TrxName());
 			for (int i = 0; i < nodes.length; i++)
 			{
 				boolean changed = false;
@@ -284,30 +280,20 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		}
 		return success;
 	}	//	afterSave
-
 	
 	/**
-	 * Get workflow nodes with where clause.
-	 * Is here as MWFNode is in base
-	 * @param ctx context
-	 * @param whereClause where clause w/o the actual WHERE
-	 * @param trxName transaction
-	 * @return nodes
+	 * @deprecated use {@link MWFNode#getWFNodes(Properties, String, String)} instead.
 	 */
+	@Deprecated
 	public static MWFNode[] getWFNodes (Properties ctx, String whereClause, String trxName)
 	{		
-		List<MWFNode> list = new Query(ctx,I_AD_WF_Node.Table_Name,whereClause,trxName)
-		.list();
-		MWFNode[] retValue = new MWFNode[list.size()];
-		list.toArray (retValue);
-		return retValue;
+		return MWFNode.getWFNodes(ctx, whereClause, trxName);
 	}	//	getWFNode
 	
-	//vpj-cd begin e-evolution
 	/**
-	 * 	get Window ID
-	 *	@param windowName String
-	 *	@return int retValue
+	 * 	Get Window ID
+	 *	@param windowName window name
+	 *	@return AD_Window_ID
 	 */
 	public static int getWindow_ID(String windowName) {
 		int retValue = 0;
@@ -333,7 +319,6 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 		}
 		return retValue;
 	}
-	//end vpj-cd e-evolution
 	
 	@Override
 	public MWindow markImmutable() {

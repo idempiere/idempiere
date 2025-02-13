@@ -28,6 +28,14 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.base.equinox.StackTraceCommand;
+import org.apache.poi.extractor.ExtractorFactory;
+import org.apache.poi.extractor.MainExtractorFactory;
+import org.apache.poi.hssf.usermodel.HSSFWorkbookFactory;
+import org.apache.poi.ooxml.extractor.POIXMLExtractorFactory;
+import org.apache.poi.sl.usermodel.SlideShowFactory;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+import org.apache.poi.xslf.usermodel.XSLFSlideShowFactory;
 import org.compiere.Adempiere;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
@@ -61,6 +69,13 @@ public class BaseActivator implements BundleActivator {
 		context.registerService(CommandProvider.class.getName(), new StackTraceCommand(), null);
 		
 		blacklistService = new ComponentBlackListService(context);
+		
+		//setup poi factory
+		WorkbookFactory.addProvider(new HSSFWorkbookFactory());
+        WorkbookFactory.addProvider(new XSSFWorkbookFactory());
+        SlideShowFactory.addProvider(new XSLFSlideShowFactory());
+        ExtractorFactory.addProvider(new POIXMLExtractorFactory());
+        ExtractorFactory.addProvider(new MainExtractorFactory());
 	}
 	
 	/* 
@@ -120,6 +135,14 @@ public class BaseActivator implements BundleActivator {
 			blacklistService.stop(context);
 			blacklistService = null;
 		}
+		
+		//remove poi factory
+		WorkbookFactory.removeProvider(HSSFWorkbookFactory.class);
+        WorkbookFactory.removeProvider(XSSFWorkbookFactory.class);
+        SlideShowFactory.removeProvider(XSLFSlideShowFactory.class);
+        ExtractorFactory.removeProvider(POIXMLExtractorFactory.class);
+        ExtractorFactory.removeProvider(MainExtractorFactory.class);
+        
 		Adempiere.stop();
 	}
 

@@ -256,11 +256,6 @@ public class MMovementLineMA extends X_M_MovementLineMA
 		return totalQty==null?Env.ZERO:totalQty;
 	} //getManualQty
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -269,7 +264,7 @@ public class MMovementLineMA extends X_M_MovementLineMA
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Movement_ID"));
 			return false;
 		}
-		//Set DateMaterialPolicy
+		// Set DateMaterialPolicy after edit of M_AttributeSetInstance_ID field
 		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
 			I_M_MovementLine line = getM_MovementLine();
 			

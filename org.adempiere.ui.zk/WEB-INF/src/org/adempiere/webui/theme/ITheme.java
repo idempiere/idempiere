@@ -20,7 +20,7 @@ package org.adempiere.webui.theme;
  */
 public interface ITheme {
 	//default theme
-	public static final String ZK_THEME_DEFAULT = "default";
+	public static final String ZK_THEME_DEFAULT = "iceblue_c";
 	//theme resource url prefix. ~./ is the zk url prefix for resources loaded from classpath (typically at src/web folder)
 	public static final String THEME_PATH_PREFIX_V8 = "~./theme/";
 	public static final String THEME_PATH_PREFIX_V7 = "/theme/"; // for backward compatibility

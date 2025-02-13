@@ -108,9 +108,9 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-        //	Set Schedule Type & Frequencies
 		if (SCHEDULETYPE_Frequency.equals(getScheduleType()))
 		{
+			// Set default frequency type and frequency 
 			if (getFrequencyType() == null)
 				setFrequencyType(FREQUENCYTYPE_Day);
 			if (getFrequency() < 1)
@@ -119,6 +119,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 		}
 		else if (SCHEDULETYPE_CronSchedulingPattern.equals(getScheduleType()))
 		{
+			// Validate cron pattern
 			String pattern = getCronPattern();
 			if (pattern != null && pattern.trim().length() > 0)
 			{

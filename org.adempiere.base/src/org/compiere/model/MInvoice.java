@@ -25,7 +25,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -1131,22 +1133,15 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 	private volatile static boolean recursiveCall = false;
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("");
-		//	No Partner Info - set Template
-		if (getC_BPartner_ID() == 0)
-			setBPartner(MBPartner.getTemplate(getCtx(), getAD_Client_ID()));
+		// Set default from business partner
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
 
-		//	Price List
+		//	Set default Price List
 		if (getM_PriceList_ID() == 0)
 		{
 			int ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
@@ -1166,7 +1161,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 
-		//	Currency
+		//	Set Currency from price list or environment context
 		if (getC_Currency_ID() == 0)
 		{
 			String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
@@ -1177,7 +1172,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
-		//	Sales Rep
+		//	Set Sales Rep from environment context
 		if (getSalesRep_ID() == 0)
 		{
 			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
@@ -1185,13 +1180,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				setSalesRep_ID (ii);
 		}
 
-		//	Document Type
+		//	Set default Document Type
 		if (getC_DocType_ID() == 0)
 			setC_DocType_ID (0);	//	make sure it's set to 0
 		if (getC_DocTypeTarget_ID() == 0)
 			setC_DocTypeTarget_ID(isSOTrx() ? MDocType.DOCBASETYPE_ARInvoice : MDocType.DOCBASETYPE_APInvoice);
 
-		//	Payment Term
+		//	Set default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
 			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
@@ -1206,7 +1201,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 		
-		// assign cash plan line from order
+		// Set cash plan line from order
 		if (getC_Order_ID() > 0 && getC_CashPlanLine_ID() <= 0) {
 			MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
 			if (order.getC_CashPlanLine_ID() > 0)
@@ -1217,10 +1212,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (!newRecord && (is_ValueChanged(COLUMNNAME_M_PriceList_ID) || is_ValueChanged(COLUMNNAME_DateInvoiced))) {
 			int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM C_InvoiceLine WHERE C_Invoice_ID=? AND M_Product_ID>0", getC_Invoice_ID());
 			if (cnt > 0) {
+				// Disallow change of price list if there are existing product lines
 				if (is_ValueChanged(COLUMNNAME_M_PriceList_ID)) {
 					log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangePlIn"));
 					return false;
 				}
+				// Validate price list is valid for updated DateInvoiced
 				if (is_ValueChanged(COLUMNNAME_DateInvoiced)) {
 					MPriceList pList =  MPriceList.get(getCtx(), getM_PriceList_ID(), null);
 					MPriceListVersion plOld = pList.getPriceListVersion((Timestamp)get_ValueOld(COLUMNNAME_DateInvoiced));
@@ -1233,6 +1230,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 
+		// Validate payment term and update IsPayScheduleValid
 		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
 			recursiveCall = true;
 			try {
@@ -1246,6 +1244,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 
+		// Validate IsOverrideCurrencyRate and CurrencyRate
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
@@ -1274,26 +1273,17 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
 		if (getC_Order_ID() != 0)
 		{
-			//Load invoice lines for afterDelete()
+			// Load invoice lines for afterDelete()
 			getLines();	
 		}
 		return true;
 	}	//	beforeDelete
 	
-	/**
-	 * After Delete
-	 * @param success success
-	 * @return true if deleted
-	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
 		// If delete invoice failed then do nothing
@@ -1301,7 +1291,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			return success;
 		
 		if (getC_Order_ID() != 0) {
-			// reset shipment line invoiced flag
+			// Reset shipment line IsInvoiced flag
 			MInvoiceLine[] lines = getLines(false);
 			for (int i = 0; i < lines.length; i++) {
 				if (lines[i].getM_InOutLine_ID() > 0) {
@@ -1347,18 +1337,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		return msgreturn.toString();
 	}	//	getDocumentInfo
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
 			return success;
 
+		// Propagate AD_Org_ID change to lines
 		if (is_ValueChanged("AD_Org_ID"))
 		{
 			StringBuilder sql = new StringBuilder("UPDATE C_InvoiceLine ol")
@@ -1629,6 +1614,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
 			pi.setRecord_ID ( getC_Invoice_ID() );
 			pi.setIsBatch(true);
+			pi.setTransientObject(format);
 			
 			ServerProcessCtl.process(pi, null);
 			
@@ -1794,6 +1780,19 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 
+		// Check if Order is Valid load all C_Order_ID and replace/remove C_Order_ID if not valid
+		if (getC_Order_ID() > 0) {
+		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
+		    		" SELECT DISTINCT ol.C_Order_ID "
+		    		+ " FROM C_InvoiceLine il "
+		    		+ " JOIN C_OrderLine ol ON (il.C_OrderLine_ID=ol.C_OrderLine_ID) "
+		    		+ " WHERE il.C_Invoice_ID=?", getC_Invoice_ID());
+		    if (orderIds.length == 1 && orderIds[0] != getC_Order_ID())
+		        setC_Order_ID(orderIds[0]);
+		    else if (orderIds.length > 1)
+		        setC_Order_ID(0);
+		}
+		
 		//	Add up Amounts
 		m_justPrepared = true;
 		if (!DOCACTION_Complete.equals(getDocAction()))
@@ -2322,8 +2321,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				}
 			}
 		}
-
-		if (PAYMENTRULE_Cash.equals(getPaymentRule())) {
+		MOrder order = getC_Order_ID() > 0 ? new MOrder(getCtx(), getC_Order_ID(), get_TrxName()) : null;
+		MDocType orderDocType = order != null ? MDocType.get(getCtx(), order.getC_DocType_ID()) : null;
+		if (PAYMENTRULE_Cash.equals(getPaymentRule())
+				|| (orderDocType != null && MDocType.DOCSUBTYPESO_PrepayOrder.equals(orderDocType.getDocSubTypeSO()) && !orderDocType.isAutoGenerateInvoice() && allocateFromOrder()))
+		{
 			if (testAllocation(true)) {
 				saveEx();
 			}
@@ -3350,4 +3352,55 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			}
 		}
 	}
+	
+	/**
+	 * Allocate Invoice for Completed Unallocated Pre-payments
+	 */
+	private boolean allocateFromOrder() {
+		// Get Set Of OrderIds from Lines
+		HashSet<Integer> orderIDSet = new HashSet<>();
+
+		if(getC_Order_ID() > 0)
+			orderIDSet.add(getC_Order_ID());
+
+		MInvoiceLine[] lines = getLines();
+		for(MInvoiceLine line : lines) {
+			if (line.getC_OrderLine_ID() > 0)
+			     orderIDSet.add(line.getC_OrderLine().getC_Order_ID());
+		   }
+
+		if(orderIDSet.isEmpty())
+			return false;
+
+		StringBuilder whereClause = new StringBuilder("docstatus = 'CO' AND NOT EXISTS( SELECT 1 FROM c_allocationline al where al.c_payment_id=c_payment.c_payment_id) AND IsAllocated='N' AND C_Invoice_ID IS NULL ");
+
+		// Parse Orders
+		whereClause.append(" AND C_Order_ID IN ( ");
+		Iterator<Integer> iterator = orderIDSet.iterator();
+		while(iterator.hasNext()) {
+			iterator.next();
+			whereClause.append("?");
+			if(iterator.hasNext())
+				whereClause.append(", ");
+		}
+
+		whereClause.append(" ) ");
+
+		List<MPayment> paymentsList = new Query(getCtx(), MPayment.Table_Name, whereClause.toString(), get_TrxName())
+		.setParameters(orderIDSet.toArray())
+		.setOrderBy(MPayment.COLUMNNAME_DateAcct)
+		.list();
+
+		for(MPayment payment : paymentsList) {
+			payment.setC_Invoice_ID(getC_Invoice_ID());
+			if(!payment.allocateIt())
+				throw new AdempiereException(Msg.getMsg(getCtx(), "PaymentNotAllocated"));
+
+			payment.saveEx();
+		}
+
+		return paymentsList.size() > 0;
+
+	}
+	
 }	//	MInvoice

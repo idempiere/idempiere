@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Freight
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_Freight")
 public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_Freight (Properties ctx, int M_Freight_ID, String trxName)
@@ -227,42 +227,6 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
 		return bd;
 	}
 
-	/** Set Max Dimension.
-		@param MaxDimension Max Dimension
-	*/
-	public void setMaxDimension (BigDecimal MaxDimension)
-	{
-		set_Value (COLUMNNAME_MaxDimension, MaxDimension);
-	}
-
-	/** Get Max Dimension.
-		@return Max Dimension	  */
-	public BigDecimal getMaxDimension()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxDimension);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** Set Max Weight.
-		@param MaxWeight Max Weight
-	*/
-	public void setMaxWeight (BigDecimal MaxWeight)
-	{
-		set_Value (COLUMNNAME_MaxWeight, MaxWeight);
-	}
-
-	/** Get Max Weight.
-		@return Max Weight	  */
-	public BigDecimal getMaxWeight()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxWeight);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	public org.compiere.model.I_M_FreightCategory getM_FreightCategory() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_ID)
@@ -363,6 +327,42 @@ public class X_M_Freight extends PO implements I_M_Freight, I_Persistent
     {
         return new KeyNamePair(get_ID(), String.valueOf(getM_Shipper_ID()));
     }
+
+	/** Set Max Dimension.
+		@param MaxDimension Max Dimension
+	*/
+	public void setMaxDimension (BigDecimal MaxDimension)
+	{
+		set_Value (COLUMNNAME_MaxDimension, MaxDimension);
+	}
+
+	/** Get Max Dimension.
+		@return Max Dimension	  */
+	public BigDecimal getMaxDimension()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxDimension);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Max Weight.
+		@param MaxWeight Max Weight
+	*/
+	public void setMaxWeight (BigDecimal MaxWeight)
+	{
+		set_Value (COLUMNNAME_MaxWeight, MaxWeight);
+	}
+
+	/** Get Max Weight.
+		@return Max Weight	  */
+	public BigDecimal getMaxWeight()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MaxWeight);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 
 	/** Set To.
 		@param To_Country_ID Receiving Country

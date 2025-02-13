@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservationLog
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservationLog")
 public class X_M_StorageReservationLog extends PO implements I_M_StorageReservationLog, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_StorageReservationLog (Properties ctx, int M_StorageReservationLog_ID, String trxName)

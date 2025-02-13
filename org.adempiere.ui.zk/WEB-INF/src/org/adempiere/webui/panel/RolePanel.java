@@ -81,17 +81,16 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Image;
 
 /**
- * Select role panel
+ * Select role panel of {@link LoginWindow}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
 public class RolePanel extends Window implements EventListener<Event>, Deferrable
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8077156023041816851L;
 
@@ -322,13 +321,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
-		helpButton.setSclass(ITheme.LOGIN_BUTTON_CLASS);
+		helpButton.addSclass(ITheme.LOGIN_BUTTON_CLASS);
 		pnlButtons.addComponentsRight(helpButton);
 
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         ZKUpdateUtil.setWidth(pnlButtons, null);
-        pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
-        pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
+        pnlButtons.getButton(ConfirmPanel.A_OK).addSclass(ITheme.LOGIN_BUTTON_CLASS);
+        pnlButtons.getButton(ConfirmPanel.A_CANCEL).addSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
         
@@ -377,7 +376,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstRole.setId("lstRole");
 
         lstRole.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstRole, "220px");
 
         lstClient = new Combobox();
         lstClient.setAutocomplete(true);
@@ -385,7 +383,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstClient.setId("lstClient");
 
         lstClient.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstClient, "220px");
 
         lstOrganisation = new Combobox();
         lstOrganisation.setAutocomplete(true);
@@ -393,7 +390,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstOrganisation.setId("lstOrganisation");
 
         lstOrganisation.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstOrganisation, "220px");
 
         lstWarehouse = new Combobox();
         lstWarehouse.setAutocomplete(true);
@@ -401,7 +397,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstWarehouse.setId("lstWarehouse");
 
         lstWarehouse.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstWarehouse, "220px");
 
         lstDate = new WDateEditor();
         lstDate.setValue(new Timestamp(System.currentTimeMillis()));
@@ -453,7 +448,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstLanguage.setAutocomplete(true);
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
-        ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
         // Update Language List
         lstLanguage.getItems().clear();
@@ -819,7 +813,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     }
     
     /**
-     * show UI for change role
+     * Show UI for change role
      * @param ctx env context
      */
     public void changeRole(Properties ctx) {
@@ -841,7 +835,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     /**
      * Validate fields
      * @param isMFAValidated
-     *
      */
     public void validateRoles(boolean isMFAValidated)
     {
@@ -943,6 +936,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	}
 
     /**
+     * Is show role selection panel to user
      * @return true if role selection panel will be shown to user
      */
 	public boolean show() {

@@ -200,14 +200,9 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 	}	//	getName
 	
 	
-	/**
-	 *  Before Save
-	 *	@param newRecord new record
-	 *	@return success  
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-
+		// Validate IBAN
 		if (MSysConfig.getBooleanValue(MSysConfig.IBAN_VALIDATION, true, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (!Util.isEmpty(getIBAN())) {
 				setIBAN(IBAN.normalizeIBAN(getIBAN()));
@@ -221,15 +216,10 @@ public class MBankAccount extends X_C_BankAccount implements ImmutablePOSupport
 		return true;
 	} // beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new record
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create new accounting record (C_BankAccount_Acct)
 		if (newRecord && success)
 			return insert_Accounting("C_BankAccount_Acct", "C_AcctSchema_Default", null);
 		return success;

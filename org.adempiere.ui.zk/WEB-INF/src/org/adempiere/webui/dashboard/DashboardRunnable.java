@@ -95,7 +95,7 @@ public class DashboardRunnable implements Runnable, Serializable
 	}
 
 	/**
-	 * Refresh {@link #dashboardPanels} (usually call by background pooling thread).
+	 * Refresh {@link #dashboardPanels} (usually call by background polling thread).<br/>
 	 * Delegate to {@link #refreshDashboard(boolean)}.
 	 */
 	@Override
@@ -115,9 +115,9 @@ public class DashboardRunnable implements Runnable, Serializable
 
 	/**
 	 * Refresh {@link #dashboardPanels}
-	 * @param pooling true if calling from pooling thread
+	 * @param polling true if calling from polling thread
 	 */
-	public void refreshDashboard(boolean pooling)
+	public void refreshDashboard(boolean polling)
 	{
 		ServerPushTemplate template = new ServerPushTemplate(desktop.get());
 		//set thread local context if not in event thread
@@ -142,7 +142,7 @@ public class DashboardRunnable implements Runnable, Serializable
 			
 	    	for(int i = 0; i < dashboardPanels.size(); i++)
 	    	{
-	    		if (pooling && !dashboardPanels.get(i).isPooling())
+	    		if (polling && !dashboardPanels.get(i).isPooling())
 	    			continue;
 	    		
 	    		final DashboardPanel dpanel = dashboardPanels.get(i); 

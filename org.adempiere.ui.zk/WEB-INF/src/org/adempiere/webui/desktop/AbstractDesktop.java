@@ -16,15 +16,24 @@ package org.adempiere.webui.desktop;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADTabpanel;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.part.AbstractUIPart;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MMenu;
+import org.compiere.model.MPreference;
+import org.compiere.model.MQuery;
+import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
@@ -58,8 +67,8 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	
 	/**
      * Event listener for menu item selection.<br/>
-     * Identifies the action associated with the selected
-     * menu item and acts accordingly.
+     * Identifies the action associated with the selected menu item and acts accordingly.<br/>
+     * Event from favourite panel, global search and application menu tree will be routed here.
      * 
      * @param	menuId	Identifier for the selected menu item
      * 
@@ -110,11 +119,82 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
       {
         setPredefinedContextVariables(null);
       }
+      updateRecentMenuItem(menuId);
     }
     
+	/**
+     * Open AD window in new record mode.<br/>
+     * Call by global search, application menu tree and favourite panel.
+     * @param menuId
+     */
+	@Override
+	public void onNewRecord(int menuId) {
+		MMenu menu = new MMenu(Env.getCtx(), menuId, null);
+		setPredefinedContextVariables(menu.getPredefinedContextVariables());
+		
+		MQuery query = new MQuery("");
+		query.addRestriction("1=2");
+		query.setRecordCount(0);
+
+		SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {				
+			@Override
+			public void onCallback(ADWindow result) {
+				if(result == null)
+					return;
+							
+				result.getADWindowContent().onNew();
+				ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
+				adtabpanel.focusToFirstEditor(false);					
+			}
+		});
+		updateRecentMenuItem(menuId);
+	}
+	
+	/**
+	 * Perform asynchronous update of recent menu items preference for user
+	 * @param menuId
+	 */
+	protected void updateRecentMenuItem(int menuId) {
+		Runnable runnable = () -> {			
+			int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
+			int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
+			int AD_Org_ID = 0;
+			String attribute = AD_Role_ID+"|RecentMenuItems";
+			Query query = new Query(Env.getCtx(), MPreference.Table_Name, "PreferenceFor=? AND Attribute=? AND AD_Org_ID=? AND AD_User_ID=? AND AD_Window_ID=?", null);
+			MPreference preference = query.setClient_ID().setParameters("W", attribute, AD_Org_ID, AD_User_ID, SystemIDs.WINDOW_MENU).first();
+			if (preference == null) {
+				preference = new MPreference(Env.getCtx(), 0, null);
+				preference.setAD_Org_ID(AD_Org_ID);
+				preference.setPreferenceFor("W");
+				preference.setAttribute(attribute);
+				preference.setAD_User_ID(AD_User_ID);
+				preference.setValue(Integer.toString(menuId));
+				preference.setAD_Window_ID(SystemIDs.WINDOW_MENU);
+				preference.saveEx();
+			} else {
+				String recentItemValue = preference.getValue();
+				List<String> itemList = new ArrayList<String>();
+				String[] recentItemValues = recentItemValue.split("[,]");
+				String menuIdValue = Integer.toString(menuId);
+				itemList.add(menuIdValue);
+				for (int i = 0; itemList.size() < 7 && i < recentItemValues.length; i++) {
+					if (!recentItemValues[i].equals(menuIdValue)) 
+						itemList.add(recentItemValues[i]);
+				}
+				recentItemValue = itemList.stream().collect(Collectors.joining(","));
+				preference.setValue(recentItemValue);
+				preference.saveEx();
+			}
+		};
+		Executions.schedule(getComponent().getDesktop(), e -> {
+			runnable.run();
+		}, new Event("onUpdateRecentMenuItem"));
+	}
+	
     /**
 	 * @return {@link ClientInfo}
 	 */
+	@Override
 	public ClientInfo getClientInfo() {
 		return clientInfo;
 	}
@@ -122,14 +202,15 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	/**
 	 * @param clientInfo
 	 */
+	@Override
 	public void setClientInfo(ClientInfo clientInfo) {
 		this.clientInfo = clientInfo;
 	}
 	
 	/**
 	 * @param win
-	 * @param registered Window Number (start from 0)
 	 */
+	@Override
 	public int registerWindow(Object win) {
 		List<Object> windows = getWindows();
 		int retValue = windows.size();
@@ -141,6 +222,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 * Remove from registered window list and clear environment context
 	 * @param WindowNo
 	 */
+	@Override
 	public void unregisterWindow(int WindowNo) {
 		List<Object> windows = getWindows();
 		if (windows != null && WindowNo < windows.size())
@@ -153,6 +235,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      * @param WindowNo
      * @return Object
      */
+	@Override
 	public Object findWindow(int WindowNo) {
 		List<Object> windows = getWindows();
 		if (windows != null && WindowNo < windows.size())
@@ -184,6 +267,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	 * Delegate to {@link #showWindow(Window, String)}
      * @param win
      */
+    @Override
     public void showWindow(Window win) 
     {
     	String pos = win.getPosition();
@@ -196,6 +280,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      * @param win Window
      * @param pos see {@link org.zkoss.zul.Window#setPosition(String)}
      */
+    @Override
    	public void showWindow(final Window win, final String pos)
 	{
 		final Window.Mode windowMode = win.getModeAttribute();		
@@ -225,7 +310,6 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	}
 
    	/**
-   	 * 
    	 * @param win Window
    	 * @param pos see {@link org.zkoss.zul.Window#setPosition(String)}
    	 * @param mode {@link Mode} (POPUP, OVERLAPPED, EMBEDDED or HIGHLIGHTED)

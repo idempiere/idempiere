@@ -27,18 +27,18 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long	serialVersionUID		= -1085269880909860587L;
 
 	public static final String	SQL_CHECK_MENU_EXISTS	= "SELECT CASE WHEN COUNT(AD_Menu_ID) > 0 THEN 'Y' ELSE 'N' END FROM AD_Tree_Favorite_Node WHERE AD_Tree_Favorite_ID=? AND NVL(Parent_ID, 0)=? AND AD_Menu_ID=?";
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_Tree_Favorite_Node_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_Tree_Favorite_Node_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTreeFavoriteNode(Properties ctx, String AD_Tree_Favorite_Node_UU, String trxName) {
         super(ctx, AD_Tree_Favorite_Node_UU, trxName);
     }
@@ -68,8 +68,8 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 	 * 
 	 * @param  menuID    - AD_Menu_ID
 	 * @param  nodeID    - Parent Node_ID
-	 * @param  treeFavID - AD_ Tree_Favorite_ID
-	 * @return           True if same menu exits
+	 * @param  treeFavID - AD_Tree_Favorite_ID
+	 * @return True if menuID exists
 	 */
 	public static boolean isMenuExists(int menuID, int nodeID, int treeFavID)
 	{
@@ -81,7 +81,7 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 	 * 
 	 * @param  AD_Tree_Favorite_ID
 	 * @param  Menu_ID
-	 * @return                     {@link MTreeFavoriteNode}
+	 * @return {@link MTreeFavoriteNode} or null
 	 */
 	public static MTreeFavoriteNode getFavouriteTreeNodeFromMenuID(int AD_Tree_Favorite_ID, int Menu_ID)
 	{
@@ -92,7 +92,7 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 	} // getFavouriteTreeNodeFromMenuID
 
 	/**
-	 * Create tree favorite node
+	 * Create and save tree favorite node
 	 * 
 	 * @param  AD_Client_ID
 	 * @param  AD_Org_ID
@@ -104,7 +104,7 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 	 * @param  isSummary
 	 * @param  isCollapsible
 	 * @param  isFavourite
-	 * @return                     {@link MTreeFavoriteNode}
+	 * @return new {@link MTreeFavoriteNode} instance
 	 */
 	public static MTreeFavoriteNode create(	int AD_Client_ID, int AD_Org_ID, int AD_Tree_Favorite_ID, int AD_Menu_ID, int Parent_ID, int SeqNo,
 											String folderName, boolean isSummary, boolean isCollapsible, boolean isFavourite)

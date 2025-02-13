@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -45,19 +45,23 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
 			setIsDefaultCounterDoc (false);
 			setIsDocNoControlled (true);
 // Y
-			setIsIndexed (false);
 			setIsInTransit (false);
+			setIsIndexed (false);
 			setIsPickQAConfirm (false);
 			setIsPrepareSplitDocument (true);
 // Y
-			setIsShipConfirm (false);
 			setIsSOTrx (false);
+			setIsShipConfirm (false);
 			setIsSplitWhenDifference (false);
 // N
 			setName (null);
@@ -77,19 +81,23 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
 			setIsDefaultCounterDoc (false);
 			setIsDocNoControlled (true);
 // Y
-			setIsIndexed (false);
 			setIsInTransit (false);
+			setIsIndexed (false);
 			setIsPickQAConfirm (false);
 			setIsPrepareSplitDocument (true);
 // Y
-			setIsShipConfirm (false);
 			setIsSOTrx (false);
+			setIsShipConfirm (false);
 			setIsSplitWhenDifference (false);
 // N
 			setName (null);
@@ -109,19 +117,23 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
 			setIsDefaultCounterDoc (false);
 			setIsDocNoControlled (true);
 // Y
-			setIsIndexed (false);
 			setIsInTransit (false);
+			setIsIndexed (false);
 			setIsPickQAConfirm (false);
 			setIsPrepareSplitDocument (true);
 // Y
-			setIsShipConfirm (false);
 			setIsSOTrx (false);
+			setIsShipConfirm (false);
 			setIsSplitWhenDifference (false);
 // N
 			setName (null);
@@ -141,19 +153,23 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAutoGenerateInout (false);
+// N
+			setIsAutoGenerateInvoice (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
 			setIsDefaultCounterDoc (false);
 			setIsDocNoControlled (true);
 // Y
-			setIsIndexed (false);
 			setIsInTransit (false);
+			setIsIndexed (false);
 			setIsPickQAConfirm (false);
 			setIsPrepareSplitDocument (true);
 // Y
-			setIsShipConfirm (false);
 			setIsSOTrx (false);
+			setIsShipConfirm (false);
 			setIsSplitWhenDifference (false);
 // N
 			setName (null);
@@ -245,28 +261,6 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Document Type.
-		@param C_DocType_ID Document type or rules
-	*/
-	public void setC_DocType_ID (int C_DocType_ID)
-	{
-		if (C_DocType_ID < 0)
-			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
-	}
-
-	/** Get Document Type.
-		@return Document type or rules
-	  */
-	public int getC_DocType_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -346,6 +340,28 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public int getC_DocTypeShipment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocTypeShipment_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Document Type.
+		@param C_DocType_ID Document type or rules
+	*/
+	public void setC_DocType_ID (int C_DocType_ID)
+	{
+		if (C_DocType_ID < 0)
+			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
+	}
+
+	/** Get Document Type.
+		@return Document type or rules
+	  */
+	public int getC_DocType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -689,6 +705,52 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
+	/** Set Generate Shipment.
+		@param IsAutoGenerateInout Automatically Generate Shipment after (Sales/Purchase) Order completed
+	*/
+	public void setIsAutoGenerateInout (boolean IsAutoGenerateInout)
+	{
+		set_Value (COLUMNNAME_IsAutoGenerateInout, Boolean.valueOf(IsAutoGenerateInout));
+	}
+
+	/** Get Generate Shipment.
+		@return Automatically Generate Shipment after (Sales/Purchase) Order completed
+	  */
+	public boolean isAutoGenerateInout()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoGenerateInout);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Generate Invoice.
+		@param IsAutoGenerateInvoice Automatically Generate Invoice after (Sales/Purchase) Order completed
+	*/
+	public void setIsAutoGenerateInvoice (boolean IsAutoGenerateInvoice)
+	{
+		set_Value (COLUMNNAME_IsAutoGenerateInvoice, Boolean.valueOf(IsAutoGenerateInvoice));
+	}
+
+	/** Get Generate Invoice.
+		@return Automatically Generate Invoice after (Sales/Purchase) Order completed
+	  */
+	public boolean isAutoGenerateInvoice()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAutoGenerateInvoice);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Mandatory Charge or Product.
 		@param IsChargeOrProductMandatory Mandatory Charge or Product
 	*/
@@ -803,29 +865,6 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
-	/** Set Indexed.
-		@param IsIndexed Index the document for the internal search engine
-	*/
-	public void setIsIndexed (boolean IsIndexed)
-	{
-		set_Value (COLUMNNAME_IsIndexed, Boolean.valueOf(IsIndexed));
-	}
-
-	/** Get Indexed.
-		@return Index the document for the internal search engine
-	  */
-	public boolean isIndexed()
-	{
-		Object oo = get_Value(COLUMNNAME_IsIndexed);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set In Transit.
 		@param IsInTransit Movement is in transit
 	*/
@@ -840,6 +879,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isInTransit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInTransit);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Indexed.
+		@param IsIndexed Index the document for the internal search engine
+	*/
+	public void setIsIndexed (boolean IsIndexed)
+	{
+		set_Value (COLUMNNAME_IsIndexed, Boolean.valueOf(IsIndexed));
+	}
+
+	/** Get Indexed.
+		@return Index the document for the internal search engine
+	  */
+	public boolean isIndexed()
+	{
+		Object oo = get_Value(COLUMNNAME_IsIndexed);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
@@ -961,29 +1023,6 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
-	/** Set Ship/Receipt Confirmation.
-		@param IsShipConfirm Require Ship or Receipt Confirmation before processing
-	*/
-	public void setIsShipConfirm (boolean IsShipConfirm)
-	{
-		set_Value (COLUMNNAME_IsShipConfirm, Boolean.valueOf(IsShipConfirm));
-	}
-
-	/** Get Ship/Receipt Confirmation.
-		@return Require Ship or Receipt Confirmation before processing
-	  */
-	public boolean isShipConfirm()
-	{
-		Object oo = get_Value(COLUMNNAME_IsShipConfirm);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Sales Transaction.
 		@param IsSOTrx This is a Sales Transaction
 	*/
@@ -998,6 +1037,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Ship/Receipt Confirmation.
+		@param IsShipConfirm Require Ship or Receipt Confirmation before processing
+	*/
+	public void setIsShipConfirm (boolean IsShipConfirm)
+	{
+		set_Value (COLUMNNAME_IsShipConfirm, Boolean.valueOf(IsShipConfirm));
+	}
+
+	/** Get Ship/Receipt Confirmation.
+		@return Require Ship or Receipt Confirmation before processing
+	  */
+	public boolean isShipConfirm()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShipConfirm);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

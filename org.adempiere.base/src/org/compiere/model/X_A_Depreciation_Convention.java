@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for A_Depreciation_Convention
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Convention")
 public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_Convention, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_A_Depreciation_Convention extends PO implements I_A_Depreciation_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Convention (Properties ctx, int A_Depreciation_Convention_ID, String trxName)

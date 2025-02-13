@@ -26,6 +26,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
+import org.adempiere.webui.editor.WBinaryEditor;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -49,7 +50,8 @@ import org.zkoss.zul.Iframe;
 
 
 /**
- * Dialog to view, upload new, remove or download media 
+ * Dialog to view, upload new, remove or download media.
+ * @see WBinaryEditor 
  * @author Low Heng Sin
  *
  */
@@ -195,7 +197,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 		South southPane = new South();
 		mainPanel.appendChild(southPane);
 		southPane.appendChild(confirmPanel);
-		ZKUpdateUtil.setHeight(southPane, "30px");
+		ZKUpdateUtil.setVflex(southPane, "min");		
 		
 		if(ThemeManager.isUseFontIconForImage())
 			bOk.setIconSclass("z-icon-Ok");

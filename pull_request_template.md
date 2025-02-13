@@ -1,3 +1,6 @@
+[ Please copy here the link to the related Jira ticket ]
+
+
 # Pull Request Checklist
 
 - [ ] My code follows the [code guidelines](https://wiki.idempiere.org/en/Contributing_to_Trunk) of this project

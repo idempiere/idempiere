@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.eevolution.process;
 
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.logging.Level;
@@ -100,7 +99,7 @@ public class BankTransfer extends SvrProcess
 	}	//	prepare
 
 	/**
-	 *  Perform process.
+	 *  Create bank transfer document (optional, if IsCreateBankTransferDoc=Y) and 2 payment document (from and to).
 	 *  @return Message (translated text)
 	 *  @throws Exception if not successful
 	 */

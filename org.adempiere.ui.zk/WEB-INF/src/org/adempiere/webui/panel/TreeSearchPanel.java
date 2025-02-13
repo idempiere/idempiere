@@ -65,7 +65,6 @@ import org.zkoss.zul.impl.LabelImageElement;
  * Use by {@link ADTreePanel}.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 3, 2007
- * @version $Revision: 0.10 $
  */
 public class TreeSearchPanel extends Panel implements EventListener<Event>, TreeDataListener, IdSpace
 {

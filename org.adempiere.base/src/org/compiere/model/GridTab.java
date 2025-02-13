@@ -112,9 +112,9 @@ import org.compiere.util.ValueNamePair;
 public class GridTab implements DataStatusListener, Evaluatee, Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3039046293468517959L;
+	private static final long serialVersionUID = 4560773843887883525L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -182,7 +182,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
     /** A list of event listeners for this component.	*/
     protected EventListenerList m_listenerList = new EventListenerList();
     /** Current Data Status Event						*/
-	private volatile DataStatusEvent 	m_DataStatusEvent = null;
+	private DataStatusEvent 	m_DataStatusEvent = null;
 	/**	Query							*/
 	private MQuery 				m_query = new MQuery();
 	private String 				m_oldQuery = "0=9";
@@ -234,6 +234,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_Record_ID = "_TabInfo_Record_ID";
 	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
 	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
+
+	public static final int DEFAULT_GLOBAL_MAX_QUERY_RECORDS = 100000;
 
 	/**
 	 *  Tab loader for Tabs > 0
@@ -496,6 +498,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		return m_vo.DisplayLogic;
 	}	//	getDisplayLogic
+
+	/**
+	 * Get EntityType
+	 * @return Window Entity Type
+	 */
+	public String getEntityType()
+	{
+		return m_vo.EntityType;
+	}
 
 	/**
 	 *  Get TableModel.
@@ -1159,6 +1170,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			processCallout(getField(i));
 		m_mTable.setChanged(false);		
 
+		if (getField("EntityType") != null && Env.getCtx().getProperty("EntityType") != null) {
+			setValue("EntityType", new MEntityType(Env.getCtx(),Integer.parseInt(Env.getCtx().getProperty("EntityType")), null).get_Value("EntityType"));
+		}
+
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_NEW));
 		return retValue;
 	}   //  dataNew
@@ -1559,6 +1574,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *	@param variableName name
 	 *	@return value as string 
 	 */
+	@Override
 	public String get_ValueAsString (String variableName)
 	{
 		return get_ValueAsString (m_vo.ctx, variableName);
@@ -1750,6 +1766,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return info
 	 *  @deprecated use getStatusLine and configure Status Line instead
 	 */
+	@Deprecated
 	public String getTrxInfo()
 	{
 		//	InvoiceBatch
@@ -2011,7 +2028,25 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			for (MStatusLine wl : wls) {
 				String line = wl.parseLine(getWindowNo());
 				if (line != null) {
-					lines.append(line).append("<br>");
+					if (wl.getAD_Style_ID() > 0) {
+			    		MStyle style = MStyle.get(wl.getAD_Style_ID());
+						String css = style.buildStyle(Env.getContext(Env.getCtx(), Env.THEME), new DefaultEvaluatee(), false);				
+						if (!Util.isEmpty(css, true)) {
+							lines.append("<div>\n")
+								.append("<style>\n")
+								.append("@scope {\n")
+								.append(css)
+								.append("\n}\n")
+								.append("</style>\n")
+								.append(line)
+								.append("\n")
+								.append("</div>\n");
+						} else {
+							lines.append(line).append("<br>");
+						}
+		    		} else {
+		    			lines.append(line).append("<br>");
+		    		}
 				}
 			}
 			if (lines.length() > 0)
@@ -2284,7 +2319,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param e event
 	 */
 	@Override
-	public void dataStatusChanged (DataStatusEvent e)
+	public synchronized void dataStatusChanged (DataStatusEvent e)
 	{		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + e.toString());
 		int oldCurrentRow = e.getCurrentRow();
@@ -2544,20 +2579,23 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 		//  Row Count
 		int rows = getRowCount();
-		if (rows == 0)
+		if (rows == 0 && !m_mTable.isLoading())
 		{
 			log.fine("No Rows");
 			return -1;
 		}
 		if (newRow >= rows)
 		{
-			newRow = rows-1;
-			if (log.isLoggable(Level.FINE)) log.fine("Set to max Row: " + newRow);
+			if (!m_mTable.isLoading())
+			{
+				newRow = rows-1;
+				if (log.isLoggable(Level.FINE)) log.fine("Set to max Row: " + newRow);
+			}
 		}
 		else if (newRow < 0)
 		{
 			newRow = 0;
-			log.fine("Set to first Row");
+			if (log.isLoggable(Level.FINE)) log.fine("Set to first Row");
 		}
 		
 		m_mTable.waitLoadingForRow(newRow);
@@ -2571,7 +2609,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param fireEvents fire events
 	 *  @return current row index
 	 */
-	public int setCurrentRow (int newCurrentRow, boolean fireEvents)
+	public synchronized int setCurrentRow (int newCurrentRow, boolean fireEvents)
 	{
 		boolean changingRow = (m_currentRow != newCurrentRow);
 		int oldCurrentRow = m_currentRow;
@@ -2745,7 +2783,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *  Get Field by DB column name
 	 *  @param columnName column name
-	 *  @return GridField
+	 *  @return GridField or null
 	 */
 	public GridField getField (String columnName)
 	{
@@ -2860,7 +2898,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				MLookup mLookup = (MLookup)dependentField.getLookup();
 				//  if the lookup is dynamic (i.e. contains this columnName as variable)
 				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
-						|| mLookup.getValidation().matches(".*[@]"+columnName+"[:].+[@].*$"))
+						|| mLookup.getValidation().matches(".*[@]"+getTabNo()+"[|]"+columnName+"([:].+)?[@].*")
+						|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 						+ dependentField.getColumnName() + " set to null");
@@ -3556,6 +3595,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		int tabMaxQueryRecords = m_vo.MaxQueryRecords;
 		if (roleMaxQueryRecords > 0 && (roleMaxQueryRecords < tabMaxQueryRecords || tabMaxQueryRecords == 0))
 			tabMaxQueryRecords = roleMaxQueryRecords;
+		if (tabMaxQueryRecords == 0)
+			tabMaxQueryRecords = MSysConfig.getIntValue(MSysConfig.GLOBAL_MAX_QUERY_RECORDS, 
+	        		DEFAULT_GLOBAL_MAX_QUERY_RECORDS, Env.getAD_Client_ID(Env.getCtx()));
 		return tabMaxQueryRecords;
 	}
 

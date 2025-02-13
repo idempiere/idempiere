@@ -39,6 +39,11 @@ public class AttachmentItem extends Span implements EventListener<Event>{
 	/** List that contains {@link #ds} */
 	private List<DataSource> list;
 
+	/**
+	 * @param ds
+	 * @param list
+	 * @param removable
+	 */
 	public AttachmentItem(DataSource ds, List<DataSource> list, boolean removable) {
 		setSclass("z-attachment-item");
 		Label label = new Label(ds.getName());

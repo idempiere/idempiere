@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
@@ -462,12 +463,6 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 		return "";
 	}	//	getSerNoCharEnd
 		
-	/**
-	 * 	Before Save.<br/>
-	 * 	- set instance attribute flag
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -477,22 +472,16 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 		return true;
 	}	//	beforeSave
 	
-	
-	/**
-	 * 	After Save.<br/>
-	 * 	- Verify Instance Attribute
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		//	Set Instance Attribute
+	{		
 		if (!success)
 			return success;
+		
 		if (!isInstanceAttribute())
 		{
+			// Update IsInstanceAttribute flag to Y if using serial no or lot or guarantee date
+			// or using one or more attribute with IsInstanceAttribute=Y
 			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas")
 				.append(" SET IsInstanceAttribute='Y' ")
 				.append("WHERE M_AttributeSet_ID=").append(getM_AttributeSet_ID())
@@ -507,13 +496,14 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
 			{
-				log.warning("Set Instance Attribute");
+				if (log.isLoggable(Level.INFO)) log.info("Set Instance Attribute");
 				setIsInstanceAttribute(true);
 			}
-		}
-		//	Reset Instance Attribute
+		}		
 		if (isInstanceAttribute() && !isSerNo() && !isLot() && !isGuaranteeDate())
 		{
+			// Update IsInstanceAttribute flag to N if not using serial no, lot and guarantee date
+			// and not using any attribute with IsInstanceAttribute=Y
 			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas")
 				.append(" SET IsInstanceAttribute='N' ")
 				.append("WHERE M_AttributeSet_ID=").append(getM_AttributeSet_ID())
@@ -527,7 +517,7 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (no != 0)
 			{
-				log.warning("Reset Instance Attribute");
+				if (log.isLoggable(Level.INFO)) log.info("Reset Instance Attribute");
 				setIsInstanceAttribute(false);
 			}
 		}

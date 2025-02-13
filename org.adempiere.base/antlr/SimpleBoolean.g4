@@ -56,5 +56,5 @@ QCSVTEXT   : [']~(['])*(QCOMMA)(QTEXT)(COMMA QTEXT)* ;
 DQCOMMA    : '",';
 DQTEXT 	   : ["](.*?)["] ;
 DQCSVTEXT  : ["]~(["])*(DQCOMMA)(DQTEXT)(COMMA DQTEXT)* ;
-TEXT 	   : [a-zA-Z_0-9,]+ ;
+TEXT 	   : [a-zA-Z_0-9,.@]+ ;
 WS         : [ \r\t\u000C\n]+ -> skip;

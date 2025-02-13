@@ -30,7 +30,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
 
 /**
- *	Document Workflow Manager
+ *	Document Value Workflow Manager
  *	
  *  @author Jorg Janke
  *  @version $Id: DocWorkflowManager.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -77,6 +77,7 @@ public class DocWorkflowManager implements DocWorkflowMgr
 	 *	@param AD_Table_ID table
 	 *	@return true if WF started
 	 */
+	@Override
 	public boolean process (PO document, int AD_Table_ID)
 	{
 		m_noCalled++;

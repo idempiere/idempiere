@@ -49,7 +49,7 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6477844604059539239L;
 
@@ -96,7 +96,6 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		BigDecimal retValue = getRate (ctx, p);
 		return retValue;
 	}	//	convert
-
 	
 	/**
 	 *	Convert qty to target UOM and round.
@@ -140,7 +139,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return retValue;
 	}	//	startDate
 	
-	/**************************************************************************
+	/**
 	 * 	Get Conversion Multiplier Rate, try to derive it if not found directly
 	 * 	@param ctx context
 	 * 	@param p Point with from(x) - to(y) C_UOM_ID
@@ -164,7 +163,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	}	//	getConversion
 
 	/**
-	 * 	Create Conversion Matrix (Client)
+	 * 	Load conversion rate into cache
 	 * 	@param ctx context
 	 */
 	protected static void createRates (Properties ctx)
@@ -373,7 +372,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return null;
 	}	//	deriveRate
 
-	/**************************************************************************
+	/**
 	 * 	Get Conversion Multiplier Rate from Server
 	 *  @param C_UOM_ID from UOM
 	 *  @param C_UOM_To_ID to UOM
@@ -449,7 +448,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return retValue;
 	}   //  convert
 
-	/**************************************************************************
+	/**
 	 *	Convert PRICE expressed in entered UoM to equivalent price in product UoM and round. <br/>
 	 *  OR Convert QTY in product UOM to qty in entered UoM and round. <br/>
 	 *  
@@ -468,7 +467,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return convertProductTo(ctx, M_Product_ID, C_UOM_To_ID, qtyPrice, -1);
 	}
 	
-	/**************************************************************************
+	/**
 	 *	Convert PRICE expressed in entered UoM to equivalent price in product UoM and round. <br/>
 	 *  OR Convert QTY in product UOM to qty in entered UoM and round. <br/>
 	 *  
@@ -556,7 +555,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return null;
 	}	//	getProductRateTo
 
-	/**************************************************************************
+	/**
 	 *	Convert PRICE expressed in product UoM to equivalent price in entered UoM and round. <br/>
 	 *  OR Convert QTY in entered UOM to qty in product UoM and round.  <br/>
 	 *  
@@ -575,7 +574,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, qtyPrice, -1);
 	}
 	
-	/**************************************************************************
+	/**
 	 *	Convert PRICE expressed in product UoM to equivalent price in entered UoM and round. <br/>
 	 *  OR Convert QTY in entered UOM to qty in product UoM and round.  <br/>
 	 *  
@@ -623,7 +622,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 
 	/**
 	 *	Get multiply rate to convert PRICE from price in entered UOM to price in product UOM <br/>
-	 *  OR multiply rate to convert QTY from product UOM to entered UOM
+	 *  OR multiply rate to convert QTY from product UOM to entered UOM.
 	 *  @param ctx context
 	 *  @param M_Product_ID product
 	 *  @param C_UOM_To_ID entered UOM
@@ -660,7 +659,6 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		
 		return null;
 	}	//	getProductRateFrom
-
 
 	/**
 	 * 	Get Product Conversions (cached)
@@ -717,19 +715,18 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	/** Product Conversion Map					*/
 	protected static final CCache<Integer,MUOMConversion[]>	s_conversionProduct 
 		= new CCache<Integer,MUOMConversion[]>(Table_Name, Table_Name+"_Of_Product", 20); 
-	
-	
+		
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_UOM_Conversion_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_UOM_Conversion_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUOMConversion(Properties ctx, String C_UOM_Conversion_UU, String trxName) {
         super(ctx, C_UOM_Conversion_UU, trxName);
     }
 
-	/**************************************************************************
+	/**
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param C_UOM_Conversion_ID id
@@ -784,7 +781,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	}	//	MUOMConversion
 	
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MUOMConversion(MUOMConversion copy) 
@@ -793,7 +790,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -803,7 +800,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -814,14 +811,10 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	From - To is the same
+		// Validate From UOM and To UOM is not the same
 		if (getC_UOM_ID() == getC_UOM_To_ID())
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@C_UOM_ID@ = @C_UOM_To_ID@"));
@@ -830,28 +823,29 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		
 		if (getMultiplyRate() != null && getMultiplyRate().signum() != 0)
 		{
+			// Calculate divide rate from multiply rate
 			if (getDivideRate() == null || getDivideRate().signum() == 0)
 				setDivideRate(getOppositeRate(getMultiplyRate()));
 		}
 		else if (getDivideRate() != null && getDivideRate().signum() != 0)
 		{
+			// Calculate multiply rate from divide rate
 			if (getMultiplyRate() == null || getMultiplyRate().signum() == 0)
 				setMultiplyRate(getOppositeRate(getDivideRate()));
 		}
 		
-		//	Nothing to convert
+		// Error if there's no conversion rate
 		if (getMultiplyRate().compareTo(Env.ZERO) <= 0)
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@MultiplyRate@ <= 0"));
 			return false;
 		}
-		//	Enforce Product UOM
+		//	Enforce Product UOM = Conversion UOM
 		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionUOMValidate, true, getAD_Client_ID()))
 		{
 			if (getM_Product_ID() != 0 
 				&& (newRecord || is_ValueChanged("M_Product_ID") || is_ValueChanged("C_UOM_ID")))
 			{
-				// Check of product must be in the same transaction as the conversion being saved
 				MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 				if (product.getC_UOM_ID() != getC_UOM_ID())
 				{
@@ -862,7 +856,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 			}
 		}
 
-		//	The Product UoM needs to be the smallest UoM - Multiplier must be < 0; Divider must be > 0
+		//	The Product UOM needs to be the smallest UOM - Multiply rate must be < 0; Divide rate must be > 0
 		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionRateValidate, true, getAD_Client_ID()))
 		{
 			if (getM_Product_ID() != 0 && getDivideRate().compareTo(Env.ONE) < 0)
@@ -879,6 +873,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ("MUOMConversion[");
@@ -901,9 +896,9 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	}
 
 	/**
-	 * Calculate opposite conversion rate, i.e calculate divide rate for multiply rate and vice versa.
+	 * Calculate opposite conversion rate, i.e calculate divide rate from multiply rate and vice versa.
 	 * @param rate
-	 * @return {@link BigDecimal}
+	 * @return opposite conversion rate
 	 */
 	public static BigDecimal getOppositeRate(BigDecimal rate) {
 		return getOppositeRate(rate, 12);

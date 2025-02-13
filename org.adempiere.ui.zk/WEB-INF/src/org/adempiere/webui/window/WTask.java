@@ -44,9 +44,7 @@ import org.zkoss.zul.South;
 /**
  *  Dialog to execute OS Task
  *
- *  @author     Jorg Janke
- *  @version    $Id: ATask.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
- *
+ *  @author Jorg Janke
  *  @author Low Heng Sin
  */
 public class WTask extends Window implements EventListener<Event>, IHelpContext
@@ -125,10 +123,12 @@ public class WTask extends Window implements EventListener<Event>, IHelpContext
 						Executions.activate(desktop, 500);
 						try {
 							StringBuilder sb = new StringBuilder();
-							sb.append(osTask.getOut())
-							.append("<br>-----------<br>")
+							sb.append("<pre><code>")
+							.append(osTask.getOut())
+							.append("-----------<br><p style=\"color:red\">")
 							.append(osTask.getErr())
-							.append("<br>-----------");
+							.append("</p>-----------<br>")
+							.append("</code></pre>");
 
 							info.setContent(sb.toString().replace("\n", "<br>"));
 							if (!osTask.isAlive())

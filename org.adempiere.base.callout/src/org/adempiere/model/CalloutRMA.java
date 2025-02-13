@@ -156,6 +156,11 @@ public class CalloutRMA extends CalloutEngine {
 		MInvoice invoice = rma.getOriginalInvoice();
 		if (invoice != null) 
 		{
+    		int dropshipLocationId = -1;
+    		MOrder order = invoice.getOriginalOrder();
+    		if (order != null)
+    			dropshipLocationId = order.getDropShip_Location_ID();
+
 			pp.setM_PriceList_ID(invoice.getM_PriceList_ID());
 			pp.setPriceDate(invoice.getDateInvoiced());
 
@@ -168,7 +173,7 @@ public class CalloutRMA extends CalloutEngine {
 					invoice.getDateInvoiced(), invoice.getDateInvoiced(),
 					AD_Org_ID, rma.getShipment().getM_Warehouse_ID(), 
 					invoice.getC_BPartner_Location_ID(), // should be bill to
-					invoice.getC_BPartner_Location_ID(), rma.isSOTrx(), deliveryViaRule, null);
+					invoice.getC_BPartner_Location_ID(), dropshipLocationId, rma.isSOTrx(), deliveryViaRule, null);
 		} 
 		else 
 		{
@@ -183,7 +188,7 @@ public class CalloutRMA extends CalloutEngine {
 						order.getDateOrdered(), order.getDateOrdered(),
 						AD_Org_ID, order.getM_Warehouse_ID(), 
 						order.getC_BPartner_Location_ID(), // should be bill to
-						order.getC_BPartner_Location_ID(), rma.isSOTrx(), order.getDeliveryViaRule(), null);
+						order.getC_BPartner_Location_ID(), order.getDropShip_Location_ID(), rma.isSOTrx(), order.getDeliveryViaRule(), null);
 			} 
 			else
 				return "No Invoice/Order found the Shipment/Receipt associated";

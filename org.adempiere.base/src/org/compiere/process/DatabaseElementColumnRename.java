@@ -22,8 +22,9 @@
  * Contributors:                                                       *
  * - Carlos Ruiz - globalqss                                           *
  **********************************************************************/
-
 package org.compiere.process;
+
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MProcessPara;
@@ -32,6 +33,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Process to rename ColumnName of an AD_Element record.
+ */
 @org.adempiere.base.annotation.Process
 public class DatabaseElementColumnRename extends SvrProcess {
 
@@ -55,8 +59,8 @@ public class DatabaseElementColumnRename extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		M_Element element = new M_Element(getCtx(), p_AD_Element_ID, get_TrxName());
-		log.info(element.toString());
-		if (   Util.isEmpty(p_NewColumnName, true)
+		if (log.isLoggable(Level.INFO)) log.info(element.toString());
+		if (Util.isEmpty(p_NewColumnName, true)
 			|| p_NewColumnName.toLowerCase().equals(element.getColumnName().toLowerCase())) {
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@NotValid@: @NewColumnName@")));
 		}

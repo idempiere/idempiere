@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
@@ -36,6 +37,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MColumn;
+import org.compiere.model.MEntityType;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRole;
@@ -57,6 +59,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 /**
@@ -68,7 +71,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 439310027130417727L;
+	private static final long serialVersionUID = 8544547290283904702L;
 
 	private int AD_Table_ID;
 	private int AD_Column_ID;
@@ -76,7 +79,8 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	private String Record_UU;
 	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
-
+	private Object value;
+	
 	/**
 	 *	Field Info
 	 *	@param title title
@@ -85,7 +89,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	 *  @param Record_ID
 	 *  @param Record_UU
 	 */
-	public WFieldRecordInfo (String title, int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU)
+	public WFieldRecordInfo (String title, int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU, Object value)
 	{
 		super ();
 		this.setTitle(title);
@@ -111,6 +115,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		this.AD_Column_ID = AD_Column_ID;
 		this.Record_ID = Record_ID;
 		this.Record_UU = Record_UU;
+		this.value = value;
 
 		try
 		{
@@ -159,6 +164,25 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");
 		
+		North north = new North();
+		MColumn column = MColumn.get (Env.getCtx(), AD_Column_ID);
+
+		north.setParent(layout);
+
+		StringBuffer label = new StringBuffer();
+		label.append(column.getAD_Table().getTableName()).append(".").append(column.getColumnName()).append("='").append(value).append("'");
+
+		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
+		{
+			label.append("\n");
+			MEntityType entityType = MEntityType.get(Env.getCtx(), column.getEntityType());
+			label.append(entityType.getName()).append(" [ ").append(entityType.getEntityType()).append(" ]");
+		}
+
+		Label l = new Label(label.toString());
+		l.setMultiline(true);
+		north.appendChild(l);
+
 		Center center = new Center();
 		center.setParent(layout);
 		if (showTable)
@@ -397,7 +421,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		new WFieldRecordInfo(gridField.getColumnName(), 
 				gridField.getGridTab().getAD_Table_ID(), gridField.getAD_Column_ID(), 
 				gridField.getGridTab().getRecord_ID(),
-				gridField.getGridTab().getRecord_UU());
+				gridField.getGridTab().getRecord_UU(), gridField.getValue());
 	}
 
 	/**

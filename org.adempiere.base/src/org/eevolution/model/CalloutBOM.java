@@ -29,7 +29,6 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MUOMConversion;
 import org.compiere.util.Env;
 
-
 /**
  * BOM Callouts
  *	
@@ -41,6 +40,7 @@ import org.compiere.util.Env;
 public class CalloutBOM extends CalloutEngine
 {
 	/**
+	 *  Callout for M_Product_ID.<br/>
 	 *	Parent cycle check and BOM Line defaults.
 	 *  @param ctx      Context
 	 *  @param WindowNo current Window No
@@ -70,6 +70,16 @@ public class CalloutBOM extends CalloutEngine
 		return "";
 	}
         
+	/**
+	 * Callout for C_UOM_ID, QtyEntered and QtyRequired.<br/>
+	 * Sync QtyEntered and QtyRequired.
+	 * @param ctx
+	 * @param WindowNo
+	 * @param mTab
+	 * @param mField
+	 * @param value
+	 * @return empty string
+	 */
     public String qtyLine (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		if (isCalloutActive() || value == null)
@@ -116,8 +126,8 @@ public class CalloutBOM extends CalloutEngine
 	}	//	qty
     
 	/**
-	 *	getdefaults   
-	 *  get defaults for Product (search key, name, description, help and UOM)
+	 *  Callout for M_Product_ID.<br/>
+	 *  Get defaults for Product (search key, name, description, help and UOM)
 	 *  @param ctx      Context
 	 *  @param WindowNo current Window No
 	 *  @param mTab     Model Tab

@@ -25,21 +25,19 @@ import java.util.Arrays;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 
-
 /**
  * 	Process Parameter
  *
  *  @author Jorg Janke
  *  @version $Id: ProcessInfoParameter.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
  * 
- * @author Teo Sarca, www.arhipac.ro
+ *  @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2430845 ] Add ProcessInfoParameter.getParameterAsBoolean method
  */
 public class ProcessInfoParameter implements Serializable
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -5396796617617359891L;
 
@@ -86,6 +84,7 @@ public class ProcessInfoParameter implements Serializable
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		//	From .. To
@@ -102,10 +101,9 @@ public class ProcessInfoParameter implements Serializable
 			+ " (" + m_Info + ")";
 	}	//	toString
 
-
 	/**
-	 * Method getInfo
-	 * @return String
+	 * Get Info
+	 * @return info text
 	 */
 	public String getInfo ()
 	{
@@ -113,8 +111,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method getInfo_To
-	 * @return String
+	 * Get Info_To
+	 * @return info text for to parameter
 	 */
 	public String getInfo_To ()
 	{
@@ -122,8 +120,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method getParameter
-	 * @return Object
+	 * Get Parameter
+	 * @return parameter value
 	 */
 	public Object getParameter ()
 	{
@@ -131,8 +129,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 	
 	/**
-	 * Method getParameter as Int
-	 * @return Object
+	 * Get Parameter as Int
+	 * @return parameter as integer value
 	 */
 	public int getParameterAsInt ()
 	{
@@ -145,8 +143,8 @@ public class ProcessInfoParameter implements Serializable
 	}	//	getParameterAsInt
 	
 	/**
-	 * Method getParameter as Boolean
-	 * @return boolean value
+	 * Get Parameter as Boolean
+	 * @return parameter as boolean value
 	 */
 	public boolean getParameterAsBoolean ()
 	{
@@ -158,8 +156,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method getParameter_To
-	 * @return Object
+	 * Get Parameter_To
+	 * @return to parameter value
 	 */
 	public Object getParameter_To ()
 	{
@@ -167,8 +165,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method getParameter as Int
-	 * @return Object
+	 * Get Parameter To as Int
+	 * @return to parameter as integer value
 	 */
 	public int getParameter_ToAsInt ()
 	{
@@ -181,8 +179,8 @@ public class ProcessInfoParameter implements Serializable
 	}	//	getParameter_ToAsInt
 
 	/**
-	 * Method getParameter as Boolean
-	 * @return boolean
+	 * Get Parameter To as Boolean
+	 * @return to parameter as boolean value
 	 */
 	public boolean getParameter_ToAsBoolean ()
 	{
@@ -194,8 +192,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 	
 	/**
-	 * Method getParameter_To as Timestamp
-	 * @return Timestamp
+	 * Get Parameter_To as Timestamp
+	 * @return to parameter as Timestamp value
 	 */
 	public Timestamp getParameter_ToAsTimestamp()
 	{
@@ -221,8 +219,8 @@ public class ProcessInfoParameter implements Serializable
 
 	
 	/**
-	 * Method getParameter To as String
-	 * @return Object
+	 * Get Parameter To as String
+	 * @return to parameter as string value
 	 */
 	public String getParameter_ToAsString()
 	{
@@ -233,8 +231,8 @@ public class ProcessInfoParameter implements Serializable
 	
 	
 	/**
-	 * Method getParameter as String
-	 * @return Object
+	 * Get Parameter as String
+	 * @return parameter as string value
 	 */
 	public String getParameterAsString()
 	{
@@ -244,8 +242,8 @@ public class ProcessInfoParameter implements Serializable
 	}	//	getParameterAsString
 	
 	/**
-	 * Method getParameter To as BigDecimal
-	 * @return Object
+	 * Get Parameter To as BigDecimal
+	 * @return to parameter as big decimal value
 	 */
 	public BigDecimal getParameter_ToAsBigDecimal ()
 	{
@@ -257,8 +255,8 @@ public class ProcessInfoParameter implements Serializable
 	}	//	getParameter_ToAsBigDecimal
 
 	/**
-	 * Method getParameter as BigDecimal
-	 * @return Object
+	 * Get Parameter as BigDecimal
+	 * @return Parameter as big decimal value
 	 */
 	public BigDecimal getParameterAsBigDecimal ()
 	{
@@ -270,8 +268,8 @@ public class ProcessInfoParameter implements Serializable
 	}	//	getParameterAsBigDecimal	
 	
 	/**
-	 * Method getParameterName
-	 * @return String
+	 * Get ParameterName
+	 * @return parameter name
 	 */
 	public String getParameterName ()
 	{
@@ -279,16 +277,16 @@ public class ProcessInfoParameter implements Serializable
 	}
 	
 	/**
-	 * Method isNotClause
-	 * @return boolean
+	 * Is using Not Clause
+	 * @return true if parameter is using not clause
 	 */
 	public boolean isNotClause() {
 		return m_IsNotClause;
 	}
 
 	/**
-	 * Method setInfo
-	 * @param Info String
+	 * Set Info
+	 * @param Info
 	 */
 	public void setInfo (String Info)
 	{
@@ -299,8 +297,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method setInfo_To
-	 * @param Info_To String
+	 * Set Info_To
+	 * @param Info_To
 	 */
 	public void setInfo_To (String Info_To)
 	{
@@ -311,8 +309,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method setParameter
-	 * @param Parameter Object
+	 * Set Parameter
+	 * @param Parameter parameter value
 	 */
 	public void setParameter (Object Parameter)
 	{
@@ -320,8 +318,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method setParameter_To
-	 * @param Parameter_To Object
+	 * Set Parameter_To
+	 * @param Parameter_To value for to parameter
 	 */
 	public void setParameter_To (Object Parameter_To)
 	{
@@ -329,8 +327,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Method setParameterName
-	 * @param ParameterName String
+	 * Set ParameterName
+	 * @param ParameterName
 	 */
 	public void setParameterName (String ParameterName)
 	{
@@ -338,32 +336,36 @@ public class ProcessInfoParameter implements Serializable
 	}
 	
 	/**
-	 * Method setIsNotClause
-	 * @param IsNotClause boolean
+	 * Set Is using NotClause
+	 * @param IsNotClause true to use not clause
 	 */
 	public void setIsNotClause(boolean IsNotClause) {
 		this.m_IsNotClause = IsNotClause;
 	}
 
 	/**
-	 * Return the value of the parameter as a comma separated integer string. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
-	 * @return String
+	 * Get value of the parameter as a comma separated integer string.<br/>
+	 * Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @return comma separated integer string
 	 */
 	public String getParameterAsCSVInt() {
 		return getParameterAsCSVInt(getParameterAsString());
 	}
 
 	/**
-	 * Return the value of the parameter To as a comma separated integer string. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
-	 * @return String
+	 * Get value of the parameter To as a comma separated integer string.<br/>
+	 * Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @return comma separated integer string
 	 */
 	public String getParameter_ToAsCSVInt() {
 		return getParameterAsCSVInt(getParameter_ToAsString());
 	}
 
 	/**
-	 * Return the value of the parameter as a validated String (all values between commas must be integer)
-	 * @return String
+	 * Validate param is a comma separated integer string.<br/>
+	 * Throw NumberFormatException if it is not. 
+	 * @param param
+	 * @return param
 	 */
 	private String getParameterAsCSVInt(String param) {
 
@@ -379,24 +381,24 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
-	 * @return String
+	 * Get value of the parameter as a String with all values between commas surrounded by quotes
+	 * @return CSV String with all values between commas surrounded by quotes
 	 */
 	public String getParameterAsCSVString() {
 		return getParameterAsCSVString(getParameterAsString());
 	}
 
 	/**
-	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
-	 * @return String
+	 * Get value of the parameter as a String with all values between commas surrounded by quotes
+	 * @return CSV String with all values between commas surrounded by quotes
 	 */
 	public String getParameter_ToAsCSVString() {
 		return getParameterAsCSVString(getParameter_ToAsString());
 	}
 
 	/**
-	 * Return the value of the parameter as a String with all values between commas surrounded by quotes
-	 * @return String
+	 * Convert param to a String with all values between commas surrounded by quotes
+	 * @return CSV String with all values between commas surrounded by quotes
 	 */
 	private String getParameterAsCSVString(String param) {
 		if (Util.isEmpty(param))
@@ -415,7 +417,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * Get value of the parameter as an array of int.<br/>
+	 * Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
 	 * @return array of int
 	 */
 	public int[] getParameterAsIntArray() {
@@ -423,7 +426,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter To as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * Get value of the parameter To as an array of int.<br/>
+	 * Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
 	 * @return array of int
 	 */
 	public int[] getParameterToAsIntArray() {
@@ -431,7 +435,9 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter as an array of int. Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * Convert param to array of int. 
+	 * Validate every value is an integer and throws NumberFormatException if one of the value is not a valid integer.
+	 * @param param CSV text
 	 * @return array of int
 	 */
 	private int[] getParameterAsIntArray(String param) {
@@ -443,7 +449,7 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter as an array of String.
+	 * Get value of the parameter as an array of String.
 	 * @return array of String
 	 */
 	public String[] getParameterAsStringArray() {
@@ -451,7 +457,7 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter To as an array of String.
+	 * Get value of the parameter To as an array of String.
 	 * @return array of String
 	 */
 	public String[] getParameterToAsStringArray() {
@@ -459,7 +465,8 @@ public class ProcessInfoParameter implements Serializable
 	}
 
 	/**
-	 * Return the value of the parameter as an array of String.
+	 * Convert param to array of String.
+	 * @param param
 	 * @return array of String
 	 */
 	private String[] getParameterAsStringArray(String param) {

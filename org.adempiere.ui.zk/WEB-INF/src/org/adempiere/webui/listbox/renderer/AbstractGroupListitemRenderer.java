@@ -36,11 +36,12 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 
 /**
- * Renderer for {@link Listbox} with single level grouping.<br/>
- * Note that due to a class hierarchy issue, this wouldn't works with {@link org.adempiere.webui.component.Listbox}.<br/>
+ * Abstract renderer base class for {@link Listbox} with single level grouping.<br/>
+ * Note1: due to a class hierarchy issue, this wouldn't works with {@link org.adempiere.webui.component.Listbox}.<br/>
  * Note2: not working very well with {@link Listbox#setCheckmark(boolean) Listbox.setCheckmark(true)}. Recommended to roll your own checkbox cell if you need multiple selection. 
  * @author hengsin
  * @param <T> Common ancestor type for Group and Item class.
+ * @see https://github.com/idempiere/idempiere-examples/blob/master/org.idempiere.listbox.group.example/src/org/idempiere/listbox/group/example/BPartnerGroupRenderer.java
  */
 public abstract class AbstractGroupListitemRenderer<T> implements ListitemRenderer<T>, ListitemRendererExt, ListgroupRendererExt {
 	

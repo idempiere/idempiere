@@ -70,19 +70,14 @@ public class MCashPlanLine extends X_C_CashPlanLine
 		super(ctx, rs, trxName);
 	}	//	MCashPlanLine
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if it can be sabed
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Charge
+		// Reset M_Product_ID to 0 if this is a Charge line
 		if (getC_Charge_ID() != 0 && getM_Product_ID() != 0)
 			setM_Product_ID(0);
 		
-		//	Get Line No
+		// Set Line No
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM C_CashPlanLine WHERE C_CashPlan_ID=?";
@@ -93,12 +88,6 @@ public class MCashPlanLine extends X_C_CashPlanLine
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return saved
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{

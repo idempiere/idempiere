@@ -30,14 +30,13 @@ import org.zkoss.zk.ui.event.Events;
  * Extend {@link org.zkoss.zul.Window}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class Window extends org.zkoss.zul.Window implements ISupportMask
 {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -8249071775776387012L;
+	private static final long serialVersionUID = 3187379158546966625L;
 
 	protected ShowMaskWrapper showMaskWrapper = new ShowMaskWrapper(this);
 	/** Show as modal window */
@@ -62,6 +61,9 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
     /** Replace current desktop tab content */
     public static final String REPLACE = "replace";
     
+    /** Window attribute to set the decorate info */
+    public static final String DECORATE_INFO = "decorateInfo";
+
     /** if true, fire ON_WINDOW_CLOSE event when detached from page */
     private boolean fireWindowCloseEventOnDetach = true;
     
@@ -74,7 +76,7 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
     }
     
     /**
-     * alias for detach, to ease porting of swing form
+     * Alias for detach, to ease porting of swing form
      */
     public void dispose()
     {

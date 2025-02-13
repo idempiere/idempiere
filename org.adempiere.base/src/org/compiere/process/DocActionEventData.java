@@ -28,12 +28,13 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adempiere.base.event.IEventTopics;
+import org.adempiere.base.event.POEventData;
 import org.compiere.model.PO;
 
 /**
  * Event data for {@link IEventTopics#DOCACTION}.
  */
-public class DocActionEventData {
+public class DocActionEventData implements POEventData {
 
 	public String docStatus;
 	public Object processing;
@@ -68,6 +69,11 @@ public class DocActionEventData {
 		this.options = options;
 		this.indexObj = indexObj;
 		this.po = po;
+	}
+
+	@Override
+	public PO getPo() {
+		return po;
 	}
 
 }

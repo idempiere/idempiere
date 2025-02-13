@@ -1059,6 +1059,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		if (getC_DocType_ID() <= 0) {
 			setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_MaterialProduction));
 		}
+		// Set IsUseProductionPlan flag
 		if (getM_Product_ID() > 0) {
 			if (isUseProductionPlan()) {
 				setIsUseProductionPlan(false);

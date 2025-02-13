@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_ReportLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_I_ReportLine 
 {
@@ -62,15 +62,6 @@ public interface I_I_ReportLine
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name CalculationType */
-    public static final String COLUMNNAME_CalculationType = "CalculationType";
-
-	/** Set Calculation	  */
-	public void setCalculationType (String CalculationType);
-
-	/** Get Calculation	  */
-	public String getCalculationType();
-
     /** Column name C_ElementValue_ID */
     public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
 
@@ -85,6 +76,15 @@ public interface I_I_ReportLine
 	public int getC_ElementValue_ID();
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
+
+    /** Column name CalculationType */
+    public static final String COLUMNNAME_CalculationType = "CalculationType";
+
+	/** Set Calculation	  */
+	public void setCalculationType (String CalculationType);
+
+	/** Get Calculation	  */
+	public String getCalculationType();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -263,17 +263,6 @@ public interface I_I_ReportLine
 	  */
 	public String getPAPeriodType();
 
-    /** Column name PA_ReportLine_ID */
-    public static final String COLUMNNAME_PA_ReportLine_ID = "PA_ReportLine_ID";
-
-	/** Set Report Line	  */
-	public void setPA_ReportLine_ID (int PA_ReportLine_ID);
-
-	/** Get Report Line	  */
-	public int getPA_ReportLine_ID();
-
-	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
-
     /** Column name PA_ReportLineSet_ID */
     public static final String COLUMNNAME_PA_ReportLineSet_ID = "PA_ReportLineSet_ID";
 
@@ -284,6 +273,17 @@ public interface I_I_ReportLine
 	public int getPA_ReportLineSet_ID();
 
 	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
+
+    /** Column name PA_ReportLine_ID */
+    public static final String COLUMNNAME_PA_ReportLine_ID = "PA_ReportLine_ID";
+
+	/** Set Report Line	  */
+	public void setPA_ReportLine_ID (int PA_ReportLine_ID);
+
+	/** Get Report Line	  */
+	public int getPA_ReportLine_ID();
+
+	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
 
     /** Column name PA_ReportSource_ID */
     public static final String COLUMNNAME_PA_ReportSource_ID = "PA_ReportSource_ID";

@@ -112,6 +112,7 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Validate that PathDictionary is mandatory if IsUsingDictionary=Y
 		if (isUsingDictionary()) {
 			StringBuilder msg = new StringBuilder();
 			if (Util.isEmpty(getPathDictionary())) {

@@ -132,11 +132,13 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 
 		// Check the returned state parameter, must match the original
         State state = (State) request.getSession().getAttribute(OIDC_STATE);
-        if (!state.equals(authResponse.getState())) {
+        if (state != null && !state.equals(authResponse.getState())) {
         	// Unexpected or tampered response, stop!!!
         	request.getSession().removeAttribute(OIDC_STATE);
         	response.sendRedirect(getRedirectURL(principalConfig, redirectMode));
 		    return;
+        } else if (state == null) {
+        	request.getSession().setAttribute(OIDC_STATE, authResponse.getState());
         }
 
 		if (!authResponse.indicatesSuccess()) {
@@ -273,7 +275,6 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 			throws IOException {		
 		AuthenticationRequest authRequest = null;
 		try {
-			String url = getMetaData().getAuthorizationEndpointURI().toString();
 			authRequest = new AuthenticationRequest.Builder(
 					new ResponseType(AUTHENTICATION_CODE_PARAMETER),		      
 					new Scope("openid", "profile", "email"),
@@ -282,7 +283,7 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 			    .state(new State())
 			    .nonce(new Nonce())
 			    .prompt(new Prompt(Prompt.Type.LOGIN)) 
-			    .endpointURI(new URI(url))
+			    .endpointURI(getMetaData().getAuthorizationEndpointURI())
 			    .build();
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
@@ -294,12 +295,50 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 		request.getSession().setAttribute(OIDC_STATE, authRequest.getState());
 		URI redirectURI = authRequest.toURI(); 
 		
-		response.sendRedirect(redirectURI.toURL().toString());
+		response.sendRedirect(redirectURI.toString());
 	}
 
 	@Override
 	public void removePrincipalFromSession(HttpServletRequest httpRequest) {
 		httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
 		httpRequest.getSession().removeAttribute(OIDC_STATE);
+	}
+		
+	@Override
+	public String getLogoutURL() {
+		if (metaData != null) {
+			if (metaData.getEndSessionEndpointURI() != null) {
+				
+				StringBuilder url = new StringBuilder(metaData.getEndSessionEndpointURI().toString());			
+				url.append("?response_type=code")
+				   .append("&client_id=")
+				   .append(principalConfig.getSSO_ApplicationClientID());
+				//redirect url: the oidc spec say post_logout_redirect_uri but amazon cognito is using redirect_uri
+				if (url.indexOf("amazonaws.com") >= 0 || url.indexOf("amazoncognito.com") >= 0)
+				   url.append("&redirect_uri=").append(principalConfig.getSSO_ApplicationRedirectURIs());
+				else
+				   url.append("&post_logout_redirect_uri=").append(principalConfig.getSSO_ApplicationRedirectURIs());			
+				return url.toString();
+			} else {
+				//For provider that doesn’t support end_session_endpoint (for e.g Google Identity), 
+				//We fall back to authorization_endpoint with SELECT_ACCOUNT prompt type
+				try {
+					AuthenticationRequest authRequest = new AuthenticationRequest.Builder(
+							new ResponseType(AUTHENTICATION_CODE_PARAMETER),		      
+							new Scope("openid", "profile", "email"),
+							new ClientID(principalConfig.getSSO_ApplicationClientID()),
+							new URI(getRedirectURL(principalConfig, SSOUtils.SSO_MODE_WEBUI))) 
+					    .prompt(new Prompt(Prompt.Type.SELECT_ACCOUNT)) 
+					    .endpointURI(metaData.getAuthorizationEndpointURI())
+					    .state(new State())
+					    .build();
+					return authRequest.toURI().toString();
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return null;
 	}
 }

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="HR_ListType")
 public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_HR_ListType extends PO implements I_HR_ListType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_HR_ListType (Properties ctx, int HR_ListType_ID, String trxName)

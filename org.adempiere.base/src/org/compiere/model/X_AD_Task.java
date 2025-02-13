@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Task
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Task")
 public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Task (Properties ctx, int AD_Task_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
       super (ctx, AD_Task_ID, trxName);
       /** if (AD_Task_ID == 0)
         {
-			setAccessLevel (null);
 			setAD_Task_ID (0);
+			setAccessLevel (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -54,8 +54,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
       super (ctx, AD_Task_ID, trxName, virtualColumns);
       /** if (AD_Task_ID == 0)
         {
-			setAccessLevel (null);
 			setAD_Task_ID (0);
+			setAccessLevel (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -69,8 +69,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
       super (ctx, AD_Task_UU, trxName);
       /** if (AD_Task_UU == null)
         {
-			setAccessLevel (null);
 			setAD_Task_ID (0);
+			setAccessLevel (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -84,8 +84,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
       super (ctx, AD_Task_UU, trxName, virtualColumns);
       /** if (AD_Task_UU == null)
         {
-			setAccessLevel (null);
 			setAD_Task_ID (0);
+			setAccessLevel (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
@@ -120,37 +120,6 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	/** AccessLevel AD_Reference_ID=5 */
-	public static final int ACCESSLEVEL_AD_Reference_ID=5;
-	/** Organization = 1 */
-	public static final String ACCESSLEVEL_Organization = "1";
-	/** Client only = 2 */
-	public static final String ACCESSLEVEL_ClientOnly = "2";
-	/** Client+Organization = 3 */
-	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
-	/** System only = 4 */
-	public static final String ACCESSLEVEL_SystemOnly = "4";
-	/** System+Client = 6 */
-	public static final String ACCESSLEVEL_SystemPlusClient = "6";
-	/** All = 7 */
-	public static final String ACCESSLEVEL_All = "7";
-	/** Set Data Access Level.
-		@param AccessLevel Access Level required
-	*/
-	public void setAccessLevel (String AccessLevel)
-	{
-
-		set_Value (COLUMNNAME_AccessLevel, AccessLevel);
-	}
-
-	/** Get Data Access Level.
-		@return Access Level required
-	  */
-	public String getAccessLevel()
-	{
-		return (String)get_Value(COLUMNNAME_AccessLevel);
-	}
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
 	{
@@ -214,6 +183,37 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	public String getAD_Task_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Task_UU);
+	}
+
+	/** AccessLevel AD_Reference_ID=5 */
+	public static final int ACCESSLEVEL_AD_Reference_ID=5;
+	/** Organization = 1 */
+	public static final String ACCESSLEVEL_Organization = "1";
+	/** Client only = 2 */
+	public static final String ACCESSLEVEL_ClientOnly = "2";
+	/** Client+Organization = 3 */
+	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
+	/** System only = 4 */
+	public static final String ACCESSLEVEL_SystemOnly = "4";
+	/** System+Client = 6 */
+	public static final String ACCESSLEVEL_SystemPlusClient = "6";
+	/** All = 7 */
+	public static final String ACCESSLEVEL_All = "7";
+	/** Set Data Access Level.
+		@param AccessLevel Access Level required
+	*/
+	public void setAccessLevel (String AccessLevel)
+	{
+
+		set_Value (COLUMNNAME_AccessLevel, AccessLevel);
+	}
+
+	/** Get Data Access Level.
+		@return Access Level required
+	  */
+	public String getAccessLevel()
+	{
+		return (String)get_Value(COLUMNNAME_AccessLevel);
 	}
 
 	/** Set Description.

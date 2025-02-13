@@ -16,8 +16,8 @@ package org.compiere.report.core;
 import org.adempiere.impexp.AbstractXLSXExporter;
 
 /**
+ * Excel exporter implementation for RModel
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
- *
  */
 public class RModelExcelExporter
 extends AbstractXLSXExporter
@@ -25,6 +25,9 @@ extends AbstractXLSXExporter
 	private RModel m_model = null;
 	private int m_currentRow = 0;
 
+	/**
+	 * @param model
+	 */
 	public RModelExcelExporter(RModel model) {
 		super();
 		m_model = model;
@@ -75,6 +78,7 @@ extends AbstractXLSXExporter
 		m_currentRow = row;
 	}
 
+	@Override
 	protected int getCurrentRow() {
 		return m_currentRow;
 	}

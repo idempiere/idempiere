@@ -22,7 +22,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 
 /**
- *  The TableModel for JTable to present RModel information
+ *  The TableModel for RModel information
  *
  *  @author Jorg Janke
  *  @version  $Id: ResultTableModel.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
@@ -30,12 +30,12 @@ import javax.swing.table.AbstractTableModel;
 public class ResultTableModel extends AbstractTableModel
 {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 9197559914473854935L;
 
 	/**
-	 *  Create a JTable Model from ReportModel
+	 *  Create a Table Model from ReportModel
 	 *  @param reportModel
 	 */
 	public ResultTableModel (RModel reportModel)
@@ -129,10 +129,9 @@ public class ResultTableModel extends AbstractTableModel
 	}   //  moveRow
 
 	/**
-	 * Returns the ArrayList of ArrayLists that contains the table's data values.
-	 * The ArrayLists contained in the outer vector are each a single row of values.
+	 * Get the ArrayList of ArrayLists that contains the table's data values. <br/>
+	 * The outer array list is rows and the inner array list is the columns of a row.
 	 * @return the ArrayList of ArrayLists containing the tables data values
-	 * author Teo Sarca [ 1734327 ]
 	 */
 	protected ArrayList<ArrayList<Object>> getDataList() {
 		return m_model.getRows();

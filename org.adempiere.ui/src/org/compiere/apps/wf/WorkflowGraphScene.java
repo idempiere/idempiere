@@ -21,8 +21,8 @@ import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
+ * Scene for workflow graph
  * @author hengsin
- *
  */
 public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 

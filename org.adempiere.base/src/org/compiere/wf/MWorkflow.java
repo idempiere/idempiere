@@ -34,6 +34,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MMenu;
 import org.compiere.model.MProduct;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -46,6 +47,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
@@ -168,10 +170,30 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		return retValue != null ? Arrays.stream(retValue).map(e -> {return new MWorkflow(ctx, e, trxName);}).toArray(MWorkflow[]::new) : null;
 	}	//	getDocValue
 	
+	/**
+	 * Get workflow records accessible to current effective role.<br/>
+	 * @param withEmptyElement if true, first element of the return array is an empty element with (-1,"")
+	 * @return workflow records (AD_Workflow_ID, translated name), order by name
+	 */
+	public static KeyNamePair[] getWorkflowKeyNamePairs(boolean withEmptyElement) {
+		String sql;
+		boolean isBaseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Workflow");
+		if (isBaseLanguage)
+			sql = MRole.getDefault().addAccessSQL(
+				"SELECT AD_Workflow_ID, Name FROM AD_Workflow WHERE IsActive='Y' ORDER BY 2",
+				"AD_Workflow", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
+		else
+			sql = MRole.getDefault().addAccessSQL(
+					"SELECT AD_Workflow.AD_Workflow_ID, AD_Workflow_Trl.Name FROM AD_Workflow INNER JOIN AD_Workflow_Trl ON (AD_Workflow.AD_Workflow_ID=AD_Workflow_Trl.AD_Workflow_ID) "
+					+ " WHERE AD_Workflow.IsActive='Y' AND AD_Workflow_Trl.AD_Language='"+Env.getAD_Language(Env.getCtx())+"' ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
+		KeyNamePair[] pp = DB.getKeyNamePairsEx(sql, withEmptyElement);
+		return pp;
+	}
+	
 	/**	Single Cache					*/
-	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name, 20);
+	private static ImmutablePOCache<String,MWorkflow>	s_cache = new ImmutablePOCache<String,MWorkflow>(Table_Name, Table_Name, 20, 0, false, 0);
 	/**	Document Value Cache			*/
-	private static final CCache<Integer,Map<Integer, MWorkflow[]>> s_cacheDocValue = new CCache<> (Table_Name, Table_Name+"|DocumentValue", 5) {
+	private static final CCache<Integer,Map<Integer, MWorkflow[]>> s_cacheDocValue = new CCache<> (Table_Name, Table_Name+"|DocumentValue", 5, 0, false, 0) {
 		/**
 		 * generated serial id
 		 */
@@ -442,7 +464,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	}	//	getNextNodes
 
 	/**
-	 * 	Get The Nodes in Sequence Order
+	 * 	Get Nodes in Sequence Order
 	 * 	@param AD_Client_ID client
 	 * 	@return Nodes in sequence
 	 */
@@ -486,7 +508,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	}	//	getNodesInOrder
 
 	/**
-	 * 	Add Nodes recursively (sibling first) to Ordered List
+	 * 	Add Nodes recursively (sibling first) to list
 	 *  @param list list to add to
 	 * 	@param AD_WF_Node_ID start node id
 	 * 	@param AD_Client_ID
@@ -669,11 +691,6 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		return sb.toString ();
 	} //	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -681,12 +698,6 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 *  After Save.
-	 *  @param newRecord new record
-	 *  @param success success
-	 *  @return true if save complete (if not overwritten true)
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -705,16 +716,17 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 			}
 		}
 		
+		// Create workflow access record for login role
 		if (newRecord)
 		{
 			int AD_Role_ID = Env.getAD_Role_ID(getCtx());
 			MWorkflowAccess wa = new MWorkflowAccess(this, AD_Role_ID);
 			wa.saveEx();
 		}
-		//	Menu/Workflow
 		else if (is_ValueChanged("IsActive") || is_ValueChanged(COLUMNNAME_Name) 
 			|| is_ValueChanged(COLUMNNAME_Description))
 		{
+			// Update menu
 			MMenu[] menues = MMenu.get(getCtx(), "AD_Workflow_ID=" + getAD_Workflow_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
 			{
@@ -734,6 +746,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 *  @deprecated
 	 *	@return process
 	 */
+	@Deprecated
 	public MWFProcess start (ProcessInfo pi)
 	{
 		return start(pi, null);
@@ -897,8 +910,8 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	}	//	getDurationCalendarField
 	
 	/**
-	 * 	Validate workflow.
-	 * 	Sets Valid flag.
+	 * 	Validate workflow configuration.<br/>
+	 * 	Set IsValid flag.
 	 *	@return errors or ""
 	 */
 	public String validate()

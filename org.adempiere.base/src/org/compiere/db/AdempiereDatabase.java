@@ -202,7 +202,18 @@ public interface AdempiereDatabase
 	 */
 	public String TO_NUMBER (BigDecimal number, int displayType);
 	
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as JSON
+	 */
+	public String TO_JSON (String value);
 	
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast ();
+		
 	/**
 	 * 	Get next sequence number in this Sequence
 	 *	@param Name Sequence name
@@ -312,7 +323,7 @@ public interface AdempiereDatabase
 	public boolean isPagingSupported();
 
 	/**
-	 * modify sql to return a subset of the query result
+	 * modify sql to return a subset of the query result. use 1 base index for start and end parameter
 	 * @param sql
 	 * @param start
 	 * @param end
@@ -425,6 +436,11 @@ public interface AdempiereDatabase
 	public String getClobDataType();
 	
 	/**
+	 * @return json object data type name
+	 */
+	public String getJsonDataType();
+	
+	/**
 	 * @return time stamp data type name
 	 */
 	public String getTimestampDataType();
@@ -471,6 +487,13 @@ public interface AdempiereDatabase
 			.append(")");
 		return sb.toString();
 	}	//	getSQLCreate
+	
+	/**
+	 * Convert blob to hex encoded string and return SQL function that will convert the hex encoded string back to blob
+	 * @param blob
+	 * @return SQL statement
+	 */
+	public String TO_Blob(byte[] blob);
 	
 	/**
 	 * @param column

@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.I_C_AllocationHdr;
 import org.compiere.model.I_C_Cash;
@@ -665,7 +666,7 @@ public abstract class Doc
 			String AD_MessageValue = "PostingError-" + p_Status;
 			int AD_User_ID = p_po.getUpdatedBy();
 			MNote note = new MNote (getCtx(), AD_MessageValue, AD_User_ID,
-				getAD_Client_ID(), getAD_Org_ID(), p_po.get_TrxName());
+				getAD_Client_ID(), getAD_Org_ID(), null);
 			note.setRecord(p_po.get_Table_ID(), p_po.get_ID());
 			//  Reference
 			note.setReference(toString());	//	Document
@@ -684,7 +685,15 @@ public abstract class Doc
 			.append(" - " + Msg.getElement(Env.getCtx(),"IsBalanced") + "=").append( Msg.getMsg(Env.getCtx(), String.valueOf(isBalanced())))
 			.append(" - " + Msg.getElement(Env.getCtx(),"C_AcctSchema_ID") + "=").append(m_as.getName());
 			note.setTextMsg(Text.toString());
-			note.saveEx();
+			try {
+				note.saveEx();
+			} catch (AdempiereException e) {
+				if (e.getMessage() != null && e.getMessage().startsWith("Foreign ID " + p_po.get_ID() + " not found in ")) {
+					; //ignore, in unit test
+				} else {
+					throw e;
+				}
+			}
 			p_Error = Text.toString();
 		}
 
@@ -1144,8 +1153,6 @@ public abstract class Doc
 		return open;
 	}	//	isPeriodOpen
 
-	/*************************************************************************/
-
 	/**	Amount Type - Invoice - Gross   */
 	public static final int 	AMTTYPE_Gross   = 0;
 	/**	Amount Type - Invoice - Net   */
@@ -1221,8 +1228,6 @@ public abstract class Doc
 		}
 		return m_qty;
 	}   //  getQty
-
-	/*************************************************************************/
 
 	/**	Account Type - Invoice - Charge  */
 	public static final int 	ACCTTYPE_Charge         = 0;
@@ -2284,10 +2289,6 @@ public abstract class Doc
 		return 0;
 	}	//	getValue
 
-
-	/*************************************************************************/
-	//  To be overwritten by Subclasses
-
 	/**
 	 *  Load Document Details
 	 *  @return error message or null
@@ -2316,6 +2317,7 @@ public abstract class Doc
 	}
 	
 	/**
+	 * Get accounting schema
 	 * @return MAcctSchema
 	 */
 	protected MAcctSchema getAcctSchema() {
@@ -2323,6 +2325,7 @@ public abstract class Doc
 	}
 	
 	/**
+	 * Is posting of document should be deferred to next run of accounting posting
 	 * @return true if posting of document should be deferred to next run of accounting posting
 	 */
 	public boolean isDeferPosting() {

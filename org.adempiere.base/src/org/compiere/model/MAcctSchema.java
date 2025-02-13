@@ -184,9 +184,9 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	}   //  getClientAcctSchema
 
 	/** Cache of Client AcctSchema Arrays		**/
-	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 120, false);	//  3 clients
+	private static CCache<Integer,MAcctSchema[]> s_schema = new CCache<Integer,MAcctSchema[]>(I_AD_ClientInfo.Table_Name, I_AD_ClientInfo.Table_Name+"|MAcctSchema[]", 3, 0, false, 0);	//  3 clients
 	/**	Cache of AcctSchemas 					**/
-	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 120);	//  3 accounting schemas
+	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 0, false, 0);	//  3 accounting schemas
 		
     /**
      * UUID based Constructor
@@ -491,6 +491,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	 * @deprecated only orgs are now fetched automatically
 	 * @throws IllegalStateException every time when you call it 
 	 */
+	@Deprecated
 	public void setOnlyOrgs (Integer[] orgs)
 	{
 		throw new IllegalStateException("The OnlyOrgs are now fetched automatically");
@@ -704,11 +705,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			|| getTaxCorrectionType().equals(TAXCORRECTIONTYPE_Write_OffAndDiscount);
 	}	//	isTaxCorrectionWriteOff
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
+	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
@@ -717,13 +714,14 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			setTaxCorrectionType(isDiscountCorrectsTax() 
 				? TAXCORRECTIONTYPE_Write_OffAndDiscount : TAXCORRECTIONTYPE_None);
 		checkCosting();
-		//	Check Primary
+		// AD_OrgOnly_ID must be 0 if this is primary accounting schema of tenant
 		if (getAD_OrgOnly_ID() != 0)
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID());
 			if (info.getC_AcctSchema1_ID() == getC_AcctSchema_ID())
 				setAD_OrgOnly_ID(0);
 		}
+		// Disallow costing level change if there are existing costing detail records
 		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) 
 		{
 			String products = getProductsWithCost();
@@ -744,7 +742,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 		StringBuilder sql = new StringBuilder("SELECT DISTINCT p.Value FROM M_Product p JOIN M_CostDetail d ON p.M_Product_ID=d.M_Product_ID");
 		sql.append(" JOIN M_Product_Category_Acct pc ON p.M_Product_Category_ID=pc.M_Product_Category_ID AND d.C_AcctSchema_ID=pc.C_AcctSchema_ID");
 		sql.append(" WHERE p.IsActive='Y' AND pc.IsActive='Y' AND pc.CostingLevel IS NULL AND d.C_AcctSchema_ID=?");
-		String query = DB.getDatabase().addPagingSQL(sql.toString(), 0, 50);
+		String query = DB.getDatabase().addPagingSQL(sql.toString(), 1, 50);
 		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), query, getC_AcctSchema_ID());
 		if (list != null) {
 			for(List<Object> entry : list) {

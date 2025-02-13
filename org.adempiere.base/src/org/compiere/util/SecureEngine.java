@@ -73,7 +73,7 @@ public class SecureEngine
 	}	//	getClassName
 	
 	/**
-	 *  Convert String and salt to SHA-512 hash with iterations
+	 *  Convert String and salt to SHA-512 hash with iterations<br/>
 	 *  https://www.owasp.org/index.php/Hashing_Java
 	 *
 	 *  @param value message
@@ -89,7 +89,7 @@ public class SecureEngine
 	}	//	getDigest	
 	
 	/**
-	 *  Perform MD5 Digest of value.
+	 *  Perform MD5 Digest of value.<br/>
 	 *  JavaScript version see - http://pajhome.org.uk/crypt/md5/index.html
 	 *
 	 *  @param value message
@@ -103,7 +103,7 @@ public class SecureEngine
 	}	//	getDigest
 	
 	/**
-	 *	Encryption.
+	 *	Encryption.<br/>
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
 	 *  @param AD_Client_ID
@@ -127,7 +127,7 @@ public class SecureEngine
 	}	//	encrypt
 	
 	/**
-	 *	Decryption.
+	 *	Decryption.<br/>
 	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
 	 *  @param AD_Client_ID

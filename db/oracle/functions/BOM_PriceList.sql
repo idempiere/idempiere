@@ -27,6 +27,7 @@ AS
 		WHERE b.M_ProductBOM_ID=p.M_Product_ID
 		  AND b.M_Product_ID=Product_ID
 		  AND b.M_ProductBOM_ID != Product_ID
+		  AND (p.IsBOM='N' OR p.IsVerified='Y')
 		  AND b.IsActive='Y';
 	--
 BEGIN
@@ -34,7 +35,7 @@ BEGIN
 	SELECT	COALESCE (SUM(PriceList), 0)
 	INTO	v_Price
    	FROM	M_PRODUCTPRICE
-	WHERE M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
+	WHERE   IsActive='Y' AND M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
 --	DBMS_OUTPUT.PUT_LINE('Price=' || Price);
 
 	--	No Price - Check if BOM

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ServiceLevelLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_ServiceLevelLine")
 public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_ServiceLevelLine (Properties ctx, int C_ServiceLevelLine_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
       super (ctx, C_ServiceLevelLine_ID, trxName);
       /** if (C_ServiceLevelLine_ID == 0)
         {
-			setC_ServiceLevel_ID (0);
 			setC_ServiceLevelLine_ID (0);
+			setC_ServiceLevel_ID (0);
 			setServiceDate (new Timestamp( System.currentTimeMillis() ));
 			setServiceLevelProvided (Env.ZERO);
         } */
@@ -55,8 +55,8 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
       super (ctx, C_ServiceLevelLine_ID, trxName, virtualColumns);
       /** if (C_ServiceLevelLine_ID == 0)
         {
-			setC_ServiceLevel_ID (0);
 			setC_ServiceLevelLine_ID (0);
+			setC_ServiceLevel_ID (0);
 			setServiceDate (new Timestamp( System.currentTimeMillis() ));
 			setServiceLevelProvided (Env.ZERO);
         } */
@@ -68,8 +68,8 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
       super (ctx, C_ServiceLevelLine_UU, trxName);
       /** if (C_ServiceLevelLine_UU == null)
         {
-			setC_ServiceLevel_ID (0);
 			setC_ServiceLevelLine_ID (0);
+			setC_ServiceLevel_ID (0);
 			setServiceDate (new Timestamp( System.currentTimeMillis() ));
 			setServiceLevelProvided (Env.ZERO);
         } */
@@ -81,8 +81,8 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
       super (ctx, C_ServiceLevelLine_UU, trxName, virtualColumns);
       /** if (C_ServiceLevelLine_UU == null)
         {
-			setC_ServiceLevel_ID (0);
 			setC_ServiceLevelLine_ID (0);
+			setC_ServiceLevel_ID (0);
 			setServiceDate (new Timestamp( System.currentTimeMillis() ));
 			setServiceLevelProvided (Env.ZERO);
         } */
@@ -115,34 +115,6 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_C_ServiceLevel getC_ServiceLevel() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ServiceLevel)MTable.get(getCtx(), org.compiere.model.I_C_ServiceLevel.Table_ID)
-			.getPO(getC_ServiceLevel_ID(), get_TrxName());
-	}
-
-	/** Set Service Level.
-		@param C_ServiceLevel_ID Product Revenue Recognition Service Level 
-	*/
-	public void setC_ServiceLevel_ID (int C_ServiceLevel_ID)
-	{
-		if (C_ServiceLevel_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_ServiceLevel_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_ServiceLevel_ID, Integer.valueOf(C_ServiceLevel_ID));
-	}
-
-	/** Get Service Level.
-		@return Product Revenue Recognition Service Level 
-	  */
-	public int getC_ServiceLevel_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_ServiceLevel_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Service Level Line.
 		@param C_ServiceLevelLine_ID Product Revenue Recognition Service Level Line
@@ -179,6 +151,34 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
 	public String getC_ServiceLevelLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ServiceLevelLine_UU);
+	}
+
+	public org.compiere.model.I_C_ServiceLevel getC_ServiceLevel() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ServiceLevel)MTable.get(getCtx(), org.compiere.model.I_C_ServiceLevel.Table_ID)
+			.getPO(getC_ServiceLevel_ID(), get_TrxName());
+	}
+
+	/** Set Service Level.
+		@param C_ServiceLevel_ID Product Revenue Recognition Service Level 
+	*/
+	public void setC_ServiceLevel_ID (int C_ServiceLevel_ID)
+	{
+		if (C_ServiceLevel_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_ServiceLevel_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_ServiceLevel_ID, Integer.valueOf(C_ServiceLevel_ID));
+	}
+
+	/** Get Service Level.
+		@return Product Revenue Recognition Service Level 
+	  */
+	public int getC_ServiceLevel_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ServiceLevel_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

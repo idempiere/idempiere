@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_CostHistory
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_CostHistory")
 public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_CostHistory (Properties ctx, int M_CostHistory_ID, String trxName)
@@ -334,25 +334,6 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 		return bd;
 	}
 
-	/** Set New Cost Price.
-		@param NewCostPrice New current cost price after processing of M_CostDetail
-	*/
-	public void setNewCostPrice (BigDecimal NewCostPrice)
-	{
-		set_ValueNoCheck (COLUMNNAME_NewCostPrice, NewCostPrice);
-	}
-
-	/** Get New Cost Price.
-		@return New current cost price after processing of M_CostDetail
-	  */
-	public BigDecimal getNewCostPrice()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_NewCostPrice);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	/** Set New Accumulated Qty.
 		@param NewCQty New Accumulated Qty after processing of M_CostDetail
 	*/
@@ -367,6 +348,25 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	public BigDecimal getNewCQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_NewCQty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set New Cost Price.
+		@param NewCostPrice New current cost price after processing of M_CostDetail
+	*/
+	public void setNewCostPrice (BigDecimal NewCostPrice)
+	{
+		set_ValueNoCheck (COLUMNNAME_NewCostPrice, NewCostPrice);
+	}
+
+	/** Get New Cost Price.
+		@return New current cost price after processing of M_CostDetail
+	  */
+	public BigDecimal getNewCostPrice()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_NewCostPrice);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
@@ -410,25 +410,6 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 		return bd;
 	}
 
-	/** Set Old Current Cost Price.
-		@param OldCostPrice Old current cost price before the processing of M_CostDetail
-	*/
-	public void setOldCostPrice (BigDecimal OldCostPrice)
-	{
-		set_ValueNoCheck (COLUMNNAME_OldCostPrice, OldCostPrice);
-	}
-
-	/** Get Old Current Cost Price.
-		@return Old current cost price before the processing of M_CostDetail
-	  */
-	public BigDecimal getOldCostPrice()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OldCostPrice);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	/** Set Old Accumulated Qty.
 		@param OldCQty Old accumulated qty before the processing of M_CostDetail
 	*/
@@ -443,6 +424,25 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	public BigDecimal getOldCQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OldCQty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Old Current Cost Price.
+		@param OldCostPrice Old current cost price before the processing of M_CostDetail
+	*/
+	public void setOldCostPrice (BigDecimal OldCostPrice)
+	{
+		set_ValueNoCheck (COLUMNNAME_OldCostPrice, OldCostPrice);
+	}
+
+	/** Get Old Current Cost Price.
+		@return Old current cost price before the processing of M_CostDetail
+	  */
+	public BigDecimal getOldCostPrice()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OldCostPrice);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

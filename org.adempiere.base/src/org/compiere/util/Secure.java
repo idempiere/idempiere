@@ -152,7 +152,7 @@ public class Secure implements SecureInterface
 	 *  @return encrypted String
 	 */
 	public String encrypt (String value,int AD_Client_ID)
- {
+	{
 		String clearText = value;
 		if (clearText == null)
 			clearText = "";

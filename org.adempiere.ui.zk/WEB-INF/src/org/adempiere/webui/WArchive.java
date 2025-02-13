@@ -45,11 +45,10 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Popup;
 
 /**
- *	Archive Button Consequences.
- *	Popup Menu
+ *	Archive Button Action.<br/>
+ *  Create and show popup menu.
  *	
  *  @author Jorg Janke
- *  @version $Id: AArchive.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  */
 public class WArchive implements EventListener<Event>
 {
@@ -60,6 +59,7 @@ public class WArchive implements EventListener<Event>
 	 *	@param Record_ID record ID
 	 *  @deprecated - use {@link #WArchive(Component, int, int, String)} instead
 	 */
+	@Deprecated
 	public WArchive (Component invoker, int AD_Table_ID, int Record_ID)
 	{
 		this(invoker, AD_Table_ID, Record_ID, null);
@@ -98,7 +98,7 @@ public class WArchive implements EventListener<Event>
 	private static final CLogger	log	= CLogger.getCLogger (WArchive.class);
 	
 	/**
-	 * 	Display archive menu
+	 * 	Create and show the archive popup menu
 	 * 	@param invoker button
 	 */
 	private void getArchives(Component invoker)

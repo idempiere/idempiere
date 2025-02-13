@@ -108,23 +108,17 @@ public class MElement extends X_C_Element
 			m_tree = new X_AD_Tree (getCtx(), getAD_Tree_ID(), get_TrxName());
 		return m_tree;
 	}	//	getTree
-	
-	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
+		
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (getAD_Org_ID() != 0)
 			setAD_Org_ID(0);
 		String elementType = getElementType();
-		//	Natural Account
+		// Reset IsNaturalAccount to false if element type is user defined
 		if (ELEMENTTYPE_UserDefined.equals(elementType) && isNaturalAccount())
 			setIsNaturalAccount(false);
-		//	Tree validation
+		//	Validate tree tree against element type
 		X_AD_Tree tree = getTree();
 		if (tree == null)
 			return false;

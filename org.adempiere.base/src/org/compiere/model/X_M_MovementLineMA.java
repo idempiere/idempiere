@@ -26,7 +26,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_MovementLineMA
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementLineMA")
 public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_M_MovementLineMA (Properties ctx, int M_MovementLineMA_ID, String trxName)
@@ -174,6 +174,21 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
 		return ii.intValue();
 	}
 
+	/** Set M_MovementLineMA_UU.
+		@param M_MovementLineMA_UU M_MovementLineMA_UU
+	*/
+	public void setM_MovementLineMA_UU (String M_MovementLineMA_UU)
+	{
+		set_Value (COLUMNNAME_M_MovementLineMA_UU, M_MovementLineMA_UU);
+	}
+
+	/** Get M_MovementLineMA_UU.
+		@return M_MovementLineMA_UU	  */
+	public String getM_MovementLineMA_UU()
+	{
+		return (String)get_Value(COLUMNNAME_M_MovementLineMA_UU);
+	}
+
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)
@@ -209,21 +224,6 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
     {
         return new ValueNamePair(get_UUID(), String.valueOf(getM_MovementLine_ID()));
     }
-
-	/** Set M_MovementLineMA_UU.
-		@param M_MovementLineMA_UU M_MovementLineMA_UU
-	*/
-	public void setM_MovementLineMA_UU (String M_MovementLineMA_UU)
-	{
-		set_Value (COLUMNNAME_M_MovementLineMA_UU, M_MovementLineMA_UU);
-	}
-
-	/** Get M_MovementLineMA_UU.
-		@return M_MovementLineMA_UU	  */
-	public String getM_MovementLineMA_UU()
-	{
-		return (String)get_Value(COLUMNNAME_M_MovementLineMA_UU);
-	}
 
 	/** Set Movement Quantity.
 		@param MovementQty Quantity of a product moved.
