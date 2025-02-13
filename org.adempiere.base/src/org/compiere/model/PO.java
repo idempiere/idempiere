@@ -55,6 +55,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.CrossTenantException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
@@ -117,7 +118,7 @@ public abstract class PO
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1335945052825334098L;
+	private static final long serialVersionUID = -10414475210373531L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -6002,30 +6003,31 @@ public abstract class PO
 					+" PO.AD_Client_ID="+poClientID
 					+" writing="+writing
 					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
-				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
-						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
-						+ " Record_ID=" + get_ID();
-				throw new AdempiereException(message);
+				throw new CrossTenantException(writing, get_TableName(), get_ID());
 			}
 		}
 	}
-
+	
 	/**
-	 * Validate Foreign keys for cross tenant.</br>
+	 * Validates foreign key constraints for the current record.<br/>
 	 * To be called programmatically before saving in programs that can receive arbitrary values in IDs.<br/>
 	 * This is an expensive operation in terms of database, use it wisely.
-	 * <pre>
-	 * TODO: there is huge room for performance improvement, for example:
-	 * - caching the valid values found on foreign tables
-	 * - caching the column ID of the foreign column
-	 * - caching the systemAccess
-	 * </pre>
-	 * @return true if all the foreign keys are valid
+	 * <p>
+	 * This method ensures that:
+	 * <ul>
+	 *   <li>Foreign key values exist in the referenced table.</li>
+	 *   <li>System-level records are only used where allowed.</li>
+	 *   <li>Cross-tenant references are prevented.</li>
+	 * </ul>
+	 * If any validation fails, an appropriate exception is thrown.
+	 *
+	 * @throws AdempiereException   If the foreign key value does not exist in the referenced table.
+	 * @throws CrossTenantException If a cross-tenant reference is detected.
 	 */
-	public boolean validForeignKeys() {
+	public void validForeignKeysEx() {
 		List<ValueNamePair> fks = getForeignColumnIdxs();
 		if (fks == null) {
-			return true;
+			return;
 		}
 		for (ValueNamePair vnp : fks) {
 			String fkcol = vnp.getID();
@@ -6056,20 +6058,47 @@ public abstract class PO
 							.append("=?");
 					int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), fkval);
 					if (pocid < 0) {
-						log.saveError("Error", "Foreign ID " + fkval + " not found in " + fkcol);
-						return false;
+						throw new AdempiereException("Foreign ID " + fkval + " not found in " + fkcol);
 					}
 					if (pocid == 0 && !systemAccess) {
-						log.saveError("Error", "System ID " + fkval + " cannot be used in " + fkcol);
-						return false;
+						throw new CrossTenantException(fkval, fkcol);
 					}
 					int curcid = Env.getAD_Client_ID(getCtx());
 					if (pocid > 0 && pocid != curcid) {
-						log.saveError("Error", "Cross tenant ID " + fkval + " not allowed in " + fkcol);
-						return false;
+						throw new CrossTenantException(fkval, fkcol);
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Validates foreign key constraints for the current record.
+	 * <p>
+	 * This method calls {@link #validForeignKeysEx()} and returns a boolean result instead of throwing exceptions.
+	 * It ensures that:
+	 * <ul>
+	 *   <li>Foreign key values exist in the referenced table.</li>
+	 *   <li>System-level records are only used where allowed.</li>
+	 *   <li>Cross-tenant references are prevented.</li>
+	 * </ul>
+	 * If validation fails, the method returns {@code false} instead of throwing an exception.
+	 * 
+ 	 * <pre>
+	 * TODO: there is huge room for performance improvement, for example:
+	 * - caching the valid values found on foreign tables
+	 * - caching the column ID of the foreign column
+	 * - caching the systemAccess
+	 * </pre>
+	 *
+	 * @return {@code true} if all foreign key constraints are valid, {@code false} otherwise.
+	 */
+	public boolean validForeignKeys() {
+		try {
+			validForeignKeysEx();
+		} catch (Exception e) {
+			log.saveError("Error", e.getMessage());
+			return false;
 		}
 		return true;
 	}
@@ -6121,10 +6150,10 @@ public abstract class PO
 		if (pocid < 0)
 			throw new AdempiereException("Foreign ID " + recordId + " not found in " + ft.getTableName());
 		if (pocid == 0 && !systemAccess)
-			throw new AdempiereException("System ID " + recordId + " cannot be used in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordId);
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
-			throw new AdempiereException("Cross tenant ID " + recordId + " not allowed in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordId);
 	}
 
 	/**
@@ -6174,10 +6203,10 @@ public abstract class PO
 		if (pocid < 0)
 			throw new AdempiereException("Foreign UUID " + recordUU + " not found in " + ft.getTableName());
 		if (pocid == 0 && !systemAccess)
-			throw new AdempiereException("System UUID " + recordUU + " cannot be used in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordUU);
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
-			throw new AdempiereException("Cross tenant UUID " + recordUU + " not allowed in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordUU);
 	}
 
 	/**
