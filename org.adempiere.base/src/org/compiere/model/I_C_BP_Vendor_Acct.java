@@ -62,6 +62,21 @@ public interface I_C_BP_Vendor_Acct
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name B_PaymentSelect_Acct */
+    public static final String COLUMNNAME_B_PaymentSelect_Acct = "B_PaymentSelect_Acct";
+
+	/** Set Payment Selection.
+	  * AP Payment Selection Clearing Account
+	  */
+	public void setB_PaymentSelect_Acct (int B_PaymentSelect_Acct);
+
+	/** Get Payment Selection.
+	  * AP Payment Selection Clearing Account
+	  */
+	public int getB_PaymentSelect_Acct();
+
+	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException;
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
