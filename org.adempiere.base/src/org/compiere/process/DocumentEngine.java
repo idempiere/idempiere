@@ -1107,9 +1107,13 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				if (periodOpen && isBackDateTrxAllowed) {
-					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen ) {
+					options[index++] = DocumentEngine.ACTION_ReActivate;
+
+					if (isBackDateTrxAllowed)
+						options[index++] = DocumentEngine.ACTION_Reverse_Correct;	
 				}
+
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
