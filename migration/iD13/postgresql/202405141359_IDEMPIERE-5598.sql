@@ -849,6 +849,14 @@ UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2024-01-23 17:35:59','YYYY-MM-
 ;
 
 -- Jan 23, 2024, 5:40:45 PM IST
+UPDATE AD_Element SET Name='Text Column 1', PrintName='Text Column 1',Updated=TO_TIMESTAMP('2024-01-23 17:40:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=203894
+;
+
+-- Jan 23, 2024, 5:40:45 PM IST
+UPDATE AD_Column SET ColumnName='CustomFieldText1', Name='Text Column 1', Description='User defined accounting Element', Help='A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)', Placeholder=NULL WHERE AD_Element_ID=203894
+;
+
+-- Jan 23, 2024, 5:40:45 PM IST
 UPDATE AD_Process_Para SET ColumnName='CustomFieldText1', Name='Text Column 1', Description='User defined accounting Element', Help='A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)', AD_Element_ID=203894 WHERE UPPER(ColumnName)='CustomFieldText1' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
 ;
 
@@ -1260,6 +1268,7 @@ UPDATE AD_Field SET SeqNo=450,Updated=TO_TIMESTAMP('2024-05-10 17:20:10','YYYY-M
 UPDATE AD_Field SET SeqNo=460,Updated=TO_TIMESTAMP('2024-05-10 17:20:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2365
 ;
 
+
 -- Dec 6, 2024, 1:18:47 PM IST
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (216925,0,'Attribute Set Instance','Product Attribute Set Instance','The values of the actual Product Attribute Instances.  The product level attributes are defined on Product level.',53203,'M_AttributeSetInstance_ID',22,'N','N','N','N','N',0,'N',35,0,0,'Y',TO_TIMESTAMP('2024-12-06 13:18:47','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-06 13:18:47','YYYY-MM-DD HH24:MI:SS'),100,2019,'Y','N','D','N','N','N','Y','984d65d3-1bca-48d2-bf8e-03051022a37d','Y',0,'N','N','N','N','N')
 ;
@@ -1307,6 +1316,7 @@ INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,
 -- Dec 16, 2024, 5:32:15 PM IST
 INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,Help,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete,DateRangeOption,IsShowNegateButton) VALUES (200493,0,0,'Y',TO_TIMESTAMP('2024-12-16 17:32:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-16 17:32:11','YYYY-MM-DD HH24:MI:SS'),100,'Attribute Set Instance','Product Attribute Set Instance','The values of the actual Product Attribute Instances.  The product level attributes are defined on Product level.',204,220,18,'N',22,'N','M_AttributeSetInstance_ID','Y','D',2019,'@$Element_AI@=Y','281d41a4-fbf5-4bbf-a93d-75843d7b5c81','N','N','D','N')
 ;
+
 
 -- Dec 17, 2024, 12:20:49 PM IST
 UPDATE AD_Field SET DisplayLogic='@$Element_F1@=Y',Updated=TO_TIMESTAMP('2024-12-17 12:20:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208201
@@ -2515,6 +2525,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,Displa
 INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLogic,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208640,'Department',200008,216978,'Y','@$Element_DP@=Y',22,390,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2024-12-20 16:04:25','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-20 16:04:25','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','5fd4766d-e9a5-4444-b3d6-7cb26d32910a','Y',390,2)
 ;
 
+
 -- Dec 23, 2024, 12:18:56 PM IST
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (216979,0,'Cost Center',660,'C_CostCenter_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2024-12-23 12:18:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-23 12:18:55','YYYY-MM-DD HH24:MI:SS'),100,203903,'Y','N','D','N','N','N','Y','8410aa6f-4836-431c-a43c-dffaff3dd1dc','Y',0,'N','N','N','N','N')
 ;
@@ -2631,7 +2642,8 @@ UPDATE AD_Field SET DisplayLogic='@$Element_DP@=Y
 
 -- Dec 24, 2024, 3:53:17 PM IST
 UPDATE AD_Field SET DisplayLogic='@$Element_DP@=Y & @AnyDepartment@=N', SeqNo=410,Updated=TO_TIMESTAMP('2024-12-24 15:53:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208634
-;-- Dec 24, 2024, 5:02:01 PM IST
+;
+-- Dec 24, 2024, 5:02:01 PM IST
 INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (203967,0,0,'Y',TO_TIMESTAMP('2024-12-24 17:02:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-24 17:02:00','YYYY-MM-DD HH24:MI:SS'),100,'AnyWarehouse','Any Warehouse','Match any value of the Warehouse segment','If selected, any value of the account segment will match. If not selected, but no value of the accounting segment is selected, the matched value must be null (i.e. not defined).','Any Warehouse','D','f8fa66a2-db81-4bcb-a96c-3f95b7cc0440')
 ;
 
@@ -3512,6 +3524,15 @@ UPDATE AD_Field SET SeqNo=420,Updated=TO_TIMESTAMP('2024-12-26 15:33:04','YYYY-M
 UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2024-12-26 15:33:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204849
 ;
 
+
+-- Dec 26, 2024, 4:38:48 PM IST
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,Help,AD_Process_ID,SeqNo,AD_Reference_ID,AD_Reference_Value_ID,IsRange,FieldLength,IsMandatory,DefaultValue,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,AD_Process_Para_UU,IsEncrypted,IsAutocomplete,DateRangeOption,IsShowNegateButton) VALUES (200494,0,0,'Y',TO_TIMESTAMP('2024-12-26 16:38:44','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-26 16:38:44','YYYY-MM-DD HH24:MI:SS'),100,'Tax','Tax identifier','The Tax indicates the type of tax used in document line.',204,230,200162,158,'N',0,'N','-1','C_Tax_ID','Y','D',213,'800e7214-566c-4e24-91bf-52e39d2e0964','N','N','D','N')
+;
+
+-- Dec 26, 2024, 4:48:29 PM IST
+UPDATE AD_Process_Para SET DefaultValue=NULL,Updated=TO_TIMESTAMP('2024-12-26 16:48:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200494
+;
+
 -- Jan 22, 2025, 2:29:04 PM IST
 INSERT INTO AD_FieldGroup (AD_FieldGroup_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,EntityType,FieldGroupType,IsCollapsedByDefault,AD_FieldGroup_UU) VALUES (200032,0,0,'Y',TO_TIMESTAMP('2025-01-22 14:29:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-01-22 14:29:00','YYYY-MM-DD HH24:MI:SS'),100,'Additional Dimensions','D','C','N','c5e2ebb1-5a09-419c-820b-66f473a37ed8')
 ;
@@ -3627,3 +3648,269 @@ UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2025-01-22 14:33:06','YYYY-M
 -- Jan 22, 2025, 2:33:06 PM IST
 UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2025-01-22 14:33:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208678
 ;
+
+-- Feb 17, 2025, 11:46:08 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217041,0,'Custom FieldText 1','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',200420,'CustomFieldText1',255,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:46:07','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:46:07','YYYY-MM-DD HH24:MI:SS'),100,203894,'Y','N','D','N','N','N','Y','21808c30-4093-420a-a6ad-4fa98046444f','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:46:10 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN CustomFieldText1 VARCHAR(255) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:46:18 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217042,0,'Text Column 2','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',200420,'CustomFieldText2',255,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:46:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:46:18','YYYY-MM-DD HH24:MI:SS'),100,203895,'Y','N','D','N','N','N','Y','6d88b10c-6a3f-4b83-a7f4-0842c19daa9b','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:46:20 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN CustomFieldText2 VARCHAR(255) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:44:34 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217034,0,'Text Column 3','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',200420,'CustomFieldText3',255,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:44:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:44:33','YYYY-MM-DD HH24:MI:SS'),100,203896,'Y','N','D','N','N','N','Y','bd6cb537-fdec-44e8-b2a2-83c386198a8c','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:44:36 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN CustomFieldText3 VARCHAR(255) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:45:57 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217040,0,'Text Column 4','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',200420,'CustomFieldText4',255,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:45:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:45:56','YYYY-MM-DD HH24:MI:SS'),100,203897,'Y','N','D','N','N','N','Y','c95447de-8006-44c3-a270-98689358403e','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:45:59 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN CustomFieldText4 VARCHAR(255) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:44:46 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217035,0,'Charge','Additional document charges','The Charge indicates a type of Charge (Handling, Shipping, Restocking)',200420,'C_Charge_ID',10,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:44:46','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:44:46','YYYY-MM-DD HH24:MI:SS'),100,968,'Y','N','D','N','N','N','Y','f7cf511f-4b14-408f-b9ac-eb2d909ef94b','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:44:50 AM IST
+UPDATE AD_Column SET FKConstraintName='CCharge_TFactAcctHistory', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-02-17 11:44:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217035
+;
+
+-- Feb 17, 2025, 11:44:50 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN C_Charge_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:44:50 AM IST
+ALTER TABLE T_Fact_Acct_History ADD CONSTRAINT CCharge_TFactAcctHistory FOREIGN KEY (C_Charge_ID) REFERENCES c_charge(c_charge_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 17, 2025, 11:45:15 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217037,0,'Warehouse','Storage Warehouse and Service Point','The Warehouse identifies a unique Warehouse where products are stored or Services are provided.',200420,'M_Warehouse_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:45:15','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:45:15','YYYY-MM-DD HH24:MI:SS'),100,459,'Y','N','D','N','N','N','Y','5871e09b-0dd7-4bd1-ab29-5bcd48100177','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:45:18 AM IST
+UPDATE AD_Column SET FKConstraintName='MWarehouse_TFactAcctHistory', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-02-17 11:45:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217037
+;
+
+-- Feb 17, 2025, 11:45:18 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN M_Warehouse_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:45:18 AM IST
+ALTER TABLE T_Fact_Acct_History ADD CONSTRAINT MWarehouse_TFactAcctHistory FOREIGN KEY (M_Warehouse_ID) REFERENCES m_warehouse(m_warehouse_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 17, 2025, 11:45:41 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217039,0,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',200420,'C_Employee_ID',10,'N','N','N','N','N',0,'N',18,252,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:45:40','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:45:40','YYYY-MM-DD HH24:MI:SS'),100,203893,'Y','N','D','N','N','N','Y','386cacb5-ec16-4f81-ac00-20a893e95f26','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:45:43 AM IST
+UPDATE AD_Column SET FKConstraintName='CEmployee_TFactAcctHistory', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-02-17 11:45:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217039
+;
+
+-- Feb 17, 2025, 11:45:43 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN C_Employee_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:45:43 AM IST
+ALTER TABLE T_Fact_Acct_History ADD CONSTRAINT CEmployee_TFactAcctHistory FOREIGN KEY (C_Employee_ID) REFERENCES c_bpartner(c_bpartner_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 17, 2025, 11:45:28 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217038,0,'Department',200420,'C_Department_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:45:27','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:45:27','YYYY-MM-DD HH24:MI:SS'),100,203901,'Y','N','D','N','N','N','Y','443830dc-dab8-4fd6-aa3e-6d69c8a5d12c','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:45:30 AM IST
+UPDATE AD_Column SET FKConstraintName='CDepartment_TFactAcctHistory', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-02-17 11:45:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217038
+;
+
+-- Feb 17, 2025, 11:45:30 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN C_Department_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:45:30 AM IST
+ALTER TABLE T_Fact_Acct_History ADD CONSTRAINT CDepartment_TFactAcctHistory FOREIGN KEY (C_Department_ID) REFERENCES c_department(c_department_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 17, 2025, 11:44:05 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217033,0,'Cost Center',200420,'C_CostCenter_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:44:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:44:04','YYYY-MM-DD HH24:MI:SS'),100,203903,'Y','N','D','N','N','N','Y','15e2f7e3-74ed-49c1-85ea-6eb8203678f4','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:44:08 AM IST
+UPDATE AD_Column SET FKConstraintName='CCostCenter_TFactAcctHistory', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-02-17 11:44:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217033
+;
+
+-- Feb 17, 2025, 11:44:08 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN C_CostCenter_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:44:08 AM IST
+ALTER TABLE T_Fact_Acct_History ADD CONSTRAINT CCostCenter_TFactAcctHistory FOREIGN KEY (C_CostCenter_ID) REFERENCES c_costcenter(c_costcenter_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 17, 2025, 11:45:01 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217036,0,'Attribute Set Instance','Product Attribute Set Instance','The values of the actual Product Attribute Instances.  The product level attributes are defined on Product level.',200420,'M_AttributeSetInstance_ID',22,'N','N','N','N','N',0,'N',35,0,0,'Y',TO_TIMESTAMP('2025-02-17 11:45:01','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 11:45:01','YYYY-MM-DD HH24:MI:SS'),100,2019,'Y','N','D','N','N','N','Y','dd26f228-fd33-40a8-951f-eed7b78b5839','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 17, 2025, 11:45:03 AM IST
+UPDATE AD_Column SET FKConstraintName='MAttributeSetInstance_TFactAcctHistory', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-02-17 11:45:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217036
+;
+
+-- Feb 17, 2025, 11:45:03 AM IST
+ALTER TABLE T_Fact_Acct_History ADD COLUMN M_AttributeSetInstance_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 17, 2025, 11:45:03 AM IST
+ALTER TABLE T_Fact_Acct_History ADD CONSTRAINT MAttributeSetInstance_TFactAcctHistory FOREIGN KEY (M_AttributeSetInstance_ID) REFERENCES m_attributesetinstance(m_attributesetinstance_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 17, 2025, 2:45:06 PM IST
+UPDATE AD_Process_Para SET AD_Reference_ID=19,Updated=TO_TIMESTAMP('2025-02-17 14:45:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200494
+;
+
+
+-- Feb 17, 2025, 3:04:02 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208694,'Project Phase','Phase of a Project',242,15465,'Y',10,470,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:01','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:01','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','4d71ce65-2703-4cb7-a792-c4758a624407','Y',440,2)
+;
+
+-- Feb 17, 2025, 3:04:02 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208695,'Project Task','Actual Project Task in a Phase','A Project Task in a Project Phase represents the actual work.',242,15466,'Y',10,480,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:02','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:02','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','e88487ce-9443-4cc7-acf4-b0f6860b4e59','Y',450,2)
+;
+
+-- Feb 17, 2025, 3:04:03 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan,NumLines) VALUES (208696,'Text Column 1','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',242,216321,'Y',255,490,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:02','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:02','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','6349443d-2852-4a89-ba5d-a1e7993c3123','Y',460,5,3)
+;
+
+-- Feb 17, 2025, 3:04:04 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan,NumLines) VALUES (208697,'Text Column 2','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',242,216322,'Y',255,500,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:03','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:03','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','bbc99865-dd7e-4867-8c69-c134b0c00878','Y',470,5,3)
+;
+
+-- Feb 17, 2025, 3:04:05 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan,NumLines) VALUES (208698,'Text Column 3','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',242,216323,'Y',255,510,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:04','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f26040db-ff1d-4349-b57f-b72b7c00de5d','Y',480,5,3)
+;
+
+-- Feb 17, 2025, 3:04:05 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan,NumLines) VALUES (208699,'Text Column 4','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',242,216324,'Y',255,520,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:05','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','c00b2a84-8d54-41df-8e5a-ab0233141bcd','Y',490,5,3)
+;
+
+-- Feb 17, 2025, 3:04:06 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208700,'Charge','Additional document charges','The Charge indicates a type of Charge (Handling, Shipping, Restocking)',242,216334,'Y',10,530,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:05','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','d477c8c7-7866-4684-bf4d-7c30e206e5ab','Y',500,2)
+;
+
+-- Feb 17, 2025, 3:04:07 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208701,'Warehouse','Storage Warehouse and Service Point','The Warehouse identifies a unique Warehouse where products are stored or Services are provided.',242,216335,'Y',22,540,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:06','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:06','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','86a996a5-2ca4-40fb-b8ef-e21dfe6a360f','Y',510,2)
+;
+
+-- Feb 17, 2025, 3:04:08 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208702,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',242,216336,'Y',10,550,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:07','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:07','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','d9f52feb-1576-4970-bcbb-646257321cbb','Y',520,2)
+;
+
+-- Feb 17, 2025, 3:04:08 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLogic,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208703,'Department',242,216384,'Y','@$Element_DP@=Y',22,560,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:08','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f8832ee9-36eb-4345-a5c3-bc1a0dc4fe30','Y',530,2)
+;
+
+-- Feb 17, 2025, 3:04:09 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLogic,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208704,'Cost Center',242,216385,'Y','@$Element_CC@=Y',22,570,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-17 15:04:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-17 15:04:08','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','53ebb204-1dca-4288-a8b2-461f72ab06e9','Y',540,2)
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208484
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3891
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5141
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2352
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2350
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=330,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2349
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=340,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2348
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=350,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2347
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=360,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2358
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=370,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2365
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=380,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208694
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=390,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208695
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_F1@=Y', SeqNo=400, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208696
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_F2@=Y', SeqNo=410, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208697
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_F3@=Y', SeqNo=420, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208698
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_F4@=Y', SeqNo=430, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208699
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_CH@=Y', SeqNo=440, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208700
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET IsDisplayed='Y', DisplayLogic='@$Element_EP@=Y', SeqNo=450, AD_FieldGroup_ID=200032, XPosition=4,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208702
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_WH@=Y', SeqNo=460,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208701
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=470, AD_FieldGroup_ID=200032, XPosition=4,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208703
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=480, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208704
+;
+
+-- Feb 17, 2025, 3:10:48 PM IST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2025-02-17 15:10:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204836
+;
+
