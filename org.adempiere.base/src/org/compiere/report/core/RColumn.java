@@ -168,6 +168,13 @@ public class RColumn
 				m_colSQL += "," + m_displaySQL;
 				m_isIDcol = true;
 			}
+			else if (columnName.equals("C_Employee_ID"))
+			{
+				m_displaySQL = "(" + MLookupFactory.getLookup_TableDirEmbed(
+					language, "C_BPartner_ID", RModel.TABLE_ALIAS, columnName) + ")";
+				m_colSQL += "," + m_displaySQL;
+				m_isIDcol = true;
+			}
 			else if (displayType == DisplayType.TableDir)
 			{
 				m_displaySQL = "(" + MLookupFactory.getLookup_TableDirEmbed(
