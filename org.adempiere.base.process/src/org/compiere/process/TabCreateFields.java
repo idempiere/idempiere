@@ -210,7 +210,11 @@ public class TabCreateFields extends SvrProcess
 					field.setDisplayLogic("@$Element_U1@=Y");
 				} else if (column.getColumnName().equalsIgnoreCase("User2_ID")) {
 					field.setDisplayLogic("@$Element_U2@=Y");
-				}  
+				} else if (column.getColumnName().equalsIgnoreCase("C_CostCenter_ID")) {
+					field.setDisplayLogic("@$Element_CC@=Y");
+				} else if (column.getColumnName().equalsIgnoreCase("C_Department_ID")) {
+					field.setDisplayLogic("@$Element_DP@=Y");
+				}				
 
 				// set read-only for usual known-fields
 				if (   column.getColumnName().equalsIgnoreCase("IsApproved")
