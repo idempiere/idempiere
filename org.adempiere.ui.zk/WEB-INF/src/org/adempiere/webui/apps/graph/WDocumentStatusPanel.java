@@ -122,6 +122,15 @@ public class WDocumentStatusPanel extends Panel {
 		lastRefreshCount = 0;
 		for (WDocumentStatusIndicator indicator : indicatorList) {
 			indicator.refresh();
+			boolean isVisible = indicator.isVisible();
+			boolean newVisible = (indicator.getStatusCount() != 0 || !indicator.getDocumentStatus().isHideWhenZero());
+			if (isVisible != newVisible) {
+				try {
+					indicator.setVisible(newVisible);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			if (indicator.getDocumentStatus().getAD_Client_ID() == 0)
 				lastRefreshCount += indicator.getStatusCount();
 		}
