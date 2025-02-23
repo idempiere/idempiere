@@ -131,6 +131,8 @@ public class WDocumentStatusPanel extends Panel {
 					e.printStackTrace();
 				}
 			}
+			if (newVisible && indicator.getDocumentStatus().getName_PrintColorZero_ID() > 0)
+				indicator.decorateNameLabel();
 			if (indicator.getDocumentStatus().getAD_Client_ID() == 0)
 				lastRefreshCount += indicator.getStatusCount();
 		}
