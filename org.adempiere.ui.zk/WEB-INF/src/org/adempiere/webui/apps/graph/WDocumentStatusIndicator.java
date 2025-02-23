@@ -52,7 +52,10 @@ import org.zkoss.zul.Div;
  * 	Document Status ({@link MDocumentStatus}) Indicator
  */
 public class WDocumentStatusIndicator extends Panel implements EventListener<Event> {
-	private static final long serialVersionUID = -9076405331101242792L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8017313188530461577L;
 
 	/**
 	 * 	Constructor
@@ -86,6 +89,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 
 	private MDocumentStatus		m_documentStatus = null;
 	private int statusCount;
+	private Label nameLabel;
 	private Label statusLabel;
 
 	/**
@@ -104,30 +108,15 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	{
 		Div div = new Div();
 		appendChild(div);
-		Label nameLabel = new Label();
+		nameLabel = new Label();
 		nameLabel.setText(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Name) + ": ");
 		nameLabel.setTooltiptext(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description));
-		String nameColorStyle = "";
-		int Name_PrintColor_ID = m_documentStatus.getName_PrintColor_ID();
-		if (Name_PrintColor_ID > 0) {
-			MPrintColor printColor = MPrintColor.get(Env.getCtx(), Name_PrintColor_ID);
-			String color = ZkCssHelper.createHexColorString(printColor.getColor());
-			nameColorStyle = "color:#"+color+";";
-		}
-		int AD_PrintFont_ID = m_documentStatus.getName_PrintFont_ID();
-		String nameFontStyle = "";
-		if (AD_PrintFont_ID > 0) {
-			MPrintFont printFont = MPrintFont.get(AD_PrintFont_ID);
-			String family = printFont.getFont().getFamily();
-			boolean bold = printFont.getFont().isBold();
-			boolean italic = printFont.getFont().isItalic();
-			int pointSize = printFont.getFont().getSize();
-			nameFontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
-		}
-		nameLabel.setStyle(nameColorStyle+nameFontStyle);
 		div.appendChild(nameLabel);
-
 		statusLabel = new Label();		
+		div.appendChild(statusLabel);
+		decorateNameLabel();
+		decorateStatusLabel();
+
 		String numberColorStyle = "";
 		int Number_PrintColor_ID = m_documentStatus.getNumber_PrintColor_ID();
 		if (Number_PrintColor_ID > 0) {
@@ -148,9 +137,52 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 			numberFontStyle += "margin-top:"+margin+"pt;"+"margin-bottom:"+margin+"pt;";
 		}
 		statusLabel.setStyle(numberColorStyle+numberFontStyle);
-		div.appendChild(statusLabel);
 
 		this.addEventListener(Events.ON_CLICK, this);
+	}
+
+	/**
+	 * Set font and color for Name Label
+	 */
+	public void decorateNameLabel() {
+		decorate(nameLabel, m_documentStatus.getName_PrintFont_ID(), m_documentStatus.getName_PrintColor_ID(), m_documentStatus.getName_PrintColorZero_ID());
+	}
+
+	/**
+	 * Set font and color for Status label (number)
+	 */
+	public void decorateStatusLabel() {
+		decorate(statusLabel, m_documentStatus.getNumber_PrintFont_ID(), m_documentStatus.getNumber_PrintColor_ID(), 0);
+	}
+
+	/**
+	 * Set font and color for the label
+	 * @param label
+	 * @param printFontId
+	 * @param printColorId
+	 * @param printColorZeroId
+	 */
+	private void decorate(Label label, int printFontId, int printColorId, int printColorZeroId) {
+		String colorStyle = "";
+		if (printColorZeroId > 0 && statusCount == 0) {
+			MPrintColor printColor = MPrintColor.get(Env.getCtx(), printColorZeroId);
+			String color = ZkCssHelper.createHexColorString(printColor.getColor());
+			colorStyle = "color:#"+color+";";
+		} else if (printColorId > 0) {
+			MPrintColor printColor = MPrintColor.get(Env.getCtx(), printColorId);
+			String color = ZkCssHelper.createHexColorString(printColor.getColor());
+			colorStyle = "color:#"+color+";";
+		}
+		String nameFontStyle = "";
+		if (printFontId > 0) {
+			MPrintFont printFont = MPrintFont.get(printFontId);
+			String family = printFont.getFont().getFamily();
+			boolean bold = printFont.getFont().isBold();
+			boolean italic = printFont.getFont().isItalic();
+			int pointSize = printFont.getFont().getSize();
+			nameFontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
+		}
+		label.setStyle(colorStyle+nameFontStyle);
 	}
 
 	@Override

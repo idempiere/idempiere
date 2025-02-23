@@ -35,6 +35,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.db.util.SQLFragment;
@@ -176,6 +177,8 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 					Boolean access = MRole.getDefault().getFormAccess(ds.getAD_Form_ID());
 					if (access != null)
 						listWithAccess.add(ds);
+				} else if (!Util.isEmpty(ds.getHelp())) {
+					listWithAccess.add(ds);
 				}
 			}
 		}
