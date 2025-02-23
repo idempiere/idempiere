@@ -564,6 +564,9 @@ public class MQuery implements Serializable, Cloneable
 	public static final String	MSG_NOT_EQUAL = "OPERATOR_NOT_EQUAL";
 	/** Not Equal - 1		*/
 	public static final int		NOT_EQUAL_INDEX = 1;
+	/** Non Case Sensitive Like*/
+	public static final String	ILIKE = " ILIKE ";
+	public static final String	MSG_ILIKE = "OPERATOR_ILIKE";
 	/** Like			*/
 	public static final String	LIKE = " LIKE ";
 	public static final String	MSG_LIKE = "OPERATOR_LIKE";
@@ -599,6 +602,7 @@ public class MQuery implements Serializable, Cloneable
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),		//	0 - EQUAL_INDEX
 		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),	//  1 - NOT_EQUAL_INDEX
+		new ValueNamePair (ILIKE,			MSG_ILIKE),
 		new ValueNamePair (LIKE,			MSG_LIKE),
 		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
 		new ValueNamePair (GREATER,			MSG_GREATER),
@@ -613,6 +617,7 @@ public class MQuery implements Serializable, Cloneable
 	public static final ValueNamePair[]	OPERATORS_STRINGS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),
 		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),
+		new ValueNamePair (ILIKE,			MSG_ILIKE),
 		new ValueNamePair (LIKE,			MSG_LIKE),
 		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
 		new ValueNamePair (GREATER,			MSG_GREATER),
