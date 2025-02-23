@@ -30,7 +30,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260207L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -56,6 +58,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -71,6 +75,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -86,6 +92,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -294,6 +302,21 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return ii.intValue();
 	}
 
+	/** Set Category.
+		@param Category Category
+	*/
+	public void setCategory (String Category)
+	{
+		set_Value (COLUMNNAME_Category, Category);
+	}
+
+	/** Get Category.
+		@return Category	  */
+	public String getCategory()
+	{
+		return (String)get_Value(COLUMNNAME_Category);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -329,6 +352,45 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
+	/** Set Comment/Help.
+		@param Help Comment or Hint
+	*/
+	public void setHelp (String Help)
+	{
+		set_Value (COLUMNNAME_Help, Help);
+	}
+
+	/** Get Comment/Help.
+		@return Comment or Hint
+	  */
+	public String getHelp()
+	{
+		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Hide when Zero.
+		@param IsHideWhenZero Hide when the Value is Zero
+	*/
+	public void setIsHideWhenZero (boolean IsHideWhenZero)
+	{
+		set_Value (COLUMNNAME_IsHideWhenZero, Boolean.valueOf(IsHideWhenZero));
+	}
+
+	/** Get Hide when Zero.
+		@return Hide when the Value is Zero
+	  */
+	public boolean isHideWhenZero()
+	{
+		Object oo = get_Value(COLUMNNAME_IsHideWhenZero);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -343,6 +405,34 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_PrintColor getName_PrintColorZero() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getName_PrintColorZero_ID(), get_TrxName());
+	}
+
+	/** Set Print Color for Name when Zero.
+		@param Name_PrintColorZero_ID Print Color for Name when Zero
+	*/
+	public void setName_PrintColorZero_ID (int Name_PrintColorZero_ID)
+	{
+		if (Name_PrintColorZero_ID < 1)
+			set_Value (COLUMNNAME_Name_PrintColorZero_ID, null);
+		else
+			set_Value (COLUMNNAME_Name_PrintColorZero_ID, Integer.valueOf(Name_PrintColorZero_ID));
+	}
+
+	/** Get Print Color for Name when Zero.
+		@return Print Color for Name when Zero	  */
+	public int getName_PrintColorZero_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Name_PrintColorZero_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	@Deprecated(since="13") // use better methods with cache

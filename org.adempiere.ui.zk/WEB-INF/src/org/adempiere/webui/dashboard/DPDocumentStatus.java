@@ -40,6 +40,8 @@ import org.compiere.Adempiere;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.DesktopUnavailableException;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -58,8 +60,15 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 
 	@Override
 	public void refresh(ServerPushTemplate template) {
-		statusPanel.refresh();
-		template.executeAsync(this);
+		try {
+			Executions.activate(template.getDesktop());
+			statusPanel.refresh();
+			template.executeAsync(this);
+		} catch (DesktopUnavailableException | InterruptedException e) {
+			e.printStackTrace();;
+		} finally {
+			Executions.deactivate(template.getDesktop());
+		}
 	}
 
 	@Override
@@ -113,10 +122,17 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
     		ZkContextRunnable cr = new ZkContextRunnable() {
     			@Override
 				protected void doRun() {
-    				refresh(template);
-    				template.executeAsync(() -> {
-    					busyDialog.detach();
-    				});
+    				try {
+						Executions.activate(template.getDesktop());
+	    				refresh(template);
+	    				template.executeAsync(() -> {
+	    					busyDialog.detach();
+	    				});
+					} catch (DesktopUnavailableException | InterruptedException e) {
+						e.printStackTrace();;
+					} finally {
+						Executions.deactivate(template.getDesktop());
+					}
     			}
     		};
     		Adempiere.getThreadPoolExecutor().submit(cr);
