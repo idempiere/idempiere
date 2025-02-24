@@ -229,7 +229,12 @@ public class PoFiller{
 						}
 					}
 				}
-				if (id != null && refTableName != null) {
+				if (id instanceof Number && ((Number)id).intValue() == 0) {
+					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
+						po.set_ValueNoCheck(columnName, id);
+						return id;
+					}
+				} else if (id != null && refTableName != null) {
 					if (foreignTable != null) {
 						if (isMulti) {
 							for (String idstring : id.toString().split(",")) {
@@ -252,11 +257,6 @@ public class PoFiller{
     					}
     				}
 					return id;
-				} else if (id instanceof Number && ((Number)id).intValue() == 0) {
-					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
-						po.set_ValueNoCheck(columnName, id);
-						return id;
-					}
 				}				
 				return -1;
 			} else {
