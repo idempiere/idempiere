@@ -65,7 +65,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 			statusPanel.refresh();
 			template.executeAsync(this);
 		} catch (DesktopUnavailableException | InterruptedException e) {
-			e.printStackTrace();;
+			e.printStackTrace();
 		} finally {
 			Executions.deactivate(template.getDesktop());
 		}
@@ -129,7 +129,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 	    					busyDialog.detach();
 	    				});
 					} catch (DesktopUnavailableException | InterruptedException e) {
-						e.printStackTrace();;
+						e.printStackTrace();
 					} finally {
 						Executions.deactivate(template.getDesktop());
 					}
