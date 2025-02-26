@@ -174,12 +174,8 @@ public class DefaultEvaluatee implements Evaluatee {
 		String value = null;
 		boolean globalVariable = Env.isGlobalVariable(variableName);
 		boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
-		// get value from global or window context
-		if (globalVariable)
-		{
-			value = Env.getContext(ctx, variableName);	// get from global context
-		}
-		else if (m_windowNo >= 0)
+		// get value from window context or global
+		if (m_windowNo >= 0)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
@@ -201,7 +197,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		    	value = Env.getContext (ctx, m_windowNo, m_tabNo, variableName, tabOnly, true);
 		    }
 		}
-		
+		if (Util.isEmpty(value) && globalVariable)
+		{
+			value = Env.getContext(ctx, variableName);	// get from global context
+		}
+
 		// po property operator
 		Object dataValue = null;
 		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {

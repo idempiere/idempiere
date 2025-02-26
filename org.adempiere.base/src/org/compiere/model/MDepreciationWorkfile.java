@@ -718,6 +718,17 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		
 		for (int currentPeriod = A_Current_Period, cnt = 1; currentPeriod <= lifePeriods; currentPeriod++, cnt++)
 		{
+			final String whereClause = MDepreciationExp.COLUMNNAME_A_Asset_ID+"=?"
+					+" AND A_Period=?"
+					+" AND "+MDepreciationExp.COLUMNNAME_PostingType+"=?"
+					+" AND "+MDepreciationExp.COLUMNNAME_Processed+"=?";
+			boolean match = new Query(getCtx(), MDepreciationExp.Table_Name, whereClause, get_TrxName())
+					.setParameters(new Object[]{getA_Asset_ID(), currentPeriod, getPostingType(), true})
+					.match();
+			if (match) {
+				continue;
+			}
+			
 			exp_C = Env.ZERO;
 			exp_F = Env.ZERO;
 			
