@@ -2361,6 +2361,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, tableUID);
 	            	}
 	            	continue;
+	            }else {
+	            	if(MQuery.ILIKE.equals(Operator)) {
+	            		ColumnSQL = "UPPER("+ColumnSQL+")";
+	            		Operator = MQuery.LIKE;
+	            	}
 	            }
 	            Object parsedValue = null;
 	            //Parse AttributeValue
