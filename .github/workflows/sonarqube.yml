@@ -38,9 +38,9 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          MAVEN_OPTS: "-Xmx7g"
+          SONAR_SCANNER_JAVA_OPTS: "-Xmx7g"
         run: |
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.0.0.4389:sonar \
           -Dsonar.projectKey=idempiere_idempiere \
           -Dsonar.exclusions=**/I_*.java,**/X_*.java \
           -Dsonar.organization=idempiere \
