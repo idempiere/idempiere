@@ -1745,8 +1745,10 @@ class Restriction  implements Serializable
 		}
 		else
 			sb.append(virtualColumn ? ColumnName : DB.getDatabase().quoteColumnName(ColumnName));
-		
-		sb.append(Operator);
+		if(MQuery.ILIKE.equals(Operator))
+			sb.append(MQuery.LIKE);
+		else
+			sb.append(Operator);
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
 			if (Code instanceof String) {

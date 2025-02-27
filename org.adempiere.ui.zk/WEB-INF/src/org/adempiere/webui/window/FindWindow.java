@@ -2364,7 +2364,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            }else {
 	            	if(MQuery.ILIKE.equals(Operator)) {
 	            		ColumnSQL = "UPPER("+ColumnSQL+")";
-	            		Operator = MQuery.LIKE;
 	            	}
 	            }
 	            Object parsedValue = null;
