@@ -98,8 +98,8 @@ public class SequenceCheck extends SvrProcess
 		String sql = "SELECT TableName "
 			+ "FROM AD_Table t "
 			+ "WHERE IsActive='Y' AND IsView='N'"
-			+ " AND NOT EXISTS (SELECT * FROM AD_Sequence s "
-			+ "WHERE UPPER(s.Name)=UPPER(t.TableName) AND s.IsTableID='Y')";		
+			+ " AND NOT EXISTS (SELECT * FROM AD_Sequence s WHERE UPPER(s.Name)=UPPER(t.TableName) AND s.IsTableID='Y')"
+			+ " AND EXISTS (SELECT 1 FROM AD_Column c WHERE c.IsKey='Y' AND c.IsActive='Y' AND c.ColumnName LIKE '%_ID' AND c.AD_Table_ID=t.AD_Table_ID)";
 		try (PreparedStatement pstmt = DB.prepareStatement(sql, trxName);)
 		{			
 			ResultSet rs = pstmt.executeQuery();
