@@ -189,7 +189,7 @@ public class MOrgInfo extends X_AD_OrgInfo implements ImmutablePOSupport
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Validate that Parent_Org_ID != AD_Org_ID
-		if(!newRecord && getParent_Org_ID()==get_ID()){
+		if(!newRecord && getAD_Org_ID() != 0 && getParent_Org_ID()==get_ID()){
 			log.saveError("Error", "Parent_Org_ID=AD_Org_ID");
 			return false;
 		}
