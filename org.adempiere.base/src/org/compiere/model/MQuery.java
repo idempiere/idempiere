@@ -588,8 +588,8 @@ public class MQuery implements Serializable, Cloneable
 	/** Between			*/
 	public static final String	BETWEEN = " BETWEEN ";
 	public static final String	MSG_BETWEEN = "OPERATOR_BETWEEN";
-	/** Between - 8		*/
-	public static final int		BETWEEN_INDEX = 8;
+	/** Between - 9		*/
+	public static final int		BETWEEN_INDEX = 9;
 	/** For IDEMPIERE-377	*/
 	public static final String 	NOT_NULL = " IS NOT NULL ";
 	public static final String 	MSG_NOT_NULL = "OPERATOR_NOT_NULL";
@@ -599,6 +599,7 @@ public class MQuery implements Serializable, Cloneable
 
 	/** NOTE: Value is the SQL operator, and Name is the message that appears in find window and reports */
 	/**	All the Operators			*/
+	/** WARNING: adding operators can change the _INDEX variables */
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),		//	0 - EQUAL_INDEX
 		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),	//  1 - NOT_EQUAL_INDEX
@@ -609,7 +610,7 @@ public class MQuery implements Serializable, Cloneable
 		new ValueNamePair (GREATER_EQUAL,	MSG_GREATER_EQUAL),
 		new ValueNamePair (LESS,			MSG_LESS),
 		new ValueNamePair (LESS_EQUAL,		MSG_LESS_EQUAL),
-		new ValueNamePair (BETWEEN,			MSG_BETWEEN),	//	8 - BETWEEN_INDEX
+		new ValueNamePair (BETWEEN,			MSG_BETWEEN),	//	9 - BETWEEN_INDEX
 		new ValueNamePair (NULL,			MSG_NULL),
 		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
 	};
