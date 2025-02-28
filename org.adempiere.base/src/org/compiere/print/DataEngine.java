@@ -580,7 +580,7 @@ public class DataEngine
 					{
 						table = "C_Location";
 						key = "C_Location_ID";
-						display = "City";	//	in case City is empty
+						display = "City";
 						synonym = "Address";
 					}
 					else if (AD_Reference_ID == DisplayType.Account)
@@ -609,7 +609,7 @@ public class DataEngine
 
 					// IDEMPIERE-6443
 					if ("City".equals(display)) {
-						sqlSELECT.append("COALESCE(").append(m_synonym).append(".").append(display).append(", '') || '.'");
+						sqlSELECT.append("COALESCE(").append(m_synonym).append(".").append(display).append(", '')");
 					}else {
 						sqlSELECT.append(m_synonym).append(".").append(display);
 					}
