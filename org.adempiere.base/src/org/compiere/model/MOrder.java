@@ -3032,6 +3032,12 @@ public class MOrder extends X_C_Order implements DocAction
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		
+		if (!DocumentEngine.canReactivateThisDocType(getC_DocType_ID())) {
+			m_processMsg = "This document cannot be reactivated"; // TODO translate
+			return false;
+		}
+		
 		String DocSubTypeSO = dt.getDocSubTypeSO();
 		
 		//	PO - just re-open
