@@ -609,7 +609,7 @@ public class DataEngine
 
 					// IDEMPIERE-6443
 					if ("City".equals(display)) {
-						sqlSELECT.append("COALESCE(").append(m_synonym).append(".").append(display).append(", '')");
+						sqlSELECT.append("COALESCE(").append(m_synonym).append(".").append(display).append(", '.')");
 					}else {
 						sqlSELECT.append(m_synonym).append(".").append(display);
 					}
