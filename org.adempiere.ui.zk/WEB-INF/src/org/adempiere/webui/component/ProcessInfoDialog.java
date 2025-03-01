@@ -28,6 +28,7 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.MRole;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
@@ -297,7 +298,10 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			return false;
 
 		for(ProcessInfoLog log : m_logs) {
-			if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0 && ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0)
+			if (   log.getAD_Table_ID() > 0
+				&& log.getRecord_ID() > 0
+				&& ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0
+				&& MRole.getDefault().isCanReport(log.getAD_Table_ID()))
 				return true;
 		}
 		return false;

@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.CrossTenantException;
 import org.compiere.model.MTest;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
@@ -70,7 +71,7 @@ public class MTestTest extends AbstractTestCase {
 				() -> testSys.saveEx(),
 				"Expected test.SaveEx() to throw cross tenant error, but it didn't"
 				);
-		assertTrue(thrown.getMessage().startsWith("Cross tenant PO "));
+		assertTrue(thrown instanceof CrossTenantException);
 	}
 
 	@Test

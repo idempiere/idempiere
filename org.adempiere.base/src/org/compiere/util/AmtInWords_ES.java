@@ -267,9 +267,4 @@ public class AmtInWords_ES implements AmtInWords
 		return sb.toString ();
 	}	//	getAmtInWords
 
-	public static void main(String[] args) throws Exception {
-		AmtInWords_ES aiw = new AmtInWords_ES();
-		System.out.println(aiw.getAmtInWords("9223372036854775807.99"));
-	}
-
 }	//	AmtInWords_ES

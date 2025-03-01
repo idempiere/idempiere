@@ -859,6 +859,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    		} catch (Exception e) {
 		        		if (DBException.isTimeout(e)) {
 		        			Dialog.error(curWindowNo, GridTable.LOAD_TIMEOUT_ERROR_MESSAGE);
+		        		} else {
+		        			Dialog.error(curWindowNo, "Error", e.getLocalizedMessage());
 		        		}
 		    		}
 			}
@@ -994,7 +996,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (rs.next())
 				no = rs.getInt(1);
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			logger.log(Level.WARNING, e.getMessage() + " -> " + finalSQL, e);
 			no = -1;
 		}
 		return no;

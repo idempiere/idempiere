@@ -2361,6 +2361,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, tableUID);
 	            	}
 	            	continue;
+	            }else {
+	            	if(MQuery.ILIKE.equals(Operator)) {
+	            		ColumnSQL = "UPPER("+ColumnSQL+")";
+	            	}
 	            }
 	            Object parsedValue = null;
 	            //Parse AttributeValue
@@ -2699,8 +2703,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     }
                     //
                     if (value.toString().indexOf('%') != -1) {
-                        m_query.addRestriction(ColumnSQL.toString(), MQuery.LIKE, value, ColumnName, wed.getDisplay());
-                        appendCode(code, ColumnName, MQuery.LIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
+                        m_query.addRestriction(ColumnSQL.toString(), MQuery.ILIKE, value, ColumnName, wed.getDisplay());
+                        appendCode(code, ColumnName, MQuery.ILIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     } else if (isProductCategoryField && value instanceof Integer) {
                         m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) value).intValue()));
                         appendCode(code, ColumnName, MQuery.EQUAL, value.toString(), "", "AND", "", "", m_AD_Tab_UU);

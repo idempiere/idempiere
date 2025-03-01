@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
@@ -181,8 +182,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String  PROPERTY = "CurrentRow";
     /** A list of event listeners for this component.	*/
     protected EventListenerList m_listenerList = new EventListenerList();
-    /** Current Data Status Event						*/
-	private DataStatusEvent 	m_DataStatusEvent = null;
 	/**	Query							*/
 	private MQuery 				m_query = new MQuery();
 	private String 				m_oldQuery = "0=9";
@@ -210,10 +209,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private boolean m_parentNeedSave = false;
 
-	private long m_lastDataStatusEventTime;
-
-	private DataStatusEvent m_lastDataStatusEvent;
-
+	private record DataStatusEventRecord(DataStatusEvent dataStatusEvent, long dataStatusEventTime) {};
+	
+	private AtomicReference<DataStatusEventRecord> m_lastDataStatusEventReference = new AtomicReference<>();
+	
 	//Contains currently selected rows
 	private ArrayList<Integer> selection = null;
 	public boolean isQuickForm = false;
@@ -989,11 +988,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (manualCmd)
 			{
 				setCurrentRow(m_currentRow, false);
-				if (m_lastDataStatusEvent != null && m_lastDataStatusEvent.getCurrentRow() == m_currentRow
-					&& ((m_lastDataStatusEvent.Record_ID != null && m_lastDataStatusEvent.Record_ID instanceof Integer
-					&& (Integer) m_lastDataStatusEvent.Record_ID == 0) || m_lastDataStatusEvent.Record_ID == null))
+				DataStatusEventRecord dseRecord = m_lastDataStatusEventReference.get();
+				DataStatusEvent lastDataStatusEvent = dseRecord != null ? dseRecord.dataStatusEvent() : null;
+				if (lastDataStatusEvent != null && lastDataStatusEvent.getCurrentRow() == m_currentRow
+					&& ((lastDataStatusEvent.Record_ID != null && lastDataStatusEvent.Record_ID instanceof Integer
+					&& (Integer) lastDataStatusEvent.Record_ID == 0) || lastDataStatusEvent.Record_ID == null))
 				{
-					updateDataStatusEventProperties(m_lastDataStatusEvent);
+					updateDataStatusEventProperties(lastDataStatusEvent);
 				}
 			}
 			fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_SAVE));
@@ -2319,13 +2320,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param e event
 	 */
 	@Override
-	public synchronized void dataStatusChanged (DataStatusEvent e)
+	public void dataStatusChanged (DataStatusEvent e)
 	{		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + e.toString());
 		int oldCurrentRow = e.getCurrentRow();
-		m_DataStatusEvent = e;          //  save it
+		DataStatusEvent dataStatusEvent = e;          //  save it
 		//  when sorted set current row to 0
-		String msg = m_DataStatusEvent.getAD_Message();
+		String msg = dataStatusEvent.getAD_Message();
 		if (msg != null && msg.equals(GridTable.SORTED_DSE_EVENT))
 		{
 			oldCurrentRow = m_currentRow;
@@ -2335,8 +2336,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				setCurrentRow(0, true);
 		}
 		//  set current row
-		m_DataStatusEvent = e;          //  setCurrentRow clear it, need to save again
-		m_DataStatusEvent.setCurrentRow(m_currentRow);
+		dataStatusEvent = e;          //  setCurrentRow clear it, need to save again
+		dataStatusEvent.setCurrentRow(m_currentRow);
 					
 		//  Same row - update value
 		if (oldCurrentRow == m_currentRow)
@@ -2353,11 +2354,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			//  Redistribute Info with current row info
 			//  Avoid firing of duplicate event
 			boolean fire = true;
-			if (m_lastDataStatusEvent != null)
+			DataStatusEventRecord dseRecord = m_lastDataStatusEventReference.get();
+			DataStatusEvent lastDataStatusEvent = dseRecord != null ? dseRecord.dataStatusEvent : null;
+			if (lastDataStatusEvent != null)
 			{
-				if (System.currentTimeMillis() - m_lastDataStatusEventTime < 200)
+				if (System.currentTimeMillis() - dseRecord.dataStatusEventTime() < 200)
 				{
-					if (m_lastDataStatusEvent.isEqual(m_DataStatusEvent))
+					if (lastDataStatusEvent.isEqual(dataStatusEvent))
 					{
 						fire = false;
 					}
@@ -2365,13 +2368,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 			
 			if (fire)
-				fireDataStatusChanged(m_DataStatusEvent);
+				fireDataStatusChanged(dataStatusEvent);
 		}
 
 		//reset
-		m_lastDataStatusEventTime = System.currentTimeMillis();
-		m_lastDataStatusEvent = m_DataStatusEvent;
-		m_DataStatusEvent = null;
+		m_lastDataStatusEventReference.set(new DataStatusEventRecord(dataStatusEvent, System.currentTimeMillis()));
 	}	//	dataStatusChanged
 
 	/**
@@ -2609,7 +2610,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param fireEvents fire events
 	 *  @return current row index
 	 */
-	public synchronized int setCurrentRow (int newCurrentRow, boolean fireEvents)
+	public int setCurrentRow (int newCurrentRow, boolean fireEvents)
 	{
 		boolean changingRow = (m_currentRow != newCurrentRow);
 		int oldCurrentRow = m_currentRow;
@@ -2659,29 +2660,30 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  inform VTable/..    -> rowChanged
 		m_propertyChangeSupport.firePropertyChange(PROPERTY, oldCurrentRow, m_currentRow);
 
+		DataStatusEvent dataStatusEvent = null;
 		//check last data status event
-		long since = System.currentTimeMillis() - m_lastDataStatusEventTime;
-		if (since <= 500 && m_lastDataStatusEvent != null)
-		{
-			m_DataStatusEvent = m_lastDataStatusEvent;
+		DataStatusEventRecord dse = m_lastDataStatusEventReference.get();
+		if (dse != null) {
+			long since = System.currentTimeMillis() - dse.dataStatusEventTime;
+			if (since <= 500)
+			{
+				dataStatusEvent = dse.dataStatusEvent();
+			}
 		}
 
 		//  inform APanel/..    -> dataStatus with row updated
-		if (m_DataStatusEvent == null) {
-			m_DataStatusEvent = new DataStatusEvent(this, getRowCount(),
+		if (dataStatusEvent == null) {
+			dataStatusEvent = new DataStatusEvent(this, getRowCount(),
 				m_mTable.isInserting(),		//	changed
 				Env.isAutoCommit(Env.getCtx(), m_vo.WindowNo), m_mTable.isInserting());
-			m_DataStatusEvent.AD_Table_ID = m_vo.AD_Table_ID;
+			dataStatusEvent.AD_Table_ID = m_vo.AD_Table_ID;
 		}
 		//
-		m_DataStatusEvent.setCurrentRow(m_currentRow);
-		String status = m_DataStatusEvent.getAD_Message();
+		dataStatusEvent.setCurrentRow(m_currentRow);
+		String status = dataStatusEvent.getAD_Message();
 		if (status == null || status.length() == 0)
-			 m_DataStatusEvent.setInfo(DEFAULT_STATUS_MESSAGE, null, false,false);
-		fireDataStatusChanged(m_DataStatusEvent);
-
-		//reset
-		m_DataStatusEvent = null;
+			 dataStatusEvent.setInfo(DEFAULT_STATUS_MESSAGE, null, false,false);
+		fireDataStatusChanged(dataStatusEvent);
 
 		m_mTable.setCurrentRow(m_currentRow);
 		
