@@ -134,19 +134,19 @@ ALTER TABLE AD_TableAttribute ADD CONSTRAINT AD_TableAttribute_AttributeKey UNIQ
 ;
 
 -- Oct 5, 2023, 7:00:24 PM IST
-UPDATE AD_Table SET AccessLevel='6',Updated=TO_TIMESTAMP('2023-10-05 19:00:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=562
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2023-10-05 19:00:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=562
 ;
 
 -- Oct 5, 2023, 7:04:17 PM IST
-UPDATE AD_Table SET AccessLevel='6',Updated=TO_TIMESTAMP('2023-10-05 19:04:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=558
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2023-10-05 19:04:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=558
 ;
 
 -- Oct 5, 2023, 7:04:30 PM IST
-UPDATE AD_Table SET AccessLevel='6',Updated=TO_TIMESTAMP('2023-10-05 19:04:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=560
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2023-10-05 19:04:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=560
 ;
 
 -- Oct 5, 2023, 7:04:53 PM IST
-UPDATE AD_Table SET AccessLevel='6',Updated=TO_TIMESTAMP('2023-10-05 19:04:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=563
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2023-10-05 19:04:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=563
 ;
 
 -- Oct 5, 2023, 7:05:49 PM IST
@@ -171,30 +171,6 @@ UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, ColumnSpan=
 
 -- Oct 5, 2023, 7:10:40 PM IST
 INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200180,'M_AttributeSet (Table Attribute)','S','M_AttributeSet.M_AttributeSet_Type=''TA''',0,0,'Y',TO_TIMESTAMP('2023-10-05 19:10:39','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-05 19:10:39','YYYY-MM-DD HH24:MI:SS'),100,'D','1ccc975e-7d12-4e40-b92f-b28dcac83a11')
-;
-
--- Oct 5, 2023, 7:10:55 PM IST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,AD_Val_Rule_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (215948,0,'Attribute Set','Product Attribute Set','Define Product Attribute Sets to add additional attributes and values to the product. You need to define a Attribute Set if you want to enable Serial and Lot Number tracking.',100,200180,'M_AttributeSet_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2023-10-05 19:10:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-05 19:10:55','YYYY-MM-DD HH24:MI:SS'),100,2017,'N','N','D','N','N','N','Y','5965098d-456d-48a2-b05d-e1b8cbc9ec8b','Y',0,'N','N','N')
-;
-
--- Oct 5, 2023, 7:10:58 PM IST
-UPDATE AD_Column SET FKConstraintName='MAttributeSet_ADTable', FKConstraintType='N',Updated=TO_TIMESTAMP('2023-10-05 19:10:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215948
-;
-
--- Oct 5, 2023, 7:10:58 PM IST
-ALTER TABLE AD_Table ADD COLUMN M_AttributeSet_ID NUMERIC(10) DEFAULT NULL 
-;
-
--- Oct 5, 2023, 7:10:58 PM IST
-ALTER TABLE AD_Table ADD CONSTRAINT MAttributeSet_ADTable FOREIGN KEY (M_AttributeSet_ID) REFERENCES m_attributeset(m_attributeset_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- Oct 5, 2023, 7:11:56 PM IST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (207749,'Attribute Set','Product Attribute Set','Define Product Attribute Sets to add additional attributes and values to the product. You need to define a Attribute Set if you want to enable Serial and Lot Number tracking.',100,215948,'Y',0,230,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-10-05 19:11:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-10-05 19:11:56','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','218bf59a-05d3-498e-a136-ca808b4ea4b3','Y',200,1,2,1,'N','N','N','N')
-;
-
--- Oct 5, 2023, 7:15:34 PM IST
-UPDATE AD_Column SET IsUpdateable='Y', IsAlwaysUpdateable='Y',Updated=TO_TIMESTAMP('2023-10-05 19:15:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215948
 ;
 
 -- Oct 25, 2023, 3:32:17 PM IST
@@ -634,12 +610,8 @@ CREATE UNIQUE INDEX AD_TableAttributeSet_AttributeSet_Table ON AD_TableAttribute
 UPDATE AD_Table SET Description='Creates a link between tables and attribute sets for flexible extensions. A table can have multiple attribute sets.', Help='Links system tables (AD_Table) with attribute sets (M_AttributeSet) to allow multiple attribute sets per table, enabling extensibility and avoiding plugin conflicts.',Updated=TO_TIMESTAMP('2024-12-31 13:29:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200423
 ;
 
--- Dec 31, 2024, 1:36:11 PM IST
-INSERT INTO AD_Window (AD_Window_ID,Name,Description,Help,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,WinHeight,WinWidth,IsBetaFunctionality,AD_Window_UU) VALUES (200152,'Table Attribute Set','Creates a link between tables and attribute sets for flexible extensions. A table can have multiple attribute sets.','Links system tables (AD_Table) with attribute sets (M_AttributeSet) to allow multiple attribute sets per table, enabling extensibility and avoiding plugin conflicts.',0,0,'Y',TO_TIMESTAMP('2024-12-31 13:36:07','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-31 13:36:07','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','Y','N',0,0,'N','1f938c8f-90f0-4753-b1d1-4dce5f2c16ae')
-;
-
 -- Dec 31, 2024, 1:36:32 PM IST
-INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200388,'Table Attribute Set',200152,10,'Y',200423,0,0,'Y',TO_TIMESTAMP('2024-12-31 13:36:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-31 13:36:31','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N','N','N',0,'N','D','Y','N','81067d1d-af66-4ab4-b564-7e95c15914ab','B','N','Y',0)
+INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200388,'Table Attribute Set',100,130,'Y',200423,0,0,'Y',TO_TIMESTAMP('2024-12-31 13:36:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-31 13:36:31','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N','N','N',1,'N','D','Y','N','81067d1d-af66-4ab4-b564-7e95c15914ab','B','N','Y',0)
 ;
 
 -- Dec 31, 2024, 1:36:48 PM IST
@@ -690,10 +662,6 @@ UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2024-12-31 13:37:23','YYYY-MM-
 ;
 
 -- Dec 31, 2024, 2:23:59 PM IST
-INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200239,'Table Attribute Set','W',200152,0,0,'Y',TO_TIMESTAMP('2024-12-31 14:23:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-12-31 14:23:55','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','D','Y','9353262d-9218-42da-9d86-5e9fc58afecc')
-;
-
--- Dec 31, 2024, 2:23:59 PM IST
 INSERT INTO AD_TreeNodeMM (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, AD_Tree_ID, Node_ID, Parent_ID, SeqNo, AD_TreeNodeMM_UU) SELECT t.AD_Client_ID, 0, 'Y', statement_timestamp(), 100, statement_timestamp(), 100,t.AD_Tree_ID, 200239, 0, 999, Generate_UUID() FROM AD_Tree t WHERE t.AD_Client_ID=0 AND t.IsActive='Y' AND t.IsAllNodes='Y' AND t.TreeType='MM' AND NOT EXISTS (SELECT * FROM AD_TreeNodeMM e WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=200239)
 ;
 
@@ -705,22 +673,6 @@ UPDATE AD_Column SET AD_Val_Rule_ID=200047,Updated=TO_TIMESTAMP('2024-12-31 14:3
 UPDATE AD_Column SET AD_Val_Rule_ID=200180,Updated=TO_TIMESTAMP('2024-12-31 15:05:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217023
 ;
 
--- Jan 1, 2025, 12:27:19 PM IST
-DELETE FROM AD_Field WHERE AD_Field_UU='218bf59a-05d3-498e-a136-ca808b4ea4b3'
-;
-
--- Jan 1, 2025, 12:27:34 PM IST
-ALTER TABLE AD_Table DROP CONSTRAINT MAttributeSet_ADTable
-;
-
--- Jan 1, 2025, 12:27:52 PM IST
-ALTER TABLE AD_Table DROP COLUMN M_AttributeSet_ID
-;
-
--- Jan 1, 2025, 12:27:55 PM IST
-DELETE FROM AD_Column WHERE AD_Column_UU='5965098d-456d-48a2-b05d-e1b8cbc9ec8b'
-;
-
 -- Jan 1, 2025, 5:32:10 PM IST
 INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_TableAttributeSet',1000000,'N','N','Table AD_TableAttributeSet','Y','Y',0,0,TO_TIMESTAMP('2025-01-01 17:32:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-01-01 17:32:09','YYYY-MM-DD HH24:MI:SS'),100,200494,'Y',1000000,1,200000,'8e73e118-776a-4f88-9270-076a2120b31a')
 ;
@@ -728,3 +680,12 @@ INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsA
 -- Jan 1, 2025, 5:32:43 PM IST
 INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('DocumentNo_AD_TableAttribute',1000000,'N','N','DocumentNo/Value for Table AD_TableAttribute','Y','N',11,0,TO_TIMESTAMP('2025-01-01 17:32:42','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-01-01 17:32:42','YYYY-MM-DD HH24:MI:SS'),100,200515,'Y',1000000,1,200000,'5cce385d-98c4-4efc-80a1-6ab2958be900')
 ;
+
+-- Mar 1, 2025, 1:36:34 PM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Extra Attributes',0,0,'Y',TO_TIMESTAMP('2025-03-01 13:36:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-03-01 13:36:33','YYYY-MM-DD HH24:MI:SS'),100,200940,'AttributeForm','D','26116a47-860b-43a8-920a-54cface6ade9')
+;
+
+-- Mar 1, 2025, 1:55:06 PM CET
+UPDATE AD_Column SET IsParent='Y', AD_Reference_ID=30, IsUpdateable='N',Updated=TO_TIMESTAMP('2025-03-01 13:55:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217024
+;
+

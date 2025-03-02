@@ -24,21 +24,49 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for AD_TableAttribute
- *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
-public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Persistent 
+ *  @author iDempiere (generated)
+ *  @version Release 13 - $Id$ */
+@org.adempiere.base.Model(table="AD_TableAttribute")
+public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231026L;
+	private static final long serialVersionUID = 20250301L;
 
     /** Standard Constructor */
     public X_AD_TableAttribute (Properties ctx, int AD_TableAttribute_ID, String trxName)
     {
       super (ctx, AD_TableAttribute_ID, trxName);
       /** if (AD_TableAttribute_ID == 0)
+        {
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TableAttribute (Properties ctx, int AD_TableAttribute_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_TableAttribute_ID, trxName, virtualColumns);
+      /** if (AD_TableAttribute_ID == 0)
+        {
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TableAttribute (Properties ctx, String AD_TableAttribute_UU, String trxName)
+    {
+      super (ctx, AD_TableAttribute_UU, trxName);
+      /** if (AD_TableAttribute_UU == null)
+        {
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TableAttribute (Properties ctx, String AD_TableAttribute_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_TableAttribute_UU, trxName, virtualColumns);
+      /** if (AD_TableAttribute_UU == null)
         {
         } */
     }
@@ -50,7 +78,7 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -66,52 +94,25 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_TableAttribute[")
+      StringBuilder sb = new StringBuilder ("X_AD_TableAttribute[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
-
-	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
-	public void setAD_Table_ID (int AD_Table_ID)
-	{
-		if (AD_Table_ID < 1) 
-			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
-	}
-
-	/** Get Table.
-		@return Database Table information
-	  */
-	public int getAD_Table_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set AD_TableAttribute_ID.
-		@param AD_TableAttribute_ID AD_TableAttribute_ID	  */
+		@param AD_TableAttribute_ID AD_TableAttribute_ID
+	*/
 	public void setAD_TableAttribute_ID (int AD_TableAttribute_ID)
 	{
-		if (AD_TableAttribute_ID < 1) 
+		if (AD_TableAttribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_TableAttribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_TableAttribute_ID, Integer.valueOf(AD_TableAttribute_ID));
 	}
 
 	/** Get AD_TableAttribute_ID.
 		@return AD_TableAttribute_ID	  */
-	public int getAD_TableAttribute_ID () 
+	public int getAD_TableAttribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_TableAttribute_ID);
 		if (ii == null)
@@ -120,7 +121,8 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	}
 
 	/** Set AD_TableAttribute_UU.
-		@param AD_TableAttribute_UU AD_TableAttribute_UU	  */
+		@param AD_TableAttribute_UU AD_TableAttribute_UU
+	*/
 	public void setAD_TableAttribute_UU (String AD_TableAttribute_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_TableAttribute_UU, AD_TableAttribute_UU);
@@ -128,60 +130,60 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 
 	/** Get AD_TableAttribute_UU.
 		@return AD_TableAttribute_UU	  */
-	public String getAD_TableAttribute_UU () 
+	public String getAD_TableAttribute_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_TableAttribute_UU);
 	}
 
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
-			.getPO(getM_Attribute_ID(), get_TrxName());	}
-
-	/** Set Attribute.
-		@param M_Attribute_ID 
-		Product Attribute
-	  */
-	public void setM_Attribute_ID (int M_Attribute_ID)
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
-		if (M_Attribute_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
 	}
 
-	/** Get Attribute.
-		@return Product Attribute
-	  */
-	public int getM_Attribute_ID () 
+	/** Set Table.
+		@param AD_Table_ID Database Table information
+	*/
+	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
+		if (AD_Table_ID < 1)
+			set_Value (COLUMNNAME_AD_Table_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
 	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_AttributeValue)MTable.get(getCtx(), org.compiere.model.I_M_AttributeValue.Table_Name)
-			.getPO(getM_AttributeValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_AttributeValue)MTable.get(getCtx(), org.compiere.model.I_M_AttributeValue.Table_ID)
+			.getPO(getM_AttributeValue_ID(), get_TrxName());
+	}
 
 	/** Set Attribute Value.
-		@param M_AttributeValue_ID 
-		Product Attribute Value
-	  */
+		@param M_AttributeValue_ID Product Attribute Value
+	*/
 	public void setM_AttributeValue_ID (int M_AttributeValue_ID)
 	{
-		if (M_AttributeValue_ID < 1) 
+		if (M_AttributeValue_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeValue_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeValue_ID, Integer.valueOf(M_AttributeValue_ID));
 	}
 
 	/** Get Attribute Value.
 		@return Product Attribute Value
 	  */
-	public int getM_AttributeValue_ID () 
+	public int getM_AttributeValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeValue_ID);
 		if (ii == null)
@@ -189,22 +191,49 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
+
+	/** Set Attribute.
+		@param M_Attribute_ID Product Attribute
+	*/
+	public void setM_Attribute_ID (int M_Attribute_ID)
+	{
+		if (M_Attribute_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
+	}
+
+	/** Get Attribute.
+		@return Product Attribute
 	  */
+	public int getM_Attribute_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Record ID.
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -213,9 +242,8 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -224,13 +252,14 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Value Date.
-		@param ValueDate Value Date	  */
+		@param ValueDate Value Date
+	*/
 	public void setValueDate (Timestamp ValueDate)
 	{
 		set_Value (COLUMNNAME_ValueDate, ValueDate);
@@ -238,15 +267,14 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 
 	/** Get Value Date.
 		@return Value Date	  */
-	public Timestamp getValueDate () 
+	public Timestamp getValueDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValueDate);
 	}
 
 	/** Set Value.
-		@param ValueNumber 
-		Numeric Value
-	  */
+		@param ValueNumber Numeric Value
+	*/
 	public void setValueNumber (BigDecimal ValueNumber)
 	{
 		set_Value (COLUMNNAME_ValueNumber, ValueNumber);
@@ -255,7 +283,7 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	/** Get Value.
 		@return Numeric Value
 	  */
-	public BigDecimal getValueNumber () 
+	public BigDecimal getValueNumber()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ValueNumber);
 		if (bd == null)

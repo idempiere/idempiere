@@ -115,7 +115,11 @@ public class MTableAttribute extends X_AD_TableAttribute
 					}
 					else if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equalsIgnoreCase(attType))
 					{
-						if (DisplayType.isText(reference_ID) || reference_ID == DisplayType.YesNo)
+						if (reference_ID == DisplayType.YesNo)
+						{
+							value = Util.isEmpty(DefaultValue) ? null: DefaultValue.equalsIgnoreCase("Y");
+						}
+						else if (DisplayType.isText(reference_ID))
 						{
 							value = DefaultValue;
 						}

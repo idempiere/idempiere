@@ -86,11 +86,11 @@ import org.zkoss.zul.impl.LabelImageElement;
  * 				<li>FR [ 2076330 ] Add new methods in CWindowToolbar class
  */
 public class ADWindowToolbar extends ToolBar implements EventListener<Event>
-{	
-	/**
-	 * generated serial id
+{
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -2174135931334134570L;
+	private static final long serialVersionUID = 8811591650029510064L;
 
 	/**
 	 * Attribute for {@link #overflowPopup} to store the last close timestamp in ms.
@@ -866,7 +866,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	{
 		btnQuickForm.setDisabled(!enabled);
 	}
-	
+
     /**
      * Enable/disable Attribute Form button
      * @param enabled

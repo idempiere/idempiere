@@ -148,7 +148,7 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 	 */
 	private void addSQLTableAttributeInsert(PO po, List<String> oracles, List<String> pgs)
 	{
-		List<PO> attributes = po.getTableAttributes();
+		List<PO> attributes = po.get_TableAttributes();
 		for (PO as : attributes)
 		{
 			addSQLInsert(as, oracles, pgs);

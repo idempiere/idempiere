@@ -178,7 +178,7 @@ public class WTableAttribute extends Window implements EventListener<Event>
 
 				editor.setMandatory(attribute.isMandatory());
 				editor.fillHorizontal();
-				editor.setValue(po.getAttribute(attribute.getName()));
+				editor.setValue(po.get_TableAttribute(attribute.getName()));
 				editor.addValueChangeListener(new ValueChangeListener() {
 
 					@Override

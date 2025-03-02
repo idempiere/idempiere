@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_AttributeUse
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeUse")
 public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240718L;
+	private static final long serialVersionUID = 20250301L;
 
     /** Standard Constructor */
     public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName)
@@ -113,34 +113,6 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
       return sb.toString();
     }
 
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
-			.getPO(getM_Attribute_ID(), get_TrxName());
-	}
-
-	/** Set Attribute.
-		@param M_Attribute_ID Product Attribute
-	*/
-	public void setM_Attribute_ID (int M_Attribute_ID)
-	{
-		if (M_Attribute_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
-	}
-
-	/** Get Attribute.
-		@return Product Attribute
-	  */
-	public int getM_Attribute_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Default Logic.
 		@param DefaultValue Default value hierarchy, separated by ;
 	*/
@@ -155,6 +127,25 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	public String getDefaultValue()
 	{
 		return (String)get_Value(COLUMNNAME_DefaultValue);
+	}
+
+	/** EntityType AD_Reference_ID=389 */
+	public static final int ENTITYTYPE_AD_Reference_ID=389;
+	/** Set Entity Type.
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
+	public void setEntityType (String EntityType)
+	{
+
+		set_Value (COLUMNNAME_EntityType, EntityType);
+	}
+
+	/** Get Entity Type.
+		@return Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public String getEntityType()
+	{
+		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
@@ -206,6 +197,34 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	public String getM_AttributeUse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeUse_UU);
+	}
+
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
+
+	/** Set Attribute.
+		@param M_Attribute_ID Product Attribute
+	*/
+	public void setM_Attribute_ID (int M_Attribute_ID)
+	{
+		if (M_Attribute_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
+	}
+
+	/** Get Attribute.
+		@return Product Attribute
+	  */
+	public int getM_Attribute_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Sequence.

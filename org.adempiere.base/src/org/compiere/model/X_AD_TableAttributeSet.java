@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_TableAttributeSet
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_TableAttributeSet")
 public class X_AD_TableAttributeSet extends PO implements I_AD_TableAttributeSet, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_TableAttributeSet extends PO implements I_AD_TableAttributeSet
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241231L;
+	private static final long serialVersionUID = 20250301L;
 
     /** Standard Constructor */
     public X_AD_TableAttributeSet (Properties ctx, int AD_TableAttributeSet_ID, String trxName)
