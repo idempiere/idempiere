@@ -44,7 +44,6 @@ jobs:
           -Dsonar.organization=${{ vars.sonarOrganization }} \
           -Dsonar.exclusions=**/I_*.java,**/X_*.java \
           -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.scanner.javaOpts="-Xmx6g" \
           -DmaterializeProduct=none \
           -DassembleRepository=none \
           -Dsonar.sourceEncoding=UTF-8 \
