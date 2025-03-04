@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_AttributeValue
+/** Generated Interface for AD_TableAttribute
  *  @author iDempiere (generated) 
  *  @version Release 13
  */
-public interface I_M_AttributeValue 
+public interface I_AD_TableAttribute 
 {
 
-    /** TableName=M_AttributeValue */
-    public static final String Table_Name = "M_AttributeValue";
+    /** TableName=AD_TableAttribute */
+    public static final String Table_Name = "AD_TableAttribute";
 
-    /** AD_Table_ID=558 */
-    public static final int Table_ID = 558;
+    /** AD_Table_ID=200390 */
+    public static final int Table_ID = 200390;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,39 @@ public interface I_M_AttributeValue
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_TableAttribute_ID */
+    public static final String COLUMNNAME_AD_TableAttribute_ID = "AD_TableAttribute_ID";
+
+	/** Set AD_TableAttribute_ID	  */
+	public void setAD_TableAttribute_ID (int AD_TableAttribute_ID);
+
+	/** Get AD_TableAttribute_ID	  */
+	public int getAD_TableAttribute_ID();
+
+    /** Column name AD_TableAttribute_UU */
+    public static final String COLUMNNAME_AD_TableAttribute_UU = "AD_TableAttribute_UU";
+
+	/** Set AD_TableAttribute_UU	  */
+	public void setAD_TableAttribute_UU (String AD_TableAttribute_UU);
+
+	/** Get AD_TableAttribute_UU	  */
+	public String getAD_TableAttribute_UU();
+
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -77,34 +110,6 @@ public interface I_M_AttributeValue
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
-    /** Column name EntityType */
-    public static final String COLUMNNAME_EntityType = "EntityType";
-
-	/** Set Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public void setEntityType (String EntityType);
-
-	/** Get Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public String getEntityType();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -132,14 +137,7 @@ public interface I_M_AttributeValue
 	  */
 	public int getM_AttributeValue_ID();
 
-    /** Column name M_AttributeValue_UU */
-    public static final String COLUMNNAME_M_AttributeValue_UU = "M_AttributeValue_UU";
-
-	/** Set M_AttributeValue_UU	  */
-	public void setM_AttributeValue_UU (String M_AttributeValue_UU);
-
-	/** Get M_AttributeValue_UU	  */
-	public String getM_AttributeValue_UU();
+	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException;
 
     /** Column name M_Attribute_ID */
     public static final String COLUMNNAME_M_Attribute_ID = "M_Attribute_ID";
@@ -156,18 +154,18 @@ public interface I_M_AttributeValue
 
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
+    /** Column name Record_ID */
+    public static final String COLUMNNAME_Record_ID = "Record_ID";
 
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
+	/** Set Record ID.
+	  * Direct internal record ID
 	  */
-	public void setName (String Name);
+	public void setRecord_ID (int Record_ID);
 
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
+	/** Get Record ID.
+	  * Direct internal record ID
 	  */
-	public String getName();
+	public int getRecord_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -197,4 +195,26 @@ public interface I_M_AttributeValue
 	  * Search key for the record in the format required - must be unique
 	  */
 	public String getValue();
+
+    /** Column name ValueDate */
+    public static final String COLUMNNAME_ValueDate = "ValueDate";
+
+	/** Set Value Date	  */
+	public void setValueDate (Timestamp ValueDate);
+
+	/** Get Value Date	  */
+	public Timestamp getValueDate();
+
+    /** Column name ValueNumber */
+    public static final String COLUMNNAME_ValueNumber = "ValueNumber";
+
+	/** Set Value.
+	  * Numeric Value
+	  */
+	public void setValueNumber (BigDecimal ValueNumber);
+
+	/** Get Value.
+	  * Numeric Value
+	  */
+	public BigDecimal getValueNumber();
 }

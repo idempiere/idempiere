@@ -20,24 +20,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for M_AttributeValue
+/** Generated Interface for AD_TableAttributeSet
  *  @author iDempiere (generated) 
  *  @version Release 13
  */
-public interface I_M_AttributeValue 
+public interface I_AD_TableAttributeSet 
 {
 
-    /** TableName=M_AttributeValue */
-    public static final String Table_Name = "M_AttributeValue";
+    /** TableName=AD_TableAttributeSet */
+    public static final String Table_Name = "AD_TableAttributeSet";
 
-    /** AD_Table_ID=558 */
-    public static final int Table_ID = 558;
+    /** AD_Table_ID=200423 */
+    public static final int Table_ID = 200423;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client 
+    /** AccessLevel = 4 - System 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(6);
+    BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
 
@@ -62,6 +62,39 @@ public interface I_M_AttributeValue
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_TableAttributeSet_ID */
+    public static final String COLUMNNAME_AD_TableAttributeSet_ID = "AD_TableAttributeSet_ID";
+
+	/** Set Table Attribute Set	  */
+	public void setAD_TableAttributeSet_ID (int AD_TableAttributeSet_ID);
+
+	/** Get Table Attribute Set	  */
+	public int getAD_TableAttributeSet_ID();
+
+    /** Column name AD_TableAttributeSet_UU */
+    public static final String COLUMNNAME_AD_TableAttributeSet_UU = "AD_TableAttributeSet_UU";
+
+	/** Set AD_TableAttributeSet_UU	  */
+	public void setAD_TableAttributeSet_UU (String AD_TableAttributeSet_UU);
+
+	/** Get AD_TableAttributeSet_UU	  */
+	public String getAD_TableAttributeSet_UU();
+
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -78,34 +111,6 @@ public interface I_M_AttributeValue
 	  */
 	public int getCreatedBy();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
-    /** Column name EntityType */
-    public static final String COLUMNNAME_EntityType = "EntityType";
-
-	/** Set Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public void setEntityType (String EntityType);
-
-	/** Get Entity Type.
-	  * Dictionary Entity Type;
- Determines ownership and synchronization
-	  */
-	public String getEntityType();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -119,55 +124,20 @@ public interface I_M_AttributeValue
 	  */
 	public boolean isActive();
 
-    /** Column name M_AttributeValue_ID */
-    public static final String COLUMNNAME_M_AttributeValue_ID = "M_AttributeValue_ID";
+    /** Column name M_AttributeSet_ID */
+    public static final String COLUMNNAME_M_AttributeSet_ID = "M_AttributeSet_ID";
 
-	/** Set Attribute Value.
-	  * Product Attribute Value
+	/** Set Attribute Set.
+	  * Product Attribute Set
 	  */
-	public void setM_AttributeValue_ID (int M_AttributeValue_ID);
+	public void setM_AttributeSet_ID (int M_AttributeSet_ID);
 
-	/** Get Attribute Value.
-	  * Product Attribute Value
+	/** Get Attribute Set.
+	  * Product Attribute Set
 	  */
-	public int getM_AttributeValue_ID();
+	public int getM_AttributeSet_ID();
 
-    /** Column name M_AttributeValue_UU */
-    public static final String COLUMNNAME_M_AttributeValue_UU = "M_AttributeValue_UU";
-
-	/** Set M_AttributeValue_UU	  */
-	public void setM_AttributeValue_UU (String M_AttributeValue_UU);
-
-	/** Get M_AttributeValue_UU	  */
-	public String getM_AttributeValue_UU();
-
-    /** Column name M_Attribute_ID */
-    public static final String COLUMNNAME_M_Attribute_ID = "M_Attribute_ID";
-
-	/** Set Attribute.
-	  * Product Attribute
-	  */
-	public void setM_Attribute_ID (int M_Attribute_ID);
-
-	/** Get Attribute.
-	  * Product Attribute
-	  */
-	public int getM_Attribute_ID();
-
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
-
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
+	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -184,17 +154,4 @@ public interface I_M_AttributeValue
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name Value */
-    public static final String COLUMNNAME_Value = "Value";
-
-	/** Set Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public void setValue (String Value);
-
-	/** Get Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public String getValue();
 }

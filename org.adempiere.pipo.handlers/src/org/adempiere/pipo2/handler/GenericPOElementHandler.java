@@ -42,6 +42,7 @@ import org.compiere.model.I_AD_Form;
 import org.compiere.model.I_AD_InfoWindow;
 import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Role;
+import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.I_C_DocType;
 import org.compiere.model.MColumn;
@@ -63,7 +64,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class GenericPOElementHandler extends AbstractElementHandler {
 
-	private String m_tableName;
+	protected String m_tableName;
 
 	public GenericPOElementHandler() {
 	}
@@ -205,6 +206,18 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						}
 					}
 				}
+				
+				ctx.packOut.getCtx().ctx.put("Table_Name", tableName);
+				try
+				{
+					ElementHandler handler = ctx.packOut.getHandler(I_AD_TableAttribute.Table_Name);
+					handler.packOut(ctx.packOut, document, null, po.get_ID());
+				}
+				catch (Exception e)
+				{
+					if (log.isLoggable(Level.INFO))
+						log.info(e.toString());
+				}
 
 				for (int i = 1; i < components.length; i++) {
 					String tables[] = components[i].split("[>]");
@@ -279,6 +292,18 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						} catch(Exception e) {
 							if (log.isLoggable(Level.INFO)) log.info(e.toString());
 						}
+					}
+					
+					ctx.packOut.getCtx().ctx.put("Table_Name", mainTable);
+					try
+					{
+						ElementHandler handlerTabAttr = ctx.packOut.getHandler(I_AD_TableAttribute.Table_Name);
+						handlerTabAttr.packOut(ctx.packOut, document, null, po.get_ID());
+					}
+					catch (Exception e)
+					{
+						if (log.isLoggable(Level.INFO))
+							log.info(e.toString());
 					}
 				}
 				for (int i=1; i<tables.length; i++) {

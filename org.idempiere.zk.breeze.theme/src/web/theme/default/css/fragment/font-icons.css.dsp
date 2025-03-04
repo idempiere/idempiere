@@ -416,3 +416,7 @@
 	content: "\f00e";
 	font-weight: 900;
 }
+.z-icon-AttributeForm:before {
+	content: "\f29e";
+	font-weight: 900;
+}
