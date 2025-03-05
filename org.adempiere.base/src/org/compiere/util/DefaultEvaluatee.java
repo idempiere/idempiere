@@ -175,7 +175,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		boolean globalVariable = Env.isGlobalVariable(variableName);
 		boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
 		// get value from window context or global
-		if (m_windowNo >= 0)
+		if (m_windowNo != 0)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
@@ -225,7 +225,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 		
 		//try window context again after removal of tab no
-		if (!globalVariable && Util.isEmpty(value) && m_windowNo >= 0 && withTabNo && !tabOnly) {
+		if (!globalVariable && Util.isEmpty(value) && m_windowNo != 0 && withTabNo && !tabOnly) {
 			value = Env.getContext(ctx, m_windowNo, variableName);
 		}
 		
