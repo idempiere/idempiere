@@ -794,11 +794,9 @@ public class ConfigurationData
 	protected boolean testServerPort (int port)
 	{
 		System.out.println("testServerPort: " + port);
-		try
-		{
-			ServerSocket ss = new ServerSocket (port);
+		try (ServerSocket ss = new ServerSocket (port))
+		{			
 			if (log.isLoggable(Level.FINE)) log.fine(ss.getInetAddress() + ":" + ss.getLocalPort() + " - created");
-			ss.close();
 		}
 		catch (Exception ex)
 		{

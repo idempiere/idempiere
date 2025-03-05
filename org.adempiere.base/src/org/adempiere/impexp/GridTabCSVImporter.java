@@ -324,8 +324,8 @@ public class GridTabCSVImporter implements IGridTabImporter
 	private void rollbackTrx(){
 		trx.rollback();
 		for( String row : rowsTmpResult ){
-			row = row.replaceAll("Updated","RolledBack");
-			row = row.replaceAll("Inserted","RolledBack");
+			row = row.replace("Updated","RolledBack");
+			row = row.replace("Inserted","RolledBack");
 			logFileW.write(row);
 		}
 	}

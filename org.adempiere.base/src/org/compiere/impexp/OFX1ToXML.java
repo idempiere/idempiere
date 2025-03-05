@@ -86,7 +86,7 @@ public final class OFX1ToXML extends InputStream implements Runnable
 		{
 			if (line.length() > 0) 
 			{
-				write(line.replaceAll(":", "=\"") + "\" ");
+				write(line.replace(":", "=\"") + "\" ");
 			}
 			line = br.readLine();
 		}

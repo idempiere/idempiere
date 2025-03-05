@@ -429,7 +429,7 @@ public class AmtInWords_HR implements AmtInWords
 		//
 		StringBuilder sb = new StringBuilder ();
 
-		amount = amount.replaceAll (",", "");
+		amount = amount.replace(",", "");
 
         Double iznos = Double.parseDouble(amount);
 		sb.append (slovimaUValuti (BigDecimal.valueOf(Double.valueOf(iznos))));

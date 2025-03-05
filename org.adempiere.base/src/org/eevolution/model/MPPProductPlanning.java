@@ -44,7 +44,7 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 	private static final long serialVersionUID = -3061309620804116277L;
 	
 	/** Log									*/
-	private static CLogger log = CLogger.getCLogger(MPPProductPlanning.class); 
+	private static CLogger s_log = CLogger.getCLogger(MPPProductPlanning.class); 
 
 
     /**
@@ -123,7 +123,7 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 											int m_warehouse_id, int s_resource_id, int m_product_id,
 											String trxname)
 	{
-		if (log.isLoggable(Level.INFO)) log.info("AD_Client_ID="  + ad_client_id + " AD_Org_ID=" + ad_org_id + " M_Product_ID=" + m_product_id + " M_Warehouse_ID=" + m_warehouse_id + " S_Resource_ID=" + s_resource_id );
+		if (s_log.isLoggable(Level.INFO)) s_log.info("AD_Client_ID="  + ad_client_id + " AD_Org_ID=" + ad_org_id + " M_Product_ID=" + m_product_id + " M_Warehouse_ID=" + m_warehouse_id + " S_Resource_ID=" + s_resource_id );
 		String  sql_warehouse = COLUMNNAME_M_Warehouse_ID+"=?";
 		if(m_warehouse_id == 0)
 		{

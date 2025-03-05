@@ -60,10 +60,8 @@ public class AttachmentFileLazyDataSource implements IAttachmentLazyDataSource {
 	public byte[] getData() {
 		// read files into byte[]
 		final byte[] dataEntry = new byte[(int) m_file.length()];
-		try {
-			final FileInputStream fileInputStream = new FileInputStream(m_file);
+		try (FileInputStream fileInputStream = new FileInputStream(m_file)) {
 			fileInputStream.read(dataEntry);
-			fileInputStream.close();
 		} catch (FileNotFoundException e) {
 			log.severe("File Not Found.");
 			e.printStackTrace();

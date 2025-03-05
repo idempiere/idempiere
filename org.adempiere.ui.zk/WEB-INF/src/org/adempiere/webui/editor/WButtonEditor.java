@@ -77,7 +77,6 @@ public class WButtonEditor extends WEditor implements IProcessButton
   
     private int AD_Process_ID;
     private int AD_InfoWindow_ID;
-    private GridField gridfield = null;
     
     private ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
@@ -123,7 +122,6 @@ public class WButtonEditor extends WEditor implements IProcessButton
         m_text = gridField.getHeader();
         AD_Process_ID = gridField.getAD_Process_ID();
         AD_InfoWindow_ID = gridField.getAD_InfoWindow_ID();
-        gridfield = gridField;
         getComponent().setAttribute(EDITOR_ATTRIBUTE, this);
         init();
 	}
@@ -151,7 +149,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
 	 */
 	public GridField getGridField()
 	{
-		return gridfield;
+		return super.gridField;
 	}
 
 	/**

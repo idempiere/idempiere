@@ -26,7 +26,6 @@ import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -45,9 +44,6 @@ public class GeneratePeriodicCashPlanLines  extends SvrProcess {
 	private Timestamp p_DateFrom = null;
 	private BigDecimal p_Probability = null;
 	private int p_C_CashPlan_ID = 0;
-
-	/**	Logger							*/
-	protected CLogger log = CLogger.getCLogger (getClass());
 
 	@Override
 	protected void prepare()

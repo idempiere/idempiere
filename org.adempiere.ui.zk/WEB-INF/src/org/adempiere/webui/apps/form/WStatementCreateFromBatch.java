@@ -53,7 +53,6 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
-import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -106,9 +105,6 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	/** Window No               */
 	private int p_WindowNo;
 
-	/**	Logger			*/
-	private final static CLogger log = CLogger.getCLogger(WStatementCreateFromBatch.class);
-	
 	protected Label bankAccountLabel = new Label();
 	/** Bank account parameter */
 	protected WTableDirEditor bankAccountField;

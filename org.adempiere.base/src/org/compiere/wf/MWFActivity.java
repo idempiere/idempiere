@@ -1770,14 +1770,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		String subject = null;
 		String raw = text.getMailHeader(false);
 		if (raw != null && raw.contains("@_noDocInfo_@"))
-			subject = text.getMailHeader().replaceAll("@_noDocInfo_@", "");
+			subject = text.getMailHeader().replace("@_noDocInfo_@", "");
 		else
 			subject = doc.getDocumentInfo() + ": " + text.getMailHeader();
 		String message = null;
 		raw = text.getMailText(true, false);
 		if (raw != null && (raw.contains("@=DocumentInfo") || raw.contains("@=documentInfo")
 				|| raw.contains("@=Summary") || raw.contains("@=summary") || raw.contains("@_noDocInfo_@")))
-			message = text.getMailText(true).replaceAll("@_noDocInfo_@", "");
+			message = text.getMailText(true).replace("@_noDocInfo_@", "");
 		else
 			message = text.getMailText(true)
 				+ "\n-----\n" + doc.getDocumentInfo()

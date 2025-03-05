@@ -58,7 +58,7 @@ public class UUIDGenerator extends SvrProcess {
 	private boolean isClearUUID = false;
 
 	/**	Logger							*/
-	private static final CLogger log = CLogger.getCLogger(UUIDGenerator.class);
+	private static final CLogger s_log = CLogger.getCLogger(UUIDGenerator.class);
 
 	/**
 	 * @see org.compiere.process.SvrProcess#prepare()
@@ -196,7 +196,7 @@ public class UUIDGenerator extends SvrProcess {
 		}
 		if ((compositeKeys == null || compositeKeys.length == 0) && keyColumn == null) {
 			// TODO: Update using rowid for oracle or ctid for postgresql
-			log.warning("Cannot update orphan table " + table.getTableName() + " (not ID neither parents)");
+			s_log.warning("Cannot update orphan table " + table.getTableName() + " (not ID neither parents)");
 			return "";
 		}
 		if (compositeKeys == null) {

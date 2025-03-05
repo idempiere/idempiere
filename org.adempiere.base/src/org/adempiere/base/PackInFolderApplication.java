@@ -84,7 +84,7 @@ public class PackInFolderApplication implements IApplication {
 			StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle())
 					.append("\n Error=").append(pi.isError())
 					.append("\n Summary=").append(pi.getSummary())
-					.append("\n Logs=\n").append(pi.getLogInfo(false).replaceAll("<br>", "\n"));
+					.append("\n Logs=\n").append(pi.getLogInfo(false).replace("<br>", "\n"));
 			System.out.println(msgout.toString());
 			if (!success)
 				return Integer.valueOf(1);

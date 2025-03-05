@@ -228,7 +228,7 @@ public class AmtInWords_TH implements AmtInWords
                 if (pos2 > pos)
                         pos = pos2;
                 String oldamt = amount;
-                amount = amount.replaceAll (",", "");
+                amount = amount.replace(",", "");
                 int newpos = amount.lastIndexOf ('.');
                 if (newpos != -1) {
                     int pesos = Integer.parseInt(amount.substring(0, newpos));
@@ -269,7 +269,7 @@ public class AmtInWords_TH implements AmtInWords
                 if (pos2 > pos)
                         pos = pos2;
                 String oldamt = amount;
-                amount = amount.replaceAll (",", "");
+                amount = amount.replace(",", "");
                 int newpos = amount.lastIndexOf ('.');
                 if (newpos != -1) {
                     int pesos = Integer.parseInt(amount.substring(0, newpos));
