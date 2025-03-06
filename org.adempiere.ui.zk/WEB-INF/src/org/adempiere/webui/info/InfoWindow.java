@@ -2314,7 +2314,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         // for SELECT DISTINCT, ORDER BY expressions must appear in select list - applies for lookup columns and multiselection columns
         if(dataSql.startsWith("SELECT DISTINCT") && indexOrderColumn > 0) {
         	ColumnInfo orderColumnInfo = p_layout[indexOrderColumn];
-        	if (DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID())) {
+        	if (   !Util.isEmpty(orderColumnInfo.getDisplayColumn())
+        		&& (   DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID())
+        			|| DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID()))) {
         		dataSql = appendOrderByToSelectList(dataSql, orderClause);
         	}
         }
@@ -2332,7 +2334,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
      * @param orderBy
      * @return sql with order by
      */
-    private String appendOrderByToSelectList(String sql, String orderBy) {
+    private String appendOrderByToSelectList(String sql, String orderBy,ColumnInfo columnInfo) {
     	if(Util.isEmpty(orderBy))
     		return sql;
 		int idxFrom = getIdxFrom(sql);
@@ -2340,7 +2342,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			return sql;
 	
 		String select = sql.substring(0, idxFrom);
-		select += ", " + orderBy.replaceFirst("\\s+ORDER BY\\s+", "").replaceAll("\\s+ASC\\s+", "").replaceAll("\\s+DESC\\s+", "");	// \s+ stands for one or more whitespace character
+		
+		//Only add the column to the select if it has a displayColumn, otherwise the column will already exist in the select
+		if(!Util.isEmpty(columnInfo.getDisplayColumn()) && DisplayType.isLookup(columnInfo.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(columnInfo.getAD_Reference_ID()))
+			select += ", " + orderBy.replaceFirst("\\s+ORDER BY\\s+", "").replaceAll("\\s+ASC\\s+", "").replaceAll("\\s+DESC\\s+", "");	// \s+ stands for one or more whitespace character
 		return select + sql.substring(idxFrom);
     }
 
