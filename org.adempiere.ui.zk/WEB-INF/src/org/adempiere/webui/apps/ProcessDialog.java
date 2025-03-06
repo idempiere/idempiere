@@ -130,8 +130,6 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	/** process log content of {@link #resultPanelLayout}, host {@link #logMessageTable} **/
 	private HtmlBasedComponent infoResultContent;
 
-	/** Window No					*/
-	private int m_WindowNo = -1;
 	/**
 	 * SysConfig USE_ESC_FOR_TAB_CLOSING
 	 */

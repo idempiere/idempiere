@@ -148,7 +148,7 @@ public final class WAccountDialog extends Window
 	protected boolean			m_changed = false;
 
 	/** Accounting Schema           */
-	private volatile static MAcctSchema	s_AcctSchema = null;
+	private MAcctSchema	m_AcctSchema = null;
 	/** MWindow for AccountCombination  */
 	private GridWindow             m_mWindow = null;
 	/** MTab for AccountCombination     */
@@ -324,10 +324,7 @@ public final class WAccountDialog extends Window
 	{
 		m_AD_Client_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "AD_Client_ID");
 		//	Get AcctSchema Info
-		if (s_AcctSchema == null || s_AcctSchema.getC_AcctSchema_ID() != m_C_AcctSchema_ID)
-			s_AcctSchema = new MAcctSchema (Env.getCtx(), m_C_AcctSchema_ID, null);
-		if (log.isLoggable(Level.CONFIG)) log.config(s_AcctSchema.toString()
-			+ ", #" + s_AcctSchema.getAcctSchemaElements().length);
+		m_AcctSchema = new MAcctSchema (Env.getCtx(), m_C_AcctSchema_ID, null);
 		Env.setContext(Env.getCtx(), m_WindowNo, "C_AcctSchema_ID", m_C_AcctSchema_ID);
 
 		//  Model
@@ -389,7 +386,7 @@ public final class WAccountDialog extends Window
 		if (!m_adTabPanel.isGridView())
 			m_adTabPanel.switchRowPresentation();
 
-		statusBar.setStatusLine(s_AcctSchema.toString());
+		statusBar.setStatusLine(m_AcctSchema.toString());
 		statusBar.setStatusDB("");
 
 		//	Initial value
@@ -417,7 +414,7 @@ public final class WAccountDialog extends Window
 		m_rows.setParent(parameterLayout);
 
 		//	Alias
-		if (s_AcctSchema.isHasAlias())
+		if (m_AcctSchema.isHasAlias())
 		{
 			GridField alias = m_mTab.getField("Alias");
 			if (f_Alias == null)
@@ -435,7 +432,7 @@ public final class WAccountDialog extends Window
 		/**
 		 *	Create Fields in Element Order
 		 */
-		MAcctSchemaElement[] elements = s_AcctSchema.getAcctSchemaElements();
+		MAcctSchemaElement[] elements = m_AcctSchema.getAcctSchemaElements();
 		for (int i = 0; i < elements.length; i++)
 		{
 			MAcctSchemaElement ase = elements[i];
@@ -931,13 +928,13 @@ public final class WAccountDialog extends Window
 		StringBuilder sb = new StringBuilder();
 		StringBuilder sql = new StringBuilder ("SELECT C_ValidCombination_ID, Alias FROM C_ValidCombination WHERE ");
 		Object value = null;
-		if (s_AcctSchema.isHasAlias())
+		if (m_AcctSchema.isHasAlias())
 		{
 			value = f_Alias.getValue().toString();
 			if (isEmpty(value) && f_Alias.isMandatory())
 				sb.append(Msg.translate(Env.getCtx(), "Alias")).append(", ");
 		}
-		MAcctSchemaElement[] elements = s_AcctSchema.getAcctSchemaElements();
+		MAcctSchemaElement[] elements = m_AcctSchema.getAcctSchemaElements();
 		for (int i = 0; i < elements.length; i++)
 		{
 			MAcctSchemaElement ase = elements[i];
@@ -1102,7 +1099,7 @@ public final class WAccountDialog extends Window
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, m_AD_Client_ID);
-			pstmt.setInt(2, s_AcctSchema.getC_AcctSchema_ID());
+			pstmt.setInt(2, m_AcctSchema.getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
@@ -1127,7 +1124,7 @@ public final class WAccountDialog extends Window
 			Alias = "";
 
 		//	We have an account like this already - check alias
-		if (IDvalue != 0 && s_AcctSchema.isHasAlias()
+		if (IDvalue != 0 && m_AcctSchema.isHasAlias()
 			&& !f_Alias.getValue().toString().equals(Alias))
 		{
 			sql = new StringBuilder("UPDATE C_ValidCombination SET Alias=");
@@ -1160,7 +1157,7 @@ public final class WAccountDialog extends Window
 		//	load and display
 		if (IDvalue != 0)
 		{
-			loadInfo (IDvalue, s_AcctSchema.getC_AcctSchema_ID());
+			loadInfo (IDvalue, m_AcctSchema.getC_AcctSchema_ID());
 			action_Find (false);
 			return true;
 		}
@@ -1209,7 +1206,7 @@ public final class WAccountDialog extends Window
 
 		MAccount acct = MAccount.get (Env.getCtx(), m_AD_Client_ID,
 			((Integer)f_AD_Org_ID.getValue()).intValue(),
-			s_AcctSchema.getC_AcctSchema_ID(),
+			m_AcctSchema.getC_AcctSchema_ID(),
 			((Integer)f_Account_ID.getValue()).intValue(), C_SubAcct_ID,
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID,
 			C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID,
@@ -1229,7 +1226,7 @@ public final class WAccountDialog extends Window
 				acct.setAlias(Alias);
 				acct.saveEx();
 			}
-			loadInfo (acct.get_ID(), s_AcctSchema.getC_AcctSchema_ID());
+			loadInfo (acct.get_ID(), m_AcctSchema.getC_AcctSchema_ID());
 		}
 		IDvalue = acct.get_ID();
 		action_Find (false);

@@ -200,6 +200,7 @@ public class Util
 				case '\n':
 					if (maskCR)
 						out.append ("<br>");
+					break;
 				//
 				default:
 					int ii =  (int)c;
@@ -731,11 +732,14 @@ public class Util
 					cb.addTemplate(page, 0, 0);
 					copy.releaseTemplate(page);
 				}
-			}
-			document.close();
+			}			
 		}
 		finally
 		{
+			if(document != null)
+			{
+				document.close();
+			}
 			for(PdfReader reader:pdfReaders)
 			{
 				reader.close();
@@ -750,12 +754,12 @@ public class Util
 	 */
 	public static String setFilenameCorrect(String input) {
 		String output = Normalizer.normalize(input, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-		output = output.replaceAll("/" , "-");
-		output = output.replaceAll(":" , "-");
-		output = output.replaceAll("\\*" , "-");
-		output = output.replaceAll("<" , "-");
-		output = output.replaceAll(">" , "-");
-		output = output.replaceAll("%" , "-");
+		output = output.replace("/" , "-");
+		output = output.replace(":" , "-");
+		output = output.replace("*" , "-");
+		output = output.replace("<" , "-");
+		output = output.replace(">" , "-");
+		output = output.replace("%" , "-");
 		return output.trim();
 	}
 

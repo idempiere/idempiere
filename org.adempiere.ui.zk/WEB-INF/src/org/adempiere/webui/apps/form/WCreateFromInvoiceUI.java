@@ -45,7 +45,6 @@ import org.compiere.model.MLookupFactory;
 
 import static org.compiere.model.SystemIDs.*;
 
-import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -95,9 +94,6 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	/** Window No */
 	private int p_WindowNo;
 
-	/**	Logger */
-	private static final CLogger log = CLogger.getCLogger(WCreateFromInvoiceUI.class);
-		
 	protected Label bPartnerLabel = new Label();
 	/** Business partner parameter field */
 	protected WEditor bPartnerField;

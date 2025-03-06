@@ -1687,11 +1687,11 @@ class Restriction  implements Serializable
 			sb.append(ExistsClause);
 
 			if (Code instanceof String)
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", DB.TO_STRING(Code.toString())));
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_STRING(Code.toString())));
 			else if (Code instanceof Timestamp)
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", DB.TO_DATE((Timestamp)Code, false)));
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_DATE((Timestamp)Code, false)));
 			else
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", Code.toString()));
+				sb = new StringBuilder(sb.toString().replace("?", Code.toString()));
 
 			return sb.toString();
 		}

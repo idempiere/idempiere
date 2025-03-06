@@ -263,7 +263,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			if (ac != null) 
 			{
 				ac = ac.replaceAll("[-]", "");
-				ac = ac.replaceAll(" ", "");
+				ac = ac.replace(" ", "");
 			}
 			return ac;
 		}
@@ -291,7 +291,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			if (ac != null) 
 			{
 				ac = ac.replaceAll("[-]", "");
-				ac = ac.replaceAll(" ", "");
+				ac = ac.replace(" ", "");
 			}
 			return ac;
 		}

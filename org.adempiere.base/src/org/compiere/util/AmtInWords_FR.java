@@ -220,7 +220,7 @@ public class AmtInWords_FR implements AmtInWords
 		if (pos2 > pos)
 			pos = pos2;
 		String oldamt = amount;
-		amount = amount.replaceAll (",", "");
+		amount = amount.replace(",", "");
 		
 		String amttobetranslate = amount.substring (0, (pos));
 
