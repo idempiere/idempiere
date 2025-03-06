@@ -213,6 +213,12 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>2.3.5</version>
       <type>jar</type>
     </location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.jvnet.mimepull</groupId>
+      <artifactId>mimepull</artifactId>
+      <version>1.9.14</version>
+	  <type>jar</type>
+	</location>	    
     <location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.sun.net.httpserver</groupId>
 	  <artifactId>http</artifactId>
