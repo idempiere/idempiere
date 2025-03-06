@@ -52,7 +52,6 @@ import org.compiere.model.MProduct;
 
 import static org.compiere.model.SystemIDs.*;
 
-import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -104,9 +103,6 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	/** Window No               */
 	private int p_WindowNo;
 
-	/**	Logger			*/
-	private final static CLogger log = CLogger.getCLogger(WCreateFromShipmentUI.class);
-		
 	protected Label bPartnerLabel = new Label();
 	/** Business partner parameter field */
 	protected WEditor bPartnerField;

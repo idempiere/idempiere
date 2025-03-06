@@ -88,8 +88,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1658595186719510159L;
-	/**	Window No					*/
-	private int         		m_WindowNo = 0;
 	/**	Open Activities				*/
 	private MWFActivity[] 		m_activities = null;
 	/**	Current Activity			*/

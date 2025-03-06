@@ -811,7 +811,7 @@ public class ModelInterfaceGenerator
 		if (tableName == null || tableName.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify table name");
 
-		StringBuilder tableLike = new StringBuilder().append(tableName.trim().toUpperCase().replaceAll("'", ""));
+		StringBuilder tableLike = new StringBuilder().append(tableName.trim().toUpperCase().replace("'", ""));
 
 		StringBuilder entityTypeFilter = new StringBuilder();
 		if (entityType != null && entityType.trim().length() > 0)
@@ -871,7 +871,7 @@ public class ModelInterfaceGenerator
 				if (finalTableLike.length() > 0)
 					finalTableLike.append(", ");
 
-				finalTableLike.append(DB.TO_STRING(table.replaceAll("'", "").trim()));
+				finalTableLike.append(DB.TO_STRING(table.replace("'", "").trim()));
 			}
 
 			sql.append(" AND UPPER(TableName) IN (").append(finalTableLike).append(")");

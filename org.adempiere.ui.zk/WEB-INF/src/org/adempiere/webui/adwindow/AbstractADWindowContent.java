@@ -2275,13 +2275,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             			}
             		}
             		if (!isTabExcluded) {
-            			//sleep needed for onClose to show confirmation dialog
-            			try {
-    						Thread.sleep(200);
-    					} catch (InterruptedException e2) {
-    					}
-            			if (!showingOnExitDialog)
-            				Executions.schedule(getComponent().getDesktop(), e1 -> asyncAutoSave(), new Event("onAutoSave"));
+            			//schedule for onClose to show confirmation dialog
+            			Executions.schedule(getComponent().getDesktop(), 
+            					e1 -> {
+            						if (!showingOnExitDialog)
+                        				Executions.schedule(getComponent().getDesktop(), e2 -> asyncAutoSave(), new Event("onAsyncAutoSave"));
+            					},  new Event("onAutoSaveChangesSchedule"));
             		}
         		}
         	}

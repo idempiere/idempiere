@@ -122,7 +122,7 @@ public class AdempiereMonitor extends HttpServlet
 	/**	The Server			*/
 	private static IServerManager	m_serverMgr = null;
 	/** Message				*/
-	private static p				m_message = null;
+	private p				m_message = null;
 	
 	private volatile static ArrayList<File>	m_dirAccessList = null;
 
@@ -526,14 +526,13 @@ public class AdempiereMonitor extends HttpServlet
 		
 		//	Stream Log
 		if (log.isLoggable(Level.INFO)) log.info ("Streaming: " + traceCmd);
-		try
+		try (FileInputStream fis = new FileInputStream(file))
 		{
 			long time = System.currentTimeMillis();		//	timer start
 			int fileLength = (int)file.length();
 			int bufferSize = 2048; //	2k Buffer
 			byte[] buffer = new byte[bufferSize];
-			//
-			FileInputStream fis = new FileInputStream(file);
+			//			
 			ServletOutputStream out = response.getOutputStream ();
 			//
 			response.setContentType("text/plain");
@@ -544,7 +543,6 @@ public class AdempiereMonitor extends HttpServlet
 				out.write (buffer, 0, read);
 			out.flush();
 			out.close();
-			fis.close();
 			//
 			time = System.currentTimeMillis() - time;
 			double speed = (fileLength/(double)1024) / (time/(double)1000);
@@ -1471,10 +1469,9 @@ public class AdempiereMonitor extends HttpServlet
 		File dirAccessFile = new File(dirAccessPathName);
 		if (dirAccessFile.exists()) 
 		{
-			try 
+			try (BufferedReader br = new BufferedReader(new FileReader(dirAccessFile)))
 			{
-				BufferedReader br = new BufferedReader(new FileReader(dirAccessFile));
-		        while (true) {
+				while (true) {
 		            String pathName = br.readLine();
 		            if (pathName == null)
 		            	break;
@@ -1482,7 +1479,6 @@ public class AdempiereMonitor extends HttpServlet
 					if (pathDir.exists() && !dirAccessList.contains(pathDir))
 						dirAccessList.add(pathDir);
 		        }
-		        br.close();
 			} 
 			catch (Exception e) 
 			{

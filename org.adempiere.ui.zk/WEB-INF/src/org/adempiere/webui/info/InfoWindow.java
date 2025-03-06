@@ -2874,9 +2874,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				continue;
 			}
 			
-			isValid = isValid & validateField (wEditor);
+			isValid = isValid && validateField (wEditor);
 			if(wEditor2 != null)
-				isValid = isValid & validateField(wEditor2);
+				isValid = isValid && validateField(wEditor2);
 		}
 		
 		return isValid;
