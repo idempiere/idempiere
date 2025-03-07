@@ -109,8 +109,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String DOCACTIONBUTTON_SHOWACTIONNAME = "DOCACTIONBUTTON_SHOWACTIONNAME";
     public static final String DPViews_ShowInfoAccount = "DPViews_ShowInfoAccount";
     public static final String DPViews_ShowInfoSchedule = "DPViews_ShowInfoSchedule";
-    public static final String EMAIL_SERVER_START_ENABLED = "EMAIL_SERVER_START_ENABLED";
     public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
+    public static final String EMAIL_SERVER_START_ENABLED = "EMAIL_SERVER_START_ENABLED";
     public static final String EMAIL_TEST_MAILTEXT_ID = "EMAIL_TEST_MAILTEXT_ID";
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
     public static final String ENABLE_SSO = "ENABLE_SSO";
