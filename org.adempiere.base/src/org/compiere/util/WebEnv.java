@@ -46,6 +46,7 @@ import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.tr;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.SystemIDs;
 
@@ -185,12 +186,15 @@ public class WebEnv
 
 		//	Logging now initiated
 		if (log.isLoggable(Level.INFO)) log.info(info.toString());
-		//		
-		MClient client = MClient.get(Env.getCtx(), 0);
-		MSystem system = MSystem.get(Env.getCtx());
-		client.sendEMail(client.getRequestEMail(),
-			"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
-			"ServerInfo: " + context.getServerInfo(), null);
+		//
+		boolean isSendServerStartEMail  = MSysConfig.getBooleanValue(MSysConfig.EMAIL_SERVER_START_ENABLED, true);
+		if (isSendServerStartEMail) {
+			MClient client = MClient.get(Env.getCtx(), 0);
+			MSystem system = MSystem.get(Env.getCtx());
+			client.sendEMail(client.getRequestEMail(),
+				"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
+				"ServerInfo: " + context.getServerInfo(), null);
+		}
 
 		return s_initOK;
 	}	//	initWeb
