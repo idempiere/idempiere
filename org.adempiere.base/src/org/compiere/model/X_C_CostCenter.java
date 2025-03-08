@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_CostCenter
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CostCenter")
 public class X_C_CostCenter extends PO implements I_C_CostCenter, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_CostCenter extends PO implements I_C_CostCenter, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240123L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_C_CostCenter (Properties ctx, int C_CostCenter_ID, String trxName)
@@ -38,6 +38,7 @@ public class X_C_CostCenter extends PO implements I_C_CostCenter, I_Persistent
       super (ctx, C_CostCenter_ID, trxName);
       /** if (C_CostCenter_ID == 0)
         {
+			setValue (null);
         } */
     }
 
@@ -47,6 +48,7 @@ public class X_C_CostCenter extends PO implements I_C_CostCenter, I_Persistent
       super (ctx, C_CostCenter_ID, trxName, virtualColumns);
       /** if (C_CostCenter_ID == 0)
         {
+			setValue (null);
         } */
     }
 
@@ -56,6 +58,7 @@ public class X_C_CostCenter extends PO implements I_C_CostCenter, I_Persistent
       super (ctx, C_CostCenter_UU, trxName);
       /** if (C_CostCenter_UU == null)
         {
+			setValue (null);
         } */
     }
 
@@ -65,6 +68,7 @@ public class X_C_CostCenter extends PO implements I_C_CostCenter, I_Persistent
       super (ctx, C_CostCenter_UU, trxName, virtualColumns);
       /** if (C_CostCenter_UU == null)
         {
+			setValue (null);
         } */
     }
 

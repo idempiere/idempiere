@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Disposed
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Disposed")
 public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_A_Asset_Disposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
@@ -540,9 +540,9 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	public void setC_CostCenter_ID (int C_CostCenter_ID)
 	{
 		if (C_CostCenter_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, null);
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
 	}
 
 	/** Get Cost Center.
@@ -567,9 +567,9 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	public void setC_Department_ID (int C_Department_ID)
 	{
 		if (C_Department_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Department_ID, null);
+			set_Value (COLUMNNAME_C_Department_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
 	}
 
 	/** Get Department.

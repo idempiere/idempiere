@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaymentTransaction
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_PaymentTransaction 
 {
@@ -351,6 +351,17 @@ public interface I_C_PaymentTransaction
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
+
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
 
@@ -365,17 +376,6 @@ public interface I_C_PaymentTransaction
 	public int getC_Invoice_ID();
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
-	
-    /** Column name C_Department_ID */
-    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
-
-	/** Set Department	  */
-	public void setC_Department_ID (int C_Department_ID);
-
-	/** Get Department	  */
-	public int getC_Department_ID();
-
-	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";

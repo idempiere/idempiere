@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Department
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Department")
 public class X_C_Department extends PO implements I_C_Department, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_Department extends PO implements I_C_Department, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240123L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_C_Department (Properties ctx, int C_Department_ID, String trxName)
@@ -39,6 +39,7 @@ public class X_C_Department extends PO implements I_C_Department, I_Persistent
       /** if (C_Department_ID == 0)
         {
 			setC_Department_ID (0);
+			setValue (null);
         } */
     }
 
@@ -49,6 +50,7 @@ public class X_C_Department extends PO implements I_C_Department, I_Persistent
       /** if (C_Department_ID == 0)
         {
 			setC_Department_ID (0);
+			setValue (null);
         } */
     }
 
@@ -59,6 +61,7 @@ public class X_C_Department extends PO implements I_C_Department, I_Persistent
       /** if (C_Department_UU == null)
         {
 			setC_Department_ID (0);
+			setValue (null);
         } */
     }
 
@@ -69,6 +72,7 @@ public class X_C_Department extends PO implements I_C_Department, I_Persistent
       /** if (C_Department_UU == null)
         {
 			setC_Department_ID (0);
+			setValue (null);
         } */
     }
 

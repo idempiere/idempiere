@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOut
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_InOut")
 public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName)
@@ -438,9 +438,9 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	public void setC_CostCenter_ID (int C_CostCenter_ID)
 	{
 		if (C_CostCenter_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, null);
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
 	}
 
 	/** Get Cost Center.
@@ -465,9 +465,9 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	public void setC_Department_ID (int C_Department_ID)
 	{
 		if (C_Department_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Department_ID, null);
+			set_Value (COLUMNNAME_C_Department_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
 	}
 
 	/** Get Department.

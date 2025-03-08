@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_InvoiceLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_InvoiceLine 
 {
@@ -188,29 +188,6 @@ public interface I_C_InvoiceLine
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
-    /** Column name C_InvoiceLine_ID */
-    public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
-
-	/** Set Invoice Line.
-	  * Invoice Detail Line
-	  */
-	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID);
-
-	/** Get Invoice Line.
-	  * Invoice Detail Line
-	  */
-	public int getC_InvoiceLine_ID();
-
-    /** Column name C_InvoiceLine_UU */
-    public static final String COLUMNNAME_C_InvoiceLine_UU = "C_InvoiceLine_UU";
-
-	/** Set C_InvoiceLine_UU	  */
-	public void setC_InvoiceLine_UU (String C_InvoiceLine_UU);
-
-	/** Get C_InvoiceLine_UU	  */
-	public String getC_InvoiceLine_UU();
-
-
     /** Column name C_CostCenter_ID */
     public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
 
@@ -232,6 +209,28 @@ public interface I_C_InvoiceLine
 	public int getC_Department_ID();
 
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
+
+    /** Column name C_InvoiceLine_ID */
+    public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
+
+	/** Set Invoice Line.
+	  * Invoice Detail Line
+	  */
+	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID);
+
+	/** Get Invoice Line.
+	  * Invoice Detail Line
+	  */
+	public int getC_InvoiceLine_ID();
+
+    /** Column name C_InvoiceLine_UU */
+    public static final String COLUMNNAME_C_InvoiceLine_UU = "C_InvoiceLine_UU";
+
+	/** Set C_InvoiceLine_UU	  */
+	public void setC_InvoiceLine_UU (String C_InvoiceLine_UU);
+
+	/** Get C_InvoiceLine_UU	  */
+	public String getC_InvoiceLine_UU();
 
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";

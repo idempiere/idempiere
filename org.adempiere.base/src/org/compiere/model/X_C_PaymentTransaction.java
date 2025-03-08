@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_PaymentTransaction
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentTransaction")
 public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_C_PaymentTransaction (Properties ctx, int C_PaymentTransaction_ID, String trxName)
@@ -601,9 +601,9 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public void setC_CostCenter_ID (int C_CostCenter_ID)
 	{
 		if (C_CostCenter_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, null);
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
 	}
 
 	/** Get Cost Center.
@@ -611,34 +611,6 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public int getC_CostCenter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-	
-
-	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
-			.getPO(getC_Department_ID(), get_TrxName());
-	}
-
-	/** Set Department.
-		@param C_Department_ID Department
-	*/
-	public void setC_Department_ID (int C_Department_ID)
-	{
-		if (C_Department_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Department_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
-	}
-
-	/** Get Department.
-		@return Department	  */
-	public int getC_Department_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -667,6 +639,33 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

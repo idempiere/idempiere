@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for Fact_Acct_Summary
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="Fact_Acct_Summary")
 public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_Fact_Acct_Summary (Properties ctx, String Fact_Acct_Summary_UU, String trxName)
