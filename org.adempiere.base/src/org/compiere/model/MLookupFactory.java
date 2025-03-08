@@ -401,7 +401,7 @@ public class MLookupFactory
 			+ "rt.WhereClause,rt.OrderByClause,t.AD_Window_ID,t.PO_Window_ID, "		//	6..9
 			+ "t.AD_Table_ID, cd.ColumnSQL as DisplayColumnSQL, "					//	10..11
 			+ "rt.AD_Window_ID as RT_AD_Window_ID, rt.AD_InfoWindow_ID as AD_InfoWindow_ID, " // 12..13
-			+ "rt.DisplaySQL, rt.IsDisplayIdentifier " // 14..15
+			+ "rt.DisplaySQL, rt.IsDisplayIdentifier, cd.AD_Reference_ID AS DisplayColumn_Reference_ID " // 14..16
 			+ "FROM AD_Ref_Table rt"
 			+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID=t.AD_Table_ID)"
 			+ " INNER JOIN AD_Column ck ON (rt.AD_Key=ck.AD_Column_ID)"
@@ -411,7 +411,8 @@ public class MLookupFactory
 		//
 		String	KeyColumn = null, DisplayColumn = null, TableName = null, WhereClause = null, OrderByClause = null;
 		String displayColumnSQL = null, displaySQL = null;
-		boolean IsTranslated = false, isValueDisplayed = false, isDisplayIdentifier = false;;
+		boolean IsTranslated = false, isValueDisplayed = false, isDisplayIdentifier = false;
+		int DisplayColumn_Reference_ID = 0;
 
 		int ZoomWindow = 0;
 		int ZoomWindowPO = 0;
@@ -431,6 +432,7 @@ public class MLookupFactory
 				TableName = rs.getString(1);
 				KeyColumn = rs.getString(2);
 				DisplayColumn = rs.getString(3);
+				DisplayColumn_Reference_ID = rs.getInt(16);
 				isValueDisplayed = "Y".equals(rs.getString(4));
 				IsTranslated = "Y".equals(rs.getString(5));
 				WhereClause = rs.getString(6);
@@ -502,6 +504,12 @@ public class MLookupFactory
 			}
 		}
 
+		// DisplayColumn
+		ArrayList<LookupDisplayColumn> listDC = new ArrayList<LookupDisplayColumn>();
+		listDC.add(new LookupDisplayColumn(DisplayColumn, displayColumnSQL, IsTranslated, DisplayColumn_Reference_ID, 0));
+		DisplayColumn = getDisplayColumn(language, TableName, listDC).toString();
+
+		//
 		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 		String lookupDisplayColumn = null;
 		//	Translated
@@ -511,12 +519,7 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU"))
 				realSQL.append("NULL,");
 			if (!Util.isEmpty(displaySQL, true)) {
-				if (DisplayColumn.endsWith("_ID")) {
-					DisplayColumn = DB.TO_CHAR(TableName + "_Trl." + DisplayColumn, DisplayType.Table, language.getAD_Language());
-					realSQL.append("NVL(").append(displaySQL).append(",").append(DisplayColumn).append(")");
-				} else {
-					realSQL.append("NVL(").append(displaySQL).append(",").append(TableName).append("_Trl.").append(DisplayColumn).append(")");
-				}
+				realSQL.append("NVL(").append(displaySQL).append(",").append(DisplayColumn).append(")");
 			} else {
 				if (isValueDisplayed)
 					realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
@@ -529,7 +532,7 @@ public class MLookupFactory
 						realSQL.append(displayColumn);
 					} else {
 						lookupDisplayColumn = DisplayColumn;
-						realSQL.append("NVL(").append(TableName).append("_Trl.").append(DisplayColumn).append(",'-1')");
+						realSQL.append(DisplayColumn);
 					}
 				}
 			}
@@ -548,12 +551,7 @@ public class MLookupFactory
 			if (KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU"))
 				realSQL.append("NULL,");
 			if (!Util.isEmpty(displaySQL, true)) {
-				if (DisplayColumn.endsWith("_ID")) {
-					DisplayColumn = DB.TO_CHAR(TableName + "." + DisplayColumn, DisplayType.Table, language.getAD_Language());
-					realSQL.append("NVL(").append(displaySQL).append(",").append(DisplayColumn).append(")");
-				} else {
-					realSQL.append("NVL(").append(displaySQL).append(",").append(TableName).append(".").append(DisplayColumn).append(")");
-				}
+				realSQL.append("NVL(").append(displaySQL).append(",").append(DisplayColumn).append(")");
 			} else {
 				if (isValueDisplayed)
 					realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
@@ -566,7 +564,7 @@ public class MLookupFactory
 						realSQL.append(displayColumn);
 					} else {
 						lookupDisplayColumn = DisplayColumn;
-						realSQL.append("NVL(").append(TableName).append(".").append(DisplayColumn).append(",'-1')");
+						realSQL.append(DisplayColumn);
 					}
 				}
 			}

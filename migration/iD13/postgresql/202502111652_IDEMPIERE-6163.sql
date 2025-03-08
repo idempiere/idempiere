@@ -21,3 +21,24 @@ UPDATE AD_Field SET DisplayLogic='@IsDisplayIdentifier@=N & @DisplaySQL:0@=0',Up
 UPDATE AD_Field SET DisplayLogic='@IsDisplayIdentifier@=N & @IsValueDisplayed@=N',Updated=TO_TIMESTAMP('2025-02-11 17:08:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205956
 ;
 
+-- Mar 7, 2025, 2:36:47 PM IST
+UPDATE AD_Column SET Description='This functionality displays lookup values using a fully qualified subquery. Make sure that the DisplaySQL field in the SELECT clause of the provided SQL query is correctly formatted as TEXT. An incompatible data type may cause casting errors.', Help='This SQL is used to display a lookup value using a fully qualified subquery.
+
+Key Points:
+    Fully Qualified Subquery: Ensures correct data retrieval by specifying complete table/schema references.
+    Data Type Compatibility: The DisplaySQL field in the SELECT clause must be in TEXT format to avoid casting errors.
+    Recommendation: Use CAST(DisplaySQL AS TEXT) if needed to ensure compatibility.
+
+Ensure proper testing to avoid errors and confirm expected results.',Updated=TO_TIMESTAMP('2025-03-07 14:36:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213865
+;
+
+-- Mar 7, 2025, 2:37:29 PM IST
+UPDATE AD_Field SET Description='This functionality displays lookup values using a fully qualified subquery. Make sure that the DisplaySQL field in the SELECT clause of the provided SQL query is correctly formatted as TEXT. An incompatible data type may cause casting errors.', Help='This SQL is used to display a lookup value using a fully qualified subquery.
+
+Key Points:
+    Fully Qualified Subquery: Ensures correct data retrieval by specifying complete table/schema references.
+    Data Type Compatibility: The DisplaySQL field in the SELECT clause must be in TEXT format to avoid casting errors.
+    Recommendation: Use CAST(DisplaySQL AS TEXT) if needed to ensure compatibility.
+
+Ensure proper testing to avoid errors and confirm expected results.',Updated=TO_TIMESTAMP('2025-03-07 14:37:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205956
+;
