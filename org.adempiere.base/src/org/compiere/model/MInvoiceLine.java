@@ -315,6 +315,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(oLine.getAD_OrgTrx_ID());
 		setUser1_ID(oLine.getUser1_ID());
 		setUser2_ID(oLine.getUser2_ID());
+		setC_CostCenter_ID(oLine.getC_CostCenter_ID());
+		setC_Department_ID(oLine.getC_Department_ID());
 		//
 		setRRAmt(oLine.getRRAmt());
 		setRRStartDate(oLine.getRRStartDate());
@@ -391,6 +393,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(sLine.getAD_OrgTrx_ID());
 		setUser1_ID(sLine.getUser1_ID());
 		setUser2_ID(sLine.getUser2_ID());
+		setC_CostCenter_ID(sLine.getC_CostCenter_ID());
+		setC_Department_ID(sLine.getC_Department_ID());
 	}	//	setShipLine
 
 	/**
