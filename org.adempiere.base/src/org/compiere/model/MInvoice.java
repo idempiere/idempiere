@@ -2384,6 +2384,10 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	private void setDefiniteDocumentNo() {
 		if (isReversal() && ! MSysConfig.getBooleanValue(MSysConfig.Invoice_ReverseUseNewNumber, true, getAD_Client_ID())) // IDEMPIERE-1771
 			return;
+
+		if (getProcessedOn().signum() > 0) // IDEMPIERE-6067 - if > 0, invoice has already has been reactivated and dates/documentno should not be updated
+			return;
+
 		MDocType dt = MDocType.get(getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setDateInvoiced(TimeUtil.getDay(0));
@@ -2882,13 +2886,37 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (m_processMsg != null)
 			return false;
 
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+
+		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+		if (allocations.length > 0) {
+			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedAllocationLine"));
+			return false;
+		}
+
+		MMatchInv[] matchInvs = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+		if (matchInvs.length > 0) {
+			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchInvoice"));
+			return false;
+		}
+
+		MMatchPO[] matchPos = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+		if (matchPos.length > 0) {
+			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchPO"));
+			return false;
+		}
+
+		MFactAcct.deleteEx(MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
+		setPosted(false);
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
+
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 			return false;
 
-
-		return false;
+		return true;
 	}	//	reActivateIt
 
 	/**
