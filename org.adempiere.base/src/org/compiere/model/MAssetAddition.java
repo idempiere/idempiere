@@ -575,6 +575,10 @@ public class MAssetAddition extends X_A_Asset_Addition
 		
 		MAsset asset = getA_Asset(true);
 		
+		if (MAsset.A_ASSET_STATUS_New.equals(asset.getA_Asset_Status()) && !isA_CreateAsset()) {
+			throw new AssetException("Set create asset to true for new assets");
+		}
+		
 		// If new assets (not renewals) must have nonzero values
 		if (isA_CreateAsset() && hasZeroValues())
 		{
