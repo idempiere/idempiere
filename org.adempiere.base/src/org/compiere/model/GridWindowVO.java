@@ -276,6 +276,9 @@ public class GridWindowVO implements Serializable
 					if (!tabvo.IsReadOnly && "N".equals(mWindowVO.IsReadWrite))
 						tabvo.IsReadOnly = true;
 					mWindowVO.Tabs.add(tabvo);
+
+					if (mWindowVO.AD_Table_ID == 0)
+						mWindowVO.AD_Table_ID = tabvo.AD_Table_ID;
 				}
 			}
 			//  No Tabs
