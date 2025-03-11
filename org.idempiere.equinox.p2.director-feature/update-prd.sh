@@ -1,5 +1,10 @@
 #!/bin/sh
-#
+
+# This script uninstall and reinstall a feature from a P2 repository
+# Usage:
+#   update-prd.sh p2Repository feature
+# for example:
+#   update-prd.sh https://jenkins.idempiere.org/job/idempiere-rest/ws/com.trekglobal.idempiere.extensions.p2/target/repository/ com.trekglobal.idempiere.rest.api
 
 cd "$(dirname "${0}")" || (echo "Cannot cd"; exit 1)
 DESTINATION=$(pwd)

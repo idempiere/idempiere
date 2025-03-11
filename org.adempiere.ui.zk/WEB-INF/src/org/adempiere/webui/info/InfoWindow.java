@@ -1135,7 +1135,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				{
 					columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true), infoColumn.isReadOnly() || haveNotProcess);
 				}
-				columnInfo.setColDescription(infoColumn.getNameTrl());
+				columnInfo.setColDescription(infoColumn.getDescriptionTrl());
 				columnInfo.setAD_Reference_ID(infoColumn.getAD_Reference_ID());
 				columnInfo.setAD_Reference_Value_ID(infoColumn.getAD_Reference_Value_ID());
 				columnInfo.setGridField(gridFields.get(i));
@@ -2874,9 +2874,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				continue;
 			}
 			
-			isValid = isValid & validateField (wEditor);
+			isValid = isValid && validateField (wEditor);
 			if(wEditor2 != null)
-				isValid = isValid & validateField(wEditor2);
+				isValid = isValid && validateField(wEditor2);
 		}
 		
 		return isValid;

@@ -129,10 +129,9 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 		if (imageEntry != null) 
 		{
 			File tmp = File.createTempFile(name, ".gif");
-			FileOutputStream os = new FileOutputStream(tmp);
+			try (FileOutputStream os = new FileOutputStream(tmp)) {
 			os.write(imageEntry.getData());
-			os.flush();
-			os.close();
+			os.flush();}
 			
 			if (Executions.getCurrent() != null)
 			{

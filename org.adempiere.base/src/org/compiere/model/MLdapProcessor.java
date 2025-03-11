@@ -59,7 +59,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
  		}
 		catch (Exception e)
 		{
-			log.log (Level.SEVERE, sql, e);
+			s_log.log (Level.SEVERE, sql, e);
 		}
 		finally
 		{
@@ -72,7 +72,7 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	}	//	getActive
 	
 	/**	Logger	*/
-	private static CLogger log = CLogger.getCLogger (MLdapProcessor.class);
+	private static CLogger s_log = CLogger.getCLogger (MLdapProcessor.class);
 	
     /**
      * UUID based Constructor

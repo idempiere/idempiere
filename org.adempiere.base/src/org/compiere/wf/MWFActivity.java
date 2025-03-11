@@ -1483,63 +1483,42 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if (getNode().isUserApproval() && getPO(trx) instanceof DocAction)
 		{
 			DocAction doc = (DocAction)m_po;
-			try
-			{
-				//	Not approved
-				if (!"Y".equals(value))
-				{
-					newState = StateEngine.STATE_Aborted;
-					if (!(doc.processIt (DocAction.ACTION_Reject)))
-						setTextMsgBefore ("Cannot Reject - Document Status: " + doc.getDocStatus());
-				}
-				else
-				{
-					if (isInvoker())
-					{
-						int startAD_User_ID = Env.getAD_User_ID(getCtx());
-						if (startAD_User_ID == 0)
-							startAD_User_ID = doc.getDoc_User_ID();
-						int nextAD_User_ID = getApprovalUser(startAD_User_ID,
-							doc.getC_Currency_ID(), doc.getApprovalAmt(),
-							doc.getAD_Org_ID(),
-							startAD_User_ID == doc.getDoc_User_ID());	//	own doc
-						//	No Approver
-						if (nextAD_User_ID <= 0)
-						{
-							newState = StateEngine.STATE_Aborted;
-							setTextMsgBefore (Msg.getMsg(getCtx(), "NoApprover"));
-							doc.processIt (DocAction.ACTION_Reject);
-						}
-						else if (startAD_User_ID != nextAD_User_ID)
-						{
-							forwardTo(nextAD_User_ID, "Next Approver");
-							newState = StateEngine.STATE_Suspended;
-						}
-						else	//	Approve
-						{
-							if (!(doc.processIt (DocAction.ACTION_Approve)))
-							{
-								newState = StateEngine.STATE_Aborted;
-								setTextMsgBefore ("Cannot Approve - Document Status: " + doc.getDocStatus());
-							}
-						}
-					}
-					//	No Invoker - Approve
-					else if (!(doc.processIt (DocAction.ACTION_Approve)))
-					{
+			// Not approved
+			if (!"Y".equals(value)) {
+				newState = StateEngine.STATE_Aborted;
+				if (!(doc.processIt(DocAction.ACTION_Reject)))
+					setTextMsgBefore("Cannot Reject - Document Status: " + doc.getDocStatus());
+			} else {
+				if (isInvoker()) {
+					int startAD_User_ID = Env.getAD_User_ID(getCtx());
+					if (startAD_User_ID == 0)
+						startAD_User_ID = doc.getDoc_User_ID();
+					int nextAD_User_ID = getApprovalUser(startAD_User_ID, doc.getC_Currency_ID(), doc.getApprovalAmt(),
+							doc.getAD_Org_ID(), startAD_User_ID == doc.getDoc_User_ID()); // own doc
+					// No Approver
+					if (nextAD_User_ID <= 0) {
 						newState = StateEngine.STATE_Aborted;
-						setTextMsgBefore ("Cannot Approve - Document Status: " + doc.getDocStatus());
+						setTextMsgBefore(Msg.getMsg(getCtx(), "NoApprover"));
+						doc.processIt(DocAction.ACTION_Reject);
+					} else if (startAD_User_ID != nextAD_User_ID) {
+						forwardTo(nextAD_User_ID, "Next Approver");
+						newState = StateEngine.STATE_Suspended;
+					} else // Approve
+					{
+						if (!(doc.processIt(DocAction.ACTION_Approve))) {
+							newState = StateEngine.STATE_Aborted;
+							setTextMsgBefore("Cannot Approve - Document Status: " + doc.getDocStatus());
+						}
 					}
 				}
-				doc.saveEx();
+				// No Invoker - Approve
+				else if (!(doc.processIt(DocAction.ACTION_Approve))) {
+					newState = StateEngine.STATE_Aborted;
+					setTextMsgBefore("Cannot Approve - Document Status: " + doc.getDocStatus());
+				}
 			}
-			catch (Exception e)
-			{
-				newState = StateEngine.STATE_Terminated;
-				setTextMsgBefore ("User Choice: " + e.toString());
-				addTextMsg(e);
-				log.log(Level.WARNING, "", e);
-			}
+			doc.saveEx();
+				
 			// Send Approval Notification
 			if (newState.equals(StateEngine.STATE_Aborted)) {
 				MUser to = new MUser(getCtx(), doc.getDoc_User_ID(), null);
@@ -1791,14 +1770,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		String subject = null;
 		String raw = text.getMailHeader(false);
 		if (raw != null && raw.contains("@_noDocInfo_@"))
-			subject = text.getMailHeader().replaceAll("@_noDocInfo_@", "");
+			subject = text.getMailHeader().replace("@_noDocInfo_@", "");
 		else
 			subject = doc.getDocumentInfo() + ": " + text.getMailHeader();
 		String message = null;
 		raw = text.getMailText(true, false);
 		if (raw != null && (raw.contains("@=DocumentInfo") || raw.contains("@=documentInfo")
 				|| raw.contains("@=Summary") || raw.contains("@=summary") || raw.contains("@_noDocInfo_@")))
-			message = text.getMailText(true).replaceAll("@_noDocInfo_@", "");
+			message = text.getMailText(true).replace("@_noDocInfo_@", "");
 		else
 			message = text.getMailText(true)
 				+ "\n-----\n" + doc.getDocumentInfo()

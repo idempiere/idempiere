@@ -360,7 +360,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         this.setShadow(false);
         ZKUpdateUtil.setWidth(this, "900px");
         ZKUpdateUtil.setHeight(this, "350px");
-        this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
+        this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replace("&", "") + ": " + title);
         this.setClosable(false);
         this.setSizable(true);  
         this.setMaximizable(false);
@@ -761,7 +761,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         tabPanel.setStyle("height: 100%; width: 100%;");
         tabPanel.appendChild(winLookupRecord);
         tabPanel.setId("simpleSearch");
-        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", ""),false, true);
+        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Find").replace("&", ""),false, true);
         tabPanel = new Tabpanel();
         tabPanel.setStyle("height: 100%; width: 100%");
         tabPanel.appendChild(winAdvanced);
@@ -2361,6 +2361,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, tableUID);
 	            	}
 	            	continue;
+	            }else {
+	            	if(MQuery.ILIKE.equals(Operator)) {
+	            		ColumnSQL = "UPPER("+ColumnSQL+")";
+	            	}
 	            }
 	            Object parsedValue = null;
 	            //Parse AttributeValue
@@ -2699,8 +2703,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     }
                     //
                     if (value.toString().indexOf('%') != -1) {
-                        m_query.addRestriction(ColumnSQL.toString(), MQuery.LIKE, value, ColumnName, wed.getDisplay());
-                        appendCode(code, ColumnName, MQuery.LIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
+                        m_query.addRestriction(ColumnSQL.toString(), MQuery.ILIKE, value, ColumnName, wed.getDisplay());
+                        appendCode(code, ColumnName, MQuery.ILIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     } else if (isProductCategoryField && value instanceof Integer) {
                         m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) value).intValue()));
                         appendCode(code, ColumnName, MQuery.EQUAL, value.toString(), "", "AND", "", "", m_AD_Tab_UU);

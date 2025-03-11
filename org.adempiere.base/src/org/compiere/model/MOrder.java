@@ -1177,7 +1177,7 @@ public class MOrder extends X_C_Order implements DocAction
 		return valid;
 	}	//	validatePaySchedule
 	
-	private volatile static boolean recursiveCall = false;
+	private static final ThreadLocal<Boolean> recursiveCall = new ThreadLocal<>();
 	
 	@Override
 	protected boolean beforeSave (boolean newRecord)
@@ -1379,8 +1379,8 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		// Validate payment term and update IsPayScheduleValid
-		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
-			recursiveCall = true;
+		if (!Boolean.TRUE.equals(recursiveCall.get()) && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
+			recursiveCall.set(Boolean.TRUE);
 			try {
 				MPaymentTerm pt = new MPaymentTerm (getCtx(), getC_PaymentTerm_ID(), get_TrxName());
 				boolean valid = pt.applyOrder(this);
@@ -1388,7 +1388,7 @@ public class MOrder extends X_C_Order implements DocAction
 			} catch (Exception e) {
 				throw e;
 			} finally {
-				recursiveCall = false;
+				recursiveCall.remove();
 			}
 		}
 

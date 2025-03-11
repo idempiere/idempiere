@@ -121,12 +121,12 @@ public class AdempiereMonitor extends HttpServlet
 	private static final CLogger	log = CLogger.getCLogger(AdempiereMonitor.class);
 	/**	The Server			*/
 	private static IServerManager	m_serverMgr = null;
-	/** Message				*/
-	private static p				m_message = null;
 	
 	private volatile static ArrayList<File>	m_dirAccessList = null;
 
 	private ScheduledFuture<?> serverMgrFuture = null;
+	
+	private static final String REQUEST_MESSAGE_ATTRIBUTE = "requestMessage";
 	
 	/**
 	 * 	Get
@@ -142,7 +142,6 @@ public class AdempiereMonitor extends HttpServlet
 		String responseType = request.getParameter("responseContentType");
 		xmlOutput = "xml".equalsIgnoreCase(responseType);
 			
-		m_message = null;
 		if (processLogParameter (request, response))
 		{
 			if (xmlOutput)
@@ -179,6 +178,9 @@ public class AdempiereMonitor extends HttpServlet
 		else
 			processActionParameter (request,response);
 		
+		if (response.isCommitted())
+			return;
+		
 		if (xmlOutput)
 			createXMLSummaryPage(request, response);
 		else
@@ -198,6 +200,15 @@ public class AdempiereMonitor extends HttpServlet
 		doGet(request, response);
 	}	//	doPost
 
+	private p getRequestMessage(HttpServletRequest request) {
+		p message = (p) request.getAttribute(REQUEST_MESSAGE_ATTRIBUTE);
+		if (message == null) {
+			message = new p();
+			request.setAttribute(REQUEST_MESSAGE_ATTRIBUTE, message);
+		}
+		return message;
+	}
+	
 	/**
 	 * 	Process Log Parameter and return log page
 	 *	@param request request
@@ -217,9 +228,9 @@ public class AdempiereMonitor extends HttpServlet
 		ServerInstance server = getServerManager().getServerInstance(serverID);
 		if (server == null)
 		{
-			m_message = new p();
-			m_message.addElement(new strong("Server not found: "));
-			m_message.addElement(serverID);
+			p message = getRequestMessage(request);
+			message.addElement(new strong("Server not found: "));
+			message.addElement(serverID);
 			return false;
 		}
 		
@@ -288,18 +299,18 @@ public class AdempiereMonitor extends HttpServlet
 		ServerInstance server = getServerManager().getServerInstance(serverID);
 		if (server == null)
 		{
-			m_message = new p();
-			m_message.addElement(new strong("Server not found: "));
-			m_message.addElement(serverID);
+			p message = getRequestMessage(request);
+			message.addElement(new strong("Server not found: "));
+			message.addElement(serverID);
 			return false;
 		}
 		//
 		String error = getServerManager().runNow(serverID);
 		if (!Util.isEmpty(error, true))
 		{
-			m_message = new p();
-			m_message.addElement(new strong(error));
-			m_message.addElement(serverID);
+			p message = getRequestMessage(request);
+			message.addElement(new strong(error));
+			message.addElement(serverID);
 		}
 		
 		//
@@ -320,9 +331,9 @@ public class AdempiereMonitor extends HttpServlet
 		{
 			boolean start = action.startsWith("Start");
 			boolean reload=action.startsWith("Reload");
-			m_message = new p();
+			p message = getRequestMessage(request);
 			String msg = (start ? "Started" : "Stopped") + ": ";
-			m_message.addElement(new strong(msg));
+			message.addElement(new strong(msg));
 			//
 			String serverID = action.substring(action.indexOf('_')+1);
 			boolean ok = false;
@@ -335,7 +346,7 @@ public class AdempiereMonitor extends HttpServlet
 					ok = getServerManager().stopAll()==null;
 				}
 					
-				m_message.addElement("All");
+				message.addElement("All");
 			}
 			else
 			{
@@ -347,27 +358,29 @@ public class AdempiereMonitor extends HttpServlet
 				} else {
 					 ServerInstance server = getServerManager().getServerInstance(serverID);
 					if (server == null) {
-						m_message = new p();
-						m_message.addElement(new strong("Server not found: "));
-						m_message.addElement(serverID);
+						message = new p();
+						message.addElement(new strong("Server not found: "));
+						message.addElement(serverID);
+						request.setAttribute(REQUEST_MESSAGE_ATTRIBUTE, message);
 						return;
 					} else {
 						if (start)
 							ok = getServerManager().start(serverID)==null;
 						else
 							ok = getServerManager().stop(serverID)==null;
-						m_message.addElement(server.getModel().getName());
+						message.addElement(server.getModel().getName());
 					}
 				}
 			}
-			m_message.addElement(ok ? " - OK" : " - Error!");
+			message.addElement(ok ? " - OK" : " - Error!");
 		}
 		catch (Exception e)
 		{
-			m_message = new p();
-			m_message.addElement(new strong("Error processing parameter: " + action));
-			m_message.addElement(new br());
-			m_message.addElement(e.toString());
+			p message = new p();
+			message.addElement(new strong("Error processing parameter: " + action));
+			message.addElement(new br());
+			message.addElement(e.toString());
+			request.setAttribute(REQUEST_MESSAGE_ATTRIBUTE, message);
 		}
 	}	//	processActionParameter
 
@@ -526,14 +539,13 @@ public class AdempiereMonitor extends HttpServlet
 		
 		//	Stream Log
 		if (log.isLoggable(Level.INFO)) log.info ("Streaming: " + traceCmd);
-		try
+		try (FileInputStream fis = new FileInputStream(file))
 		{
 			long time = System.currentTimeMillis();		//	timer start
 			int fileLength = (int)file.length();
 			int bufferSize = 2048; //	2k Buffer
 			byte[] buffer = new byte[bufferSize];
-			//
-			FileInputStream fis = new FileInputStream(file);
+			//			
 			ServletOutputStream out = response.getOutputStream ();
 			//
 			response.setContentType("text/plain");
@@ -544,7 +556,6 @@ public class AdempiereMonitor extends HttpServlet
 				out.write (buffer, 0, read);
 			out.flush();
 			out.close();
-			fis.close();
 			//
 			time = System.currentTimeMillis() - time;
 			double speed = (fileLength/(double)1024) / (time/(double)1000);
@@ -587,8 +598,8 @@ public class AdempiereMonitor extends HttpServlet
 		}
 		if (AD_Client_ID < 0)
 		{
-			m_message = new p();
-			m_message.addElement("No EMail: " + email);
+			p message = getRequestMessage(request);
+			message.addElement("No EMail: " + email);
 			return false;
 		}
 		
@@ -596,8 +607,8 @@ public class AdempiereMonitor extends HttpServlet
 		MClient client = MClient.get(new Properties(), AD_Client_ID);
 		if (log.isLoggable(Level.INFO)) log.info ("Test: " + client);
 		
-		m_message = new p();
-		m_message.addElement(client.getName() + ": " + client.testEMail());
+		p message = getRequestMessage(request);
+		message.addElement(client.getName() + ": " + client.testEMail());
 		return false;
 	}	//	processEMailParameter
 	
@@ -620,29 +631,29 @@ public class AdempiereMonitor extends HttpServlet
 		String tableName = WebUtil.getParameter (request, "CacheTableName");
 		String record_ID = WebUtil.getParameter (request, "CacheRecord_ID");
 		
-		m_message = new p();
+		p message = getRequestMessage(request);
 		try
 		{
 			if (tableName == null || tableName.length() == 0)
 			{
 				CacheMgt.get().reset();
-				m_message.addElement("Cache Reset: All");
+				message.addElement("Cache Reset: All");
 			}
 			else if (record_ID == null || record_ID.length() == 0)
 			{
 				CacheMgt.get().reset(tableName);
-				m_message.addElement("Cache Reset: " + tableName);
+				message.addElement("Cache Reset: " + tableName);
 			}
 			else
 			{
 				CacheMgt.get().reset(tableName, Integer.parseInt(record_ID));
-				m_message.addElement("Cache Reset: " + tableName + ", Record_ID=" + record_ID);
+				message.addElement("Cache Reset: " + tableName + ", Record_ID=" + record_ID);
 			}
 		}
 		catch (Exception e)
 		{
 			log.severe(e.toString());
-			m_message.addElement("Error: " + e.toString());
+			message.addElement("Error: " + e.toString());
 		}
 		return false;	//	continue
 	}	//	processEMailParameter
@@ -666,10 +677,11 @@ public class AdempiereMonitor extends HttpServlet
 		bb = doc.getBody();			
 		
 		//	Message
-		if (m_message != null)
+		p message = getRequestMessage(request);
+		if (message != null && message.elements().hasMoreElements())
 		{
 			bb.addElement(new hr());
-			bb.addElement(m_message);
+			bb.addElement(message);
 			bb.addElement(new hr());
 		}
 		
@@ -971,9 +983,10 @@ public class AdempiereMonitor extends HttpServlet
 
 		//	message
 		writer.println("\t<message>");
-		if (m_message != null)
+		p message = getRequestMessage(request);
+		if (message != null && message.elements().hasMoreElements())
 		{
-			writer.println(m_message);
+			writer.println(message);
 		}
 		writer.println("\t</message>");
 		
@@ -1471,10 +1484,9 @@ public class AdempiereMonitor extends HttpServlet
 		File dirAccessFile = new File(dirAccessPathName);
 		if (dirAccessFile.exists()) 
 		{
-			try 
+			try (BufferedReader br = new BufferedReader(new FileReader(dirAccessFile)))
 			{
-				BufferedReader br = new BufferedReader(new FileReader(dirAccessFile));
-		        while (true) {
+				while (true) {
 		            String pathName = br.readLine();
 		            if (pathName == null)
 		            	break;
@@ -1482,7 +1494,6 @@ public class AdempiereMonitor extends HttpServlet
 					if (pathDir.exists() && !dirAccessList.contains(pathDir))
 						dirAccessList.add(pathDir);
 		        }
-		        br.close();
 			} 
 			catch (Exception e) 
 			{

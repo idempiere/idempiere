@@ -352,7 +352,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				cssInfo = new HTMLReportRenderer.CSSInfo(newFont, null);
 				styleBuild.append(".tr-level-2 td").append(cssInfo.getCssRule());
 				
-				styleBuild = new StringBuilder(styleBuild.toString().replaceAll(";", "!important;"));
+				styleBuild = new StringBuilder(styleBuild.toString().replace(";", "!important;"));
 				HTMLReportRenderer.appendInlineCss (doc, styleBuild);
 				
 				w.print(doc.toString());
@@ -1078,12 +1078,11 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	private StringBuilder readResource(URL url) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		InputStream is = url.openStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 		String line;
 		while ((line = reader.readLine()) != null) {
 		    builder.append(line);
-		}
-		reader.close();
+		}}
 		return builder;
 	}
 

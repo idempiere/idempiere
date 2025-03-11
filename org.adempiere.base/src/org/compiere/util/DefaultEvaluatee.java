@@ -109,7 +109,7 @@ public class DefaultEvaluatee implements Evaluatee {
 	 */
 	public DefaultEvaluatee(DataProvider dataProvider) {
 		this.m_dataProvider = dataProvider;
-		this.m_windowNo = -1;
+		this.m_windowNo = 0;
 		this.m_tabNo = -1;
 		this.m_onlyWindow = false;
 		this.m_onlyTab = null;
@@ -120,7 +120,7 @@ public class DefaultEvaluatee implements Evaluatee {
 	 */
 	public DefaultEvaluatee() {
 		this.m_dataProvider = null;
-		this.m_windowNo = -1;
+		this.m_windowNo = 0;
 		this.m_tabNo = -1;
 		this.m_onlyWindow = false;
 		this.m_onlyTab = null;
@@ -174,12 +174,8 @@ public class DefaultEvaluatee implements Evaluatee {
 		String value = null;
 		boolean globalVariable = Env.isGlobalVariable(variableName);
 		boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
-		// get value from global or window context
-		if (globalVariable)
-		{
-			value = Env.getContext(ctx, variableName);	// get from global context
-		}
-		else if (m_windowNo >= 0)
+		// get value from window context or global
+		if (m_windowNo != 0)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
@@ -201,7 +197,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		    	value = Env.getContext (ctx, m_windowNo, m_tabNo, variableName, tabOnly, true);
 		    }
 		}
-		
+		if (Util.isEmpty(value) && globalVariable)
+		{
+			value = Env.getContext(ctx, variableName);	// get from global context
+		}
+
 		// po property operator
 		Object dataValue = null;
 		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
@@ -225,7 +225,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 		
 		//try window context again after removal of tab no
-		if (!globalVariable && Util.isEmpty(value) && m_windowNo >= 0 && withTabNo && !tabOnly) {
+		if (!globalVariable && Util.isEmpty(value) && m_windowNo != 0 && withTabNo && !tabOnly) {
 			value = Env.getContext(ctx, m_windowNo, variableName);
 		}
 		

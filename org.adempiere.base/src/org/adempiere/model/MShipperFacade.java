@@ -164,7 +164,7 @@ public class MShipperFacade
 		String ac = DB.getSQLValueString(null, sql.toString(), m_shipper.getC_BPartner_ID());
 		if (ac != null) {
 			ac = ac.replaceAll("[-]", "");
-			ac = ac.replaceAll(" ", "");
+			ac = ac.replace(" ", "");
 		}
 		return ac;
 	}
@@ -183,7 +183,7 @@ public class MShipperFacade
 		String ac = DB.getSQLValueString(null, sql.toString(), m_shipper.getC_BPartner_ID());
 		if (ac != null) {
 			ac = ac.replaceAll("[-]", "");
-			ac = ac.replaceAll(" ", "");
+			ac = ac.replace(" ", "");
 		}
 		return ac;
 	}

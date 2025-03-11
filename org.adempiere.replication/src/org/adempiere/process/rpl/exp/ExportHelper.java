@@ -383,7 +383,7 @@ public class ExportHelper {
 
 				final StringBuilder whereClause = new StringBuilder(masterPO.get_KeyColumns()[0] +"=?");
 
-				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause()))
+				if (embeddedFormat.getWhereClause() != null && !"".equals(embeddedFormat.getWhereClause()))
 				{
 				    whereClause.append(" AND ").append(embeddedFormat.getWhereClause());
 				}
@@ -418,7 +418,7 @@ public class ExportHelper {
 				if (log.isLoggable(Level.INFO)) log.info("Table Embedded = " + tableEmbedded);
 
 				final StringBuilder whereClause = new StringBuilder(tableEmbedded.getTableName() + "_ID =?");
-				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause()))
+				if (embeddedFormat.getWhereClause() != null && !"".equals(embeddedFormat.getWhereClause()))
 				{
 				    whereClause.append(" AND ").append(embeddedFormat.getWhereClause());
 				}

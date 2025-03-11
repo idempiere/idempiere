@@ -161,7 +161,7 @@ public class Export extends SvrProcess
 				   .append("WHERE ").append(po.get_KeyColumns()[0]).append("=?")
 		;
 		
-		if (exportFormat.getWhereClause() != null & !"".equals(exportFormat.getWhereClause())) {
+		if (exportFormat.getWhereClause() != null && !"".equals(exportFormat.getWhereClause())) {
 			sql.append(" AND ").append(exportFormat.getWhereClause());
 		}
 		
@@ -354,7 +354,7 @@ public class Export extends SvrProcess
 					   .append("WHERE ").append(masterPO.get_KeyColumns()[0]).append("=?")
 					   //+ "WHERE " + po.get_WhereClause(false)
 				;
-				if (embeddedFormat.getWhereClause() != null & !"".equals(embeddedFormat.getWhereClause())) {
+				if (embeddedFormat.getWhereClause() != null && !"".equals(embeddedFormat.getWhereClause())) {
 					sql.append(" AND ").append(embeddedFormat.getWhereClause());
 				}
 				ResultSet rsEmbedded = null;
