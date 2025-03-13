@@ -182,7 +182,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
 				parents.add(0);
 			}
 
-			//clear context
+			//clear context - except the IsSOTrx
 			for (int i = 0; i < tabPanelList.size(); i++)
 			{
 				IADTabpanel adtab = tabPanelList.get(i);
@@ -191,7 +191,8 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
 				GridField[] fields = adtab.getGridTab().getFields();
 				for (GridField gf : fields)
 				{
-					Env.setContext(Env.getCtx(), gf.getWindowNo(),  gf.getColumnName(), "");
+					if (! "IsSOTrx".equals(gf.getColumnName()))
+						Env.setContext(Env.getCtx(), gf.getWindowNo(),  gf.getColumnName(), "");
 				}
 			}
 
