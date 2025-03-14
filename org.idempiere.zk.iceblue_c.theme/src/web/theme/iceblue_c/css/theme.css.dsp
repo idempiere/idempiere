@@ -17,6 +17,10 @@ html,body {
 	margin:0px;
 }
 
+.z-initing {
+    background-image: url(${c:encodeURL('~./theme/iceblue_c/images/zssosepowered.png')}) !important;
+}
+
 [class*="z-"]:not([class*="z-icon-"]):not([class*="z-group-icon-"]) {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }

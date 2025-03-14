@@ -410,24 +410,13 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	 */
 	protected Tabpanel createCredit() {
 		Tabpanel tabPanel = new Tabpanel();
-		String fileName = Adempiere.getAdempiereHome() + File.separator + "Credits.html";
-		File file = new File(fileName);
-		AMedia media = null;
-		try {
-			media = new AMedia(file.getName(), "html", "text/html", file, false);
-		} catch (FileNotFoundException e) {
-			log.warning("File " + fileName + " not found");
-		}
 		Iframe iframe = new Iframe();
 		ZKUpdateUtil.setWidth(iframe, "100%");
 		ZKUpdateUtil.setHeight(iframe, "100%");
 		iframe.setStyle("overflow: auto;");
 		iframe.setId("creditsFrame");
 		iframe.setParent(tabPanel);
-		iframe.setSrc(null);
-		if (media != null)
-			iframe.setContent(media);
-
+		iframe.setSrc("/html/Credits.html");
 		return tabPanel;
 	}
 
