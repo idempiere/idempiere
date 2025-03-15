@@ -18,6 +18,7 @@ import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.IServiceLocator;
 import org.adempiere.base.IServicesHolder;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.exceptions.AdempiereException;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.ComponentConstants;
@@ -132,8 +133,7 @@ public class DynamicServiceLocator implements IServiceLocator {
 		try {
 			return BaseActivator.getBundleContext().createFilter(builder.toString());
 		} catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-			return null;
+			throw new AdempiereException(e.getMessage(), e);
 		}
 	}
 }
