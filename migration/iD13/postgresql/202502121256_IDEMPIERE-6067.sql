@@ -41,3 +41,14 @@ UPDATE AD_Field SET SeqNo=360,Updated=TO_TIMESTAMP('2025-02-28 16:23:08','YYYY-M
 UPDATE AD_Field SET SeqNo=370,Updated=TO_TIMESTAMP('2025-02-28 16:23:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=3125
 ;
 
+-- Mar 20, 2025, 2:06:23 PM CET
+UPDATE AD_Field SET DisplayLogic='@DocBaseType@=''SOO'' | @DocBaseType@=''POO'' | @DocBaseType@=''API'' | @DocBaseType@=''ARI'' | @DocBaseType@=''ARF'' | @DocBaseType@=''API'' | @DocBaseType@=''ARC'' | @DocBaseType@=''APC'' | @DocBaseType@=''ARR'' | @DocBaseType@=''APP'' | @DocBaseType@=''CMB'' | @DocBaseType@=''GLJ''',Updated=TO_TIMESTAMP('2025-03-20 14:06:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=208710
+;
+
+-- Mar 20, 2025, 2:14:42 PM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','{0} cannot be reactivated',0,0,'Y',TO_TIMESTAMP('2025-03-20 14:14:41','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2025-03-20 14:14:41','YYYY-MM-DD HH24:MI:SS'),10,200941,'DocTypeCannotBeReactivated','D','c4bd569c-db4d-440b-9c05-e99ec99716c1')
+;
+
+
+UPDATE C_DocType SET IsCanBeReactivated = 'Y' WHERE DocBaseType IN ('SOO', 'POO', 'ARR', 'APP', 'CMB', 'GLJ')
+;

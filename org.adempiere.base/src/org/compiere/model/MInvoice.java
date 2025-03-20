@@ -2888,6 +2888,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 
+		if (!DocumentEngine.canReactivateThisDocType(getC_DocType_ID())) {
+			m_processMsg = Msg.getMsg(getCtx(), "DocTypeCannotBeReactivated", new Object[] {MDocType.get(getC_DocType_ID()).getNameTrl()});
+			return false;
+		}
+
 		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (allocations.length > 0) {
 			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedAllocationLine"));
