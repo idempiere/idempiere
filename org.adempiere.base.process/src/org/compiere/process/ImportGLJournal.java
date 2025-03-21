@@ -110,7 +110,7 @@ public class ImportGLJournal extends SvrProcess
 		{
 			sql = new StringBuilder ("DELETE FROM I_GLJournal ")
 				  .append("WHERE I_IsImported='Y'").append (clientCheck);
-			no = DB.executeUpdate(sql.toString(), get_TrxName());
+			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Delete Old Impored =" + no);
 		}
 
@@ -124,7 +124,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" I_ErrorMsg = ' ',")
 			.append(" I_IsImported = 'N' ")
 			.append("WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.INFO)) log.info ("Reset=" + no);
 
 		//	Set Client from Name
@@ -132,7 +132,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" SET AD_Client_ID=(SELECT c.AD_Client_ID FROM AD_Client c WHERE c.Value=i.ClientValue)")
 			.append(" WHERE (AD_Client_ID IS NULL OR AD_Client_ID=0) AND ClientValue IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'");
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Client from Value=" + no);
 
 		//	Set Default Client, Doc Org, AcctSchema, DatAcct
@@ -145,7 +145,7 @@ public class ImportGLJournal extends SvrProcess
 			sql.append(" DateAcct = COALESCE (DateAcct,").append (DB.TO_DATE(m_DateAcct)).append ("),");
 		sql.append(" Updated = COALESCE (Updated, getDate()) ")
 			  .append(" WHERE I_IsImported<>'Y' OR I_IsImported IS NULL");
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Client/DocOrg/Default=" + no);
 
 		//	Error Doc Org
@@ -154,7 +154,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE (AD_OrgDoc_ID IS NULL OR AD_OrgDoc_ID=0")
 			.append(" OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_OrgDoc_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Doc Org=" + no);
 
@@ -164,13 +164,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE i.AcctSchemaName=a.Name AND i.AD_Client_ID=a.AD_Client_ID) ")
 			.append(" WHERE C_AcctSchema_ID IS NULL AND AcctSchemaName IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set AcctSchema from Name=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i")
 			.append(" SET C_AcctSchema_ID=(SELECT c.C_AcctSchema1_ID FROM AD_ClientInfo c WHERE c.AD_Client_ID=i.AD_Client_ID)")
 			.append(" WHERE C_AcctSchema_ID IS NULL AND AcctSchemaName IS NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set AcctSchema from Client=" + no);
 		//	Error AcctSchema
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
@@ -178,7 +178,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE (C_AcctSchema_ID IS NULL OR C_AcctSchema_ID=0")
 			.append(" OR NOT EXISTS (SELECT * FROM C_AcctSchema a WHERE i.AD_Client_ID=a.AD_Client_ID))")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid AcctSchema=" + no);
 
@@ -187,7 +187,7 @@ public class ImportGLJournal extends SvrProcess
 			.append("SET DateAcct=getDate()")
 			.append(" WHERE DateAcct IS NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set DateAcct=" + no);
 
 		//	Document Type
@@ -196,14 +196,14 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE d.Name=i.DocTypeName AND d.DocBaseType='GLJ' AND i.AD_Client_ID=d.AD_Client_ID)")
 			.append(" WHERE C_DocType_ID IS NULL AND DocTypeName IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid DocType, '")
 			.append(" WHERE (C_DocType_ID IS NULL OR C_DocType_ID=0")
 			.append(" OR NOT EXISTS (SELECT * FROM C_DocType d WHERE i.AD_Client_ID=d.AD_Client_ID AND d.DocBaseType='GLJ'))")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid DocType=" + no);
 
@@ -213,13 +213,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE c.Name=i.CategoryName AND i.AD_Client_ID=c.AD_Client_ID)")
 			.append(" WHERE GL_Category_ID IS NULL AND CategoryName IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set DocType=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Category, '")
 			.append(" WHERE (GL_Category_ID IS NULL OR GL_Category_ID=0)")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid GLCategory=" + no);
 
@@ -229,20 +229,20 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE c.ISO_Code=i.ISO_Code AND c.AD_Client_ID IN (0,i.AD_Client_ID))")
 			.append(" WHERE C_Currency_ID IS NULL AND ISO_Code IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Currency from ISO=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET C_Currency_ID=(SELECT a.C_Currency_ID FROM C_AcctSchema a")
 			.append(" WHERE a.C_AcctSchema_ID=i.C_AcctSchema_ID AND a.AD_Client_ID=i.AD_Client_ID)")
 			.append(" WHERE C_Currency_ID IS NULL AND ISO_Code IS NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Default Currency=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Currency, '")
 			.append(" WHERE (C_Currency_ID IS NULL OR C_Currency_ID=0)")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Currency=" + no);
 
@@ -251,20 +251,20 @@ public class ImportGLJournal extends SvrProcess
 			.append(" SET ConversionTypeValue='S' ")
 			.append(" WHERE C_ConversionType_ID IS NULL AND ConversionTypeValue IS NULL")
 			.append(" AND I_IsImported='N'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set CurrencyType Value to Spot =" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ") 
 			.append(" SET C_ConversionType_ID=(SELECT c.C_ConversionType_ID FROM C_ConversionType c")
 			.append(" WHERE c.Value=i.ConversionTypeValue AND c.AD_Client_ID IN (0,i.AD_Client_ID)) ")
 			.append(" WHERE C_ConversionType_ID IS NULL AND ConversionTypeValue IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set CurrencyType from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid CurrencyType, '")
 			.append(" WHERE (C_ConversionType_ID IS NULL OR C_ConversionType_ID=0) AND ConversionTypeValue IS NOT NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid CurrencyTypeValue=" + no);
 
@@ -273,7 +273,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No ConversionType, '")
 			.append(" WHERE (C_ConversionType_ID IS NULL OR C_ConversionType_ID=0)")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("No CourrencyType=" + no);
 
@@ -283,7 +283,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE EXISTS (SELECT * FROM C_AcctSchema a")
 			.append(" WHERE a.C_AcctSchema_ID=i.C_AcctSchema_ID AND a.C_Currency_ID=i.C_Currency_ID)")
 			.append(" AND C_Currency_ID IS NOT NULL AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Home CurrencyRate=" + no);
 		//	Set Currency Rate
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
@@ -296,7 +296,7 @@ public class ImportGLJournal extends SvrProcess
 	   //	ORDER BY ValidFrom DESC
 		   .append(") WHERE CurrencyRate IS NULL OR CurrencyRate=0 AND C_Currency_ID>0")
 		   .append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Org Rate=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i")
 			.append(" SET CurrencyRate=(SELECT MAX(r.MultiplyRate) FROM C_Conversion_Rate r, C_AcctSchema s")
@@ -308,13 +308,13 @@ public class ImportGLJournal extends SvrProcess
 		//	ORDER BY ValidFrom DESC
 			.append(") WHERE CurrencyRate IS NULL OR CurrencyRate=0 AND C_Currency_ID>0")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Client Rate=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Rate, '")
 			.append(" WHERE CurrencyRate IS NULL OR CurrencyRate=0")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("No Rate=" + no);
 
@@ -328,7 +328,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" AND i.DateAcct BETWEEN p.StartDate AND p.EndDate AND p.IsActive='Y' AND p.PeriodType='S') ")
 			.append(" WHERE C_Period_ID IS NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Period=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Period, '")
@@ -340,7 +340,7 @@ public class ImportGLJournal extends SvrProcess
 			// globalqss - cruiz - Bug [ 1577712 ] Financial Period Bug
 			.append(" AND i.DateAcct BETWEEN p.StartDate AND p.EndDate AND p.IsActive='Y' AND p.PeriodType='S')")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Period=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
@@ -348,7 +348,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE C_Period_ID IS NOT NULL AND NOT EXISTS")
 			.append(" (SELECT * FROM C_PeriodControl pc WHERE pc.C_Period_ID=i.C_Period_ID AND DocBaseType='GLJ' AND PeriodStatus='O') ")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Period Closed=" + no);
 
@@ -356,14 +356,14 @@ public class ImportGLJournal extends SvrProcess
 		sql = new StringBuilder ("UPDATE I_GLJournal i")
 			.append(" SET PostingType='A'")
 			.append(" WHERE PostingType IS NULL AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Actual PostingType=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid PostingType, '")
 			.append(" WHERE PostingType IS NULL OR NOT EXISTS")
 			.append(" (SELECT * FROM AD_Ref_List r WHERE r.AD_Reference_ID=125 AND i.PostingType=r.Value)")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid PostingTypee=" + no);
 
@@ -377,13 +377,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE o.Value=i.OrgValue AND o.IsSummary='N' AND i.AD_Client_ID=o.AD_Client_ID),AD_Org_ID) ")
 			.append(" WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0) AND OrgValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'");
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Org from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET AD_Org_ID=AD_OrgDoc_ID ")
 			.append(" WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0) AND OrgValue IS NULL AND AD_OrgDoc_ID IS NOT NULL AND AD_OrgDoc_ID<>0")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Org from Doc Org=" + no);
 		//	Error Org
 		sql = new StringBuilder ("UPDATE I_GLJournal o ")
@@ -391,7 +391,7 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE (AD_Org_ID IS NULL OR AD_Org_ID=0")
 			.append(" OR EXISTS (SELECT * FROM AD_Org oo WHERE o.AD_Org_ID=oo.AD_Org_ID AND (oo.IsSummary='Y' OR oo.IsActive='N')))")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Org=" + no);
 
@@ -404,13 +404,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" AND i.C_AcctSchema_ID=ase.C_AcctSchema_ID AND i.AD_Client_ID=ev.AD_Client_ID) ")
 			.append(" WHERE Account_ID IS NULL AND AccountValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Account from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Account, '")
 			.append(" WHERE (Account_ID IS NULL OR Account_ID=0)")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Account=" + no);
 
@@ -420,13 +420,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE bp.Value=i.BPartnerValue AND bp.IsSummary='N' AND i.AD_Client_ID=bp.AD_Client_ID) ")
 			.append(" WHERE C_BPartner_ID IS NULL AND BPartnerValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y' ").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set BPartner from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid BPartner, '")
 			.append(" WHERE C_BPartner_ID IS NULL AND BPartnerValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid BPartner=" + no);
 
@@ -437,13 +437,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
 			.append(" WHERE M_Product_ID IS NULL AND (ProductValue IS NOT NULL OR UPC IS NOT NULL OR SKU IS NOT NULL)")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Product from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Product, '")
 			.append(" WHERE M_Product_ID IS NULL AND (ProductValue IS NOT NULL OR UPC IS NOT NULL OR SKU IS NOT NULL)")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Product=" + no);
 
@@ -453,13 +453,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE p.Value=i.ProjectValue AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
 			.append(" WHERE C_Project_ID IS NULL AND ProjectValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Project from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Project, '")
 			.append(" WHERE C_Project_ID IS NULL AND ProjectValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Project=" + no);
 		
@@ -470,13 +470,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE p.Value=i.CampaignValue AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
 			.append(" WHERE C_Campaign_ID IS NULL AND CampaignValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Campaign from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Campaign, '")
 			.append(" WHERE C_Campaign_ID IS NULL AND CampaignValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Campaign=" + no);
 
@@ -486,13 +486,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE p.Value=i.ActivityValue AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
 			.append(" WHERE C_Activity_ID IS NULL AND ActivityValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Activity from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid Activity, '")
 			.append(" WHERE C_Activity_ID IS NULL AND ActivityValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Activity=" + no);
 
@@ -502,13 +502,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE p.Value=i.SalesRegionValue AND p.IsSummary='N' AND i.AD_Client_ID=p.AD_Client_ID) ")
 			.append(" WHERE C_SalesRegion_ID IS NULL AND SalesRegionValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set SalesRegion from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid SalesRegion, '")
 			.append(" WHERE C_SalesRegion_ID IS NULL AND SalesRegionValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid SalesRegion=" + no);
 
@@ -519,13 +519,13 @@ public class ImportGLJournal extends SvrProcess
 			.append(" WHERE o.Value=i.OrgTrxValue AND o.IsSummary='N' AND i.AD_Client_ID=o.AD_Client_ID) ")
 			.append(" WHERE AD_OrgTrx_ID IS NULL AND OrgTrxValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set OrgTrx from Value=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=Invalid OrgTrx, '")
 			.append(" WHERE AD_OrgTrx_ID IS NULL AND OrgTrxValue IS NOT NULL")
 			.append(" AND (C_ValidCombination_ID IS NULL OR C_ValidCombination_ID=0) AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid OrgTrx=" + no);
 
@@ -535,19 +535,19 @@ public class ImportGLJournal extends SvrProcess
 			.append(" SET AmtSourceDr = 0 ")
 			.append(" WHERE AmtSourceDr IS NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set 0 Source Dr=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal ")
 			.append(" SET AmtSourceCr = 0 ")
 			.append(" WHERE AmtSourceCr IS NULL")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set 0 Source Cr=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_ErrorMsg=I_ErrorMsg||'WARN=Zero Source Balance, ' ")
 			.append(" WHERE (AmtSourceDr-AmtSourceCr)=0")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Zero Source Balance=" + no);
 
@@ -556,19 +556,19 @@ public class ImportGLJournal extends SvrProcess
 			.append(" SET AmtAcctDr = ROUND(AmtSourceDr * CurrencyRate, 2) ")	//	HARDCODED rounding
 			.append(" WHERE AmtAcctDr IS NULL OR AmtAcctDr=0")
 			.append(" AND I_IsImported='N'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Calculate Acct Dr=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal ")
 			.append(" SET AmtAcctCr = ROUND(AmtSourceCr * CurrencyRate, 2) ")
 			.append(" WHERE AmtAcctCr IS NULL OR AmtAcctCr=0")
 			.append(" AND I_IsImported='N'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Calculate Acct Cr=" + no);
 		sql = new StringBuilder ("UPDATE I_GLJournal i ")
 			.append(" SET I_ErrorMsg=I_ErrorMsg||'WARN=Zero Acct Balance, ' ")
 			.append(" WHERE (AmtSourceDr-AmtSourceCr)<>0 AND (AmtAcctDr-AmtAcctCr)=0")
 			.append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Zero Acct Balance=" + no);
 
@@ -617,7 +617,7 @@ public class ImportGLJournal extends SvrProcess
 		
 		//	Count Errors
 		StringBuilder msgdb = new StringBuilder("SELECT COUNT(*) FROM I_GLJournal WHERE I_IsImported NOT IN ('Y','N')").append(clientCheck);
-		int errors = DB.getSQLValue(get_TrxName(), msgdb.toString());
+		int errors = DB.getSQLValueEx(get_TrxName(), msgdb.toString());
 
 		if (errors != 0)
 		{
@@ -835,7 +835,7 @@ public class ImportGLJournal extends SvrProcess
 		sql = new StringBuilder ("UPDATE I_GLJournal ")
 			.append("SET I_IsImported='N', Updated=getDate() ")
 			.append("WHERE I_IsImported<>'Y'").append(clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		addLog (0, null, new BigDecimal (no), "@Errors@");
 		//
 		addLog (0, null, new BigDecimal (noInsert), "@GL_JournalBatch_ID@: @Inserted@");
