@@ -681,11 +681,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	{
 		byte fileContent[] = new byte[(int) tempFile.length()];
 
-		try
+		try (FileInputStream fis = new FileInputStream(tempFile))
 		{
-			FileInputStream fis = new FileInputStream(tempFile);
 			fis.read(fileContent);
-			fis.close();
 		}
 		catch (FileNotFoundException e)
 		{

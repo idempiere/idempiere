@@ -202,7 +202,7 @@ public abstract class Convert
 	 */
 	public boolean hasError()
 	{
-		return (m_exception != null) | (m_conversionError != null);
+		return (m_exception != null) || (m_conversionError != null);
 	}   //  hasError
 
 	/**

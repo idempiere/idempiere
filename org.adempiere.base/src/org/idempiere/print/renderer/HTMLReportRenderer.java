@@ -329,7 +329,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 				cssInfo = new CSSInfo(newFont, null);
 				styleBuild.append(".tr-level-2 td").append(cssInfo.getCssRule());
 				
-				styleBuild = new StringBuilder(styleBuild.toString().replaceAll(";", "!important;"));
+				styleBuild = new StringBuilder(styleBuild.toString().replace(";", "!important;"));
 				appendInlineCss (doc, styleBuild);
 				
 				w.print(compress(doc.toString(), minify));

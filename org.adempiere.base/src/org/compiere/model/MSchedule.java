@@ -45,10 +45,10 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7183417983901074702L;
-	private static Pattern VALID_IPV4_PATTERN = null;
-	private static Pattern VALID_IPV6_PATTERN = null;
 	private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
     private static final String ipv6Pattern = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
+	private static final Pattern VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern,Pattern.CASE_INSENSITIVE);
+	private static final Pattern VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern,Pattern.CASE_INSENSITIVE);	
 
     /**
      * UUID based Constructor
@@ -246,9 +246,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	public boolean chekIPFormat(String ipOnly)
 	{
 		boolean IsIp = false;
-		try {
-			VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern,Pattern.CASE_INSENSITIVE);
-			VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern,Pattern.CASE_INSENSITIVE);
+		try {						
 			
 			Matcher m1 = VALID_IPV4_PATTERN.matcher(ipOnly);
 			if (m1.matches()) {

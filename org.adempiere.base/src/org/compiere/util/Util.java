@@ -44,6 +44,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
+import org.adempiere.base.Generated;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
 
@@ -200,6 +201,7 @@ public class Util
 				case '\n':
 					if (maskCR)
 						out.append ("<br>");
+					break;
 				//
 				default:
 					int ii =  (int)c;
@@ -416,6 +418,7 @@ public class Util
 	 * @param relevantAttributes relevant attributes
 	 * @return iterator
 	 */
+	@Generated
 	static public AttributedCharacterIterator getIterator (AttributedString aString, 
 		AttributedCharacterIterator.Attribute[] relevantAttributes)
 	{
@@ -464,6 +467,7 @@ public class Util
 	 * Dump a Map (key=value) to standard out
 	 * @param map Map
 	 */
+	@Generated
 	static public void dump (Map<Object,Object> map)
 	{
 		System.out.println("Dump Map - size=" + map.size());
@@ -482,6 +486,7 @@ public class Util
 	 * @deprecated Swing client have been deprecated
 	 */
 	@Deprecated
+	@Generated
 	public static void printActionInputMap (JComponent comp)
 	{
 		//	Action Map
@@ -629,6 +634,7 @@ public class Util
 		}
 		catch (UnsupportedEncodingException e)
 		{
+			//should never happen
 			log.log(Level.SEVERE, str, e);
 		}
 		return size;
@@ -662,6 +668,7 @@ public class Util
 		}
 		catch (UnsupportedEncodingException e)
 		{
+			//should never happen
 			log.log(Level.SEVERE, str, e);
 		}
 		return str;
@@ -674,6 +681,7 @@ public class Util
 	 * @deprecated dummy method, not doing anything
 	 */
 	@Deprecated(forRemoval = true, since = "12")
+	@Generated
 	public static String stripDiacritics(String s) {
 		return s;
 	}
@@ -731,11 +739,14 @@ public class Util
 					cb.addTemplate(page, 0, 0);
 					copy.releaseTemplate(page);
 				}
-			}
-			document.close();
+			}			
 		}
 		finally
 		{
+			if(document != null)
+			{
+				document.close();
+			}
 			for(PdfReader reader:pdfReaders)
 			{
 				reader.close();
@@ -750,12 +761,12 @@ public class Util
 	 */
 	public static String setFilenameCorrect(String input) {
 		String output = Normalizer.normalize(input, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-		output = output.replaceAll("/" , "-");
-		output = output.replaceAll(":" , "-");
-		output = output.replaceAll("\\*" , "-");
-		output = output.replaceAll("<" , "-");
-		output = output.replaceAll(">" , "-");
-		output = output.replaceAll("%" , "-");
+		output = output.replace("/" , "-");
+		output = output.replace(":" , "-");
+		output = output.replace("*" , "-");
+		output = output.replace("<" , "-");
+		output = output.replace(">" , "-");
+		output = output.replace("%" , "-");
 		return output.trim();
 	}
 
@@ -775,6 +786,7 @@ public class Util
 	 * Is running from Eclipse
 	 * @return true if there is a directory org.adempiere.base within AdempiereHome or if there is a System property org.idempiere.developermode set to Y 
 	 */
+	@Generated
 	public static boolean isDeveloperMode() {
 		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base")) || "Y".equals(System.getProperty("org.idempiere.developermode"));
 	}

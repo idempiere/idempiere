@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -45,6 +46,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.impexp.ImpFormat;
 import org.compiere.impexp.ImpFormatRow;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -598,9 +600,18 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		for (row = 0; row < m_data.size(); row++)
 			if (m_format.updateDB(Env.getCtx(), m_data.get(row).toString(), null))
 				imported++;
-		
-		Dialog.info(m_WindowNo, "FileImportR/I", row + " / " + imported + "#");
-		
-		SessionManager.getAppDesktop().closeActiveWindow();
+
+		final int importedFinal = imported;
+		Dialog.info(m_WindowNo, "FileImportR/I", row + " / " + imported + "#", Msg.getMsg(Env.getCtx(), "FileImport"),
+			    result -> {
+			        if (importedFinal > 0) {
+			            MQuery query = new MQuery(m_format.getAD_Table_ID());
+			            query.addRestriction("I_IsImported='N'");
+			            AEnv.zoom(m_format.getAD_Table_ID(), 0, query);
+			        }
+			    });
+
+		if (imported > 0)
+			SessionManager.getAppDesktop().closeActiveWindow();
 	}	//	cmd_process
 }

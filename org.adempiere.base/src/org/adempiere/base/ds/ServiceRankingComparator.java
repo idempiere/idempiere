@@ -83,7 +83,7 @@ public final class ServiceRankingComparator implements Comparator<ServiceReferen
                 long serviceId2 = (Long) serviceIdP2;
 
                 if (serviceId1 == serviceId2) {
-                    return 0;
+                    return 0; //should never reach here
                 } else if (serviceId1 > serviceId2) {
                     return -1;
                 } else {

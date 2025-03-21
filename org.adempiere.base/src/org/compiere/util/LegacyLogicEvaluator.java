@@ -90,9 +90,9 @@ public final class LegacyLogicEvaluator {
 			boolean temp = evaluateLogicTuple(source, exprStrand);
 
 			if (logOp.equals("&"))
-				retValue = retValue & temp;
+				retValue = retValue && temp;
 			else if (logOp.equals("|"))
-				retValue = retValue | temp;
+				retValue = retValue || temp;
 			else
 			{
 				s_log.log(Level.SEVERE, "Logic operand '|' or '&' expected => " + logic);

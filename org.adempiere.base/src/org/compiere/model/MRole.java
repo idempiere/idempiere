@@ -2112,7 +2112,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retSQL.append(" AND ");
 				String orgWhere = getOrgWhere(rw);
 				if (fullyQualified)
-					orgWhere = orgWhere.replaceAll("AD_Org_ID", tableName + ".AD_Org_ID");
+					orgWhere = orgWhere.replace("AD_Org_ID", tableName + ".AD_Org_ID");
 				retSQL.append(orgWhere);
 			}
 		} else {
@@ -3405,6 +3405,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_Client:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_ClientOnly:
@@ -3413,6 +3414,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_Organization:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_Organization:
@@ -3420,6 +3422,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_ClientPlusOrganization:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_Organization:
@@ -3429,6 +3432,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		}
 		return access;
 	}

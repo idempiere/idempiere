@@ -155,7 +155,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     	layout.setHflex("1");
     	layout.setValign("middle");
         lblSearch = new Label();
-        lblSearch.setValue(Msg.getMsg(Env.getCtx(),"TreeSearch").replaceAll("&", "") + ":");
+        lblSearch.setValue(Msg.getMsg(Env.getCtx(),"TreeSearch").replace("&", "") + ":");
         lblSearch.setTooltiptext(Msg.getMsg(Env.getCtx(),"TreeSearchText"));
 
         cmbSearch = new AutoComplete();

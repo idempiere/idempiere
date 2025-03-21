@@ -237,9 +237,9 @@ public class AmtInWords_ES implements AmtInWords
 		String oldamt = amount;
 
 		if(lang.isDecimalPoint())
-			amount = amount.replaceAll (",", "");   // Old
+			amount = amount.replace(",", "");   // Old
 		else
-			amount = amount.replaceAll( "\\.","");
+			amount = amount.replace( ".","");
 
 		int newpos = 0;
 		if(lang.isDecimalPoint())
