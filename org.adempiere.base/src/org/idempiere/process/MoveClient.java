@@ -1210,6 +1210,9 @@ public class MoveClient extends SvrProcess {
 		if (convertedId == null || (convertedId instanceof Number && ((Number)convertedId).intValue() < 0)) {
 			// when obtaining a UUID for a non-UUID table means to generate and insert the conversion
 			// for example AD_Attachment.Record_UU requires the UUID of a still not inserted record in another table
+			// when moving client from another database, the UUIDs are preserved
+			if (! p_IsCopyClient)
+				return key;
 			MTable cTable = MTable.get(getCtx(), convertTable);
 			if (key instanceof String && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
 				convertedId = UUID.randomUUID().toString();
