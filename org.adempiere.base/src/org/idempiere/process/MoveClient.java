@@ -30,8 +30,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -113,6 +115,8 @@ public class MoveClient extends SvrProcess {
 	private String p_ClientValue;
 	/** skip some validations to make the process faster */
 	private boolean p_IsSkipSomeValidations;
+	/* Fallback Records when FK not found */
+	private String p_FallbackRecordsWhenFKNotFound = null;
 
 	final private static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_Key, Target_Key) VALUES (?, ?, ?, ?)";
 	final private static String queryT_MoveClient = "SELECT Target_Key FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_Key=?";
@@ -126,6 +130,7 @@ public class MoveClient extends SvrProcess {
 	private List<String> p_tablesToExcludeList = new ArrayList<String>();
 	private List<String> p_columnsVerifiedList = new ArrayList<String>();
 	private List<String> p_idSystemConversionList = new ArrayList<String>(); // can consume lot of memory but it helps for performance
+	private List<Map.Entry<String, PO>> p_fallbackRecords = null;
 	private boolean p_isPreserveAll = false;
 
 	/**
@@ -162,6 +167,8 @@ public class MoveClient extends SvrProcess {
 				p_TablesToPreserveIDs = para.getParameterAsString();
 			} else if ("IsSkipSomeValidations".equals(name)) {
 				p_IsSkipSomeValidations = para.getParameterAsBoolean();
+			} else if ("FallbackRecordsWhenFKNotFound".equals(name)) {
+				p_FallbackRecordsWhenFKNotFound = para.getParameterAsString();
 			} else {
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
@@ -264,6 +271,8 @@ public class MoveClient extends SvrProcess {
 				}
 			}
 		}
+
+		p_fallbackRecords = parseFallbackRecordsString(p_FallbackRecordsWhenFKNotFound);
 
 		// Make the connection to external database - or to the same local when copying template
 		externalConn = null;
@@ -1406,9 +1415,17 @@ public class MoveClient extends SvrProcess {
 		if (list != null && list.size() == 1)
 			local_Key = list.get(0);
 		if (local_Key == null || (local_Key instanceof Number && ((Number)local_Key).intValue() < 0)) {
-			p_errorList.add("Column " + tableName + "." + columnName +  " has system reference not convertible, "
-					+ foreignTableName + "." + uuidCol + "=" + foreignUU);
-			return -1;
+			PO po = getFallbackRecordByTableName(p_fallbackRecords, foreignTableName);
+			if (po == null) {
+				p_errorList.add("Column " + tableName + "." + columnName +  " has system reference not convertible, "
+						+ foreignTableName + "." + uuidCol + "=" + foreignUU);
+				return -1;
+			} else {
+				if (foreignTable.isIDKeyTable())
+					local_Key = po.get_ID();
+				else
+					local_Key = po.get_UUID();
+			}
 		}
 		DB.executeUpdateEx(insertConversionId,
 				new Object[] {getAD_PInstance_ID(), foreignTableName.toUpperCase(), foreign_Key, local_Key},
@@ -1416,5 +1433,64 @@ public class MoveClient extends SvrProcess {
 		p_idSystemConversionList.add(foreignTableName.toUpperCase() + "." + foreign_Key);
 		return local_Key;
 	}
+
+	/**
+	 * Convert a string of table=ID (or table=UUID) to a List of String,PO maps
+	 * @param fallbackRecordsString
+	 * @return
+	 */
+	public List<Map.Entry<String, PO>> parseFallbackRecordsString(String fallbackRecordsString) {
+		List<Map.Entry<String, PO>> records = new ArrayList<>();
+
+		if (fallbackRecordsString == null || fallbackRecordsString.trim().isEmpty()) {
+			return records; // Return empty list if no data
+		}
+
+		String[] pairs = fallbackRecordsString.split(",");
+		for (String pair : pairs) {
+			String[] parts = pair.split("=");
+			if (parts.length == 2) {
+				String tableName = parts[0].trim();
+				MTable table = MTable.get(getCtx(), tableName);
+				if (table == null) {
+					throw new AdempiereUserError("Fallback Table " + tableName + " not found");
+				}
+				String id = parts[1].trim();
+				PO po = null;
+				if (Util.isUUID(id)) {
+					po = MTable.get(getCtx(), tableName).getPOByUU(id, get_TrxName());
+				} else {
+					int recordId;
+					try {
+						recordId = Integer.parseInt(id);
+					} catch (NumberFormatException e) {
+						throw new AdempiereUserError("Fallback ID " + id + " is not a valid number for table " + tableName);
+					}
+					po = MTable.get(getCtx(), tableName).getPO(recordId, get_TrxName());
+				}
+				if (po == null || po.is_new()) {
+					throw new AdempiereUserError("Fallback record " + id + " not found for table " + tableName);
+				} else {
+					records.add(new AbstractMap.SimpleEntry<>(tableName, po));
+				}
+			}
+		}
+
+		return records;
+	}
+
+    /**
+     * Get the PO associated to the tablename in the fallbackRecords list
+     * @param fallbackRecords
+     * @param tableName
+     * @return
+     */
+    public static PO getFallbackRecordByTableName(List<Map.Entry<String, PO>> fallbackRecords, String tableName) {
+        return fallbackRecords.stream()
+                .filter(entry -> entry.getKey().equalsIgnoreCase(tableName)) // Case-insensitive comparison
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null); // Returns null if not found
+    }
 
 }
