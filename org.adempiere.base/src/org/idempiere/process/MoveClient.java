@@ -30,11 +30,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -42,6 +42,7 @@ import org.compiere.db.CConnection;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MSequence;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -83,6 +84,7 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -118,7 +120,7 @@ public class MoveClient extends SvrProcess {
 	/* Fallback Records when FK not found */
 	private String p_FallbackRecordsWhenFKNotFound = null;
 
-	final private static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_Key, Target_Key) VALUES (?, ?, ?, ?)";
+	final private static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_Key, Target_Key, Identifier) VALUES (?, ?, ?, ?, ?)";
 	final private static String queryT_MoveClient = "SELECT Target_Key FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_Key=?";
 
 	private Connection externalConn;
@@ -130,7 +132,7 @@ public class MoveClient extends SvrProcess {
 	private List<String> p_tablesToExcludeList = new ArrayList<String>();
 	private List<String> p_columnsVerifiedList = new ArrayList<String>();
 	private List<String> p_idSystemConversionList = new ArrayList<String>(); // can consume lot of memory but it helps for performance
-	private List<Map.Entry<String, PO>> p_fallbackRecords = null;
+	private List<FallbackRecord> p_fallbackRecords = null;
 	private boolean p_isPreserveAll = false;
 
 	/**
@@ -826,7 +828,7 @@ public class MoveClient extends SvrProcess {
 					}
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
 						DB.executeUpdateEx(insertConversionId,
-								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key, target_Key},
+								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key, target_Key, null},
 								get_TrxName());
 					}
 				}
@@ -1217,7 +1219,7 @@ public class MoveClient extends SvrProcess {
 			if (key instanceof String && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
 				convertedId = UUID.randomUUID().toString();
 				DB.executeUpdateEx(insertConversionId,
-						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key, convertedId},
+						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key, convertedId, null},
 						get_TrxName());
 			} else {
 				// not found in the T_MoveClient table - try to get it again - could be missed in first pass
@@ -1417,21 +1419,29 @@ public class MoveClient extends SvrProcess {
 		List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), sqlCheckLocalUU.toString(), foreignUU);
 		if (list != null && list.size() == 1)
 			local_Key = list.get(0);
+		String identifier = null;
 		if (local_Key == null || (local_Key instanceof Number && ((Number)local_Key).intValue() < 0)) {
-			PO po = getFallbackRecordByTableName(p_fallbackRecords, foreignTableName);
+			FallbackRecord fr = getFallbackRecordByTableName(p_fallbackRecords, foreignTableName);
+			PO po = null;
+			if (fr != null)
+				po = fr.getPO();
 			if (po == null) {
 				p_errorList.add("Column " + tableName + "." + columnName +  " has system reference not convertible, "
 						+ foreignTableName + "." + uuidCol + "=" + foreignUU);
 				return -1;
 			} else {
-				if (foreignTable.isIDKeyTable())
+				if (foreignTable.isIDKeyTable()) {
 					local_Key = po.get_ID();
-				else
+				} else {
 					local_Key = po.get_UUID();
+				}
+				identifier = getIdentifierFromExternalRecord(foreignTable, foreign_Key);
+		        if (identifier != null && identifier.length() > 4000)
+		        	identifier = identifier.substring(0, 4000);
 			}
 		}
 		DB.executeUpdateEx(insertConversionId,
-				new Object[] {getAD_PInstance_ID(), foreignTableName.toUpperCase(), foreign_Key, local_Key},
+				new Object[] {getAD_PInstance_ID(), foreignTableName.toUpperCase(), foreign_Key, local_Key, identifier},
 				get_TrxName());
 		p_idSystemConversionList.add(foreignTableName.toUpperCase() + "." + foreign_Key);
 		return local_Key;
@@ -1442,8 +1452,8 @@ public class MoveClient extends SvrProcess {
 	 * @param fallbackRecordsString
 	 * @return
 	 */
-	public List<Map.Entry<String, PO>> parseFallbackRecordsString(String fallbackRecordsString) {
-		List<Map.Entry<String, PO>> records = new ArrayList<>();
+	public List<FallbackRecord> parseFallbackRecordsString(String fallbackRecordsString) {
+		List<FallbackRecord> records = new ArrayList<>();
 
 		if (fallbackRecordsString == null || fallbackRecordsString.trim().isEmpty()) {
 			return records; // Return empty list if no data
@@ -1459,11 +1469,11 @@ public class MoveClient extends SvrProcess {
 					throw new AdempiereUserError("Fallback Table " + tableName + " not found");
 				}
 				String id = parts[1].trim();
+				int recordId = -1;
 				PO po = null;
 				if (Util.isUUID(id)) {
 					po = MTable.get(getCtx(), tableName).getPOByUU(id, get_TrxName());
 				} else {
-					int recordId;
 					try {
 						recordId = Integer.parseInt(id);
 					} catch (NumberFormatException e) {
@@ -1471,29 +1481,105 @@ public class MoveClient extends SvrProcess {
 					}
 					po = MTable.get(getCtx(), tableName).getPO(recordId, get_TrxName());
 				}
-				if (po == null || po.is_new()) {
+				if (po == null || po.is_new())
 					throw new AdempiereUserError("Fallback record " + id + " not found for table " + tableName);
-				} else {
-					records.add(new AbstractMap.SimpleEntry<>(tableName, po));
-				}
+				else
+					records.add(new FallbackRecord(tableName, po));
 			}
 		}
 
 		return records;
 	}
 
+	private ConcurrentMap<String, String> externalIdentifiersMap = new ConcurrentHashMap<String, String>();
     /**
-     * Get the PO associated to the tablename in the fallbackRecords list
+     * Get the identifier of a record from the external database
+     * @param table
+     * @param id
+     * @param recordId
+     * @return
+     */
+    private String getIdentifierFromExternalRecord(MTable table, Object key) {
+    	String mapKey = table.getTableName()+"|"+key.toString();
+    	if (externalIdentifiersMap.containsKey(mapKey))
+    		return externalIdentifiersMap.get(mapKey);
+		String[] columns = table.getIdentifierColumns();
+		if (columns.length == 0) {
+			externalIdentifiersMap.put(mapKey, null);
+			return null;
+		}
+		StringBuilder identifier = new StringBuilder();
+		StringBuilder sqlSB = new StringBuilder("SELECT ").append(String.join(",", columns)).append(" FROM ").append(table.getTableName()).append(" WHERE ");
+		int recordId = -1;
+		if (Util.isUUID(key.toString())) {
+			sqlSB.append(PO.getUUIDColumnName(table.getTableName()));
+		} else {
+			sqlSB.append(table.getKeyColumns()[0]);
+			recordId = Integer.valueOf(key.toString());
+		}
+		sqlSB.append("=?");
+
+		String sql = DB.getDatabase().convertStatement(sqlSB.toString());
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = externalConn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			if (recordId >= 0)
+				stmt.setInt(1, recordId);
+			else
+				stmt.setString(1, key.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				for (int i = 0; i < columns.length; i++) {
+					String val = rs.getString(i+1);
+					if (identifier.length() > 0)
+						identifier.append(MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx())));
+					identifier.append(val);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AdempiereException("Could not execute external query: " + sql + "\nCause = " + e.getLocalizedMessage());
+		} finally {
+			DB.close(rs, stmt);
+		}
+
+		String retValue = ( identifier.length() == 0 ? null : identifier.toString() );
+		externalIdentifiersMap.put(mapKey, retValue);
+		return retValue;
+	}
+
+	/**
+     * Get the fallback record associated to the tablename in the fallbackRecords list
      * @param fallbackRecords
      * @param tableName
      * @return
      */
-    public static PO getFallbackRecordByTableName(List<Map.Entry<String, PO>> fallbackRecords, String tableName) {
-        return fallbackRecords.stream()
-                .filter(entry -> entry.getKey().equalsIgnoreCase(tableName)) // Case-insensitive comparison
-                .map(Map.Entry::getValue)
+    public static FallbackRecord getFallbackRecordByTableName(List<FallbackRecord> records, String tableName) {
+        return records.stream()
+                .filter(fallbackRecord -> fallbackRecord.getTableName().equalsIgnoreCase(tableName))
                 .findFirst()
-                .orElse(null); // Returns null if not found
+                .orElse(null);
+    }
+
+    /**
+     * FallbackRecord object
+     */
+    public class FallbackRecord {
+    	private final String tableName;
+    	private final PO po;
+
+    	public FallbackRecord(String tableName, PO po) {
+    		this.tableName = tableName;
+    		this.po = po;
+    	}
+
+    	public String getTableName() {
+    		return tableName;
+    	}
+
+    	public PO getPO() {
+    		return po;
+    	}
     }
 
 }
