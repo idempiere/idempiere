@@ -31,6 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -127,6 +128,7 @@ public class MoveClient extends SvrProcess {
 	private StringBuffer p_excludeTablesWhere = new StringBuffer();
 	private StringBuffer p_whereClient = new StringBuffer();
 	private List<String> p_errorList = new ArrayList<String>();
+	private List<String> p_missingFkList = new ArrayList<String>();
 	private List<String> p_tablesVerifiedList = new ArrayList<String>();
 	private List<String> p_tablesToPreserveIDsList = new ArrayList<String>();
 	private List<String> p_tablesToExcludeList = new ArrayList<String>();
@@ -290,9 +292,15 @@ public class MoveClient extends SvrProcess {
 			}
 
 			validate();
-			if (p_errorList.size() > 0) {
+			if (! p_errorList.isEmpty()) {
 				for (String err : p_errorList) {
 					addLog(err);
+				}
+				if (! p_missingFkList.isEmpty()) {
+					Collections.sort(p_missingFkList);
+					for (String err : p_missingFkList) {
+						addLog("Missing Key -> " + err);
+					}
 				}
 				return "@Error@";
 			}
@@ -1430,8 +1438,10 @@ public class MoveClient extends SvrProcess {
 			if (fr != null)
 				po = fr.getPO();
 			if (po == null) {
-				p_errorList.add("Column " + tableName + "." + columnName +  " has system reference not convertible, "
-						+ foreignTableName + "." + uuidCol + "=" + foreignUU);
+				String missingFk = foreignTableName + "." + uuidCol + "=" + foreignUU;
+				p_errorList.add("Column " + tableName + "." + columnName +  " has system reference not convertible, " + missingFk);
+				if (! p_missingFkList.contains(missingFk))
+					p_missingFkList.add(missingFk);
 				return -1;
 			} else {
 				if (foreignTable.isIDKeyTable()) {
