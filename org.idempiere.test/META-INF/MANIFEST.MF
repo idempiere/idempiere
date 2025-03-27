@@ -11,6 +11,11 @@ Import-Package: com.lowagie.text;version="[1.3.0,2.0.0)",
  org.adempiere.report.jasper,
  org.assertj.core.api;version="3.22.0",
  org.assertj.core.api.junit.jupiter;version="3.22.0",
+ org.jfree.chart;version="[1.0.0,2.0.0)",
+ org.jfree.data.category;version="[1.0.0,2.0.0)",
+ org.jfree.data.general;version="[1.0.0,2.0.0)",
+ org.jfree.data.time;version="[1.0.0,2.0.0)",
+ org.jfree.data.xy;version="[1.0.0,2.0.0)",
  org.junit.jupiter.api;version="5.9.0",
  org.junit.jupiter.api.condition;version="5.9.0",
  org.junit.jupiter.api.extension;version="5.9.0",
@@ -46,5 +51,10 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.idempiere.test.TestActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.idempiere.test
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/mockito-core.jar,
+ lib/mockito-junit-jupiter.jar,
+ lib/objenesis.jar,
+ lib/byte-buddy.jar,
+ lib/byte-buddy-agent.jar
 Service-Component: OSGI-INF/*.xml
