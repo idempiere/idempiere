@@ -1433,7 +1433,7 @@ public class MoveClient extends SvrProcess {
 			local_Key = list.get(0);
 		String identifier = null;
 		if (local_Key == null || (local_Key instanceof Number && ((Number)local_Key).intValue() < 0)) {
-			FallbackRecord fr = getFallbackRecordByTableName(p_fallbackRecords, foreignTableName);
+			FallbackRecord fr = getFallbackRecordByTableName(p_fallbackRecords, foreignTableName, foreignUU);
 			PO po = null;
 			if (fr != null)
 				po = fr.getPO();
@@ -1478,6 +1478,11 @@ public class MoveClient extends SvrProcess {
 			String[] parts = pair.split("=");
 			if (parts.length == 2) {
 				String tableName = parts[0].trim();
+				String foreignUUID = null;
+				if (tableName.contains(".")) {
+					foreignUUID = tableName.substring(tableName.indexOf(".")+1);
+					tableName = tableName.substring(0, tableName.indexOf("."));
+				}
 				MTable table = MTable.get(getCtx(), tableName);
 				if (table == null) {
 					throw new AdempiereUserError("Fallback Table " + tableName + " not found");
@@ -1498,7 +1503,7 @@ public class MoveClient extends SvrProcess {
 				if (po == null || po.is_new())
 					throw new AdempiereUserError("Fallback record " + id + " not found for table " + tableName);
 				else
-					records.add(new FallbackRecord(tableName, po));
+					records.add(new FallbackRecord(tableName, foreignUUID, po));
 			}
 		}
 
@@ -1566,13 +1571,23 @@ public class MoveClient extends SvrProcess {
      * Get the fallback record associated to the tablename in the fallbackRecords list
      * @param fallbackRecords
      * @param tableName
+     * @param foreignUUID
      * @return
      */
-    public static FallbackRecord getFallbackRecordByTableName(List<FallbackRecord> records, String tableName) {
-        return records.stream()
-                .filter(fallbackRecord -> fallbackRecord.getTableName().equalsIgnoreCase(tableName))
+    public static FallbackRecord getFallbackRecordByTableName(List<FallbackRecord> records, String tableName, String foreignUUID) {
+    	// first try to find the record using the foreign UUID
+        FallbackRecord fr = records.stream()
+                .filter(fallbackRecord -> fallbackRecord.getTableName().equalsIgnoreCase(tableName) && foreignUUID != null && fallbackRecord.getForeignUUID() != null && foreignUUID.equals(fallbackRecord.getForeignUUID()))
                 .findFirst()
                 .orElse(null);
+        if (fr == null) {
+        	// if not found, then find a general fallback record without UUID
+            fr = records.stream()
+                    .filter(fallbackRecord -> fallbackRecord.getTableName().equalsIgnoreCase(tableName) && fallbackRecord.getForeignUUID() == null)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return fr;
     }
 
     /**
@@ -1580,15 +1595,21 @@ public class MoveClient extends SvrProcess {
      */
     public class FallbackRecord {
     	private final String tableName;
+    	private final String foreignUUID;
     	private final PO po;
 
-    	public FallbackRecord(String tableName, PO po) {
+    	public FallbackRecord(String tableName, String foreignUUID, PO po) {
     		this.tableName = tableName;
+    		this.foreignUUID = foreignUUID;
     		this.po = po;
     	}
 
     	public String getTableName() {
     		return tableName;
+    	}
+
+    	public String getForeignUUID() {
+    		return foreignUUID;
     	}
 
     	public PO getPO() {
