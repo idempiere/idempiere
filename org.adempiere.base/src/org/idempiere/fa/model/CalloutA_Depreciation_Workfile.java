@@ -49,6 +49,12 @@ public class CalloutA_Depreciation_Workfile extends CalloutEngine
 	public String uselifeyear(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		BigDecimal uselife = null;
+		
+		if (value == null) {
+			value = "0";
+			mTab.setValue(mField.getColumnName(), value);
+		}
+		
 		if (MDepreciationWorkfile.COLUMNNAME_UseLifeYears.equals(mField.getColumnName()))
 		{
 			uselife =  new BigDecimal(value.toString()).multiply(TWELVE);
