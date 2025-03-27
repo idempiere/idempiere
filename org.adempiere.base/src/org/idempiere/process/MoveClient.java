@@ -822,8 +822,12 @@ public class MoveClient extends SvrProcess {
 						} else {
 							if (table.isUUIDKeyTable())
 								target_Key = UUID.randomUUID().toString();
-							else
-								target_Key = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+							else {
+								if (source_Key instanceof Number && ((Number)source_Key).intValue() <= MTable.MAX_OFFICIAL_ID && !p_IsCopyClient)
+									target_Key = source_Key;
+								else
+									target_Key = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+							}
 						}
 					}
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
