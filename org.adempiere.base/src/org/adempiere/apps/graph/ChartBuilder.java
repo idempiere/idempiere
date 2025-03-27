@@ -352,7 +352,7 @@ public class ChartBuilder {
 	 * @param qty qty to increment
 	 * @return alter date
 	 */
-	private Date increment(Date lastDate, String timeUnit, int qty) {		
+	public Date increment(Date lastDate, String timeUnit, int qty) {		
 		if ( lastDate == null )
 			return null;
 		
