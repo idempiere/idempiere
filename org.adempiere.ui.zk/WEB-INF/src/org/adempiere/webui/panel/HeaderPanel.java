@@ -93,7 +93,12 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	createSearchPanel();
 
     	btnMenu = (LabelImageElement) getFellow("menuButton");
-    	btnMenu.setIconSclass("z-icon-sitemap");
+
+    	if (ThemeManager.isUseFontIconForImage())
+    		btnMenu.setIconSclass("z-icon-sitemap");
+    	else
+    		btnMenu.setImage(ThemeManager.getThemeResource("images/MenuTree16.png"));
+
     	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")) + " Alt+M");
     	btnMenu.addEventListener(Events.ON_CLICK, this);
     	if (ClientInfo.isMobile()) {
