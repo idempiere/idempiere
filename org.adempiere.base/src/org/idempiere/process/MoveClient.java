@@ -31,8 +31,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -40,6 +43,7 @@ import org.compiere.db.CConnection;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MSequence;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -81,6 +85,7 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
@@ -113,19 +118,23 @@ public class MoveClient extends SvrProcess {
 	private String p_ClientValue;
 	/** skip some validations to make the process faster */
 	private boolean p_IsSkipSomeValidations;
+	/* Fallback Records when FK not found */
+	private String p_FallbackRecordsWhenFKNotFound = null;
 
-	final private static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_Key, Target_Key) VALUES (?, ?, ?, ?)";
+	final private static String insertConversionId = "INSERT INTO T_MoveClient (AD_PInstance_ID, TableName, Source_Key, Target_Key, Identifier) VALUES (?, ?, ?, ?, ?)";
 	final private static String queryT_MoveClient = "SELECT Target_Key FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_Key=?";
 
 	private Connection externalConn;
 	private StringBuffer p_excludeTablesWhere = new StringBuffer();
 	private StringBuffer p_whereClient = new StringBuffer();
 	private List<String> p_errorList = new ArrayList<String>();
+	private List<String> p_missingFkList = new ArrayList<String>();
 	private List<String> p_tablesVerifiedList = new ArrayList<String>();
 	private List<String> p_tablesToPreserveIDsList = new ArrayList<String>();
 	private List<String> p_tablesToExcludeList = new ArrayList<String>();
 	private List<String> p_columnsVerifiedList = new ArrayList<String>();
 	private List<String> p_idSystemConversionList = new ArrayList<String>(); // can consume lot of memory but it helps for performance
+	private List<FallbackRecord> p_fallbackRecords = null;
 	private boolean p_isPreserveAll = false;
 
 	/**
@@ -162,6 +171,8 @@ public class MoveClient extends SvrProcess {
 				p_TablesToPreserveIDs = para.getParameterAsString();
 			} else if ("IsSkipSomeValidations".equals(name)) {
 				p_IsSkipSomeValidations = para.getParameterAsBoolean();
+			} else if ("FallbackRecordsWhenFKNotFound".equals(name)) {
+				p_FallbackRecordsWhenFKNotFound = para.getParameterAsString();
 			} else {
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
@@ -265,6 +276,8 @@ public class MoveClient extends SvrProcess {
 			}
 		}
 
+		p_fallbackRecords = parseFallbackRecordsString(p_FallbackRecordsWhenFKNotFound);
+
 		// Make the connection to external database - or to the same local when copying template
 		externalConn = null;
 		try {
@@ -279,9 +292,15 @@ public class MoveClient extends SvrProcess {
 			}
 
 			validate();
-			if (p_errorList.size() > 0) {
+			if (! p_errorList.isEmpty()) {
 				for (String err : p_errorList) {
 					addLog(err);
+				}
+				if (! p_missingFkList.isEmpty()) {
+					Collections.sort(p_missingFkList);
+					for (String err : p_missingFkList) {
+						addLog("Missing Key -> " + err);
+					}
 				}
 				return "@Error@";
 			}
@@ -811,13 +830,17 @@ public class MoveClient extends SvrProcess {
 						} else {
 							if (table.isUUIDKeyTable())
 								target_Key = UUID.randomUUID().toString();
-							else
-								target_Key = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+							else {
+								if (source_Key instanceof Number && ((Number)source_Key).intValue() <= MTable.MAX_OFFICIAL_ID && !p_IsCopyClient)
+									target_Key = source_Key;
+								else
+									target_Key = DB.getNextID(getAD_Client_ID(), tableName, get_TrxName());
+							}
 						}
 					}
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
 						DB.executeUpdateEx(insertConversionId,
-								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key, target_Key},
+								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key, target_Key, null},
 								get_TrxName());
 					}
 				}
@@ -1201,11 +1224,14 @@ public class MoveClient extends SvrProcess {
 		if (convertedId == null || (convertedId instanceof Number && ((Number)convertedId).intValue() < 0)) {
 			// when obtaining a UUID for a non-UUID table means to generate and insert the conversion
 			// for example AD_Attachment.Record_UU requires the UUID of a still not inserted record in another table
+			// when moving client from another database, the UUIDs are preserved
+			if (! p_IsCopyClient)
+				return key;
 			MTable cTable = MTable.get(getCtx(), convertTable);
 			if (key instanceof String && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
 				convertedId = UUID.randomUUID().toString();
 				DB.executeUpdateEx(insertConversionId,
-						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key, convertedId},
+						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key, convertedId, null},
 						get_TrxName());
 			} else {
 				// not found in the T_MoveClient table - try to get it again - could be missed in first pass
@@ -1405,16 +1431,190 @@ public class MoveClient extends SvrProcess {
 		List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), sqlCheckLocalUU.toString(), foreignUU);
 		if (list != null && list.size() == 1)
 			local_Key = list.get(0);
+		String identifier = null;
 		if (local_Key == null || (local_Key instanceof Number && ((Number)local_Key).intValue() < 0)) {
-			p_errorList.add("Column " + tableName + "." + columnName +  " has system reference not convertible, "
-					+ foreignTableName + "." + uuidCol + "=" + foreignUU);
-			return -1;
+			FallbackRecord fr = getFallbackRecordByTableName(p_fallbackRecords, foreignTableName, foreignUU);
+			PO po = null;
+			if (fr != null)
+				po = fr.getPO();
+			if (po == null) {
+				String missingFk = foreignTableName + "." + uuidCol + "=" + foreignUU;
+				p_errorList.add("Column " + tableName + "." + columnName +  " has system reference not convertible, " + missingFk);
+				if (! p_missingFkList.contains(missingFk))
+					p_missingFkList.add(missingFk);
+				return -1;
+			} else {
+				if (foreignTable.isIDKeyTable()) {
+					local_Key = po.get_ID();
+				} else {
+					local_Key = po.get_UUID();
+				}
+				identifier = getIdentifierFromExternalRecord(foreignTable, foreign_Key);
+		        if (identifier != null && identifier.length() > 4000)
+		        	identifier = identifier.substring(0, 4000);
+			}
 		}
 		DB.executeUpdateEx(insertConversionId,
-				new Object[] {getAD_PInstance_ID(), foreignTableName.toUpperCase(), foreign_Key, local_Key},
+				new Object[] {getAD_PInstance_ID(), foreignTableName.toUpperCase(), foreign_Key, local_Key, identifier},
 				get_TrxName());
 		p_idSystemConversionList.add(foreignTableName.toUpperCase() + "." + foreign_Key);
 		return local_Key;
 	}
+
+	/**
+	 * Convert a string of table=ID (or table=UUID) to a List of String,PO maps
+	 * @param fallbackRecordsString
+	 * @return
+	 */
+	public List<FallbackRecord> parseFallbackRecordsString(String fallbackRecordsString) {
+		List<FallbackRecord> records = new ArrayList<>();
+
+		if (fallbackRecordsString == null || fallbackRecordsString.trim().isEmpty()) {
+			return records; // Return empty list if no data
+		}
+
+		String[] pairs = fallbackRecordsString.split(",");
+		for (String pair : pairs) {
+			String[] parts = pair.split("=");
+			if (parts.length == 2) {
+				String tableName = parts[0].trim();
+				String foreignUUID = null;
+				if (tableName.contains(".")) {
+					foreignUUID = tableName.substring(tableName.indexOf(".")+1);
+					tableName = tableName.substring(0, tableName.indexOf("."));
+				}
+				MTable table = MTable.get(getCtx(), tableName);
+				if (table == null) {
+					throw new AdempiereUserError("Fallback Table " + tableName + " not found");
+				}
+				String id = parts[1].trim();
+				int recordId = -1;
+				PO po = null;
+				if (Util.isUUID(id)) {
+					po = MTable.get(getCtx(), tableName).getPOByUU(id, get_TrxName());
+				} else {
+					try {
+						recordId = Integer.parseInt(id);
+					} catch (NumberFormatException e) {
+						throw new AdempiereUserError("Fallback ID " + id + " is not a valid number for table " + tableName);
+					}
+					po = MTable.get(getCtx(), tableName).getPO(recordId, get_TrxName());
+				}
+				if (po == null || po.is_new())
+					throw new AdempiereUserError("Fallback record " + id + " not found for table " + tableName);
+				else
+					records.add(new FallbackRecord(tableName, foreignUUID, po));
+			}
+		}
+
+		return records;
+	}
+
+	private ConcurrentMap<String, String> externalIdentifiersMap = new ConcurrentHashMap<String, String>();
+    /**
+     * Get the identifier of a record from the external database
+     * @param table
+     * @param id
+     * @param recordId
+     * @return
+     */
+    private String getIdentifierFromExternalRecord(MTable table, Object key) {
+    	String mapKey = table.getTableName()+"|"+key.toString();
+    	if (externalIdentifiersMap.containsKey(mapKey))
+    		return externalIdentifiersMap.get(mapKey);
+		String[] columns = table.getIdentifierColumns();
+		if (columns.length == 0) {
+			externalIdentifiersMap.put(mapKey, null);
+			return null;
+		}
+		StringBuilder identifier = new StringBuilder();
+		StringBuilder sqlSB = new StringBuilder("SELECT ").append(String.join(",", columns)).append(" FROM ").append(table.getTableName()).append(" WHERE ");
+		int recordId = -1;
+		if (Util.isUUID(key.toString())) {
+			sqlSB.append(PO.getUUIDColumnName(table.getTableName()));
+		} else {
+			sqlSB.append(table.getKeyColumns()[0]);
+			recordId = Integer.valueOf(key.toString());
+		}
+		sqlSB.append("=?");
+
+		String sql = DB.getDatabase().convertStatement(sqlSB.toString());
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = externalConn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			if (recordId >= 0)
+				stmt.setInt(1, recordId);
+			else
+				stmt.setString(1, key.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				for (int i = 0; i < columns.length; i++) {
+					String val = rs.getString(i+1);
+					if (identifier.length() > 0)
+						identifier.append(MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx())));
+					identifier.append(val);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AdempiereException("Could not execute external query: " + sql + "\nCause = " + e.getLocalizedMessage());
+		} finally {
+			DB.close(rs, stmt);
+		}
+
+		String retValue = ( identifier.length() == 0 ? null : identifier.toString() );
+		externalIdentifiersMap.put(mapKey, retValue);
+		return retValue;
+	}
+
+	/**
+     * Get the fallback record associated to the tablename in the fallbackRecords list
+     * @param fallbackRecords
+     * @param tableName
+     * @param foreignUUID
+     * @return
+     */
+    public static FallbackRecord getFallbackRecordByTableName(List<FallbackRecord> records, String tableName, String foreignUUID) {
+    	// first try to find the record using the foreign UUID
+        FallbackRecord fr = records.stream()
+                .filter(fallbackRecord -> fallbackRecord.getTableName().equalsIgnoreCase(tableName) && foreignUUID != null && fallbackRecord.getForeignUUID() != null && foreignUUID.equals(fallbackRecord.getForeignUUID()))
+                .findFirst()
+                .orElse(null);
+        if (fr == null) {
+        	// if not found, then find a general fallback record without UUID
+            fr = records.stream()
+                    .filter(fallbackRecord -> fallbackRecord.getTableName().equalsIgnoreCase(tableName) && fallbackRecord.getForeignUUID() == null)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return fr;
+    }
+
+    /**
+     * FallbackRecord object
+     */
+    public class FallbackRecord {
+    	private final String tableName;
+    	private final String foreignUUID;
+    	private final PO po;
+
+    	public FallbackRecord(String tableName, String foreignUUID, PO po) {
+    		this.tableName = tableName;
+    		this.foreignUUID = foreignUUID;
+    		this.po = po;
+    	}
+
+    	public String getTableName() {
+    		return tableName;
+    	}
+
+    	public String getForeignUUID() {
+    		return foreignUUID;
+    	}
+
+    	public PO getPO() {
+    		return po;
+    	}
+    }
 
 }
