@@ -677,6 +677,11 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
 
+		if (!DocumentEngine.canReactivateThisDocType(getC_DocType_ID())) {
+			m_processMsg = Msg.getMsg(getCtx(), "DocTypeCannotBeReactivated", new Object[] {MDocType.get(getC_DocType_ID()).getNameTrl()});
+			return false;
+		}
+
 		MFactAcct.deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
 		setPosted(false);
 
