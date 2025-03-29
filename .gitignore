@@ -35,3 +35,4 @@ org.idempiere.maven.to.p2/org.idempiere.webservice.client/.settings/
 out/
 .idea/*
 */.maven.run/**
+**/.idea/*
