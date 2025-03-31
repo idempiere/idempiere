@@ -115,7 +115,7 @@ public class POWrapper implements InvocationHandler
 			if (idx >= 0)
 				value = po.get_Value(propertyName);
 			else
-				value = callDefaultFunction(proxy, method, args, false);
+				value = callDefaultFunction(proxy, method, args, true);
 
 			if (value != null)
 			{
