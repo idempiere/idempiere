@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -843,6 +844,11 @@ public class MPayment extends X_C_Payment
 						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_ConvertedAmt));
 						return false;
 					}
+					BigDecimal converted = getPayAmt().multiply(getCurrencyRate());
+					int stdPrecision = MCurrency.getStdPrecision(getCtx(), as.getC_Currency_ID());
+					if (converted.scale() > stdPrecision)
+						converted = converted.setScale(stdPrecision, RoundingMode.HALF_UP);
+					setConvertedAmt(converted);
 				}
 				else
 				{
