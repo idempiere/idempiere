@@ -65,6 +65,7 @@ import org.eevolution.model.I_PP_Cost_Collector;
 import org.eevolution.model.I_PP_Order;
 import org.osgi.service.event.Event;
 import org.compiere.model.MDepositBatch;
+import org.compiere.model.MDocType;
 
 /**
  *	Document Action Engine
@@ -1077,7 +1078,9 @@ public class DocumentEngine implements DocAction
 			else if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
-				options[index++] = DocumentEngine.ACTION_ReActivate;
+
+				if (canReactivateThisDocType(po.get_ValueAsInt("C_DocType_ID")))
+					options[index++] = DocumentEngine.ACTION_ReActivate;
 			}
 			else if (docStatus.equals(DocumentEngine.STATUS_WaitingPayment))
 			{
@@ -1107,9 +1110,14 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				if (periodOpen && isBackDateTrxAllowed) {
-					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
+				if (periodOpen ) {
+					if (canReactivateThisDocType(po.get_ValueAsInt("C_DocType_ID")))
+						options[index++] = DocumentEngine.ACTION_ReActivate;
+
+					if (isBackDateTrxAllowed)
+						options[index++] = DocumentEngine.ACTION_Reverse_Correct;	
 				}
+
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
 		}
@@ -1123,7 +1131,8 @@ public class DocumentEngine implements DocAction
 			{
 				if (periodOpen) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
-					options[index++] = DocumentEngine.ACTION_ReActivate;
+					if (canReactivateThisDocType(po.get_ValueAsInt("C_DocType_ID")))
+						options[index++] = DocumentEngine.ACTION_ReActivate;
 				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
@@ -1138,7 +1147,8 @@ public class DocumentEngine implements DocAction
 			{
 				if (periodOpen) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
-					options[index++] = DocumentEngine.ACTION_ReActivate;
+					if (canReactivateThisDocType(po.get_ValueAsInt("C_DocType_ID")))
+						options[index++] = DocumentEngine.ACTION_ReActivate;
 				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
 			}
@@ -1178,7 +1188,8 @@ public class DocumentEngine implements DocAction
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
 				if (periodOpen) {
-					options[index++] = DocumentEngine.ACTION_ReActivate;
+					if (canReactivateThisDocType(po.get_ValueAsInt("C_DocType_ID")))
+						options[index++] = DocumentEngine.ACTION_ReActivate;
 					options[index++] = DocumentEngine.ACTION_Void;
 				}
 			}
@@ -1507,5 +1518,9 @@ public class DocumentEngine implements DocAction
 			rs = null;
 			pstmt = null;
 		}
+	}
+
+	public static boolean canReactivateThisDocType(int docTypeID) {
+		return docTypeID > 0 && MDocType.get(docTypeID).isCanBeReactivated();
 	}
 }	//	DocumentEnine
