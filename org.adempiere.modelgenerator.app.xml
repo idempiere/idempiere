@@ -42,6 +42,7 @@
 								<arg>-Dswing.aatext=true</arg>
 								<arg>-Dswing.plaf.metal.controlFont=Roboto-13</arg>
 								<arg>-Dswing.plaf.metal.userFont=Roboto-13</arg>
+								<arg>-Dosgi.noShutdown=true</arg>
 							</jvmArgs>
 							<work>org.adempiere.install/.maven.run</work>
 							<installation>org.idempiere.p2.targetplatform/target/target-platform-repository</installation>
