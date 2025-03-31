@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/idempiere.iml" filepath="$PROJECT_DIR$/idempiere.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.base/org.adempiere.base.iml" filepath="$PROJECT_DIR$/org.adempiere.base/org.adempiere.base.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.base.callout/org.adempiere.base.callout.iml" filepath="$PROJECT_DIR$/org.adempiere.base.callout/org.adempiere.base.callout.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.base.process/org.adempiere.base.process.iml" filepath="$PROJECT_DIR$/org.adempiere.base.process/org.adempiere.base.process.iml" />
