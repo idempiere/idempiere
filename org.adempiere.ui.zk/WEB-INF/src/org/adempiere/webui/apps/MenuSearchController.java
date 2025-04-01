@@ -670,6 +670,7 @@ public class MenuSearchController implements EventListener<Event>{
 		for(int i = 0; i < count; i++) {
 			ListItem item = listbox.getItemAtIndex(i);
 			MenuItem menuItem = item.getValue();
+			if (menuItem == null) continue;
 			String label = menuItem.getLabel();
 			if (Util.isEmpty(label)) continue;
 			if (label.equalsIgnoreCase(text)) {
