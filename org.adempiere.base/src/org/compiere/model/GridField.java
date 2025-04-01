@@ -1374,7 +1374,7 @@ public class GridField
 	{
 		if (m_parentEvaluatee != null) {
 			String value = m_parentEvaluatee.get_ValueAsString(variableName);
-			if (value != null)
+			if (!Util.isEmpty(value))
 				return value;
 		}
 		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
