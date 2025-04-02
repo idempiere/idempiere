@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ToolBarButtonRestrict
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_ToolBarButtonRestrict")
 public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButtonRestrict, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
       super (ctx, AD_ToolBarButtonRestrict_ID, trxName);
       /** if (AD_ToolBarButtonRestrict_ID == 0)
         {
-			setAction (null);
 			setAD_ToolBarButtonRestrict_ID (0);
+			setAction (null);
 			setIsExclude (true);
 // Y
         } */
@@ -51,8 +51,8 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
       super (ctx, AD_ToolBarButtonRestrict_ID, trxName, virtualColumns);
       /** if (AD_ToolBarButtonRestrict_ID == 0)
         {
-			setAction (null);
 			setAD_ToolBarButtonRestrict_ID (0);
+			setAction (null);
 			setIsExclude (true);
 // Y
         } */
@@ -64,8 +64,8 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
       super (ctx, AD_ToolBarButtonRestrict_UU, trxName);
       /** if (AD_ToolBarButtonRestrict_UU == null)
         {
-			setAction (null);
 			setAD_ToolBarButtonRestrict_ID (0);
+			setAction (null);
 			setIsExclude (true);
 // Y
         } */
@@ -77,8 +77,8 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
       super (ctx, AD_ToolBarButtonRestrict_UU, trxName, virtualColumns);
       /** if (AD_ToolBarButtonRestrict_UU == null)
         {
-			setAction (null);
 			setAD_ToolBarButtonRestrict_ID (0);
+			setAction (null);
 			setIsExclude (true);
 // Y
         } */
@@ -111,43 +111,6 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	/** Action AD_Reference_ID=104 */
-	public static final int ACTION_AD_Reference_ID=104;
-	/** Workbench = B */
-	public static final String ACTION_Workbench = "B";
-	/** Detail = D */
-	public static final String ACTION_Detail = "D";
-	/** WorkFlow = F */
-	public static final String ACTION_WorkFlow = "F";
-	/** Info = I */
-	public static final String ACTION_Info = "I";
-	/** Process = P */
-	public static final String ACTION_Process = "P";
-	/** Report = R */
-	public static final String ACTION_Report = "R";
-	/** Task = T */
-	public static final String ACTION_Task = "T";
-	/** Window = W */
-	public static final String ACTION_Window = "W";
-	/** Form = X */
-	public static final String ACTION_Form = "X";
-	/** Set Action.
-		@param Action Indicates the Action to be performed
-	*/
-	public void setAction (String Action)
-	{
-
-		set_Value (COLUMNNAME_Action, Action);
-	}
-
-	/** Get Action.
-		@return Indicates the Action to be performed
-	  */
-	public String getAction()
-	{
-		return (String)get_Value(COLUMNNAME_Action);
-	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
@@ -233,33 +196,6 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_ToolBarButton)MTable.get(getCtx(), org.compiere.model.I_AD_ToolBarButton.Table_ID)
-			.getPO(getAD_ToolBarButton_ID(), get_TrxName());
-	}
-
-	/** Set ToolBar Button.
-		@param AD_ToolBarButton_ID ToolBar Button
-	*/
-	public void setAD_ToolBarButton_ID (int AD_ToolBarButton_ID)
-	{
-		if (AD_ToolBarButton_ID < 1)
-			set_Value (COLUMNNAME_AD_ToolBarButton_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_ToolBarButton_ID, Integer.valueOf(AD_ToolBarButton_ID));
-	}
-
-	/** Get ToolBar Button.
-		@return ToolBar Button	  */
-	public int getAD_ToolBarButton_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ToolBarButton_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set ToolBar Button Restrict.
 		@param AD_ToolBarButtonRestrict_ID ToolBar Button Restrict
 	*/
@@ -296,6 +232,33 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return (String)get_Value(COLUMNNAME_AD_ToolBarButtonRestrict_UU);
 	}
 
+	public org.compiere.model.I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_ToolBarButton)MTable.get(getCtx(), org.compiere.model.I_AD_ToolBarButton.Table_ID)
+			.getPO(getAD_ToolBarButton_ID(), get_TrxName());
+	}
+
+	/** Set ToolBar Button.
+		@param AD_ToolBarButton_ID ToolBar Button
+	*/
+	public void setAD_ToolBarButton_ID (int AD_ToolBarButton_ID)
+	{
+		if (AD_ToolBarButton_ID < 1)
+			set_Value (COLUMNNAME_AD_ToolBarButton_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_ToolBarButton_ID, Integer.valueOf(AD_ToolBarButton_ID));
+	}
+
+	/** Get ToolBar Button.
+		@return ToolBar Button	  */
+	public int getAD_ToolBarButton_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ToolBarButton_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -322,6 +285,43 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Action AD_Reference_ID=104 */
+	public static final int ACTION_AD_Reference_ID=104;
+	/** Workbench = B */
+	public static final String ACTION_Workbench = "B";
+	/** Detail = D */
+	public static final String ACTION_Detail = "D";
+	/** WorkFlow = F */
+	public static final String ACTION_WorkFlow = "F";
+	/** Info = I */
+	public static final String ACTION_Info = "I";
+	/** Process = P */
+	public static final String ACTION_Process = "P";
+	/** Report = R */
+	public static final String ACTION_Report = "R";
+	/** Task = T */
+	public static final String ACTION_Task = "T";
+	/** Window = W */
+	public static final String ACTION_Window = "W";
+	/** Form = X */
+	public static final String ACTION_Form = "X";
+	/** Set Action.
+		@param Action Indicates the Action to be performed
+	*/
+	public void setAction (String Action)
+	{
+
+		set_Value (COLUMNNAME_Action, Action);
+	}
+
+	/** Get Action.
+		@return Indicates the Action to be performed
+	  */
+	public String getAction()
+	{
+		return (String)get_Value(COLUMNNAME_Action);
 	}
 
 	/** Set Exclude.

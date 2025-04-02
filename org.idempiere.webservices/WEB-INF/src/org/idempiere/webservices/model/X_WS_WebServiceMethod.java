@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceMethod
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceMethod")
 public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName)
@@ -174,41 +174,6 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
-	public I_WS_WebService getWS_WebService() throws RuntimeException
-	{
-		return (I_WS_WebService)MTable.get(getCtx(), I_WS_WebService.Table_ID)
-			.getPO(getWS_WebService_ID(), get_TrxName());
-	}
-
-	/** Set Web Service.
-		@param WS_WebService_ID Web Service
-	*/
-	public void setWS_WebService_ID (int WS_WebService_ID)
-	{
-		if (WS_WebService_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_WS_WebService_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_WS_WebService_ID, Integer.valueOf(WS_WebService_ID));
-	}
-
-	/** Get Web Service.
-		@return Web Service	  */
-	public int getWS_WebService_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebService_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getWS_WebService_ID()));
-    }
-
 	/** Set Web Service Method.
 		@param WS_WebServiceMethod_ID Web Service Method
 	*/
@@ -244,4 +209,39 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebServiceMethod_UU);
 	}
+
+	public I_WS_WebService getWS_WebService() throws RuntimeException
+	{
+		return (I_WS_WebService)MTable.get(getCtx(), I_WS_WebService.Table_ID)
+			.getPO(getWS_WebService_ID(), get_TrxName());
+	}
+
+	/** Set Web Service.
+		@param WS_WebService_ID Web Service
+	*/
+	public void setWS_WebService_ID (int WS_WebService_ID)
+	{
+		if (WS_WebService_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_WS_WebService_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_WS_WebService_ID, Integer.valueOf(WS_WebService_ID));
+	}
+
+	/** Get Web Service.
+		@return Web Service	  */
+	public int getWS_WebService_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebService_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getWS_WebService_ID()));
+    }
 }

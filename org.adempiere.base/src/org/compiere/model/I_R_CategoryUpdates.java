@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_CategoryUpdates
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_R_CategoryUpdates 
 {
@@ -119,6 +119,15 @@ public interface I_R_CategoryUpdates
 	  */
 	public boolean isSelfService();
 
+    /** Column name R_CategoryUpdates_UU */
+    public static final String COLUMNNAME_R_CategoryUpdates_UU = "R_CategoryUpdates_UU";
+
+	/** Set R_CategoryUpdates_UU	  */
+	public void setR_CategoryUpdates_UU (String R_CategoryUpdates_UU);
+
+	/** Get R_CategoryUpdates_UU	  */
+	public String getR_CategoryUpdates_UU();
+
     /** Column name R_Category_ID */
     public static final String COLUMNNAME_R_Category_ID = "R_Category_ID";
 
@@ -133,15 +142,6 @@ public interface I_R_CategoryUpdates
 	public int getR_Category_ID();
 
 	public org.compiere.model.I_R_Category getR_Category() throws RuntimeException;
-
-    /** Column name R_CategoryUpdates_UU */
-    public static final String COLUMNNAME_R_CategoryUpdates_UU = "R_CategoryUpdates_UU";
-
-	/** Set R_CategoryUpdates_UU	  */
-	public void setR_CategoryUpdates_UU (String R_CategoryUpdates_UU);
-
-	/** Get R_CategoryUpdates_UU	  */
-	public String getR_CategoryUpdates_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_FieldSuggestion
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_FieldSuggestion")
 public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName)
@@ -38,9 +38,9 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
       super (ctx, AD_FieldSuggestion_ID, trxName);
       /** if (AD_FieldSuggestion_ID == 0)
         {
-			setAD_Field_ID (0);
 			setAD_FieldSuggestion_ID (0);
 			setAD_FieldSuggestion_UU (null);
+			setAD_Field_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -61,9 +61,9 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
       super (ctx, AD_FieldSuggestion_ID, trxName, virtualColumns);
       /** if (AD_FieldSuggestion_ID == 0)
         {
-			setAD_Field_ID (0);
 			setAD_FieldSuggestion_ID (0);
 			setAD_FieldSuggestion_UU (null);
+			setAD_Field_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -84,9 +84,9 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
       super (ctx, AD_FieldSuggestion_UU, trxName);
       /** if (AD_FieldSuggestion_UU == null)
         {
-			setAD_Field_ID (0);
 			setAD_FieldSuggestion_ID (0);
 			setAD_FieldSuggestion_UU (null);
+			setAD_Field_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -107,9 +107,9 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
       super (ctx, AD_FieldSuggestion_UU, trxName, virtualColumns);
       /** if (AD_FieldSuggestion_UU == null)
         {
-			setAD_Field_ID (0);
 			setAD_FieldSuggestion_ID (0);
 			setAD_FieldSuggestion_UU (null);
+			setAD_Field_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -152,50 +152,6 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
       return sb.toString();
     }
 
-	/** Set Accept.
-		@param AcceptSuggestion Accept suggested changes
-	*/
-	public void setAcceptSuggestion (String AcceptSuggestion)
-	{
-		set_Value (COLUMNNAME_AcceptSuggestion, AcceptSuggestion);
-	}
-
-	/** Get Accept.
-		@return Accept suggested changes
-	  */
-	public String getAcceptSuggestion()
-	{
-		return (String)get_Value(COLUMNNAME_AcceptSuggestion);
-	}
-
-	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
-			.getPO(getAD_Field_ID(), get_TrxName());
-	}
-
-	/** Set Field.
-		@param AD_Field_ID Field on a database table
-	*/
-	public void setAD_Field_ID (int AD_Field_ID)
-	{
-		if (AD_Field_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
-	}
-
-	/** Get Field.
-		@return Field on a database table
-	  */
-	public int getAD_Field_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Field Suggestions.
 		@param AD_FieldSuggestion_ID Field Suggestions
 	*/
@@ -230,6 +186,34 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	public String getAD_FieldSuggestion_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_FieldSuggestion_UU);
+	}
+
+	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
+			.getPO(getAD_Field_ID(), get_TrxName());
+	}
+
+	/** Set Field.
+		@param AD_Field_ID Field on a database table
+	*/
+	public void setAD_Field_ID (int AD_Field_ID)
+	{
+		if (AD_Field_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
+	}
+
+	/** Get Field.
+		@return Field on a database table
+	  */
+	public int getAD_Field_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** AD_Language AD_Reference_ID=106 */
@@ -352,6 +336,22 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Accept.
+		@param AcceptSuggestion Accept suggested changes
+	*/
+	public void setAcceptSuggestion (String AcceptSuggestion)
+	{
+		set_Value (COLUMNNAME_AcceptSuggestion, AcceptSuggestion);
+	}
+
+	/** Get Accept.
+		@return Accept suggested changes
+	  */
+	public String getAcceptSuggestion()
+	{
+		return (String)get_Value(COLUMNNAME_AcceptSuggestion);
 	}
 
 	/** Set Compare.

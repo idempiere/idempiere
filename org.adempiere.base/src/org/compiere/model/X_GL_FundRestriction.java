@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_FundRestriction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="GL_FundRestriction")
 public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_GL_FundRestriction (Properties ctx, int GL_FundRestriction_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
       /** if (GL_FundRestriction_ID == 0)
         {
 			setC_ElementValue_ID (0);
-			setGL_Fund_ID (0);
 			setGL_FundRestriction_ID (0);
+			setGL_Fund_ID (0);
 			setName (null);
         } */
     }
@@ -53,8 +53,8 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
       /** if (GL_FundRestriction_ID == 0)
         {
 			setC_ElementValue_ID (0);
-			setGL_Fund_ID (0);
 			setGL_FundRestriction_ID (0);
+			setGL_Fund_ID (0);
 			setName (null);
         } */
     }
@@ -66,8 +66,8 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
       /** if (GL_FundRestriction_UU == null)
         {
 			setC_ElementValue_ID (0);
-			setGL_Fund_ID (0);
 			setGL_FundRestriction_ID (0);
+			setGL_Fund_ID (0);
 			setName (null);
         } */
     }
@@ -79,8 +79,8 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
       /** if (GL_FundRestriction_UU == null)
         {
 			setC_ElementValue_ID (0);
-			setGL_Fund_ID (0);
 			setGL_FundRestriction_ID (0);
+			setGL_Fund_ID (0);
 			setName (null);
         } */
     }
@@ -157,34 +157,6 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException
-	{
-		return (org.compiere.model.I_GL_Fund)MTable.get(getCtx(), org.compiere.model.I_GL_Fund.Table_ID)
-			.getPO(getGL_Fund_ID(), get_TrxName());
-	}
-
-	/** Set GL Fund.
-		@param GL_Fund_ID General Ledger Funds Control
-	*/
-	public void setGL_Fund_ID (int GL_Fund_ID)
-	{
-		if (GL_Fund_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_GL_Fund_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_GL_Fund_ID, Integer.valueOf(GL_Fund_ID));
-	}
-
-	/** Get GL Fund.
-		@return General Ledger Funds Control
-	  */
-	public int getGL_Fund_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Fund_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Fund Restriction.
 		@param GL_FundRestriction_ID Restriction of Funds
 	*/
@@ -220,6 +192,34 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 	public String getGL_FundRestriction_UU()
 	{
 		return (String)get_Value(COLUMNNAME_GL_FundRestriction_UU);
+	}
+
+	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException
+	{
+		return (org.compiere.model.I_GL_Fund)MTable.get(getCtx(), org.compiere.model.I_GL_Fund.Table_ID)
+			.getPO(getGL_Fund_ID(), get_TrxName());
+	}
+
+	/** Set GL Fund.
+		@param GL_Fund_ID General Ledger Funds Control
+	*/
+	public void setGL_Fund_ID (int GL_Fund_ID)
+	{
+		if (GL_Fund_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_GL_Fund_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_GL_Fund_ID, Integer.valueOf(GL_Fund_ID));
+	}
+
+	/** Get GL Fund.
+		@return General Ledger Funds Control
+	  */
+	public int getGL_Fund_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Fund_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Name.

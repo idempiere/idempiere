@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Reval_Index
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_A_Asset_Reval_Index 
 {
@@ -40,24 +40,6 @@ public interface I_A_Asset_Reval_Index
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
-
-    /** Column name A_Asset_Reval_Index_ID */
-    public static final String COLUMNNAME_A_Asset_Reval_Index_ID = "A_Asset_Reval_Index_ID";
-
-	/** Set Asset Reval Index	  */
-	public void setA_Asset_Reval_Index_ID (int A_Asset_Reval_Index_ID);
-
-	/** Get Asset Reval Index	  */
-	public int getA_Asset_Reval_Index_ID();
-
-    /** Column name A_Asset_Reval_Index_UU */
-    public static final String COLUMNNAME_A_Asset_Reval_Index_UU = "A_Asset_Reval_Index_UU";
-
-	/** Set A_Asset_Reval_Index_UU	  */
-	public void setA_Asset_Reval_Index_UU (String A_Asset_Reval_Index_UU);
-
-	/** Get A_Asset_Reval_Index_UU	  */
-	public String getA_Asset_Reval_Index_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -79,6 +61,24 @@ public interface I_A_Asset_Reval_Index
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_Asset_Reval_Index_ID */
+    public static final String COLUMNNAME_A_Asset_Reval_Index_ID = "A_Asset_Reval_Index_ID";
+
+	/** Set Asset Reval Index	  */
+	public void setA_Asset_Reval_Index_ID (int A_Asset_Reval_Index_ID);
+
+	/** Get Asset Reval Index	  */
+	public int getA_Asset_Reval_Index_ID();
+
+    /** Column name A_Asset_Reval_Index_UU */
+    public static final String COLUMNNAME_A_Asset_Reval_Index_UU = "A_Asset_Reval_Index_UU";
+
+	/** Set A_Asset_Reval_Index_UU	  */
+	public void setA_Asset_Reval_Index_UU (String A_Asset_Reval_Index_UU);
+
+	/** Get A_Asset_Reval_Index_UU	  */
+	public String getA_Asset_Reval_Index_UU();
 
     /** Column name A_Effective_Date */
     public static final String COLUMNNAME_A_Effective_Date = "A_Effective_Date";

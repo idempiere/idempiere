@@ -733,26 +733,29 @@ public class MenuSearchController implements EventListener<Event>{
 			}
 			
 			// Highlight search text
-			if (!Util.isEmpty(highlightText, true) && data.getLabel().toLowerCase().contains(highlightText.toLowerCase())) {
+			if (!Util.isEmpty(highlightText, true) && Util.deleteAccents(data.getLabel()).toLowerCase().contains(Util.deleteAccents(highlightText).toLowerCase())) {
 				// Space to maintain proper gap between icon and label
 				cell.setLabel(" ");
 				String label = data.getLabel();
-				String matchString = highlightText.toLowerCase();
-				int match = label.toLowerCase().indexOf(matchString);
+				String unaccentedLabel = Util.deleteAccents(label);
+				String matchString = Util.deleteAccents(highlightText.toLowerCase());
+				int match = unaccentedLabel.toLowerCase().indexOf(matchString);
     			while (match >= 0) {
     				if (match > 0) {
     					cell.appendChild(new Label(label.substring(0, match)));
     					Label l = new Label(label.substring(match, match+matchString.length()));
     					LayoutUtils.addSclass("highlight", l);
     					cell.appendChild(l);
+    					unaccentedLabel = unaccentedLabel.substring(match+matchString.length());
     					label = label.substring(match+matchString.length());
     				} else {
     					Label l = new Label(label.substring(0, matchString.length()));
     					LayoutUtils.addSclass("highlight", l);
     					cell.appendChild(l);
+    					unaccentedLabel = unaccentedLabel.substring(matchString.length());
     					label = label.substring(matchString.length());
     				}
-    				match = label.toLowerCase().indexOf(matchString);
+    				match = unaccentedLabel.toLowerCase().indexOf(matchString);
     			}
     			if (label.length() > 0)
     				cell.appendChild(new Label(label));

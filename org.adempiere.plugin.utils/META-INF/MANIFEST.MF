@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Plugin Utils
 Bundle-SymbolicName: org.adempiere.plugin.utils
-Bundle-Version: 12.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: org.apache.xerces.dom;version="2.12.1",
@@ -45,4 +45,4 @@ Export-Package: org.adempiere.plugin.utils
 Bundle-ClassPath: .
 Automatic-Module-Name: org.adempiere.plugin.utils
 Bundle-Vendor: iDempiere Community
-Require-Bundle: org.adempiere.base;bundle-version="12.0.0"
+Require-Bundle: org.adempiere.base;bundle-version="13.0.0"

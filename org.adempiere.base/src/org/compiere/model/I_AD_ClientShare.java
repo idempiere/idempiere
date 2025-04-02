@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ClientShare
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_AD_ClientShare 
 {
@@ -40,14 +40,6 @@ public interface I_AD_ClientShare
     BigDecimal accessLevel = BigDecimal.valueOf(2);
 
     /** Load Meta Data */
-
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
 
     /** Column name AD_ClientShare_ID */
     public static final String COLUMNNAME_AD_ClientShare_ID = "AD_ClientShare_ID";
@@ -70,6 +62,14 @@ public interface I_AD_ClientShare
 
 	/** Get AD_ClientShare_UU	  */
 	public String getAD_ClientShare_UU();
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";

@@ -64,6 +64,7 @@ import org.eevolution.model.I_HR_Process;
 import org.eevolution.model.I_PP_Cost_Collector;
 import org.eevolution.model.I_PP_Order;
 import org.osgi.service.event.Event;
+import org.compiere.model.MDepositBatch;
 
 /**
  *	Document Action Engine
@@ -979,10 +980,32 @@ public class DocumentEngine implements DocAction
 	 * @param docAction
 	 * @param options
 	 * @param periodOpen - flag indicating if the period is Open - to avoid including Void and ReverseCorrect options in the list
+	 * @param po
 	 * @return End index of valid options[] (exclusive)
 	 */
 	public static int getValidActions(String docStatus, Object processing,
 			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options, boolean periodOpen, PO po)
+	{
+		return getValidActions(docStatus, processing, orderType, isSOTrx, AD_Table_ID, docAction, options, periodOpen, true, po);
+	}
+	
+	/**
+	 * Get list of valid document action into the options array parameter.<br/>
+	 * Set default document action into the docAction array parameter.
+	 * @param docStatus
+	 * @param processing
+	 * @param orderType
+	 * @param isSOTrx
+	 * @param AD_Table_ID
+	 * @param docAction
+	 * @param options
+	 * @param periodOpen - flag indicating if the period is Open - to avoid including Void and ReverseCorrect options in the list
+	 * @param isBackDateTrxAllowed - flag indicating if back-date transaction is allowed
+	 * @param po
+	 * @return End index of valid options[] (exclusive)
+	 */
+	public static int getValidActions(String docStatus, Object processing,
+			String orderType, String isSOTrx, int AD_Table_ID, String[] docAction, String[] options, boolean periodOpen, boolean isBackDateTrxAllowed, PO po)
 	{
 		if (options == null)
 			throw new IllegalArgumentException("Option array parameter is null");
@@ -1070,7 +1093,7 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				if (periodOpen) {
+				if (periodOpen && isBackDateTrxAllowed) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
@@ -1084,7 +1107,7 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				if (periodOpen) {
+				if (periodOpen && isBackDateTrxAllowed) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
@@ -1169,7 +1192,7 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				if (periodOpen) {
+				if (periodOpen && isBackDateTrxAllowed) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
@@ -1201,7 +1224,7 @@ public class DocumentEngine implements DocAction
 			//	Complete                    ..  CO
 			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
-				if (periodOpen) {
+				if (periodOpen && isBackDateTrxAllowed) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 				}
 				options[index++] = DocumentEngine.ACTION_Reverse_Accrual;
@@ -1281,6 +1304,18 @@ public class DocumentEngine implements DocAction
 			if(docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
 				options[index++] = DocumentEngine.ACTION_Void;
+			}
+		}
+		/********************
+		 *  Deposit Batch
+		 */
+		else if (AD_Table_ID == MDepositBatch.Table_ID)
+		{
+			//	Complete
+			if (docStatus.equals(DocumentEngine.STATUS_Completed)) 
+			{
+				options[index++] = DocumentEngine.ACTION_Void;
+				options[index++] = DocumentEngine.ACTION_ReActivate;
 			}
 		}
 

@@ -61,7 +61,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5422581050563711060L;
+	private static final long serialVersionUID = 8555678512288694221L;
 
 	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
 	
@@ -156,6 +156,7 @@ public class MAttachment extends X_AD_Attachment
 	 *	@param trxName transaction
 	 *  @deprecated Use {@link MAttachment#MAttachment(Properties, int, int, String, String)} instead
 	 */
+	@Deprecated
 	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
 		this(ctx, AD_Table_ID, Record_ID, null, trxName);
@@ -224,6 +225,15 @@ public class MAttachment extends X_AD_Attachment
 	 * @return
 	 */
 	public boolean isReadOnly() {
+		return isReadOnly(false);
+	}
+
+	/**
+	 * If the related record is on System and the user is operating on Tenant, the attachment is read-only
+	 * @param isDelete
+	 * @return
+	 */
+	public boolean isReadOnly(boolean isDelete) {
 		if (isReadOnly == null) {
 			isReadOnly = true;
 			MTable table = MTable.get(getAD_Table_ID());
@@ -233,6 +243,21 @@ public class MAttachment extends X_AD_Attachment
 					po = table.getPOByUU(getRecord_UU(), get_TrxName());
 				else
 					po = table.getPO(getRecord_ID(), get_TrxName());
+				if (isDelete && po == null) {
+					StringBuilder sqlExists = new StringBuilder("SELECT 1 FROM ")
+							.append(table.getTableName())
+							.append(" WHERE ");
+					int testExists = -1;
+					if (table.isUUIDKeyTable()) {
+						sqlExists.append(PO.getUUIDColumnName(table.getTableName())).append("=?");
+						testExists = DB.getSQLValueEx(get_TrxName(), sqlExists.toString(), getRecord_UU());
+					} else {
+						sqlExists.append(table.getKeyColumns()[0]).append("=?");
+						testExists = DB.getSQLValueEx(get_TrxName(), sqlExists.toString(), getRecord_ID());
+					}
+					if (testExists == -1) // Orphan Record, not read-only as it can be deleted
+						isReadOnly = false;
+				}
 				if (po != null && ! po.is_new() && po.getAD_Client_ID() == Env.getAD_Client_ID(getCtx()))
 					isReadOnly = false;
 			}
@@ -457,7 +482,7 @@ public class MAttachment extends X_AD_Attachment
 	 * @return true if deleted
 	 */
 	public boolean deleteEntry(int index) {
-		if (isReadOnly())
+		if (isReadOnly(false))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
 		if (m_items == null)
 			loadLOBData();
@@ -597,7 +622,7 @@ public class MAttachment extends X_AD_Attachment
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (isReadOnly())
+		if (isReadOnly(false))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
 		if (Util.isEmpty(getTitle()))
 			setTitle(NONE);
@@ -613,7 +638,7 @@ public class MAttachment extends X_AD_Attachment
 
 	@Override
 	protected boolean beforeDelete() {
-		if (isReadOnly())
+		if (isReadOnly(true))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
 		return true;
 	}
@@ -698,6 +723,7 @@ public class MAttachment extends X_AD_Attachment
 	 * @return AD_Attachment_ID
  	 * @deprecated Use {@link MAttachment#getID(int, int, String)} instead
 	 */
+	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_ID=?";
 		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_ID);

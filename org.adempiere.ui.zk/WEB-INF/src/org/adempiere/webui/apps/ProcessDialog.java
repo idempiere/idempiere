@@ -42,7 +42,10 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.model.MInOut;
+import org.compiere.model.MInvoice;
 import org.compiere.model.MProcess;
+import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.print.ReportEngine;
@@ -580,12 +583,12 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		{
 			if (log.isLoggable(Level.CONFIG)) log.config("");
 			//	Print invoices
-			if (getAD_Process_ID() == PROCESS_C_INVOICE_GENERATE)
+			if (getAD_Process_ID() == PROCESS_C_INVOICE_GENERATE && MRole.getDefault().isCanReport(MInvoice.Table_ID))
 			{
 				printInvoices();
 				return true;
 			}
-			else if (getAD_Process_ID() == PROCESS_M_INOUT_GENERATE)
+			else if (getAD_Process_ID() == PROCESS_M_INOUT_GENERATE && MRole.getDefault().isCanReport(MInOut.Table_ID))
 			{
 				printShipments();
 				return true;

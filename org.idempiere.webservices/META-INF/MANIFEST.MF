@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Webservices
 Bundle-SymbolicName: org.idempiere.webservices;singleton:=true
-Bundle-Version: 12.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-Activator: org.idempiere.webservices.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
@@ -69,8 +69,8 @@ Import-Package: javax.activation;version="1.2.0",
  org.osgi.framework;version="1.10.0",
  org.osgi.service.component.annotations;version="1.5.1",
  org.w3c.dom
-Require-Bundle: org.adempiere.base;bundle-version="12.0.0",
- org.adempiere.ui;bundle-version="12.0.0",
+Require-Bundle: org.adempiere.base;bundle-version="13.0.0",
+ org.adempiere.ui;bundle-version="13.0.0",
  org.apache.ecs;bundle-version="0.0.0",
  org.apache.cxf.cxf-core;bundle-version="3.6.3",
  org.apache.neethi;bundle-version="3.2.0",
@@ -106,7 +106,7 @@ Require-Bundle: org.adempiere.base;bundle-version="12.0.0",
  org.codehaus.jettison.jettison;bundle-version="1.5.4",
  org.eclipse.osgi;bundle-version="3.18.500",
  jakarta.annotation-api;bundle-version="1.3.5",
- org.idempiere.webservices.resources;bundle-version="12.0.0",
+ org.idempiere.webservices.resources;bundle-version="13.0.0",
  wrapped.org.apache.xmlbeans.xmlbeans;bundle-version="5.0.3",
  wrapped.org.apache.cxf.cxf-rt-ws-transfer;bundle-version="3.6.3",
  org.apache.cxf.cxf-rt-databinding-xmlbeans;bundle-version="3.6.3",
@@ -125,3 +125,4 @@ Jetty-Environment: ee8
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.idempiere.webservices
 Bundle-Vendor: iDempiere Community
+Eclipse-BundleShape: dir

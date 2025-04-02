@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BPartner_Location
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_BPartner_Location")
 public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_BPartner_Location (Properties ctx, int C_BPartner_Location_ID, String trxName)
@@ -309,6 +309,22 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 		return (String)get_Value(COLUMNNAME_Fax);
 	}
 
+	/** Set ISDN.
+		@param ISDN ISDN or modem line
+	*/
+	public void setISDN (String ISDN)
+	{
+		set_Value (COLUMNNAME_ISDN, ISDN);
+	}
+
+	/** Get ISDN.
+		@return ISDN or modem line
+	  */
+	public String getISDN()
+	{
+		return (String)get_Value(COLUMNNAME_ISDN);
+	}
+
 	/** Set Invoice Address.
 		@param IsBillTo Business Partner Invoice/Bill Address
 	*/
@@ -330,22 +346,6 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Set ISDN.
-		@param ISDN ISDN or modem line
-	*/
-	public void setISDN (String ISDN)
-	{
-		set_Value (COLUMNNAME_ISDN, ISDN);
-	}
-
-	/** Get ISDN.
-		@return ISDN or modem line
-	  */
-	public String getISDN()
-	{
-		return (String)get_Value(COLUMNNAME_ISDN);
 	}
 
 	/** Set Pay-From Address.

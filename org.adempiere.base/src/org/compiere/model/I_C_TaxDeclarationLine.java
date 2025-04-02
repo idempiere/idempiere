@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxDeclarationLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_C_TaxDeclarationLine 
 {
@@ -107,21 +107,6 @@ public interface I_C_TaxDeclarationLine
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
-    /** Column name C_Invoice_ID */
-    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
-
-	/** Set Invoice.
-	  * Invoice Identifier
-	  */
-	public void setC_Invoice_ID (int C_Invoice_ID);
-
-	/** Get Invoice.
-	  * Invoice Identifier
-	  */
-	public int getC_Invoice_ID();
-
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
-
     /** Column name C_InvoiceLine_ID */
     public static final String COLUMNNAME_C_InvoiceLine_ID = "C_InvoiceLine_ID";
 
@@ -137,36 +122,20 @@ public interface I_C_TaxDeclarationLine
 
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
+    /** Column name C_Invoice_ID */
+    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
 
-	/** Get Created.
-	  * Date this record was created
+	/** Set Invoice.
+	  * Invoice Identifier
 	  */
-	public Timestamp getCreated();
+	public void setC_Invoice_ID (int C_Invoice_ID);
 
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
+	/** Get Invoice.
+	  * Invoice Identifier
 	  */
-	public int getCreatedBy();
+	public int getC_Invoice_ID();
 
-    /** Column name C_TaxDeclaration_ID */
-    public static final String COLUMNNAME_C_TaxDeclaration_ID = "C_TaxDeclaration_ID";
-
-	/** Set Tax Declaration.
-	  * Define the declaration to the tax authorities
-	  */
-	public void setC_TaxDeclaration_ID (int C_TaxDeclaration_ID);
-
-	/** Get Tax Declaration.
-	  * Define the declaration to the tax authorities
-	  */
-	public int getC_TaxDeclaration_ID();
-
-	public org.compiere.model.I_C_TaxDeclaration getC_TaxDeclaration() throws RuntimeException;
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_TaxDeclarationLine_ID */
     public static final String COLUMNNAME_C_TaxDeclarationLine_ID = "C_TaxDeclarationLine_ID";
@@ -190,6 +159,21 @@ public interface I_C_TaxDeclarationLine
 	/** Get C_TaxDeclarationLine_UU	  */
 	public String getC_TaxDeclarationLine_UU();
 
+    /** Column name C_TaxDeclaration_ID */
+    public static final String COLUMNNAME_C_TaxDeclaration_ID = "C_TaxDeclaration_ID";
+
+	/** Set Tax Declaration.
+	  * Define the declaration to the tax authorities
+	  */
+	public void setC_TaxDeclaration_ID (int C_TaxDeclaration_ID);
+
+	/** Get Tax Declaration.
+	  * Define the declaration to the tax authorities
+	  */
+	public int getC_TaxDeclaration_ID();
+
+	public org.compiere.model.I_C_TaxDeclaration getC_TaxDeclaration() throws RuntimeException;
+
     /** Column name C_Tax_ID */
     public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
 
@@ -204,6 +188,22 @@ public interface I_C_TaxDeclarationLine
 	public int getC_Tax_ID();
 
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";

@@ -17,7 +17,7 @@
 }
 
 .z-button:focus {
-    border-color: transparent;
+    border-color: black;
 }
 
 .z-button.btn-small {
@@ -91,4 +91,8 @@
 }
 .z-bandbox-button [class*="z-icon-"], .z-combobox-button [class*="z-icon-"] {
 	font-size: 16px;
+}
+
+.mobile .login-btn {
+    font-size: 0px !important;
 }

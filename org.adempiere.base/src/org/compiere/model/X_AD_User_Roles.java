@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_User_Roles
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_User_Roles")
 public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_User_Roles (Properties ctx, int AD_User_Roles_ID, String trxName)

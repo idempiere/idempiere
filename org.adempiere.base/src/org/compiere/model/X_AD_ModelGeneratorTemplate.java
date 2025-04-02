@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ModelGeneratorTemplate
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_ModelGeneratorTemplate")
 public class X_AD_ModelGeneratorTemplate extends PO implements I_AD_ModelGeneratorTemplate, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ModelGeneratorTemplate extends PO implements I_AD_ModelGenerat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_ModelGeneratorTemplate (Properties ctx, int AD_ModelGeneratorTemplate_ID, String trxName)

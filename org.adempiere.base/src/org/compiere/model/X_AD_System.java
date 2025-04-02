@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_System
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_System")
 public class X_AD_System extends PO implements I_AD_System, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_System (Properties ctx, int AD_System_ID, String trxName)
@@ -456,37 +456,6 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 		return false;
 	}
 
-	/** Set Last Build Info.
-		@param LastBuildInfo Last Build Info
-	*/
-	public void setLastBuildInfo (String LastBuildInfo)
-	{
-		set_Value (COLUMNNAME_LastBuildInfo, LastBuildInfo);
-	}
-
-	/** Get Last Build Info.
-		@return Last Build Info	  */
-	public String getLastBuildInfo()
-	{
-		return (String)get_Value(COLUMNNAME_LastBuildInfo);
-	}
-
-	/** Set Last Migration Script Applied.
-		@param LastMigrationScriptApplied Register of the filename for the last migration script applied on this database
-	*/
-	public void setLastMigrationScriptApplied (String LastMigrationScriptApplied)
-	{
-		set_Value (COLUMNNAME_LastMigrationScriptApplied, LastMigrationScriptApplied);
-	}
-
-	/** Get Last Migration Script Applied.
-		@return Register of the filename for the last migration script applied on this database
-	  */
-	public String getLastMigrationScriptApplied()
-	{
-		return (String)get_Value(COLUMNNAME_LastMigrationScriptApplied);
-	}
-
 	/** Set LDAP Domain.
 		@param LDAPDomain Directory service domain name - e.g. idempiere.org
 	*/
@@ -517,6 +486,37 @@ public class X_AD_System extends PO implements I_AD_System, I_Persistent
 	public String getLDAPHost()
 	{
 		return (String)get_Value(COLUMNNAME_LDAPHost);
+	}
+
+	/** Set Last Build Info.
+		@param LastBuildInfo Last Build Info
+	*/
+	public void setLastBuildInfo (String LastBuildInfo)
+	{
+		set_Value (COLUMNNAME_LastBuildInfo, LastBuildInfo);
+	}
+
+	/** Get Last Build Info.
+		@return Last Build Info	  */
+	public String getLastBuildInfo()
+	{
+		return (String)get_Value(COLUMNNAME_LastBuildInfo);
+	}
+
+	/** Set Last Migration Script Applied.
+		@param LastMigrationScriptApplied Register of the filename for the last migration script applied on this database
+	*/
+	public void setLastMigrationScriptApplied (String LastMigrationScriptApplied)
+	{
+		set_Value (COLUMNNAME_LastMigrationScriptApplied, LastMigrationScriptApplied);
+	}
+
+	/** Get Last Migration Script Applied.
+		@return Register of the filename for the last migration script applied on this database
+	  */
+	public String getLastMigrationScriptApplied()
+	{
+		return (String)get_Value(COLUMNNAME_LastMigrationScriptApplied);
 	}
 
 	/** Set Name.

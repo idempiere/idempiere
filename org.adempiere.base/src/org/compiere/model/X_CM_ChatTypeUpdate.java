@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for CM_ChatTypeUpdate
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatTypeUpdate")
 public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_CM_ChatTypeUpdate (Properties ctx, int CM_ChatTypeUpdate_ID, String trxName)
@@ -136,6 +136,21 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 		return ii.intValue();
 	}
 
+	/** Set CM_ChatTypeUpdate_UU.
+		@param CM_ChatTypeUpdate_UU CM_ChatTypeUpdate_UU
+	*/
+	public void setCM_ChatTypeUpdate_UU (String CM_ChatTypeUpdate_UU)
+	{
+		set_Value (COLUMNNAME_CM_ChatTypeUpdate_UU, CM_ChatTypeUpdate_UU);
+	}
+
+	/** Get CM_ChatTypeUpdate_UU.
+		@return CM_ChatTypeUpdate_UU	  */
+	public String getCM_ChatTypeUpdate_UU()
+	{
+		return (String)get_Value(COLUMNNAME_CM_ChatTypeUpdate_UU);
+	}
+
 	public org.compiere.model.I_CM_ChatType getCM_ChatType() throws RuntimeException
 	{
 		return (org.compiere.model.I_CM_ChatType)MTable.get(getCtx(), org.compiere.model.I_CM_ChatType.Table_ID)
@@ -162,21 +177,6 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set CM_ChatTypeUpdate_UU.
-		@param CM_ChatTypeUpdate_UU CM_ChatTypeUpdate_UU
-	*/
-	public void setCM_ChatTypeUpdate_UU (String CM_ChatTypeUpdate_UU)
-	{
-		set_Value (COLUMNNAME_CM_ChatTypeUpdate_UU, CM_ChatTypeUpdate_UU);
-	}
-
-	/** Get CM_ChatTypeUpdate_UU.
-		@return CM_ChatTypeUpdate_UU	  */
-	public String getCM_ChatTypeUpdate_UU()
-	{
-		return (String)get_Value(COLUMNNAME_CM_ChatTypeUpdate_UU);
 	}
 
 	/** Set Self-Service.

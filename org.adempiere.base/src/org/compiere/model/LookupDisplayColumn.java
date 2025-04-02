@@ -46,6 +46,7 @@ public class LookupDisplayColumn implements Serializable
 	 * 	@param ad_Reference_Value_ID table/list reference id
 	 * @deprecated Please use {@link #LookupDisplayColumn(String, String, boolean, int, int)}
 	 */
+	@Deprecated
 	public LookupDisplayColumn(String columnName, boolean isTranslated,
 		int ad_Reference_ID, int ad_Reference_Value_ID)
 	{

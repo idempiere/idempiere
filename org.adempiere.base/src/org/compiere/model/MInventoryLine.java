@@ -424,7 +424,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			// Set current cost price
 			String costingMethod = getParent().getCostingMethod();
 			int AD_Org_ID = getAD_Org_ID();
-			MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
+			ICostInfo cost = product.getCostInfo(as, AD_Org_ID, M_ASI_ID, costingMethod, getParent().getMovementDate());					
 			if (cost == null) {
 				// Error if no costing record (except standard costing)
 				if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {

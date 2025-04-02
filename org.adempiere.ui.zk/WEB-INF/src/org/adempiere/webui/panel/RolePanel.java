@@ -376,7 +376,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstRole.setId("lstRole");
 
         lstRole.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstRole, "220px");
 
         lstClient = new Combobox();
         lstClient.setAutocomplete(true);
@@ -384,7 +383,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstClient.setId("lstClient");
 
         lstClient.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstClient, "220px");
 
         lstOrganisation = new Combobox();
         lstOrganisation.setAutocomplete(true);
@@ -392,7 +390,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstOrganisation.setId("lstOrganisation");
 
         lstOrganisation.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstOrganisation, "220px");
 
         lstWarehouse = new Combobox();
         lstWarehouse.setAutocomplete(true);
@@ -400,7 +397,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstWarehouse.setId("lstWarehouse");
 
         lstWarehouse.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstWarehouse, "220px");
 
         lstDate = new WDateEditor();
         lstDate.setValue(new Timestamp(System.currentTimeMillis()));
@@ -452,7 +448,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         lstLanguage.setAutocomplete(true);
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
-        ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
         // Update Language List
         lstLanguage.getItems().clear();

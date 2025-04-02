@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
+import org.compiere.model.ICostInfo;
 import org.compiere.model.I_M_InOutLine;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -182,6 +183,12 @@ public class Doc_Invoice extends Doc
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 		//
 		MInvoiceLine[] lines = invoice.getLines(false);
+		MInvoiceLine[] reversalLines = null;
+		if (invoice.getReversal_ID() > 0)
+		{
+			MInvoice reversal = new MInvoice(invoice.getCtx(), invoice.getReversal_ID(), invoice.get_TrxName());
+			reversalLines = reversal.getLines(false);		
+		}
 		for (int i = 0; i < lines.length; i++)
 		{
 			MInvoiceLine line = lines[i];
@@ -193,6 +200,8 @@ public class Doc_Invoice extends Doc
 			boolean cm = getDocumentType().equals(DOCTYPE_ARCredit)
 				|| getDocumentType().equals(DOCTYPE_APCredit);
 			docLine.setQty(cm ? Qty.negate() : Qty, invoice.isSOTrx());
+			if (invoice.getReversal_ID() > 0 && reversalLines != null)
+				docLine.setReversalLine_ID(reversalLines[i].get_ID());		
 			//
 			BigDecimal LineNetAmt = line.getLineNetAmt();
 			BigDecimal PriceList = line.getPriceList();
@@ -697,12 +706,22 @@ public class Doc_Invoice extends Doc
 					}
 					//
 					if (line.getM_Product_ID() != 0
-						&& line.getProduct().isService())	//	otherwise Inv Matching
+						&& line.getProduct().isService()) {	//	otherwise Inv Matching
+						int Ref_CostDetail_ID = 0;
+						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						{
+							MInvoiceLine reversalLine = new MInvoiceLine(getCtx(), line.getReversalLine_ID(), getTrxName());
+							MCostDetail cd = MCostDetail.getInvoice(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+									reversalLine.get_ID(), 0, reversalLine.getParent().getDateAcct(), getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
 						MCostDetail.createInvoice(as, line.getAD_Org_ID(),
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,		//	No Cost Element
 							line.getAmtSource(), line.getQty(),
-							line.getDescription(), getTrxName());
+							line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName());
+					}
 				}
 			}
 
@@ -814,12 +833,22 @@ public class Doc_Invoice extends Doc
 					}
 					//
 					if (line.getM_Product_ID() != 0
-						&& line.getProduct().isService())	//	otherwise Inv Matching
+						&& line.getProduct().isService()) {	//	otherwise Inv Matching
+						int Ref_CostDetail_ID = 0;
+						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						{
+							MInvoiceLine reversalLine = new MInvoiceLine(getCtx(), line.getReversalLine_ID(), getTrxName());
+							MCostDetail cd = MCostDetail.getInvoice(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+									reversalLine.get_ID(), 0, reversalLine.getParent().getDateAcct(), getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
 						MCostDetail.createInvoice(as, line.getAD_Org_ID(),
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 							line.get_ID(), 0,		//	No Cost Element
 							line.getAmtSource().negate(), line.getQty(),
-							line.getDescription(), getTrxName());
+							line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName());
+					}
 				}
 			}
 
@@ -1147,16 +1176,22 @@ public class Doc_Invoice extends Doc
 							else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
 								AD_Org_ID = 0;
 							
+							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), M_AttributeSetInstance_ID, 
+									C_InvoiceLine_ID, lca.getM_CostElement_ID(), getDateAcct(), getTrxName());
 							MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(),
 									AD_Org_ID);
-							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
+							ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-									M_AttributeSetInstance_ID, getTrxName());
+									M_AttributeSetInstance_ID, 
+									getDateAcct(), cd, getTrxName());
+							String key = getAD_Client_ID() + "_" + lca.getM_Product_ID() + "_" 
+									+ as.getM_CostType_ID() + "_" + as.getC_AcctSchema_ID() + "_" + ce.getM_CostElement_ID() + "_" 
+									+ M_AttributeSetInstance_ID;
 							if (c != null)
 							{
 								BigDecimal mcostQty = c.getCurrentQty();
-								if (mcostQtyMap.containsKey(c.get_UUID())) {
-									mcostQty = mcostQty.subtract(mcostQtyMap.get(c.get_UUID()));
+								if (mcostQtyMap.containsKey(key)) {
+									mcostQty = mcostQty.subtract(mcostQtyMap.get(key));
 									if (mcostQty.signum() < 0)
 										mcostQty = new BigDecimal("0.00");
 								}
@@ -1165,10 +1200,10 @@ public class Doc_Invoice extends Doc
 									amtVariance = costAdjustmentAmt.subtract(amtAsset);
 									costDetailQty = mcostQty;									
 								}
-								if (mcostQtyMap.containsKey(c.get_UUID())) {
-									mcostQtyMap.put(c.get_UUID(), mcostQtyMap.get(c.get_UUID()).add(costDetailQty));
+								if (mcostQtyMap.containsKey(key)) {
+									mcostQtyMap.put(key, mcostQtyMap.get(key).add(costDetailQty));
 								} else {
-									mcostQtyMap.put(c.get_UUID(), costDetailQty);
+									mcostQtyMap.put(key, costDetailQty);
 								}
 							}
 						}
@@ -1189,12 +1224,20 @@ public class Doc_Invoice extends Doc
 							costDetailAmt = costDetailAmt.add(prevAmt);
 						}
 						costDetailAmtMap.put(key, costDetailAmt);
-						if (costDetailAmt.signum() != 0 && 
-							!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
+						int Ref_CostDetail_ID = 0;
+						if (reversalLine != null && reversalLine.get_ID() > 0 && C_InvoiceLine_ID > reversalLine.get_ID())
+						{
+							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
+									reversalLine.get_ID(), lca.getM_CostElement_ID(), reversalLine.getParent().getDateAcct(), getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
+						// cost detail record is required for costing-relevant transaction
+						if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
 								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
 								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
 								costDetailAmt, costDetailQty,
-								desc, getTrxName())) {
+								desc, getDateAcct(), Ref_CostDetail_ID, getTrxName())) {
 							throw new RuntimeException("Failed to create cost detail record.");
 						}				
 					} catch (SQLException e) {
@@ -1267,8 +1310,8 @@ public class Doc_Invoice extends Doc
 							if (costDetailQty == null)
 								costDetailQty = BigDecimal.ZERO;
 						} else if (lca.getM_AttributeSetInstance_ID() > 0 && M_AttributeSetInstance_ID > 0) {
-							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+lca.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
-									reversalLine.get_ID(), lca.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
+							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(), 
+									reversalLine.get_ID(), lca.getM_CostElement_ID(), reversalLine.getParent().getDateAcct(), getTrxName());
 							costDetailQty = cd != null ? cd.getQty() : BigDecimal.ZERO;
 							if (cd != null) {
 								amtAsset = cd.getAmt();
@@ -1282,17 +1325,23 @@ public class Doc_Invoice extends Doc
 								}
 							}
 						} else {
-							MCostDetail cd = MCostDetail.get (as.getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+lca.getM_CostElement_ID()+" AND M_Product_ID="+lca.getM_Product_ID(), 
-									reversalLine.get_ID(), lca.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), getTrxName());
+							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(), 
+									reversalLine.get_ID(), lca.getM_CostElement_ID(), reversalLine.getParent().getDateAcct(), getTrxName());
 							costDetailQty = cd != null ? cd.getQty() : BigDecimal.ZERO;
 						}
 						if (costDetailQty.signum() != 0)
 						{
+							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), M_AttributeSetInstance_ID, 
+									C_InvoiceLine_ID, lca.getM_CostElement_ID(), getDateAcct(), getTrxName());
+							if (cd == null)
+								cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), M_AttributeSetInstance_ID, 
+									reversalLine.get_ID(), lca.getM_CostElement_ID(), getDateAcct(), getTrxName());
 							MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(),
 									AD_Org_ID);
-							MCost c = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
+  							ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(),
 									as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-									M_AttributeSetInstance_ID, getTrxName());
+									M_AttributeSetInstance_ID, 
+									getDateAcct(), cd, getTrxName());
 							if (c != null) {
 								if (c.getCurrentQty().signum() == 0) {
 									amtVariance = amtVariance.add(amtAsset);
@@ -1305,14 +1354,21 @@ public class Doc_Invoice extends Doc
 								}
 							}
 						}
-						if (amtAsset.signum() != 0) {
-							if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
-									lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
-									C_InvoiceLine_ID, lca.getM_CostElement_ID(),
-									amtAsset.negate(), costDetailQty,
-									desc, getTrxName())) {
-								throw new RuntimeException("Failed to create cost detail record.");
-							}
+						int Ref_CostDetail_ID = 0;
+						if (reversalLine != null && reversalLine.get_ID() > 0 && C_InvoiceLine_ID > reversalLine.get_ID())
+						{
+							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
+									reversalLine.get_ID(), lca.getM_CostElement_ID(), reversalLine.getParent().getDateAcct(), getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
+						// cost detail record is required for costing-relevant transaction
+						if (!MCostDetail.createInvoice(as, lca.getAD_Org_ID(),
+								lca.getM_Product_ID(), lca.getM_AttributeSetInstance_ID(),
+								C_InvoiceLine_ID, lca.getM_CostElement_ID(),
+								amtAsset.negate(), costDetailQty,
+								desc, getDateAcct(), Ref_CostDetail_ID, getTrxName())) {
+							throw new RuntimeException("Failed to create cost detail record.");
 						}
 						if (getC_Currency_ID() != as.getC_Currency_ID()) {
 							usesSchemaCurrency = true;

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for EXP_Processor
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="EXP_Processor")
 public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_EXP_Processor extends PO implements I_EXP_Processor, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_EXP_Processor (Properties ctx, int EXP_Processor_ID, String trxName)

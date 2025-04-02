@@ -444,7 +444,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				}
 			}
 		});
-		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")) + "    Shift+Alt+Q");
+		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")) + "    Shift+Alt+F");
 		buttons.put(BTN_QUICK_FORM_ID.substring(3, BTN_QUICK_FORM_ID.length()), button);
 		
 		// ADD Customize grid button
@@ -1108,14 +1108,6 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		eventListener.onEvent(openEvent);
 	}
 
-    private static final int VK_N = 0x4E;
-    private static final int VK_T = 0x54;
-    private static final int VK_E = 0x45;
-    private static final int VK_S = 0x53;
-    private static final int VK_D = 0x44;
-    private static final int VK_O = 0x4F;
-    private static final int VK_Q = 0x51;
-    
     /**
      * Handle shortcut key event
      * @param keyEvent
@@ -1123,9 +1115,9 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && keyEvent.isShiftKey()) { // Shift+Alt key
-			if (keyEvent.getKeyCode() == VK_N) { // Shift+Alt+N
+			if (keyEvent.getKeyCode() == ADWindowToolbar.VK_N) { // Shift+Alt+N
 				btn = getSelectedPanel().getToolbarButton(BTN_NEW_ID);
-			} else if (keyEvent.getKeyCode() == VK_T) {
+			} else if (keyEvent.getKeyCode() == ADWindowToolbar.VK_T) {
 				btn = getSelectedPanel().getToolbarButton(BTN_TOGGLE_ID);
 			} else if (keyEvent.getKeyCode() == KeyEvent.HOME) {
 				btn = getSelectedPanel().getRecordToolbar().btnFirst;
@@ -1137,15 +1129,15 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				btn = getSelectedPanel().getRecordToolbar().btnNext;
 			} else if (keyEvent.getKeyCode() == KeyEvent.HOME) {
 				btn = getSelectedPanel().getRecordToolbar().btnFirst;
-			} else if (keyEvent.getKeyCode() == VK_E) {
+			} else if (keyEvent.getKeyCode() == ADWindowToolbar.VK_E) {
 				btn = getSelectedPanel().getToolbarButton(BTN_EDIT_ID);
-			} else if (keyEvent.getKeyCode() == VK_S) {
+			} else if (keyEvent.getKeyCode() == ADWindowToolbar.VK_S) {
 				btn = getSelectedPanel().getToolbarButton(BTN_SAVE_ID);
-			} else if (keyEvent.getKeyCode() == VK_D) {
+			} else if (keyEvent.getKeyCode() == ADWindowToolbar.VK_D) {
 				btn = getSelectedPanel().getToolbarButton(BTN_DELETE_ID);
-			} else if (keyEvent.getKeyCode() == VK_O) {
+			} else if (keyEvent.getKeyCode() == ADWindowToolbar.VK_O) {
 				btn = getSelectedPanel().getToolbarButton(BTN_PROCESS_ID);
-			} else if (keyEvent.getKeyCode() == VK_Q) {
+			} else if (keyEvent.getKeyCode() == ADWindowToolbar.VK_F) {
 				btn = getSelectedPanel().getToolbarButton(BTN_QUICK_FORM_ID);
 			}
 		} 

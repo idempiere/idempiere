@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InventoryValue
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="T_InventoryValue")
 public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_T_InventoryValue (Properties ctx, String T_InventoryValue_UU, String trxName)

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AuthorizationProvider
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationProvider")
 public class X_AD_AuthorizationProvider extends PO implements I_AD_AuthorizationProvider, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationProvider (Properties ctx, int AD_AuthorizationProvider_ID, String trxName)

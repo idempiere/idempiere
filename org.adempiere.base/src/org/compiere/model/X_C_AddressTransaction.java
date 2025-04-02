@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressTransaction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_AddressTransaction")
 public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_AddressTransaction (Properties ctx, int C_AddressTransaction_ID, String trxName)
@@ -264,30 +264,6 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 		return ii.intValue();
 	}
 
-	/** Set City.
-		@param City Identifies a City
-	*/
-	public void setCity (String City)
-	{
-		set_Value (COLUMNNAME_City, City);
-	}
-
-	/** Get City.
-		@return Identifies a City
-	  */
-	public String getCity()
-	{
-		return (String)get_Value(COLUMNNAME_City);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), getCity());
-    }
-
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
@@ -315,6 +291,30 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 			 return 0;
 		return ii.intValue();
 	}
+
+	/** Set City.
+		@param City Identifies a City
+	*/
+	public void setCity (String City)
+	{
+		set_Value (COLUMNNAME_City, City);
+	}
+
+	/** Get City.
+		@return Identifies a City
+	  */
+	public String getCity()
+	{
+		return (String)get_Value(COLUMNNAME_City);
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), getCity());
+    }
 
 	/** Set Comments.
 		@param Comments Comments or additional information

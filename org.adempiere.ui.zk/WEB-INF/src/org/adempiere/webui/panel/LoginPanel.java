@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -111,6 +112,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
+	private static final String ON_LOGIN_AS = "onLoginAs";
     private static final CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
     protected Properties ctx;
@@ -150,6 +152,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setEnabled(false);
         Events.echoEvent(ON_LOAD_TOKEN, this, null);
         this.addEventListener(ON_LOAD_TOKEN, this);
+        if (Adempiere.isLoginInfoShown())
+        	this.addEventListener(ON_LOGIN_AS, this);
     }
 
     /**
@@ -394,14 +398,12 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
         txtUserId.setMaxlength(40);
-        ZKUpdateUtil.setWidth(txtUserId, "220px");
         txtUserId.setClientAttribute("autocomplete", "username");
 
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
         txtPassword.setCols(25);
-        ZKUpdateUtil.setWidth(txtPassword, "220px");
         if (MSysConfig.getBooleanValue(MSysConfig.ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD, true))
         	txtPassword.setClientAttribute("autocomplete", "current-password");
 
@@ -410,7 +412,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
         // Update Language List
         lstLanguage.getItems().clear();
@@ -476,6 +477,13 @@ public class LoginPanel extends Window implements EventListener<Event>
             
         	AuFocus auf = new AuFocus(txtUserId);
             Clients.response(auf);
+        }
+        else if (event.getName().equals(ON_LOGIN_AS))
+        {
+        	@SuppressWarnings("unchecked")
+			Map<String, String> data = (Map<String, String>) event.getData();
+        	txtUserId.setValue(data.get("username"));
+        	txtPassword.setValue(data.get("password"));
         }
         //
     }

@@ -121,6 +121,7 @@ public class Allocation
 	 * @param paymentTable not used
 	 * @return list of payment record
 	 */
+	@Deprecated
 	public Vector<Vector<Object>> getPaymentData(boolean isMultiCurrency, Object date, IMiniTable paymentTable)
 	{
 		return getPaymentData(isMultiCurrency, (Timestamp) date, (String)null);
@@ -196,6 +197,7 @@ public class Allocation
 	 * @param invoiceTable not use
 	 * @return list of unpaid invoice data
 	 */
+	@Deprecated
 	public Vector<Vector<Object>> getInvoiceData(boolean isMultiCurrency, Object date, IMiniTable invoiceTable)
 	{
 		return getInvoiceData(isMultiCurrency, (Timestamp) date, (String)null);

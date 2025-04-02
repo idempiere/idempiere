@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AlertProcessorLog
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_AlertProcessorLog")
 public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessorLog (Properties ctx, int AD_AlertProcessorLog_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
       super (ctx, AD_AlertProcessorLog_ID, trxName);
       /** if (AD_AlertProcessorLog_ID == 0)
         {
-			setAD_AlertProcessor_ID (0);
 			setAD_AlertProcessorLog_ID (0);
+			setAD_AlertProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -50,8 +50,8 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
       super (ctx, AD_AlertProcessorLog_ID, trxName, virtualColumns);
       /** if (AD_AlertProcessorLog_ID == 0)
         {
-			setAD_AlertProcessor_ID (0);
 			setAD_AlertProcessorLog_ID (0);
+			setAD_AlertProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -62,8 +62,8 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
       super (ctx, AD_AlertProcessorLog_UU, trxName);
       /** if (AD_AlertProcessorLog_UU == null)
         {
-			setAD_AlertProcessor_ID (0);
 			setAD_AlertProcessorLog_ID (0);
+			setAD_AlertProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -74,8 +74,8 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
       super (ctx, AD_AlertProcessorLog_UU, trxName, virtualColumns);
       /** if (AD_AlertProcessorLog_UU == null)
         {
-			setAD_AlertProcessor_ID (0);
 			setAD_AlertProcessorLog_ID (0);
+			setAD_AlertProcessor_ID (0);
 			setIsError (false);
         } */
     }
@@ -107,34 +107,6 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_ID)
-			.getPO(getAD_AlertProcessor_ID(), get_TrxName());
-	}
-
-	/** Set Alert Processor.
-		@param AD_AlertProcessor_ID Alert Processor/Server Parameter
-	*/
-	public void setAD_AlertProcessor_ID (int AD_AlertProcessor_ID)
-	{
-		if (AD_AlertProcessor_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_AlertProcessor_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_AlertProcessor_ID, Integer.valueOf(AD_AlertProcessor_ID));
-	}
-
-	/** Get Alert Processor.
-		@return Alert Processor/Server Parameter
-	  */
-	public int getAD_AlertProcessor_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AlertProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Alert Processor Log.
 		@param AD_AlertProcessorLog_ID Result of the execution of the Alert Processor
@@ -171,6 +143,34 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
 	public String getAD_AlertProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AlertProcessorLog_UU);
+	}
+
+	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_ID)
+			.getPO(getAD_AlertProcessor_ID(), get_TrxName());
+	}
+
+	/** Set Alert Processor.
+		@param AD_AlertProcessor_ID Alert Processor/Server Parameter
+	*/
+	public void setAD_AlertProcessor_ID (int AD_AlertProcessor_ID)
+	{
+		if (AD_AlertProcessor_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_AlertProcessor_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_AlertProcessor_ID, Integer.valueOf(AD_AlertProcessor_ID));
+	}
+
+	/** Get Alert Processor.
+		@return Alert Processor/Server Parameter
+	  */
+	public int getAD_AlertProcessor_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AlertProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Binary Data.

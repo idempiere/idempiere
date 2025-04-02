@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for A_Asset_Class
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Class")
 public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_A_Asset_Class (Properties ctx, int A_Asset_Class_ID, String trxName)

@@ -3181,8 +3181,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //  Load not more than max allow
         if (m_gridTab != null && alertRecords && m_total != COUNTING_RECORDS_TIMED_OUT && m_gridTab.isQueryMax(m_total))
         {
-            Dialog.info(m_targetWindowNo, "FindOverMax",
-                    m_total + " > " + m_gridTab.getMaxQueryRecords());
+        	// no need to show warning here, it will be thrown on GridTable
+            // Dialog.info(m_targetWindowNo, "FindOverMax", m_total + " > " + m_gridTab.getMaxQueryRecords());
             m_total = m_gridTab.getMaxQueryRecords();
         }
         else

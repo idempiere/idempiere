@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestUpdates
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestUpdates")
 public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_R_RequestUpdates (Properties ctx, int R_RequestUpdates_ID, String trxName)
@@ -159,6 +159,21 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 		return false;
 	}
 
+	/** Set R_RequestUpdates_UU.
+		@param R_RequestUpdates_UU R_RequestUpdates_UU
+	*/
+	public void setR_RequestUpdates_UU (String R_RequestUpdates_UU)
+	{
+		set_Value (COLUMNNAME_R_RequestUpdates_UU, R_RequestUpdates_UU);
+	}
+
+	/** Get R_RequestUpdates_UU.
+		@return R_RequestUpdates_UU	  */
+	public String getR_RequestUpdates_UU()
+	{
+		return (String)get_Value(COLUMNNAME_R_RequestUpdates_UU);
+	}
+
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)
@@ -185,20 +200,5 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set R_RequestUpdates_UU.
-		@param R_RequestUpdates_UU R_RequestUpdates_UU
-	*/
-	public void setR_RequestUpdates_UU (String R_RequestUpdates_UU)
-	{
-		set_Value (COLUMNNAME_R_RequestUpdates_UU, R_RequestUpdates_UU);
-	}
-
-	/** Get R_RequestUpdates_UU.
-		@return R_RequestUpdates_UU	  */
-	public String getR_RequestUpdates_UU()
-	{
-		return (String)get_Value(COLUMNNAME_R_RequestUpdates_UU);
 	}
 }

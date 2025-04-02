@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestProcessorLog
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessorLog")
 public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
       /** if (R_RequestProcessorLog_ID == 0)
         {
 			setIsError (false);
-			setR_RequestProcessor_ID (0);
 			setR_RequestProcessorLog_ID (0);
+			setR_RequestProcessor_ID (0);
         } */
     }
 
@@ -51,8 +51,8 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
       /** if (R_RequestProcessorLog_ID == 0)
         {
 			setIsError (false);
-			setR_RequestProcessor_ID (0);
 			setR_RequestProcessorLog_ID (0);
+			setR_RequestProcessor_ID (0);
         } */
     }
 
@@ -63,8 +63,8 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
       /** if (R_RequestProcessorLog_UU == null)
         {
 			setIsError (false);
-			setR_RequestProcessor_ID (0);
 			setR_RequestProcessorLog_ID (0);
+			setR_RequestProcessor_ID (0);
         } */
     }
 
@@ -75,8 +75,8 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
       /** if (R_RequestProcessorLog_UU == null)
         {
 			setIsError (false);
-			setR_RequestProcessor_ID (0);
 			setR_RequestProcessorLog_ID (0);
+			setR_RequestProcessor_ID (0);
         } */
     }
 
@@ -163,50 +163,6 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 		return false;
 	}
 
-	/** Set Reference.
-		@param Reference Reference for this record
-	*/
-	public void setReference (String Reference)
-	{
-		set_Value (COLUMNNAME_Reference, Reference);
-	}
-
-	/** Get Reference.
-		@return Reference for this record
-	  */
-	public String getReference()
-	{
-		return (String)get_Value(COLUMNNAME_Reference);
-	}
-
-	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException
-	{
-		return (org.compiere.model.I_R_RequestProcessor)MTable.get(getCtx(), org.compiere.model.I_R_RequestProcessor.Table_ID)
-			.getPO(getR_RequestProcessor_ID(), get_TrxName());
-	}
-
-	/** Set Request Processor.
-		@param R_RequestProcessor_ID Processor for Requests
-	*/
-	public void setR_RequestProcessor_ID (int R_RequestProcessor_ID)
-	{
-		if (R_RequestProcessor_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_R_RequestProcessor_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_R_RequestProcessor_ID, Integer.valueOf(R_RequestProcessor_ID));
-	}
-
-	/** Get Request Processor.
-		@return Processor for Requests
-	  */
-	public int getR_RequestProcessor_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestProcessor_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Request Processor Log.
 		@param R_RequestProcessorLog_ID Result of the execution of the Request Processor
 	*/
@@ -242,6 +198,50 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	public String getR_RequestProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_RequestProcessorLog_UU);
+	}
+
+	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException
+	{
+		return (org.compiere.model.I_R_RequestProcessor)MTable.get(getCtx(), org.compiere.model.I_R_RequestProcessor.Table_ID)
+			.getPO(getR_RequestProcessor_ID(), get_TrxName());
+	}
+
+	/** Set Request Processor.
+		@param R_RequestProcessor_ID Processor for Requests
+	*/
+	public void setR_RequestProcessor_ID (int R_RequestProcessor_ID)
+	{
+		if (R_RequestProcessor_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_R_RequestProcessor_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_R_RequestProcessor_ID, Integer.valueOf(R_RequestProcessor_ID));
+	}
+
+	/** Get Request Processor.
+		@return Processor for Requests
+	  */
+	public int getR_RequestProcessor_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestProcessor_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Reference.
+		@param Reference Reference for this record
+	*/
+	public void setReference (String Reference)
+	{
+		set_Value (COLUMNNAME_Reference, Reference);
+	}
+
+	/** Get Reference.
+		@return Reference for this record
+	  */
+	public String getReference()
+	{
+		return (String)get_Value(COLUMNNAME_Reference);
 	}
 
 	/** Set Summary.

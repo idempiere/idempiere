@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCostAllocation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_LandedCostAllocation")
 public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAllocation, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName)

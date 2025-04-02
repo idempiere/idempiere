@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Element
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="AD_Element")
 public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_AD_Element (Properties ctx, int AD_Element_ID, String trxName)
@@ -249,21 +249,6 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set Placeholder.
-		@param Placeholder Placeholder
-	*/
-	public void setPlaceholder (String Placeholder)
-	{
-		set_Value (COLUMNNAME_Placeholder, Placeholder);
-	}
-
-	/** Get Placeholder.
-		@return Placeholder	  */
-	public String getPlaceholder()
-	{
-		return (String)get_Value(COLUMNNAME_Placeholder);
-	}
-
 	/** Set PO Description.
 		@param PO_Description Description in PO Screens
 	*/
@@ -326,6 +311,21 @@ public class X_AD_Element extends PO implements I_AD_Element, I_Persistent
 	public String getPO_PrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PO_PrintName);
+	}
+
+	/** Set Placeholder.
+		@param Placeholder Placeholder
+	*/
+	public void setPlaceholder (String Placeholder)
+	{
+		set_Value (COLUMNNAME_Placeholder, Placeholder);
+	}
+
+	/** Get Placeholder.
+		@return Placeholder	  */
+	public String getPlaceholder()
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder);
 	}
 
 	/** Set Print Text.

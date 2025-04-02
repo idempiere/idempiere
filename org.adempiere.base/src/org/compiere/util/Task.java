@@ -50,6 +50,8 @@ public class Task extends Thread
 	private InputStream     m_errStream;
 	/** The Input Stream of process         */
 	private OutputStream    m_inStream;
+	/** The Exit Value of process         */
+	private Integer			m_exitValue = null;
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Task.class);
@@ -72,6 +74,7 @@ public class Task extends Thread
 			catch (IOException ioe)
 			{
 				log.log(Level.SEVERE, "outReader", ioe);
+				m_err.append(" Error reading stdOut -> " + ioe.getLocalizedMessage());
 			}
 			if (log.isLoggable(Level.FINE)) log.fine("outReader - done");
 		}   //  run
@@ -95,6 +98,7 @@ public class Task extends Thread
 			catch (IOException ioe)
 			{
 				log.log(Level.SEVERE, "errReader", ioe);
+				m_err.append(" Error reading stdErr -> " + ioe.getLocalizedMessage());
 			}
 			if (log.isLoggable(Level.FINE)) log.fine("errReader - done");
 		}   //  run
@@ -134,19 +138,26 @@ public class Task extends Thread
 			catch (InterruptedException ie)
 			{
 				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "(ie) - " + ie);
+				m_err.append(" Interrupted -> " + ie.getLocalizedMessage());
 			}
 			//  ExitValue
 			try
 			{
-				if (m_child != null)
-					if (log.isLoggable(Level.FINE)) log.fine("run - ExitValue=" + m_child.exitValue());
+				if (m_child != null) {
+					m_exitValue = m_child.exitValue();
+					if (log.isLoggable(Level.FINE)) log.fine("run - ExitValue=" + m_exitValue);
+				}
 			}
-			catch (Exception e) {}
+			catch (Exception e) {
+				if (log.isLoggable(Level.INFO))log.log(Level.INFO, "(ie) - " + e);
+				m_err.append(" Error reading exitValue -> " + e.getLocalizedMessage());
+			}
 			if (log.isLoggable(Level.CONFIG)) log.config("done");
 		}
 		catch (IOException ioe)
 		{
 			log.log(Level.SEVERE, "(ioe)", ioe);
+			m_err.append(" Error running Task -> " + ioe.getLocalizedMessage());
 		}
 	}   //  run
 
@@ -212,4 +223,13 @@ public class Task extends Thread
 		return m_inStream;
 	}   //  getInStream
 	
+	/**
+	 *  Get Exit Value
+	 *  @return Exit Value of the process
+	 */
+	public Integer getExitValue()
+	{
+		return m_exitValue;
+	}   //  getExitValue
+
 }   //  Task

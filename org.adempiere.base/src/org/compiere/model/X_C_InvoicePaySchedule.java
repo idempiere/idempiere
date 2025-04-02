@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoicePaySchedule
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoicePaySchedule")
 public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_C_InvoicePaySchedule (Properties ctx, int C_InvoicePaySchedule_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
       super (ctx, C_InvoicePaySchedule_ID, trxName);
       /** if (C_InvoicePaySchedule_ID == 0)
         {
-			setC_Invoice_ID (0);
 			setC_InvoicePaySchedule_ID (0);
+			setC_Invoice_ID (0);
 			setDiscountAmt (Env.ZERO);
 			setDiscountDate (new Timestamp( System.currentTimeMillis() ));
 			setDueAmt (Env.ZERO);
@@ -59,8 +59,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
       super (ctx, C_InvoicePaySchedule_ID, trxName, virtualColumns);
       /** if (C_InvoicePaySchedule_ID == 0)
         {
-			setC_Invoice_ID (0);
 			setC_InvoicePaySchedule_ID (0);
+			setC_Invoice_ID (0);
 			setDiscountAmt (Env.ZERO);
 			setDiscountDate (new Timestamp( System.currentTimeMillis() ));
 			setDueAmt (Env.ZERO);
@@ -76,8 +76,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
       super (ctx, C_InvoicePaySchedule_UU, trxName);
       /** if (C_InvoicePaySchedule_UU == null)
         {
-			setC_Invoice_ID (0);
 			setC_InvoicePaySchedule_ID (0);
+			setC_Invoice_ID (0);
 			setDiscountAmt (Env.ZERO);
 			setDiscountDate (new Timestamp( System.currentTimeMillis() ));
 			setDueAmt (Env.ZERO);
@@ -93,8 +93,8 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
       super (ctx, C_InvoicePaySchedule_UU, trxName, virtualColumns);
       /** if (C_InvoicePaySchedule_UU == null)
         {
-			setC_Invoice_ID (0);
 			setC_InvoicePaySchedule_ID (0);
+			setC_Invoice_ID (0);
 			setDiscountAmt (Env.ZERO);
 			setDiscountDate (new Timestamp( System.currentTimeMillis() ));
 			setDueAmt (Env.ZERO);
@@ -132,34 +132,6 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
       return sb.toString();
     }
 
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
-			.getPO(getC_Invoice_ID(), get_TrxName());
-	}
-
-	/** Set Invoice.
-		@param C_Invoice_ID Invoice Identifier
-	*/
-	public void setC_Invoice_ID (int C_Invoice_ID)
-	{
-		if (C_Invoice_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
-	}
-
-	/** Get Invoice.
-		@return Invoice Identifier
-	  */
-	public int getC_Invoice_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Invoice Payment Schedule.
 		@param C_InvoicePaySchedule_ID Invoice Payment Schedule
 	*/
@@ -195,6 +167,34 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	public String getC_InvoicePaySchedule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_InvoicePaySchedule_UU);
+	}
+
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
+
+	/** Set Invoice.
+		@param C_Invoice_ID Invoice Identifier
+	*/
+	public void setC_Invoice_ID (int C_Invoice_ID)
+	{
+		if (C_Invoice_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
+	}
+
+	/** Get Invoice.
+		@return Invoice Identifier
+	  */
+	public int getC_Invoice_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_PaySchedule getC_PaySchedule() throws RuntimeException

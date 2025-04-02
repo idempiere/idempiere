@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Inventory
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 12
  */
 public interface I_M_Inventory 
 {
@@ -49,19 +49,6 @@ public interface I_M_Inventory
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -74,6 +61,19 @@ public interface I_M_Inventory
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name ApprovalAmt */
     public static final String COLUMNNAME_ApprovalAmt = "ApprovalAmt";
@@ -163,19 +163,6 @@ public interface I_M_Inventory
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
-    /** Column name CostingMethod */
-    public static final String COLUMNNAME_CostingMethod = "CostingMethod";
-
-	/** Set Costing Method.
-	  * Indicates how Costs will be calculated
-	  */
-	public void setCostingMethod (String CostingMethod);
-
-	/** Get Costing Method.
-	  * Indicates how Costs will be calculated
-	  */
-	public String getCostingMethod();
-
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
 
@@ -190,6 +177,19 @@ public interface I_M_Inventory
 	public int getC_Project_ID();
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name CostingMethod */
+    public static final String COLUMNNAME_CostingMethod = "CostingMethod";
+
+	/** Set Costing Method.
+	  * Indicates how Costs will be calculated
+	  */
+	public void setCostingMethod (String CostingMethod);
+
+	/** Get Costing Method.
+	  * Indicates how Costs will be calculated
+	  */
+	public String getCostingMethod();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -320,19 +320,6 @@ public interface I_M_Inventory
 	/** Get M_Inventory_UU	  */
 	public String getM_Inventory_UU();
 
-    /** Column name MovementDate */
-    public static final String COLUMNNAME_MovementDate = "MovementDate";
-
-	/** Set Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public void setMovementDate (Timestamp MovementDate);
-
-	/** Get Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate();
-
     /** Column name M_PerpetualInv_ID */
     public static final String COLUMNNAME_M_PerpetualInv_ID = "M_PerpetualInv_ID";
 
@@ -362,6 +349,19 @@ public interface I_M_Inventory
 	public int getM_Warehouse_ID();
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
+
+    /** Column name MovementDate */
+    public static final String COLUMNNAME_MovementDate = "MovementDate";
+
+	/** Set Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public void setMovementDate (Timestamp MovementDate);
+
+	/** Get Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate();
 
     /** Column name Posted */
     public static final String COLUMNNAME_Posted = "Posted";
@@ -426,6 +426,15 @@ public interface I_M_Inventory
 
 	public org.compiere.model.I_M_Inventory getReversal() throws RuntimeException;
 
+    /** Column name UpdateQty */
+    public static final String COLUMNNAME_UpdateQty = "UpdateQty";
+
+	/** Set Update Quantities	  */
+	public void setUpdateQty (String UpdateQty);
+
+	/** Get Update Quantities	  */
+	public String getUpdateQty();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -441,15 +450,6 @@ public interface I_M_Inventory
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name UpdateQty */
-    public static final String COLUMNNAME_UpdateQty = "UpdateQty";
-
-	/** Set Update Quantities	  */
-	public void setUpdateQty (String UpdateQty);
-
-	/** Get Update Quantities	  */
-	public String getUpdateQty();
 
     /** Column name User1_ID */
     public static final String COLUMNNAME_User1_ID = "User1_ID";

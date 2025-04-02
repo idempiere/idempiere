@@ -98,7 +98,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3948220810042370826L;
+	private static final long serialVersionUID = 1852095729689900949L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
@@ -106,6 +106,9 @@ public class GridTable extends AbstractTableModel
 	public static final int DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS = 1;
 
 	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
+	public static final String COUNT_QUERY_TIMEOUT_ERROR_MESSAGE = "CountQueryTimeoutLoadBackground";
+	public static final String FIND_OVER_MAX_ERROR_MESSAGE = "FindOverMax";
+	public static final String BACKGROUND_LOAD_FINISHED_INFO_MESSAGE = "BackgroundLoadFinished";
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -1140,11 +1143,22 @@ public class GridTable extends AbstractTableModel
 	 * @param row
 	 */
 	public void waitLoadingForRow(int row) {
+		// optimization - this method is called too frequently
+		// avoid processing when the criteria of whiles and if's below is not  met
+		if ( ! (row >= m_sort.size() || m_sort.size() == 0) )
+			return;
 		//	need to wait for data read into buffer
 		int loops = 0;
 		//wait for [timeout] seconds
 		int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
-		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < timeout)
+		if (timeout <= 0) {
+			timeout = 120;
+			log.warning("Setting GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 0 is not recommended as long queries can keep running in the database and affects performance, "
+					+ " in this case the system assigns a wait of 2 minutes to load records of a window");
+		} else {
+			timeout += 5; /* give 5 seconds extra for the query to timeout first in the database */
+		}
+		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && !m_rowLoadTimeout && loops < timeout)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
 			try
@@ -1168,7 +1182,7 @@ public class GridTable extends AbstractTableModel
 			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
 			//adjust row count
 			m_rowCount = m_sort.size();
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), LOAD_TIMEOUT_ERROR_MESSAGE));
+			m_rowLoadTimeout = true; // at this moment this must be set, but just to be sure that the warning is raised at doRun
 		}
 	}
 
@@ -3019,6 +3033,8 @@ public class GridTable extends AbstractTableModel
 		 */
 		protected int open (int maxRows)
 		{
+			m_rowLoadTimeout = false;
+			m_rowCountTimeout = false;
 			this.maxRows = maxRows;
 
 			//	Get Number of Rows
@@ -3042,6 +3058,7 @@ public class GridTable extends AbstractTableModel
 			{
 				if (DB.getDatabase().isQueryTimeout(e0))
 				{
+					if (log.isLoggable(Level.INFO)) log.info("Count query timed out -> " + m_SQL_Count);
 					m_rowCountTimeout = true;
 					return 0;
 				}
@@ -3069,6 +3086,7 @@ public class GridTable extends AbstractTableModel
 		}	//	open
 
 		private void openResultSet() {
+			m_rowLoadTimeout = false;
 			String trxName = get_TrxName();
 			//postgresql need trx to use cursor based resultset
 			//https://jdbc.postgresql.org/documentation/head/query.html#query-with-cursor
@@ -3097,6 +3115,7 @@ public class GridTable extends AbstractTableModel
 					m_rowLoadTimeout = true;
 					throw new AdempiereException(Msg.getMsg(Env.getCtx(), LOAD_TIMEOUT_ERROR_MESSAGE), e);
 				} else {
+					log.severe(e.getLocalizedMessage() + " -> " + m_SQL);
 					log.saveError(e.getLocalizedMessage(), e);
 					throw new DBException(e);
 				}
@@ -3138,6 +3157,7 @@ public class GridTable extends AbstractTableModel
 		 */
 		private void doRun() {
 			boolean isFindOverMax = false;
+			boolean backgroundLoad = false;
 			try
 			{
 				openResultSet();
@@ -3182,7 +3202,7 @@ public class GridTable extends AbstractTableModel
 						{
 							DataStatusEvent evt = createDSE();
 							evt.setLoading(m_sort.size());
-							evt.setInfo("CountQueryTimeoutLoadBackground", null, false, true);
+							evt.setInfo(COUNT_QUERY_TIMEOUT_ERROR_MESSAGE, null, false, false);
 							fireDataStatusChanged(evt);
 						}
 					}
@@ -3190,6 +3210,7 @@ public class GridTable extends AbstractTableModel
 					//	Statement all 1000 rows & sleep
 					if (m_sort.size() % 1000 == 0)
 					{
+						backgroundLoad = true;
 						DataStatusEvent evt = createDSE();
 						evt.setLoading(m_sort.size());
 						fireDataStatusChanged(evt);
@@ -3210,7 +3231,9 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (Exception e)
 			{
-				log.log(Level.SEVERE, "run", e);
+				if (! DBException.isTimeout(e))
+					throw new AdempiereException(e);
+				if (log.isLoggable(Level.INFO)) log.info("Query timed out -> " + m_SQL);
 			}
 			finally
 			{
@@ -3218,12 +3241,26 @@ public class GridTable extends AbstractTableModel
 			}
 			
 			// Background loading without initial rowCount, inform final loaded rows
-			if (m_rowCountTimeout && m_sort.size() > 0)
+			if (backgroundLoad && m_sort.size() > 0)
 			{
 				DataStatusEvent evt = createDSE();
 				evt.setLoading(m_sort.size());
 				if (isFindOverMax)
-					evt.setInfo("FindOverMax", " > " + m_sort.size(), false, true);
+					evt.setInfo(FIND_OVER_MAX_ERROR_MESSAGE, " > " + m_sort.size(), false, true);
+				else
+					evt.setInfo(BACKGROUND_LOAD_FINISHED_INFO_MESSAGE, null, false, false);
+				fireDataStatusChanged(evt);
+			} else if (m_rowLoadTimeout)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				evt.setInfo(LOAD_TIMEOUT_ERROR_MESSAGE, null, false, true);
+				fireDataStatusChanged(evt);
+			} else if (isFindOverMax)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				evt.setInfo(FIND_OVER_MAX_ERROR_MESSAGE, " > " + m_sort.size(), false, true);
 				fireDataStatusChanged(evt);
 			}
 

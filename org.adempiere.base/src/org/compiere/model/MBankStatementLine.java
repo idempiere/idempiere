@@ -191,6 +191,16 @@ import org.compiere.util.Util;
 				return false;				
 			}
 		}
+		
+		if (getC_Payment_ID() != 0 && getC_DepositBatch_ID() != 0) {
+			log.saveError("SaveError", Msg.translate(getCtx(), "EitherPaymentOrDepositBatch"));
+			return false;
+		}
+		
+		if (getC_DepositBatch_ID() != 0 && !getC_DepositBatch().isProcessed()) {
+			log.saveError("SaveError", Msg.getMsg(getCtx(), "DepositBatchIsNotProcessed") + getC_DepositBatch());
+			return false;
+		}
 
 		//	Calculate Charge = Statement - Trx - Interest  
 		BigDecimal amt = getStmtAmt();
@@ -314,6 +324,11 @@ import org.compiere.util.Util;
 			return headerPeriod != null && linePeriod != null && headerPeriod.getC_Period_ID() == linePeriod.getC_Period_ID();	
 		}
 		return true;
+	}
+	
+	@Override
+	public MDepositBatch getC_DepositBatch() throws RuntimeException {
+		return getC_DepositBatch_ID() > 0 ? new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName()) : null;
 	}
 	
  }	//	MBankStatementLine

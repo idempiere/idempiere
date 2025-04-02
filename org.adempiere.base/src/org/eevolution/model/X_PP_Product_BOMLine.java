@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_BOMLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="PP_Product_BOMLine")
 public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20241222L;
 
     /** Standard Constructor */
     public X_PP_Product_BOMLine (Properties ctx, int PP_Product_BOMLine_ID, String trxName)
@@ -47,8 +47,8 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Product_BOMLine WHERE PP_Product_BOM_ID=@PP_Product_BOM_ID@
 			setM_Product_ID (0);
 // -1
-			setPP_Product_BOM_ID (0);
 			setPP_Product_BOMLine_ID (0);
+			setPP_Product_BOM_ID (0);
         } */
     }
 
@@ -62,8 +62,8 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Product_BOMLine WHERE PP_Product_BOM_ID=@PP_Product_BOM_ID@
 			setM_Product_ID (0);
 // -1
-			setPP_Product_BOM_ID (0);
 			setPP_Product_BOMLine_ID (0);
+			setPP_Product_BOM_ID (0);
         } */
     }
 
@@ -77,8 +77,8 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Product_BOMLine WHERE PP_Product_BOM_ID=@PP_Product_BOM_ID@
 			setM_Product_ID (0);
 // -1
-			setPP_Product_BOM_ID (0);
 			setPP_Product_BOMLine_ID (0);
+			setPP_Product_BOM_ID (0);
         } */
     }
 
@@ -92,8 +92,8 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Product_BOMLine WHERE PP_Product_BOM_ID=@PP_Product_BOM_ID@
 			setM_Product_ID (0);
 // -1
-			setPP_Product_BOM_ID (0);
 			setPP_Product_BOMLine_ID (0);
+			setPP_Product_BOM_ID (0);
         } */
     }
 
@@ -160,6 +160,34 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		return (String)get_Value(COLUMNNAME_BackflushGroup);
 	}
 
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
+
+	/** Set UOM.
+		@param C_UOM_ID Unit of Measure
+	*/
+	public void setC_UOM_ID (int C_UOM_ID)
+	{
+		if (C_UOM_ID < 1)
+			set_Value (COLUMNNAME_C_UOM_ID, null);
+		else
+			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
+	}
+
+	/** Get UOM.
+		@return Unit of Measure
+	  */
+	public int getC_UOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** ComponentType AD_Reference_ID=53225 */
 	public static final int COMPONENTTYPE_AD_Reference_ID=53225;
 	/** By-Product = BY */
@@ -214,34 +242,6 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
-			.getPO(getC_UOM_ID(), get_TrxName());
-	}
-
-	/** Set UOM.
-		@param C_UOM_ID Unit of Measure
-	*/
-	public void setC_UOM_ID (int C_UOM_ID)
-	{
-		if (C_UOM_ID < 1)
-			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else
-			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
-	}
-
-	/** Get UOM.
-		@return Unit of Measure
-	  */
-	public int getC_UOM_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Description.
@@ -512,34 +512,6 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_ID()));
     }
 
-	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
-	{
-		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
-			.getPO(getPP_Product_BOM_ID(), get_TrxName());
-	}
-
-	/** Set BOM &amp; Formula.
-		@param PP_Product_BOM_ID BOM &amp; Formula
-	*/
-	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
-	{
-		if (PP_Product_BOM_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
-	}
-
-	/** Get BOM &amp; Formula.
-		@return BOM &amp; Formula
-	  */
-	public int getPP_Product_BOM_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set BOM Line.
 		@param PP_Product_BOMLine_ID BOM Line
 	*/
@@ -577,23 +549,32 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		return (String)get_Value(COLUMNNAME_PP_Product_BOMLine_UU);
 	}
 
-	/** Set Quantity in %.
-		@param QtyBatch Indicate the Quantity % use in this Formula
-	*/
-	public void setQtyBatch (BigDecimal QtyBatch)
+	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
 	{
-		set_Value (COLUMNNAME_QtyBatch, QtyBatch);
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
 	}
 
-	/** Get Quantity in %.
-		@return Indicate the Quantity % use in this Formula
-	  */
-	public BigDecimal getQtyBatch()
+	/** Set BOM &amp; Formula.
+		@param PP_Product_BOM_ID BOM &amp; Formula
+	*/
+	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatch);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
+		if (PP_Product_BOM_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
+	}
+
+	/** Get BOM &amp; Formula.
+		@return BOM &amp; Formula
+	  */
+	public int getPP_Product_BOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Quantity.
@@ -610,6 +591,25 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	public BigDecimal getQtyBOM()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBOM);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Quantity in %.
+		@param QtyBatch Indicate the Quantity % use in this Formula
+	*/
+	public void setQtyBatch (BigDecimal QtyBatch)
+	{
+		set_Value (COLUMNNAME_QtyBatch, QtyBatch);
+	}
+
+	/** Get Quantity in %.
+		@return Indicate the Quantity % use in this Formula
+	  */
+	public BigDecimal getQtyBatch()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatch);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

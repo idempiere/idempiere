@@ -32,10 +32,10 @@ import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
+import org.compiere.model.ICostInfo;
 import org.compiere.model.I_M_InventoryLine;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
-import org.compiere.model.MCost;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInventory;
@@ -94,7 +94,7 @@ public class CostAdjustmentLineProduct implements IColumnCallout {
 								as = a ; 
 						}
 					}
-					MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
+					ICostInfo cost = product.getCostInfo(as, AD_Org_ID, M_ASI_ID, costingMethod, inventory.getMovementDate());					
 					if (cost == null) {
 						if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
 							mTab.setValue(mField, null);

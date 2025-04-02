@@ -189,7 +189,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		sendEvent(m_WindowNo, m_AD_Table_ID, m_Record_ID, m_Record_UU, null, "");
 		setValuesFromContext(m_WindowNo);
 		
-		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxWidth(ClientInfo.SMALL_HEIGHT)) {
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT)) {
 			this.setMaximized(true);
 			this.setSizable(false);
 			this.setMaximizable(false);
