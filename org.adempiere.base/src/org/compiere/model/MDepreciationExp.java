@@ -228,6 +228,8 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 			}
 			//
 			assetwk.adjustAccumulatedDepr(getExpense(), getExpense_F(), false);
+			// set period and dateacct from latest depreciation expense (do nothing in case of first depreciation)
+			assetwk.setA_Current_Period();
 			// Update workfile - Remaining asset cost
 			assetwk.saveEx();
 			//adjust to the last day of the month in before save assetwk.
