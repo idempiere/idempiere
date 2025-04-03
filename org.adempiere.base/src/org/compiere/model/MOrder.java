@@ -1467,9 +1467,10 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 			MOrderPaySchedule[] orderPaySchedules = MOrderPaySchedule.getOrderPaySchedule(getCtx(),this.getC_Order_ID(),0,get_TrxName());
 			for(MOrderPaySchedule orderPaySchedule : orderPaySchedules) {
-				if(is_ValueChanged(MOrder.COLUMNNAME_AD_Org_ID))
+				if(is_ValueChanged(MOrder.COLUMNNAME_AD_Org_ID)) {
 					orderPaySchedule.setAD_Org_ID(getAD_Org_ID());
-				orderPaySchedule.saveEx();
+					orderPaySchedule.saveEx();
+				}
 			}
 		}
 		//
