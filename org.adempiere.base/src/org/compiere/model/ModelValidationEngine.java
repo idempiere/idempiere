@@ -81,7 +81,7 @@ public class ModelValidationEngine
 	/** Engine Singleton				*/
 	private static ModelValidationEngine s_engine = null;
 	/** flag to indicate a missing model validation class */
-	private static String missingModelValidationMessage = "";
+	private String missingModelValidationMessage = "";
 
 	/**
 	 * 	Private Constructor.
@@ -288,7 +288,9 @@ public class ModelValidationEngine
 			return eventErrors.toString();
 		}
 
-		if ((AD_User_ID == SystemIDs.USER_SYSTEM || AD_User_ID == SystemIDs.USER_SUPERUSER) && AD_Role_ID == SystemIDs.ROLE_SYSTEM)
+		if (   AD_Role_ID == SystemIDs.ROLE_SYSTEM
+			&& (AD_User_ID == SystemIDs.USER_SYSTEM || AD_User_ID == SystemIDs.USER_SUPERUSER)
+			&& MSysConfig.getBooleanValue(MSysConfig.ALLOW_SYSTEM_LOGIN_ON_MISSING_PLUGIN, false))
 			; // don't validate for user system on role system
 		else
 			if (! Util.isEmpty(missingModelValidationMessage)) {
