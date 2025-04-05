@@ -9,4 +9,28 @@
 	</parent>
 	<artifactId>org.adempiere.server</artifactId>
 	<packaging>eclipse-plugin</packaging>
+  <build>
+		<sourceDirectory>src/main/server</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/main/servlet</source>
+								<source>src/main/home</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
