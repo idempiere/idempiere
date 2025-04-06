@@ -117,7 +117,11 @@ public class DefaultEvaluatee implements Evaluatee {
 	 * @param dataProvider
 	 */
 	public DefaultEvaluatee(DataProvider dataProvider) {
-		
+		this.m_dataProvider = dataProvider;
+		this.m_windowNo = 0;
+		this.m_tabNo = -1;
+		this.m_onlyWindow = false;
+		this.m_onlyTab = null;
 	}
 	
 	/**
