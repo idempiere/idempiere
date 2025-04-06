@@ -105,7 +105,10 @@ public class DefaultEvaluatee implements Evaluatee {
 	}
 	
 	/**
+	 * Help to use variable from window context 
 	 * @param dataProvider
+	 * @param windowNo
+	 * @param tabNo
 	 */
 	public DefaultEvaluatee(DataProvider dataProvider, int windowNo, int tabNo) {
 		this(dataProvider);
