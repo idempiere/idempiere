@@ -185,10 +185,12 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 		         * NOTE2: continue of special case for CalloutInfoWindow
 		         * normal case we get bellow result:
 		         * 		classInfo.getAnnotationInfoRepeatable(Callouts.class) return list (1 item) AnnotationInfo of Callouts
+		         *      classInfo.getAnnotationInfoRepeatable(Callout.class) return empty list
 		         *		classInfo.getAnnotationInfo(Callouts.class) AnnotationInfo of Callouts
 		         *		classInfo.getAnnotationInfo(Callout.class) return null
 		         * "CalloutInfoWindow" get bellow result
 		         * 		classInfo.getAnnotationInfoRepeatable(Callouts.class) return empty list
+		         *      classInfo.getAnnotationInfoRepeatable(Callout.class) return list (2 item) AnnotationInfo of Callout
 		         *		classInfo.getAnnotationInfo(Callouts.class) return null
 		         *		classInfo.getAnnotationInfo(Callout.class) return latest AnnotationInfo of Callout
 		         *
