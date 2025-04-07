@@ -161,17 +161,57 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 				.acceptPackagesNonRecursive(getPackages());
 
 		ScanResultProcessor scanResultProcessor = scanResult -> {
+			/**
+			 * NOTE1: callout implement IColumnCallout use annotation Callout for 2 case
+			 * case 1:single Callout
+			 * case 2:multi Callout (by that it treats as Callouts)
+			 * 
+			 * for case 1:
+			 *   scanResult.getClassesWithAnnotation(Callouts.class) return empty list
+			 *   scanResult.getClassesWithAnnotation(Callout.class) return non-empty list
+			 * for case 2:
+			 *   scanResult.getClassesWithAnnotation(Callouts.class) return non-empty list
+			 *   scanResult.getClassesWithAnnotation(Callout.class) return empty list
+			 *   
+			 *  but CalloutInfoWindow is special case (still don't know why)
+			 *  it return non-empty list for both called so need to check class processed to avoid duplicate registration callout
+			 */
 			List<String> processed = new ArrayList<String>();
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Callouts.class)) {
 		    	if (classInfo.isAbstract())
 		    		continue;
-		        String className = classInfo.getName();		        
-		        AnnotationInfoList annotationInfos = classInfo.getAnnotationInfoRepeatable(Callout.class);
-		        for(AnnotationInfo annotationInfo : annotationInfos) {
-			        processAnnotation(className, annotationInfo);
+		        String className = classInfo.getName();
+		        /**
+		         * NOTE2: continue of special case for CalloutInfoWindow
+		         * normal case we get bellow result:
+		         * 		classInfo.getAnnotationInfoRepeatable(Callouts.class) return list (1 item) AnnotationInfo of Callouts
+		         *		classInfo.getAnnotationInfo(Callouts.class) AnnotationInfo of Callouts
+		         *		classInfo.getAnnotationInfo(Callout.class) return null
+		         * "CalloutInfoWindow" get bellow result
+		         * 		classInfo.getAnnotationInfoRepeatable(Callouts.class) return empty list
+		         *		classInfo.getAnnotationInfo(Callouts.class) return null
+		         *		classInfo.getAnnotationInfo(Callout.class) return latest AnnotationInfo of Callout
+		         *
+		         * so use classInfo.getAnnotationInfo() to get list of AnnotationInfo of Callout
+		         */
+		        AnnotationInfoList annotInfos = classInfo.getAnnotationInfo();
+		        for (AnnotationInfo annotInfo : annotInfos) {
+					if (Callout.class.getName().equals(annotInfo.getName())) {
+						processAnnotation(className, annotInfo);
+					}else if (Callouts.class.getName().equals(annotInfo.getName())) {
+						// declare repeat Callout is treament as Callouts (value=Callout[])
+				        String calloutsRepeatablePropertiesName = "value";
+				        // not null because default value is {}, see Callouts.java
+				        Object[] calloutAnnotInfos = (Object[])annotInfo.getParameterValues().getValue(calloutsRepeatablePropertiesName);
+		                for (Object calloutAnnotInfo : calloutAnnotInfos) {
+		                	processAnnotation(className, (AnnotationInfo)calloutAnnotInfo);
+		                }
+					}
 		        }
+		        
 		        processed.add(className);
 		    }
+		    
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Callout.class)) {
 		    	if (classInfo.isAbstract())
 		    		continue;
