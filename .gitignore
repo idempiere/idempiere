@@ -36,3 +36,4 @@ out/
 .idea/*
 */.maven.run/**
 **/.idea/*
+partial-runtime/

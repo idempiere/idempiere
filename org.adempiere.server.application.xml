@@ -14,6 +14,31 @@
 	<packaging>pom</packaging>
 	<build>
 		<plugins>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.2.0</version>
+          <executions>
+              <execution>
+                  <phase>validate</phase>
+                  <goals>
+                      <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                      <outputDirectory>${project.basedir}/org.adempiere.server/.maven.run/org.eclipse.equinox.simpleconfigurator</outputDirectory>
+                      <resources>
+                          <resource>
+                              <directory>${project.basedir}/org.adempiere.server/.maven.run</directory>
+                              <includes>
+                                  <include>bundles.info</include>
+                              </includes>
+                              <filtering>true</filtering>
+                          </resource>
+                      </resources>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-eclipse-plugin</artifactId>
