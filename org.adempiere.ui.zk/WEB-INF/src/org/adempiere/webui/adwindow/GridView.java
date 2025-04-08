@@ -34,6 +34,7 @@ import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.SortComparator;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
@@ -728,14 +729,14 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		// setup freeze column menu
 		Menuitem frozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_FROZEN_LABEL, true));
 		frozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_FROZEN);
-		frozenMenuItem.setIconSclass("z-icon-lock");
+		frozenMenuItem.setIconSclass(Icon.getIconSclass(Icon.LOCK));
 		frozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
 		gridColumnMenuPopup.appendChild(frozenMenuItem);
 		
 		// setup reset freeze column menu
 		Menuitem resetFrozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_RESET_FROZEN_LABEL, true));
 		resetFrozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_RESET_FROZEN);
-		resetFrozenMenuItem.setIconSclass("z-icon-mail-reply");
+		resetFrozenMenuItem.setIconSclass(Icon.getIconSclass(Icon.MAIL_REPLY));
 		resetFrozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
 		gridColumnMenuPopup.appendChild(resetFrozenMenuItem);
 		

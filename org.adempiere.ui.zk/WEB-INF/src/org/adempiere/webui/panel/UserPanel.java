@@ -27,6 +27,7 @@ import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
@@ -128,12 +129,12 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	feedbackMenu = new Menupopup();
 		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
-		mi.setIconSclass("z-icon-comment");
+		mi.setIconSclass(Icon.getIconSclass(Icon.COMMENT));
     	mi.setId("CreateRequest");
     	feedbackMenu.appendChild(mi);
     	mi.addEventListener(Events.ON_CLICK, this);
     	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
-    	mi.setIconSclass("z-icon-envelope");
+    	mi.setIconSclass(Icon.getIconSclass(Icon.ENVELOPE));
     	mi.setId("EmailSupport");
     	mi.addEventListener(Events.ON_CLICK, this);
     	feedbackMenu.appendChild(mi);

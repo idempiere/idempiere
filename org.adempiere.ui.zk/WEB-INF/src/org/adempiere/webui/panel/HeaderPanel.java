@@ -26,6 +26,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.AboutWindow;
 import org.compiere.model.MQuery;
@@ -95,7 +96,7 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	btnMenu = (LabelImageElement) getFellow("menuButton");
 
     	if (ThemeManager.isUseFontIconForImage())
-    		btnMenu.setIconSclass("z-icon-sitemap");
+    		btnMenu.setIconSclass(Icon.getIconSclass(Icon.SITEMAP));
     	else
     		btnMenu.setImage(ThemeManager.getThemeResource("images/MenuTree16.png"));
 

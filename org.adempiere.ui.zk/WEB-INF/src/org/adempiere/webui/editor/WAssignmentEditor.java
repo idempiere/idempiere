@@ -38,6 +38,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.InfoSchedule;
 import org.adempiere.webui.window.WAssignmentDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
@@ -103,7 +104,7 @@ public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	private void initComponents() {
 		getComponent().getTextbox().setReadonly(true);
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-Assignment");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.ASSIGNMENT));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Assignment16.png"));
 		

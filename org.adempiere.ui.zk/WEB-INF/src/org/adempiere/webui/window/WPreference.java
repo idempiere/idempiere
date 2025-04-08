@@ -28,6 +28,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MMenu;
@@ -177,7 +178,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		ToolBarButton btn = new ToolBarButton("");
 		btn.setName("btnSave");
 		if (ThemeManager.isUseFontIconForImage())
-			btn.setIconSclass("z-icon-Save");
+			btn.setIconSclass(Icon.getIconSclass(Icon.SAVE));
 		else
 			btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
