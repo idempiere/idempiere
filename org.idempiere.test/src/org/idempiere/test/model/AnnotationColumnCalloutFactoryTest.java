@@ -38,6 +38,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.IColumnCalloutFactory;
 import org.adempiere.base.annotation.Callout;
+import org.adempiere.model.CalloutInfoWindow;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.I_AD_Element;
@@ -88,6 +89,11 @@ public class AnnotationColumnCalloutFactoryTest extends AbstractTestCase {
 		
 		var optional = list.stream().filter(TestRepeatableAnnotatedCallout.class::isInstance).findFirst();
 		assertTrue(optional.isPresent(), "Can't find TestRepeatableAnnotatedCallout column callout for " + I_AD_InfoWindow.Table_Name + "." + I_AD_InfoWindow.COLUMNNAME_AD_Table_ID);
+		
+		list = Core.findCallout("AD_InfoWindow", "AD_Table_ID");
+		
+		optional = list.stream().filter(CalloutInfoWindow.class::isInstance).findFirst();
+		assertTrue(optional.isPresent(), "Can't find CalloutInfoWindow column callout for AD_InfoWindow.AD_Table_ID");
 	}
 	
 	private static final class TestAnnotationBasedColumnCalloutFactory extends AnnotationBasedColumnCalloutFactory {
