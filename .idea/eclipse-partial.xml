@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="TcRacTargetDefinitions" launcherJar="$PROJECT_DIR$/org.idempiere.p2.targetplatform/target/target-platform-repository/plugins/org.eclipse.equinox.launcher_1.6.500.v20230717-2134.jar">
+    <locations>
+      <location location="$PROJECT_DIR$/org.idempiere.p2.targetplatform/target/target-platform-repository" launcherJar="$PROJECT_DIR$/org.idempiere.p2.targetplatform/target/target-platform-repository/plugins/org.eclipse.equinox.launcher_1.6.500.v20230717-2134.jar" alias="iDempiere" type="Eclipse SDK">
+        <bundleVersionSelection>
+          <sourceVersion canonicalName="com.sun.xml.fastinfoset.FastInfoset-1.2.18.v202109010034" version="1.2.18.v202109010034" />
+          <sourceVersion canonicalName="jakarta.xml.ws-api-2.3.3.v202109010034" version="2.3.3.v202109010034" />
+          <sourceVersion canonicalName="org.apache.cxf.cxf-rt-databinding-xmlbeans-3.6.3" version="3.6.3" />
+          <sourceVersion canonicalName="org.apache.cxf.cxf-rt-rs-extension-providers-3.6.3" version="3.6.3" />
+          <sourceVersion canonicalName="org.apache.felix.webconsole-4.6.4.v202109010034" version="4.6.4.v202109010034" />
+          <sourceVersion canonicalName="org.atmosphere.runtime-2.7.2.v202109010034" version="2.7.2.v202109010034" />
+        </bundleVersionSelection>
+      </location>
+    </locations>
+  </component>
+</project>

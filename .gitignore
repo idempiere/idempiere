@@ -31,3 +31,9 @@ External Plug-in Libraries
 /runtime-*.app/
 org.idempiere.maven.to.p2/org.idempiere.webservice.client/.settings/
 **/org.eclipse.jdt.core.prefs
+.idea/**/Partial_*.xml
+out/
+.idea/*
+*/.maven.run/**
+**/.idea/*
+partial-runtime/
