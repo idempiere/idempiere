@@ -182,8 +182,7 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 						processAnnotation(className, annotInfo);
 					}else if (Callouts.class.getName().equals(annotInfo.getName())) {
 						// Declaring repeated @Callout annotations is treated as @Callouts(value = Callout[]).
-				        String calloutsRepeatablePropertiesName = "value";
-				        // It's not null because the default value is {}, as defined in Callouts.java.			
+				        String calloutsRepeatablePropertiesName = "value";			
 				        Object[] calloutAnnotInfos = (Object[])annotInfo.getParameterValues().getValue(calloutsRepeatablePropertiesName);
 		                for (Object calloutAnnotInfo : calloutAnnotInfos) {
 		                	processAnnotation(className, (AnnotationInfo)calloutAnnotInfo);
