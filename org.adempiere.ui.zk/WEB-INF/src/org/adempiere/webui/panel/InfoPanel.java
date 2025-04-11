@@ -2607,27 +2607,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	            form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 	            form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 
+	            form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        updateListSelected();
+                        recordSelectedData.clear();
+                        Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
+                        onUserQuery();
+                    }
+                });
+
 	            if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
-	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-	                    @Override
-	                    public void onEvent(Event event) throws Exception {
-	                        ;
-	                    }
-	                });
 	                form.doHighlighted();
 	                form.focus();
 	            }
 	            else {
-	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-	                    @Override
-	                    public void onEvent(Event event) throws Exception {
-	                        updateListSelected();
-	                        recordSelectedData.clear();
-	                        Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
-	                        onUserQuery();
-	                    }
-	                });
-
 	                SessionManager.getAppDesktop().showWindow(form);
 	            }
 	            return;
