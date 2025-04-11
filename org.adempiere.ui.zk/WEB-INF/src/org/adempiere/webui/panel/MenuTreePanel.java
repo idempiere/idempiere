@@ -16,6 +16,7 @@ package org.adempiere.webui.panel;
 
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
@@ -121,7 +122,7 @@ public class MenuTreePanel extends AbstractMenuPanel
 
         filterBtn = new Toolbarbutton();
         if (ThemeManager.isUseFontIconForImage())
-        	filterBtn.setIconSclass("z-icon-Preference");
+        	filterBtn.setIconSclass(Icon.getIconSclass(Icon.PREFERENCE));
         else
         	filterBtn.setImage(ThemeManager.getThemeResource("images/Preference16.png"));
         filterBtn.addEventListener(Events.ON_CLICK, this);

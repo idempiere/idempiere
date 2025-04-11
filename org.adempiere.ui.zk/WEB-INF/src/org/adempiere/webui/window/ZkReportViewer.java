@@ -74,6 +74,7 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.util.ZkContextRunnable;
@@ -472,7 +473,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		
 		bCustomize.setName("Customize");
 		if (ThemeManager.isUseFontIconForImage())
-			bCustomize.setIconSclass("z-icon-Preference");
+			bCustomize.setIconSclass(Icon.getIconSclass(Icon.PREFERENCE));
 		else
 			bCustomize.setImage(ThemeManager.getThemeResource("images/Preference24.png"));
 		bCustomize.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintCustomize")));
@@ -489,7 +490,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		
 		bFind.setName("Find");
 		if (ThemeManager.isUseFontIconForImage())
-			bFind.setIconSclass("z-icon-Find");
+			bFind.setIconSclass(Icon.getIconSclass(Icon.FIND));
 		else
 			bFind.setImage(ThemeManager.getThemeResource("images/Find24.png"));
 		bFind.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Find")));		
@@ -513,7 +514,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		
 		bSendMail.setName("SendMail");
 		if (ThemeManager.isUseFontIconForImage())
-			bSendMail.setIconSclass("z-icon-SendMail");
+			bSendMail.setIconSclass(Icon.getIconSclass(Icon.SEND_MAIL));
 		else
 			bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
@@ -530,7 +531,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		
 		bArchive.setName("Archive");
 		if (ThemeManager.isUseFontIconForImage())
-			bArchive.setIconSclass("z-icon-Archive");
+			bArchive.setIconSclass(Icon.getIconSclass(Icon.ARCHIVE));
 		else
 			bArchive.setImage(ThemeManager.getThemeResource("images/Archive24.png"));
 		bArchive.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Archive")));
@@ -550,7 +551,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (tableId > 0 && recordId > 0) {
 			bAttachment.setName("Attachment");
 			if (ThemeManager.isUseFontIconForImage())
-				bAttachment.setIconSclass("z-icon-Attachment");
+				bAttachment.setIconSclass(Icon.getIconSclass(Icon.ATTACHMENT));
 			else
 				bAttachment.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 			bAttachment.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Attachment")));
@@ -570,7 +571,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		{
 			bExport.setName("Export");
 			if (ThemeManager.isUseFontIconForImage())
-				bExport.setIconSclass("z-icon-Export");
+				bExport.setIconSclass(Icon.getIconSclass(Icon.EXPORT));
 			else
 				bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
@@ -591,7 +592,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		
 		bRefresh.setName("Refresh");
 		if (ThemeManager.isUseFontIconForImage())
-			bRefresh.setIconSclass("z-icon-Refresh");
+			bRefresh.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
@@ -611,7 +612,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if((!pf.isForm()) && (pf.getAD_ReportView_ID() > 0)) {
 				bReRun.setName("ReRun");
 				if (ThemeManager.isUseFontIconForImage())
-					bReRun.setIconSclass("z-icon-ReRun");
+					bReRun.setIconSclass(Icon.getIconSclass(Icon.RE_RUN));
 				else
 					bReRun.setImage(ThemeManager.getThemeResource("images/ReRun24.png"));
 				bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
@@ -630,7 +631,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					
 		bWizard.setName("Wizard");
 		if (ThemeManager.isUseFontIconForImage())
-			bWizard.setIconSclass("z-icon-Wizard");
+			bWizard.setIconSclass(Icon.getIconSclass(Icon.WIZARD));
 		else
 			bWizard.setImage(ThemeManager.getThemeResource("images/Wizard24.png"));
 		bWizard.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "PrintWizard")));
@@ -649,7 +650,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		{
 			ToolBarButton more = new ToolBarButton();
 			if (ThemeManager.isUseFontIconForImage())
-				more.setIconSclass("z-icon-Expand");
+				more.setIconSclass(Icon.getIconSclass(Icon.EXPAND));
 			else
 				more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
 
@@ -666,7 +667,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if (uploadServicesMap.size() > 0) {
 				bCloudUpload.setName("CloudUpload");
 				if (ThemeManager.isUseFontIconForImage())
-					bCloudUpload.setIconSclass("z-icon-FileImport");
+					bCloudUpload.setIconSclass(Icon.getIconSclass(Icon.FILE_IMPORT));
 				else
 					bCloudUpload.setImage(ThemeManager.getThemeResource("images/FileImport24.png"));
 				bCloudUpload.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "CloudUpload")));

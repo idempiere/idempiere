@@ -56,6 +56,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
@@ -493,7 +494,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		// Elaine 2009/07/29
 		if (ThemeManager.isUseFontIconForImage())
-			bZoom.setIconSclass("z-icon-Zoom");
+			bZoom.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
 		else
 			bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		bZoom.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
@@ -502,14 +503,14 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		//
 		
 		if (ThemeManager.isUseFontIconForImage())
-			bQuery.setIconSclass("z-icon-Refresh");
+			bQuery.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			bQuery.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		bQuery.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		bQuery.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bExport.setIconSclass("z-icon-Export");
+			bExport.setIconSclass(Icon.getIconSclass(Icon.EXPORT));
 		else
 			bExport.setImage(ThemeManager.getThemeResource("images/Export16.png"));
 		bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
@@ -646,7 +647,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		selTable.addEventListener(Events.ON_SELECT, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			selRecord.setIconSclass("z-icon-Find");
+			selRecord.setIconSclass(Icon.getIconSclass(Icon.FIND));
 		else
 			selRecord.setImage(ThemeManager.getThemeResource("images/Find16.png"));
 		selRecord.addEventListener(Events.ON_CLICK, this);
@@ -662,7 +663,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		selAcct.addEventListener(Events.ON_CLICK, this);
 		selAcct.setLabel("");
 		if (ThemeManager.isUseFontIconForImage())
-			selAcct.setIconSclass("z-icon-Find");
+			selAcct.setIconSclass(Icon.getIconSclass(Icon.FIND));
 		else
 			selAcct.setImage(ThemeManager.getThemeResource("images/Find16.png"));
 
@@ -915,7 +916,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 				buttons[selectionIndex].setName(columnName); // actionCommand
 				buttons[selectionIndex].addEventListener(Events.ON_CLICK, this);
 				if (ThemeManager.isUseFontIconForImage())
-					buttons[selectionIndex].setIconSclass("z-icon-Find");
+					buttons[selectionIndex].setIconSclass(Icon.getIconSclass(Icon.FIND));
 				else
 					buttons[selectionIndex].setImage(ThemeManager.getThemeResource("images/Find16.png"));
 				buttons[selectionIndex].setLabel("");

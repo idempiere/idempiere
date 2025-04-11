@@ -39,6 +39,7 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
@@ -399,7 +400,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		bCancel.setDisabled(false);
 
     	if (ThemeManager.isUseFontIconForImage()) {
-    		String iconSclass = "z-icon-Reset";
+    		String iconSclass = Icon.getIconSclass(Icon.RESET);
     		bOK.setIconSclass(iconSclass);
     		LayoutUtils.addSclass("font-icon-toolbar-button", bOK);
     	} else {
@@ -537,8 +538,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		bCancel.setLabel(Util.cleanAmp(Msg.translate(Env.getCtx(), ConfirmPanel.A_CANCEL)));
 
     	if (ThemeManager.isUseFontIconForImage()) {
-    		String iconSclass = "z-icon-Ok";
-    		bOK.setIconSclass(iconSclass);
+    		bOK.setIconSclass(Icon.getIconSclass(Icon.OK));
     		LayoutUtils.addSclass("font-icon-toolbar-button", bOK);
     	} else {
 			bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));

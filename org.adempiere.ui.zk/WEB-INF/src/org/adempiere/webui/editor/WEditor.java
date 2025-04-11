@@ -47,6 +47,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
@@ -941,7 +942,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		editor.setAttribute("EVENT", WEditorPopupMenu.EDITOR_EVENT);
 		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Editor")).intern());
         if (ThemeManager.isUseFontIconForImage())
-        	editor.setIconSclass("z-icon-Edit");
+        	editor.setIconSclass(Icon.getIconSclass(Icon.EDIT));
         else
         	editor.setImage(ThemeManager.getThemeResource("images/Editor16.png"));
         editor.addEventListener(Events.ON_CLICK, popupMenu);

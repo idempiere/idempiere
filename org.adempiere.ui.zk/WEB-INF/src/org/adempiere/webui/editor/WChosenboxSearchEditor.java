@@ -45,6 +45,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
@@ -207,7 +208,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	{
 		columnName = this.getColumnName();
 		if (ThemeManager.isUseFontIconForImage())
-			imageUrl = "z-icon-More";
+			imageUrl = Icon.getIconSclass(Icon.MORE);
 		else
 			imageUrl = ThemeManager.getThemeResource("images/PickOpen16.png");
 		if (lookup instanceof MLookup) 
@@ -217,7 +218,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 				|| (mlookup.getLookupInfo().KeyColumn != null && mlookup.getLookupInfo().KeyColumn.endsWith(".C_BPartner_ID")))
 			{
 				if (ThemeManager.isUseFontIconForImage())
-					imageUrl = "z-icon-BPartner";
+					imageUrl = Icon.getIconSclass(Icon.BPARTNER);
 				else
 					imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 			}
@@ -225,7 +226,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 					|| (mlookup.getLookupInfo().KeyColumn != null && mlookup.getLookupInfo().KeyColumn.endsWith(".M_Product_ID")))
 			{
 				if (ThemeManager.isUseFontIconForImage())
-					imageUrl = "z-icon-Product";
+					imageUrl = Icon.getIconSclass(Icon.PRODUCT);
 				else
 					imageUrl = ThemeManager.getThemeResource("images/Product16.png");
 			}
@@ -237,7 +238,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
 		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
 		if (ThemeManager.isUseFontIconForImage())
-			editor.setIconSclass("z-icon-Wizard");
+			editor.setIconSclass(Icon.getIconSclass(Icon.WIZARD));
 		else
 			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
 		editor.addEventListener(Events.ON_CLICK, popupMenu);

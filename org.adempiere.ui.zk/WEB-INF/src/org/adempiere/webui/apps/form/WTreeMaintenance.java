@@ -34,6 +34,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
@@ -131,10 +132,10 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private void jbInit () throws Exception
 	{
 		if (ThemeManager.isUseFontIconForImage()) {
-			bAddAll.setIconSclass("z-icon-FastBack");
-			bAdd.setIconSclass("z-icon-StepBack");
-			bDelete.setIconSclass("z-icon-StepForward");
-			bDeleteAll.setIconSclass("z-icon-FastForward");
+			bAddAll.setIconSclass(Icon.getIconSclass(Icon.FAST_BACK));
+			bAdd.setIconSclass(Icon.getIconSclass(Icon.STEP_BACK));
+			bDelete.setIconSclass(Icon.getIconSclass(Icon.STEP_FORWARD));
+			bDeleteAll.setIconSclass(Icon.getIconSclass(Icon.FAST_FORWARD));
 		} else {
 			bAddAll.setImage(ThemeManager.getThemeResource("images/FastBack24.png"));
 			bAdd.setImage(ThemeManager.getThemeResource("images/StepBack24.png"));
@@ -207,7 +208,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		searchBox.addEventListener(Events.ON_CLICK, this);
 		searchBox.getTextbox().addEventListener(Events.ON_OK, this);
 		if (ThemeManager.isUseFontIconForImage())
-			searchBox.getButton().setIconSclass("z-icon-Search");
+			searchBox.getButton().setIconSclass(Icon.getIconSclass(Icon.SEARCH));
 		else
 			searchBox.getButton().setImage(ThemeManager.getThemeResource("images/Find16.png"));
 		searchBox.setToolTipText(Msg.getCleanMsg(Env.getCtx(), "TreeSearch"));

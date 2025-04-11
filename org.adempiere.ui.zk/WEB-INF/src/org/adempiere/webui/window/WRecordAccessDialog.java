@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.MRecordAccess;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogger;
@@ -151,25 +152,25 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 	{
 		//devCoffee #6142
     	if(ThemeManager.isUseFontIconForImage())
-    		bDelete.setIconSclass("z-icon-Delete");
+    		bDelete.setIconSclass(Icon.getIconSclass(Icon.DELETE));
     	else
     		bDelete.setImage(ThemeManager.getThemeResource("images/Delete16.png"));
 		bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		//devCoffee #6142
     	if(ThemeManager.isUseFontIconForImage())
-    		bNew.setIconSclass("z-icon-New");
+    		bNew.setIconSclass(Icon.getIconSclass(Icon.NEW));
     	else
     		bNew.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		bNew.setTooltiptext(Msg.getMsg(Env.getCtx(), "New"));
 		//devCoffee #6142
     	if(ThemeManager.isUseFontIconForImage())
-    		bUp.setIconSclass("z-icon-Previous");
+    		bUp.setIconSclass(Icon.getIconSclass(Icon.PREVIOUS));
     	else
     		bUp.setImage(ThemeManager.getThemeResource("images/Previous16.png"));
 		bUp.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
 		//devCoffee #6142
     	if(ThemeManager.isUseFontIconForImage())
-    		bDown.setIconSclass("z-icon-Next");
+    		bDown.setIconSclass(Icon.getIconSclass(Icon.NEXT));
     	else
     		bDown.setImage(ThemeManager.getThemeResource("images/Next16.png"));
 		bDown.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));

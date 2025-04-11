@@ -54,6 +54,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttachment;
@@ -411,7 +412,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		Button btn = new Button();
 		if (ThemeManager.isUseFontIconForImage())
-			btn.setIconSclass("z-icon-Attachment");
+			btn.setIconSclass(Icon.getIconSclass(Icon.ATTACHMENT));
 		else
 			btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload(AdempiereWebUI.getUploadSetting());
@@ -421,7 +422,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 
 		bAddDefaultMailText = new Button();
 		if(ThemeManager.isUseFontIconForImage())
-			bAddDefaultMailText.setIconSclass("z-icon-GetMail");
+			bAddDefaultMailText.setIconSclass(Icon.getIconSclass(Icon.GET_MAIL));
 		else
 			bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
 		bAddDefaultMailText.addEventListener(Events.ON_CLICK, this);

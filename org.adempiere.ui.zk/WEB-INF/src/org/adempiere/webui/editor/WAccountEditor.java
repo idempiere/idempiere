@@ -23,6 +23,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.WAccountDialog;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
@@ -72,7 +73,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 	{
 		super(new Combinationbox(), gridField, tableEditor, editorConfiguration);
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-Account");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.ACCOUNT));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Account16.png"));
 

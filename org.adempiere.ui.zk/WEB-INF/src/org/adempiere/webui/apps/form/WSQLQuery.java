@@ -42,6 +42,7 @@ import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MIssue;
 import org.compiere.model.MSysConfig;
@@ -171,7 +172,7 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 	public static final Button createProcessButton() {
 		Button btnProcess = new Button();
 		if(ThemeManager.isUseFontIconForImage())
-			btnProcess.setIconSclass("z-icon-Process");
+			btnProcess.setIconSclass(Icon.getIconSclass(Icon.PROCESS));
 		else
 			btnProcess.setImage(ThemeManager.getThemeResource("images/Process24.png"));
 		btnProcess.setName(Msg.getMsg(Env.getCtx(), "Process"));

@@ -59,6 +59,7 @@ import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.util.ZkContextRunnable;
@@ -443,7 +444,7 @@ public class DashboardController implements EventListener<Event> {
 		A icon = new A();
 		icon.setSclass("dashboard-content-help-icon");
 		if (ThemeManager.isUseFontIconForImage())
-			icon.setIconSclass("z-icon-Help");
+			icon.setIconSclass(Icon.getIconSclass(Icon.HELP));
 		else
 			icon.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
 		icon.addEventListener(Events.ON_CLICK, this);
@@ -856,7 +857,7 @@ public class DashboardController implements EventListener<Event> {
 					}
 					btn = new ToolBarButton();
 					if (ThemeManager.isUseFontIconForImage()) {
-						btn.setIconSclass("z-icon-Refresh");
+						btn.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 						btn.setSclass("trash-toolbarbutton");
 					}
 					else
@@ -903,7 +904,7 @@ public class DashboardController implements EventListener<Event> {
             	Div div = new Div();
             	Toolbarbutton link = new Toolbarbutton();
             	if (ThemeManager.isUseFontIconForImage())
-            		link.setIconSclass("z-icon-Zoom");
+            		link.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
             	else
             		link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
             	link.setAttribute("PA_Goal_ID", PA_Goal_ID);

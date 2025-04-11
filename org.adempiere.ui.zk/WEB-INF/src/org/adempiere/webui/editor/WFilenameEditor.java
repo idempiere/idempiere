@@ -25,6 +25,7 @@ import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.component.FilenameBox;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.GridField;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
@@ -69,7 +70,7 @@ public class WFilenameEditor extends WEditor
 	{
 		super(new FilenameBox(), gridField, tableEditor, editorConfiguration);
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-Open");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.OPEN));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Open16.png"));
 		getComponent().addEventListener(Events.ON_UPLOAD, this);

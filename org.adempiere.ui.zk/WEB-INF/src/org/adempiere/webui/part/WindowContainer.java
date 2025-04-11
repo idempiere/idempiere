@@ -32,6 +32,7 @@ import org.adempiere.webui.desktop.TabbedDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MSysConfig;
@@ -211,7 +212,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         {
         	ToolBarButton homeButton = new ToolBarButton();
         	if (ThemeManager.isUseFontIconForImage())
-        		homeButton.setIconSclass("z-icon-Home");
+        		homeButton.setIconSclass(Icon.getIconSclass(Icon.HOME));
         	else
         		homeButton.setImage(ThemeManager.getThemeResource("images/Home16.png"));
         	homeButton.setSclass("window-container-toolbar-btn");
@@ -225,7 +226,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         	tabListBtn = new ToolBarButton();
         	if (ThemeManager.isUseFontIconForImage()) 
         	{
-        		tabListBtn.setIconSclass("z-icon-Expand");
+        		tabListBtn.setIconSclass(Icon.getIconSclass(Icon.EXPAND));
         	} 
         	else 
         	{

@@ -27,6 +27,7 @@ import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.panel.AbstractMenuPanel;
 import org.adempiere.webui.panel.MenuTreePanel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
 import org.adempiere.webui.util.TreeUtils;
@@ -774,7 +775,7 @@ public class MenuSearchController implements EventListener<Event>{
 			if (isWindow) {
 				ToolBarButton newBtn = new ToolBarButton();
 				if (ThemeManager.isUseFontIconForImage())
-					newBtn.setIconSclass("z-icon-New");
+					newBtn.setIconSclass(Icon.getIconSclass(Icon.NEW));
 				else
 					newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
 				newBtn.addEventListener(Events.ON_CLICK, MenuSearchController.this);

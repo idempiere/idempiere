@@ -34,6 +34,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.DateRangePicker;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Page;
@@ -91,7 +92,7 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 		popupBtn = new ToolBarButton();
 		popupBtn.addSclass("date-picker-calendar-button");
 		if (ThemeManager.isUseFontIconForImage())
-			popupBtn.setIconSclass("z-icon-Calendar");
+			popupBtn.setIconSclass(Icon.getIconSclass(Icon.CALENDAR));
 		else
 			popupBtn.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_CALENDAR_PNG));
 		this.appendChild(popupBtn);
