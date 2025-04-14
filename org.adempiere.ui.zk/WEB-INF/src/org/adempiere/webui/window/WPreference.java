@@ -128,7 +128,14 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		morePreferences= new A();	
 		morePreferences.setLabel(Msg.translate(Env.getCtx(), "MorePreferences"));
 		morePreferences.addEventListener(Events.ON_CLICK, this);
-		div.appendChild(morePreferences);
+
+		int windowID = Env.getZoomWindowID(MUserPreference.Table_ID, recordId);
+		if (windowID > 0) {
+			Boolean access = MRole.getDefault().getWindowAccess(windowID);
+			if (access != null && access.booleanValue())
+				div.appendChild(morePreferences);
+		}
+
 		this.appendChild(div);
 				
 		MMenu myProfileMenu = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID);		
@@ -137,7 +144,14 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		myProfile= new A();	
 		myProfile.setLabel(myProfileMenu.get_Translation("Name"));
 		myProfile.addEventListener(Events.ON_CLICK, this);
-		div.appendChild(myProfile);		
+		
+		windowID = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID).getAD_Window_ID();
+		if (windowID > 0) {
+			Boolean access = MRole.getDefault().getWindowAccess(windowID);
+			if (access != null && access.booleanValue())
+				div.appendChild(myProfile);
+		}
+
 		this.appendChild(div);
 		
 		div = new Div();
