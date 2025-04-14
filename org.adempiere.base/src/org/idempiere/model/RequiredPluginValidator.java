@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.compiere.model.MRequiredPlugin;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Util;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -93,6 +94,8 @@ public class RequiredPluginValidator implements FrameworkListener {
 	 * 
 	 */
 	private void started() {
+		if (! DB.isConnected())
+			return;
 		// list of running plugins with their states
 		Map<String, String> bundleList =  new HashMap<>();
 		for (Bundle bundle : bundleContext.getBundles())
