@@ -47,7 +47,8 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3560868079847839831L;
+	private static final long serialVersionUID = 5259015877977440085L;
+
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -58,7 +59,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ALLOW_APPLY_PAYMENT_TO_CREDITMEMO = "ALLOW_APPLY_PAYMENT_TO_CREDITMEMO";
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
     public static final String ALLOW_REVERSAL_OF_RECONCILED_PAYMENT = "ALLOW_REVERSAL_OF_RECONCILED_PAYMENT";
-	public static final String ALLOW_SYSTEM_LOGIN_ON_MISSING_PLUGIN = "ALLOW_SYSTEM_LOGIN_ON_MISSING_PLUGIN";
     public static final String ALogin_ShowDate = "ALogin_ShowDate";
     @Deprecated(forRemoval = true, since = "11")
     public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";

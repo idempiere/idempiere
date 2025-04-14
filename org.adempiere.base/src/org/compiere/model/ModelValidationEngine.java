@@ -120,6 +120,13 @@ public class ModelValidationEngine
 				continue;
 			loadValidatorClasses(clients[i], classNames);
 		}
+		if (    MSystem.get(Env.getCtx()).isFailOnMissingModelValidator()
+			&& !Util.isEmpty(missingModelValidationMessage)) {
+			// do not use severe, logging to db will try to init ModelValidationEngine again!
+			log.warning(missingModelValidationMessage);
+			System.exit(1);
+		}
+
 	}	//	ModelValidatorEngine
 
 	/**
@@ -288,16 +295,10 @@ public class ModelValidationEngine
 			return eventErrors.toString();
 		}
 
-		if (   AD_Role_ID == SystemIDs.ROLE_SYSTEM
-			&& (AD_User_ID == SystemIDs.USER_SYSTEM || AD_User_ID == SystemIDs.USER_SUPERUSER)
-			&& MSysConfig.getBooleanValue(MSysConfig.ALLOW_SYSTEM_LOGIN_ON_MISSING_PLUGIN, false))
-			; // don't validate for user system on role system
-		else
-			if (! Util.isEmpty(missingModelValidationMessage)) {
-				MSystem system = MSystem.get(Env.getCtx());
-				if (system.isFailOnMissingModelValidator())
-					return missingModelValidationMessage;
-			}
+		if (   !Util.isEmpty(missingModelValidationMessage)
+			&& ! (   AD_Role_ID == SystemIDs.ROLE_SYSTEM
+				  && (AD_User_ID == SystemIDs.USER_SYSTEM || AD_User_ID == SystemIDs.USER_SUPERUSER)))
+			return missingModelValidationMessage;
 		return null;
 	}	//	loginComplete
 
