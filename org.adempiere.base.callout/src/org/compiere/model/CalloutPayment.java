@@ -372,10 +372,15 @@ public class CalloutPayment extends CalloutEngine
 					return "";
 				}
 				BigDecimal payAmt = (BigDecimal) mTab.getValue(I_C_Payment.COLUMNNAME_PayAmt);
-				if (payAmt != null)
+				if (payAmt != null && payAmt.signum() != 0)
 				{
-					BigDecimal baseCurrencyRate = convertedAmt.divide(payAmt, 6, RoundingMode.HALF_UP);
+					BigDecimal baseCurrencyRate = convertedAmt.divide(payAmt, 12, RoundingMode.HALF_UP);
 					mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, baseCurrencyRate);
+				}
+				else
+				{
+					// divide by zero
+					mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, null);
 				}
 				return "";
 			}
@@ -594,6 +599,13 @@ public class CalloutPayment extends CalloutEngine
 				if (colName.equals(I_C_Payment.COLUMNNAME_PayAmt)) {
 					BigDecimal baseConversionRate = (BigDecimal) mTab.getValue(I_C_Payment.COLUMNNAME_CurrencyRate);
 					BigDecimal converted = (BigDecimal) mTab.getValue(I_C_Payment.COLUMNNAME_ConvertedAmt);
+					if (baseConversionRate == null) {
+						if (converted != null) {
+							baseConversionRate = converted.divide(payAmt, 12, RoundingMode.HALF_UP);
+							mTab.setValue(I_C_Payment.COLUMNNAME_CurrencyRate, baseConversionRate);
+						}
+						return "";
+					}
 					converted = payAmt.multiply(baseConversionRate);
 					int stdPrecision = MCurrency.getStdPrecision(ctx, baseCurrencyId);
 					if (converted.scale() > stdPrecision)
