@@ -44,6 +44,9 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.launch.Framework;
 import org.osgi.service.event.Event;
 
 /**
@@ -124,7 +127,16 @@ public class ModelValidationEngine
 			&& !Util.isEmpty(missingModelValidationMessage)) {
 			// do not use severe, logging to db will try to init ModelValidationEngine again!
 			log.warning(missingModelValidationMessage);
-			System.exit(1);
+			log.warning("Terminating");
+	        try {
+	            BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+	            context.getBundle(0).stop();
+				if (context.getBundle(0) instanceof Framework framework)
+					framework.waitForStop(60000);
+			} catch (Exception e) {
+			} finally {
+				System.exit(1);
+			}
 		}
 
 	}	//	ModelValidatorEngine
