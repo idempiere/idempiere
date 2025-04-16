@@ -23,6 +23,7 @@ package org.idempiere.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.compiere.model.MRequiredPlugin;
 import org.compiere.util.CLogger;
@@ -76,7 +77,8 @@ public class RequiredPluginValidator implements FrameworkListener {
         switch (event.getType()) {
             case FrameworkEvent.ERROR:
                 eventType = "ERROR";
-                s_log.warning("DS Listener - OSGi Framework Error: " + event.getThrowable().getMessage());
+                if (s_log.isLoggable(Level.WARNING))
+                	s_log.warning("DS Listener - OSGi Framework Error: " + event.getThrowable().getMessage());
                 break;
             case FrameworkEvent.STARTLEVEL_CHANGED:
 				eventType = "STARTLEVEL_CHANGED";
@@ -86,7 +88,8 @@ public class RequiredPluginValidator implements FrameworkListener {
                 eventType = "OTHER (" + event.getType() + ")";
                 break;
         }
-		s_log.info("DS Listener - Received OSGi Framework Event: " + eventType
+        if (s_log.isLoggable(Level.INFO))
+        	s_log.info("DS Listener - Received OSGi Framework Event: " + eventType
 				+ (event.getBundle() != null ? " from Bundle: " + event.getBundle().getSymbolicName() : ""));
     }
 
@@ -126,8 +129,8 @@ public class RequiredPluginValidator implements FrameworkListener {
 	    	}
 	    }
 	    if (! missingPluginMessage.isEmpty()) {
-			s_log.warning(missingPluginMessage.toString());
-			s_log.warning("Terminating");
+			System.out.println(missingPluginMessage.toString());
+			System.out.println("Terminating");
 			try {
 				bundleContext.getBundle(0).stop();
 				if (bundleContext.getBundle(0) instanceof Framework framework)

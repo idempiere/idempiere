@@ -126,8 +126,8 @@ public class ModelValidationEngine
 		if (    MSystem.get(Env.getCtx()).isFailOnMissingModelValidator()
 			&& !Util.isEmpty(missingModelValidationMessage)) {
 			// do not use severe, logging to db will try to init ModelValidationEngine again!
-			log.warning(missingModelValidationMessage);
-			log.warning("Terminating");
+			System.out.println(missingModelValidationMessage);
+			System.out.println("Terminating");
 	        try {
 	            BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
 	            context.getBundle(0).stop();
