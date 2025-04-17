@@ -312,7 +312,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		{
 			String sql = MRole.getDefault().addAccessSQL(
 				"SELECT r.S_Resource_ID, r.Name, r.IsActive,"	//	1..3
-				+ "uom.C_UOM_ID,uom.UOMSymbol "					//	4..5
+				+ "uom.C_UOM_ID,COALESCE(uom.UOMSymbol, uom.Name) "					//	4..5
 				+ "FROM S_Resource r, S_ResourceType rt, C_UOM uom "
 				+ "WHERE r.S_ResourceType_ID=rt.S_ResourceType_ID AND rt.C_UOM_ID=uom.C_UOM_ID",
 				"r", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
