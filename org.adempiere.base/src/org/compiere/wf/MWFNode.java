@@ -792,4 +792,5 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		list.toArray (retValue);
 		return retValue;
 	}	//	getWFNodes
+	
 }
