@@ -22,7 +22,13 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library name="Partial-Runtime">
-        <CLASSES />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/mockito-core.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mockito-junit-jupiter.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/objenesis.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/byte-buddy.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/byte-buddy-agent.jar!/" />
+        </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
