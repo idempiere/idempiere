@@ -9,8 +9,8 @@
 	</parent>
 	<artifactId>org.idempiere.webservices</artifactId>
 	<packaging>eclipse-plugin</packaging>
-
 	<build>
+    <sourceDirectory>WEB-INF/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
