@@ -1096,7 +1096,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @return true if info window should auto hide empty columns
 	 */
 	protected boolean isAutoHideEmptyColumns() {
-		return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		if (ClientInfo.isMobile())
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_MOBILE_AUTO_HIDE_EMPTY_COLUMNS, true, Env.getAD_Client_ID(Env.getCtx()));
+		else
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	/**

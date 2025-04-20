@@ -6,6 +6,22 @@
 {
 	text-align: center;
 }
+td.form-label-above-input div.form-label {
+    text-align: left;
+}
+td.form-label-above-input div.form-label > span.z-label {
+    font-weight: 600;
+}
+td.form-label-above-input.z-cell {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+td.form-label-above-input.login-label {
+    text-align: left;
+}
+td.form-label-above-input.login-label .z-label {
+    font-weight: 600;
+}
 
 .form-button {
 	width: 99%;

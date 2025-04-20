@@ -297,7 +297,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
 				lookup, AD_InfoWindow_ID, queryValue);		
 		this.m_gridfield = field;
-		this.autoCollapsedParameterPanel = MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_COLLAPSED_PARAMETER_PANEL, false, Env.getAD_Client_ID(Env.getCtx()));
+		this.autoCollapsedParameterPanel = ClientInfo.isMobile()
+				? MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_MOBILE_AUTO_COLLAPSED_PARAMETER_PANEL, true, Env.getAD_Client_ID(Env.getCtx()))
+				: MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_COLLAPSED_PARAMETER_PANEL, false, Env.getAD_Client_ID(Env.getCtx()));
 
 		addEventListener(ON_QUERY_AFTER_CHANGE, e -> postQueryAfterChangeEvent());
 		

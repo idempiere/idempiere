@@ -967,10 +967,14 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	 * @return if auto hide empty columns feature have been turned on
 	 */
 	private boolean isAutoHideEmptyColumns() {
-		if (!Util.isEmpty(m_isAutoHideEmptyColumn, true)) 
+		if (!Util.isEmpty(m_isAutoHideEmptyColumn, true)) {
 			return "Y".equalsIgnoreCase(m_isAutoHideEmptyColumn);
-		else
-			return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		} else {
+			if (ClientInfo.isMobile())
+				return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_AUTO_HIDE_EMPTY_COLUMNS, true, Env.getAD_Client_ID(Env.getCtx()));
+			else
+				return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		}
 	}
 
 	/**
