@@ -1,0 +1,611 @@
+-- IDEMPIERE-5598  Add new Accounting Dimensions
+SELECT register_migration_script('202504211145_IDEMPIERE-5598.sql') FROM dual;
+
+-- Apr 21, 2025, 11:45:21 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217112,0,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',318,'C_Employee_ID',10,'N','N','N','N','N',0,'N',18,252,0,0,'Y',TO_TIMESTAMP('2025-04-21 11:45:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 11:45:20','YYYY-MM-DD HH24:MI:SS'),100,203893,'Y','N','D','N','N','N','Y','17772d1a-cdb9-46d9-bf74-b298ee7eaa9e','Y',0,'N','N','N','N','N')
+;
+
+-- Apr 21, 2025, 11:45:25 AM IST
+UPDATE AD_Column SET FKConstraintName='CEmployee_CInvoice', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-04-21 11:45:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217112
+;
+
+-- Apr 21, 2025, 11:45:25 AM IST
+ALTER TABLE C_Invoice ADD COLUMN C_Employee_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Apr 21, 2025, 11:45:25 AM IST
+ALTER TABLE C_Invoice ADD CONSTRAINT CEmployee_CInvoice FOREIGN KEY (C_Employee_ID) REFERENCES c_bpartner(c_bpartner_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Apr 21, 2025, 11:46:37 AM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217113,0,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',333,'C_Employee_ID',10,'N','N','N','N','N',0,'N',18,252,0,0,'Y',TO_TIMESTAMP('2025-04-21 11:46:37','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 11:46:37','YYYY-MM-DD HH24:MI:SS'),100,203893,'Y','N','D','N','N','N','Y','99a0e802-f00a-4695-8df0-7d93c42b77be','Y',0,'N','N','N','N','N')
+;
+
+-- Apr 21, 2025, 11:46:40 AM IST
+UPDATE AD_Column SET FKConstraintName='CEmployee_CInvoiceLine', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-04-21 11:46:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217113
+;
+
+-- Apr 21, 2025, 11:46:40 AM IST
+ALTER TABLE C_InvoiceLine ADD COLUMN C_Employee_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Apr 21, 2025, 11:46:40 AM IST
+ALTER TABLE C_InvoiceLine ADD CONSTRAINT CEmployee_CInvoiceLine FOREIGN KEY (C_Employee_ID) REFERENCES c_bpartner(c_bpartner_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Apr 21, 2025, 11:52:37 AM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208773,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',263,217112,'Y',10,500,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-04-21 11:52:37','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 11:52:37','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','a151bcb0-6b3b-4dde-b149-17bc78d4e7d9','Y',490,2)
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205806
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205807
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=200,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2763
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=210,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3273
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=220,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2953
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=230,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2956
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=240,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3112
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=250,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2774
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=260,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207185
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2775
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2764
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2768
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=6935
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=7794
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=7795
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=330,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2786
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=340,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2780
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=350,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2778
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=360,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2771
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=370,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8657
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=380,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10485
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=390,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=6564
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=400,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2777
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=410,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3663
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=420,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3899
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=430,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=13700
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=440,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=53257
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=450,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=53258
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=460,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=60970
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=470,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200050
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=480,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206135
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=490, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208549
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=500, AD_FieldGroup_ID=200032, XPosition=4,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208550
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_EP@=Y', SeqNo=510, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208773
+;
+
+-- Apr 21, 2025, 11:56:24 AM IST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2025-04-21 11:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207190
+;
+
+-- Apr 21, 2025, 11:56:42 AM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208774,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',270,217113,'Y',10,290,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-04-21 11:56:41','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 11:56:41','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','272aa211-cb59-475f-92b1-274a7433a670','Y',290,2)
+;
+
+-- Apr 21, 2025, 11:57:19 AM IST
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2025-04-21 11:57:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8265
+;
+
+-- Apr 21, 2025, 11:57:19 AM IST
+UPDATE AD_Field SET SeqNo=280, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:57:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208553
+;
+
+-- Apr 21, 2025, 11:57:19 AM IST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=290, AD_FieldGroup_ID=200032, XPosition=4,Updated=TO_TIMESTAMP('2025-04-21 11:57:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208554
+;
+
+-- Apr 21, 2025, 11:57:19 AM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_EP@=Y', SeqNo=300, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:57:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208774
+;
+
+-- Apr 21, 2025, 11:57:19 AM IST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2025-04-21 11:57:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204739
+;
+
+-- Apr 21, 2025, 11:57:58 AM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208775,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',290,217112,'Y',10,480,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-04-21 11:57:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 11:57:58','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','de6906c0-2ec0-4809-9bb8-d2bb882e3654','Y',470,2)
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205808
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205809
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=200,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3322
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=210,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3355
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=220,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3354
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=230,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3346
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=240,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3353
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=250,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3331
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=260,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207186
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4247
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3332
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3323
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3327
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=6936
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=7796
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=330,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=7797
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=340,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3343
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=350,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3337
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=360,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3335
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=370,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3329
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=380,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=6532
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=390,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8659
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=400,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3334
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=410,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3900
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=420,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3670
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=430,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=60971
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=440,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10486
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=450,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200048
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=460,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206136
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=470, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208551
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=480, AD_FieldGroup_ID=200032, XPosition=4,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208552
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_EP@=Y', SeqNo=490, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208775
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204735
+;
+
+-- Apr 21, 2025, 11:58:24 AM IST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2025-04-21 11:58:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207189
+;
+
+-- Apr 21, 2025, 11:58:53 AM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208776,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',291,217113,'Y',10,350,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-04-21 11:58:52','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 11:58:52','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','7c6d2e20-342b-48c5-830e-83d98682095e','Y',340,2)
+;
+
+-- Apr 21, 2025, 11:59:19 AM IST
+UPDATE AD_Field SET SeqNo=330, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:59:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208555
+;
+
+-- Apr 21, 2025, 11:59:19 AM IST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=340, AD_FieldGroup_ID=200032, XPosition=4,Updated=TO_TIMESTAMP('2025-04-21 11:59:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208556
+;
+
+-- Apr 21, 2025, 11:59:19 AM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_EP@=Y', SeqNo=350, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 11:59:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208776
+;
+
+-- Apr 21, 2025, 12:00:15 PM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217114,0,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',335,'C_Employee_ID',10,'N','N','N','N','N',0,'N',18,252,0,0,'Y',TO_TIMESTAMP('2025-04-21 12:00:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 12:00:14','YYYY-MM-DD HH24:MI:SS'),100,203893,'Y','N','D','N','N','N','Y','3aacfd07-95a3-4365-84a5-e1642df57f91','Y',0,'N','N','N','N','N')
+;
+
+-- Apr 21, 2025, 12:00:17 PM IST
+UPDATE AD_Column SET FKConstraintName='CEmployee_CPayment', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-04-21 12:00:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217114
+;
+
+-- Apr 21, 2025, 12:00:17 PM IST
+ALTER TABLE C_Payment ADD COLUMN C_Employee_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Apr 21, 2025, 12:00:17 PM IST
+ALTER TABLE C_Payment ADD CONSTRAINT CEmployee_CPayment FOREIGN KEY (C_Employee_ID) REFERENCES c_bpartner(c_bpartner_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Apr 21, 2025, 12:01:32 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208777,'Employee','Identifies a Business Partner','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',330,217114,'Y',10,780,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-04-21 12:01:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-04-21 12:01:31','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','d939b9b3-ea79-44c4-a430-afd2e9da148b','Y',780,2)
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=240,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205706
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=250,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205669
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=260,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205670
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4131
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5117
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5736
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5737
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4056
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200472
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=330,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4363
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=340,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4054
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=350,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4027
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=360,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204358
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=370,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204357
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=380,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4032
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=390,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4041
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=400,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4036
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=410,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4057
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=420,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4035
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=430,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4037
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=440,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4033
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=450,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4034
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=460,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4023
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=470,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4025
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=480,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4019
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=490,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4026
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=500,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4024
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=510,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=6299
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=520,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4021
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=530,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4022
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=540,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4020
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=550,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4055
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=560,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4043
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=570,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4058
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=580,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4042
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=590,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4258
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=600,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4039
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=610,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4053
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=620,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4052
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=630,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200631
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=640,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200630
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=650,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4051
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=660,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4047
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=670,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4049
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=680,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4048
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=690,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200627
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=700,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200625
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=710,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200626
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=720,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200624
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=730,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4362
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=740,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4361
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=750,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=6552
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=760,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4044
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=770,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4266
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=780,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4040
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET SeqNo=790, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208567
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=800, AD_FieldGroup_ID=200032, XPosition=4,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208568
+;
+
+-- Apr 21, 2025, 12:02:02 PM IST
+UPDATE AD_Field SET DisplayLogic='@$Element_EP@=Y', SeqNo=810, AD_FieldGroup_ID=200032,Updated=TO_TIMESTAMP('2025-04-21 12:02:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208777
+;
+
