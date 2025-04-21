@@ -1644,8 +1644,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 		}
 		
-		addViewIDToQuery();
-		addKeyViewToQuery();
+		addViewIDToQuery(from);
+		addKeyViewToQuery(from);
 
 		if (m_sqlMain.indexOf("@") >= 0) {
 			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlMain, true);
@@ -1673,18 +1673,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 	/**
 	 * Add all ViewID in each MInfoProcess to query.<br/>
-	 * If main query have subquery in SELECT, it will beak or incorrect
+	 * @param from
 	 */
-	protected void addViewIDToQuery () {
-		m_sqlMain = addMoreColumnToQuery (m_sqlMain, infoProcessList);
+	protected void addViewIDToQuery (String from) {
+		m_sqlMain = addMoreColumnToQuery (m_sqlMain, infoProcessList, from);
 	}
 	
 	/**
 	 * If {@link #keyColumnOfView} not null and not display, add {@link #keyColumnOfView} to query
+	 * @param from
 	 */
-	protected void addKeyViewToQuery () {
+	protected void addKeyViewToQuery (String from) {
 		if (isNeedAppendKeyViewData()){
-			m_sqlMain = addMoreColumnToQuery (m_sqlMain, new IInfoColumn [] {keyColumnOfView});
+			m_sqlMain = addMoreColumnToQuery (m_sqlMain, new IInfoColumn [] {keyColumnOfView}, from);
 		}
 	}
 	
@@ -1701,14 +1702,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * Append info window column to query.
 	 * @param sqlMain main SQL to append column
 	 * @param listInfoColumn list of info column to add to query
+	 * @param from original from, used to look where to add the additional column
 	 * @return SQL after append column
 	 */
-	protected String addMoreColumnToQuery (String sqlMain, IInfoColumn [] listInfoColumn) {
+	protected String addMoreColumnToQuery (String sqlMain, IInfoColumn [] listInfoColumn, String from) {
 		if (sqlMain == null || sqlMain.length() == 0 || listInfoColumn == null || listInfoColumn.length == 0){
 			return sqlMain;
 		}
 				
-		int fromIndex = sqlMain.indexOf("FROM");
+		int fromIndex = sqlMain.indexOf("FROM " + from);
 		// split Select and from clause
 		String selectClause = sqlMain.substring(0, fromIndex);
 		String fromClause = sqlMain.substring(fromIndex);
