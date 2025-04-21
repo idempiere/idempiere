@@ -1,4 +1,4 @@
-.form-label 
+.form-label
 {
 	text-align: right;
 }
@@ -10,7 +10,7 @@ td.form-label-above-input div.form-label {
     text-align: left;
 }
 td.form-label-above-input div.form-label > span.z-label {
-    font-weight: 600;
+    font-weight: 400;
 }
 td.form-label-above-input.z-cell {
     padding-top: 5px;
@@ -20,7 +20,15 @@ td.form-label-above-input.login-label {
     text-align: left;
 }
 td.form-label-above-input.login-label .z-label {
-    font-weight: 600;
+    font-weight: 400;
+}
+.form-label-above-input.z-window .login-box-body {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.form-label-above-input.adwindow-form {
+    padding-left: 1em !important;
+    padding-right: 1em !important;
 }
 
 .form-button {

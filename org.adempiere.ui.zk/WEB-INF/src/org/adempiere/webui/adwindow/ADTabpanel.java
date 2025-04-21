@@ -109,22 +109,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Cell;
-import org.zkoss.zul.Center;
-import org.zkoss.zul.DefaultTreeNode;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Separator;
-import org.zkoss.zul.South;
-import org.zkoss.zul.Space;
-import org.zkoss.zul.Tabpanels;
-import org.zkoss.zul.Tabs;
-import org.zkoss.zul.Toolbar;
-import org.zkoss.zul.TreeModel;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.Vlayout;
-import org.zkoss.zul.West;
+import org.zkoss.zul.*;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -626,6 +611,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		rowList = null;
     		currentGroup = null;
     	}
+
+		if (isLabelAboveInput())
+			LayoutUtils.addSclass("form-label-above-input", form);
+
     	Rows rows = form.newRows();
         GridField fields[] = gridTab.getFields();
         Row row = new Row();

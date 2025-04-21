@@ -147,6 +147,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         init();
         this.setId("loginPanel");
         this.setSclass("login-box");
+		if (isLabelAboveInput())
+			LayoutUtils.addSclass("form-label-above-input", this);
 
         txtUserId.setEnabled(false);
         txtPassword.setEnabled(false);
@@ -260,6 +262,7 @@ public class LoginPanel extends Window implements EventListener<Event>
      * Layout panel
      */
 	protected void createUI() {
+
 		Form form = new Form();
 
 		Div div = new Div();

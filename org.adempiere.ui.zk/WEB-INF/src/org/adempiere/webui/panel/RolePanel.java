@@ -166,6 +166,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         init();
         this.setId("rolePanel");
         this.setSclass("login-box");
+		if (isLabelAboveInput())
+			LayoutUtils.addSclass("form-label-above-input", this);
 
         if (! m_showRolePanel) {
         	// check if all mandatory fields are ok to not show
@@ -205,6 +207,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
      * Layout panel
      */
 	protected void createUI() {
+
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	Label label = new Label(Msg.getMsg(Env.getCtx(), "SelectRole"));
