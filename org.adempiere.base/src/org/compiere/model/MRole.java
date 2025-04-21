@@ -1724,7 +1724,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 					+ "             AND ce.AD_Process_Para_ID IS NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
 			String noReportsFilter = "";
-			if (! isCanReport())
+			if (! MRole.getDefault().isCanReport())
 				noReportsFilter = " AND AD_Process_ID NOT IN (SELECT p.AD_Process_ID FROM AD_Process p WHERE IsReport='Y')";
 			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter + noReportsFilter;
 			PreparedStatement pstmt = null;
@@ -1925,7 +1925,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 							m_formAccess.remove(formId);
 						}
 					} else {
-						if ( ! (formId == SystemIDs.FORM_ARCHIVEVIEWER && !isCanReport()) )
+						if ( ! (formId == SystemIDs.FORM_ARCHIVEVIEWER && !MRole.getDefault().isCanReport()) )
 							directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
