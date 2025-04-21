@@ -164,6 +164,8 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.InputElement;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+
 /**
  * AD_InfoWindow implementation
  * @author hengsin
@@ -1913,8 +1915,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		Columns columns = new Columns();
 		parameterGrid.appendChild(columns);
 		noOfParameterColumn = getNoOfParameterColumns();
-		String labelWidth = ( 100 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
-		String fieldWidth = ( 100 * 2 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
+		String labelWidth = noOfParameterColumn == 1 ? "100%" : ( 100 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
+		String fieldWidth = noOfParameterColumn == 1 ? "100%" : ( 100 * 2 / ( 3 * ( getNoOfParameterColumns() / 2 ) ) ) + "%";
 		for(int i = 0; i < noOfParameterColumn; i++) {
 			Column column = new Column();
 			if (i%2 == 0)
@@ -2173,13 +2175,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         if (!(fieldEditor instanceof Checkbox))
         {
         	Div div = new Div();
-        	div.setStyle("text-align: right;");
+			if (!isLabelAboveInputForSmallWidth())
+        		div.setStyle("text-align: right;");
         	div.appendChild(label);
         	if (label.getDecorator() != null){
         		div.appendChild (label.getDecorator());
         	}
         	panel.appendChild(div);
-        } else {
+			if (getNoOfParameterColumns() == 1)
+			{
+				panel = new Row();
+				parameterGrid.getRows().appendChild(panel);
+			}
+        } else if (getNoOfParameterColumns() > 1) {
         	panel.appendChild(new Space());
         }
         
@@ -2210,7 +2218,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @return number of columns for parameter grid
 	 */
 	protected int getNoOfParameterColumns() {
-		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
+		if (isLabelAboveInputForSmallWidth())
+			return 1;
+		else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
 			return 2;
 		else if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
 			return 4;
