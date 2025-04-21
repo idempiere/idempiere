@@ -251,11 +251,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword.removeEventListener(Events.ON_FOCUS, txtPassword);
     }
 
-	protected static boolean isLabelAboveInput() {
-		if (ClientInfo.isMobile() && ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH - 1))
-			return MSysConfig.getBooleanValue(MSysConfig.ZK_FIELD_MOBILE_SMALL_WIDTH_LABEL_ABOVE_INPUT, true, Env.getAD_Client_ID(Env.getCtx()));
-		else
-			return false;
+	private boolean isLabelAboveInput() {
+		return LayoutUtils.isLabelAboveInputForSmallWidth();
 	}
 
     /**

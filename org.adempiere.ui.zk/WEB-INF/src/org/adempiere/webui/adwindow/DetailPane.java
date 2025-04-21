@@ -557,13 +557,19 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			tp.addEventListener(ADTabpanel.ON_SWIPE_RIGHT, e -> {
 				RecordToolbar rtb = tp.getRecordToolbar();
 				if (rtb != null && rtb.isVisible()) {
-					if (!rtb.btnPrevious.isDisabled()) Events.sendEvent(Events.ON_CLICK, rtb.btnPrevious, null);
+					if (!rtb.btnPrevious.isDisabled()) {
+						LayoutUtils.addSclass(ADTabpanel.SLIDE_RIGHT_OUT_CSS, adTabpanel.form);
+						Events.sendEvent(Events.ON_CLICK, rtb.btnPrevious, null);
+					}
 				}
 			});
 			tp.addEventListener(ADTabpanel.ON_SWIPE_LEFT, e -> {
 				RecordToolbar rtb = tp.getRecordToolbar();
 				if (rtb != null && rtb.isVisible()) {
-					if (!rtb.btnNext.isDisabled()) Events.sendEvent(Events.ON_CLICK, rtb.btnNext, null);
+					if (!rtb.btnNext.isDisabled()) {
+						LayoutUtils.addSclass(ADTabpanel.SLIDE_LEFT_OUT_CSS, adTabpanel.form);
+						Events.sendEvent(Events.ON_CLICK, rtb.btnNext, null);
+					}
 				}
 			});
 			adTabpanel.setupFormSwipeListener(tp);

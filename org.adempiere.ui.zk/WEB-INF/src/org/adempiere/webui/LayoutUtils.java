@@ -22,6 +22,8 @@ import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuOuter;
 import org.zkoss.zk.au.out.AuScript;
@@ -582,5 +584,16 @@ public final class LayoutUtils {
 				.append("t.setWidth(\"").append("jq(r).width()+'px'\");");
 		script.append("})()");
 		Clients.response("_sameWidth_", new AuScript(target, script.toString()));
+	}
+
+	/**
+	 * Is prefer label above input layout for small width (<500px) mobile device
+	 * @return true if prefer label above input layout for small width (<500px) mobile device
+	 */
+	public static boolean isLabelAboveInputForSmallWidth() {
+		if (ClientInfo.isMobile() && ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH - 1))
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_FIELD_MOBILE_SMALL_WIDTH_LABEL_ABOVE_INPUT, true, Env.getAD_Client_ID(Env.getCtx()));
+		else
+			return false;
 	}
 }

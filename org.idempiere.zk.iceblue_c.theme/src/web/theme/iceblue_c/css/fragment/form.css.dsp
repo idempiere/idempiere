@@ -22,13 +22,10 @@ td.form-label-above-input.login-label {
 td.form-label-above-input.login-label .z-label {
     font-weight: 400;
 }
-.form-label-above-input.z-window .login-box-body {
+.form-label-above-input.z-window .login-box-body,
+.form-label-above-input.adwindow-form {
     padding-left: 1em;
     padding-right: 1em;
-}
-.form-label-above-input.adwindow-form {
-    padding-left: 1em !important;
-    padding-right: 1em !important;
 }
 
 .form-button {

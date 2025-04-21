@@ -138,6 +138,8 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+
 /**
  *  Find/Search Records dialog.
  *
@@ -499,19 +501,27 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         Columns columns = new Columns();
         Column column = new Column();
-        column.setAlign("right");
-        ZKUpdateUtil.setWidth(column, "30%");
+        if (isLabelAboveInputForSmallWidth()) {
+            ZKUpdateUtil.setWidth(column, "100%");
+        } else {
+            column.setAlign("right");
+            ZKUpdateUtil.setWidth(column, "30%");
+        }
         columns.appendChild(column);
-        
-        column = new Column();
-        column.setAlign("left");
-        ZKUpdateUtil.setWidth(column, "50%");
-        columns.appendChild(column);
-        
-        column = new Column();
-        ZKUpdateUtil.setWidth(column, "20%");
-        columns.appendChild(column);
-        
+
+        if (!isLabelAboveInputForSmallWidth()) {
+            column = new Column();
+            column.setAlign("left");
+            ZKUpdateUtil.setWidth(column, "50%");
+            columns.appendChild(column);
+
+            column = new Column();
+            ZKUpdateUtil.setWidth(column, "20%");
+            columns.appendChild(column);
+        } else {
+            contentSimple.setSclass("form-label-above-input");
+        }
+
         contentSimple.appendChild(columns);
 
         contentSimpleRows = new Rows();
@@ -1630,6 +1640,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         Row panel = new Row();
         panel.appendChild(label);
+        if (isLabelAboveInputForSmallWidth()) {
+            contentSimpleRows.appendChild(panel);
+            if (group != null)
+                panel.setGroup(group);
+            panel = new Row();
+        }
         Div div = new Div();
         panel.appendChild(div);
         div.appendChild(fieldEditor);
@@ -1667,7 +1683,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	editor.fillHorizontal();
         	editor.updateStyle(false);
         }
-        panel.appendChild(new Space());
+        if (!isLabelAboveInputForSmallWidth())
+            panel.appendChild(new Space());
         if (group != null)
         	panel.setGroup(group);
 

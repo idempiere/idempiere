@@ -199,8 +199,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	createUI();
     }
 
-	protected boolean isLabelAboveInput() {
-		return LoginPanel.isLabelAboveInput();
+	private boolean isLabelAboveInput() {
+		return LayoutUtils.isLabelAboveInputForSmallWidth();
 	}
 
     /**
