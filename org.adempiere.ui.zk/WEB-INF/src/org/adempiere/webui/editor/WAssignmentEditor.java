@@ -59,7 +59,7 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class WAssignmentEditor extends WEditor implements ContextMenuListener {
 	
-	private static final String RETRIEVE_RESOURCE_ASSIGNMENT_SQL = "SELECT r.Name,ra.AssignDateFrom,ra.Qty,uom.UOMSymbol "
+	private static final String RETRIEVE_RESOURCE_ASSIGNMENT_SQL = "SELECT r.Name,ra.AssignDateFrom,ra.Qty,COALESCE(uom.UOMSymbol,uom.Name) "
 			+ "FROM S_ResourceAssignment ra, S_Resource r, S_ResourceType rt, C_UOM uom "
 			+ "WHERE ra.S_ResourceAssignment_ID=?"
 			+ " AND ra.S_Resource_ID=r.S_Resource_ID"
