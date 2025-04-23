@@ -455,6 +455,11 @@ public class DefaultEvaluatee implements Evaluatee {
 			String key = tableName + "|" + recordId;
 			remove(key);
 		}
+		
+		@Override
+		public void reset(String tableName, String key) {
+			remove(key);
+		}
 	}
 	
 	/**

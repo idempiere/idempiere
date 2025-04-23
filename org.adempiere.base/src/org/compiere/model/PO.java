@@ -2209,8 +2209,10 @@ public abstract class PO
 		set_ValueNoCheck ("UpdatedBy", Integer.valueOf(AD_User_ID));
 	}	//	setAD_User_ID
 
+	private static final String TRANSLATION_CACHE_TABLE_NAME = "PO_Trl";
+	
 	/**	Cache						*/
-	private static CCache<String,String> trl_cache	= new CCache<String,String>("PO_Trl", 5);
+	private static CCache<String,String> trl_cache	= new CCache<String,String>(TRANSLATION_CACHE_TABLE_NAME, 5);
 	/** Cache for foreign keys */
 	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
@@ -2291,9 +2293,13 @@ public abstract class PO
 	 * @return key used in the translation cache
 	 */
 	private String getTrlCacheKey(String columnName, String AD_Language) {
-		return get_TableName() + "." + columnName + "|" + get_ID() + "|" + AD_Language;
+		return toTrlCacheKey(get_TableName(), columnName, get_ID(), AD_Language);
 	}
 
+	private static String toTrlCacheKey(String tableName, String columnName, int id, String AD_Language) {
+		return tableName + "." + columnName + "|" + id + "|" + AD_Language;
+	}
+	
 	/**
 	 * Get Translation of column
 	 * @param columnName
@@ -2802,6 +2808,57 @@ public abstract class PO
 					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
 				else if (get_ID() > 0)
 					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+			}
+		} else if (p_info.getTableName().endsWith("_Trl") && CacheMgt.get().hasCache(TRANSLATION_CACHE_TABLE_NAME) && !newRecord) {
+			MTable table = MTable.get(getCtx(), p_info.getTableName().substring(0, p_info.getTableName().length() - 4));
+			POInfo parentInfo = POInfo.getPOInfo(getCtx(), table.getAD_Table_ID());
+			// take all translated columns, is_valuechanged(columnName) not working at this point
+			List<String> translatedColumns = new ArrayList<>();
+			for (int i = 0; i < parentInfo.getColumnCount(); i++)
+			{
+				String columnName = parentInfo.getColumnName(i);
+				if (parentInfo.isColumnTranslated(i))
+				{
+					translatedColumns.add(columnName);
+				}
+			}
+			if (translatedColumns.size() > 0) {
+				int id = get_ValueAsInt(table.get_KeyColumns()[0]);
+				boolean cacheResetScheduled = false;
+				if (get_TrxName() != null) {
+					Trx trx = Trx.get(get_TrxName(), false);
+					if (trx != null) {
+						trx.addTrxEventListener(new TrxEventListener() {
+							@Override
+							public void afterRollback(Trx trx, boolean success) {
+								trx.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterCommit(Trx sav, boolean success) {
+								if (success)
+									Adempiere.getThreadPoolExecutor().submit(() -> { 
+										for (String column : translatedColumns) {
+											CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
+												toTrlCacheKey(table.getTableName(), column, id, Env.getAD_Language(getCtx())));
+										}
+									});
+								trx.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterClose(Trx trx) {
+							}
+						});
+						cacheResetScheduled = true;
+					}
+				}
+				if (!cacheResetScheduled) {
+					Adempiere.getThreadPoolExecutor().submit(() -> {
+						for (String column : translatedColumns) {
+							CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
+								toTrlCacheKey(table.getTableName(), column, id, Env.getAD_Language(getCtx())));
+						}
+					});
+				}
 			}
 		}
 		
