@@ -2212,7 +2212,7 @@ public abstract class PO
 	private static final String TRANSLATION_CACHE_TABLE_NAME = "PO_Trl";
 	
 	/**	Cache						*/
-	private static CCache<String,String> trl_cache	= new CCache<String,String>(TRANSLATION_CACHE_TABLE_NAME, 5);
+	private static CCache<String,String> trl_cache	= new CCache<String,String>(TRANSLATION_CACHE_TABLE_NAME, 5, CCache.DEFAULT_EXPIRE_MINUTE, true);
 	/** Cache for foreign keys */
 	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
@@ -2739,6 +2739,9 @@ public abstract class PO
 				success = false;
 			}
 		}
+		
+		//collect changed columns for translation cache reset below
+		List<String> updatedColumns = new ArrayList<>();
 		//	OK
 		if (success)
 		{
@@ -2764,6 +2767,8 @@ public abstract class PO
 			int size = p_info.getColumnCount();
 			for (int i = 0; i < size; i++)
 			{
+				if (is_ValueChanged(i))
+					updatedColumns.add(p_info.getColumnName(i));
 				if (m_newValues[i] != null)
 				{
 					if (m_newValues[i] == Null.NULL)
@@ -2775,9 +2780,9 @@ public abstract class PO
 			m_newValues = new Object[size];
 			m_createNew = false;
 		}
-		if (!newRecord)
+		if (!newRecord && success)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID(), get_UUID());
-		if (CacheMgt.get().hasCache(p_info.getTableName())) {
+		if (success && CacheMgt.get().hasCache(p_info.getTableName())) {
 			boolean cacheResetScheduled = false;
 			if (get_TrxName() != null) {
 				Trx trx = Trx.get(get_TrxName(), false);
@@ -2809,21 +2814,20 @@ public abstract class PO
 				else if (get_ID() > 0)
 					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
 			}
-		} else if (p_info.getTableName().endsWith("_Trl") && CacheMgt.get().hasCache(TRANSLATION_CACHE_TABLE_NAME) && !newRecord) {
+		} else if (success && p_info.getTableName().endsWith("_Trl") && CacheMgt.get().hasCache(TRANSLATION_CACHE_TABLE_NAME) && !newRecord) {
 			MTable table = MTable.get(getCtx(), p_info.getTableName().substring(0, p_info.getTableName().length() - 4));
 			POInfo parentInfo = POInfo.getPOInfo(getCtx(), table.getAD_Table_ID());
-			// take all translated columns, is_valuechanged(columnName) not working at this point
 			List<String> translatedColumns = new ArrayList<>();
 			for (int i = 0; i < parentInfo.getColumnCount(); i++)
 			{
 				String columnName = parentInfo.getColumnName(i);
-				if (parentInfo.isColumnTranslated(i))
+				if (parentInfo.isColumnTranslated(i) && updatedColumns.contains(columnName))
 				{
 					translatedColumns.add(columnName);
 				}
 			}
 			if (translatedColumns.size() > 0) {
-				int id = get_ValueAsInt(table.get_KeyColumns()[0]);
+				int id = get_ValueAsInt(table.getKeyColumns()[0]);
 				boolean cacheResetScheduled = false;
 				if (get_TrxName() != null) {
 					Trx trx = Trx.get(get_TrxName(), false);
@@ -2839,7 +2843,7 @@ public abstract class PO
 									Adempiere.getThreadPoolExecutor().submit(() -> { 
 										for (String column : translatedColumns) {
 											CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
-												toTrlCacheKey(table.getTableName(), column, id, Env.getAD_Language(getCtx())));
+												toTrlCacheKey(table.getTableName(), column, id, get_ValueAsString("AD_Language")));
 										}
 									});
 								trx.removeTrxEventListener(this);
@@ -2855,7 +2859,7 @@ public abstract class PO
 					Adempiere.getThreadPoolExecutor().submit(() -> {
 						for (String column : translatedColumns) {
 							CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
-								toTrlCacheKey(table.getTableName(), column, id, Env.getAD_Language(getCtx())));
+								toTrlCacheKey(table.getTableName(), column, id, get_ValueAsString("AD_Language")));
 						}
 					});
 				}
@@ -4744,7 +4748,7 @@ public abstract class PO
 		        for (String langName : availableLanguages) {
 		    		Language language = Language.getLanguage(langName);
 					String key = getTrlCacheKey(columnName, language.getAD_Language());
-					trl_cache.remove(key);
+					CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, key);
 				}
 			}
 		}

@@ -37,7 +37,8 @@ public class ResetCacheCallable implements Callable<Integer>, Serializable
 	 */
 	public ResetCacheCallable(String tableName, String key)
 	{
-		this.key = key;
+		this.tableName = tableName;
+		this.key = key;		
 	}
 	
 	/**
