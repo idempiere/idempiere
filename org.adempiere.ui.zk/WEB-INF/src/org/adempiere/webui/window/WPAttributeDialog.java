@@ -602,8 +602,15 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 						// IDEMPIERE-2999 - set value in online button as HRef
 						if (sourceEditor.getGridField().getDisplayType() == DisplayType.URL)
 							((Urlbox) sourceEditor.getComponent()).setText((String) evt.getNewValue());
+						// update grid field and context
+						sourceEditor.getGridField().setValue(evt.getNewValue(), false);
 					}
 				}
+			});
+			// evaluate context (if needed, for e.g dynamic validation)
+			WEditor finalEditor = editor;
+			editor.getComponent().addEventListener(Events.ON_FOCUS, e-> {
+				finalEditor.dynamicDisplay();
 			});
 
 			Component fieldEditor = editor.getComponent();
