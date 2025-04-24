@@ -138,6 +138,10 @@ public class EnvTest extends AbstractTestCase {
 		assertEquals("test@@mail.com", expr, "Unexpected parsed text for " + expr + " with keepEscapeSequence=true");
 		parsedText = Env.parseVariable(expr, null, getTrxName(), true, true, true, false);		
 		assertEquals("test@mail.com", parsedText, "Unexpected parsed text for " + expr + " with keepEscapeSequence=false");
+
+		expr = "@C_Order_ID<C_Order.DocumentNo>@";
+		parsedText = Env.parseVariable(expr, order, getTrxName(), true, true, true);
+		assertEquals(order.getDocumentNo(), parsedText, "Unexpected parsed text for "+expr);
 	}
 
 	@Test

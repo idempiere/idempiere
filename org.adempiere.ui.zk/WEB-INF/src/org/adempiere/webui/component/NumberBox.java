@@ -165,7 +165,7 @@ public class NumberBox extends Div
 						}
 					}
 					String txtCalcId = txtCalc.getId();
-					Clients.evalJavaScript("calc.append('" + txtCalcId + "', '" + curValue + "')");					
+					Clients.evalJavaScript("calc.clearAll('" + txtCalcId + "'); calc.append('" + txtCalcId + "', '" + curValue + "')");	
 				}				
 			}
 		});
