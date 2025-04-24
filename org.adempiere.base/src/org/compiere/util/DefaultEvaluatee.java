@@ -302,6 +302,12 @@ public class DefaultEvaluatee implements Evaluatee {
 		// handle format in <> operator
 		if (format != null && format.length() > 0) {
 			String foreignTable = getForeignTableName(variableName, column);
+			if (foreignTable == null && column != null && getPO() != null
+					&& getPO().get_KeyColumns() != null
+					&& getPO().get_KeyColumns().length == 1
+					&& getPO().get_KeyColumns()[0].equalsIgnoreCase(column.getColumnName())) {
+				foreignTable = getPO().get_TableName();
+			}
 			//no dot operator and variable name is *_ID
 			if (Util.isEmpty(foreignColumn) && variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX)) {
 				int id = 0;
