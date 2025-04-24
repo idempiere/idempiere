@@ -218,9 +218,20 @@ public class MCountry extends X_C_Country
 	/**	Display Language				*/
 	@SuppressWarnings("unused")
 	private static String		s_AD_Language = null;
-	
+
 	/**	Country Cache					*/
-	private static ImmutableIntPOCache<Integer,MCountry>	s_countries = null;
+	private static ImmutableIntPOCache<Integer,MCountry>    s_countries = new ImmutableIntPOCache<Integer,MCountry>(Table_Name, 250, 0, false) {
+		private static final long serialVersionUID = 1106078701451046946L;
+
+		@Override
+		public int reset(int recordId) {
+			if (recordId <= 0)
+				return super.reset(recordId);
+			else 
+				return 0;
+		}
+	};
+
 	/**	Default Country 				*/
 	private static ImmutableIntPOCache<Integer,MCountry>	s_default = new ImmutableIntPOCache<Integer,MCountry>(Table_Name, Table_Name+"|Default", 3);
 	/**	Static Logger					*/
