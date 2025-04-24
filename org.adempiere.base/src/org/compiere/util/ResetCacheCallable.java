@@ -28,7 +28,18 @@ public class ResetCacheCallable implements Callable<Integer>, Serializable
 	private static final long serialVersionUID = 6669645804211785491L;
 	
 	private String tableName;
-	private int Record_ID;
+	private Integer Record_ID;
+	private String key;
+	
+	/**
+	 * @param tableName
+	 * @param key
+	 */
+	public ResetCacheCallable(String tableName, String key)
+	{
+		this.tableName = tableName;
+		this.key = key;		
+	}
 	
 	/**
 	 * @param tableName
@@ -45,7 +56,9 @@ public class ResetCacheCallable implements Callable<Integer>, Serializable
 	 */
 	@Override
 	public Integer call() throws Exception {
-		return CacheMgt.get().resetLocalCache(tableName, Record_ID);
+		return Record_ID != null
+			? CacheMgt.get().resetLocalCache(tableName, Record_ID)
+			: CacheMgt.get().resetLocalCache(tableName, key);
 	}
 	
 }
