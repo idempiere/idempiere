@@ -2212,7 +2212,7 @@ public abstract class PO
 	private static final String TRANSLATION_CACHE_TABLE_NAME = "PO_Trl";
 	
 	/**	Cache						*/
-	private static CCache<String,String> trl_cache	= new CCache<String,String>(TRANSLATION_CACHE_TABLE_NAME, 5, CCache.DEFAULT_EXPIRE_MINUTE, true);
+	private static CCache<String,String> trl_cache	= new CCache<String,String>(TRANSLATION_CACHE_TABLE_NAME, 5, CCache.DEFAULT_EXPIRE_MINUTE, false);
 	/** Cache for foreign keys */
 	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
