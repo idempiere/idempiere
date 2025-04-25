@@ -252,6 +252,10 @@
             class="org.adempiere.pipo2.handler.TableAttributeSetElementHandler"
             id="AD_TableAttributeSet">
       </handler>
+      <handler
+            class="org.adempiere.pipo2.handler.AttributeElementHandler"
+            id="M_Attribute">
+      </handler>
    </extension>
 
 </plugin>

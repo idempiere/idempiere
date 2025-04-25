@@ -21,46 +21,44 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.DataElementParameters;
-import org.adempiere.pipo2.ElementHandler;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.compiere.model.MAttribute;
-import org.compiere.model.MAttributeUse;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableAttribute;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class AttributeUseElementHandler extends GenericPOElementHandler
+public class AttributeElementHandler extends GenericPOElementHandler
 {
-	@SuppressWarnings("resource")
+	
 	@Override
 	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException
 	{
 		AttributesImpl atts = new AttributesImpl();
+		int tableId = MTable.getTable_ID(MTableAttribute.Table_Name);
 		String sql = Env.getContext(ctx.ctx, DataElementParameters.SQL_STATEMENT);
-		String tableName = MAttributeUse.Table_Name;
-		int tableId = MTable.getTable_ID(MAttributeUse.Table_Name);
-		List<String> excludes = defaultExcludeList(tableName);
+		List<String> excludes = defaultExcludeList(MTableAttribute.Table_Name);
 		Statement stmt = null;
 		ResultSet rs = null;
 		try
 		{
-			sql = MRole.getDefault().addAccessSQL(sql, tableName, true, true);
+			sql = MRole.getDefault().addAccessSQL(sql, MAttribute.Table_Name, true, true);
 			stmt = DB.createStatement();
 			rs = stmt.executeQuery(sql);
 			while (rs.next())
 			{
-				MAttributeUse mAttributeUse = new MAttributeUse(ctx.ctx, rs, getTrxName(ctx));
-				int AD_Client_ID = mAttributeUse.getAD_Client_ID();
+				MAttribute attribute = new MAttribute(ctx.ctx, rs, getTrxName(ctx));
+				int AD_Client_ID = attribute.getAD_Client_ID();
 				if (AD_Client_ID != Env.getAD_Client_ID(ctx.ctx))
 					continue;
 
-				boolean createElement = isPackOutElement(ctx, mAttributeUse);
+				boolean createElement = isPackOutElement(ctx, attribute);
 
 				MTable table = MTable.get(ctx.ctx, tableId);
 				for (MColumn column : table.getColumns(false))
@@ -82,7 +80,7 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 					}
 				}
 
-				for (String keycol : mAttributeUse.get_KeyColumns())
+				for (String keycol : attribute.get_KeyColumns())
 				{
 					if (excludes.contains(keycol.toLowerCase()))
 					{
@@ -90,22 +88,14 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 					}
 				}
 
-				if (mAttributeUse.getM_Attribute_ID() > 0)
-				{
-					ctx.packOut.getCtx().ctx.put("Table_Name", MAttribute.Table_Name);
-					ElementHandler handler = ctx.packOut.getHandler(MAttribute.Table_Name);
-					handler.packOut(ctx.packOut, document, ctx.logDocument, mAttributeUse.getM_Attribute_ID());
-					ctx.packOut.getCtx().ctx.put("Table_Name", MAttributeUse.Table_Name);
-				}
-
 				if (createElement)
 				{
-					verifyPackOutRequirement(mAttributeUse);
+					verifyPackOutRequirement(attribute);
 					addTypeName(atts, "table");
-					document.startElement("", "", tableName, atts);
-					PoExporter filler = new PoExporter(ctx, document, mAttributeUse);
+					document.startElement("", "", MAttribute.Table_Name, atts);
+					PoExporter filler = new PoExporter(ctx, document, attribute);
 					filler.export(excludes, true);
-					document.endElement("", "", tableName);
+					document.endElement("", "", MAttribute.Table_Name);
 				}
 			}
 		}
@@ -120,11 +110,30 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 	}
 
 	@Override
+	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
+	{
+		if(m_tableName == null)
+			m_tableName = Env.getContext(packout.getCtx().ctx, "Table_Name");
+		int tableId = MTable.get(packout.getCtx().ctx, m_tableName).getAD_Table_ID();
+		String sql = "SELECT * FROM M_Attribute WHERE M_Attribute_ID=" + recordId;
+		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
+		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
+		this.create(packout.getCtx(), packoutHandler);
+		packout.getCtx().ctx.remove(DataElementParameters.AD_TABLE_ID);
+		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
+	}
+
+	@Override
 	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId, String uuid) throws Exception
 	{
-		StringBuilder sql = new StringBuilder("SELECT * FROM M_AttributeUse WHERE M_AttributeUse_UU = '").append(uuid).append("'");
-		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql.toString());
+		if(m_tableName == null)
+			m_tableName = Env.getContext(packout.getCtx().ctx, "Table_Name");
+		int tableId = MTable.get(packout.getCtx().ctx, m_tableName).getAD_Table_ID();
+		String sql = "SELECT * FROM M_Attribute WHERE M_Attribute_UU = '" + uuid + "'";
+		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
+		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
 		this.create(packout.getCtx(), packoutHandler);
+		packout.getCtx().ctx.remove(DataElementParameters.AD_TABLE_ID);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
 	}
 }
