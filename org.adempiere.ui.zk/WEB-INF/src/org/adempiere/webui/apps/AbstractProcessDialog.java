@@ -87,12 +87,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Html;
-import org.zkoss.zul.Space;
-import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.*;
+
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 /**
  * Abstract dialog base class for execution of process/report.
@@ -290,7 +287,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected HtmlBasedComponent mainParameterLayout;
 	protected WTableDirEditor fPrintFormat;
 	private WEditor fLanguageType;
-	protected Listbox freportType;
+	protected Combobox freportType;
 	private Checkbox chbIsSummary;
 	/** ok button to run process/report **/
 	protected Button bOK;
@@ -344,7 +341,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		// input component
 		HtmlBasedComponent inputParameterLayout = new Div();
-		inputParameterLayout.setSclass("input-paramenter-layout"); 
+		inputParameterLayout.setSclass("input-paramenter-layout");
+		if (isLabelAboveInputForSmallWidth())
+			LayoutUtils.addSclass("form-label-above-input", inputParameterLayout);
 		topParameterLayout.appendChild(inputParameterLayout);
 		
 		// input parameter content
@@ -481,18 +480,28 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			return;//if not a report not need show this panel
 
 		// option control
-		Hlayout reportOptionLayout = new Hlayout();
+		Hlayout reportOptionLayout =  new Hlayout();
 		reportOptionLayout.setSclass("report-option-container");
 		reportOptionLayout.setValign("middle");
-		bottomParameterLayout.appendChild(reportOptionLayout);
+		if (!isLabelAboveInputForSmallWidth())
+			bottomParameterLayout.appendChild(reportOptionLayout);
 
 		//output type: html, pdf, etc
 		Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
-		lreportType.setSclass("option-input-parameter view-report-label");
-		freportType = new Listbox();
+		if (!isLabelAboveInputForSmallWidth())
+			lreportType.setSclass("option-input-parameter view-report-label");
+		freportType = new Combobox();
 		freportType.setSclass("option-input-parameter view-report-list");
-		reportOptionLayout.appendChild(lreportType);
-		reportOptionLayout.appendChild(freportType);	
+		if (isLabelAboveInputForSmallWidth()) {
+			freportType.setHflex("1");
+			freportType.setPlaceholder(lreportType.getValue());
+		}
+		if (isLabelAboveInputForSmallWidth()) {
+			bottomParameterLayout.appendChild(freportType);
+		} else {
+			reportOptionLayout.appendChild(lreportType);
+			reportOptionLayout.appendChild(freportType);
+		}
 
 		if (isJasperReport())
 			listReportTypeJasper();
@@ -505,24 +514,41 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		chbIsSummary.setSclass("option-input-parameter");
 		chbIsSummary.setLabel(Msg.translate(Env.getCtx(), "Summary"));
 		Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
-		lPrintFormat.setSclass("option-input-parameter print-format-label");
+		if (!isLabelAboveInputForSmallWidth())
+			lPrintFormat.setSclass("option-input-parameter print-format-label");
 
 		//print formats
 		MClient client = MClient.get(m_ctx);
 		listPrintFormat(client);
 
-		reportOptionLayout.appendChild(lPrintFormat);
-		reportOptionLayout.appendChild(fPrintFormat.getComponent());
+		if (isLabelAboveInputForSmallWidth()) {
+			bottomParameterLayout.appendChild(fPrintFormat.getComponent());
+			fPrintFormat.getComponent().setWidth(null);
+			fPrintFormat.getComponent().setHflex("1");
+		} else {
+			reportOptionLayout.appendChild(lPrintFormat);
+			reportOptionLayout.appendChild(fPrintFormat.getComponent());
+		}
 		//selection of language
 		if (client.isMultiLingualDocument()){
 			Label lLanguageType = new Label(Msg.translate(Env.getCtx(), MLanguage.COLUMNNAME_AD_Language_ID));
-			reportOptionLayout.appendChild(lLanguageType);
-			reportOptionLayout.appendChild(fLanguageType.getComponent());
+			if (isLabelAboveInputForSmallWidth()) {
+				bottomParameterLayout.appendChild(fLanguageType.getComponent());
+				((Combobox)fLanguageType.getComponent()).setPlaceholder(lLanguageType.getValue());
+				((Combobox) fLanguageType.getComponent()).setWidth(null);
+				((Combobox) fLanguageType.getComponent()).setHflex("1");
+			} else {
+				reportOptionLayout.appendChild(lLanguageType);
+				reportOptionLayout.appendChild(fLanguageType.getComponent());
+			}
 			((Combobox)fLanguageType.getComponent()).setSclass("option-input-parameter");
 		}
 		fPrintFormat.getComponent().setSclass("option-input-parameter print-format-list");
 		fPrintFormat.getComponent().setPlaceholder(lPrintFormat.getValue());
-		reportOptionLayout.appendChild(chbIsSummary);
+		if (isLabelAboveInputForSmallWidth())
+			bottomParameterLayout.appendChild(chbIsSummary);
+		else
+			reportOptionLayout.appendChild(chbIsSummary);
 	}
 
 	/**
@@ -703,7 +729,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 */
 	private void fillReportType(boolean m_isCanExport) {
 		freportType.removeAllItems();
-		freportType.setMold("select");
 		freportType.appendItem("", "");
 		freportType.appendItem("PDF", "PDF");
 		freportType.appendItem("HTML", "HTML");

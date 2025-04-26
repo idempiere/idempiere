@@ -1911,6 +1911,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			parameterGrid = GridFactory.newGridLayout();
 			parameterGrid.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoParameterPanel");
 			parameterGrid.setStyle("width: 95%; margin: auto !important;");
+			if (isLabelAboveInputForSmallWidth())
+				parameterGrid.setSclass("form-label-above-input");
 		}
 		if (parameterGrid.getColumns() != null)
 			parameterGrid.getColumns().detach();

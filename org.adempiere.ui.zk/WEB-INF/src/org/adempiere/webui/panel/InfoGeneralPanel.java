@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -248,6 +249,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		noOfParameterColumn = getNoOfParameterColumn();
 		Rows rows = new Rows();
 		grid.appendChild(rows);
+		LayoutUtils.addSclass("form-label-above-input", grid);
 
 		Row row = new Row();
 		rows.appendChild(row);
@@ -329,9 +331,13 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		txt4.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox4");
 
 		lbl1 = new Label();
+		lbl1.setSclass("idempiere-label");
 		lbl2 = new Label();
+		lbl2.setSclass("idempiere-label");
 		lbl3 = new Label();
+		lbl3.setSclass("idempiere-label");
 		lbl4 = new Label();
+		lbl4.setSclass("idempiere-label");
 	}
 
 	private boolean initInfo ()

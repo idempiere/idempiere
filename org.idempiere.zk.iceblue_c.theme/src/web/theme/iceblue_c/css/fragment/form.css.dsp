@@ -20,12 +20,14 @@ td.form-label-above-input.z-cell {
 td.form-label-above-input.login-label {
     text-align: left;
 }
-td.form-label-above-input.login-label .z-label {
+td.form-label-above-input.login-label .z-label,
+.form-label-above-input .idempiere-label.z-label {
     font-weight: 400;
     font-size: smaller !important;
 }
 .form-label-above-input.z-window .login-box-body,
-.form-label-above-input.adwindow-form {
+.form-label-above-input.adwindow-form,
+.form-label-above-input.input-paramenter-layout {
     padding-left: 1em !important;
     padding-right: 1em !important;
 }

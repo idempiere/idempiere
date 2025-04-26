@@ -410,6 +410,8 @@ public final class WAccountDialog extends Window
 		
 		m_rows = new Rows();
 		m_rows.setParent(parameterLayout);
+		if (isLabelAboveInputForSmallWidth())
+			LayoutUtils.addSclass("form-label-above-input", parameterLayout);
 
 		//	Alias
 		if (m_AcctSchema.isHasAlias())
