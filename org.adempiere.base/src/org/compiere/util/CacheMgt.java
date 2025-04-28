@@ -194,15 +194,36 @@ public class CacheMgt
 	
 	/**
 	 * Do a cluster wide cache reset for tableName with recordId key
-	 * @param tableName
-	 * @param recordId record id for the cache entries to delete. pass -1 if you don't want to delete 
-	 * cache entries by record id   
+	 * @param tableName name of cache
+	 * @param recordId cache key. -1 to reset all cache entries for this table
 	 * @return number of deleted cache entries
 	 */
 	private int clusterReset(String tableName, int recordId) {
+		return clusterResetInternal(tableName, recordId);
+	}
+	
+	/**
+	 * Do a cluster wide cache reset for tableName with string key
+	 * @param tableName name of cache
+	 * @param key cache key
+	 * @return number of deleted cache entries
+	 */
+	private int clusterReset(String tableName, String key) {
+		return clusterResetInternal(tableName, key);
+	}
+	
+	/**
+	 * Do a cluster wide cache reset for tableName with key
+	 * @param tableName name of cache
+	 * @param key integer or string cache key   
+	 * @return number of deleted cache entries
+	 */
+	private <K> int clusterResetInternal(String tableName, K key) {
 		IClusterService service = Core.getClusterService();
 		if (service != null) {			
-			ResetCacheCallable callable = new ResetCacheCallable(tableName, recordId);
+			ResetCacheCallable callable = key instanceof Integer id
+					? new ResetCacheCallable(tableName, id)
+					: new ResetCacheCallable(tableName, key.toString());
 			Map<IClusterMember, Future<Integer>> futureMap = service.execute(callable, service.getMembers());
 			if (futureMap != null) {
 				int total = 0;
@@ -225,10 +246,14 @@ public class CacheMgt
 				}
 				return total;
 			} else {
-				return resetLocalCache(tableName, recordId);
+				return key instanceof Integer id
+					? resetLocalCache(tableName, id)
+					: resetLocalCache(tableName, key.toString());
 			}
 		} else {
-			return resetLocalCache(tableName, recordId);
+			return key instanceof Integer id
+					? resetLocalCache(tableName, id)
+					: resetLocalCache(tableName, key.toString());
 		}
 	}
 	
@@ -286,6 +311,20 @@ public class CacheMgt
 	}
 	
 	/**
+	 * Do a cluster wide cache reset for tableName with key
+	 * @param tableName cache name
+	 * @param key cache key
+	 * @return number of deleted cache entries
+	 */
+	public int reset(String tableName, String key) 
+	{
+		if (suspendedResetCacheTables.contains(tableName))
+			return 0;
+		
+		return clusterReset(tableName, key);
+	}
+	
+	/**
 	 * 	Reset local Cache
 	 * 	@return number of deleted cache entries
 	 */
@@ -316,12 +355,34 @@ public class CacheMgt
 	}
 	
 	/**
+	 * Reset local Cache
+	 * @param tableName cache name
+	 * @param recordId cache key
+	 * @return number of deleted cache entries
+	 */
+	protected int resetLocalCache (String tableName, Integer recordId)
+	{
+		return resetLocalCacheInternal(tableName, recordId);
+	}
+	
+	/**
+	 * Reset local Cache
+	 * @param tableName cache name
+	 * @param key cache key
+	 * @return number of deleted cache entries
+	 */
+	protected int resetLocalCache (String tableName, String key)
+	{
+		return resetLocalCacheInternal(tableName, key);
+	}
+	
+	/**
 	 * 	Reset local Cache
 	 * 	@param tableName table name
-	 * 	@param Record_ID record if applicable or 0 for all
+	 * 	@param key integer or string cache key
 	 * 	@return number of deleted cache entries
 	 */
-	protected int resetLocalCache (String tableName, int Record_ID)
+	private <K> int resetLocalCacheInternal (String tableName, K key)
 	{
 		if (tableName == null)
 			return resetLocalCache();
@@ -339,7 +400,7 @@ public class CacheMgt
 				if (cc.getTableName() != null && cc.getTableName().equalsIgnoreCase(tableName))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("(all) - " + stored);
-					total += stored.reset(Record_ID);
+					total += key instanceof Integer id ? stored.reset(id) : stored.resetByStringKey(key.toString());
 					counter++;
 				}
 			}
@@ -349,10 +410,10 @@ public class CacheMgt
 		CacheChangeListener[] listeners = m_listeners.toArray(new CacheChangeListener[0]);
 		for(CacheChangeListener listener : listeners)
 		{
-			if (Record_ID == -1)
+			if ((key instanceof Integer id && id == -1) || (key.toString().length() == 0))
 				listener.reset(tableName);
 			else
-				listener.reset(tableName, Record_ID);
+				listener.reset(tableName, key.toString());
 		}
 		
 		return total;
