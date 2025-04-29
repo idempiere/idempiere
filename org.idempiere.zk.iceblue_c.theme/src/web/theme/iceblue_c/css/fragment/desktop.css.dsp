@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 <%-- header --%>
 .desktop-north {
 	background-color: #C7E8FF;
@@ -13,19 +14,12 @@
 }
 
 .desktop-header {
+	background-color: ${u:sysConfig("ZK_DESKTOP_BACKGROUND_COLOR", "#C7E8FF")}; <%-- SysConfig with default to #C7E8FF --%>
 	width: 100%;
 	height: 46px;
 	padding-left: 4px;
 }
-.status-P {
-	background-color: #C7E8FF;
-}
-.status-E {
-	background-color: #90EE90;
-}
-.status-I {
-	background-color: #FA8072;
-}
+
 .desktop-header.mobile {
 	height: 36px;
 	padding: 4px 4px;
