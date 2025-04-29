@@ -93,6 +93,8 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+
 /**
  * Process Parameter Panel.<br/>
  * Embedded in {@link ProcessDialog} and {@link ProcessModalDialog}.<br/>
@@ -152,10 +154,14 @@ public class ProcessParameterPanel extends Panel implements
 		Columns columns = new Columns();
 		centerPanel.appendChild(columns);
 		Column col = new Column();
-		ZKUpdateUtil.setWidth(col, "30%");
-		columns.appendChild(col);
-		col = new Column();
-		ZKUpdateUtil.setWidth(col, "70%");
+		if (!isLabelAboveInputForSmallWidth()) {
+			ZKUpdateUtil.setWidth(col, "30%");
+			columns.appendChild(col);
+			col = new Column();
+			ZKUpdateUtil.setWidth(col, "70%");
+		} else {
+			ZKUpdateUtil.setWidth(col, "100%");
+		}
 		columns.appendChild(col);
 	}
 
@@ -472,15 +478,18 @@ public class ProcessParameterPanel extends Panel implements
 		m_wEditors.add(editor); // add to Editors
 
     	Div div = new Div();
-        div.setStyle("text-align: right;");
+		if (!isLabelAboveInputForSmallWidth())
+        	div.setStyle("text-align: right;");
         org.adempiere.webui.component.Label label = editor.getLabel();
         div.appendChild(label);
         if (label.getDecorator() != null)
         	div.appendChild(label.getDecorator());
-        row.appendChild(div);
+		if (!isLabelAboveInputForSmallWidth())
+        	row.appendChild(div);
 		//
         Div box = new Div();
-		box.setStyle("display: flex; align-items: center;");
+		if (!isLabelAboveInputForSmallWidth())
+			box.setStyle("display: flex; align-items: center;");
 		ZKUpdateUtil.setWidth(box, "100%");
 		//create to field and editor
 		if (voF.isRange) {
@@ -559,7 +568,16 @@ public class ProcessParameterPanel extends Panel implements
 				editor.getComponent().setAttribute("isNotClause", bNegate);
 			}
 		}
-		row.appendChild(box);
+		if (!isLabelAboveInputForSmallWidth()) {
+			row.appendChild(box);
+		} else {
+			Div container = new Div();
+			container.appendChild(div);
+			container.appendChild(box);
+			row.appendCellChild(container);
+			LayoutUtils.addSclass("form-label-above-input", row.getLastCell());
+			LayoutUtils.addSclass("form-label", div);
+		}
 	} // createField
 
 	/**

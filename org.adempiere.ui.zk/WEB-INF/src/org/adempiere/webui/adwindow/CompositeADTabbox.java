@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.DetailPane.Tabpanel;
 import org.adempiere.webui.component.ADTabListModel;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
@@ -434,7 +435,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (tabPanel != headerTab && headerTab.getDetailPane() != null && tabPanel.getTabLevel() > headerTab.getTabLevel()) {
 					if (b != null && b.booleanValue()) {
 						onActivateDetail(tabPanel);
-						if (headerTab instanceof ADTabpanel) {
+						if (headerTab instanceof ADTabpanel && !ClientInfo.isMobile()) {
 							if (!((ADTabpanel) headerTab).getADWindowContent().focusToLastFocusEditor(true))
 								((ADTabpanel) headerTab).getADWindowContent().focusToActivePanel();
 						}
