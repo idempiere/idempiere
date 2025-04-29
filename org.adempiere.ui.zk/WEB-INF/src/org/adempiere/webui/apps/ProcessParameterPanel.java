@@ -62,7 +62,6 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
-import org.compiere.model.MLookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
@@ -1205,18 +1204,7 @@ public class ProcessParameterPanel extends Panel implements
 	private void verifyChangedField(GridField field, String columnName) {
 		ArrayList<String> list = field.getDependentOn();
 		if (list.contains(columnName)) {
-			if (field.getLookup() instanceof MLookup)
-			{
-				MLookup mLookup = (MLookup)field.getLookup();
-				//  if the lookup is dynamic (i.e. contains this columnName as variable)
-				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1)
-				{
-					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
-						+ field.getColumnName() + " set to null");
-					//  invalidate current selection
-					field.setValue(null, true);
-				}
-			}
+			GridField.updateDependentField(field, columnName, -1, null);
 		}
 	}
 	
