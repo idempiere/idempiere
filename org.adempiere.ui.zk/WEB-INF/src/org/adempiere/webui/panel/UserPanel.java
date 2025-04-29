@@ -32,9 +32,8 @@ import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
-import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
-import org.compiere.model.MSystem;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.Env;
@@ -362,10 +361,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		String warehouse = getWarehouseName();
 		if (!Util.isEmpty(warehouse))
 			layout.appendChild(new Label(warehouse));
-		String systemStatus = MSystem.get(Env.getCtx()).getSystemStatus();
-		String status = MRefList.getListName(Env.getCtx(), 374, systemStatus);
-		if(!MSystem.SYSTEMSTATUS_Production.equals(systemStatus))
-			layout.appendChild(new Label(status));
+		String msgText = "";
+		String msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_BACKGROUND_MESSAGE_VALUE);
+		if (!Util.isEmpty(msgValue, true))
+			msgText = Msg.getMsg(Env.getCtx(), msgValue);
+		layout.appendChild(new Label(msgText));
 		layout.appendChild(userPanelLinksContainer);
 		
 		popup.appendChild(layout);
