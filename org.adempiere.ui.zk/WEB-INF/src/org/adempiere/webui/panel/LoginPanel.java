@@ -33,6 +33,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -146,6 +147,8 @@ public class LoginPanel extends Window implements EventListener<Event>
         init();
         this.setId("loginPanel");
         this.setSclass("login-box");
+		if (isLabelAboveInput())
+			LayoutUtils.addSclass("form-label-above-input", this);
 
         txtUserId.setEnabled(false);
         txtPassword.setEnabled(false);
@@ -248,10 +251,15 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword.removeEventListener(Events.ON_FOCUS, txtPassword);
     }
 
+	private boolean isLabelAboveInput() {
+		return LayoutUtils.isLabelAboveInputForSmallWidth();
+	}
+
     /**
      * Layout panel
      */
 	protected void createUI() {
+
 		Form form = new Form();
 
 		Div div = new Div();
@@ -286,6 +294,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblUserId);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -298,6 +311,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblPassword);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -310,6 +328,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblLanguage);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -322,6 +345,10 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(new Label(""));
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -335,6 +362,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         	tr.appendChild(td);
         	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
         	td.appendChild(new Label(""));
+			if (isLabelAboveInput()) {
+				tr = new Tr();
+				table.appendChild(tr);
+			}
         	td = new Td();
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
@@ -349,6 +380,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         	tr.appendChild(td);
         	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
         	td.appendChild(new Label(""));
+			if (isLabelAboveInput()) {
+				tr = new Tr();
+				table.appendChild(tr);
+			}
         	td = new Td();
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
