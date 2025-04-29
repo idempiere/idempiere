@@ -2,6 +2,7 @@
 **/bin/
 **/lib/*.jar
 **/seed/*.jar
+**/seed/*.dmp
 /org.adempiere.ui.zk/labelapplet.jar
 /org.adempiere.extend/test.properties
 
