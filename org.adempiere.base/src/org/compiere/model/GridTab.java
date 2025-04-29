@@ -2894,31 +2894,17 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (dependentField == null || dependentField.isLookupEditorSettingValue())
 				continue;
 
-			//  if the field has a lookup
-			if (dependentField.getLookup() instanceof MLookup)
-			{
-				MLookup mLookup = (MLookup)dependentField.getLookup();
-				//  if the lookup is dynamic (i.e. contains this columnName as variable)
-				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
-						|| mLookup.getValidation().matches(".*[@]"+getTabNo()+"[|]"+columnName+"([:].+)?[@].*")
-						|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
-				{
-					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
-						+ dependentField.getColumnName() + " set to null");
-					mLookup.refresh();
-					Object currentValue = dependentField.getValue();
-					
-					//  invalidate current selection
-					setValue(dependentField, null);
-					
+			GridField.updateDependentField(dependentField, columnName, getTabNo(), () -> {
+				Object currentValue = dependentField.getValue();
+				
+				//  invalidate current selection
+				setValue(dependentField, null);
+				
+				if (dependentField.getLookup() instanceof MLookup mLookup) {
 					if (currentValue != null && mLookup.containsKeyNoDirect(currentValue))
 						setValue(dependentField, currentValue);
 				}
-			}
-			//  if the field is a Virtual UI Column
-			if (dependentField.isVirtualUIColumn()) {
-				dependentField.processUIVirtualColumn();
-			}
+			});			
 		}   //  for all dependent fields
 	}   //  processDependencies
 
