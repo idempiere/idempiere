@@ -100,16 +100,30 @@ ls -lsa "$IDEMPIERE_HOME"/data/seed/Adempiere${SUFFIX}.dmp
 echo Press enter to continue ...
 read -r _
 
-cd "$IDEMPIERE_HOME"/.. || (echo "Cannot cd to $IDEMPIERE_HOME/.."; exit 1)
-bash "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/ImportIdempiere.sh" "$SYSUSER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
-
-IDEMPIERE_HOME=$( dirname "$($READLINK_CMD -f "${BASH_SOURCE[0]}")" )
-bash $IDEMPIERE_HOME/RUN_SyncDBDev.sh "$@"
-
-DBIMPORT_FOLDER="${2:-$DBIMPORT_FOLDER}"
-if [ -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql ]
+if [ "$ADEMPIERE_DB_PATH" = "postgresql" ]
 then
-    PGPASSWORD="$ADEMPIERE_DB_PASSWORD"
-    export PGPASSWORD
-    psql -b -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U "$ADEMPIERE_DB_USER" -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql
+    cd "$IDEMPIERE_HOME"/.. || (echo "Cannot cd to $IDEMPIERE_HOME/.."; exit 1)
+    bash "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/ImportIdempiere.sh" "$SYSUSER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
+
+    IDEMPIERE_HOME=$( dirname "$($READLINK_CMD -f "${BASH_SOURCE[0]}")" )
+    bash $IDEMPIERE_HOME/RUN_SyncDBDev.sh "$@"
+
+    DBIMPORT_FOLDER="${2:-$DBIMPORT_FOLDER}"
+    if [ -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql ]
+    then
+	PGPASSWORD="$ADEMPIERE_DB_PASSWORD"
+	export PGPASSWORD
+	psql -b -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U "$ADEMPIERE_DB_USER" -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql
+    fi
+else
+    # TODO: oracle
+    echo "oracle import not implemented yet"
+    # verify if ADEMPIERE_DB_SYSTEM variable is set
+    # cat "$IDEMPIERE_HOME"/$UTILS_FOLDER/"$ADEMPIERE_DB_PATH"/CreateUser.sql |
+      # sed replacing &1 and &2
+      # sqlplus
+    # same for CreateDataPumpDir.sql
+    # impdp
+    # AfterImport.sql
+    # post...sql
 fi
