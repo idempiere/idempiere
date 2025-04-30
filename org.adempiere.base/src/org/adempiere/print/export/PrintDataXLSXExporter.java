@@ -24,12 +24,13 @@ import java.util.logging.Level;
 import javax.print.attribute.standard.MediaSizeName;
 
 import org.adempiere.impexp.AbstractXLSXExporter;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormat;
@@ -289,7 +290,7 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 
 	@Override
-	protected void formatPage(XSSFSheet sheet)
+	protected void formatPage(SXSSFSheet sheet)
 	{
 		super.formatPage(sheet);
 		MPrintPaper paper = MPrintPaper.get(this.m_printFormat.getAD_PrintPaper_ID());
@@ -420,7 +421,7 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 	
 	@Override
-	protected void createParameter(XSSFSheet sheet) {
+	protected void createParameter(SXSSFSheet sheet) {
 		if (!m_printFormat.isForm()) {
 			if (m_query != null && m_query.isActive()) {
 				int rows = m_query.getReportProcessQuery() != null ? m_query.getReportProcessQuery().getRestrictionCount() : m_query.getRestrictionCount();
@@ -428,8 +429,8 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 					setNoOfParameter(rows);
 					setFreezePane(1, rows + 1);
 					
-					XSSFCellStyle parameterStyle = m_workbook.createCellStyle();
-					XSSFFont parameterFont = m_workbook.createFont();
+					CellStyle parameterStyle = m_workbook.createCellStyle();
+					Font parameterFont = m_workbook.createFont();
 					parameterFont.setItalic(true);
 					parameterStyle.setFont(parameterFont);
 					
@@ -438,18 +439,18 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 						query = m_query.getReportProcessQuery();
 					for (int r = 0; r < query.getRestrictionCount(); r++)
 					{
-						XSSFRow row = sheet.createRow(r);
+						SXSSFRow row = sheet.createRow(r);
 						if (r == 0) {
-							XSSFCell cell = row.createCell(0);
-							XSSFCellStyle style = m_workbook.createCellStyle();
-							XSSFFont font = m_workbook.createFont();
+							SXSSFCell cell = row.createCell(0);
+							CellStyle style = m_workbook.createCellStyle();
+							Font font = m_workbook.createFont();
 							font.setBold(true);
 							style.setFont(font);
 							cell.setCellStyle(style);
 							String value = Msg.getMsg(getCtx(), "Parameter") + ":";
 							cell.setCellValue(new XSSFRichTextString(value));
 						}
-						XSSFCell cell = row.createCell(1);
+						SXSSFCell cell = row.createCell(1);
 						cell.setCellStyle(parameterStyle);
 						String value = query.getInfoName(r);
 						cell.setCellValue(new XSSFRichTextString(value));
@@ -476,8 +477,8 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 	
 	@Override
-	protected XSSFCell getFormCell(XSSFRow row, int colnum) {
-		XSSFCell cell = null;
+	protected SXSSFCell getFormCell(SXSSFRow row, int colnum) {
+		SXSSFCell cell = null;
 		if (colnum >= 0 && colnum < columns.size()) {
 			MPrintFormatItem item = (MPrintFormatItem) columns.get(colnum);		
 			int previousCol = m_previousFormCol >= 0 ? m_previousFormCol : 0;
@@ -508,8 +509,8 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 
 	@Override
-	protected XSSFRow getFormRow(XSSFSheet sheet, int colnum) {
-		XSSFRow row = null;
+	protected SXSSFRow getFormRow(SXSSFSheet sheet, int colnum) {
+		SXSSFRow row = null;
 		if (m_firstHeaderRow == -1) {
 			m_firstHeaderRow = sheet.getLastRowNum();
 		}
