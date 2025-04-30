@@ -350,17 +350,32 @@ public abstract class AbstractXLSXExporter
 	/**
 	 * auto size column
 	 * @param sheet
-	 * @param lastColumnIndex
+	 * @param lastColumnIndex  (unused)
 	 */
 	private void fixColumnWidth(SXSSFSheet sheet, int colCount)
 	{
-		/* TODO: set column width depending on AD_Column definition, could be according to the CellStyle of the column */
-		/*
-		for (short colnum = 0; colnum < colCount; colnum++)
-		{
-			sheet.autoSizeColumn(colnum);
+		// NOTE that using streaming SXSSFWorkbook, the autoSizeColumn is not available
+		// so, we need to figure a default size depending on the display type
+		//  default here to:
+		//     10 characters for date fields
+		//     12 for numeric
+		//      5 for boolean
+		//     20 for all others
+		int colnum = 0;
+		for (int col = 0; col < getColumnCount(); col++) {				
+			if (isColumnPrinted(col)) {
+				int dt = getDisplayType(0, col);
+				int width = 20*256;
+				if (DisplayType.isDate(dt))
+					width = 10*256;
+				else if (DisplayType.isNumeric(dt))
+					width = 12*256;
+				else if (dt == DisplayType.YesNo)
+					width = 5*256;
+				sheet.setColumnWidth(colnum, width);
+				colnum++;
+			}
 		}
-		*/
 	}
 
 	/**
