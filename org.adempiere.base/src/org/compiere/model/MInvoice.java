@@ -1354,6 +1354,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				.append("WHERE C_Invoice_ID=").append(getC_Invoice_ID());
 			int no = DB.executeUpdate(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Lines -> #" + no);
+			
+			MInvoicePaySchedule[] invoicePaySchedules = MInvoicePaySchedule.getInvoicePaySchedule(getCtx(), this.getC_Invoice_ID(),0, get_TrxName());
+			for(MInvoicePaySchedule invoicePaySchedule : invoicePaySchedules) {
+				invoicePaySchedule.setAD_Org_ID(getAD_Org_ID());
+				invoicePaySchedule.saveEx();
+			}
 		}
 		
 		return true;
