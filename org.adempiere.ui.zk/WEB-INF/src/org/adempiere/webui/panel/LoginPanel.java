@@ -32,7 +32,6 @@ import java.util.logging.Level;
 
 import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereWebUI;
-import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
