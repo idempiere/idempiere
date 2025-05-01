@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -34,7 +36,6 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
@@ -87,9 +88,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
-
-import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.Space;
+import org.zkoss.zul.Vlayout;
 
 /**
  * Abstract dialog base class for execution of process/report.
