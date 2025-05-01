@@ -103,17 +103,22 @@ read -r _
 if [ "$ADEMPIERE_DB_PATH" = "postgresql" ]
 then
     cd "$IDEMPIERE_HOME"/.. || (echo "Cannot cd to $IDEMPIERE_HOME/.."; exit 1)
+    echo "*** Importing postgresql seed into $ADEMPIERE_DB_NAME ***"
     bash "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/ImportIdempiere.sh" "$SYSUSER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
 
+    echo "*** Applying migration scripts ***"
     IDEMPIERE_HOME=$( dirname "$($READLINK_CMD -f "${BASH_SOURCE[0]}")" )
     bash $IDEMPIERE_HOME/RUN_SyncDBDev.sh "$@"
 
     DBIMPORT_FOLDER="${2:-$DBIMPORT_FOLDER}"
     if [ -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql ]
     then
+        echo "*** Applying script post_$ADEMPIERE_DB_NAME.sql ***"
 	PGPASSWORD="$ADEMPIERE_DB_PASSWORD"
 	export PGPASSWORD
 	psql -b -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U "$ADEMPIERE_DB_USER" -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql
+    else
+        echo "*** No post script found $DBIMPORT_FOLDER/post_$ADEMPIERE_DB_NAME.sql ***"
     fi
 else
     # TODO: oracle
