@@ -24,6 +24,7 @@ import org.compiere.model.I_AD_SysConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_SysConfig;
+import org.compiere.util.Env;
 import org.osgi.service.event.Event;
 import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.util.WebAppInit;
@@ -45,7 +46,9 @@ public class DefaultWebAppInit implements WebAppInit {
 		this.webApp = wapp;
 		// save app name get from zk.xml to restore when delete app name in system config value
 		AdempiereWebUI.APP_NAME = this.webApp.getAppName();
-		String appNameConfig = MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE);
+		
+		String fromFile = Env.getContext(Env.getCtx(), Env.PREFIX_SYSTEM_VARIABLE + MSysConfig.ZK_BROWSER_TITLE);
+		String appNameConfig = MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE, fromFile);
 		if (appNameConfig != null){
 			this.webApp.setAppName(appNameConfig);
 		}
