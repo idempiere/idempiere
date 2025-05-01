@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 import static org.compiere.model.SystemIDs.WINDOW_ACCOUNTCOMBINATION;
 
 import java.sql.PreparedStatement;
@@ -66,7 +67,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Caption;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -75,8 +75,6 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
-
-import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 /**
  *	Dialog to enter Account Info
