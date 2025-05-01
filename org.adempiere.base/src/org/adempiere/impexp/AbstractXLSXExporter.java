@@ -26,18 +26,21 @@ import java.util.logging.Level;
 
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.Header;
 import org.apache.poi.ss.usermodel.PrintSetup;
-import org.apache.poi.xssf.streaming.SXSSFCell;
-import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -142,7 +145,8 @@ public abstract class AbstractXLSXExporter
 	/** Logger */
 	protected final CLogger					log				= CLogger.getCLogger(getClass());
 	//
-	protected SXSSFWorkbook					m_workbook;
+	protected Workbook					m_workbook;
+	private boolean						m_isUseSXSSF;
 	private DataFormat					m_dataFormat;
 	private Font						m_fontHeader	= null;
 	private Font						m_fontDefault	= null;
@@ -163,9 +167,14 @@ public abstract class AbstractXLSXExporter
 	 */
 	public AbstractXLSXExporter()
 	{
-		m_workbook = new SXSSFWorkbook(null, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, true, true);
-		m_workbook.getXSSFWorkbook().getProperties().getCoreProperties().setCreator("iDempiere");
-		m_workbook.setZip64Mode(Zip64Mode.Never);
+		m_isUseSXSSF = MSysConfig.getBooleanValue(MSysConfig.XLSX_EXPORT_USE_FAST_METHOD, true, Env.getAD_Client_ID(Env.getCtx()));
+		if (m_isUseSXSSF) {
+			m_workbook = new SXSSFWorkbook(null, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, true, true);
+			((SXSSFWorkbook)m_workbook).getXSSFWorkbook().getProperties().getCoreProperties().setCreator("iDempiere");
+			((SXSSFWorkbook)m_workbook).setZip64Mode(Zip64Mode.Never);
+		} else {
+			m_workbook = new XSSFWorkbook();
+		}
 		m_dataFormat = m_workbook.createDataFormat();
 	}
 
@@ -350,32 +359,40 @@ public abstract class AbstractXLSXExporter
 	/**
 	 * auto size column
 	 * @param sheet
-	 * @param lastColumnIndex  (unused)
+	 * @param lastColumnIndex
 	 */
-	private void fixColumnWidth(SXSSFSheet sheet, int colCount)
+	private void fixColumnWidth(Sheet sheet, int colCount)
 	{
-		// NOTE that using streaming SXSSFWorkbook, the autoSizeColumn is not available
-		// so, we need to figure a default size depending on the display type
-		//  default here to:
-		//     10 characters for date fields
-		//     12 for numeric
-		//      5 for boolean
-		//     20 for all others
-		int colnum = 0;
-		for (int col = 0; col < getColumnCount(); col++) {				
-			if (isColumnPrinted(col)) {
-				int dt = getDisplayType(0, col);
-				int width = 20*256;
-				if (DisplayType.isDate(dt))
-					width = 10*256;
-				else if (DisplayType.isNumeric(dt))
-					width = 12*256;
-				else if (dt == DisplayType.YesNo)
-					width = 5*256;
-				sheet.setColumnWidth(colnum, width);
-				colnum++;
+		if (m_isUseSXSSF) {
+			// using streaming SXSSFWorkbook, the autoSizeColumn is not available
+			// so, we need to figure a default size depending on the display type
+			//  default here to:
+			//     10 characters for date fields
+			//     12 for numeric
+			//      5 for boolean
+			//     20 for all others
+			int colnum = 0;
+			for (int col = 0; col < getColumnCount(); col++) {				
+				if (isColumnPrinted(col)) {
+					int dt = getDisplayType(0, col);
+					int width = 20*256;
+					if (DisplayType.isDate(dt))
+						width = 10*256;
+					else if (DisplayType.isNumeric(dt))
+						width = 12*256;
+					else if (dt == DisplayType.YesNo)
+						width = 5*256;
+					sheet.setColumnWidth(colnum, width);
+					colnum++;
+				}
+			}
+		} else {
+			for (short colnum = 0; colnum < colCount; colnum++)
+			{
+				sheet.autoSizeColumn(colnum);
 			}
 		}
+
 	}
 
 	/**
@@ -384,7 +401,7 @@ public abstract class AbstractXLSXExporter
 	 * @param prevSheetName
 	 * @param colCount
 	 */
-	private void closeTableSheet(SXSSFSheet prevSheet, String prevSheetName, int colCount)
+	private void closeTableSheet(Sheet prevSheet, String prevSheetName, int colCount)
 	{
 		if (prevSheet == null)
 			return;
@@ -408,11 +425,11 @@ public abstract class AbstractXLSXExporter
 
 	/**
 	 * Create new sheet
-	 * @return SXSSFSheet
+	 * @return Sheet
 	 */
-	private SXSSFSheet createTableSheet()
+	private Sheet createTableSheet()
 	{
-		SXSSFSheet sheet = m_workbook.createSheet();
+		Sheet sheet = m_workbook.createSheet();
 		formatPage(sheet);
 		createHeaderFooter(sheet);
 		createParameter(sheet);
@@ -428,7 +445,7 @@ public abstract class AbstractXLSXExporter
 	/**
 	 * @param sheet
 	 */
-	private void createTableHeader(SXSSFSheet sheet)
+	private void createTableHeader(Sheet sheet)
 	{
 		createTableHeader(sheet, Math.max(noOfParameter, 0));
 	}
@@ -437,11 +454,11 @@ public abstract class AbstractXLSXExporter
 	 * @param sheet
 	 * @param headerRowNum
 	 */
-	private void createTableHeader(SXSSFSheet sheet, int headerRowNum)
+	private void createTableHeader(Sheet sheet, int headerRowNum)
 	{
 		int colnumMax = 0;
 
-		SXSSFRow row = sheet.createRow(headerRowNum);
+		Row row = sheet.createRow(headerRowNum);
 		// for all columns
 		int colnum = 0;
 		for (int col = 0; col < getColumnCount(); col++)
@@ -451,7 +468,7 @@ public abstract class AbstractXLSXExporter
 			//
 			if (isColumnPrinted(col))
 			{
-				SXSSFCell cell = row.createCell(colnum);
+				Cell cell = row.createCell(colnum);
 				// header row
 				CellStyle style = getHeaderStyle(col);
 				cell.setCellStyle(style);
@@ -462,7 +479,7 @@ public abstract class AbstractXLSXExporter
 		} // for all columns
 	}
 
-	protected void createHeaderFooter(SXSSFSheet sheet)
+	protected void createHeaderFooter(Sheet sheet)
 	{
 		// Sheet Header
 		Header header = sheet.getHeader();
@@ -489,14 +506,18 @@ public abstract class AbstractXLSXExporter
 	 * Format sheet
 	 * @param sheet
 	 */
-	protected void formatPage(SXSSFSheet sheet)
+	protected void formatPage(Sheet sheet)
 	{
 		sheet.setFitToPage(true);
 		// Print Setup
-		PrintSetup ps = sheet.getPrintSetup();
+		PrintSetup ps;
+		if (m_isUseSXSSF)
+			ps = ((SXSSFSheet)sheet).getPrintSetup();
+		else
+			ps = ((XSSFSheet)sheet).getPrintSetup();
 		ps.setFitWidth((short) 1);
 		ps.setNoColor(true);
-		ps.setPaperSize(XSSFPrintSetup.A4_PAPERSIZE);
+		ps.setPaperSize(PrintSetup.A4_PAPERSIZE);
 		ps.setLandscape(false);
 	}
 
@@ -524,7 +545,7 @@ public abstract class AbstractXLSXExporter
 	 */
 	protected void export(OutputStream out) throws Exception
 	{
-		SXSSFSheet sheet = null;
+		Sheet sheet = null;
 		if (out != null) 
 		{
 			sheet = createTableSheet();
@@ -559,7 +580,7 @@ public abstract class AbstractXLSXExporter
 				setCurrentRow(rownum);
 
 			boolean isPageBreak = false;
-			SXSSFRow row = sheet.createRow(xls_rownum);
+			Row row = sheet.createRow(xls_rownum);
 			printColIndex = -1;
 			// for all columns
 			int colnum = 0;
@@ -569,7 +590,7 @@ public abstract class AbstractXLSXExporter
 				if (isColumnPrinted(col))
 				{
 					printColIndex++;
-					SXSSFCell cell = null;
+					Cell cell = null;
 					// line row
 					Object obj = getValueAt(rownum, col);
 					if (isForm())
@@ -737,7 +758,7 @@ public abstract class AbstractXLSXExporter
 	 * @param language
 	 * @throws Exception
 	 */
-	public void exportToWorkbook(SXSSFWorkbook workbook, Language language) throws Exception
+	public void exportToWorkbook(Workbook workbook, Language language) throws Exception
 	{
 		m_lang = language;
 		m_workbook = workbook;
@@ -772,7 +793,7 @@ public abstract class AbstractXLSXExporter
 	 * Create parameter
 	 * @param sheet
 	 */
-	protected void createParameter(SXSSFSheet sheet)
+	protected void createParameter(Sheet sheet)
 	{
 		
 	}
@@ -809,7 +830,7 @@ public abstract class AbstractXLSXExporter
 	 * @param colnum
 	 * @return cell for column
 	 */
-	protected SXSSFCell getFormCell(SXSSFRow row, int colnum) {
+	protected Cell getFormCell(Row row, int colnum) {
 		return null;
 	}
 
@@ -819,7 +840,7 @@ public abstract class AbstractXLSXExporter
 	 * @param colnum
 	 * @return row for column
 	 */
-	protected SXSSFRow getFormRow(SXSSFSheet sheet, int colnum) {
+	protected Row getFormRow(Sheet sheet, int colnum) {
 		return null;
 	}
 }
