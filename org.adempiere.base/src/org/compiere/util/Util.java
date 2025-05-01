@@ -47,6 +47,7 @@ import javax.swing.KeyStroke;
 import org.adempiere.base.Generated;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
+import org.compiere.model.SystemProperties;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -788,7 +789,7 @@ public class Util
 	 */
 	@Generated
 	public static boolean isDeveloperMode() {
-		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base")) || "Y".equals(System.getProperty("org.idempiere.developermode"));
+		return Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base")) || SystemProperties.isDeveloperMode();
 	}
 	
 	/**
