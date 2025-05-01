@@ -209,7 +209,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		    	value = Env.getContext (ctx, m_windowNo, m_tabNo, variableName, tabOnly, true);
 		    }
 		}
-		if (Util.isEmpty(value) && globalVariable)
+		if (Util.isEmpty(value) && (globalVariable || Env.isPreference(variableName)))
 		{
 			value = Env.getContext(ctx, variableName);	// get from global context
 		}
@@ -226,7 +226,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		
 		//remove prefix from variable name
 		boolean withTabNo = false;
-		if (Env.isGlobalVariable(variableName)) {
+		if (globalVariable) {
 			variableName = variableName.substring(1);				
 		} else if (variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0) {
 			variableName = variableName.substring(variableName.lastIndexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR)+1);
