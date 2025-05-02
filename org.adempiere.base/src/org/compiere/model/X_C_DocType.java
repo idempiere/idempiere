@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250228L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -48,6 +48,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -85,6 +87,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // N
 			setIsAutoGenerateInvoice (false);
 // N
+			setIsCanBeReactivated (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
@@ -121,6 +125,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // N
 			setIsAutoGenerateInvoice (false);
 // N
+			setIsCanBeReactivated (false);
+// N
 			setIsCreateCounter (true);
 // Y
 			setIsDefault (false);
@@ -156,6 +162,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -742,6 +750,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isAutoGenerateInvoice()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoGenerateInvoice);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Can Be Reactivated.
+		@param IsCanBeReactivated This document can be reactivated
+	*/
+	public void setIsCanBeReactivated (boolean IsCanBeReactivated)
+	{
+		set_Value (COLUMNNAME_IsCanBeReactivated, Boolean.valueOf(IsCanBeReactivated));
+	}
+
+	/** Get Can Be Reactivated.
+		@return This document can be reactivated
+	  */
+	public boolean isCanBeReactivated()
+	{
+		Object oo = get_Value(COLUMNNAME_IsCanBeReactivated);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
