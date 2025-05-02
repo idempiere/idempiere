@@ -435,7 +435,18 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		MWFNode node = getNode();
 		if (node == null)
 			return null;
-		int AD_Column_ID = node.getAD_Column_ID();
+		int AD_Column_ID = 0;
+		
+		// get Approval Column
+		if (node.getApprovalColumn_ID() > 0)
+		{
+			AD_Column_ID = node.getApprovalColumn_ID();
+		}
+		else
+		{
+			AD_Column_ID = node.getAD_Column_ID();
+		}
+		 
 		if (AD_Column_ID == 0)
 			return null;
 		PO po = getPO();
@@ -1286,6 +1297,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		else if (MWFNode.ACTION_UserChoice.equals(action))
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("UserChoice:AD_Column_ID=" + m_node.getAD_Column_ID());
+			if (log.isLoggable(Level.FINE)) log.fine("UserChoice:ApprovalColumn_ID=" + m_node.getApprovalColumn_ID());
 			//	Approval
 			if (m_node.isUserApproval()
 				&& getPO(trx) instanceof DocAction)
@@ -1402,6 +1414,17 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID());
 		//	Set Value
 		Object dbValue = null;
+		int AD_Column_ID = 0;
+		
+		if (getNode().getApprovalColumn_ID() > 0)
+		{
+			AD_Column_ID = getNode().getApprovalColumn_ID();
+		}
+		else
+		{
+			AD_Column_ID = getNode().getAD_Column_ID();
+		}
+		
 		if (value == null)
 			;
 		else if (displayType == DisplayType.YesNo)
@@ -1409,7 +1432,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		else if (DisplayType.isNumeric(displayType))
 			dbValue = new BigDecimal (value);
 		else if (DisplayType.isID(displayType)) {
-			MColumn column = MColumn.get(Env.getCtx(), getNode().getAD_Column_ID());
+			MColumn column =  MColumn.get(Env.getCtx(), AD_Column_ID);
 			String referenceTableName = column.getReferenceTableName();
 			if (referenceTableName != null) {
 				MTable refTable = MTable.get(Env.getCtx(), referenceTableName);
@@ -1440,16 +1463,16 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 		else
 			dbValue = value;
-		if (!m_po.set_ValueOfColumnReturningBoolean(getNode().getAD_Column_ID(), dbValue)) {
+		if (!m_po.set_ValueOfColumnReturningBoolean(AD_Column_ID, dbValue)) {
 			throw new Exception("Persistent Object not updated - AD_Table_ID="
 					+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID()
 					+ " - Value=" + value + " error : " + CLogger.retrieveErrorString("check logs"));
 		}
 		m_po.saveEx();
-		if (dbValue != null && !dbValue.equals(m_po.get_ValueOfColumn(getNode().getAD_Column_ID())))
+		if (dbValue != null && !dbValue.equals(m_po.get_ValueOfColumn(AD_Column_ID)))
 			throw new Exception("Persistent Object not updated - AD_Table_ID="
 				+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID()
-				+ " - Should=" + value + ", Is=" + m_po.get_ValueOfColumn(m_node.getAD_Column_ID()));
+				+ " - Should=" + value + ", Is=" + m_po.get_ValueOfColumn(AD_Column_ID));
 		//	Info
 		String msg = getNode().getAttributeName() + "=" + value;
 		if (textMsg != null && textMsg.length() > 0)
@@ -1484,7 +1507,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		{
 			DocAction doc = (DocAction)m_po;
 			// Not approved
-			if (!"Y".equals(value)) {
+			if (!"Y".equals(value) && DisplayType.YesNo == displayType) {
 				newState = StateEngine.STATE_Aborted;
 				if (!(doc.processIt(DocAction.ACTION_Reject)))
 					setTextMsgBefore("Cannot Reject - Document Status: " + doc.getDocStatus());

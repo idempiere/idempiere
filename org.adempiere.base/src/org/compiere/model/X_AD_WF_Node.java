@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Node
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Node")
 public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250418L;
 
     /** Standard Constructor */
     public X_AD_WF_Node (Properties ctx, int AD_WF_Node_ID, String trxName)
@@ -575,6 +575,34 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	public String getAction()
 	{
 		return (String)get_Value(COLUMNNAME_Action);
+	}
+
+	public org.compiere.model.I_AD_Column getApprovalColumn() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getApprovalColumn_ID(), get_TrxName());
+	}
+
+	/** Set Approval Column.
+		@param ApprovalColumn_ID Specify the boolean type column which marked on approval
+	*/
+	public void setApprovalColumn_ID (int ApprovalColumn_ID)
+	{
+		if (ApprovalColumn_ID < 1)
+			set_Value (COLUMNNAME_ApprovalColumn_ID, null);
+		else
+			set_Value (COLUMNNAME_ApprovalColumn_ID, Integer.valueOf(ApprovalColumn_ID));
+	}
+
+	/** Get Approval Column.
+		@return Specify the boolean type column which marked on approval
+	  */
+	public int getApprovalColumn_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ApprovalColumn_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Attribute Name.
