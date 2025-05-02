@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 import static org.compiere.model.SystemIDs.WINDOW_ACCOUNTCOMBINATION;
 
 import java.sql.PreparedStatement;
@@ -66,11 +67,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
-import org.zkoss.zul.Caption;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -188,7 +187,7 @@ public final class WAccountDialog extends Window
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private StatusBarPanel statusBar = new StatusBarPanel();
 	private Hbox northPanel = new Hbox();
-	private Groupbox parameterPanel = new Groupbox();
+	private Div parameterPanel = new Div();
 	private Grid parameterLayout = new Grid();
 	private ToolBar toolBar = new ToolBar();
 	private ToolBarButton bRefresh = new ToolBarButton();
@@ -198,8 +197,6 @@ public final class WAccountDialog extends Window
 	private Rows m_rows;
 
 	private boolean m_smallWidth;
-
-
 
 	/**
 	 *	Create components and layout dialog
@@ -218,10 +215,7 @@ public final class WAccountDialog extends Window
 	protected void init() throws Exception
 	{
 		//
-		Caption caption = new Caption(Msg.getMsg(Env.getCtx(),"Parameter"));
-		parameterPanel.appendChild(caption);
 		ZKUpdateUtil.setHflex(parameterPanel, "min");
-		parameterPanel.setStyle("background-color: transparent;");
 		toolBar.setOrient("vertical");
 		toolBar.setStyle("border: none; padding: 5px");
 		ZKUpdateUtil.setHflex(toolBar, "min");
@@ -255,7 +249,6 @@ public final class WAccountDialog extends Window
 		toolBar.appendChild(bIgnore);
 		toolBar.appendChild(bSave);
 		//
-
 		northPanel.appendChild(parameterPanel);
 		northPanel.appendChild(toolBar);
 		ZKUpdateUtil.setWidth(northPanel, "100%");
@@ -271,21 +264,20 @@ public final class WAccountDialog extends Window
 		North nRegion = new North();
 		nRegion.setParent(layout);
 		ZKUpdateUtil.setHflex(northPanel, "false");
-		ZKUpdateUtil.setVflex(northPanel, "min");
 		ZKUpdateUtil.setVflex(parameterPanel, "min");
 		nRegion.appendChild(northPanel);
-		nRegion.setStyle("background-color: transparent; border: none");
-		northPanel.setStyle("background-color: transparent;");
+		nRegion.setStyle("border: none");
 		nRegion.setCollapsible(true);
 		nRegion.setSplittable(true);
 		nRegion.setAutoscroll(true);
+		nRegion.setTitle(Msg.getMsg(Env.getCtx(),"Parameter"));
 
 		Center cRegion = new Center();
 		cRegion.setParent(layout);
 		ZKUpdateUtil.setHflex(m_adTabPanel, "true");
 		ZKUpdateUtil.setVflex(m_adTabPanel, "true");
 		cRegion.appendChild(m_adTabPanel);
-		ZKUpdateUtil.setVflex(cRegion, "min");
+		ZKUpdateUtil.setVflex(cRegion, "1");
 
 		South sRegion = new South();
 		sRegion.setParent(layout);
@@ -401,6 +393,10 @@ public final class WAccountDialog extends Window
 			}
 		}
 
+		//auto collapse parameter region
+		if (isAutoCollapseParameterPane() && northPanel.getParent() instanceof North northRegion)
+			northRegion.setOpen(false);
+
 		return true;
 	}	//	initAccount
 
@@ -412,6 +408,8 @@ public final class WAccountDialog extends Window
 		
 		m_rows = new Rows();
 		m_rows.setParent(parameterLayout);
+		if (isLabelAboveInputForSmallWidth())
+			LayoutUtils.addSclass("form-label-above-input", parameterLayout);
 
 		//	Alias
 		if (m_AcctSchema.isHasAlias())
@@ -423,6 +421,7 @@ public final class WAccountDialog extends Window
 		}	//	Alias
 
 		//	Combination
+		m_newRow = isLabelAboveInputForSmallWidth();
 		GridField combination = m_mTab.getField("Combination");
 		if (f_Combination == null)
 			f_Combination = WebEditorFactory.getEditor(combination, false);
@@ -435,6 +434,8 @@ public final class WAccountDialog extends Window
 		MAcctSchemaElement[] elements = m_AcctSchema.getAcctSchemaElements();
 		for (int i = 0; i < elements.length; i++)
 		{
+			if (isLabelAboveInputForSmallWidth())
+				m_newRow = true;
 			MAcctSchemaElement ase = elements[i];
 			String type = ase.getElementType();
 			boolean isMandatory = ase.isMandatory();
@@ -586,7 +587,7 @@ public final class WAccountDialog extends Window
 			vlayout.setSpacing("0px");
 			vlayout.appendChild(label);
 			vlayout.appendChild(editor.getComponent());
-			m_row.appendCellChild(vlayout, 2);
+			m_row.appendCellChild(vlayout, isLabelAboveInputForSmallWidth() ? 4 : 2);
 		}
 		else
 		{
@@ -852,7 +853,7 @@ public final class WAccountDialog extends Window
 		else
 			query = new MQuery();
 		//	Alias
-		if (includeAliasCombination && f_Alias != null && !isEmpty(f_Alias))
+		if (includeAliasCombination && f_Alias != null && !isEmpty(f_Alias.getValue()))
 		{
 			String value = f_Alias.getValue().toString().toUpperCase();
 			if (!value.endsWith("%"))
@@ -914,8 +915,19 @@ public final class WAccountDialog extends Window
 		m_mTab.setQuery(query);
 		m_mTab.query(false);
 		statusBar.setStatusDB(String.valueOf(m_mTab.getRowCount()));
+
+		//auto collapse parameter region
+		if (isAutoCollapseParameterPane() && northPanel.getParent() instanceof North northRegion)
+			northRegion.setOpen(false);
+
 	}	//	action_Find
 
+	private boolean isAutoCollapseParameterPane() {
+		if (ClientInfo.isMobile())
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_MOBILE_AUTO_COLLAPSED_PARAMETER_PANEL, true, Env.getAD_Client_ID(Env.getCtx()));
+		else
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_COLLAPSED_PARAMETER_PANEL, false, Env.getAD_Client_ID(Env.getCtx()));
+	}
 
 	/**
 	 *	Create/Save Account

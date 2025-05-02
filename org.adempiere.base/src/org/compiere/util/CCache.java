@@ -551,6 +551,32 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 
 	@Override
+	public int resetByStringKey(String key) {
+		if (Util.isEmpty(key, true))
+			return reset();
+		
+		if (cache.isEmpty() && nullList.isEmpty())
+			return 0;
+
+		K firstKey = null;
+		try {
+			if (!cache.isEmpty())
+				firstKey = cache.keySet().iterator().next();
+			else if (!nullList.isEmpty())
+				firstKey = nullList.iterator().next();
+		} catch (ConcurrentModificationException e) {}
+		if (firstKey != null && firstKey instanceof String) {
+			if (!nullList.isEmpty()) {
+				if (nullList.remove(key)) return 1;
+			}
+			V removed = cache.remove(key);
+			return removed != null ? 1 : 0;
+		} else {
+			return reset();
+		}
+	}
+	
+	@Override
 	public void newRecord(int record_ID) {
 	}
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/idempiere.iml" filepath="$PROJECT_DIR$/idempiere.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.base/org.adempiere.base.iml" filepath="$PROJECT_DIR$/org.adempiere.base/org.adempiere.base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.base.callout/org.adempiere.base.callout.iml" filepath="$PROJECT_DIR$/org.adempiere.base.callout/org.adempiere.base.callout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.base.process/org.adempiere.base.process.iml" filepath="$PROJECT_DIR$/org.adempiere.base.process/org.adempiere.base.process.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.eclipse.equinox.http.servlet/org.adempiere.eclipse.equinox.http.servlet.iml" filepath="$PROJECT_DIR$/org.adempiere.eclipse.equinox.http.servlet/org.adempiere.eclipse.equinox.http.servlet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.install/org.adempiere.install.iml" filepath="$PROJECT_DIR$/org.adempiere.install/org.adempiere.install.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.payment.processor/org.adempiere.payment.processor.iml" filepath="$PROJECT_DIR$/org.adempiere.payment.processor/org.adempiere.payment.processor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.pipo/org.adempiere.pipo.iml" filepath="$PROJECT_DIR$/org.adempiere.pipo/org.adempiere.pipo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.pipo.handlers/org.adempiere.pipo.handlers.iml" filepath="$PROJECT_DIR$/org.adempiere.pipo.handlers/org.adempiere.pipo.handlers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.plugin.utils/org.adempiere.plugin.utils.iml" filepath="$PROJECT_DIR$/org.adempiere.plugin.utils/org.adempiere.plugin.utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.replication/org.adempiere.replication.iml" filepath="$PROJECT_DIR$/org.adempiere.replication/org.adempiere.replication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.replication.server/org.adempiere.replication.server.iml" filepath="$PROJECT_DIR$/org.adempiere.replication.server/org.adempiere.replication.server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.report.jasper/org.adempiere.report.jasper.iml" filepath="$PROJECT_DIR$/org.adempiere.report.jasper/org.adempiere.report.jasper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.server/org.adempiere.server.iml" filepath="$PROJECT_DIR$/org.adempiere.server/org.adempiere.server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.ui/org.adempiere.ui.iml" filepath="$PROJECT_DIR$/org.adempiere.ui/org.adempiere.ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.ui.zk/org.adempiere.ui.zk.iml" filepath="$PROJECT_DIR$/org.adempiere.ui.zk/org.adempiere.ui.zk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.apache.ecs/org.apache.ecs.iml" filepath="$PROJECT_DIR$/org.apache.ecs/org.apache.ecs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.compiere.db.oracle.provider/org.compiere.db.oracle.provider.iml" filepath="$PROJECT_DIR$/org.compiere.db.oracle.provider/org.compiere.db.oracle.provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.compiere.db.postgresql.provider/org.compiere.db.postgresql.provider.iml" filepath="$PROJECT_DIR$/org.compiere.db.postgresql.provider/org.compiere.db.postgresql.provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.felix.webconsole/org.idempiere.felix.webconsole.iml" filepath="$PROJECT_DIR$/org.idempiere.felix.webconsole/org.idempiere.felix.webconsole.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.hazelcast.service/org.idempiere.hazelcast.service.iml" filepath="$PROJECT_DIR$/org.idempiere.hazelcast.service/org.idempiere.hazelcast.service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.jetty.osgi.boot.fragment/org.idempiere.jetty.osgi.boot.fragment.iml" filepath="$PROJECT_DIR$/org.idempiere.jetty.osgi.boot.fragment/org.idempiere.jetty.osgi.boot.fragment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.keikai/org.idempiere.keikai.iml" filepath="$PROJECT_DIR$/org.idempiere.keikai/org.idempiere.keikai.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.printformat.editor/org.idempiere.printformat.editor.iml" filepath="$PROJECT_DIR$/org.idempiere.printformat.editor/org.idempiere.printformat.editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.tablepartition/org.idempiere.tablepartition.iml" filepath="$PROJECT_DIR$/org.idempiere.tablepartition/org.idempiere.tablepartition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.test/org.idempiere.test.iml" filepath="$PROJECT_DIR$/org.idempiere.test/org.idempiere.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.ui.sso.oidc/org.idempiere.ui.sso.oidc.iml" filepath="$PROJECT_DIR$/org.idempiere.ui.sso.oidc/org.idempiere.ui.sso.oidc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.webservices/org.idempiere.webservices.iml" filepath="$PROJECT_DIR$/org.idempiere.webservices/org.idempiere.webservices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.webservices.resources/org.idempiere.webservices.resources.iml" filepath="$PROJECT_DIR$/org.idempiere.webservices.resources/org.idempiere.webservices.resources.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.zk.billboard/org.idempiere.zk.billboard.iml" filepath="$PROJECT_DIR$/org.idempiere.zk.billboard/org.idempiere.zk.billboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.zk.billboard.chart/org.idempiere.zk.billboard.chart.iml" filepath="$PROJECT_DIR$/org.idempiere.zk.billboard.chart/org.idempiere.zk.billboard.chart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.zk.breeze.theme/org.idempiere.zk.breeze.theme.iml" filepath="$PROJECT_DIR$/org.idempiere.zk.breeze.theme/org.idempiere.zk.breeze.theme.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.zk.datatable/org.idempiere.zk.datatable.iml" filepath="$PROJECT_DIR$/org.idempiere.zk.datatable/org.idempiere.zk.datatable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.zk.extra/org.idempiere.zk.extra.iml" filepath="$PROJECT_DIR$/org.idempiere.zk.extra/org.idempiere.zk.extra.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.zk.iceblue_c.theme/org.idempiere.zk.iceblue_c.theme.iml" filepath="$PROJECT_DIR$/org.idempiere.zk.iceblue_c.theme/org.idempiere.zk.iceblue_c.theme.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.idempiere.zk.pivot/org.idempiere.zk.pivot.iml" filepath="$PROJECT_DIR$/org.idempiere.zk.pivot/org.idempiere.zk.pivot.iml" />
+    </modules>
+  </component>
+</project>

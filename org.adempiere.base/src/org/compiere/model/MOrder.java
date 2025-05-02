@@ -1465,6 +1465,13 @@ public class MOrder extends X_C_Order implements DocAction
 					line.setC_Currency_ID(getC_Currency_ID());
 				line.saveEx();
 			}
+			if (is_ValueChanged(MOrder.COLUMNNAME_AD_Org_ID)) {
+				for (MOrderPaySchedule orderPaySchedule : MOrderPaySchedule.getOrderPaySchedule(getCtx(),this.getC_Order_ID(), 0, get_TrxName())) {
+					orderPaySchedule.setAD_Org_ID(getAD_Org_ID());
+					orderPaySchedule.saveEx();
+				}
+			}
+			
 		}
 		//
 		return true;
@@ -3032,6 +3039,12 @@ public class MOrder extends X_C_Order implements DocAction
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+
+		if (!DocumentEngine.canReactivateThisDocType(getC_DocType_ID())) {
+			m_processMsg = Msg.getMsg(getCtx(), "DocTypeCannotBeReactivated", new Object[] {dt.getNameTrl()});
+			return false;
+		}
+
 		String DocSubTypeSO = dt.getDocSubTypeSO();
 		
 		//	PO - just re-open

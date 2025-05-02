@@ -722,8 +722,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	/**
 	 * 	Calculate Total Open Balance and SO_CreditUsed.
 	 */
-	public void setTotalOpenBalance ()
-	{
+	public void setTotalOpenBalance () {
 		log.info("");
 		BigDecimal SO_CreditUsed = null;
 		BigDecimal TotalOpenBalance = null;

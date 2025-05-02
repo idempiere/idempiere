@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/byte-buddy-agent.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/byte-buddy.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockito-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockito-junit-jupiter.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/objenesis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

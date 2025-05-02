@@ -43,4 +43,11 @@ public interface CacheChangeListener {
 	 *  @param recordId
 	 */
 	public void reset(String tableName, int recordId);
+	
+	/**
+	 * Reset Cache by table name and key
+	 * @param tableName
+	 * @param key
+	 */
+	public void reset(String tableName, String key);
 }
