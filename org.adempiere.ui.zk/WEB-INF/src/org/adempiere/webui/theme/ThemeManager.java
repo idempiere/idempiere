@@ -173,11 +173,11 @@ public final class ThemeManager {
 
 		String def = Env.getContext(Env.getCtx(), Env.PREFIX_SYSTEM_VARIABLE + MSysConfig.ZK_BROWSER_ICON);
 
-		if (Util.isEmpty(def)) {
-			String theme = getTheme();
-			def = THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
-		}
+		if (!Util.isEmpty(def))
+			return def;
 
+		String theme = getTheme();
+		def = THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
 		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_ICON, def);
 	}
 	
