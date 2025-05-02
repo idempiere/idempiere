@@ -72,7 +72,7 @@ public class CreditManagerInvoice implements ICreditManager
 				}
 			}
 		}
-		else if (MInvoice.DOCACTION_Complete.equals(docAction))
+		else if (MInvoice.DOCACTION_Complete.equals(docAction) || MInvoice.DOCACTION_Re_Activate.equals(docAction))
 		{
 			// POS supports multiple payments
 			boolean fromPOS = false;
@@ -114,6 +114,10 @@ public class CreditManagerInvoice implements ICreditManager
 															mInvoice.getDateAcct(),
 															mInvoice.get_TrxName());
 			}
+			
+			if (MInvoice.DOCACTION_Re_Activate.equals(docAction))
+				invAmt = invAmt.negate();
+			
 			// Total Balance
 			BigDecimal newBalance = bp.getTotalOpenBalance();
 			if (newBalance == null)

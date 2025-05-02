@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_DocType 
 {
@@ -358,6 +358,19 @@ public interface I_C_DocType
 	  * Automatically Generate Invoice after (Sales/Purchase) Order completed
 	  */
 	public boolean isAutoGenerateInvoice();
+
+    /** Column name IsCanBeReactivated */
+    public static final String COLUMNNAME_IsCanBeReactivated = "IsCanBeReactivated";
+
+	/** Set Can Be Reactivated.
+	  * This document can be reactivated
+	  */
+	public void setIsCanBeReactivated (boolean IsCanBeReactivated);
+
+	/** Get Can Be Reactivated.
+	  * This document can be reactivated
+	  */
+	public boolean isCanBeReactivated();
 
     /** Column name IsChargeOrProductMandatory */
     public static final String COLUMNNAME_IsChargeOrProductMandatory = "IsChargeOrProductMandatory";
