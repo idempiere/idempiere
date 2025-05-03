@@ -3426,12 +3426,24 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				link = adTabbox.getSelectedGridTab().getLinkColumnName();
 			if (link.length() != 0)
 			{
-				if (link.endsWith("_ID"))
-					query.addRestriction(link, MQuery.EQUAL,
-						Integer.valueOf(Env.getContextAsInt(ctx, curWindowNo, link)));
-				else
-					query.addRestriction(link, MQuery.EQUAL,
-						Env.getContext(ctx, curWindowNo, link));
+				GridField field = adTabbox.getSelectedGridTab().getField(link);
+				if(field!=null && field.isParentTabField())
+				{
+					int tabLevel = adTabbox.getSelectedGridTab().getTabLevel();
+					if (link.endsWith("_ID"))
+						query.addRestriction(link, MQuery.EQUAL,
+								Integer.valueOf(Env.getContextAsInt(ctx, curWindowNo, tabLevel, link)));
+					else
+						query.addRestriction(link, MQuery.EQUAL,
+								Env.getContext(ctx, curWindowNo, tabLevel, link));
+				} else {
+					if (link.endsWith("_ID"))
+						query.addRestriction(link, MQuery.EQUAL,
+								Integer.valueOf(Env.getContextAsInt(ctx, curWindowNo, link)));
+					else
+						query.addRestriction(link, MQuery.EQUAL,
+								Env.getContext(ctx, curWindowNo, link));
+				}
 			}
 			new WZoomAcross(toolbar.getToolbarItem("ZoomAcross"), adTabbox.getSelectedGridTab()
 					.getTableName(), adTabbox.getSelectedGridTab().getAD_Window_ID(), query);
