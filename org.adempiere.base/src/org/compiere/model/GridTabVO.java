@@ -347,6 +347,8 @@ public class GridTabVO implements Evaluatee, Serializable
 	public static void updateContext(GridTabVO vo) {
 		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_ID, String.valueOf(vo.AD_Tab_ID));
 		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_UU, vo.AD_Tab_UU);
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Table_ID, vo.AD_Table_ID);
+		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Table_UU, vo.AD_Table_UU);
 		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_Name, vo.Name);
 		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AccessLevel, vo.AccessLevel);
 		Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_IsLookupOnlySelection, vo.IsLookupOnlySelection);
