@@ -221,7 +221,7 @@ public class MMailText extends X_R_MailText
 		//	Parse BP
 		text = parse (text, m_bpartner, (keepEscapeSequence || m_po != null));
 		//	Parse PO
-		text = parse (text, m_po, false);
+		text = parse (text, m_po, keepEscapeSequence);
 		//
 		if (isHtml() && hasMarkdownText(text)) 
 		{
