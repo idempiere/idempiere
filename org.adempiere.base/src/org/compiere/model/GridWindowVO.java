@@ -318,8 +318,7 @@ public class GridWindowVO implements Serializable
 					if (mTabVO != null)
 					{
 						GridTabVO.loadUserDefTab(mTabVO);
-						if (firstTab)
-							GridTabVO.updateContext(mTabVO);
+						GridTabVO.updateContext(mTabVO);
 					}
 
 					if (mTabVO == null && firstTab)
@@ -479,8 +478,7 @@ public class GridWindowVO implements Serializable
 					if (cloneTab == null)
 						return null;
 					clone.Tabs.add(cloneTab);
-					if (clone.Tabs.size() == 1)
-						GridTabVO.updateContext(cloneTab);
+					GridTabVO.updateContext(cloneTab);
 				}
 				//set context, cloneTabs is usually for web client session cache
 				Env.setContext(ctx, windowNo, "IsSOTrx", clone.IsSOTrx);

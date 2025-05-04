@@ -24,13 +24,13 @@ import java.util.logging.Level;
 import javax.print.attribute.standard.MediaSizeName;
 
 import org.adempiere.impexp.AbstractXLSXExporter;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -289,7 +289,7 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 
 	@Override
-	protected void formatPage(XSSFSheet sheet)
+	protected void formatPage(Sheet sheet)
 	{
 		super.formatPage(sheet);
 		MPrintPaper paper = MPrintPaper.get(this.m_printFormat.getAD_PrintPaper_ID());
@@ -299,31 +299,31 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 		MediaSizeName mediaSizeName = paper.getMediaSize().getMediaSizeName();
 		if (MediaSizeName.NA_LETTER.equals(mediaSizeName))
 		{
-			paperSize = XSSFPrintSetup.LETTER_PAPERSIZE;
+			paperSize = PrintSetup.LETTER_PAPERSIZE;
 		}
 		else if (MediaSizeName.NA_LEGAL.equals(mediaSizeName))
 		{
-			paperSize = XSSFPrintSetup.LEGAL_PAPERSIZE;
+			paperSize = PrintSetup.LEGAL_PAPERSIZE;
 		}
 		else if (MediaSizeName.EXECUTIVE.equals(mediaSizeName))
 		{
-			paperSize = XSSFPrintSetup.EXECUTIVE_PAPERSIZE;
+			paperSize = PrintSetup.EXECUTIVE_PAPERSIZE;
 		}
 		else if (MediaSizeName.ISO_A4.equals(mediaSizeName))
 		{
-			paperSize = XSSFPrintSetup.A4_PAPERSIZE;
+			paperSize = PrintSetup.A4_PAPERSIZE;
 		}
 		else if (MediaSizeName.ISO_A5.equals(mediaSizeName))
 		{
-			paperSize = XSSFPrintSetup.A5_PAPERSIZE;
+			paperSize = PrintSetup.A5_PAPERSIZE;
 		}
 		else if (MediaSizeName.NA_NUMBER_10_ENVELOPE.equals(mediaSizeName))
 		{
-			paperSize = XSSFPrintSetup.ENVELOPE_10_PAPERSIZE;
+			paperSize = PrintSetup.ENVELOPE_10_PAPERSIZE;
 		}
 		else if (MediaSizeName.MONARCH_ENVELOPE.equals(mediaSizeName))
 		{
-			paperSize = XSSFPrintSetup.ENVELOPE_MONARCH_PAPERSIZE;
+			paperSize = PrintSetup.ENVELOPE_MONARCH_PAPERSIZE;
 		}
 		if (paperSize != -1)
 		{
@@ -334,10 +334,10 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 		sheet.getPrintSetup().setLandscape(paper.isLandscape());
 
 		// Set Paper Margin:
-		sheet.setMargin(XSSFSheet.TopMargin, ((double) paper.getMarginTop()) / 72);
-		sheet.setMargin(XSSFSheet.RightMargin, ((double) paper.getMarginRight()) / 72);
-		sheet.setMargin(XSSFSheet.LeftMargin, ((double) paper.getMarginLeft()) / 72);
-		sheet.setMargin(XSSFSheet.BottomMargin, ((double) paper.getMarginBottom()) / 72);
+		sheet.setMargin(Sheet.TopMargin, ((double) paper.getMarginTop()) / 72);
+		sheet.setMargin(Sheet.RightMargin, ((double) paper.getMarginRight()) / 72);
+		sheet.setMargin(Sheet.LeftMargin, ((double) paper.getMarginLeft()) / 72);
+		sheet.setMargin(Sheet.BottomMargin, ((double) paper.getMarginBottom()) / 72);
 	}
 	
 
@@ -420,7 +420,7 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 	
 	@Override
-	protected void createParameter(XSSFSheet sheet) {
+	protected void createParameter(Sheet sheet) {
 		if (!m_printFormat.isForm()) {
 			if (m_query != null && m_query.isActive()) {
 				int rows = m_query.getReportProcessQuery() != null ? m_query.getReportProcessQuery().getRestrictionCount() : m_query.getRestrictionCount();
@@ -428,8 +428,8 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 					setNoOfParameter(rows);
 					setFreezePane(1, rows + 1);
 					
-					XSSFCellStyle parameterStyle = m_workbook.createCellStyle();
-					XSSFFont parameterFont = m_workbook.createFont();
+					CellStyle parameterStyle = m_workbook.createCellStyle();
+					Font parameterFont = m_workbook.createFont();
 					parameterFont.setItalic(true);
 					parameterStyle.setFont(parameterFont);
 					
@@ -438,18 +438,18 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 						query = m_query.getReportProcessQuery();
 					for (int r = 0; r < query.getRestrictionCount(); r++)
 					{
-						XSSFRow row = sheet.createRow(r);
+						Row row = sheet.createRow(r);
 						if (r == 0) {
-							XSSFCell cell = row.createCell(0);
-							XSSFCellStyle style = m_workbook.createCellStyle();
-							XSSFFont font = m_workbook.createFont();
+							Cell cell = row.createCell(0);
+							CellStyle style = m_workbook.createCellStyle();
+							Font font = m_workbook.createFont();
 							font.setBold(true);
 							style.setFont(font);
 							cell.setCellStyle(style);
 							String value = Msg.getMsg(getCtx(), "Parameter") + ":";
 							cell.setCellValue(new XSSFRichTextString(value));
 						}
-						XSSFCell cell = row.createCell(1);
+						Cell cell = row.createCell(1);
 						cell.setCellStyle(parameterStyle);
 						String value = query.getInfoName(r);
 						cell.setCellValue(new XSSFRichTextString(value));
@@ -476,8 +476,8 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 	
 	@Override
-	protected XSSFCell getFormCell(XSSFRow row, int colnum) {
-		XSSFCell cell = null;
+	protected Cell getFormCell(Row row, int colnum) {
+		Cell cell = null;
 		if (colnum >= 0 && colnum < columns.size()) {
 			MPrintFormatItem item = (MPrintFormatItem) columns.get(colnum);		
 			int previousCol = m_previousFormCol >= 0 ? m_previousFormCol : 0;
@@ -508,8 +508,8 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 	}
 
 	@Override
-	protected XSSFRow getFormRow(XSSFSheet sheet, int colnum) {
-		XSSFRow row = null;
+	protected Row getFormRow(Sheet sheet, int colnum) {
+		Row row = null;
 		if (m_firstHeaderRow == -1) {
 			m_firstHeaderRow = sheet.getLastRowNum();
 		}
