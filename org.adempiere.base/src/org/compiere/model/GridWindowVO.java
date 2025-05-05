@@ -44,10 +44,11 @@ public class GridWindowVO implements Serializable
 	
 	private static final CLogger log = CLogger.getCLogger(GridWindowVO.class);
 
-	/**	Window Cache		*/
-	private static CCache<String,GridWindowVO> s_windowsvo = new CCache<String,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
+  public static final String GRID_WINDOW_VO_CACHE_NAME = I_AD_Window.Table_Name + "|GridWindowVO";
+  /**	Window Cache		*/
+	private static CCache<String,GridWindowVO>	s_windowsvo = new CCache<String,GridWindowVO>(I_AD_Window.Table_Name, GRID_WINDOW_VO_CACHE_NAME, 10);
 
-	/**
+  /**
 	 * @param AD_Window_ID
 	 * @param windowNo
 	 * @return {@link GridWindowVO}
@@ -239,7 +240,8 @@ public class GridWindowVO implements Serializable
 		return vo;
 	}   //  create
 
-	private static final CCache<String, ArrayList<GridTabVO>> s_gridTabsCache = new CCache<String, ArrayList<GridTabVO>>(MTab.Table_Name, "GridTabVOs Cache", 100, 0, false, 0);
+    public static final String GRID_TAB_VO_CACHE_NAME = "GridTabVOs Cache";
+    private static final CCache<String, ArrayList<GridTabVO>> s_gridTabsCache = new CCache<String, ArrayList<GridTabVO>>(MTab.Table_Name, GRID_TAB_VO_CACHE_NAME, 100, 0, false, 0);
 	
 	/**
 	 *  Create Window Tabs
@@ -271,8 +273,7 @@ public class GridWindowVO implements Serializable
 				else if (!firstTabIsNull)
 				{
 					GridTabVO.loadUserDefTab(tabvo);
-					if (mWindowVO.Tabs.isEmpty())
-						GridTabVO.updateContext(tabvo);
+                    GridTabVO.updateContext(tabvo);
 					if (!tabvo.IsReadOnly && "N".equals(mWindowVO.IsReadWrite))
 						tabvo.IsReadOnly = true;
 					mWindowVO.Tabs.add(tabvo);
