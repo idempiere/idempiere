@@ -719,6 +719,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.TreeDisplayedOn = TreeDisplayedOn;
 		clone.MaxQueryRecords = MaxQueryRecords;
 		clone.AD_Table_ID = AD_Table_ID;
+        clone.AD_Table_UU = AD_Table_UU;
 		clone.AD_Column_ID = AD_Column_ID;
 		clone.Parent_Column_ID = Parent_Column_ID;
 		clone.TableName = TableName;
