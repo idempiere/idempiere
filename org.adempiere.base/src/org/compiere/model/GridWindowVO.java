@@ -45,9 +45,8 @@ public class GridWindowVO implements Serializable
 	private static final CLogger log = CLogger.getCLogger(GridWindowVO.class);
 
 	/**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
-	
+	private static CCache<String,GridWindowVO> s_windowsvo = new CCache<String,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
+
 	/**
 	 * @param AD_Window_ID
 	 * @param windowNo
@@ -146,7 +145,8 @@ public class GridWindowVO implements Serializable
 				log.config("AD_Window_ID=" + AD_Window_ID);
 		}
 		
-		GridWindowVO vo = s_windowsvo.get(AD_Window_ID);
+		String keyCache = AD_Window_ID + "|" + Env.getAD_Language(ctx);
+		GridWindowVO vo = s_windowsvo.get(keyCache);
 		boolean clone = false;
 		if (vo != null)
 		{
@@ -161,13 +161,12 @@ public class GridWindowVO implements Serializable
 		
 		if (menuIsReadWrite != null)
 			vo.IsReadWrite = menuIsReadWrite;
-
-		//  --  Get Window
-		MWindow window = MWindow.get(AD_Window_ID);
-		boolean base = Env.isBaseLanguage(vo.ctx, "AD_Window");
-
+		
 		if (!clone)
 		{
+			//  --  Get Window
+			MWindow window = MWindow.get(AD_Window_ID);
+			boolean base = Env.isBaseLanguage(vo.ctx, "AD_Window");
 			if (window != null)
 			{
 				vo.Name = base ? window.getName() : window.get_Translation(MWindow.COLUMNNAME_Name); 
@@ -195,21 +194,7 @@ public class GridWindowVO implements Serializable
 			{
 				vo = null;
 			}
-			s_windowsvo.put(AD_Window_ID, vo.clone(0, false));
-		}
-		else if (window != null) 
-		{
-			vo.Name = base ? window.getName() : window.get_Translation(MWindow.COLUMNNAME_Name); 
-			vo.Description = base ? window.getDescription() : window.get_Translation(MWindow.COLUMNNAME_Description);
-			if (vo.Description == null)
-				vo.Description = "";
-			vo.Help = base ? window.getHelp() : window.get_Translation(MWindow.COLUMNNAME_Help);
-			if (vo.Help == null)
-				vo.Help = "";
-		}
-		else 
-		{
-			vo = null;
+			s_windowsvo.put(keyCache, vo.clone(0, false));
 		}
 		
 		// Ensure ASP exceptions
