@@ -161,12 +161,13 @@ public class GridWindowVO implements Serializable
 		
 		if (menuIsReadWrite != null)
 			vo.IsReadWrite = menuIsReadWrite;
-		
+
+		//  --  Get Window
+		MWindow window = MWindow.get(AD_Window_ID);
+		boolean base = Env.isBaseLanguage(vo.ctx, "AD_Window");
+
 		if (!clone)
 		{
-			//  --  Get Window
-			MWindow window = MWindow.get(AD_Window_ID);
-			boolean base = Env.isBaseLanguage(vo.ctx, "AD_Window");
 			if (window != null)
 			{
 				vo.Name = base ? window.getName() : window.get_Translation(MWindow.COLUMNNAME_Name); 
@@ -195,6 +196,20 @@ public class GridWindowVO implements Serializable
 				vo = null;
 			}
 			s_windowsvo.put(AD_Window_ID, vo.clone(0, false));
+		}
+		else if (window != null) 
+		{
+			vo.Name = base ? window.getName() : window.get_Translation(MWindow.COLUMNNAME_Name); 
+			vo.Description = base ? window.getDescription() : window.get_Translation(MWindow.COLUMNNAME_Description);
+			if (vo.Description == null)
+				vo.Description = "";
+			vo.Help = base ? window.getHelp() : window.get_Translation(MWindow.COLUMNNAME_Help);
+			if (vo.Help == null)
+				vo.Help = "";
+		}
+		else 
+		{
+			vo = null;
 		}
 		
 		// Ensure ASP exceptions
