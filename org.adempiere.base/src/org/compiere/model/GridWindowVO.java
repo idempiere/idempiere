@@ -44,12 +44,11 @@ public class GridWindowVO implements Serializable
 	
 	private static final CLogger log = CLogger.getCLogger(GridWindowVO.class);
 
-    public static final String GRID_WINDOW_VO_CACHE_NAME = I_AD_Window.Table_Name + "|GridWindowVO";
-    /**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, GRID_WINDOW_VO_CACHE_NAME, 10);
-	
-	/**
+  public static final String GRID_WINDOW_VO_CACHE_NAME = I_AD_Window.Table_Name + "|GridWindowVO";
+  /**	Window Cache		*/
+	private static CCache<String,GridWindowVO>	s_windowsvo = new CCache<String,GridWindowVO>(I_AD_Window.Table_Name, GRID_WINDOW_VO_CACHE_NAME, 10);
+
+  /**
 	 * @param AD_Window_ID
 	 * @param windowNo
 	 * @return {@link GridWindowVO}
@@ -147,7 +146,8 @@ public class GridWindowVO implements Serializable
 				log.config("AD_Window_ID=" + AD_Window_ID);
 		}
 		
-		GridWindowVO vo = s_windowsvo.get(AD_Window_ID);
+		String keyCache = AD_Window_ID + "|" + Env.getAD_Language(ctx);
+		GridWindowVO vo = s_windowsvo.get(keyCache);
 		boolean clone = false;
 		if (vo != null)
 		{
@@ -195,7 +195,7 @@ public class GridWindowVO implements Serializable
 			{
 				vo = null;
 			}
-			s_windowsvo.put(AD_Window_ID, vo.clone(0, false));
+			s_windowsvo.put(keyCache, vo.clone(0, false));
 		}
 		
 		// Ensure ASP exceptions
