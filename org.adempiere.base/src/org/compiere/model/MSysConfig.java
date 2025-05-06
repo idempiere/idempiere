@@ -236,8 +236,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
     public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
-	public static final String ZK_DESKTOP_BACKGROUND_COLOR = "ZK_DESKTOP_BACKGROUND_COLOR"; // used in desktop.css.dsp
-	public static final String ZK_DESKTOP_BACKGROUND_MESSAGE_VALUE = "ZK_DESKTOP_BACKGROUND_MESSAGE_VALUE";
+	public static final String ZK_DESKTOP_HEADER_BACKGROUND_COLOR = "ZK_DESKTOP_HEADER_BACKGROUND_COLOR"; // used in desktop.css.dsp
+	public static final String ZK_DESKTOP_HEADER_MESSAGE_VALUE = "ZK_DESKTOP_HEADER_MESSAGE_VALUE";
     public static final String ZK_DESKTOP_CLASS = "ZK_DESKTOP_CLASS";
     public static final String ZK_DESKTOP_SHOW_HOME_BUTTON = "ZK_DESKTOP_SHOW_HOME_BUTTON";
     public static final String ZK_DESKTOP_SHOW_TAB_LIST_BUTTON = "ZK_DESKTOP_SHOW_TAB_LIST_BUTTON";

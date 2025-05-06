@@ -14,7 +14,7 @@
 }
 
 .desktop-header {
-	background-color: ${u:sysConfig("ZK_DESKTOP_BACKGROUND_COLOR", "#C7E8FF")}; <%-- SysConfig with default to #C7E8FF --%>
+	background-color: ${u:sysConfig("ZK_DESKTOP_HEADER_BACKGROUND_COLOR", "#C7E8FF")}; <%-- SysConfig with default to #C7E8FF --%>
 	width: 100%;
 	height: 46px;
 	padding-left: 4px;

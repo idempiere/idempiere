@@ -362,7 +362,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		if (!Util.isEmpty(warehouse))
 			layout.appendChild(new Label(warehouse));
 		String msgText = "";
-		String msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_BACKGROUND_MESSAGE_VALUE);
+		String msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_HEADER_MESSAGE_VALUE);
 		if (!Util.isEmpty(msgValue, true))
 			msgText = Msg.getMsg(Env.getCtx(), msgValue);
 		layout.appendChild(new Label(msgText));

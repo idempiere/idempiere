@@ -8,7 +8,7 @@
     import org.compiere.util.Msg;
     import org.compiere.util.Util;
     var msgText = "";
-    var msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_BACKGROUND_MESSAGE_VALUE);
+    var msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_HEADER_MESSAGE_VALUE);
 	if (!Util.isEmpty(msgValue, true))
 		msgText = Msg.getMsg(Env.getCtx(), msgValue);
 </zscript>
