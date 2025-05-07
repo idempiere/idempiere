@@ -196,8 +196,6 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 
 	private Hlayout southPanel = new Hlayout();
 
-	private int m_windowNo;
-
 	private ArrayList<ArrayList<Object>> m_queryData;
 
 	private South pagingPanel;
@@ -235,7 +233,7 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		if (log.isLoggable(Level.INFO))
 			log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 
-		m_data = new WAcctViewerData (Env.getCtx(), m_windowNo, AD_Client_ID, AD_Table_ID);
+		m_data = new WAcctViewerData (Env.getCtx(), m_WindowNo, AD_Client_ID, AD_Table_ID);
 
 		try
 		{
@@ -243,7 +241,7 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 			dynInit (AD_Table_ID, Record_ID);
 			setAttribute(MODE_KEY, MODE_EMBEDDED);
 			setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
-			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
+			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);	// for closing the window with shortcut
 	    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 	    	addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
 		}
@@ -811,8 +809,8 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		}
 		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(e.getName())) {
         	IDesktop desktop = SessionManager.getAppDesktop();
-        	if (m_windowNo > 0 && desktop.isCloseTabWithShortcut())
-        		desktop.closeWindow(m_windowNo);
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
         	else
         		desktop.setCloseTabWithShortcut(true);
         }
@@ -1434,6 +1432,8 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 
 	@Override
 	protected void initForm() {
-		
+		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "+AD_Table_ID", true);
+		int Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "+Record_ID", true);
+		dynInit(AD_Table_ID, Record_ID);
 	}
 }
