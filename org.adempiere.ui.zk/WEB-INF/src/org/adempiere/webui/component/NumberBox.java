@@ -24,6 +24,7 @@ import java.text.ParseException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DisplayType;
@@ -138,7 +139,7 @@ public class NumberBox extends Div
 		
 		btn = new Button();
 		if (ThemeManager.isUseFontIconForImage())
-			btn.setIconSclass("z-icon-Calculator");
+			btn.setIconSclass(Icon.getIconSclass(Icon.CALCULATOR));
 		else
 			btn.setImage(ThemeManager.getThemeResource("images/Calculator16.png"));
 		btn.setTabindex(-1);

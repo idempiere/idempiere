@@ -30,6 +30,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
@@ -104,7 +105,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
     private void init()
     {
     	if (ThemeManager.isUseFontIconForImage())
-    		getComponent().getButton().setIconSclass("z-icon-Location");
+    		getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.LOCATION));
     	else
     		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Location16.png"));
     	

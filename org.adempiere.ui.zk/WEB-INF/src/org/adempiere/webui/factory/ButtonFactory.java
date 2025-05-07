@@ -16,6 +16,7 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -78,7 +79,7 @@ public class ButtonFactory {
         	if (withImage) 
         	{
         		if (ThemeManager.isUseFontIconForImage())
-        			button.setIconSclass("z-icon-"+name);
+        			button.setIconSclass(Icon.getIconSclass(name));
         		else
         			button.setImage(ThemeManager.getThemeResource("images/"+name+"16.png"));        	
         	}
@@ -87,7 +88,7 @@ public class ButtonFactory {
         else
         {
         	if (ThemeManager.isUseFontIconForImage())
-    			button.setIconSclass("z-icon-"+name);
+    			button.setIconSclass(Icon.getIconSclass(name));
         	else
         		button.setImage(ThemeManager.getThemeResource("images/"+name+"24.png"));
         	

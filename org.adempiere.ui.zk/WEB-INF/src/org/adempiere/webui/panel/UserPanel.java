@@ -28,6 +28,7 @@ import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
@@ -130,7 +131,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
     	if (ThemeManager.isUseFontIconForImage())
-    		mi.setIconSclass("z-icon-comment");
+		    mi.setIconSclass(Icon.getIconSclass(Icon.COMMENT));
     	else
     		mi.setImage(ThemeManager.getThemeResource("images/Request16.png"));
     	mi.setId("CreateRequest");
@@ -138,7 +139,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	mi.addEventListener(Events.ON_CLICK, this);
     	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
     	if (ThemeManager.isUseFontIconForImage())
-    		mi.setIconSclass("z-icon-envelope");
+    	  mi.setIconSclass(Icon.getIconSclass(Icon.ENVELOPE));
     	else
     		mi.setImage(ThemeManager.getThemeResource("images/SendMail16.png"));
     	mi.setId("EmailSupport");

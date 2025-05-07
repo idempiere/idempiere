@@ -46,6 +46,7 @@ import org.adempiere.webui.panel.WRC5SummaryFieldsPanel;
 import org.adempiere.webui.panel.WRCTabPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.ZkReportViewer;
@@ -301,7 +302,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		btnSave.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Save")));
 		//devCoffee #6142
 		if (ThemeManager.isUseFontIconForImage())
-			btnSave.setIconSclass("z-icon-Save");
+			btnSave.setIconSclass(Icon.getIconSclass(Icon.SAVE));
 		else
 			btnSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		if(fm.getAD_Client_ID()== 0 || !isChange)
@@ -317,7 +318,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		{
 			//devCoffee #6142
 			if (ThemeManager.isUseFontIconForImage())
-				bExport.setIconSclass("z-icon-Export");
+				bExport.setIconSclass(Icon.getIconSclass(Icon.EXPORT));
 			else
 				bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 			bExport.setName("btnExport");

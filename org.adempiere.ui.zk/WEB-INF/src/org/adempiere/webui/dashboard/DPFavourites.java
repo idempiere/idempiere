@@ -18,6 +18,7 @@ import org.adempiere.webui.component.FavoriteSimpleTreeModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
@@ -92,7 +93,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		btnExpand.addEventListener(Events.ON_CLICK, this);
 		btnExpand.setTooltiptext(Msg.getMsg(Env.getCtx(), "Tooltip_ExpandCollapseTree"));
 		if (ThemeManager.isUseFontIconForImage())
-			btnExpand.setIconSclass("z-icon-Expanding");
+			btnExpand.setIconSclass(Icon.getIconSclass(Icon.EXPANDING));
 		else
 			btnExpand.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
 
@@ -102,7 +103,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		btnAdd.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddFolder"));
 		btnAdd.addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
-			btnAdd.setIconSclass("z-icon-TreeFavNodeAdd");
+			btnAdd.setIconSclass(Icon.getIconSclass(Icon.TREE_FAV_NODE_ADD));
 		else
 			btnAdd.setImage(ThemeManager.getThemeResource("images/FolderAdd24.png"));
 
@@ -113,7 +114,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		btnEdit.addEventListener(Events.ON_CLICK, this);
 		btnEdit.setDisabled(true);
 		if (ThemeManager.isUseFontIconForImage())
-			btnEdit.setIconSclass("z-icon-Edit");
+			btnEdit.setIconSclass(Icon.getIconSclass(Icon.EDIT));
 		else
 			btnEdit.setImage(ThemeManager.getThemeResource("images/Editor24.png"));
 
@@ -123,7 +124,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		btnAutoLaunch.setTooltiptext(Msg.getMsg(Env.getCtx(), "AutoLaunch"));
 		btnAutoLaunch.addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
-			btnAutoLaunch.setIconSclass("z-icon-SequenceChange");
+			btnAutoLaunch.setIconSclass(Icon.getIconSclass(Icon.SEQUENCE_CHANGE));
 		else
 			btnAutoLaunch.setImage(ThemeManager.getThemeResource("images/Customize24.png"));
 

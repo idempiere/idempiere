@@ -47,6 +47,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
@@ -334,7 +335,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bSave.setEnabled(false);
 		bSave.setSclass("img-btn");
 		if (ThemeManager.isUseFontIconForImage())
-			bSave.setIconSclass("z-icon-Export");
+			bSave.setIconSclass(Icon.getIconSclass(Icon.EXPORT));
 		else
 			bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
@@ -343,14 +344,14 @@ public class WAttachment extends Window implements EventListener<Event>
 		bSaveAllAsZip.setEnabled(false);
 		bSaveAllAsZip.setSclass("img-btn");
 		if (ThemeManager.isUseFontIconForImage())
-			bSaveAllAsZip.setIconSclass("z-icon-file-zip-o");
+			bSaveAllAsZip.setIconSclass(Icon.getIconSclass(Icon.FILE_ZIP));
 		else
 			bSaveAllAsZip.setImage(ThemeManager.getThemeResource("images/SaveAsZip24.png"));
 		bSaveAllAsZip.setTooltiptext(Msg.getMsg(Env.getCtx(), "ExportZIP"));
 		bSaveAllAsZip.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bLoad.setIconSclass("z-icon-Import");
+			bLoad.setIconSclass(Icon.getIconSclass(Icon.IMPORT));
 		else
 			bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
 		bLoad.setSclass("img-btn");
@@ -363,7 +364,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		bEmail.setEnabled(false);
 		if (ThemeManager.isUseFontIconForImage())
-			bEmail.setIconSclass("z-icon-SendMail");
+			bEmail.setIconSclass(Icon.getIconSclass(Icon.SEND_MAIL));
 		else
 			bEmail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bLoad.setSclass("img-btn");
@@ -391,7 +392,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bOk.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bDeleteAll.setIconSclass("z-icon-Delete");
+			bDeleteAll.setIconSclass(Icon.getIconSclass(Icon.DELETE));
 		else
 			bDeleteAll.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDeleteAll.setSclass("img-btn");
@@ -399,7 +400,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bDeleteAll.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DeleteAll")));
 
 		if (ThemeManager.isUseFontIconForImage())
-			bPreview.setIconSclass("z-icon-Find");
+			bPreview.setIconSclass(Icon.getIconSclass(Icon.FIND));
 		else
 			bPreview.setImage(ThemeManager.getThemeResource("images/Find24.png"));
 		bPreview.setSclass("img-btn");

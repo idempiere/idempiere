@@ -35,6 +35,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WFieldRecordInfo;
@@ -133,7 +134,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 		editButton = new ToolBarButton();
 		editButton.setStyle("right: 21px;");
 		if (ThemeManager.isUseFontIconForImage())
-			editButton.setIconSclass("z-icon-Edit");
+			editButton.setIconSclass(Icon.getIconSclass(Icon.EDIT));
 		else
 			editButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_EDIT_RECORD_PNG));
 		editButton.setParent(getComponent());
@@ -142,7 +143,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 
 		zoomButton = new ToolBarButton();
 		if (ThemeManager.isUseFontIconForImage())
-			zoomButton.setIconSclass("z-icon-Zoom");
+			zoomButton.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
 		else
 			zoomButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_ZOOM_PNG));
 		zoomButton.setParent(getComponent());

@@ -20,6 +20,7 @@ import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.MMenu;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTreeNode;
@@ -215,7 +216,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 
 					if (ThemeManager.isUseFontIconForImage())
 					{
-						newBtn.setIconSclass("z-icon-New");
+						newBtn.setIconSclass(Icon.getIconSclass(Icon.NEW));
 						newBtn.setSclass("new-toolbarbutton");
 					}
 					else
@@ -230,7 +231,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 			{
 				Toolbarbutton btnContextMenu = new Toolbarbutton();
 				btnContextMenu.setClass("fav-mobile-ctx-menu");
-				btnContextMenu.setIconSclass("z-icon-More");
+				btnContextMenu.setIconSclass(Icon.getIconSclass(Icon.MORE));
 				btnContextMenu.setAttribute(MOBILE_TOOLBAR_CTX_MENU, true);
 				btnContextMenu.addEventListener(Events.ON_CLICK, this);
 				tc.appendChild(btnContextMenu);
@@ -388,22 +389,22 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 	private static String getIconSclass(MTreeNode mt)
 	{
 		if (mt.isSummary())
-			return "z-icon-Folder";
+			return Icon.getIconSclass(Icon.FOLDER);
 		if (mt.isWindow())
-			return "z-icon-Window";
+			return Icon.getIconSclass(Icon.WINDOW);
 		if (mt.isReport())
-			return "z-icon-Report";
+			return Icon.getIconSclass(Icon.REPORT);
 		if (mt.isProcess())
-			return "z-icon-Process";
+			return Icon.getIconSclass(Icon.PROCESS);
 		if (mt.isTask())
-			return "z-icon-Task";
+			return Icon.getIconSclass(Icon.TASK);
 		if (mt.isWorkFlow())
-			return "z-icon-WorkFlow";
+			return Icon.getIconSclass(Icon.WORKFLOW);
 		if (mt.isForm())
-			return "z-icon-Form";
+			return Icon.getIconSclass(Icon.FORM);
 		if (mt.isInfo())
-			return "z-icon-Info";
-		return "z-icon-Window";
+			return Icon.getIconSclass(Icon.INFO);
+		return Icon.getIconSclass(Icon.WINDOW);
 	} // getIconSclass
 
 }

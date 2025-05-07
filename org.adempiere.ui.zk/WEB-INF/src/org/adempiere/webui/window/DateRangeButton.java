@@ -32,6 +32,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
@@ -71,7 +72,7 @@ public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDis
 	private void init() {
 		
 		if (ThemeManager.isUseFontIconForImage())
-			setIconSclass("z-icon-History");
+			setIconSclass(Icon.getIconSclass(Icon.HISTORY));
 		else
 			setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HISTORY_PNG));
 		
