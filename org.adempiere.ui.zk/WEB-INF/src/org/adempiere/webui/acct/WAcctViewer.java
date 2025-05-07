@@ -533,6 +533,7 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		ZKUpdateUtil.setHflex(southRight, "1");
 		southPanel.appendChild(southRight);
 		Panel southRightPanel = new Panel();
+		southRightPanel.setStyle("display: flex; flex-direction: row; align-items: center; gap: 5px; justify-content: flex-end;");
 		southRightPanel.appendChild(bZoom); // Elaine 2009/07/29
 		southRightPanel.appendChild(bExport);
 		southRightPanel.appendChild(bQuery);
@@ -1432,8 +1433,8 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 
 	@Override
 	protected void initForm() {
-		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "+AD_Table_ID", true);
-		int Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "+Record_ID", true);
+		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + "AD_Table_ID", true);
+		int Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + "Record_ID", true);
 		dynInit(AD_Table_ID, Record_ID);
 	}
 }
