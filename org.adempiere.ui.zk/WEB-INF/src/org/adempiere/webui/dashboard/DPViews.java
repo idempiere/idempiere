@@ -22,6 +22,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.InfoSchedule;
@@ -31,6 +32,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUserDefInfo;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -198,7 +200,9 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 				if (actionCommand.equals("InfoAccount"))
 				{
-					new org.adempiere.webui.acct.WAcctViewer();
+					ADForm form = ADForm.openForm(SystemIDs.FORM_ACCOUNT_INFO);
+					form.setAttribute(Window.MODE_KEY, form.getWindowMode());
+					AEnv.showWindow(form);
 				}
 				else if (actionCommand.equals("InfoSchedule"))
 				{

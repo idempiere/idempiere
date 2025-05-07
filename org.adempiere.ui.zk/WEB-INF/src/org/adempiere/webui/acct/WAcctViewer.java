@@ -53,6 +53,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -109,7 +110,7 @@ import org.zkoss.zul.Space;
  *  @author Elaine Tan
  *  @author Low Heng Sin
  */
-public class WAcctViewer extends Window implements EventListener<Event>
+public class WAcctViewer extends ADForm implements EventListener<Event>
 {
 	/**
 	 * generated serial id
@@ -234,7 +235,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		if (log.isLoggable(Level.INFO))
 			log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 
-		m_windowNo = SessionManager.getAppDesktop().registerWindow(this);
 		m_data = new WAcctViewerData (Env.getCtx(), m_windowNo, AD_Client_ID, AD_Table_ID);
 
 		try
@@ -246,7 +246,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
 	    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 	    	addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
-			AEnv.showWindow(this);
 		}
 		catch(Exception e)
 		{
@@ -1431,5 +1430,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			keyEvent.stopPropagation();
 			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
+	}
+
+	@Override
+	protected void initForm() {
+		
 	}
 }
