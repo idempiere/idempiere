@@ -94,6 +94,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 					deferFK(element, mColumn);
 					syncColumn(ctx, mColumn, "Sync", false);
 				}
+				element.recordId = mColumn.getAD_Column_ID();
 				return;
 			}
 			

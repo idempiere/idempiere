@@ -13,6 +13,8 @@
  *****************************************************************************/
 package org.adempiere.model;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -64,7 +66,7 @@ public class POWrapper implements InvocationHandler
 		{
 			return (T)po;
 		}
-		return (T)Proxy.newProxyInstance(cl.getClassLoader(), new Class<?>[]{cl}, new POWrapper((PO)po));
+		return (T)Proxy.newProxyInstance(cl.getClassLoader(), new Class<?>[]{cl}, new POWrapper((PO)po, cl));
 	}
 	
 	/**
@@ -82,15 +84,17 @@ public class POWrapper implements InvocationHandler
 
 	private static final CLogger log = CLogger.getCLogger(POWrapper.class);
 	private final PO po;
+	private final Class<?> interfaceClass;
 	
 	/**
 	 * Private constructor. Use the static create method to create a new instance of POWrapper.
 	 * @param po
 	 */
-	private POWrapper(PO po)
+	private POWrapper(PO po, Class<?> interfaceClass)
 	{
 		super();
 		this.po = po;
+		this.interfaceClass = interfaceClass;
 	}
 
 	@Override
@@ -110,6 +114,9 @@ public class POWrapper implements InvocationHandler
 			final int idx = po.get_ColumnIndex(propertyName);
 			if (idx >= 0)
 				value = po.get_Value(propertyName);
+			else
+				value = callDefaultFunction(proxy, method, args, true);
+
 			if (value != null)
 			{
 				return value;
@@ -145,9 +152,10 @@ public class POWrapper implements InvocationHandler
 			if (ii >= 0)
 			{
 				return po.get_Value(ii);
+			}else{
+				// throw IllegalArgumentException in case no default method defined
+				return callDefaultFunction(proxy, method, args, false);
 			}
-			//
-			throw new IllegalArgumentException("Method not supported - "+methodName);
 		}
 		else
 		{
@@ -155,6 +163,34 @@ public class POWrapper implements InvocationHandler
 		}
 	}
 	
+	/**
+	 * Call default method of interface class
+	 * 
+	 * @param proxy
+	 * @param method
+	 * @param args
+	 * @param nullIfNotSupported - return null if no default method is defined otherwise throw IllegalArgumentException
+	 * @return
+	 */
+	protected Object callDefaultFunction(Object proxy, Method method, Object[] args, boolean nullIfNotSupported){
+		try {
+			if (method.isDefault())
+				return MethodHandles.lookup()
+		        	.findSpecial(interfaceClass, method.getName(), 
+		        		MethodType.methodType(method.getReturnType(), 
+		        		method.getParameterTypes()), interfaceClass)
+		        .bindTo(proxy)
+		        .invokeWithArguments(args);
+			
+		}catch (Throwable e){
+			throw new IllegalArgumentException("Method not supported - " + method.getName());
+		}
+		if(nullIfNotSupported)
+			return null;
+		
+		throw new IllegalArgumentException("Method not supported - " + method.getName());
+	}
+
 	/**
 	 * @return wrapped PO instance
 	 */

@@ -1408,6 +1408,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      * @return true if there's last focus editor
      */
 	public boolean focusToLastFocusEditor() {
+		if (ClientInfo.isMobile())
+			return false;
+
 		return focusToLastFocusEditor(false);
 	}
 	
@@ -1597,7 +1600,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		Integer[] data = (Integer[]) event.getData();
     		adTabbox.setDetailPaneSelectedTab(data[0], data[1]);
     	}
-    	else if (event.getName().equals(ON_FOCUS_DEFER_EVENT)) {
+    	else if (event.getName().equals(ON_FOCUS_DEFER_EVENT) && !ClientInfo.isMobile()) {
     		HtmlBasedComponent comp = (HtmlBasedComponent) event.getData();
     		if (comp instanceof ADTabpanel)
     			((ADTabpanel)comp).focusToFirstEditor(false);

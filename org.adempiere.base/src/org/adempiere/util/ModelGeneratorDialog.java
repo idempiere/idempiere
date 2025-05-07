@@ -13,24 +13,16 @@
  *****************************************************************************/
 package org.adempiere.util;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Panel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 import org.compiere.Adempiere;
 
@@ -73,6 +65,7 @@ public class ModelGeneratorDialog extends JFrame implements ActionListener {
 		filePanel.setLayout(new BorderLayout());
 		String defaultPath = Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base" + File.separator + "src";
 		fFolderName = new JTextField(defaultPath);
+		setFieldBorder(fFolderName);
 		filePanel.add(fFolderName, BorderLayout.CENTER);
 		bFolder = new JButton("...");
 		bFolder.setMargin(new Insets(0, 0, 0, 0));
@@ -83,18 +76,22 @@ public class ModelGeneratorDialog extends JFrame implements ActionListener {
 
 		mainPanel.add(new JLabel("Package Name"), makeGbc(0, 1));
 		fPackageName = new JTextField("org.compiere.model");
+		setFieldBorder(fPackageName);
 		mainPanel.add(fPackageName, makeGbc(1, 1));
 
 		mainPanel.add(new JLabel("Table Name"), makeGbc(0, 2));
 		fTableName = new JTextField("AD_ReplaceThis%");
+		setFieldBorder(fTableName);
 		mainPanel.add(fTableName, makeGbc(1, 2));
 
 		mainPanel.add(new JLabel("Table Entity Type"), makeGbc(0, 3));
 		fEntityType = new JTextField("D");
+		setFieldBorder(fEntityType);
 		mainPanel.add(fEntityType, makeGbc(1, 3));
 		
 		mainPanel.add(new JLabel("Column Entity Type"), makeGbc(0, 4));
 		fColumnEntityType = new JTextField("");
+		setFieldBorder(fColumnEntityType);
 		mainPanel.add(fColumnEntityType, makeGbc(1, 4));
 
 		Panel chkPanel = new Panel();
@@ -114,6 +111,26 @@ public class ModelGeneratorDialog extends JFrame implements ActionListener {
 		confirmPanel.add(bCancel);
 		bGenerate.addActionListener(this);
 		bCancel.addActionListener(this);
+	}
+
+	private void setFieldBorder(JComponent textField) {
+		Border innerBorder = BorderFactory.createEmptyBorder(3, 3, 3, 3);
+		LineBorder defaultBorder = new LineBorder(Color.GRAY); // Default border
+		LineBorder focusBorder = new LineBorder(Color.BLUE.brighter(), 1); // Focus border
+
+		textField.setBorder(BorderFactory.createCompoundBorder(defaultBorder, innerBorder));
+
+		textField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				textField.setBorder(BorderFactory.createCompoundBorder(focusBorder, innerBorder));
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				textField.setBorder(BorderFactory.createCompoundBorder(defaultBorder, innerBorder));
+			}
+		});
 	}
 
 	/**
