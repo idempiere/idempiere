@@ -47,8 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5259015877977440085L;
-
+	private static final long serialVersionUID = -2802588820363361001L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -223,6 +222,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT = "VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT";
     public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
+    public static final String XLSX_EXPORT_USE_FAST_METHOD = "XLSX_EXPORT_USE_FAST_METHOD";
     public static final String ZK_ADVANCE_FIND_FILTER_COLUMN_LIST = "ZK_ADVANCE_FIND_FILTER_COLUMN_LIST";
     public static final String ZK_AUTO_SAVE_CHANGES = "ZK_AUTO_SAVE_CHANGES";
     public static final String ZK_AUTO_SAVE_TABS_EXCLUDED = "ZK_AUTO_SAVE_TABS_EXCLUDED";
@@ -242,12 +242,16 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_DESKTOP_TAB_AUTO_SHRINK_TO_FIT = "ZK_DESKTOP_TAB_AUTO_SHRINK_TO_FIT";
     public static final String ZK_DESKTOP_TAB_MAX_TITLE_LENGTH = "ZK_DESKTOP_TAB_MAX_TITLE_LENGTH";
     public static final String ZK_ERROR_MSG_LIFETIME_MILLISECONDS = "ZK_ERROR_MSG_LIFETIME_MILLISECONDS";
+    public static final String ZK_FIELD_LABEL_ABOVE_INPUT = "ZK_FIELD_LABEL_ABOVE_INPUT";
+    public static final String ZK_FIELD_MOBILE_LABEL_ABOVE_INPUT = "ZK_FIELD_MOBILE_LABEL_ABOVE_INPUT";
+    public static final String ZK_FIELD_MOBILE_SMALL_WIDTH_LABEL_ABOVE_INPUT = "ZK_FIELD_MOBILE_SMALL_WIDTH_LABEL_ABOVE_INPUT";
     public static final String ZK_FLAT_VIEW_MENU_TREE = "ZK_FLAT_VIEW_MENU_TREE";
     public static final String ZK_FOOTER_SERVER_DATETIME_FORMAT = "ZK_FOOTER_SERVER_DATETIME_FORMAT";
     public static final String ZK_FOOTER_SERVER_MSG = "ZK_FOOTER_SERVER_MSG";
     public static final String ZK_GRID_AFTER_FIND = "ZK_GRID_AFTER_FIND";
     public static final String ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS = "ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS";
     public static final String ZK_GRID_EDIT_MODELESS = "ZK_GRID_EDIT_MODELESS";
+    public static final String ZK_GRID_MOBILE_AUTO_HIDE_EMPTY_COLUMNS = "ZK_GRID_MOBILE_AUTO_HIDE_EMPTY_COLUMNS";
     public static final String ZK_GRID_MOBILE_EDITABLE = "ZK_GRID_MOBILE_EDITABLE";
     public static final String ZK_GRID_MOBILE_EDIT_MODELESS = "ZK_GRID_MOBILE_EDIT_MODELESS";
     public static final String ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR = "ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR";
@@ -256,6 +260,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_GRID_VIEW_USE_DEFER_RENDERING = "ZK_GRID_VIEW_USE_DEFER_RENDERING";
     public static final String ZK_INFO_AUTO_COLLAPSED_PARAMETER_PANEL = "ZK_INFO_AUTO_COLLAPSED_PARAMETER_PANEL";
     public static final String ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS = "ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS";
+    public static final String ZK_INFO_MOBILE_AUTO_COLLAPSED_PARAMETER_PANEL = "ZK_INFO_MOBILE_AUTO_COLLAPSED_PARAMETER_PANEL";
+    public static final String ZK_INFO_MOBILE_AUTO_HIDE_EMPTY_COLUMNS = "ZK_INFO_MOBILE_AUTO_HIDE_EMPTY_COLUMNS";
     public static final String ZK_INFO_NUM_PAGE_PRELOAD = "ZK_INFO_NUM_PAGE_PRELOAD";
     public static final String ZK_INFO_QUERY_TIME_OUT =  "ZK_INFO_QUERY_TIME_OUT";
     public static final String ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD = "ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD";

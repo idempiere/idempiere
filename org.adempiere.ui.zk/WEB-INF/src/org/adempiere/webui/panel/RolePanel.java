@@ -66,8 +66,8 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.AbstractComponent;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Deferrable;
@@ -165,6 +165,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         init();
         this.setId("rolePanel");
         this.setSclass("login-box");
+		if (isLabelAboveInput())
+			LayoutUtils.addSclass("form-label-above-input", this);
 
         if (! m_showRolePanel) {
         	// check if all mandatory fields are ok to not show
@@ -196,10 +198,15 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	createUI();
     }
 
+	private boolean isLabelAboveInput() {
+		return LayoutUtils.isLabelAboveInputForSmallWidth();
+	}
+
     /**
      * Layout panel
      */
 	protected void createUI() {
+
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
     	Label label = new Label(Msg.getMsg(Env.getCtx(), "SelectRole"));
@@ -231,11 +238,18 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	td = new Td();
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(lblClient.rightAlign());
+    	td.appendChild(isLabelAboveInput() ? lblClient : lblClient.rightAlign());
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstClient);
+		if (isLabelAboveInput())
+			lstClient.setWidth("100%");
 
         tr = new Tr();
         tr.setId("rowRole");
@@ -243,11 +257,18 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	td = new Td();
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(lblRole.rightAlign());
+    	td.appendChild(isLabelAboveInput() ? lblRole : lblRole.rightAlign());
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstRole);
+		if (isLabelAboveInput())
+			lstRole.setWidth("100%");
 
     	tr = new Tr();
         tr.setId("rowLabelDefault");
@@ -258,7 +279,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
 		div = new Div();
-		div.setStyle("text-align: right; text-decoration: underline");
+		div.setStyle("text-align: " + (isLabelAboveInput() ? "left;" : "right;") + " text-decoration: underline");
 		div.appendChild(lblDef);
     	td.appendChild(div);
 
@@ -268,11 +289,18 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	td = new Td();
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(lblOrganisation.rightAlign());
+    	td.appendChild(isLabelAboveInput() ? lblOrganisation : lblOrganisation.rightAlign());
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstOrganisation);
+		if (isLabelAboveInput())
+			lstOrganisation.setWidth("100%");
 
     	tr = new Tr();
         tr.setId("rowWarehouse");
@@ -280,11 +308,18 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	td = new Td();
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(lblWarehouse.rightAlign());
+    	td.appendChild(isLabelAboveInput() ? lblWarehouse : lblWarehouse.rightAlign());
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstWarehouse);
+		if (isLabelAboveInput())
+			lstWarehouse.setWidth("100%");
     	
     	tr = new Tr();
     	tr.setId("rowLanguage");
@@ -292,11 +327,18 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	td = new Td();
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(lblLanguage.rightAlign());
+    	td.appendChild(isLabelAboveInput() ? lblLanguage : lblLanguage.rightAlign());
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstLanguage);
+		if (isLabelAboveInput())
+			lstLanguage.setWidth("100%");
 
     	tr = new Tr();
         tr.setId("rowDate");
@@ -304,7 +346,12 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	td = new Td();
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.appendChild(lblDate.rightAlign());
+    	td.appendChild(isLabelAboveInput() ? lblDate : lblDate.rightAlign());
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);

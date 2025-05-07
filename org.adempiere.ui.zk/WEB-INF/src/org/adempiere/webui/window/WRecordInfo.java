@@ -27,6 +27,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Listbox;
@@ -267,7 +268,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		tabPanel = createTimeline();
 		tabPanel.setParent(tabPanels);
 		
-		if("T".equals(userPreference.getProperty(UserPreference.P_RECORD_INFO_DEFAULT_TAB)))
+		if("T".equals(userPreference.getProperty(UserPreference.P_RECORD_INFO_DEFAULT_TAB)) || ClientInfo.isMobile())
 			tab.setSelected(true);
 	}
 
@@ -300,17 +301,18 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			return false;
 		//  Info
 		MUser user = MUser.get(Env.getCtx(), dse.CreatedBy.intValue());
-		m_info.append(" ")
-			.append(Msg.getElement(Env.getCtx(), "CreatedBy"))
-			.append(": ").append(user.getName())
-			.append(" - ").append(m_dateTimeFormat.format(dse.Created)).append("\n");
-		
+		if (!ClientInfo.isMobile())
+			m_info.append(" ")
+				.append(Msg.getElement(Env.getCtx(), "CreatedBy"))
+				.append(": ").append(user.getName())
+				.append(" - ").append(m_dateTimeFormat.format(dse.Created)).append("\n");
+
 		// get user preference
 		userPreference = new UserPreference();
 		userPreference.loadPreference(user.getAD_User_ID());
-		
-		if (!dse.Created.equals(dse.Updated) 
-			|| !dse.CreatedBy.equals(dse.UpdatedBy))
+
+		if ((!dse.Created.equals(dse.Updated)
+			|| !dse.CreatedBy.equals(dse.UpdatedBy)) && !ClientInfo.isMobile())
 		{
 			if (!dse.CreatedBy.equals(dse.UpdatedBy))
 				user = MUser.get(Env.getCtx(), dse.UpdatedBy.intValue());
@@ -320,7 +322,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				.append(" - ").append(m_dateTimeFormat.format(dse.Updated)).append("\n");
 		}
 		if (dse.Info != null && dse.Info.length() > 0)
-			m_info.append("\n ").append(dse.Info).append("");
+			m_info.append(ClientInfo.isMobile() ? " " : "\n ").append(dse.Info).append("");
 		
 		//get uuid
 		GridTable gridTable = null;

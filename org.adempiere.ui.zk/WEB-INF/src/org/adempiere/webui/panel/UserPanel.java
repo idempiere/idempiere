@@ -26,6 +26,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
@@ -129,12 +130,18 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	feedbackMenu = new Menupopup();
 		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
-		mi.setIconSclass(Icon.getIconSclass(Icon.COMMENT));
+    	if (ThemeManager.isUseFontIconForImage())
+		    mi.setIconSclass(Icon.getIconSclass(Icon.COMMENT));
+    	else
+    		mi.setImage(ThemeManager.getThemeResource("images/Request16.png"));
     	mi.setId("CreateRequest");
     	feedbackMenu.appendChild(mi);
     	mi.addEventListener(Events.ON_CLICK, this);
     	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
-    	mi.setIconSclass(Icon.getIconSclass(Icon.ENVELOPE));
+    	if (ThemeManager.isUseFontIconForImage())
+    	  mi.setIconSclass(Icon.getIconSclass(Icon.ENVELOPE));
+    	else
+    		mi.setImage(ThemeManager.getThemeResource("images/SendMail16.png"));
     	mi.setId("EmailSupport");
     	mi.addEventListener(Events.ON_CLICK, this);
     	feedbackMenu.appendChild(mi);

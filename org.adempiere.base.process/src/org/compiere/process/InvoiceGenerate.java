@@ -238,7 +238,8 @@ public class InvoiceGenerate extends SvrProcess
 						&& m_bpartnerID != order.getC_BPartner_ID())
 						|| (m_invoice != null 
 						&& (m_invoice.getC_BPartner_Location_ID() != order.getBill_Location_ID() ||
-							m_invoice.getAD_User_ID() != order.getBill_User_ID()) ) )
+							m_invoice.getAD_User_ID() != order.getBill_User_ID() ||
+							m_invoice.getAD_Org_ID() != order.getAD_Org_ID()) ) )
 					completeInvoice();
 				boolean completeOrder = MOrder.INVOICERULE_AfterOrderDelivered.equals(order.getInvoiceRule());
 				

@@ -148,7 +148,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
 	protected static final String COLUMN_VISIBLE_ORIGINAL = "column.visible.original";
 	protected static final String ROW_CTX_VARIABLE_PREFIX = "_IWInfo_";
-	protected static final String ROW_ID_CTX_VARIABLE_NAME = "_IWInfoIDs_Selected";
+	public static final String ROW_ID_CTX_VARIABLE_NAME = "_IWInfoIDs_Selected";
 	
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
@@ -1096,7 +1096,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @return true if info window should auto hide empty columns
 	 */
 	protected boolean isAutoHideEmptyColumns() {
-		return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		if (ClientInfo.isMobile())
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_MOBILE_AUTO_HIDE_EMPTY_COLUMNS, true, Env.getAD_Client_ID(Env.getCtx()));
+		else
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	/**
@@ -2607,27 +2610,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	            form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 	            form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 
+	            form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        updateListSelected();
+                        recordSelectedData.clear();
+                        Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
+                        onUserQuery();
+                    }
+                });
+
 	            if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
-	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-	                    @Override
-	                    public void onEvent(Event event) throws Exception {
-	                        ;
-	                    }
-	                });
 	                form.doHighlighted();
 	                form.focus();
 	            }
 	            else {
-	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-	                    @Override
-	                    public void onEvent(Event event) throws Exception {
-	                        updateListSelected();
-	                        recordSelectedData.clear();
-	                        Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
-	                        onUserQuery();
-	                    }
-	                });
-
 	                SessionManager.getAppDesktop().showWindow(form);
 	            }
 	            return;

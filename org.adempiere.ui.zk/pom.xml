@@ -10,6 +10,7 @@
 	<artifactId>org.adempiere.ui.zk</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<build>
+    <sourceDirectory>WEB-INF/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

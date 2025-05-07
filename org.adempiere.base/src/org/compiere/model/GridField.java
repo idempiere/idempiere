@@ -2835,4 +2835,42 @@ public class GridField
 	public void setParentEvaluatee(Evaluatee evaluatee) {
 		m_parentEvaluatee  = evaluatee;
 	}
+	
+	/**
+	 * Update dependent field after changes to a column
+	 * @param dependentField field with logic depending on column that changed
+	 * @param columnName name of column that changed
+	 * @param tabNo optional tab number
+	 * @param resetFieldAction optional action to reset dependent field value
+	 */
+	public static void updateDependentField(GridField dependentField, String columnName, int tabNo, Runnable resetFieldAction) {
+		//  if the field has a lookup
+		if (dependentField.getLookup() instanceof MLookup mLookup)
+		{
+			//  if the lookup is dynamic (i.e. contains this columnName as variable)
+			if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
+					|| (tabNo >= 0 && mLookup.getValidation().matches(".*[@]"+tabNo+"[|]"+columnName+"([:].+)?[@].*"))
+					|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
+			{
+				if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
+					+ dependentField.getColumnName() + " set to null");
+				mLookup.refresh();
+				if (resetFieldAction != null) {
+					resetFieldAction.run();
+				} else {
+					Object currentValue = dependentField.getValue();
+					
+					//  invalidate current selection
+					dependentField.setValue(null, false);
+					
+					if (currentValue != null && mLookup.containsKeyNoDirect(currentValue))
+						dependentField.setValue(currentValue, false);
+				}
+			}
+		}
+		//  if the field is a Virtual UI Column
+		if (dependentField.isVirtualUIColumn()) {
+			dependentField.processUIVirtualColumn();
+		}
+	}
 }   //  GridField

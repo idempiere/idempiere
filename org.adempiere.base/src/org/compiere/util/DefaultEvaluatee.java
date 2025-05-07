@@ -209,7 +209,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		    	value = Env.getContext (ctx, m_windowNo, m_tabNo, variableName, tabOnly, true);
 		    }
 		}
-		if (Util.isEmpty(value) && globalVariable)
+		if (Util.isEmpty(value) && (globalVariable || Env.isPreference(variableName)))
 		{
 			value = Env.getContext(ctx, variableName);	// get from global context
 		}
@@ -226,7 +226,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		
 		//remove prefix from variable name
 		boolean withTabNo = false;
-		if (Env.isGlobalVariable(variableName)) {
+		if (globalVariable) {
 			variableName = variableName.substring(1);				
 		} else if (variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0) {
 			variableName = variableName.substring(variableName.lastIndexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR)+1);
@@ -302,6 +302,12 @@ public class DefaultEvaluatee implements Evaluatee {
 		// handle format in <> operator
 		if (format != null && format.length() > 0) {
 			String foreignTable = getForeignTableName(variableName, column);
+			if (foreignTable == null && column != null && getPO() != null
+					&& getPO().get_KeyColumns() != null
+					&& getPO().get_KeyColumns().length == 1
+					&& getPO().get_KeyColumns()[0].equalsIgnoreCase(column.getColumnName())) {
+				foreignTable = getPO().get_TableName();
+			}
 			//no dot operator and variable name is *_ID
 			if (Util.isEmpty(foreignColumn) && variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX)) {
 				int id = 0;
@@ -453,6 +459,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		@Override
 		public void reset(String tableName, int recordId) {
 			String key = tableName + "|" + recordId;
+			remove(key);
+		}
+		
+		@Override
+		public void reset(String tableName, String key) {
 			remove(key);
 		}
 	}
