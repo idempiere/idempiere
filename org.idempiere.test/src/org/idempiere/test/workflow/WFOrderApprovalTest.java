@@ -36,10 +36,9 @@ public class WFOrderApprovalTest extends AbstractTestCase
 
 	private MWorkflow	workflow;
 	private MWFNode		nodeStart, nodePrepare, nodeApprove, nodeAuto, nodeComplete;
-	private MOrder		order;
 	private MUser		joeSales, carlBoss;
 	private MWFNodeNext	nextStartPrepare, nextStartAuto, nextPrepareApprove, nextApproveComplete, nextPrepareComplete;
-
+	
 	/**
 	 * Tests rejection of a sales order using a custom approval column.
 	 * Simulates supervisor/user roles and verifies that rejection updates document status
@@ -59,7 +58,7 @@ public class WFOrderApprovalTest extends AbstractTestCase
 			Env.setContext(ctx, Env.AD_USER_ID, carlBoss.getAD_User_ID());
 			Env.setContext(ctx, Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
 
-			order = createOrder(ctx, trxName);
+			MOrder order = createOrder(ctx, trxName);
 
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 			order.saveEx();
@@ -109,7 +108,7 @@ public class WFOrderApprovalTest extends AbstractTestCase
 			Env.setContext(ctx, Env.AD_USER_ID, carlBoss.getAD_User_ID());
 			Env.setContext(ctx, Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
 
-			order = createOrder(ctx, trxName);
+			MOrder order = createOrder(ctx, trxName);
 
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 			order.saveEx();
@@ -155,7 +154,7 @@ public class WFOrderApprovalTest extends AbstractTestCase
 		workflow.setName("Process_Order");
 		workflow.setDescription("(Standard Process Order)");
 		workflow.setAD_Table_ID(MOrder.Table_ID);
-		workflow.setEntityType("D");
+		workflow.setEntityType("U");
 		workflow.setWorkflowType(MWorkflow.WORKFLOWTYPE_DocumentProcess);
 		workflow.setIsValid(true);
 		workflow.saveEx();
@@ -340,7 +339,6 @@ public class WFOrderApprovalTest extends AbstractTestCase
 	private void cleanup( )
 	{
 		rollback();
-		deleteIfExists(order);
 		deleteIfExists(nextStartPrepare, nextStartAuto, nextPrepareApprove, nextApproveComplete, nextPrepareComplete);
 		deleteIfExists(nodeComplete, nodeAuto, nodeApprove, nodePrepare, nodeStart);
 		deleteIfExists(workflow);
