@@ -33,6 +33,7 @@ import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.Env;
@@ -49,7 +50,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
-import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.LabelImageElement;
 
@@ -361,7 +361,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		String warehouse = getWarehouseName();
 		if (!Util.isEmpty(warehouse))
 			layout.appendChild(new Label(warehouse));
-		layout.appendChild(new Space());
+		String msgText = "";
+		String msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_HEADER_MESSAGE_VALUE);
+		if (!Util.isEmpty(msgValue, true))
+			msgText = Msg.getMsg(Env.getCtx(), msgValue);
+		layout.appendChild(new Label(msgText));
 		layout.appendChild(userPanelLinksContainer);
 		
 		popup.appendChild(layout);
