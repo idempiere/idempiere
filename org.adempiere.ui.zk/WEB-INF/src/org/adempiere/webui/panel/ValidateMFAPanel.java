@@ -381,10 +381,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		}
 
 		if (chkRegisterDevice != null && chkRegisterDevice.isChecked()) {
-			// TODO: generate the random cookie if possible with some fingerprint of the device
 			String cookieValue = UUID.randomUUID().toString();
-			long daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
-			setCookie(getCookieName(), cookieValue, (int) daysExpire * 86400); // 86400 = seconds per day
+			int daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
+			setCookie(getCookieName(), cookieValue, daysExpire * 86400); // 86400 = seconds per day
 			MUser user = MUser.get(Env.getCtx());
 			MMFARegisteredDevice rd = new MMFARegisteredDevice(m_ctx, 0, null);
 			rd.set_ValueOfColumn(MMFARegistration.COLUMNNAME_AD_Client_ID, user.getAD_Client_ID());
