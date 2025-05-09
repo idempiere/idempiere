@@ -1426,7 +1426,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		String colsql = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
 		
 		colsql = getSelectForOrderBy(colsql);
-		if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID()))) {
+		if (   !Util.isEmpty(displayColumn)
+			&& (   (DisplayType.isID(orderColumnInfo.getAD_Reference_ID()) && orderColumnInfo.getAD_Reference_ID() != DisplayType.ID)
+			    || DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()))) {
 			String from = getFromForOrderBy(orderColumnInfo, displayColumn);
 			String where = getWhereForOrderBy(orderColumnInfo);
 			
