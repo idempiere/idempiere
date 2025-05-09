@@ -517,8 +517,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (isManual())
 			return "-";
 		
-		//If the AD_Client_ID is not System, insert the 'CreatedBy' and 'UpdatedBy' with the user who executed the process
-		int userID = Env.getAD_Client_ID(getCtx())>0?Env.getAD_User_ID(getCtx()):getUpdatedBy();
+		int userID = Env.getAD_User_ID(getCtx());
 		
 		String roleClientOrgUser = getAD_Role_ID() + ","
 			+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y', getDate()," 
