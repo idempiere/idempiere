@@ -123,6 +123,8 @@ then
 else
     # TODO: oracle
     echo "oracle import not implemented yet"
+    # would be called like:
+    #    ADEMPIERE_DB_SYSTEM=oracle DBIMPORT_FOLDER=/home/carlos/post_import_scripts bash RUN_ImportIdempiereDev.sh idempieredevoracle.properties
     # verify if ADEMPIERE_DB_SYSTEM variable is set
     # cat "$IDEMPIERE_HOME"/$UTILS_FOLDER/"$ADEMPIERE_DB_PATH"/CreateUser.sql |
       # sed replacing &1 and &2
