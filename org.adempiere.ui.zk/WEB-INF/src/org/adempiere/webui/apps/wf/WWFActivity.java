@@ -502,7 +502,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		MWFNode node = m_activity.getNode();
 		if (MWFNode.ACTION_UserChoice.equals(node.getAction()))
 		{
-			if (m_column == null)
+			if (m_column == null && node.getApprovalColumn_ID() > 0)
+				m_column = (MColumn) node.getApprovalColumn();
+			if (m_column == null || node.getApprovalColumn_ID() <= 0)
 				m_column = node.getColumn();
 			if (m_column != null && m_column.get_ID() != 0)
 			{
@@ -647,7 +649,10 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			//	User Choice - Answer
 			else if (MWFNode.ACTION_UserChoice.equals(node.getAction()))
 			{
-				if (m_column == null)
+				// getting Approval column for User Choice node
+				if (m_column == null && node.getApprovalColumn_ID() > 0)
+					m_column = (MColumn) node.getApprovalColumn();
+				if (m_column == null || node.getApprovalColumn_ID() <= 0)
 					m_column = node.getColumn();
 				//	Do we have an answer?
 				int dt = m_column.getAD_Reference_ID();
