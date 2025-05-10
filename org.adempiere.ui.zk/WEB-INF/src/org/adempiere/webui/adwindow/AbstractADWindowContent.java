@@ -113,6 +113,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.StateChangeEvent;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.SystemProperties;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.DocAction;
@@ -3855,8 +3856,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 			if (ps != null && ps.equals("Y"))
 			{
-				new org.adempiere.webui.acct.WAcctViewer(Env.getContextAsInt (ctx, curWindowNo, "AD_Client_ID"),
-						tableId, recordId);
+				ADForm form = ADForm.openForm(MSysConfig.getIntValue(MSysConfig.ACCOUNT_INFO_FORM_ID, SystemIDs.FORM_ACCOUNT_INFO), 
+						"AD_Table_ID=" + tableId + "\nRecord_ID=" + recordId);
+				AEnv.showWindow(form);
 			}
 			else
 			{
