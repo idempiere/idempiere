@@ -38,7 +38,9 @@ public class WFOrderApprovalTest extends AbstractTestCase
 	private MWFNode		nodeStart, nodePrepare, nodeApprove, nodeAuto, nodeComplete;
 	private MUser		joeSales, carlBoss;
 	private MWFNodeNext	nextStartPrepare, nextStartAuto, nextPrepareApprove, nextApproveComplete, nextPrepareComplete;
-	
+	private MUserRoles	jsUserRoles, cbUserRoles;
+	private int			ordWFID, cbSupervisorID;
+
 	/**
 	 * Tests rejection of a sales order using a custom approval column.
 	 * Simulates supervisor/user roles and verifies that rejection updates document status
@@ -52,61 +54,15 @@ public class WFOrderApprovalTest extends AbstractTestCase
 
 		try
 		{
+			// Switch context to Joe Sales
+			loginSuperUser(ctx);
+
 			setupWorkflow(ctx, trxName);
-			assignSupervisor(ctx, trxName);
+			setUserConfig(ctx, trxName);
+			updateWFProcessRef(trxName);
 
-			Env.setContext(ctx, Env.AD_USER_ID, carlBoss.getAD_User_ID());
-			Env.setContext(ctx, Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
-
-			MOrder order = createOrder(ctx, trxName);
-
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-			order.saveEx();
-
-			assertFalse(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_InProgress, order.getDocStatus(), "Document should be in progress awaiting approval");
-
-			MWFProcess process = fetchWorkflowProcess(ctx, trxName, order.get_ID());
-			assertNotNull(process, "Workflow process should exist");
-
-			MWFActivity suspendedActivity = findSuspendedActivity(ctx, trxName, process);
-			assertNotNull(suspendedActivity, "Suspended approval step should be assigned to Joe Sales");
-
-			// Switch context to Joe Sales to reject
-			Env.setContext(ctx, Env.AD_USER_ID, joeSales.getAD_User_ID());
-			Env.setContext(ctx, Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id);
-
-			updateActivity(suspendedActivity, false);
-
-			assertEquals(MWFActivity.WFSTATE_Aborted, suspendedActivity.getWFState(), "Activity status should be Aborted.");
-			order.saveEx();
-
-			MOrder reloadOrder = new MOrder(ctx, order.getC_Order_ID(), trxName);
-			assertTrue(MOrder.DOCSTATUS_NotApproved.equals(reloadOrder.getDocStatus()), "Order should be Not Approved.");
-		}
-		finally
-		{
-			cleanup();
-		}
-	}
-
-	/**
-	 * Tests approval of a sales order using a custom approval column.
-	 * Ensures the order moves from InProgress to Completed after approval.
-	 */
-	@Test
-	public void testOrderApprovalWithCustomApprovalColumn( )
-	{
-		Properties ctx = Env.getCtx();
-		String trxName = getTrxName();
-
-		try
-		{
-			setupWorkflow(ctx, trxName);
-			assignSupervisor(ctx, trxName);
-
-			Env.setContext(ctx, Env.AD_USER_ID, carlBoss.getAD_User_ID());
-			Env.setContext(ctx, Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
+			// Switch context to carl Boss
+			loginCarlBoss(ctx);
 
 			MOrder order = createOrder(ctx, trxName);
 
@@ -123,8 +79,59 @@ public class WFOrderApprovalTest extends AbstractTestCase
 			assertNotNull(suspendedActivity, "Suspended approval step should be assigned to Joe Sales");
 
 			// Switch context to Joe Sales to approve
-			Env.setContext(ctx, Env.AD_USER_ID, joeSales.getAD_User_ID());
-			Env.setContext(ctx, Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id);
+			loginJoeSales(ctx);
+			updateActivity(suspendedActivity, false);
+
+			assertEquals(MWFActivity.WFSTATE_Aborted, suspendedActivity.getWFState(), "Activity status should be Aborted.");
+			order.saveEx();
+
+			MOrder reloadOrder = new MOrder(ctx, order.getC_Order_ID(), trxName);
+			assertTrue(MOrder.DOCSTATUS_NotApproved.equals(reloadOrder.getDocStatus()), "Order should be Not Approved.");
+		}
+		finally
+		{
+			cleanup(ctx, trxName);
+		}
+	}
+
+	/**
+	 * Tests approval of a sales order using a custom approval column.
+	 * Ensures the order moves from InProgress to Completed after approval.
+	 */
+	@Test
+	public void testOrderApprovalWithCustomApprovalColumn( )
+	{
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		try
+		{
+			// Switch context to Joe Sales
+			loginSuperUser(ctx);
+			
+			setupWorkflow(ctx, trxName);
+			setUserConfig(ctx, trxName);
+			updateWFProcessRef(trxName);
+
+			// Switch context to carl Boss
+			loginCarlBoss(ctx);
+			
+			MOrder order = createOrder(ctx, trxName);
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.saveEx();
+
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_InProgress, order.getDocStatus(), "Document should be in progress awaiting approval");
+
+			MWFProcess process = fetchWorkflowProcess(ctx, trxName, order.get_ID());
+			assertNotNull(process, "Workflow process should exist");
+
+			MWFActivity suspendedActivity = findSuspendedActivity(ctx, trxName, process);
+			assertNotNull(suspendedActivity, "Suspended approval step should be assigned to Joe Sales");
+
+			// Switch context to Joe Sales to approve
+			loginJoeSales(ctx);
 
 			updateActivity(suspendedActivity, true);
 
@@ -136,8 +143,137 @@ public class WFOrderApprovalTest extends AbstractTestCase
 		}
 		finally
 		{
-			cleanup();
+			cleanup(ctx, trxName);
 		}
+	}
+
+	/**
+	 * Sets the login context with the specified user, client, organization, and role.
+	 *
+	 * @param ctx
+	 *            the context properties
+	 * @param userId
+	 *            the user ID to set
+	 * @param clientId
+	 *            the client ID to set
+	 * @param orgId
+	 *            the organization ID to set
+	 * @param roleId
+	 *            the role ID to set
+	 */
+	private void setLoginContext(Properties ctx, int userId, int clientId, int orgId, int roleId)
+	{
+		Env.setContext(ctx, Env.AD_USER_ID, userId);
+		Env.setContext(ctx, Env.AD_CLIENT_ID, clientId);
+		Env.setContext(ctx, Env.AD_ORG_ID, orgId);
+		Env.setContext(ctx, Env.AD_ROLE_ID, roleId);
+	}
+
+	/**
+	 * Logs in as Joe Sales with GardenWorld Admin privileges.
+	 *
+	 * @param ctx
+	 *            the context properties
+	 */
+	private void loginJoeSales(Properties ctx)
+	{
+		setLoginContext(ctx,
+						joeSales.getAD_User_ID(),
+						DictionaryIDs.AD_Client.GARDEN_WORLD.id,
+						DictionaryIDs.AD_Org.GLOBAL.id,
+						DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id);
+	}
+
+	/**
+	 * Logs in as Carl Boss with GardenWorld User privileges for the Fertilizer organization.
+	 *
+	 * @param ctx
+	 *            the context properties
+	 */
+	private void loginCarlBoss(Properties ctx)
+	{
+		setLoginContext(ctx,
+						carlBoss.getAD_User_ID(),
+						DictionaryIDs.AD_Client.GARDEN_WORLD.id,
+						DictionaryIDs.AD_Org.FERTILIZER.id,
+						DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
+	}
+
+	/**
+	 * Logs in as the Super User with System Administrator privileges.
+	 *
+	 * @param ctx
+	 *            the context properties
+	 */
+	private void loginSuperUser(Properties ctx)
+	{
+		setLoginContext(ctx,
+						DictionaryIDs.AD_User.SUPER_USER.id,
+						DictionaryIDs.AD_Client.SYSTEM.id,
+						DictionaryIDs.AD_Org.GLOBAL.id,
+						DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id);
+	}
+
+	/**
+	 * Updates the workflow process for the MOrder table.
+	 * This method retrieves the workflow process associated with the "DocAction" column
+	 * of the MOrder table and updates the workflow ID.
+	 *
+	 * @param trxName
+	 *            the transaction name to be used for context
+	 */
+	private void updateWFProcessRef(String trxName)
+	{
+		MProcess wfProcess = getWFProcess(trxName);
+		if (wfProcess != null)
+		{
+			ordWFID = wfProcess.getAD_Workflow_ID();
+			wfProcess.setAD_Workflow_ID(workflow.getAD_Workflow_ID());
+			wfProcess.saveEx();
+		}
+	}
+
+	/**
+	 * Updates the workflow process for the MOrder table and sets the supervisor for Carl Boss.
+	 * This method performs two tasks:
+	 * 1. Reset the workflow ID for the process associated with the "DocAction" column of the
+	 * MOrder table.
+	 * 2. Reset the supervisor ID for Carl Boss and saves the changes.
+	 *
+	 * @param trxName
+	 *            the transaction name to be used for context
+	 */
+	private void resetProcessAndSupervisor(String trxName)
+	{
+		MProcess wfProcess = getWFProcess(trxName);
+		if (wfProcess != null)
+		{
+			wfProcess.setAD_Workflow_ID(ordWFID);
+			wfProcess.saveEx();
+		}
+
+		// Set the supervisor ID for Carl Boss and save the change
+		carlBoss.setSupervisor_ID(cbSupervisorID);
+		carlBoss.saveEx();
+	}
+
+	/**
+	 * Retrieves the workflow process associated with the "DocAction" column of the MOrder table.
+	 *
+	 * @param trxName
+	 *            the transaction name to be used for context
+	 * @return the MProcess object corresponding to the "DocAction" column, or null if not found
+	 */
+	private MProcess getWFProcess(String trxName)
+	{
+		// Retrieve the MTable for MOrder using the provided transaction name
+		MTable table = MTable.get(Env.getCtx(), MOrder.Table_ID, trxName);
+
+		// Get the "DocAction" column from the table
+		MColumn column = table.getColumn("DocAction");
+
+		// Retrieve the workflow process associated with the "DocAction" column
+		return (MProcess) column.getAD_Process();
 	}
 
 	/**
@@ -151,7 +287,7 @@ public class WFOrderApprovalTest extends AbstractTestCase
 	private void setupWorkflow(Properties ctx, String trxName)
 	{
 		workflow = new MWorkflow(ctx, 0, trxName);
-		workflow.setName("Process_Order");
+		workflow.setName("Process_Order_Test");
 		workflow.setDescription("(Standard Process Order)");
 		workflow.setAD_Table_ID(MOrder.Table_ID);
 		workflow.setEntityType("U");
@@ -165,6 +301,9 @@ public class WFOrderApprovalTest extends AbstractTestCase
 		nodeAuto = createNode(workflow, "(DocAuto)", MWFNode.ACTION_DocumentAction, MWFNode.DOCACTION_None, trxName);
 		nodeComplete = createNode(workflow, "(DocComplete)", MWFNode.ACTION_DocumentAction, MWFNode.DOCACTION_Complete, trxName);
 
+		workflow.setAD_WF_Node_ID(nodeStart.getAD_WF_Node_ID());
+		workflow.saveEx();
+		
 		createTransitions();
 		commit();
 	}
@@ -214,19 +353,34 @@ public class WFOrderApprovalTest extends AbstractTestCase
 	}
 
 	/**
-	 * Assigns Joe Sales as the supervisor for Carl Boss.
+	 * Assigns a supervisor to Carl Boss and updates the user roles for both Joe Sales and Carl Boss.
+	 * This method performs the following tasks:
+	 * 1. Creates user roles for Joe Sales and assigns the "Garden World Admin" role.
+	 * 2. Creates user roles for Carl Boss and assigns the "Garden World User" role.
+	 * 3. Sets Joe Sales as the supervisor for Carl Boss and saves the changes.
+	 * 4. Commits the transaction to persist changes.
 	 *
-	 * @param ctx
-	 *            application context
-	 * @param trxName
-	 *            transaction name
+	 * @param ctx the context properties for the operation
+	 * @param trxName the transaction name for the operation
 	 */
-	private void assignSupervisor(Properties ctx, String trxName)
-	{
-		joeSales = new MUser(ctx, 103, trxName);
-		carlBoss = new MUser(ctx, 104, trxName);
-		carlBoss.setSupervisor_ID(joeSales.getAD_User_ID());
-		carlBoss.saveEx();
+	private void setUserConfig(Properties ctx, String trxName) {
+	    // Create and assign role to Joe Sales
+	    joeSales = new MUser(ctx, 103, trxName);
+	    jsUserRoles = new MUserRoles(ctx, joeSales.getAD_User_ID(), DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id, trxName);
+	    jsUserRoles.saveEx();
+	    
+	    // Create and assign role to Carl Boss
+	    carlBoss = new MUser(ctx, 104, trxName);
+	    cbUserRoles = new MUserRoles(ctx, carlBoss.getAD_User_ID(), DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id, trxName);
+	    cbUserRoles.saveEx();
+	    
+	    // Set Joe Sales as the supervisor for Carl Boss
+	    cbSupervisorID = carlBoss.getSupervisor_ID();
+	    carlBoss.setSupervisor_ID(joeSales.getAD_User_ID());
+	    carlBoss.saveEx();
+	    
+	    // Commit the transaction to save the changes
+	    commit();
 	}
 
 	/**
@@ -335,10 +489,15 @@ public class WFOrderApprovalTest extends AbstractTestCase
 
 	/**
 	 * Cleans up all created workflow data, nodes, transitions, and resets cache.
+	 * @param trxName 
+	 * @param ctx 
 	 */
-	private void cleanup( )
+	private void cleanup(Properties ctx, String trxName )
 	{
+		loginSuperUser(ctx);
 		rollback();
+		resetProcessAndSupervisor(trxName);
+		deleteIfExists(jsUserRoles, cbUserRoles);
 		deleteIfExists(nextStartPrepare, nextStartAuto, nextPrepareApprove, nextApproveComplete, nextPrepareComplete);
 		deleteIfExists(nodeComplete, nodeAuto, nodeApprove, nodePrepare, nodeStart);
 		deleteIfExists(workflow);
