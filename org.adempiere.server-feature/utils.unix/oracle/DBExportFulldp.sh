@@ -21,14 +21,36 @@ if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ]
     exit 1
 fi
 
+DOCKER_EXEC=
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  DOCKER_EXEC="docker exec $ORACLE_DOCKER_CONTAINER"
+fi
+
+DATAPUMP_HOME="$IDEMPIERE_HOME"
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  ORACLE_DOCKER_HOME=${ORACLE_DOCKER_HOME:-/opt/oracle}
+  DATAPUMP_HOME="$ORACLE_DOCKER_HOME"
+  $DOCKER_EXEC mkdir -p "$DATAPUMP_HOME"/data
+fi
+
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-sqlplus -S "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql "$IDEMPIERE_HOME"/data
-chgrp dba "$IDEMPIERE_HOME"/data
-chmod 770 "$IDEMPIERE_HOME"/data
+sqlplus -S "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql "$DATAPUMP_HOME"/data
 
-expdp "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDatFull_"$DATE".dmp LOGFILE=ExpDatFull_"$DATE".log EXCLUDE=STATISTICS FULL=Y
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  docker exec -u 0 "$ORACLE_DOCKER_CONTAINER" chown oracle:dba "$DATAPUMP_HOME"/data
+else
+  chgrp dba "$IDEMPIERE_HOME"/data
+  chmod 770 "$IDEMPIERE_HOME"/data
+fi
+
+$DOCKER_EXEC expdp "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDatFull_"$DATE".dmp LOGFILE=ExpDatFull_"$DATE".log EXCLUDE=STATISTICS FULL=Y
+
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/ExpDatFull_"$DATE".dmp "$IDEMPIERE_HOME"/data
+  docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/ExpDatFull_"$DATE".log "$IDEMPIERE_HOME"/data
+fi
 
 cd "$IDEMPIERE_HOME"/data || exit
 jar cvfM ExpDatFull.jar ExpDatFull_"$DATE".dmp  ExpDatFull_"$DATE".log

@@ -19,6 +19,17 @@ if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ]
     exit 1
 fi
 
+DOCKER_EXEC=
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  DOCKER_EXEC="docker exec $ORACLE_DOCKER_CONTAINER"
+fi
+
+DATAPUMP_HOME="$IDEMPIERE_HOME"
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  ORACLE_DOCKER_HOME=${ORACLE_DOCKER_HOME:-/opt/oracle}
+  DATAPUMP_HOME="$ORACLE_DOCKER_HOME"
+  $DOCKER_EXEC mkdir -p "$DATAPUMP_HOME"/data
+fi
 
 echo -------------------------------------
 echo Re-Create DB user
@@ -28,17 +39,27 @@ sqlplus -S "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME"
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-sqlplus -S "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql "$IDEMPIERE_HOME"/data
-# Note the user running this script must be member of dba group:  usermod -G dba idempiere
-chgrp dba "$IDEMPIERE_HOME"/data
-chmod 770 "$IDEMPIERE_HOME"/data
-chgrp dba "$IDEMPIERE_HOME"/data/ExpDat.dmp
-chmod 640 "$IDEMPIERE_HOME"/data/ExpDat.dmp
+sqlplus -S "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql "$DATAPUMP_HOME"/data
+
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  docker exec -u 0 "$ORACLE_DOCKER_CONTAINER" chown oracle:dba "$DATAPUMP_HOME"/data
+  docker exec -u 0 "$ORACLE_DOCKER_CONTAINER" chown oracle:dba "$DATAPUMP_HOME"/data/ExpDat.dmp
+else
+  # Note the user running this script must be member of dba group:  usermod -G dba idempiere
+  chgrp dba "$IDEMPIERE_HOME"/data
+  chmod 770 "$IDEMPIERE_HOME"/data
+  chgrp dba "$IDEMPIERE_HOME"/data/ExpDat.dmp
+  chmod 640 "$IDEMPIERE_HOME"/data/ExpDat.dmp
+fi
+
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  docker cp "$IDEMPIERE_HOME"/data/ExpDat.dmp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data
+fi
 
 echo -------------------------------------
 echo Import ExpDat
 echo -------------------------------------
-impdp "$2"/"$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp SCHEMAS="$2"
+$DOCKER_EXEC impdp "$2"/"$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp SCHEMAS="$2"
 
 echo -------------------------------------
 echo Check System
