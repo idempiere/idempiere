@@ -2,6 +2,9 @@
 **/bin/
 **/lib/*.jar
 **/seed/*.jar
+org.adempiere.server-feature/data/seed/Adempiere.dmp
+org.adempiere.server-feature/data/seed/Adempiere_pg.dmp
+org.adempiere.server-feature/data/seed/Adempiere.log
 /org.adempiere.ui.zk/labelapplet.jar
 /org.adempiere.extend/test.properties
 
