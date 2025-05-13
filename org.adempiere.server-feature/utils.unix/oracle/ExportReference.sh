@@ -38,34 +38,18 @@ else
   chmod 770 "$IDEMPIERE_HOME"/data
 fi
 
-if [ "x${1,,}" != "xreference" ]
-then
-    sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
-DROP USER REFERENCE CASCADE;
-alter session set "_enable_rename_user"=true;
-alter system enable restricted session;
-ALTER USER $1 RENAME TO REFERENCE IDENTIFIED BY "$2";
-alter system disable restricted session;
-!
-fi
 
 rm -f "$IDEMPIERE_HOME"/data/Adempiere.dmp "$IDEMPIERE_HOME"/data/Adempiere.log
 # Export
-$DOCKER_EXEC expdp REFERENCE/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS=REFERENCE
+if [ "x${1,,}" != "xreference" ]; then
+  $DOCKER_EXEC expdp "$1"/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS="$1"
+else
+  $DOCKER_EXEC expdp REFERENCE/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS=REFERENCE
+fi
 
 if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
   docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/Adempiere.dmp "$IDEMPIERE_HOME"/data
   docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/Adempiere.log "$IDEMPIERE_HOME"/data
-fi
-
-if [ "x${1,,}" != "xreference" ]
-then
-    sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
-alter session set "_enable_rename_user"=true;
-alter system enable restricted session;
-ALTER USER REFERENCE RENAME TO $1 IDENTIFIED BY "$2";
-alter system disable restricted session;
-!
 fi
 
 cd "$IDEMPIERE_HOME"/data || exit
