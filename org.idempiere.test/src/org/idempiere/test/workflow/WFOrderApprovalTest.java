@@ -246,7 +246,7 @@ public class WFOrderApprovalTest extends AbstractTestCase
 	private void resetProcessAndSupervisor(String trxName)
 	{
 		MProcess wfProcess = getWFProcess(trxName);
-		if (wfProcess != null)
+		if (wfProcess != null && ordWFID > 0)
 		{
 			wfProcess.setAD_Workflow_ID(ordWFID);
 			wfProcess.saveEx();
@@ -497,6 +497,7 @@ public class WFOrderApprovalTest extends AbstractTestCase
 		loginSuperUser(ctx);
 		rollback();
 		resetProcessAndSupervisor(trxName);
+		commit();
 		deleteIfExists(jsUserRoles, cbUserRoles);
 		deleteIfExists(nextStartPrepare, nextStartAuto, nextPrepareApprove, nextApproveComplete, nextPrepareComplete);
 		deleteIfExists(nodeComplete, nodeAuto, nodeApprove, nodePrepare, nodeStart);
