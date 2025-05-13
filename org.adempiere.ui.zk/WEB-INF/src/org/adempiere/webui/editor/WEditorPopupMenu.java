@@ -23,6 +23,7 @@ import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.WFieldSuggestion;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
@@ -236,7 +237,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
             zoomItem.setAttribute(EVENT_ATTRIBUTE, ZOOM_EVENT);
             zoomItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")).intern());
             if (ThemeManager.isUseFontIconForImage())
-            	zoomItem.setIconSclass("z-icon-Zoom");
+            	zoomItem.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
             else
             	zoomItem.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
             zoomItem.addEventListener(Events.ON_CLICK, this);
@@ -250,7 +251,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
             requeryItem.setAttribute(EVENT_ATTRIBUTE, REQUERY_EVENT);
             requeryItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")).intern());
             if (ThemeManager.isUseFontIconForImage())
-            	requeryItem.setIconSclass("z-icon-Refresh");
+            	requeryItem.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
             else
             	requeryItem.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
             requeryItem.addEventListener(Events.ON_CLICK, this);
@@ -263,7 +264,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
             prefItem.setAttribute(EVENT_ATTRIBUTE, PREFERENCE_EVENT);
             prefItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ValuePreference")).intern());
             if (ThemeManager.isUseFontIconForImage())
-            	prefItem.setIconSclass("z-icon-VPreference");
+            	prefItem.setIconSclass(Icon.getIconSclass(Icon.VPREFERENCE));
             else
             	prefItem.setImage(ThemeManager.getThemeResource("images/VPreference16.png"));
             prefItem.addEventListener(Events.ON_CLICK, this);
@@ -276,7 +277,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	newItem.setAttribute(EVENT_ATTRIBUTE, NEW_EVENT);
         	newItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")).intern());
         	if (ThemeManager.isUseFontIconForImage())
-        		newItem.setIconSclass("z-icon-New");
+        		newItem.setIconSclass(Icon.getIconSclass(Icon.NEW));
         	else
         		newItem.setImage(ThemeManager.getThemeResource("images/New16.png"));
         	newItem.addEventListener(Events.ON_CLICK, this);
@@ -289,7 +290,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	updateItem.setAttribute(EVENT_ATTRIBUTE, UPDATE_EVENT);
         	updateItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Update")).intern());
         	if (ThemeManager.isUseFontIconForImage())
-        		updateItem.setIconSclass("z-icon-InfoBPartner");
+        		updateItem.setIconSclass(Icon.getIconSclass(Icon.INFO_BPARTNER));
         	else
         		updateItem.setImage(ThemeManager.getThemeResource("images/InfoBPartner16.png"));
         	updateItem.addEventListener(Events.ON_CLICK, this);
@@ -302,7 +303,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	showLocationItem.setAttribute(EVENT_ATTRIBUTE, SHOWLOCATION_EVENT);
         	showLocationItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ShowLocation")).intern());
         	if (ThemeManager.isUseFontIconForImage())
-        		showLocationItem.setIconSclass("z-icon-InfoBPartner");
+        		showLocationItem.setIconSclass(Icon.getIconSclass(Icon.INFO_BPARTNER));
         	else
         		showLocationItem.setImage(ThemeManager.getThemeResource("images/InfoBPartner16.png"));
         	showLocationItem.addEventListener(Events.ON_CLICK, this);
@@ -315,7 +316,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	drillItem.setAttribute(EVENT_ATTRIBUTE, DRILL_EVENT);
         	drillItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DrillAssistant")).intern());
         	if (ThemeManager.isUseFontIconForImage())
-        		drillItem.setIconSclass("z-icon-Window");
+        		drillItem.setIconSclass(Icon.getIconSclass(Icon.WINDOW));
             else
             	drillItem.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
         	drillItem.addEventListener(Events.ON_CLICK, this);
@@ -359,7 +360,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 		if (!MRole.getDefault().isTableAccessExcluded(MFieldSuggestion.Table_ID)) {
 			Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));
 			if (ThemeManager.isUseFontIconForImage())
-				editor.setIconSclass("z-icon-FieldSuggestion");
+				editor.setIconSclass(Icon.getIconSclass(Icon.FIELD_SUGGESTION));
 			else
 				editor.setImage(ThemeManager.getThemeResource("images/FieldSuggestion16.png"));
 			editor.addEventListener(Events.ON_CLICK, new EventListener<Event>() {

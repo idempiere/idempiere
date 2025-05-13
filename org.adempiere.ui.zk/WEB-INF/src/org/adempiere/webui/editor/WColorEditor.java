@@ -36,6 +36,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -93,7 +94,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		init();
 
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-pencil");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.PENCIL));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/ColorPicker16.png")); 
 
@@ -184,7 +185,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
 		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Erase")).intern());
 		if (ThemeManager.isUseFontIconForImage())
-			editor.setIconSclass("z-icon-eraser");
+			editor.setIconSclass(Icon.getIconSclass(Icon.ERASER));
 		else
 			editor.setImage(ThemeManager.getThemeResource("images/Erase16.png"));
 		editor.addEventListener(Events.ON_CLICK, popupMenu);
@@ -194,7 +195,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		editor.setAttribute("EVENT", COLOR_PICKER_EVENT);
 		editor.setLabel(Msg.getMsg(Env.getCtx(), "ColorPicker"));
 		if (ThemeManager.isUseFontIconForImage())
-			editor.setIconSclass("z-icon-pencil");
+			editor.setIconSclass(Icon.getIconSclass(Icon.PENCIL));
 		else
 			editor.setImage(ThemeManager.getThemeResource("images/ColorPicker16.png"));
 		editor.addEventListener(Events.ON_CLICK, popupMenu);

@@ -82,6 +82,7 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.part.MultiTabPart;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -555,7 +556,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
         ToolBarButton btnNew = new ToolBarButton();
         if (ThemeManager.isUseFontIconForImage())
-        	btnNew.setIconSclass("z-icon-New");
+        	btnNew.setIconSclass(Icon.getIconSclass(Icon.NEW));
         else
         	btnNew.setImage(ThemeManager.getThemeResource("images/New24.png"));
         btnNew.setAttribute("name", "btnNewAdv");
@@ -564,7 +565,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ToolBarButton btnDelete = new ToolBarButton();
         btnDelete.setAttribute("name","btnDeleteAdv");
         if (ThemeManager.isUseFontIconForImage())
-        	btnDelete.setIconSclass("z-icon-Delete");
+        	btnDelete.setIconSclass(Icon.getIconSclass(Icon.DELETE));
         else
         	btnDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
         btnDelete.addEventListener(Events.ON_CLICK, this);
@@ -696,7 +697,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	btnSave = new ToolBarButton();
         btnSave.setAttribute("name","btnSaveAdv");
         if (ThemeManager.isUseFontIconForImage())
-        	btnSave.setIconSclass("z-icon-Save");
+        	btnSave.setIconSclass(Icon.getIconSclass(Icon.SAVE));
         else
         	btnSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
         btnSave.addEventListener(Events.ON_CLICK, this);
@@ -709,7 +710,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnShare.setAttribute("name","btnShareAdv");
         btnShare.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShareFilter"));
         if (ThemeManager.isUseFontIconForImage())
-        	btnShare.setIconSclass("z-icon-Share");
+        	btnShare.setIconSclass(Icon.getIconSclass(Icon.SHARE));
         else
         	btnShare.setImage(ThemeManager.getThemeResource("images/Setup24.png"));
         btnShare.addEventListener(Events.ON_CLICK, this);

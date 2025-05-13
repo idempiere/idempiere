@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
@@ -112,7 +113,7 @@ public class WFEditor extends ADForm {
 		// Zoom
 		zoomButton = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			zoomButton.setIconSclass("z-icon-Zoom");
+			zoomButton.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
 		else
 			zoomButton.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		toolbar.appendChild(zoomButton);
@@ -121,7 +122,7 @@ public class WFEditor extends ADForm {
 		// New Node
 		newButton = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			newButton.setIconSclass("z-icon-New");
+			newButton.setIconSclass(Icon.getIconSclass(Icon.NEW));
 		else
 			newButton.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		toolbar.appendChild(newButton);
@@ -130,7 +131,7 @@ public class WFEditor extends ADForm {
 		// Refresh
 		refreshButton = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			refreshButton.setIconSclass("z-icon-Refresh");
+			refreshButton.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			refreshButton.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		toolbar.appendChild(refreshButton);

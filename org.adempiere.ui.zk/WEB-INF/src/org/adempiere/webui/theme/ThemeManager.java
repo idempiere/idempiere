@@ -16,6 +16,7 @@ package org.adempiere.webui.theme;
 import java.io.IOException;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
@@ -294,7 +295,7 @@ public final class ThemeManager {
 			// remove image size
 			iconSclass = iconSclass.replaceAll("(\\d\\d)$", "");
 			
-			iconSclass = "z-icon-" + iconSclass;
+			iconSclass = Icon.getIconSclass(iconSclass);
 		}
 		
 		return iconSclass;
