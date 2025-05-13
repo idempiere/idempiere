@@ -350,7 +350,7 @@ public class WFPurchaseUserTaskTest extends AbstractTestCase
 	private void resetWorkflowProcess(String trxName)
 	{
 		MProcess wfProcess = getWFProcess(trxName);
-		if (wfProcess != null)
+		if (wfProcess != null && ordWFID>0)
 		{
 			wfProcess.setAD_Workflow_ID(ordWFID);
 			wfProcess.saveEx();
@@ -641,6 +641,7 @@ public class WFPurchaseUserTaskTest extends AbstractTestCase
 		loginSuperUser(ctx);
 		rollback();
 		resetWorkflowProcess(trxName);
+		commit();
 		deleteIfExists(jsUserRoles, cbUserRoles, jsAdminUserRoles);
 		deleteIfExists(jsValResponsible);
 		deleteIfExists(nextStartPrepare, nextStartAuto, nextPrepareApprove, nextValidateComplete, nextPrepareComplete);
