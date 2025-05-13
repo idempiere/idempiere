@@ -84,6 +84,9 @@ export ADEMPIERE_DB_PATH
 
 IDEMPIERE_HOME=$IDEMPIERE_HOME/org.adempiere.server-feature
 
+ADEMPIERE_DB_SYSTEM="$( "$IDEMPIERE_HOME/utils.unix/getVar.sh" ADEMPIERE_DB_SYSTEM )"
+export ADEMPIERE_DB_SYSTEM
+
 SUFFIX=""
 SYSUSER=system
 if [ "$ADEMPIERE_DB_PATH" = "postgresql" ]
