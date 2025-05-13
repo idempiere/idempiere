@@ -89,6 +89,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
 	
+	private transient String	m_ErrorMsg	= null;
+	
 	/**
 	 * 	Get Activities for table/record
 	 *	@param ctx context
@@ -938,8 +940,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				setWFState(StateEngine.STATE_Terminated);
 				return;
 			}
-			//
-			setWFState(StateEngine.STATE_Running);
+			//For User Task,  Don't change to running, instead state decided at perform work
+			if(!(MWFNode.ACTION_UserTask.equals(m_node.getAction()) && StateEngine.STATE_NotStarted.equals(m_state.getState())))
+					setWFState(StateEngine.STATE_Running);
 
 			if (getNode().get_ID() == 0)
 			{
@@ -1373,6 +1376,91 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 					&& doc.save())
 					return true;	//	done
 			}	//	approval
+			return false;	//	wait for user
+		}
+		/**User Task **/
+		else if (MWFNode.ACTION_UserTask.equals(action))
+		{
+			//when state is Not Started, We should assign task to User by finding responsible
+			//
+			if (getPO(trx) instanceof DocAction)
+			{
+				//Assign if task not started
+				if(StateEngine.STATE_NotStarted.equals(m_state.getState()))
+				{
+					DocAction doc = (DocAction) m_po;
+					setWFState(StateEngine.STATE_Running);
+
+					if (isInvoker())
+					{
+						// Set Assignee
+						int startAD_User_ID = Env.getAD_User_ID(getCtx());
+						if (startAD_User_ID == 0)
+							startAD_User_ID = doc.getDoc_User_ID();
+						setAD_User_ID(startAD_User_ID);
+					}
+					else // fixed Approver
+					{
+						MWFResponsible resp = getResponsible();
+						if (resp.isHuman())
+						{
+							setAD_User_ID(resp.getAD_User_ID());
+						}
+						else if (resp.isRole() || resp.isManual())
+						{
+							;
+						}
+						else if (resp.isOrganization())
+						{
+							throw new AdempiereException("Support not implemented for " + resp);
+						}
+						else
+						{
+							throw new AdempiereException("@NotSupported@ " + resp);
+						}
+						// end MZ
+					}
+					return false; //Suspend workflow
+				}	//	Assignment
+				else {//Completion
+					int sessionAD_User_ID = Env.getAD_User_ID(getCtx());
+					if (isInvoker())
+					{
+						// Set Assignee
+						if (getAD_User_ID()>0 && sessionAD_User_ID == getAD_User_ID())
+							return true;
+					}
+					else // fixed Approver
+					{
+						MWFResponsible resp = getResponsible();
+						if (resp.isHuman() || resp.isManual())
+						{
+							if (getAD_User_ID()>0 && Env.getAD_User_ID(getCtx()) == getAD_User_ID())
+								return true;
+						}
+						else if (resp.isRole())
+						{
+							MUserRoles[] urs = MUserRoles.getOfUser(getCtx(), sessionAD_User_ID);
+							for (int i = 0; i < urs.length; i++)
+							{
+								if(urs[i].getAD_Role_ID() == resp.getAD_Role_ID() && urs[i].isActive())
+								{
+									return true;
+								}
+							}
+						}
+						else if (resp.isOrganization())
+						{
+							throw new AdempiereException("Support not implemented for " + resp);
+						}
+						else
+						{
+							throw new AdempiereException("@NotSupported@ " + resp);
+						}
+				
+				}
+			}
+			}
 			return false;	//	wait for user
 		}
 		/******	User Form					******/
@@ -2155,5 +2243,51 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 		return m_process.getProcessMsg();
 	}
+	
+	/**
+	 * If Approval column is Configured on User Task Node then value will be set on that
+	 * column
+	 * 
+	 * @param AD_User_ID
+	 * @param value
+	 * @param displayType
+	 * @param textMsg
+	 * @return true if set
+	 * @throws Exception
+	 */
+	public boolean setUserTask(int AD_User_ID, String value, int displayType, String textMsg) throws Exception
+	{
+		setWFState(StateEngine.STATE_Running);
+		setAD_User_ID(AD_User_ID);
+		Trx trx = (get_TrxName() != null) ? Trx.get(get_TrxName(), false) : null;
+		
+		MWFNode node = getNode();
+		if(node.getAD_Column_ID()>0)
+			setVariable(value, displayType, textMsg, trx);
+		
+		setWFState(StateEngine.STATE_Completed);
+		return true;
+			
+	}
+	
+	public String getM_ErrorMsg()
+	{
+		return m_ErrorMsg;
+	}
+
+	public void setM_ErrorMsg(String m_ErrorMsg)
+	{
+		this.m_ErrorMsg = m_ErrorMsg;
+	}
+
+	/**
+	 * Is this a User Task step?
+	 * @return true if User Task
+	 */
+	public boolean isUserTask()
+	{
+		return getNode().isUserTask();
+	}
+	
 
 }	//	MWFActivity

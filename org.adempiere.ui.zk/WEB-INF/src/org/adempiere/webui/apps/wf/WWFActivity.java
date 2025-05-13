@@ -72,6 +72,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vlayout;
@@ -500,7 +501,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 		//	User Actions
 		MWFNode node = m_activity.getNode();
-		if (MWFNode.ACTION_UserChoice.equals(node.getAction()))
+		if (MWFNode.ACTION_UserChoice.equals(node.getAction())  || node.isUserTask())
 		{
 			if (m_column == null && node.getApprovalColumn_ID() > 0)
 				m_column = (MColumn) node.getApprovalColumn();
@@ -671,50 +672,83 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				}
 				//
 				if (log.isLoggable(Level.CONFIG)) log.config("Answer=" + value + " - " + textMsg);
-				try
+				boolean ok = m_activity.setUserChoice(m_activity.getAD_User_ID(), value, dt, textMsg);
+				MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
+				wfpr.checkCloseActivities(m_activity.get_TrxName());
+
+				if (!ok)
 				{
-					m_activity.setUserChoice(AD_User_ID, value, dt, textMsg);
-					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
-					wfpr.checkCloseActivities(m_activity.get_TrxName());
-					
-					if (!Util.isEmpty(m_activity.getProcessMsg(), true))
-						Dialog.error(m_WindowNo, m_activity.getProcessMsg());
-				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, node.getName(), e);
-					Dialog.error(m_WindowNo, "Error", e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getMessage());
-					trx.rollback();
-					trx.close();
-					return;
+					String error = m_activity.getM_ErrorMsg();
+
+					if (!Util.isEmpty(error, true))
+					{
+						Dialog.error(m_WindowNo, "Error", error);
+						trx.rollback();
+						return;
+					}
 				}
 			}
 			//	User Action
 			else
 			{
-				if (log.isLoggable(Level.CONFIG)) log.config("Action=" + node.getAction() + " - " + textMsg);
-				try
+				if (logger.isLoggable(Level.CONFIG))
+					logger.config("Action=" + node.getAction() + " - " + textMsg);
+				
+				if (node.isUserTask())
+				{
+                    boolean ok = false;
+					if (node.getAD_Column_ID() > 0) 
+					{
+						MColumn column = MColumn.get(Env.getCtx(), node.getAD_Column_ID());
+						String value = null;
+
+						Listitem li = fAnswerList.getSelectedItem();
+
+						if (li != null)
+							value = li.getValue().toString();
+
+						ok = m_activity.setUserTask(m_activity.getAD_User_ID(), value, column.getAD_Reference_ID(),
+								textMsg);
+					}else {
+						//If no column set then no needs to set value
+						ok = m_activity.setUserTask(m_activity.getAD_User_ID(), null, -1,textMsg);
+                    }
+					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
+					wfpr.checkCloseActivities(m_activity.get_TrxName());
+
+					if (!ok)
+					{
+						String error = m_activity.getM_ErrorMsg();
+
+						if (!Util.isEmpty(error, true))
+						{
+							Dialog.error(m_WindowNo, "Error", error);
+							trx.rollback();
+							return;
+						}
+					}
+				}
+				else
 				{
 					// ensure activity is ran within a transaction
-					m_activity.setUserConfirmation(AD_User_ID, textMsg);
+					m_activity.setUserConfirmation(m_activity.getAD_User_ID(), textMsg);
 					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
 					wfpr.checkCloseActivities(m_activity.get_TrxName());
 					
 					if (!Util.isEmpty(m_activity.getProcessMsg(), true))
 						Dialog.error(m_WindowNo, m_activity.getProcessMsg());
 				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, node.getName(), e);
-					Dialog.error(m_WindowNo, "Error", e.toString());
-					trx.rollback();
-					trx.close();
-					return;
-				}
-
 			}
 
 			trx.commit();
+		}
+		catch (Exception e)
+		{
+            log.log(Level.SEVERE, node.getName(), e);
+            Dialog.error(m_WindowNo, "Error", e.toString());
+			trx.rollback();
+			trx.close();
+			return;
 		}
 		finally
 		{

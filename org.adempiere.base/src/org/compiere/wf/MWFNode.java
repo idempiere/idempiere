@@ -513,6 +513,15 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	{
 		return ACTION_UserChoice.equals(getAction());
 	}	//	isUserChoice
+
+	/**
+	 * 	Is this a User Task step?
+	 *	@return true if User Task
+	 */
+	public boolean isUserTask()
+	{
+		return ACTION_UserTask.equals(getAction());
+	}	//	isUserTask
 	
 	/**
 	 * 	Is this a Manual user step?
