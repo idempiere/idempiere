@@ -108,7 +108,7 @@ then
 
     echo "*** Applying migration scripts ***"
     IDEMPIERE_HOME=$( dirname "$($READLINK_CMD -f "${BASH_SOURCE[0]}")" )
-    bash $IDEMPIERE_HOME/RUN_SyncDBDev.sh "$@"
+    bash $IDEMPIERE_HOME/RUN_SyncDBDev.sh "$1"
 
     DBIMPORT_FOLDER="${2:-$DBIMPORT_FOLDER}"
     if [ -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql ]
