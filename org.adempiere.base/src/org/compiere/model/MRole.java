@@ -517,9 +517,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (isManual())
 			return "-";
 		
+		int userID = Env.getAD_User_ID(getCtx());
+		
 		String roleClientOrgUser = getAD_Role_ID() + ","
 			+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y', getDate()," 
-			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
+			+ userID + ", getDate()," + userID 
 			+ ",'Y' ";	//	IsReadWrite
 		
 		String sqlWindow = "INSERT INTO AD_Window_Access "
@@ -568,7 +570,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ "C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) " 
 			+ "(SELECT "
 			+ getAD_Client_ID() + ",0,'Y', getDate()," 
-			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
+			+ userID + ", getDate()," + userID
 			+ ", doctype.C_DocType_ID, action.AD_Ref_List_ID, rol.AD_Role_ID " 
 			+ "FROM AD_Client client " 
 			+ "INNER JOIN C_DocType doctype ON (doctype.AD_Client_ID=client.AD_Client_ID) "
@@ -585,7 +587,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy) "
 				+ "SELECT i.AD_InfoWindow_ID," + getAD_Role_ID() + ","
 				+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y',getDate()," 
-				+ getUpdatedBy() + ", getDate()," + getUpdatedBy()
+				+ userID + ", getDate()," + userID
 				+ " FROM AD_InfoWindow i LEFT JOIN AD_InfoWindow_Access ia ON "
 				+ "(ia.AD_Role_ID=" + getAD_Role_ID()
 				+ " AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) "
