@@ -64,12 +64,12 @@ ADEMPIERE_DB_NAME="$(expr "$CONN" : ".*DBname.=\(.*\),BQ.=")"
 ADEMPIERE_DB_SERVER="$(expr "$CONN" : ".*DBhost.=\(.*\),DBport.=")"
 ADEMPIERE_DB_PORT="$(expr "$CONN" : ".*DBport.=\(.*\),DBname.=")"
 ADEMPIERE_DB_USER="$(expr "$CONN" : ".*UID.=\(.*\),PWD.=")"
-if [ "x$ADEMPIERE_DB_USER" = "x" ]; then
+if [ "$ADEMPIERE_DB_USER" = "" ]; then
     ADEMPIERE_DB_USER="$(expr "$CONN" : ".*UID.=\(.*\)\]")"
 fi
 ADEMPIERE_DB_PASSWORD="$(expr "$CONN" : ".*PWD.=\(.*\)]")"
-if [ "x$ADEMPIERE_DB_PASSWORD" = "x" ]; then
-    ADEMPIERE_DB_PASSWORD="$( $IDEMPIERE_HOME/org.adempiere.server-feature/utils.unix/getVar.sh ADEMPIERE_DB_PASSWORD )"
+if [ "$ADEMPIERE_DB_PASSWORD" = "" ]; then
+    ADEMPIERE_DB_PASSWORD="$( "$IDEMPIERE_HOME/org.adempiere.server-feature/utils.unix/getVar.sh" ADEMPIERE_DB_PASSWORD )"
 fi
 ADEMPIERE_DB_PATH="$(expr "$CONN" : ".*type.=\(.*\),DBhost.=")"
 ADEMPIERE_DB_PATH=$(echo "$ADEMPIERE_DB_PATH" | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
@@ -83,6 +83,9 @@ export ADEMPIERE_DB_PASSWORD
 export ADEMPIERE_DB_PATH
 
 IDEMPIERE_HOME=$IDEMPIERE_HOME/org.adempiere.server-feature
+
+ADEMPIERE_DB_SYSTEM="$( "$IDEMPIERE_HOME/utils.unix/getVar.sh" ADEMPIERE_DB_SYSTEM )"
+export ADEMPIERE_DB_SYSTEM
 
 SUFFIX=""
 SYSUSER=system
@@ -104,19 +107,27 @@ if [ "$ADEMPIERE_DB_PATH" = "postgresql" ]
 then
     cd "$IDEMPIERE_HOME"/.. || (echo "Cannot cd to $IDEMPIERE_HOME/.."; exit 1)
     echo "*** Importing postgresql seed into $ADEMPIERE_DB_NAME ***"
-    bash "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/ImportIdempiere.sh" "$SYSUSER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
+    if ! bash "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/ImportIdempiere.sh" "$SYSUSER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
+    then
+        echo "Import failed, please verify"
+        exit 1
+    fi
 
     echo "*** Applying migration scripts ***"
     IDEMPIERE_HOME=$( dirname "$($READLINK_CMD -f "${BASH_SOURCE[0]}")" )
-    bash $IDEMPIERE_HOME/RUN_SyncDBDev.sh "$@"
+    if ! bash "$IDEMPIERE_HOME/RUN_SyncDBDev.sh" "$@"
+    then
+        echo "Applying migration scripts failed, please verify"
+        exit 1
+    fi
 
     DBIMPORT_FOLDER="${2:-$DBIMPORT_FOLDER}"
-    if [ -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql ]
+    if [ -f "$DBIMPORT_FOLDER/post_$ADEMPIERE_DB_NAME.sql" ]
     then
         echo "*** Applying script post_$ADEMPIERE_DB_NAME.sql ***"
 	PGPASSWORD="$ADEMPIERE_DB_PASSWORD"
 	export PGPASSWORD
-	psql -b -h $ADEMPIERE_DB_SERVER -p $ADEMPIERE_DB_PORT -d $ADEMPIERE_DB_NAME -U "$ADEMPIERE_DB_USER" -f "$DBIMPORT_FOLDER"/post_$ADEMPIERE_DB_NAME.sql
+	psql -b -h "$ADEMPIERE_DB_SERVER" -p "$ADEMPIERE_DB_PORT" -d "$ADEMPIERE_DB_NAME" -U "$ADEMPIERE_DB_USER" -f "$DBIMPORT_FOLDER/post_$ADEMPIERE_DB_NAME.sql"
     else
         echo "*** No post script found $DBIMPORT_FOLDER/post_$ADEMPIERE_DB_NAME.sql ***"
     fi
