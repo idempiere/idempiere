@@ -44,6 +44,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -221,19 +222,19 @@ public final class WAccountDialog extends Window
 		ZKUpdateUtil.setHflex(toolBar, "min");
 
 		if (ThemeManager.isUseFontIconForImage())
-			bSave.setIconSclass("z-icon-Save");
+			bSave.setIconSclass(Icon.getIconSclass(Icon.SAVE));
 		else
 			bSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(),"AccountNewUpdate"));
 		bSave.addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
-			bRefresh.setIconSclass("z-icon-Refresh");
+			bRefresh.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(),"Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
-			bIgnore.setIconSclass("z-icon-Ignore");
+			bIgnore.setIconSclass(Icon.getIconSclass(Icon.IGNORE));
 		else
 			bIgnore.setImage(ThemeManager.getThemeResource("images/Ignore24.png"));
 		bIgnore.setTooltiptext(Msg.getMsg(Env.getCtx(),"Ignore"));

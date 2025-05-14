@@ -42,6 +42,7 @@ import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
@@ -333,7 +334,7 @@ ContextMenuListener, IZoomableEditor
         			searchMode.setAttribute(WEditorPopupMenu.EVENT_ATTRIBUTE, SHORT_LIST_EVENT);
         			searchMode.setLabel(Msg.getMsg(Env.getCtx(), "ShortListSwitchSearchMode"));
         			if(ThemeManager.isUseFontIconForImage())
-        				searchMode.setIconSclass("z-icon-Lock");
+        				searchMode.setIconSclass(Icon.getIconSclass(Icon.LOCK));
         			else
         				searchMode.setImage(ThemeManager.getThemeResource("images/Lock16.png"));
         			searchMode.addEventListener(Events.ON_CLICK, popupMenu);

@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.InfoSchedule;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MInfoWindow;
@@ -79,7 +80,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAccount")));
 			if (ThemeManager.isUseFontIconForImage())
-				btnViewItem.setIconSclass("z-icon-InfoAccount");
+				btnViewItem.setIconSclass(Icon.getIconSclass(Icon.INFO_ACCOUNT));
 			else
 				btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -94,7 +95,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoSchedule")));
 			if (ThemeManager.isUseFontIconForImage())
-				btnViewItem.setIconSclass("z-icon-InfoSchedule");
+				btnViewItem.setIconSclass(Icon.getIconSclass(Icon.INFO_SCHEDULE));
 			else
 				btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoSchedule16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -169,7 +170,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 						image = image.replace("24.png", "");					
 					else if (image.endsWith(".png"))
 						image = image.replace(".png", "");
-					btnViewItem.setIconSclass("z-icon-"+image);
+					btnViewItem.setIconSclass(Icon.getIconSclass(image));
 				}
 				else
 				{

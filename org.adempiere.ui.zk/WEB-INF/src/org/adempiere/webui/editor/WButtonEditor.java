@@ -33,6 +33,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.GridField;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -166,7 +167,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         {
             readReference(REFERENCE_PAYMENTRULE);
             if (ThemeManager.isUseFontIconForImage())
-            	getComponent().setIconSclass("z-icon-Payment");
+            	getComponent().setIconSclass(Icon.getIconSclass(Icon.PAYMENT));
             else
             	getComponent().setImage(ThemeManager.getThemeResource("images/Payment16.png"));    //  29*14
         }
@@ -174,21 +175,21 @@ public class WButtonEditor extends WEditor implements IProcessButton
         {
             readReference(REFERENCE_DOCUMENTACTION);
             if (ThemeManager.isUseFontIconForImage())
-            	getComponent().setIconSclass("z-icon-Process");
+            	getComponent().setIconSclass(Icon.getIconSclass(Icon.PROCESS));
             else
             	getComponent().setImage(ThemeManager.getThemeResource("images/Process16.png"));    //  16*16
         }
         else if (columnName.equals("CreateFrom"))
         {
         	if (ThemeManager.isUseFontIconForImage())
-        		getComponent().setIconSclass("z-icon-CreateFrom");
+        		getComponent().setIconSclass(Icon.getIconSclass(Icon.CREATE_FROM));
         	else
         		getComponent().setImage(ThemeManager.getThemeResource("images/Copy16.png"));       //  16*16
         }
         else if (columnName.equals("Record_ID"))
         {
         	if (ThemeManager.isUseFontIconForImage())
-        		getComponent().setIconSclass("z-icon-Zoom");
+        		getComponent().setIconSclass(Icon.getIconSclass(Icon.ZOOM));
         	else
         		getComponent().setImage(ThemeManager.getThemeResource("images/Zoom16.png"));       //  16*16
         	// NOTE the label of Record_ID button is overwritten in setValue
@@ -198,7 +199,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         {
             readReference(REFERENCE_POSTED);
             if (ThemeManager.isUseFontIconForImage())
-            	getComponent().setIconSclass("z-icon-InfoAccount");
+            	getComponent().setIconSclass(Icon.getIconSclass(Icon.INFO_ACCOUNT));
             else
             	getComponent().setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));    //  16*16
         }

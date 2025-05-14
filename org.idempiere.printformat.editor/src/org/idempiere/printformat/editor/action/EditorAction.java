@@ -26,6 +26,7 @@ package org.idempiere.printformat.editor.action;
 
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.util.Icon;
 import org.compiere.util.Env;
 import org.idempiere.printformat.editor.ui.WPrintFormatEditor;
 import org.osgi.service.component.annotations.Component;
@@ -59,7 +60,7 @@ public class EditorAction implements IAction {
 
 	@Override
 	public String getIconSclass() {
-		return "z-icon-th-list";
+		return Icon.getIconSclass(Icon.TH_LIST);
 	}
 
 }

@@ -289,6 +289,13 @@ public class EnvTest extends AbstractTestCase {
 		String validationCode = "M_Warehouse.AD_Org_ID=@NonExisting_AD_Org_ID@";
 		String dynamicValid = Env.parseContext(Env.getCtx(), -1, 0, validationCode, false);
 		assertEquals("M_Warehouse.AD_Org_ID=11", dynamicValid, "Unexpected parsed text for "+validationCode);
+
+        //TabNo 0 for null _ID
+        expr = "AD_User.C_BPartner_ID IN (@C_BPartner_ID@, @Bill_BPartner_ID@)";
+        Env.setContext(Env.getCtx(), windowNo, 0, "C_BPartner_ID", DictionaryIDs.C_BPartner.C_AND_W.id);
+        Env.setContext(Env.getCtx(), windowNo, 0, "Bill_BPartner_ID", null);
+        parsedText = Env.parseContext(Env.getCtx(), windowNo, 0, expr, false);
+        assertEquals("AD_User.C_BPartner_ID IN (%s, 0)".formatted(DictionaryIDs.C_BPartner.C_AND_W.id), parsedText, "Unexpected parsed text for "+expr);
 	}
 
 	@Test

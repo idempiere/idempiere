@@ -56,6 +56,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -379,7 +380,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row.appendChild(cbNewEdit);
 			bSelect.setLabel(Msg.getMsg(Env.getCtx(), "SelectExisting"));
 			if (ThemeManager.isUseFontIconForImage())
-				bSelect.setIconSclass("z-icon-PAttribute");
+				bSelect.setIconSclass(Icon.getIconSclass(Icon.PATTRIBUTE));
 			else
 				bSelect.setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 			bSelect.addEventListener(Events.ON_CLICK, this);

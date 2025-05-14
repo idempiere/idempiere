@@ -41,6 +41,7 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
@@ -419,7 +420,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         {
         	if (ThemeManager.isUseFontIconForImage()) 
         	{
-        		String iconSclass = "z-icon-" + image;
+        		String iconSclass = Icon.getIconSclass(image);
         		btn.setIconSclass(iconSclass);
         		LayoutUtils.addSclass("font-icon-toolbar-button", btn);
         	}
@@ -873,8 +874,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
       	if (ThemeManager.isUseFontIconForImage())
       	{
-      		String iconSclass = "z-icon-" + (this.btnLock.isPressed() ? "lock" : "unlock") ;
-      		this.btnLock.setIconSclass(iconSclass);
+      		this.btnLock.setIconSclass(Icon.getIconSclass(this.btnLock.isPressed() ? Icon.LOCK : Icon.UNLOCK));
       		LayoutUtils.addSclass("font-icon-toolbar-button", this.btnLock);
       	}
       	else
@@ -1418,7 +1418,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private void createOverflowButtonForMobile() {
 		mobileOverflowButton = new A();
 		mobileOverflowButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowMore"));
-		mobileOverflowButton.setIconSclass("z-icon-ShowMore");
+		mobileOverflowButton.setIconSclass(Icon.getIconSclass(Icon.SHOW_MORE));
 		mobileOverflowButton.setSclass("font-icon-toolbar-button toolbar-button mobile-overflow-link");
 		appendChild(mobileOverflowButton);
 		newOverflowPopup();
