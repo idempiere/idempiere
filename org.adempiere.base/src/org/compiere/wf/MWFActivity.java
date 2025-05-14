@@ -85,7 +85,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7274149891086011624L;
+	private static final long serialVersionUID = 7493991252101308814L;
 
 	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
 	
@@ -1365,6 +1365,36 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 					{
 						throw new AdempiereException("Support not implemented for "+resp);
 					}
+					else if (resp.isInitiator())
+					{
+						// assign the Workflow's Initiator
+						setAD_User_ID(m_process.getAD_User_ID());
+					}
+					else if (resp.isSupervisor())
+					{
+						// assign the initiator's supervisor
+						
+						MUser initiator = MUser.get(p_ctx, m_process.getAD_User_ID());
+						int superVisorId = initiator.getSupervisor_ID();
+
+						// if Initiator didn't have Supervisor set then Assign
+						// document's Organization's Supervisor
+						if (superVisorId <= 0)
+						{
+							MOrgInfo orgInfo = MOrgInfo.get(p_ctx, m_process.getAD_Org_ID(), m_process.get_TrxName());
+							superVisorId = orgInfo.getSupervisor_ID();
+						}
+						
+						if (superVisorId > 0)
+						{
+							setAD_User_ID(superVisorId);
+						}
+						else
+						{
+							m_docStatus = DocAction.STATUS_Invalid;
+							throw new AdempiereException(Msg.getMsg(getCtx(), "NoApprover - Set Supervisor on User or Organization"));
+						}
+					}
 					else
 					{
 						throw new AdempiereException("@NotSupported@ "+resp);
@@ -1413,6 +1443,36 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						else if (resp.isOrganization())
 						{
 							throw new AdempiereException("Support not implemented for " + resp);
+						}
+						else if (resp.isInitiator())
+						{
+							// assign the Workflow's Initiator
+							setAD_User_ID(m_process.getAD_User_ID());
+						}
+						else if (resp.isSupervisor())
+						{
+							// assign the initiator's supervisor
+
+							MUser initiator = MUser.get(p_ctx, m_process.getAD_User_ID());
+							int superVisorId = initiator.getSupervisor_ID();
+
+							// if Initiator didn't have Supervisor set then Assign
+							// document's Organization's Supervisor
+							if (superVisorId <= 0)
+							{
+								MOrgInfo orgInfo = MOrgInfo.get(p_ctx, m_process.getAD_Org_ID(), m_process.get_TrxName());
+								superVisorId = orgInfo.getSupervisor_ID();
+							}
+
+							if (superVisorId > 0)
+							{
+								setAD_User_ID(superVisorId);
+							}
+							else
+							{
+								m_docStatus = DocAction.STATUS_Invalid;
+								throw new AdempiereException(Msg.getMsg(getCtx(), "NoApprover - Set Supervisor on User or Organization"));
+							}
 						}
 						else
 						{
