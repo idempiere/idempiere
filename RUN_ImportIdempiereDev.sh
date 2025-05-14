@@ -115,7 +115,7 @@ then
 
     echo "*** Applying migration scripts ***"
     IDEMPIERE_HOME=$( dirname "$($READLINK_CMD -f "${BASH_SOURCE[0]}")" )
-    if ! bash "$IDEMPIERE_HOME/RUN_SyncDBDev.sh" "$@"
+    if ! bash "$IDEMPIERE_HOME/RUN_SyncDBDev.sh" "$1"
     then
         echo "Applying migration scripts failed, please verify"
         exit 1
