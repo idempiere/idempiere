@@ -1292,9 +1292,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (infoName != null && infoDisplay != null)
 				break;
 		}
-		if (infoDisplay == null) {
-			infoDisplay = "";
-		}
+    	if (infoName == null)
+    		infoName = adTabbox.getSelectedGridTab().getName();
+    	if (infoDisplay == null)
+    		infoDisplay = "";
 		String description = infoName + ": " + infoDisplay;
 
     	WChat chat = new WChat(curWindowNo, adTabbox.getSelectedGridTab().getCM_ChatID(), adTabbox.getSelectedGridTab().getAD_Table_ID(),
@@ -1339,6 +1340,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		if (infoName != null && infoDisplay != null)
     			break;
     	}
+    	if (infoName == null)
+    		infoName = adTabbox.getSelectedGridTab().getName();
+    	if (infoDisplay == null)
+    		infoDisplay = "";
     	String header = infoName + ": " + infoDisplay;
 
     	WPostIt postit = new WPostIt(header, adTabbox.getSelectedGridTab().getAD_PostIt_ID(), adTabbox.getSelectedGridTab().getAD_Table_ID(), recordId, recordUU, null);
