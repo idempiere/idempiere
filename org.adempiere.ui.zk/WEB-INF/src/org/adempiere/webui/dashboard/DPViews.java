@@ -201,7 +201,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 				if (actionCommand.equals("InfoAccount"))
 				{
-					ADForm form = ADForm.openForm(MSysConfig.getIntValue(MSysConfig.ACCOUNT_INFO_FORM_ID, SystemIDs.FORM_ACCOUNT_INFO));
+					ADForm form = ADForm.openForm(SystemIDs.FORM_ACCOUNT_INFO);
 					form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 					AEnv.showWindow(form);
 				}
