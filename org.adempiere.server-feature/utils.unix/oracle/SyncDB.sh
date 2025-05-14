@@ -46,6 +46,11 @@ fi
 
 cd "$DIR_SCRIPTS" || (echo "ERROR: Cannot change to folder $DIR_SCRIPTS"; exit 1)
 
+if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+  CMD="docker exec -i $ORACLE_DOCKER_CONTAINER $CMD"
+  SILENTCMD="docker exec -i $ORACLE_DOCKER_CONTAINER $SILENTCMD"
+fi
+
 # Create list of files already applied - registered in AD_MigrationScript table
 echo "set heading off
 set feedback off
