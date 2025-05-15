@@ -17,7 +17,7 @@ then
     SYSUSER=postgres
 fi
 
-echo Re-Create idempiere User and import "$IDEMPIERE_HOME"/data/Adempiere${SUFFIX}.dmp - \("$ADEMPIERE_DB_NAME"\)
+echo Re-Create idempiere User and import "$IDEMPIERE_HOME"/data/seed/Adempiere${SUFFIX}.dmp - \("$ADEMPIERE_DB_NAME"\)
 echo "== The import will show warnings. This is OK =="
 cd "$IDEMPIERE_HOME"/data/seed || exit
 jar xvf Adempiere${SUFFIX}.jar

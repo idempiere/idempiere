@@ -14,36 +14,44 @@ if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ]
     exit 1
 fi
 
+CREATE_DATAPUMP_DIR_SCRIPT="$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql
+DOCKER_EXEC=
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
+  DOCKER_EXEC="docker exec -i $ORACLE_DOCKER_CONTAINER"
+  ORACLE_DOCKER_HOME=${ORACLE_DOCKER_HOME:-/opt/oracle}
+  $DOCKER_EXEC mkdir -p "$ORACLE_DOCKER_HOME"/idempiere/data
+  $DOCKER_EXEC mkdir -p "$ORACLE_DOCKER_HOME"/idempiere/script
+  docker cp "$CREATE_DATAPUMP_DIR_SCRIPT" "$ORACLE_DOCKER_CONTAINER:$ORACLE_DOCKER_HOME"/idempiere/script
+  docker exec -u 0 "$ORACLE_DOCKER_CONTAINER" chown -R oracle:dba "$ORACLE_DOCKER_HOME"/idempiere
+  CREATE_DATAPUMP_DIR_SCRIPT="$ORACLE_DOCKER_HOME"/idempiere/script/CreateDataPumpDir.sql
+fi
+
+DATAPUMP_HOME="$IDEMPIERE_HOME"
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
+  DATAPUMP_HOME="$ORACLE_DOCKER_HOME"/idempiere
+fi
+
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql "$IDEMPIERE_HOME"/data
-chgrp dba "$IDEMPIERE_HOME"/data
-chmod 770 "$IDEMPIERE_HOME"/data
+$DOCKER_EXEC sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATAPUMP_HOME"/data
 
-if [ "x${1,,}" != "xreference" ]
-then
-    sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
-DROP USER REFERENCE CASCADE;
-alter session set "_enable_rename_user"=true;
-alter system enable restricted session;
-ALTER USER $1 RENAME TO REFERENCE IDENTIFIED BY "$2";
-alter system disable restricted session;
-!
+if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
+  chgrp dba "$IDEMPIERE_HOME"/data
+  chmod 770 "$IDEMPIERE_HOME"/data
 fi
 
-rm -f "$IDEMPIERE_HOME"/data/Adempiere.dmp "$IDEMPIERE_HOME"/data/Adempiere.log
+$DOCKER_EXEC rm -f "$DATAPUMP_HOME"/data/Adempiere.dmp "$DATAPUMP_HOME"/data/Adempiere.log
 # Export
-expdp REFERENCE/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS=REFERENCE
+if [ "x${1,,}" != "xreference" ]; then
+  $DOCKER_EXEC expdp "$1"/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS="$1"
+else
+  $DOCKER_EXEC expdp REFERENCE/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS=REFERENCE
+fi
 
-if [ "x${1,,}" != "xreference" ]
-then
-    sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
-alter session set "_enable_rename_user"=true;
-alter system enable restricted session;
-ALTER USER REFERENCE RENAME TO $1 IDENTIFIED BY "$2";
-alter system disable restricted session;
-!
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
+  docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/Adempiere.dmp "$IDEMPIERE_HOME"/data
+  docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/Adempiere.log "$IDEMPIERE_HOME"/data
 fi
 
 cd "$IDEMPIERE_HOME"/data || exit
