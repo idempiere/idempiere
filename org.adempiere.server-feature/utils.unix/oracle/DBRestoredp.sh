@@ -23,7 +23,7 @@ CREATE_USER_SCRIPT="$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateUser.sql
 CREATE_DATAPUMP_DIR_SCRIPT="$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql
 AFTER_IMPORT_SCRIPT="$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/AfterImport.sql
 DOCKER_EXEC=
-if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
   DOCKER_EXEC="docker exec -i $ORACLE_DOCKER_CONTAINER"
   ORACLE_DOCKER_HOME=${ORACLE_DOCKER_HOME:-/opt/oracle}
   $DOCKER_EXEC mkdir -p "$DATAPUMP_HOME"/idempiere/data
@@ -39,7 +39,7 @@ if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
 fi
 
 DATAPUMP_HOME="$IDEMPIERE_HOME"
-if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
   DATAPUMP_HOME="$ORACLE_DOCKER_HOME"/idempiere  
 fi
 
@@ -53,7 +53,7 @@ echo Re-Create DataPump directory
 echo -------------------------------------
 $DOCKER_EXEC sqlplus -S "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATAPUMP_HOME"/data
 
-if ! [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
   # Note the user running this script must be member of dba group:  usermod -G dba idempiere
   chgrp dba "$IDEMPIERE_HOME"/data
   chmod 770 "$IDEMPIERE_HOME"/data

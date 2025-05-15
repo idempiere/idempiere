@@ -16,7 +16,7 @@ fi
 
 CREATE_DATAPUMP_DIR_SCRIPT="$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql
 DOCKER_EXEC=
-if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
   DOCKER_EXEC="docker exec -i $ORACLE_DOCKER_CONTAINER"
   ORACLE_DOCKER_HOME=${ORACLE_DOCKER_HOME:-/opt/oracle}
   $DOCKER_EXEC mkdir -p "$ORACLE_DOCKER_HOME"/idempiere/data
@@ -27,7 +27,7 @@ if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
 fi
 
 DATAPUMP_HOME="$IDEMPIERE_HOME"
-if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
   DATAPUMP_HOME="$ORACLE_DOCKER_HOME"/idempiere
 fi
 
@@ -36,7 +36,7 @@ echo Re-Create DataPump directory
 echo -------------------------------------
 $DOCKER_EXEC sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATAPUMP_HOME"/data
 
-if ! [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
   chgrp dba "$IDEMPIERE_HOME"/data
   chmod 770 "$IDEMPIERE_HOME"/data
 fi
@@ -49,7 +49,7 @@ else
   $DOCKER_EXEC expdp REFERENCE/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS=REFERENCE
 fi
 
-if [[ -n "$ORACLE_DOCKER_CONTAINER" ]]; then
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
   docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/Adempiere.dmp "$IDEMPIERE_HOME"/data
   docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/Adempiere.log "$IDEMPIERE_HOME"/data
 fi
