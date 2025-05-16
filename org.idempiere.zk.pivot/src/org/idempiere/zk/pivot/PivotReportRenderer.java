@@ -342,12 +342,11 @@ public class PivotReportRenderer implements IReportRenderer<PivotReportRendererC
 	private StringBuilder readResource(URL url) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		InputStream is = url.openStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(is))){
 		String line;
 		while ((line = reader.readLine()) != null) {
 		    builder.append(line);
-		}
-		reader.close();
+		}}
 		return builder;
 	}
 }

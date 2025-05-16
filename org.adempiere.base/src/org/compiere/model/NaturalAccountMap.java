@@ -92,10 +92,9 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(file.getAbsolutePath());
 		String line = null;
-		try
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), Ini.getCharset()), 10240))
 		{
-			//  see FileImport
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), Ini.getCharset()), 10240);
+			//  see FileImport			
 			//	not safe see p108 Network pgm
 			String errMsg = "";
 
@@ -106,7 +105,6 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 				lineNo++;
 			}
 			line = null;
-			in.close();
 
 			//  Error
 			if (errMsg.length() != 0)

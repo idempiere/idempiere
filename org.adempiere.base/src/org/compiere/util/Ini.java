@@ -237,17 +237,30 @@ public final class Ini implements Serializable
 			fos = new FileOutputStream(f);
 			s_prop.store(fos, "Adempiere");
 			fos.flush();
-			fos.close();
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
+			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString(), e);
 			return;
 		}
 		catch (Throwable t)
 		{
-			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
+			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString(), t);
 			return;
+		}
+		finally
+		{
+			if (fos != null)
+			{
+				try
+				{
+					fos.close();
+				}
+				catch (Exception e) 
+				{
+					log.log(Level.SEVERE, "Cannot close Properties to " + fileName + " - " + e.toString(), e);
+				}
+			}
 		}
 		if (log.isLoggable(Level.FINER)) log.finer(fileName);
 	}	//	save

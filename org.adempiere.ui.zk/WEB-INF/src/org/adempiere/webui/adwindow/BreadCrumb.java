@@ -30,6 +30,7 @@ import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.WRecordInfo;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridTab;
@@ -433,7 +434,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     		suffix = size + ".png";
     	}
     	if (ThemeManager.isUseFontIconForImage())
-    		btn.setIconSclass("z-icon-"+image+"Record");
+    		btn.setIconSclass(Icon.getIconSclass(image+"Record"));
     	else
     		btn.setImage(ThemeManager.getThemeResource("images/"+image + suffix));
         btn.setTooltiptext(Msg.getMsg(Env.getCtx(),tooltip));

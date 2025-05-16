@@ -317,7 +317,15 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (m_process == null)
 				m_process = new MWFProcess (getCtx(), getAD_WF_Process_ID(),
 					this.get_TrxName());
-			m_process.checkActivities(this.get_TrxName(), m_po);
+			try{
+				m_process.checkActivities(this.get_TrxName(), m_po);
+			}catch (Exception e) {
+				setWFState(WFSTATE_Terminated); 
+				m_process.setWFState(MWFProcess.WFSTATE_Terminated);
+				 m_docStatus = DocAction.STATUS_Invalid;
+				 m_process.setProcessMsg(e.getLocalizedMessage());;
+				 log.log(Level.SEVERE, e.getLocalizedMessage());
+			}
 		}
 		else
 		{
@@ -657,6 +665,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	{
 		//	Responsible
 		int AD_WF_Responsible_ID = getNode().getAD_WF_Responsible_ID();
+		// get Client WF Responsible from the cache
+		MWFResponsible ovrResp = MWFResponsible.getClientWFResp(p_ctx, AD_WF_Responsible_ID);
+		if (ovrResp != null)
+		{
+			AD_WF_Responsible_ID = ovrResp.getAD_WF_Responsible_ID();
+		}
+				
 		if (AD_WF_Responsible_ID == 0)	//	not defined on Node Level
 			AD_WF_Responsible_ID = process.getAD_WF_Responsible_ID();
 		setAD_WF_Responsible_ID (AD_WF_Responsible_ID);
@@ -1770,14 +1785,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		String subject = null;
 		String raw = text.getMailHeader(false);
 		if (raw != null && raw.contains("@_noDocInfo_@"))
-			subject = text.getMailHeader().replaceAll("@_noDocInfo_@", "");
+			subject = text.getMailHeader().replace("@_noDocInfo_@", "");
 		else
 			subject = doc.getDocumentInfo() + ": " + text.getMailHeader();
 		String message = null;
 		raw = text.getMailText(true, false);
 		if (raw != null && (raw.contains("@=DocumentInfo") || raw.contains("@=documentInfo")
 				|| raw.contains("@=Summary") || raw.contains("@=summary") || raw.contains("@_noDocInfo_@")))
-			message = text.getMailText(true).replaceAll("@_noDocInfo_@", "");
+			message = text.getMailText(true).replace("@_noDocInfo_@", "");
 		else
 			message = text.getMailText(true)
 				+ "\n-----\n" + doc.getDocumentInfo()

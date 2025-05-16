@@ -213,13 +213,23 @@ public abstract class DelimitedReportRenderer<C extends DelimitedReportRendererC
 				writer.write(Env.NL);
 			}	//	for all rows
 			//
-			writer.flush();
-			writer.close();
+			writer.flush();			
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(w)", e);
 			return false;
+		}
+		finally
+		{
+			try
+			{
+				writer.close();
+			}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, "(w) - close", e);
+			}
 		}
 		return true;
 	}	//	createCSV

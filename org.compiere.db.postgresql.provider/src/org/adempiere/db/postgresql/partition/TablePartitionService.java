@@ -567,7 +567,7 @@ public class TablePartitionService implements ITablePartitionService {
 		else if (partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_Range))
 			currentPartitionKey = "RANGE";
 		currentPartitionKey += " (" + partitionKeyColumn.getColumnName().toLowerCase() + ")";
-		currentPartitionKey = currentPartitionKey.replaceAll(",", ", ");				
+		currentPartitionKey = currentPartitionKey.replace(",", ", ");				
 		if (!currentPartitionKey.equalsIgnoreCase(partitionKey))
 			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + ": " + partitionKey;
 		return null;

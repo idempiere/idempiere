@@ -16,6 +16,7 @@ package org.adempiere.webui.theme;
 import java.io.IOException;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
@@ -170,8 +171,14 @@ public final class ThemeManager {
 	 * @return url for browser icon
 	 */
 	public static String getBrowserIcon() {
+
+		String def = Env.getContext(Env.getCtx(), Env.PREFIX_SYSTEM_VARIABLE + MSysConfig.ZK_BROWSER_ICON);
+
+		if (!Util.isEmpty(def))
+			return def;
+
 		String theme = getTheme();
-		String def = THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
+		def = THEME_PATH_PREFIX + theme + ITheme.BROWSER_ICON_IMAGE;
 		return MSysConfig.getValue(MSysConfig.ZK_BROWSER_ICON, def);
 	}
 	
@@ -288,7 +295,7 @@ public final class ThemeManager {
 			// remove image size
 			iconSclass = iconSclass.replaceAll("(\\d\\d)$", "");
 			
-			iconSclass = "z-icon-" + iconSclass;
+			iconSclass = Icon.getIconSclass(iconSclass);
 		}
 		
 		return iconSclass;

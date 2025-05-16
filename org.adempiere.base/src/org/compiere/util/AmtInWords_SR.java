@@ -191,7 +191,7 @@ public class AmtInWords_SR
 		if (amount == null)
 			return amount;
 		StringBuilder sb = new StringBuilder ();
-		amount = amount.replaceAll (" ", "").replaceAll ("\u00A0", "");
+		amount = amount.replace(" ", "").replace("\u00A0", "");
 		char sep = amount.contains (",") ? ',' : '.'; // Try to determine the
 		// separator either
 		// comma or a full stop

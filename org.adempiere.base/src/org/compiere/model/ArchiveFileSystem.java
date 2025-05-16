@@ -104,10 +104,8 @@ public class ArchiveFileSystem implements IArchiveStore {
 				if (file.exists()) {
 					// read files into byte[]
 					final byte[] dataEntry = new byte[(int) file.length()];
-					try {
-						final FileInputStream fileInputStream = new FileInputStream(file);
+					try (FileInputStream fileInputStream = new FileInputStream(file)) {
 						fileInputStream.read(dataEntry);
-						fileInputStream.close();
 					} catch (FileNotFoundException e) {
 						log.severe("File Not Found.");
 						e.printStackTrace();

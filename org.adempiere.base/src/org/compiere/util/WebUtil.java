@@ -868,7 +868,7 @@ public final class WebUtil
 		
 		MimeType mimeType = MimeType.get(file.getAbsolutePath());
 		//	Stream File
-		try
+		try (FileInputStream in = new FileInputStream(file))
 		{
 			int bufferSize = 2048; //	2k Buffer
 			int fileLength = (int)file.length();
@@ -880,15 +880,12 @@ public final class WebUtil
 			if (log.isLoggable(Level.FINE)) log.fine(file.toString());
 			long time = System.currentTimeMillis();		//	timer start
 			//	Get Data
-			FileInputStream in = new FileInputStream(file);
-			ServletOutputStream out = response.getOutputStream ();
+			try (ServletOutputStream out = response.getOutputStream ();) {
 			int c = 0;
 			while ((c = in.read()) != -1)
 				out.write(c);
 			//
-			out.flush();
-			out.close();
-			in.close();
+			out.flush();}			
 			//
 			time = System.currentTimeMillis() - time;
 			double speed = (fileLength/(double)1024) / (time/(double)1000);

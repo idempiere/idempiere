@@ -335,12 +335,13 @@ public class MAttachmentEntry
 		else
 		{
 			long now = System.currentTimeMillis();
+			synchronized(this) {
 			if (s_seed+3600000l < now)	//	older then 1 hour
 			{
 				s_seed = now;
 				s_random = new Random(s_seed);
 			}
-			m_index = s_random.nextInt();
+			m_index = s_random.nextInt();}
 		}
 	}
 

@@ -284,11 +284,11 @@ public class PoExporter {
 					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
 					if (AD_Table_ID > 0)
 						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
-				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Parent_ID")) {
+				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Parent_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
 					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
 					tableName = tree.getSourceTableName(true);
-				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Node_ID")) {
+				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Node_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
 					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
 					tableName = tree.getSourceTableName(true);

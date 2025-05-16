@@ -161,17 +161,38 @@ public abstract class AnnotationBasedColumnCalloutFactory extends AnnotationBase
 				.acceptPackagesNonRecursive(getPackages());
 
 		ScanResultProcessor scanResultProcessor = scanResult -> {
+			/** 
+             *  It's necessary to check if a class has already been processed to avoid duplicate callout registration, 
+             *  because sometimes scanResult returns ClassInfo with both Callout and Callouts annotations for the same class, 
+             *  as in the case of CalloutInfoWindow.
+			 */
 			List<String> processed = new ArrayList<String>();
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Callouts.class)) {
 		    	if (classInfo.isAbstract())
 		    		continue;
-		        String className = classInfo.getName();		        
-		        AnnotationInfoList annotationInfos = classInfo.getAnnotationInfoRepeatable(Callout.class);
-		        for(AnnotationInfo annotationInfo : annotationInfos) {
-			        processAnnotation(className, annotationInfo);
+		        String className = classInfo.getName();
+		        
+		        /**
+		         *  scenario 1: return list with 1 element of AnnotationInfo of type Callouts.
+		         *  scenario 2: (CalloutInfoWindow), return list AnnotationInfo of type Callout.
+		         */
+		        AnnotationInfoList annotInfos = classInfo.getAnnotationInfo();
+		        for (AnnotationInfo annotInfo : annotInfos) {
+					if (Callout.class.getName().equals(annotInfo.getName())) {
+						processAnnotation(className, annotInfo);
+					}else if (Callouts.class.getName().equals(annotInfo.getName())) {
+						// Declaring repeated @Callout annotations is treated as @Callouts(value = Callout[]).
+				        String calloutsRepeatablePropertiesName = "value";			
+				        Object[] calloutAnnotInfos = (Object[])annotInfo.getParameterValues().getValue(calloutsRepeatablePropertiesName);
+		                for (Object calloutAnnotInfo : calloutAnnotInfos) {
+		                	processAnnotation(className, (AnnotationInfo)calloutAnnotInfo);
+		                }
+					}
 		        }
+		        
 		        processed.add(className);
 		    }
+		    
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Callout.class)) {
 		    	if (classInfo.isAbstract())
 		    		continue;

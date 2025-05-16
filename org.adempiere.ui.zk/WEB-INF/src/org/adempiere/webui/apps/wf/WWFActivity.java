@@ -41,6 +41,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MColumn;
@@ -88,8 +89,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1658595186719510159L;
-	/**	Window No					*/
-	private int         		m_WindowNo = 0;
 	/**	Open Activities				*/
 	private MWFActivity[] 		m_activities = null;
 	/**	Current Activity			*/
@@ -147,9 +146,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         fAnswerList.setMold("select");
 
 		if (ThemeManager.isUseFontIconForImage()) {
-        	bZoom.setIconSclass("z-icon-Zoom");
-        	bOK.setIconSclass("z-icon-Ok");
-			bRefresh.setIconSclass("z-icon-Refresh");
+        	bZoom.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
+        	bOK.setIconSclass(Icon.getIconSclass(Icon.OK));
+			bRefresh.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
         } else {
         	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
         	bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
@@ -448,7 +447,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		fAnswerList.setVisible(false);
 		fAnswerButton.setVisible(false);
 		if (ThemeManager.isUseFontIconForImage())
-			fAnswerButton.setIconSclass("z-icon-Window");
+			fAnswerButton.setIconSclass(Icon.getIconSclass(Icon.WINDOW));
 		else
 			fAnswerButton.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		fTextMsg.setReadonly(!(selIndex >= 0));

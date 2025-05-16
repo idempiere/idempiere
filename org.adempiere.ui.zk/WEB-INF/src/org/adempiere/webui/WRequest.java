@@ -20,6 +20,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRequest;
@@ -105,7 +106,7 @@ public class WRequest implements EventListener<Event>
 	{
 		m_new = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
 		if (ThemeManager.isUseFontIconForImage())
-			m_new.setIconSclass("z-icon-New");
+			m_new.setIconSclass(Icon.getIconSclass(Icon.NEW));
 		else
 			m_new.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		m_new.addEventListener(Events.ON_CLICK, this);

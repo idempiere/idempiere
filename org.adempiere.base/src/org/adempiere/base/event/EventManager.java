@@ -91,7 +91,7 @@ public class EventManager implements IEventManager {
 					s = br.readLine();
 					if (!Util.isEmpty(s)) {
 						s = s.trim();
-						s = s.replaceAll(" ", "");
+						s = s.replace(" ", "");
 						if (s.endsWith("[*]")) {
 							blackListEventHandlers.add(s.substring(0, s.length()-3));
 						} else {

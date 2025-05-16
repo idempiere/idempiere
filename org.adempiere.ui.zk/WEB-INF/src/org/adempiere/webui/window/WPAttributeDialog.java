@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -55,6 +56,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -102,6 +104,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -7810825026970615029L;
 
+	private List<WEditor> editors = new ArrayList<WEditor>();
+	
 	/**
 	 *	Product Attribute Instance Dialog
 	 *	@param M_AttributeSetInstance_ID Product Attribute Set Instance id
@@ -376,7 +380,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row.appendChild(cbNewEdit);
 			bSelect.setLabel(Msg.getMsg(Env.getCtx(), "SelectExisting"));
 			if (ThemeManager.isUseFontIconForImage())
-				bSelect.setIconSclass("z-icon-PAttribute");
+				bSelect.setIconSclass(Icon.getIconSclass(Icon.PATTRIBUTE));
 			else
 				bSelect.setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 			bSelect.addEventListener(Events.ON_CLICK, this);
@@ -602,10 +606,21 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 						// IDEMPIERE-2999 - set value in online button as HRef
 						if (sourceEditor.getGridField().getDisplayType() == DisplayType.URL)
 							((Urlbox) sourceEditor.getComponent()).setText((String) evt.getNewValue());
+						// update grid field and context
+						sourceEditor.getGridField().setValue(evt.getNewValue(), false);
+						editors.forEach(e -> {
+							// evaluate context (if needed, for e.g dynamic validation)
+							if (e != sourceEditor)
+							{
+								verifyChangedField(e.getGridField(), sourceEditor.getGridField().getColumnName());
+								e.dynamicDisplay();								
+							}
+						});
 					}
 				}
 			});
-
+			
+			editors.add(editor);			
 			Component fieldEditor = editor.getComponent();
 			row.appendChild(fieldEditor);
 			editor.showMenu();
@@ -613,9 +628,23 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				editor.setReadWrite(false);
 			else
 				m_editors.add(editor);
+			editor.getGridField().addPropertyChangeListener(editor);
 		}
 	}	//	addAttributeLine
 
+	/**
+	 * Reset field value to null if field depends on columnName.
+	 * Duplicated from ProcessParameterPanel.
+	 * @param field
+	 * @param columnName column name of changed field
+	 */
+	private void verifyChangedField(GridField field, String columnName) {
+		ArrayList<String> list = field.getDependentOn();
+		if (list.contains(columnName)) {
+			GridField.updateDependentField(field, columnName, -1, null);
+		}
+	}
+	
 	/**
 	 * Create GridField for attribute
 	 * @param attribute

@@ -295,7 +295,7 @@ public class PoFiller{
 					subPo.getAD_Client_ID() != 0)
 				return false;
 		}
-		if (subPo.is_new())
+		if (subPo != null && subPo.is_new())
 			return false;
 		return true;
 	}

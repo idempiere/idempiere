@@ -23,6 +23,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.util.DisplayType;
@@ -57,7 +58,7 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 	{
 		super(new Urlbox(), gridField, tableEditor, editorConfiguration);
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-Online");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.ONLINE));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Online16.png"));
 		

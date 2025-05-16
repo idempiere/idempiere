@@ -281,7 +281,7 @@
 .z-icon-Previous:before {
 	content: "\f0d9";
 }
-.z-icon-PreviousRecord:before, z-icon-angle-left:before {
+.z-icon-PreviousRecord:before, .z-icon-angle-left:before {
 	content: "\f060";
 }
 .z-icon-Print:before {

@@ -25,20 +25,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.ResourceBundle;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import org.adempiere.install.DBConfigStatus;
@@ -181,6 +174,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lJavaHome.setToolTipText(res.getString("JavaHomeInfo"));
 		lJavaHome.setText(res.getString("JavaHome"));
 		fJavaHome.setText(".");
+		setFieldBorder(fJavaHome);
 		okJavaHome.setEnabled(false);
 		bJavaHome.setMargin(bInsets);
 		bJavaHome.setToolTipText(res.getString("JavaHomeInfo"));
@@ -207,17 +201,20 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 				,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 2, 5), 0, 0));
 		this.add(fJavaOptions,    new GridBagConstraints(1, 3, 5, 1, 1.0, 0.0
 				,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
-			
+		setFieldBorder(fJavaOptions);
+
 		//	AdempiereHome - KeyStore
 		lAdempiereHome.setToolTipText(res.getString("AdempiereHomeInfo"));
 		lAdempiereHome.setText(res.getString("AdempiereHome"));
 		fAdempiereHome.setText(".");
+		setFieldBorder(fAdempiereHome);
 		okAdempiereHome.setEnabled(false);
 		bAdempiereHome.setMargin(bInsets);
 		bAdempiereHome.setToolTipText(res.getString("AdempiereHomeInfo"));
 		lKeyStore.setText(res.getString("KeyStorePassword"));
 		lKeyStore.setToolTipText(res.getString("KeyStorePasswordInfo"));
 		fKeyStore.setText("");
+		setFieldBorder(fKeyStore);
 		okKeyStore.setEnabled(false);
 
 		sectionLabel = new JLabel("iDempiere");
@@ -246,6 +243,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lAppsServer.setText(res.getString("AppsServer"));
 		lAppsServer.setFont(lAppsServer.getFont().deriveFont(Font.BOLD));
 		fAppsServer.setText(".");
+		setFieldBorder(fAppsServer);
 		okAppsServer.setEnabled(false);
 		sectionLabel = new JLabel(res.getString("AppsServer"));
 		sectionLabel.setForeground(titledBorder.getTitleColor());
@@ -264,9 +262,11 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lWebPort.setToolTipText(res.getString("WebPortInfo"));
 		lWebPort.setText(res.getString("WebPort"));
 		fWebPort.setText(".");
+		setFieldBorder(fWebPort);
 		okWebPort.setEnabled(false);
 		lSSLPort.setText("SSL");
 		fSSLPort.setText(".");
+		setFieldBorder(fSSLPort);
 		okSSLPort.setEnabled(false);
 		this.add(lWebPort,   new GridBagConstraints(0, 11, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
@@ -288,6 +288,7 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lDatabaseType.setToolTipText(res.getString("DatabaseTypeInfo"));
 		lDatabaseType.setText(res.getString("DatabaseType"));
 		fDatabaseType.setPreferredSize(fDatabaseServer.getPreferredSize());
+		fDatabaseType.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		sectionLabel = new JLabel(res.getString("DatabaseServer"));
 		sectionLabel.setForeground(titledBorder.getTitleColor());
 		separator = new JSeparator();
@@ -316,12 +317,15 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lDatabaseName.setToolTipText(res.getString("DatabaseNameInfo"));
 		lDatabaseName.setText(res.getString("DatabaseName"));
 		fDatabaseName.setText(".");
+		setFieldBorder(fDatabaseName);
+		setFieldBorder(fDatabaseServer);
 
 		//TNS/Native connection
 		lDatabaseDiscovered.setToolTipText(res.getString("TNSNameInfo"));
 		lDatabaseDiscovered.setText(res.getString("TNSName"));
 		fDatabaseDiscovered.setEditable(true);
 		fDatabaseDiscovered.setPreferredSize(fDatabaseName.getPreferredSize());
+		fDatabaseDiscovered.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		okDatabaseSQL.setEnabled(false);
 		this.add(lDatabaseName,		new GridBagConstraints(0, 16, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
@@ -337,9 +341,11 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lDatabasePort.setToolTipText(res.getString("DatabasePortInfo"));
 		lDatabasePort.setText(res.getString("DatabasePort"));
 		fDatabasePort.setText(".");
+		setFieldBorder(fDatabasePort);
 		lSystemPassword.setToolTipText(res.getString("SystemPasswordInfo"));
 		lSystemPassword.setText(res.getString("SystemPassword"));
 		fSystemPassword.setText(".");
+		setFieldBorder(fSystemPassword);
 		okDatabaseSystem.setEnabled(false);
 		this.add(lDatabasePort,		new GridBagConstraints(0, 17, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
@@ -356,9 +362,11 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lDatabaseUser.setToolTipText(res.getString("DatabaseUserInfo"));
 		lDatabaseUser.setText(res.getString("DatabaseUser"));
 		fDatabaseUser.setText(".");
+		setFieldBorder(fDatabaseUser);
 		lDatabasePassword.setToolTipText(res.getString("DatabasePasswordInfo"));
 		lDatabasePassword.setText(res.getString("DatabasePassword"));
 		fDatabasePassword.setText(".");
+		setFieldBorder(fDatabasePassword);
 		okDatabaseUser.setEnabled(false);
 		this.add(lDatabaseUser,     new GridBagConstraints(0, 18, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
@@ -383,9 +391,11 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lMailServer.setText(res.getString("MailServer"));
 		lMailServer.setFont(lMailServer.getFont().deriveFont(Font.BOLD));
 		fMailServer.setText(".");
+		setFieldBorder(fMailServer);
 		lAdminEMail.setToolTipText(res.getString("AdminEMailInfo"));
 		lAdminEMail.setText(res.getString("AdminEMail"));
 		fAdminEMail.setText(".");
+		setFieldBorder(fAdminEMail);
 		okMailServer.setEnabled(false);
 		this.add(lMailServer,   new GridBagConstraints(0, 21, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 2, 5), 0, 0));
@@ -402,9 +412,11 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		lMailUser.setToolTipText(res.getString("MailUserInfo"));
 		lMailUser.setText(res.getString("MailUser"));
 		fMailUser.setText(".");
+		setFieldBorder(fMailUser);
 		lMailPassword.setToolTipText(res.getString("MailPasswordInfo"));
 		lMailPassword.setText(res.getString("MailPassword"));
 		fMailPassword.setText(".");
+		setFieldBorder(fMailPassword);
 		okMailUser.setEnabled(false);
 		this.add(lMailUser,		new GridBagConstraints(0, 22, 1, 1, 0.0, 0.0
 			,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 5, 2, 5), 0, 0));
@@ -445,6 +457,26 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 		bTest.addActionListener(this);
 		bSave.addActionListener(this);
 	}	//	jbInit
+
+	private void setFieldBorder(JComponent textField) {
+		Border innerBorder = BorderFactory.createEmptyBorder(3, 3, 3, 3);
+		LineBorder defaultBorder = new LineBorder(Color.GRAY); // Default border
+		LineBorder focusBorder = new LineBorder(Color.BLUE.brighter(), 1); // Focus border
+
+		textField.setBorder(BorderFactory.createCompoundBorder(defaultBorder, innerBorder));
+
+		textField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				textField.setBorder(BorderFactory.createCompoundBorder(focusBorder, innerBorder));
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				textField.setBorder(BorderFactory.createCompoundBorder(defaultBorder, innerBorder));
+			}
+		});
+	}
 
 	/**
 	 * 	Dynamic Initial.
@@ -662,7 +694,6 @@ public class ConfigurationPanel extends JPanel implements ActionListener, IDBCon
 
 		//	To be sure
 		((Frame)SwingUtilities.getWindowAncestor(this)).dispose();
-//		System.exit(0);		//	remains active when License Dialog called
 		/** **/
 	}	//	save
 

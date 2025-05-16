@@ -1,5 +1,10 @@
 #!/bin/sh
-#
+
+# This script uninstall if needed and install a new iDempiere core from a P2 repository
+# Usage:
+#   update.sh p2Repository
+# for example:
+#   update.sh https://jenkins.idempiere.org/job/iDempiere/ws/org.idempiere.p2/target/repository/
 
 cd "$(dirname "${0}")" || (echo "Cannot cd"; exit 1)
 DESTINATION=$(pwd)
@@ -24,7 +29,7 @@ then
    cp jettyhome/etc/jetty-ssl.xml jetty-ssl.xml.sav
 fi
 
-"$DESTINATION"/update-prd.sh "$1" org.adempiere.server.product
+"$DESTINATION"/compare-update-prd.sh "$1" org.adempiere.base org.adempiere.server.product
 
 cp idempiere.ini.sav idempiere.ini
 

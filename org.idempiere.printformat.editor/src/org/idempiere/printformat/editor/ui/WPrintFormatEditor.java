@@ -173,7 +173,7 @@ public class WPrintFormatEditor implements ValueChangeListener {
 
 		paperHeight = printPaper.getSizeY().floatValue();
 		paperWidth = printPaper.getSizeX().floatValue();
-		if (paperHeight > 0 & paperWidth > 0) {
+		if (paperHeight > 0 && paperWidth > 0) {
 			if (X_AD_PrintPaper.DIMENSIONUNITS_MM.equals(printPaper.getDimensionUnits())) {
 				paperHeight = PrintFormatEditorUtil.mmToPointValue(paperHeight);
 				paperWidth = PrintFormatEditorUtil.mmToPointValue(paperWidth);
