@@ -1306,14 +1306,16 @@ public class CalloutOrder extends CalloutEngine
 				&& !(product.isBOM() && product.isVerified() && product.isAutoProduce()))
 			{
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
+				MWarehouse warehouse = MWarehouse.get(ctx, M_Warehouse_ID);
+
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
 					(M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, null);
 				if (available == null)
 					available = Env.ZERO;
-				if (available.signum() == 0)
+				if (available.signum() == 0 && !warehouse.isDisableInventoryPopup())
 					mTab.fireDataStatusEEvent ("NoQtyAvailable", "0", false);
-				else if (available.compareTo(QtyOrdered) < 0)
+				else if (available.compareTo(QtyOrdered) < 0 && !warehouse.isDisableInventoryPopup())
 					mTab.fireDataStatusEEvent ("InsufficientQtyAvailable", available.toString(), false);
 				else
 				{
@@ -1326,7 +1328,7 @@ public class CalloutOrder extends CalloutEngine
 					if (notReserved == null)
 						notReserved = Env.ZERO;
 					BigDecimal total = available.subtract(notReserved);
-					if (total.compareTo(QtyOrdered) < 0)
+					if (total.compareTo(QtyOrdered) < 0 && !warehouse.isDisableInventoryPopup())
 					{
 						StringBuilder msgpts = new StringBuilder("@QtyAvailable@=").append(available)
 								.append("  -  @QtyNotReserved@=").append(notReserved).append("  =  ").append(total);
