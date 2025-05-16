@@ -239,7 +239,6 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		try
 		{
 			init();
-			dynInit (AD_Table_ID, Record_ID);
 			setAttribute(MODE_KEY, MODE_EMBEDDED);
 			setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);	// for closing the window with shortcut
@@ -618,12 +617,6 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		southPanel.setParent(south);
 		ZKUpdateUtil.setVflex(southPanel, "1");
 		ZKUpdateUtil.setHflex(southPanel, "1");
-
-		this.setTitle(Msg.getMsg(Env.getCtx(), TITLE));
-		this.setClosable(true);
-		this.setStyle("position: relative; width: 100%; height: 100%;");
-		this.setSizable(true);
-		this.setMaximizable(true);
 	}
 
 	/**
@@ -1434,6 +1427,7 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 
 	@Override
 	protected void initForm() {
+		setTitle(Msg.getMsg(Env.getCtx(), TITLE));
 		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + "AD_Table_ID", true);
 		int Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + "Record_ID", true);
 		dynInit(AD_Table_ID, Record_ID);
