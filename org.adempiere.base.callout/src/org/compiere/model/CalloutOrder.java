@@ -823,7 +823,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.fireDataStatusEEvent ("NoQtyAvailable", "0", false);
 				else if (available.compareTo(QtyOrdered) < 0)
 					mTab.fireDataStatusEEvent ("InsufficientQtyAvailable", available.toString(), false);
-				else 
+				else
 				{
 					Integer C_OrderLine_ID = (Integer)mTab.getValue("C_OrderLine_ID");
 					if (C_OrderLine_ID == null)
