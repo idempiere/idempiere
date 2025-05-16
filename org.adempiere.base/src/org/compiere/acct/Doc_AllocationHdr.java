@@ -950,6 +950,13 @@ public class Doc_AllocationHdr extends Doc
 		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
 		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
+		// If the allocation is created as a result of the invoice reversal, 
+		// do not use RLG/RLL, as this will cause the AP balance to not be zero
+		boolean isReversedInvoice = isReversedInvoice();
+		if (isReversedInvoice) {
+			gain = acct;
+			loss = acct;
+		}
 
 		MAllocationHdr alloc = (MAllocationHdr) getPO();
 		if (alloc.getReversal_ID() == 0 || alloc.get_ID() < alloc.getReversal_ID())
@@ -958,7 +965,8 @@ public class Doc_AllocationHdr extends Doc
 			{
 				FactLine fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference);
 				fl.setDescription(description.toString());
-				invGainLossFactLines.add(fl);
+				if (!isReversedInvoice)
+					invGainLossFactLines.add(fl);
 				fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference.negate());
 				fl.setDescription(description.toString());
 			}
@@ -968,7 +976,8 @@ public class Doc_AllocationHdr extends Doc
 				fl.setDescription(description.toString());
 				fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
 				fl.setDescription(description.toString());
-				invGainLossFactLines.add(fl);
+				if (!isReversedInvoice)
+					invGainLossFactLines.add(fl);
 			}
 		}
 		else
@@ -979,13 +988,15 @@ public class Doc_AllocationHdr extends Doc
 				fl.setDescription(description.toString());
 				fl = fact.createLine (line, gain, loss, as.getC_Currency_ID(), acctDifference.negate());
 				fl.setDescription(description.toString());
-				invGainLossFactLines.add(fl);
+				if (!isReversedInvoice)
+					invGainLossFactLines.add(fl);
 			}
 			else
 			{
 				FactLine fl = fact.createLine (line, gain, loss, as.getC_Currency_ID(), acctDifference);
 				fl.setDescription(description.toString());
-				invGainLossFactLines.add(fl);
+				if (!isReversedInvoice)
+					invGainLossFactLines.add(fl);
 				fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference.negate());
 				fl.setDescription(description.toString());
 			}
@@ -1110,6 +1121,9 @@ public class Doc_AllocationHdr extends Doc
 	 */
 	private String createInvoiceRoundingCorrection (MAcctSchema as, Fact fact, MAccount acctAr, MAccount acctAp) 
 	{
+		if (isReversedInvoice())
+			return null;
+		
 		Map<Integer, MInvoice> invList = new HashMap<>();
 		Map<Integer, Integer> htInvAllocLine = new HashMap<>();
 		for (int i = 0; i < p_lines.length; i++)
@@ -1122,7 +1136,7 @@ public class Doc_AllocationHdr extends Doc
 
 			if (invList.containsKey(line.getC_Invoice_ID())){
 				log.severe(line.getC_Invoice_ID() + ":same invoice included in more than one allocation line");
-			}else {
+			} else {
 				invoice = new MInvoice (getCtx(), line.getC_Invoice_ID(), getTrxName());
 				invList.put(invoice.getC_Invoice_ID(), invoice);
 				htInvAllocLine.put(invoice.getC_Invoice_ID(), line.get_ID());
@@ -1860,6 +1874,31 @@ public class Doc_AllocationHdr extends Doc
 				|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
 				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
 				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo());
+	}
+	
+	/**
+	 * Is the allocation created as a result of the invoice reversal?
+	 * @return true
+	 */
+	private boolean isReversedInvoice()
+	{
+		if (p_lines.length != 2)
+			return false;
+		int invoiceId1 = ((DocLine_Allocation) p_lines[1]).getC_Invoice_ID();
+		int invoiceId2 = ((DocLine_Allocation) p_lines[0]).getC_Invoice_ID();
+		if (invoiceId1 > 0 && invoiceId2 > 0) {
+			MInvoice invoice1 = new MInvoice(getCtx(), invoiceId1, getTrxName());
+			MInvoice invoice2 = new MInvoice(getCtx(), invoiceId2, getTrxName());
+			int Reversal_ID = invoice1.getReversal_ID();
+			if (Reversal_ID > 0)
+				return Reversal_ID == invoice2.get_ID();
+			else {
+				Reversal_ID = invoice2.getReversal_ID();
+				if (Reversal_ID > 0)
+					return Reversal_ID == invoice1.get_ID();
+			}
+		}
+		return false;
 	}
 }   //  Doc_Allocation
 

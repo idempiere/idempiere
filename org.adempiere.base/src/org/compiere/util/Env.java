@@ -138,7 +138,7 @@ public final class Env
 	public static final String UI_CLIENT = "#UIClient";
 	public static final String USER_LEVEL = "#User_Level";
 
-	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
+	public static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 
 	@Deprecated
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
@@ -601,7 +601,7 @@ public final class Env
 		if (context.startsWith(PREFIX_SYSTEM_VARIABLE)) {
 			String retValue = System.getenv(context.substring(PREFIX_SYSTEM_VARIABLE.length()));
 			if (retValue == null)
-				retValue = "";
+				retValue = System.getProperty(context.substring(PREFIX_SYSTEM_VARIABLE.length()), "");
 			return retValue;
 		}
 		String value = ctx.getProperty(context, "");

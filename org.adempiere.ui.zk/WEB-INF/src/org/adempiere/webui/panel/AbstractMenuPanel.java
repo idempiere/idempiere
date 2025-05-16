@@ -24,6 +24,7 @@ import org.adempiere.webui.apps.MenuSearchController;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -197,7 +198,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 if (mChildNode.isReport())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Report");
+                		link.setIconSclass(Icon.getIconSclass(Icon.REPORT));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mReport.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "report");
@@ -205,7 +206,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isProcess() || mChildNode.isTask())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Process");
+                		link.setIconSclass(Icon.getIconSclass(Icon.PROCESS));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "process");
@@ -213,7 +214,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isWorkFlow())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Workflow");
+                		link.setIconSclass(Icon.getIconSclass(Icon.WORKFLOW));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "workflow");
@@ -221,7 +222,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isForm())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Form");
+                		link.setIconSclass(Icon.getIconSclass(Icon.FORM));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mForm.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "form");
@@ -229,7 +230,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isInfo())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Info");
+                		link.setIconSclass(Icon.getIconSclass(Icon.INFO));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mInfo.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "info");
@@ -237,7 +238,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else // Window
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Window");
+                		link.setIconSclass(Icon.getIconSclass(Icon.WINDOW));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "window");
@@ -267,7 +268,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     	Toolbarbutton newBtn = new Toolbarbutton(null);
     	if (ThemeManager.isUseFontIconForImage())
 		{
-			newBtn.setIconSclass("z-icon-New");
+			newBtn.setIconSclass(Icon.getIconSclass(Icon.NEW));
 		}
     	else {
     		newBtn.setImage(ThemeManager.getThemeResource("images/New10.png"));

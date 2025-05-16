@@ -11,13 +11,14 @@ if [ $# -le 2 ]
     echo "Example:	$0 postgres idempiere idempiere postgresPwd"
     exit 1
 fi
-if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ] || [ "$ADEMPIERE_DB_SERVER" = "" ] || [ "$ADEMPIERE_DB_PORT" = "" ]
+if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ] || [ "$ADEMPIERE_DB_SERVER" = "" ] || [ "$ADEMPIERE_DB_PORT" = "" ] || [ "$ADEMPIERE_DB_SYSTEM" = "" ]
   then
     echo "Please make sure that the environment variables are set correctly:"
     echo "	IDEMPIERE_HOME	e.g. /idempiere"
     echo "	ADEMPIERE_DB_NAME	e.g. idempiere"
     echo "  ADEMPIERE_DB_SERVER e.g. dbserver.idempiere.org"
     echo "  ADEMPIERE_DB_PORT e.g. 5432"
+    echo "  ADEMPIERE_DB_SYSTEM e.g. postgres"
     exit 1
 fi
 

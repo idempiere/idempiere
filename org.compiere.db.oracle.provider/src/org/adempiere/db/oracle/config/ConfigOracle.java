@@ -434,13 +434,18 @@ public class ConfigOracle implements IDatabaseConfig
 		}
 		if (testFile != null) {
 			//	TNS Name Info via sqlplus
-			String sqlplus = "sqlplus " + p_db.getSystemUser() + "/" + systemPassword + "@"
+			String oracleDockerContainer = System.getenv("ORACLE_DOCKER_CONTAINER");
+			String oracleDockerHome = System.getenv("ORACLE_DOCKER_HOME");
+			String dockerCmd = "";
+			if (oracleDockerContainer != null && oracleDockerHome != null)
+				dockerCmd = "docker exec -i " + oracleDockerContainer + " ";
+
+			String sqlplus = dockerCmd + "sqlplus " + p_db.getSystemUser() + "/" + systemPassword + "@"
 				+ "//" + databaseServer.getHostName()
 				+ ":" + databasePort
-				+ "/" + databaseName
-				+ " @" + testFile;
+				+ "/" + databaseName;
 			log.config(sqlplus);
-			pass = testSQL(sqlplus);
+			pass = testSQL(sqlplus, testFile);
 			error = "Error connecting via: " + sqlplus;
 		} else {
 			pass = false;
@@ -504,16 +509,20 @@ public class ConfigOracle implements IDatabaseConfig
 	/**
 	 * 	Test TNS Connection
 	 *  @param sqlplus sqlplus command line
+	 *  @param testFile sql file 
 	 * 	@return true if OK
 	 */
-	private boolean testSQL (String sqlplus)
+	private boolean testSQL (String sqlplus, String testFile)
 	{
+		System.out.print("Executing " + sqlplus + " ... ");
 		StringBuilder sbOut = new StringBuilder();
 		StringBuilder sbErr = new StringBuilder();
 		int result = -1;
 		try
 		{
-			Process p = Runtime.getRuntime().exec (sqlplus);
+	        ProcessBuilder builder = new ProcessBuilder(sqlplus.split(" "));
+	        builder.redirectInput(new File(testFile));
+	        Process p = builder.start();
 			InputStream in = p.getInputStream();
 			int c;
 			while ((c = in.read()) != -1)

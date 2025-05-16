@@ -1,0 +1,13 @@
+org.idempiere.test.model
+org.idempiere.test.workflow
+org.idempiere.test.adwindow
+org.idempiere.test.event
+org.idempiere.test.model.annotated
+org.idempiere.test.form
+org.idempiere.test
+org.idempiere.test.costing
+org.idempiere.test.dunning
+org.idempiere.test.performance
+org.idempiere.test.jasper
+org.idempiere.test.commission
+org.idempiere.test.base

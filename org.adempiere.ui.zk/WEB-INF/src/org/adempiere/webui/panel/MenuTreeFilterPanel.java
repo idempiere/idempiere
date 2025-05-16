@@ -27,6 +27,7 @@ package org.adempiere.webui.panel;
 import java.util.List;
 
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.util.Env;
@@ -78,7 +79,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 
 		Checkbox report = new Checkbox();
 		if (ThemeManager.isUseFontIconForImage())
-			report.setIconSclass("z-icon-Report");
+			report.setIconSclass(Icon.getIconSclass(Icon.REPORT));
 		else
 			report.setImage(ThemeManager.getThemeResource("images/mReport.png"));		
 		report.setChecked(true);
@@ -89,7 +90,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 
 		Checkbox process = new Checkbox();
 		if (ThemeManager.isUseFontIconForImage())
-			process.setIconSclass("z-icon-Process");
+			process.setIconSclass(Icon.getIconSclass(Icon.PROCESS));
 		else
 			process.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
 		process.setChecked(true);
@@ -100,7 +101,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 
 		Checkbox workflow = new Checkbox();
 		if (ThemeManager.isUseFontIconForImage())
-			workflow.setIconSclass("z-icon-WorkFlow");
+			workflow.setIconSclass(Icon.getIconSclass(Icon.WORKFLOW));
 		else
 			workflow.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
 		workflow.setChecked(true);
@@ -111,7 +112,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 
 		Checkbox window = new Checkbox();
 		if (ThemeManager.isUseFontIconForImage())
-			window.setIconSclass("z-icon-Window");
+			window.setIconSclass(Icon.getIconSclass(Icon.WINDOW));
 		else
 			window.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		window.setChecked(true);
@@ -122,7 +123,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		
 		Checkbox form = new Checkbox();
 		if (ThemeManager.isUseFontIconForImage())
-			form.setIconSclass("z-icon-Form");
+			form.setIconSclass(Icon.getIconSclass(Icon.FORM));
 		else
 			form.setImage(ThemeManager.getThemeResource("images/mForm.png"));
 		form.setChecked(true);
@@ -133,7 +134,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 
 		Checkbox info = new Checkbox();
 		if (ThemeManager.isUseFontIconForImage())
-			info.setIconSclass("z-icon-Info");
+			info.setIconSclass(Icon.getIconSclass(Icon.INFO));
 		else
 			info.setImage(ThemeManager.getThemeResource("images/mInfo.png"));
 		info.setChecked(true);

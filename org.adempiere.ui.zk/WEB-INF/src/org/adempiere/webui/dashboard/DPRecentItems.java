@@ -21,6 +21,7 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MQuery;
@@ -107,7 +108,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		if (ThemeManager.isUseFontIconForImage())
 		{
 			ToolBarButton btn = new ToolBarButton();
-			btn.setIconSclass("z-icon-Refresh");
+			btn.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 			btn.setSclass("trash-toolbarbutton");
 			recentItemsToolbar.appendChild(btn);
 			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
@@ -127,7 +128,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		{
 			Label deleteLabel = new Label();
 			recentItemsToolbar.appendChild(deleteLabel);
-			deleteLabel.setSclass("z-icon-Trash trash-font-icon");
+			deleteLabel.setSclass(Icon.getIconSclass(Icon.TRASH)+" trash-font-icon");
 			deleteLabel.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DeleteRecentItem")));
 			deleteLabel.setDroppable(DELETE_RECENTITEMS_DROPPABLE);		
 			deleteLabel.addEventListener(Events.ON_DROP, this);
@@ -323,7 +324,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	 */
 	private String getIconFile() {
 		if (ThemeManager.isUseFontIconForImage())
-			return "z-icon-Window";
+			return Icon.getIconSclass(Icon.WINDOW);
 		else
 			return "images/mWindow.png";
 	}

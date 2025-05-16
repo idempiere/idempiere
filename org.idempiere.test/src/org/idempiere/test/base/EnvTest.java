@@ -27,18 +27,14 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import org.adempiere.model.MRelationType;
-import org.compiere.model.MBPartner;
-import org.compiere.model.MClient;
-import org.compiere.model.MInOut;
-import org.compiere.model.MMailText;
-import org.compiere.model.MOrder;
-import org.compiere.model.MTable;
-import org.compiere.model.MUser;
+import org.compiere.model.*;
 import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -293,6 +289,13 @@ public class EnvTest extends AbstractTestCase {
 		String validationCode = "M_Warehouse.AD_Org_ID=@NonExisting_AD_Org_ID@";
 		String dynamicValid = Env.parseContext(Env.getCtx(), -1, 0, validationCode, false);
 		assertEquals("M_Warehouse.AD_Org_ID=11", dynamicValid, "Unexpected parsed text for "+validationCode);
+
+        //TabNo 0 for null _ID
+        expr = "AD_User.C_BPartner_ID IN (@C_BPartner_ID@, @Bill_BPartner_ID@)";
+        Env.setContext(Env.getCtx(), windowNo, 0, "C_BPartner_ID", DictionaryIDs.C_BPartner.C_AND_W.id);
+        Env.setContext(Env.getCtx(), windowNo, 0, "Bill_BPartner_ID", null);
+        parsedText = Env.parseContext(Env.getCtx(), windowNo, 0, expr, false);
+        assertEquals("AD_User.C_BPartner_ID IN (%s, 0)".formatted(DictionaryIDs.C_BPartner.C_AND_W.id), parsedText, "Unexpected parsed text for "+expr);
 	}
 
 	@Test
@@ -324,4 +327,40 @@ public class EnvTest extends AbstractTestCase {
 				.formatted(contacts[0].getName());
 		assertEquals(expectedText, parsedText, "Unexpected parsed mail text");
 	}
+
+    @Test
+    public void testParseMailTextWithEmailValue() {
+        String mailText = "User Email = @EMail@ and BPartner Name=@Name@";
+        MMailText mMailText = new MMailText(Env.getCtx(), 0, getTrxName());
+        mMailText.setMailText(mailText);
+        MBPartner bPartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id);
+        mMailText.setBPartner(bPartner);
+        MUser user = mock(MUser.class);
+        when(user.get_TableName()).thenReturn("AD_User");
+        when(user.get_ColumnIndex("EMail")).thenReturn(1);
+        when(user.get_Value("EMail")).thenReturn("test@test.com");
+        mMailText.setUser(user);
+        mMailText.setPO(MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id));
+        String expected = "User Email = %s and BPartner Name=%s".formatted(user.get_Value("EMail"), bPartner.getName());
+        assertEquals(expected, mMailText.getMailText());
+    }
+
+    @Test
+    public void testParseMailTextWithNullValue() {
+        String mailText = "User Email = @EMail@ and Phone=@Phone@";
+        MMailText mMailText = new MMailText(Env.getCtx(), 0, getTrxName());
+        mMailText.setMailText(mailText);
+        MBPartner bPartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id);
+        mMailText.setBPartner(bPartner);
+        MUser user = mock(MUser.class);
+        when(user.get_TableName()).thenReturn("AD_User");
+        when(user.get_ColumnIndex("EMail")).thenReturn(1);
+        when(user.get_Value("EMail")).thenReturn("test@test.com");
+        when(user.get_ColumnIndex("Phone")).thenReturn(2);
+        when(user.get_Value("Phone")).thenReturn(null);
+        mMailText.setUser(user);
+        mMailText.setPO(MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id));
+        String expected = "User Email = %s and Phone=".formatted(user.get_Value("EMail"));
+        assertEquals(expected, mMailText.getMailText());
+    }
 }

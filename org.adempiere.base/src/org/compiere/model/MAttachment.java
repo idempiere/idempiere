@@ -239,7 +239,7 @@ public class MAttachment extends X_AD_Attachment
 			MTable table = MTable.get(getAD_Table_ID());
 			if (table != null) {
 				PO po = null;
-				if (table.isUUIDKeyTable())
+				if (! table.isIDKeyTable())
 					po = table.getPOByUU(getRecord_UU(), get_TrxName());
 				else
 					po = table.getPO(getRecord_ID(), get_TrxName());
