@@ -92,6 +92,7 @@ import org.adempiere.webui.window.LabelAction;
 import org.adempiere.webui.window.WChat;
 import org.adempiere.webui.window.WPostIt;
 import org.adempiere.webui.window.WRecordAccessDialog;
+import org.adempiere.webui.window.WTableAttribute;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -110,6 +111,7 @@ import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableAttributeSet;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.StateChangeEvent;
@@ -1488,6 +1490,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		AEnv.showWindow(form);
 	} // onQuickForm
 
+	/**
+	 * Open Table Attribute Window
+	 */
+	public void onAttributeForm()
+	{
+		new WTableAttribute(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+		
+	}
+	
     /**
      * @param event
      * @see EventListener#onEvent(Event)
@@ -1814,8 +1825,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		toolbar.enableQuickForm(adTabbox.getSelectedTabpanel().isEnableQuickFormButton() && !adTabbox.getSelectedGridTab().isReadOnly());
 
+		toolbar.enableAttributeForm(MTableAttributeSet.hasTableAttributeSet(adTabbox.getSelectedGridTab().getAD_Table_ID()));
+		
 		boolean isNewRow = adTabbox.getSelectedGridTab().getRowCount() == 0 || adTabbox.getSelectedGridTab().isNew();
-        
 		IADTabpanel adtab = adTabbox.getSelectedTabpanel();
         toolbar.enableProcessButton(adtab != null && adtab.isEnableProcessButton());
         toolbar.enableCustomize(adtab.isEnableCustomizeButton());
