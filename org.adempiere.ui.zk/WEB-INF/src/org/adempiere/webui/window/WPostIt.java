@@ -31,6 +31,7 @@ import org.compiere.model.MPostIt;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -73,7 +74,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 	 */
 	public WPostIt(String title, int postItID, int tableID, int recordID, String recordUU, String trxName) {
 		super();
-		setTitle(title);
+		setTitle(Msg.getMsg(Env.getCtx(), "PostIt") + " " + title);
 		this.editable = true;
 		this.maxSize = 2000;
 

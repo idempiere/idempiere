@@ -438,5 +438,6 @@
     <orderEntry type="library" name="Partial: zweb-10.0.1" level="project" />
     <orderEntry type="library" name="Partial: zweb-dsp-10.0.1" level="project" />
     <orderEntry type="module" module-name="org.adempiere.base" />
+    <orderEntry type="module" module-name="org.adempiere.report.jasper.library" />
   </component>
 </module>

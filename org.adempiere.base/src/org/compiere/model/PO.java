@@ -118,7 +118,7 @@ public abstract class PO
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -10414475210373531L;
+	private static final long serialVersionUID = -2193260381693906628L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -127,6 +127,16 @@ public abstract class PO
 
 	/** default query/statement timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
+
+	/** Get value of the attribute for Table ID and Record ID **/
+	private static final String TABLE_ATTRIBUTE_VALUE_SQL = """
+			SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, ta.Value, ta.ValueDate, ta.ValueNumber, ta.M_AttributeValue_ID
+				FROM AD_TableAttribute ta
+				INNER JOIN M_Attribute a ON (a.M_Attribute_ID = ta.M_Attribute_ID)
+				WHERE ta.AD_Table_ID = ? AND Record_ID = ? AND a.IsActive = 'Y' """;
+
+	/** Record Attribute and Value Map */
+	private Map<String, Object> m_tableAttributeMap = new HashMap<String, Object>();
 
 	/**
 	 * 	Set Document Value Workflow Manager
@@ -328,6 +338,7 @@ public abstract class PO
 	{
 		this.m_attachment = copy.m_attachment != null ? new MAttachment(copy.m_attachment) : null;
 		this.m_attributes = copy.m_attributes != null ? new HashMap<String, Object>(copy.m_attributes) : null;
+		this.m_tableAttributeMap = copy.m_tableAttributeMap != null ? new HashMap<String, Object>(copy.m_tableAttributeMap) : null;
 		this.m_createNew = copy.m_createNew;
 		this.m_custom = copy.m_custom != null ? new HashMap<String, String>(copy.m_custom) : null;
 		this.m_IDs = copy.m_IDs != null ? Arrays.copyOf(copy.m_IDs, copy.m_IDs.length) : null;
@@ -6322,6 +6333,156 @@ public abstract class PO
 	 */
 	public boolean columnExists(String columnName) {
 		return columnExists(columnName, false);
+	}
+
+	/**
+	 * @param attributeName
+	 * @return
+	 */
+	public boolean get_TableAttributeAsBoolean(String attributeName)
+	{
+		Object value = get_TableAttribute(attributeName);
+		if (value != null)
+		{
+			 if (value instanceof Boolean)
+				 return ((Boolean)value).booleanValue();
+			return "Y".equals(value);
+		}
+		return false;
+	} // get_TableAttributeAsBoolean
+
+	/**
+	 * @param attributeName
+	 * @return
+	 */
+	public int get_TableAttributeAsInt(String attributeName)
+	{
+		Object value = get_TableAttribute(attributeName);
+		if (value == null)
+			return 0;
+		if (value instanceof Integer)
+			return ((Integer)value).intValue();
+		try
+		{
+			return Integer.parseInt(value.toString());
+		}
+		catch (NumberFormatException ex)
+		{
+			log.warning("Attribute " + attributeName + " - " + ex.getMessage());
+			return 0;
+		}
+	} // get_TableAttributeAsInt
+
+	/**
+	 * Return attribute value for table and record.
+	 * Load All attribute first time, then only query attribute that are not in map.
+	 * TODO can write different method to get directly cast value like get_TableAttributeAsString, get_TableAttributeAsDate etc..
+	 * 
+	 * @param  attributeName
+	 * @param  table_ID
+	 * @param  record_ID
+	 * @return
+	 */
+	public Object get_TableAttribute(String attributeName)
+	{
+		if (m_tableAttributeMap.isEmpty() || !m_tableAttributeMap.containsKey(attributeName))
+		{
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				String where = m_tableAttributeMap.isEmpty() ? "" : " AND a.Name = ? ";
+				// 4 - String, 5 - data, 6 - number, 7 - attribute value
+				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_VALUE_SQL + where, null);
+				pstmt.setInt(1, get_Table_ID());
+				pstmt.setInt(2, get_ID());
+				if (!m_tableAttributeMap.isEmpty())
+					pstmt.setString(3, attributeName);
+
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					Object value = null;
+					String attName = rs.getString(1);
+					String attType = rs.getString(2);
+					int reference_ID = rs.getInt(3);
+
+					if (MAttribute.ATTRIBUTEVALUETYPE_Number.equalsIgnoreCase(attType))
+					{
+						value = rs.getInt(6);
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_Date.equalsIgnoreCase(attType))
+					{
+						value = rs.getDate(5) != null ? new Timestamp(rs.getDate(5).getTime()) : null;
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_List.equalsIgnoreCase(attType))
+					{
+						value = rs.getInt(7);
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_StringMax40.equalsIgnoreCase(attType))
+					{
+						value = rs.getString(4);
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equalsIgnoreCase(attType))
+					{
+						if (reference_ID == DisplayType.YesNo)
+						{
+							value = Util.isEmpty(rs.getString(4)) ? null: rs.getString(4).equalsIgnoreCase("Y");
+						}
+						else if (DisplayType.isText(reference_ID))
+						{
+							value = rs.getString(4);
+						}
+						else if (DisplayType.isDate(reference_ID))
+						{
+							value = rs.getDate(5) != null ? new Timestamp(rs.getDate(5).getTime()) : null;
+						}
+						else if (DisplayType.isNumeric(reference_ID) || DisplayType.isID(reference_ID))
+						{
+							value = rs.getInt(6);
+						}
+						else
+						{
+							value = rs.getString(4);
+						}
+					}
+					else
+					{
+						value = rs.getString(4);
+					}
+
+					if (value != null)
+						m_tableAttributeMap.put(attName, value);
+				}
+			}
+			catch (Exception e)
+			{
+				CLogger.get().log(Level.SEVERE, "Failed: Get Attribute = " + attributeName, e);
+				return null;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+		}
+
+		if (m_tableAttributeMap.containsKey(attributeName))
+			return m_tableAttributeMap.get(attributeName);
+
+		return MTableAttribute.getAttributeDefaultValue(attributeName, get_Table_ID());
+	} // get_TableAttribute
+
+	/**
+	 * Retrieves the table attributes associated with the current record.
+	 * 
+	 * @return a list of {@link PO} objects representing table attributes
+	 *         filtered by the table ID and record ID.
+	 */
+	public List<PO> get_TableAttributes()
+	{
+		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", null).setParameters(get_Table_ID(), get_ID()).list();
 	}
 
 }   //  PO

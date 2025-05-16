@@ -802,7 +802,9 @@ public class CalloutOrder extends CalloutEngine
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 
-		if (Env.isSOTrx(ctx, WindowNo))
+		int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
+		MWarehouse warehouse = MWarehouse.get(ctx, M_Warehouse_ID);
+		if (Env.isSOTrx(ctx, WindowNo) && !warehouse.isDisableInventoryPopup())
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
 			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N")
@@ -811,7 +813,7 @@ public class CalloutOrder extends CalloutEngine
 				BigDecimal QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
 				if (QtyOrdered == null)
 					QtyOrdered = Env.ZERO;
-				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
+
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
 					(M_Warehouse_ID, M_Product_ID.intValue(), M_AttributeSetInstance_ID, null);
@@ -1296,16 +1298,18 @@ public class CalloutOrder extends CalloutEngine
 			QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
 		}
 
+		int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
+		MWarehouse warehouse = MWarehouse.get(ctx, M_Warehouse_ID);
 		//	Storage
 		if (M_Product_ID != 0
 			&& Env.isSOTrx(ctx, WindowNo)
-			&& QtyOrdered.signum() > 0)		//	no negative (returns)
+			&& QtyOrdered.signum() > 0		//	no negative (returns)
+			&& !warehouse.isDisableInventoryPopup())
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID);
 			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N")
 				&& !(product.isBOM() && product.isVerified() && product.isAutoProduce()))
 			{
-				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
 					(M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, null);

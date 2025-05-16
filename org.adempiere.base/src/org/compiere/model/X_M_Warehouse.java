@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Warehouse
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Warehouse")
 public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250516L;
 
     /** Standard Constructor */
     public X_M_Warehouse (Properties ctx, int M_Warehouse_ID, String trxName)
@@ -40,6 +40,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
       /** if (M_Warehouse_ID == 0)
         {
 			setC_Location_ID (0);
+			setIsDisableInventoryPopup (false);
+// N
 			setIsDisallowNegativeInv (false);
 // N
 			setM_Warehouse_ID (0);
@@ -57,6 +59,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
       /** if (M_Warehouse_ID == 0)
         {
 			setC_Location_ID (0);
+			setIsDisableInventoryPopup (false);
+// N
 			setIsDisallowNegativeInv (false);
 // N
 			setM_Warehouse_ID (0);
@@ -74,6 +78,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
       /** if (M_Warehouse_UU == null)
         {
 			setC_Location_ID (0);
+			setIsDisableInventoryPopup (false);
+// N
 			setIsDisallowNegativeInv (false);
 // N
 			setM_Warehouse_ID (0);
@@ -91,6 +97,8 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
       /** if (M_Warehouse_UU == null)
         {
 			setC_Location_ID (0);
+			setIsDisableInventoryPopup (false);
+// N
 			setIsDisallowNegativeInv (false);
 // N
 			setM_Warehouse_ID (0);
@@ -171,6 +179,28 @@ public class X_M_Warehouse extends PO implements I_M_Warehouse, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Disable Insufficient Inventory Popup.
+		@param IsDisableInventoryPopup Disable Insufficient Inventory Popup
+	*/
+	public void setIsDisableInventoryPopup (boolean IsDisableInventoryPopup)
+	{
+		set_Value (COLUMNNAME_IsDisableInventoryPopup, Boolean.valueOf(IsDisableInventoryPopup));
+	}
+
+	/** Get Disable Insufficient Inventory Popup.
+		@return Disable Insufficient Inventory Popup	  */
+	public boolean isDisableInventoryPopup()
+	{
+		Object oo = get_Value(COLUMNNAME_IsDisableInventoryPopup);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Disallow Negative Inventory.

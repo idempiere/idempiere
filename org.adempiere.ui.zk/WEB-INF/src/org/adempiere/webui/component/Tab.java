@@ -123,7 +123,7 @@ public class Tab extends org.zkoss.zul.Tab
 			if (imageIntenalUrl != null) {
 				if (ThemeManager.isUseFontIconForImage()) {
 					String iconClass = imageIntenalUrl.getFile().replace("16.png", "").replaceAll(".*\\/", "");
-					comp.setIconSclass("z-icon-" + iconClass);
+					comp.setIconSclass(Icon.getIconSclass(iconClass));
 				} else {
 					Image image = ManageImageCache.instance().getImage(imageIntenalUrl);
 					if (image != null)
@@ -132,7 +132,7 @@ public class Tab extends org.zkoss.zul.Tab
 			} else if (imageKey != null){
 				if (ThemeManager.isUseFontIconForImage() && imageKey.indexOf("://") == -1 && !MAttachment.isAttachmentURLPath(imageKey)) {
 					String iconClass = imageKey;
-					comp.setIconSclass("z-icon-" + iconClass);
+					comp.setIconSclass(Icon.getIconSclass(iconClass));
 				} else {
 					Image ico = ManageImageCache.instance().getImage(imageKey);
 					if (ico != null)

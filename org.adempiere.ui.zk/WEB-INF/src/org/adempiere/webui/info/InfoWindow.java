@@ -21,6 +21,8 @@
  **********************************************************************/
 package org.adempiere.webui.info;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -163,8 +165,6 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.InputElement;
-
-import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 /**
  * AD_InfoWindow implementation
@@ -2331,8 +2331,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         if(dataSql.startsWith("SELECT DISTINCT") && indexOrderColumn > 0) {
         	ColumnInfo orderColumnInfo = p_layout[indexOrderColumn];
         	if (   !Util.isEmpty(orderColumnInfo.getDisplayColumn())
-        		&& (   DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID())
-        			|| DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID()))) {
+        		&& (   (DisplayType.isID(orderColumnInfo.getAD_Reference_ID()) && orderColumnInfo.getAD_Reference_ID() != DisplayType.ID)
+        			|| DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()))) {
         		dataSql = appendOrderByToSelectList(dataSql, orderClause);
         	}
         }

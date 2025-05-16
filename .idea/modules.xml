@@ -15,6 +15,7 @@
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.replication/org.adempiere.replication.iml" filepath="$PROJECT_DIR$/org.adempiere.replication/org.adempiere.replication.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.replication.server/org.adempiere.replication.server.iml" filepath="$PROJECT_DIR$/org.adempiere.replication.server/org.adempiere.replication.server.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.report.jasper/org.adempiere.report.jasper.iml" filepath="$PROJECT_DIR$/org.adempiere.report.jasper/org.adempiere.report.jasper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.adempiere.report.jasper.library/org.adempiere.report.jasper.library.iml" filepath="$PROJECT_DIR$/org.adempiere.report.jasper.library/org.adempiere.report.jasper.library.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.server/org.adempiere.server.iml" filepath="$PROJECT_DIR$/org.adempiere.server/org.adempiere.server.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.ui/org.adempiere.ui.iml" filepath="$PROJECT_DIR$/org.adempiere.ui/org.adempiere.ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/org.adempiere.ui.zk/org.adempiere.ui.zk.iml" filepath="$PROJECT_DIR$/org.adempiere.ui.zk/org.adempiere.ui.zk.iml" />
