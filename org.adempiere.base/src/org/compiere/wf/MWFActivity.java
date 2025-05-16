@@ -1416,21 +1416,21 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		else if (MWFNode.ACTION_UserTask.equals(action))
 		{
 			//when state is Not Started, We should assign task to User by finding responsible
-			//
-			if (getPO(trx) instanceof DocAction)
-			{
+
 				//Assign if task not started
 				if(StateEngine.STATE_NotStarted.equals(m_state.getState()))
 				{
-					DocAction doc = (DocAction) m_po;
 					setWFState(StateEngine.STATE_Running);
 
 					if (isInvoker())
 					{
 						// Set Assignee
 						int startAD_User_ID = Env.getAD_User_ID(getCtx());
-						if (startAD_User_ID == 0)
+                        if (startAD_User_ID == 0 && getPO(trx) instanceof DocAction)
+                        {
+                            DocAction doc = (DocAction) m_po;
 							startAD_User_ID = doc.getDoc_User_ID();
+                        }
 						setAD_User_ID(startAD_User_ID);
 					}
 					else // fixed Approver
@@ -1526,7 +1526,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 						}
 				
 				}
-			}
 			}
 			return false;	//	wait for user
 		}
