@@ -3856,7 +3856,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 			if (ps != null && ps.equals("Y"))
 			{
-				ADForm form = ADForm.openForm(MSysConfig.getIntValue(MSysConfig.ACCOUNT_INFO_FORM_ID, SystemIDs.FORM_ACCOUNT_INFO), 
+				ADForm form = ADForm.openForm(SystemIDs.FORM_ACCOUNT_INFO, 
 						"AD_Table_ID=" + tableId + "\nRecord_ID=" + recordId);
 				AEnv.showWindow(form);
 			}
