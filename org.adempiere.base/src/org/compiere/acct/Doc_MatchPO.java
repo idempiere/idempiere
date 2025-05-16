@@ -489,6 +489,10 @@ public class Doc_MatchPO extends Doc
 					cr.setC_UOM_ID(m_oLine.getC_UOM_ID());
 					cr.setUser1_ID(m_oLine.getUser1_ID());
 					cr.setUser2_ID(m_oLine.getUser2_ID());
+					cr.setC_Charge_ID(m_oLine.getC_Charge_ID());
+					cr.setC_CostCenter_ID(m_oLine.getC_CostCenter_ID());
+					cr.setC_Department_ID(m_oLine.getC_Department_ID());
+					cr.setM_AttributeSetInstance_ID(m_oLine.getM_AttributeSetInstance_ID());
 					acct_cr = cr.getAccount(); // PPV Offset
 				}
 	
@@ -509,6 +513,10 @@ public class Doc_MatchPO extends Doc
 					dr.setC_UOM_ID(m_oLine.getC_UOM_ID());
 					dr.setUser1_ID(m_oLine.getUser1_ID());
 					dr.setUser2_ID(m_oLine.getUser2_ID());
+					dr.setC_Charge_ID(m_oLine.getC_Charge_ID());
+					dr.setC_CostCenter_ID(m_oLine.getC_CostCenter_ID());
+					dr.setC_Department_ID(m_oLine.getC_Department_ID());
+					dr.setM_AttributeSetInstance_ID(m_oLine.getM_AttributeSetInstance_ID());
 					acct_db =  dr.getAccount(); // PPV
 				}
 				

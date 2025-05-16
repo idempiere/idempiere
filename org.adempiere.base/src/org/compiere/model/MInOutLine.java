@@ -257,6 +257,8 @@ public class MInOutLine extends X_M_InOutLine
 		setAD_OrgTrx_ID(oLine.getAD_OrgTrx_ID());
 		setUser1_ID(oLine.getUser1_ID());
 		setUser2_ID(oLine.getUser2_ID());
+		setC_CostCenter_ID(oLine.getC_CostCenter_ID());
+		setC_Department_ID(oLine.getC_Department_ID());
 	}	//	setOrderLine
 
 	/**
@@ -299,6 +301,8 @@ public class MInOutLine extends X_M_InOutLine
 		setAD_OrgTrx_ID(iLine.getAD_OrgTrx_ID());
 		setUser1_ID(iLine.getUser1_ID());
 		setUser2_ID(iLine.getUser2_ID());
+		setC_CostCenter_ID(iLine.getC_CostCenter_ID());
+		setC_Department_ID(iLine.getC_Department_ID());
 	}	//	setInvoiceLine
 
 	/**

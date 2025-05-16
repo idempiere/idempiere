@@ -909,7 +909,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			//  Additional Elements
 
 			if (!ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Organization)
-				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Account))
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Account)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField1)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField2)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField3)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField4))
 			{
 				labels[selectionIndex].setValue(Msg.translate(Env.getCtx(), displayColumnName));
 				labels[selectionIndex].setVisible(true);
@@ -1290,8 +1294,18 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
 			whereClause = "";
 		}
-		else if (keyColumn.equals("M_Product_ID"))
+		else if (keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Employee_ID))
 		{
+			lookupColumn = "C_BPartner_ID";
+			whereClause = "C_BPartner.IsEmployee='Y'";
+		}
+		// 
+		else if (keyColumn.equals("M_Product_ID") || keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_CostCenter_ID)
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Department_ID)
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_M_AttributeSetInstance_ID) 
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_M_Warehouse_ID)
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_A_Asset_ID) 
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Charge_ID)) {
 			whereClause = "";
 		}
 		else if (selDocument.isChecked())
