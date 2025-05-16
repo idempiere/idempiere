@@ -454,13 +454,24 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	@Override
 	public String getAttributeName ()
 	{
-		if (getAD_Column_ID() == 0)
+		String colName = null;
+		String action = getAction();
+		
+		if (getAD_Column_ID() == 0 || (ACTION_UserChoice.equals(action) && getApprovalColumn_ID() == 0))
 			return super.getAttributeName();
+
+		//for backward compitability we assume that isApproved column may configured
+		if (ACTION_UserChoice.equals(action) && getApprovalColumn_ID() >0)
+			colName = getApprovalColumn().getColumnName();
+		else
+			colName = getColumn().getColumnName();
+		
 		//	We have a column
 		String attribute = super.getAttributeName();
 		if (attribute != null && attribute.length() > 0)
 			return attribute;
-		setAttributeName(getColumn().getColumnName());
+		
+		setAttributeName(colName);
 		return super.getAttributeName ();
 	}	//	getAttributeName
 		
@@ -490,8 +501,8 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	{
 		if (!ACTION_UserChoice.equals(getAction()))
 			return false;
-		return getColumn() != null 
-			&& "IsApproved".equals(getColumn().getColumnName());
+		return getApprovalColumn() != null || (getColumn() != null 
+			&& "IsApproved".equals(getColumn().getColumnName()));
 	}	//	isApproval
 
 	/**
@@ -502,6 +513,15 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	{
 		return ACTION_UserChoice.equals(getAction());
 	}	//	isUserChoice
+
+	/**
+	 * 	Is this a User Task step?
+	 *	@return true if User Task
+	 */
+	public boolean isUserTask()
+	{
+		return ACTION_UserTask.equals(getAction());
+	}	//	isUserTask
 	
 	/**
 	 * 	Is this a Manual user step?
@@ -709,9 +729,9 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		}
 		else if (action.equals(ACTION_UserChoice)) 
 		{
-			if (getAD_Column_ID() == 0)
+			if (getAD_Column_ID() == 0 && getApprovalColumn_ID() == 0)
 			{
-				log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Column_ID"));
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), "ApprovalColumn_ID"));
 				return false;
 			}
 		}

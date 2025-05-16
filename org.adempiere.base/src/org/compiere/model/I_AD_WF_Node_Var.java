@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for AD_WF_Responsible
+/** Generated Interface for AD_WF_Node_Var
  *  @author iDempiere (generated) 
  *  @version Release 13
  */
-public interface I_AD_WF_Responsible 
+public interface I_AD_WF_Node_Var 
 {
 
-    /** TableName=AD_WF_Responsible */
-    public static final String Table_Name = "AD_WF_Responsible";
+    /** TableName=AD_WF_Node_Var */
+    public static final String Table_Name = "AD_WF_Node_Var";
 
-    /** AD_Table_ID=646 */
-    public static final int Table_ID = 646;
+    /** AD_Table_ID=200430 */
+    public static final int Table_ID = 200430;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -49,6 +49,21 @@ public interface I_AD_WF_Responsible
 	  */
 	public int getAD_Client_ID();
 
+    /** Column name AD_Column_ID */
+    public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
+
+	/** Set Column.
+	  * Column in the table
+	  */
+	public void setAD_Column_ID (int AD_Column_ID);
+
+	/** Get Column.
+	  * Column in the table
+	  */
+	public int getAD_Column_ID();
+
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -62,57 +77,51 @@ public interface I_AD_WF_Responsible
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Role_ID */
-    public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
+    /** Column name AD_WF_Node_ID */
+    public static final String COLUMNNAME_AD_WF_Node_ID = "AD_WF_Node_ID";
 
-	/** Set Role.
-	  * Responsibility Role
+	/** Set Node.
+	  * Workflow Node (activity), step or process
 	  */
-	public void setAD_Role_ID (int AD_Role_ID);
+	public void setAD_WF_Node_ID (int AD_WF_Node_ID);
 
-	/** Get Role.
-	  * Responsibility Role
+	/** Get Node.
+	  * Workflow Node (activity), step or process
 	  */
-	public int getAD_Role_ID();
+	public int getAD_WF_Node_ID();
 
-	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
+	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+    /** Column name AD_WF_Node_Var_ID */
+    public static final String COLUMNNAME_AD_WF_Node_Var_ID = "AD_WF_Node_Var_ID";
 
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
+	/** Set Workflow Node Set Variable	  */
+	public void setAD_WF_Node_Var_ID (int AD_WF_Node_Var_ID);
+
+	/** Get Workflow Node Set Variable	  */
+	public int getAD_WF_Node_Var_ID();
+
+    /** Column name AD_WF_Node_Var_UU */
+    public static final String COLUMNNAME_AD_WF_Node_Var_UU = "AD_WF_Node_Var_UU";
+
+	/** Set AD_WF_Node_Var_UU	  */
+	public void setAD_WF_Node_Var_UU (String AD_WF_Node_Var_UU);
+
+	/** Get AD_WF_Node_Var_UU	  */
+	public String getAD_WF_Node_Var_UU();
+
+    /** Column name AttributeValue */
+    public static final String COLUMNNAME_AttributeValue = "AttributeValue";
+
+	/** Set Attribute Value.
+	  * Value of the Attribute
 	  */
-	public void setAD_User_ID (int AD_User_ID);
+	public void setAttributeValue (String AttributeValue);
 
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
+	/** Get Attribute Value.
+	  * Value of the Attribute
 	  */
-	public int getAD_User_ID();
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
-
-    /** Column name AD_WF_Responsible_ID */
-    public static final String COLUMNNAME_AD_WF_Responsible_ID = "AD_WF_Responsible_ID";
-
-	/** Set Workflow Responsible.
-	  * Responsible for Workflow Execution
-	  */
-	public void setAD_WF_Responsible_ID (int AD_WF_Responsible_ID);
-
-	/** Get Workflow Responsible.
-	  * Responsible for Workflow Execution
-	  */
-	public int getAD_WF_Responsible_ID();
-
-    /** Column name AD_WF_Responsible_UU */
-    public static final String COLUMNNAME_AD_WF_Responsible_UU = "AD_WF_Responsible_UU";
-
-	/** Set AD_WF_Responsible_UU	  */
-	public void setAD_WF_Responsible_UU (String AD_WF_Responsible_UU);
-
-	/** Get AD_WF_Responsible_UU	  */
-	public String getAD_WF_Responsible_UU();
+	public String getAttributeValue();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -170,43 +179,6 @@ public interface I_AD_WF_Responsible
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
-
-    /** Column name Override_ID */
-    public static final String COLUMNNAME_Override_ID = "Override_ID";
-
-	/** Set Overridden WF Responsible	  */
-	public void setOverride_ID (int Override_ID);
-
-	/** Get Overridden WF Responsible	  */
-	public int getOverride_ID();
-
-	public org.compiere.model.I_AD_WF_Responsible getOverride() throws RuntimeException;
-
-    /** Column name ResponsibleType */
-    public static final String COLUMNNAME_ResponsibleType = "ResponsibleType";
-
-	/** Set Responsible Type.
-	  * Type of the Responsibility for a workflow
-	  */
-	public void setResponsibleType (String ResponsibleType);
-
-	/** Get Responsible Type.
-	  * Type of the Responsibility for a workflow
-	  */
-	public String getResponsibleType();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
