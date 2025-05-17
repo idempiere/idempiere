@@ -227,6 +227,9 @@ public class PoFiller{
 							foreignTable = MTable.get(Env.getCtx(), tableID, po.get_TrxName());
 							refTableName = foreignTable.getTableName();
 						}
+					} else if (   po.get_TableName().startsWith("AD_TreeNode")
+							   && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName))) {
+						refTableName = e.attributes.getValue("reference-key");
 					}
 				}
 				if (id instanceof Number && ((Number)id).intValue() == 0) {
