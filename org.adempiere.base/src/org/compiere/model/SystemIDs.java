@@ -58,6 +58,7 @@ public class SystemIDs
 	public final static int ENTITYTYPE_ADEMPIERE = 20;
 	public final static int ENTITYTYPE_DICTIONARY = 10;
 
+	public final static int FORM_ACCOUNT_INFO = 200020;
 	public final static int FORM_PAYMENT_PRINT_EXPORT = 106;
 	public final static int FORM_ARCHIVEVIEWER = 118;
 	public final static int FORM_REPORT_WIZARD = 200002;
