@@ -194,8 +194,12 @@ public class PoExporter {
 	}
 
 	public void addTableReference(String columnName, String tableName, int id, AttributesImpl atts) {
-		String value = ReferenceUtils.getTableReference(tableName, id, atts, po.get_TrxName());
-		addString(columnName, value, atts);
+		if (id == 0 && ("Node_ID".equals(columnName) || "Parent_ID".equals(columnName))) {
+			addString(columnName, "0", atts);
+		} else {
+			String value = ReferenceUtils.getTableReference(tableName, id, atts, po.get_TrxName());
+			addString(columnName, value, atts);
+		}
 	}
 
 	public void addTableReferenceUUID(String columnName, String tableName, String uuid, AttributesImpl atts) {
