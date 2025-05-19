@@ -4,7 +4,7 @@ echo ... Setup iDempiere Server
 # $Header: /cvsroot/adempiere/install/Adempiere/RUN_setup.sh,v 1.19 2005/09/08 21:54:12 jjanke Exp $
 
 if [ "$JAVA_HOME" ]; then
-  JAVA=$JAVA_HOME/bin/java
+  JAVA="$JAVA_HOME/bin/java"
 else
   JAVA=java
   echo JAVA_HOME is not set.

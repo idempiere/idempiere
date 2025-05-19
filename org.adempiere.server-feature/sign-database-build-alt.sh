@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 if [ "$JAVA_HOME" ]; then
-  JAVA=$JAVA_HOME/bin/java
+  JAVA="$JAVA_HOME/bin/java"
 else
   JAVA=java
   echo JAVA_HOME is not set.

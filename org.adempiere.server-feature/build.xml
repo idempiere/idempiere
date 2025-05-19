@@ -34,9 +34,7 @@
 
 
 		<!-- Environment variables -->
-		<condition property="isWindows">
-			<os family="windows" />
-		</condition>
+		<available file="utils/myEnvironmentTemplate.bat" property="isWindows"/>
 		<echo message="Windows=${isWindows}" />
 
 		<copy file="jettyhome/etc/jetty-template.xml"
