@@ -46,7 +46,7 @@ public abstract class BaseEventHandler implements EventHandler {
 	/** event topic:method */
 	protected final Map<String, Method> eventTopicMap = new HashMap<String, Method>();
 	private String filter;
-	private Class<? extends EventDelegate> delegateClass;
+	protected Class<? extends EventDelegate> delegateClass;
 
 	/**
 	 * @param delegateClass
