@@ -38,6 +38,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.form.SetupWizard;
@@ -387,28 +388,28 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		mainLayout.setStyle("position: absolute");
 
 		if (ThemeManager.isUseFontIconForImage())
-			bRefresh.setIconSclass("z-icon-Refresh");
+			bRefresh.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		bRefresh.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bOK.setIconSclass("z-icon-Ok");
+			bOK.setIconSclass(Icon.getIconSclass(Icon.OK));
 		else
 			bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 		bOK.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Update"));
 		bOK.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bNext.setIconSclass("z-icon-Next");
+			bNext.setIconSclass(Icon.getIconSclass(Icon.NEXT));
 		else
 			bNext.setImage(ThemeManager.getThemeResource("images/Next16.png"));
 		bNext.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Next"));
 		bNext.addEventListener(Events.ON_CLICK, this);
 		
 		if (ThemeManager.isUseFontIconForImage())
-			bZoom.setIconSclass("z-icon-Zoom");
+			bZoom.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
 		else
 			bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		bZoom.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "Zoom"));

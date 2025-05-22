@@ -442,6 +442,7 @@
     <orderEntry type="module" module-name="org.adempiere.base.process" />
     <orderEntry type="module" module-name="org.adempiere.plugin.utils" />
     <orderEntry type="module" module-name="org.adempiere.report.jasper" />
+    <orderEntry type="module" module-name="org.adempiere.report.jasper.library" />
     <orderEntry type="module" module-name="org.adempiere.server" />
     <orderEntry type="module" module-name="org.adempiere.ui" />
     <orderEntry type="module" module-name="org.adempiere.ui.zk" />

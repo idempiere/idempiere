@@ -195,7 +195,7 @@ public class DefaultEvaluatee implements Evaluatee {
 						m_onlyTab != null ? m_onlyTab.booleanValue() : false);
 				value = Env.getContext(Env.getCtx(), m_windowNo, m_tabNo, keycolumnName, m_onlyTab != null ? m_onlyTab.booleanValue() : false);
 			}
-			else if (m_tabNo <= 0)
+			else if (m_tabNo < 0)
 			{
 				if (!tabOnly)
 					value = Env.getContext (ctx, m_windowNo, variableName, m_onlyWindow);

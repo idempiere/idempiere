@@ -33,6 +33,7 @@ import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.graph.WDocumentStatusPanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZkContextRunnable;
 import org.compiere.Adempiere;
@@ -84,7 +85,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 		if (ThemeManager.isUseFontIconForImage())
 		{
 			ToolBarButton btn = new ToolBarButton();
-			btn.setIconSclass("z-icon-Refresh");
+			btn.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 			btn.setSclass("trash-toolbarbutton");
 			documentStatusToolbar.appendChild(btn);
 			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
