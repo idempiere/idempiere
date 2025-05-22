@@ -114,9 +114,6 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (cd == null)
 			return null;
 		
-		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-			return null;
-		
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT c.* ");
 		sql.append("FROM M_CostHistory c ");
@@ -199,9 +196,6 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 			String trxName)
 	{
 		if (dateAcct == null)
-			return null;
-		
-		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 			return null;
 		
 		StringBuilder sql = new StringBuilder();

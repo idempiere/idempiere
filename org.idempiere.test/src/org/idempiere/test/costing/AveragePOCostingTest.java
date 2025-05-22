@@ -1127,7 +1127,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	@ResourceLock(value = MConversionRate.Table_Name)
-	public void testMultipleMR() {
+	public void testReverseCorrectMultipleMR() {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
@@ -1142,7 +1142,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		Timestamp date2 = new Timestamp(cal.getTimeInMillis()); 
 		Timestamp date3 = currentDate;
 		
-		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		MCurrency thb = MCurrency.get(206); // THB
@@ -1185,7 +1185,6 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			product1 = new MProduct(Env.getCtx(), 0, null);
 			product1.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id);
 			product1.setName("testMultipleMR1");
-			product1.setValue("testMultipleMR1");
 			product1.setProductType(MProduct.PRODUCTTYPE_Item);
 			product1.setIsStocked(true);
 			product1.setIsSold(true);
@@ -1201,7 +1200,6 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			product2 = new MProduct(Env.getCtx(), 0, null);
 			product2.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id);
 			product2.setName("testMultipleMR2");
-			product2.setValue("testMultipleMR2");
 			product2.setProductType(MProduct.PRODUCTTYPE_Item);
 			product2.setIsStocked(true);
 			product2.setIsSold(true);
@@ -1314,6 +1312,19 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				} 
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
+				
+				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				boolean found = false;
+				for (MFactAcct factAcct : factAccts) {
+					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+						found = true;
+						break;
+					}
+				}
+				assertTrue(found);
 			}
 			
 			product1.set_TrxName(getTrxName());
@@ -1348,6 +1359,19 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				} 
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
+				
+				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				boolean found = false;
+				for (MFactAcct factAcct : factAccts) {
+					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+						found = true;
+						break;
+					}
+				}
+				assertTrue(found);
 			}
 			
 			product1.set_TrxName(getTrxName());
@@ -1459,6 +1483,19 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
+				
+				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				boolean found = false;
+				for (MFactAcct factAcct : factAccts) {
+					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+						found = true;
+						break;
+					}
+				}
+				assertTrue(found);
 			} 
 			
 			product1.set_TrxName(getTrxName());
@@ -1493,6 +1530,19 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
+				
+				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				boolean found = false;
+				for (MFactAcct factAcct : factAccts) {
+					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+						found = true;
+						break;
+					}
+				}
+				assertTrue(found);
 			}
 			
 			product1.set_TrxName(getTrxName());
