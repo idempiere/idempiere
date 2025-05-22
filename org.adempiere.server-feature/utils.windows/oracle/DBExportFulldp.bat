@@ -6,17 +6,20 @@
 
 @if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
-@if (%ADEMPIERE_DB_SERVER%) == () goto environment
-@if (%ADEMPIERE_DB_PORT%) == () goto environment
 @Rem Must have parameter: systemAccount
 @if (%1) == () goto usage
 
 @echo -------------------------------------
 @echo Re-Create DataPump Directory
 @echo -------------------------------------
-@sqlplus -S %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data
+@if (%ADEMPIERE_DB_SERVER%) == () (
+    @set DB_CONNECTION=%ADEMPIERE_DB_NAME%
+) else (
+    @set DB_CONNECTION=%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME%
+)
+sqlplus -S %1@%DB_CONNECTION% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %DATA_ENDPOINT% %IDEMPIERE_HOME%\data
 
-@expdp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDatFull_%Date%.dmp LOGFILE=ExpDatFull_%Date%.log EXCLUDE=STATISTICS FULL=Y
+expdp %1@%DB_CONNECTION% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=%DATA_ENDPOINT%ExpDatFull_%Date%.dmp LOGFILE=%DATA_ENDPOINT%ExpDatFull_%Date%.log EXCLUDE=STATISTICS FULL=Y CREDENTIAL=NULL
 
 @cd %IDEMPIERE_HOME%\data
 @jar cvfM data\ExpDatFull.jar ExpDatFull_%Date%.dmp  ExpDatFull_%Date%.log

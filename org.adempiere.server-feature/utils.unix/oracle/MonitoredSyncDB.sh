@@ -39,13 +39,11 @@ if [ $# -eq 0 ]
     echo "Example: $0 adempiere adempiere"
     exit 1
 fi
-if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ] || [ "$ADEMPIERE_DB_SERVER" = "" ] || [ "$ADEMPIERE_DB_PORT" = "" ]
+if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ]
   then
     echo "Please make sure that the environment variables are set correctly:"
     echo "  IDEMPIERE_HOME e.g. /idempiere"
     echo "  ADEMPIERE_DB_NAME e.g. adempiere or xe"
-    echo "  ADEMPIERE_DB_SERVER e.g. dbserver.adempiere.org"
-    echo "  ADEMPIERE_DB_PORT e.g. 5432 or 1521"
     exit 1
 fi
 
@@ -53,9 +51,15 @@ TMPFOLDER=/tmp
 ADEMPIERE_DB_USER=$1
 ADEMPIERE_DB_PASSWORD=$2
 ADEMPIERE_DB_PATH=$3
+if [ "$ADEMPIERE_DB_SERVER" = "" ]
+  then
+    DB_CONNECTION="$ADEMPIERE_DB_NAME"
+  else
+    DB_CONNECTION="$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME"
+fi
 # NOTE: remove the -S on CMD if you want more verbose output on sqlplus
-CMD="sqlplus -S $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME"
-SILENTCMD="sqlplus -S $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME"
+CMD="sqlplus -S $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$DB_CONNECTION"
+SILENTCMD="sqlplus -S $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$DB_CONNECTION"
 ERROR_STRINGS="\b(ORA-[0-9]+:|TNS-|PLS-|SP2-)"
 DIR_POST=$IDEMPIERE_HOME/migration
 if [ "x$4" = "x" ]

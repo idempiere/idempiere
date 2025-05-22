@@ -17,4 +17,7 @@ read -r _
 
 # Parameter: <systemAccount> <adempiereID> <adempierePwd>
 # globalqss - cruiz - 2007-10-09 - added fourth parameter for postgres(ignored in oracle)
-"$ADEMPIERE_DB_PATH"/DBRestoredp.sh system/"$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM"
+if [ -z "$ADEMPIERE_DB_SYSTEM_USER" ]; then
+    ADEMPIERE_DB_SYSTEM_USER=SYSTEM
+fi
+"$ADEMPIERE_DB_PATH"/DBRestoredp.sh "$ADEMPIERE_DB_SYSTEM_USER"/"$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM"
