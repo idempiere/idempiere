@@ -739,7 +739,7 @@ public class Doc_MatchInv extends Doc
 				if (cd != null)
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			}		
-			// Set Total Amount and Total Quantity from Matched Invoice //TODO DateAcct
+			// Set Total Amount and Total Quantity from Matched Invoice
 			if (!MCostDetail.createInvoice(as, getAD_Org_ID(), 
 					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 					m_invoiceLine.getC_InvoiceLine_ID(), 0,		//	No cost element
