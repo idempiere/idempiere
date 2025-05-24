@@ -219,18 +219,12 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
 	        // Validate VFormat with regular expression
 			if (!Util.isEmpty(vFormat)) {
-				if (vFormat.startsWith("~")) {
-					String regex = gridField.getVFormat().substring(1); // remove the initial ~
-					if (!newValue.matches(regex)) {
-						String msgregex = Msg.getMsg(Env.getCtx(), regex);
-						throw new WrongValueException(component,
-								Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] { msgregex }));
-					}
-				} else {
-					String regex = vFormatToRegex(vFormat);
-					if (!newValue.matches(regex)) {
-						newValue = null;
-					}
+				String regex = vFormatToRegex(vFormat);
+				if (!newValue.matches(regex)) {
+					String msgregex = Msg.getMsg(Env.getCtx(), regex);
+					newValue = oldValue;
+					getComponent().setValue(newValue);
+					throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
 				}
 			}
 
@@ -389,7 +383,14 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 		return null;
 	}
 	
+	/**
+	 * Convert vFormat to regular expression, see jquery.maskedinput.js
+	 * @param vFormat
+	 * @return
+	 */
 	private String vFormatToRegex(String vFormat) {
+		if (vFormat.startsWith("~"))
+			return gridField.getVFormat().substring(1); // remove the initial ~
 		StringBuilder regex = new StringBuilder();
 		for (char c : vFormat.toCharArray()) {
 			switch (c) {
