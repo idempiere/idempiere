@@ -504,7 +504,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		sql.append("WHERE M_Product_ID IN (SELECT M_Product_ID FROM C_ProjectIssue WHERE C_ProjectIssue_ID=?) ");
 		sql.append("AND Processed='Y' ");
 		sql.append(reversalDate != null ? "AND DateAcct>=? " : "AND DateAcct>? ");
-		int no = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ID(), get_ID(), dateAcct);
+		int no = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ID(), dateAcct);
 		if (no <= 0)
 			return true;
 		

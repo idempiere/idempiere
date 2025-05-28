@@ -114,9 +114,6 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (cd == null)
 			return null;
 		
-		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-			return null;
-		
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT c.* ");
 		sql.append("FROM M_CostHistory c ");
@@ -201,9 +198,6 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (dateAcct == null)
 			return null;
 		
-		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-			return null;
-		
 		StringBuilder sql = new StringBuilder();
 		sql.append("(");
 		
@@ -220,9 +214,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (M_CostElement_ID > 0)
 			sql.append(" AND c.M_CostElement_ID=? ");
 		sql.append(" AND c.DateAcct<=? ");
-		sql.append("ORDER BY c.DateAcct DESC, ");
-		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END DESC, ");
-		sql.append("c.M_CostHistory_ID DESC ");
+		sql.append("ORDER BY c.M_CostHistory_ID DESC ");
 		sql = new StringBuilder(DB.getDatabase().addPagingSQL(sql.toString(), 1, 1));
 		
 		sql.append(") UNION ALL (");

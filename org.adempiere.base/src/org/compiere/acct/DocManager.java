@@ -697,6 +697,11 @@ public class DocManager {
 				if (tableID == MInvoice.Table_ID) {
 					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
 					for (MMatchInv mi : miList) {
+						if (AD_Table_ID == MMatchInv.Table_ID)
+							if (mi.get_ID() != Record_ID && mi.getReversal_ID() != Record_ID)
+								continue;
+						if (mi.getDateAcct().compareTo(cd.getDateAcct()) < 0)
+							continue;
 						repostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
 						if (repostedRecordIds.contains(repostedRecordId))
 							continue;
