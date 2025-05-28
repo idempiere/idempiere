@@ -4333,6 +4333,99 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	}
 	
 	/**
+	 * Back-Date shipment to the date before MRs. Stock as of that account date was zero.
+	 * Shipment should not be completed.
+	 * MR1
+	 * MR2
+	 * SH (Back-Date)
+	 */
+	@Test
+	public void testBackDateShipmentBeforeMultipleMR() {
+		MProduct product = null;
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), getTrxName()); 
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		try {
+			configureAcctSchema(as);
+			product = createProduct("testBackDateShipmentBeforeMultipleMR", new BigDecimal(5));
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate2, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetail(cd, receiptLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// MR2
+			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(10), new BigDecimal(7));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetail(cd, receiptLine2.getParent().getDateAcct(), false, new BigDecimal("6.00"));
+			
+			// SH (Back-Date)
+			Timestamp acctDate = backDate1;
+			int productId = product.getM_Product_ID();
+			BigDecimal qty = new BigDecimal(6);
+			BigDecimal price = new BigDecimal(6);
+
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			order.setIsSOTrx(true);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.setDateAcct(acctDate);
+			order.setDateOrdered(acctDate);
+			order.setDatePromised(acctDate);		
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(new MProduct(Env.getCtx(), productId, getTrxName()));
+			orderLine.setQty(qty);
+			orderLine.setDatePromised(acctDate);
+			if (price != null)
+				orderLine.setPrice(price);
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());		
+			
+			MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setOrderLine(orderLine, 0, qty);
+			shipmentLine.setQty(qty);
+			shipmentLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertTrue(info.isError(), info.getSummary());
+		} finally { 
+			rollback();
+			as.load(getTrxName());
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+		}
+	}
+	
+	/**
 	 * PO1, Product1, Qty=100, Price=100; Product2, Qty=100, Price=185 (Period 1)
 	 * PI1, Product1, Qty=100, Price=100; Product2, Qty=100, Price=185 (Period 1)
 	 * MR1, Product1, Qty=85, Price=100; Product2, Qty=100, Price=185 (Period 2) - Reverse-Correct
