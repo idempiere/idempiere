@@ -69,6 +69,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("C_Project_ID", Integer.valueOf(order.getC_Project_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(order.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(order.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(order.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(order.getC_Department_ID()));
 			mTab.setValue("M_Warehouse_ID", Integer.valueOf(order.getM_Warehouse_ID()));
 			//
 			mTab.setValue("DeliveryRule", order.getDeliveryRule());
@@ -144,6 +146,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("C_Project_ID", Integer.valueOf(originalReceipt.getC_Project_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(originalReceipt.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(originalReceipt.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(originalReceipt.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(originalReceipt.getC_Department_ID()));
 			mTab.setValue("M_Warehouse_ID", Integer.valueOf(originalReceipt.getM_Warehouse_ID()));
 			//
 			mTab.setValue("DeliveryRule", originalReceipt.getDeliveryRule());
@@ -444,6 +448,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(ol.getAD_OrgTrx_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(ol.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(ol.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(ol.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(ol.getC_Department_ID()));
 		}
 		return "";
 	}	//	orderLine
@@ -492,6 +498,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(rl.getAD_OrgTrx_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(rl.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(rl.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(rl.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(rl.getC_Department_ID()));  
 		}
 		return "";
 	}	//	rmaLine
