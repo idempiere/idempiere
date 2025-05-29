@@ -53,6 +53,8 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserRoles;
 import org.compiere.model.MWFActivityApprover;
+import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Activity;
@@ -1718,6 +1720,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if (!ok)
 			return false;
 
+		// Doc Validation
+		String errorMsg = ModelValidationEngine.get().fireDocValidate(this,
+				ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION);
+		if (errorMsg != null)
+		{
+			throw new AdempiereException(errorMsg);
+		}
+		
 		String newState = StateEngine.STATE_Completed;
 		//	Approval
 		if (getNode().isUserApproval() && getPO(trx) instanceof DocAction)
@@ -2394,7 +2404,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if(node.getAD_Column_ID()>0)
 			setVariable(value, displayType, textMsg, trx);
 		
-		setWFState(StateEngine.STATE_Completed);
+		String errorMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION);
+		if (errorMsg != null)
+		{
+			throw new AdempiereException(errorMsg);
+		}
+		else
+			setWFState(StateEngine.STATE_Completed);
 		return true;
 			
 	}

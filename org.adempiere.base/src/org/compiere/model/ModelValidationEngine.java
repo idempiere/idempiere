@@ -44,6 +44,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
+import org.compiere.wf.MWFActivity;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.launch.Framework;
@@ -557,6 +558,9 @@ public class ModelValidationEngine
 			return null;
 
 		String propertyName = po.get_TableName() + "*";
+		if(docTiming == ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION)
+			propertyName = ((MWFActivity)po).getPO().get_TableName() + "*";
+		
 		ArrayList<ModelValidator> list = m_docValidateListeners.get(propertyName);
 		if (list != null)
 		{
@@ -567,6 +571,8 @@ public class ModelValidationEngine
 		}
 
 		propertyName = po.get_TableName() + po.getAD_Client_ID();
+		if(docTiming == ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION)
+			propertyName = ((MWFActivity)po).getPO().get_TableName() + po.getAD_Client_ID();
 		list = m_docValidateListeners.get(propertyName);
 		if (list != null)
 		{
@@ -577,41 +583,48 @@ public class ModelValidationEngine
 		}
 
 		// now process the script model validator for this event
-		List<MTableScriptValidator> scriptValidators =
-			MTableScriptValidator.getModelValidatorRules(
-					po.getCtx(),
-					po.get_Table_ID(),
-					ModelValidator.documentEventValidators[docTiming]);
-		if (scriptValidators != null) {
-			for (MTableScriptValidator scriptValidator : scriptValidators) {
-				MRule rule = MRule.get(po.getCtx(), scriptValidator.getAD_Rule_ID());
-				// currently just JSR 223 supported
-				if (   rule != null
-					&& rule.isActive()
-					&& rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs)
-					&& rule.getEventType().equals(MRule.EVENTTYPE_ModelValidatorDocumentEvent)) {
-					String error;
-					try {
-						ScriptEngine engine = rule.getScriptEngine();
-						if (engine == null) {
-							throw new AdempiereException("Engine not found: " + rule.getEngineName());
+		if(docTiming != ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION)
+		{
+			List<MTableScriptValidator> scriptValidators = MTableScriptValidator.getModelValidatorRules(po.getCtx(),
+					po.get_Table_ID(), ModelValidator.documentEventValidators[docTiming]);
+			if (scriptValidators != null)
+			{
+				for (MTableScriptValidator scriptValidator : scriptValidators)
+				{
+					MRule rule = MRule.get(po.getCtx(), scriptValidator.getAD_Rule_ID());
+					// currently just JSR 223 supported
+					if (rule != null && rule.isActive() && rule.getRuleType().equals(MRule.RULETYPE_JSR223ScriptingAPIs)
+							&& rule.getEventType().equals(MRule.EVENTTYPE_ModelValidatorDocumentEvent))
+					{
+						String error;
+						try
+						{
+							ScriptEngine engine = rule.getScriptEngine();
+							if (engine == null)
+							{
+								throw new AdempiereException("Engine not found: " + rule.getEngineName());
+							}
+
+							MRule.setContext(engine, po.getCtx(), 0); // no
+																		// window
+							// now add the method arguments to the engine
+							engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", po.getCtx());
+							engine.put(MRule.ARGUMENTS_PREFIX + "PO", po);
+							engine.put(MRule.ARGUMENTS_PREFIX + "Type", docTiming);
+							engine.put(MRule.ARGUMENTS_PREFIX + "Event",
+									ModelValidator.documentEventValidators[docTiming]);
+
+							Object retval = engine.eval(rule.getScript());
+							error = (retval == null ? "" : retval.toString());
 						}
-
-						MRule.setContext(engine, po.getCtx(), 0);  // no window
-						// now add the method arguments to the engine
-						engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", po.getCtx());
-						engine.put(MRule.ARGUMENTS_PREFIX + "PO", po);
-						engine.put(MRule.ARGUMENTS_PREFIX + "Type", docTiming);
-						engine.put(MRule.ARGUMENTS_PREFIX + "Event", ModelValidator.documentEventValidators[docTiming]);
-
-						Object retval = engine.eval(rule.getScript());
-						error = (retval == null ? "" : retval.toString());
-					} catch (Exception e) {
-						e.printStackTrace();
-						error = e.toString();
+						catch (Exception e)
+						{
+							e.printStackTrace();
+							error = e.toString();
+						}
+						if (error != null && error.length() > 0)
+							return error;
 					}
-					if (error != null && error.length() > 0)
-						return error;
 				}
 			}
 		}
