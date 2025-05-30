@@ -333,6 +333,23 @@ public interface I_C_DocType
 	  */
 	public boolean isActive();
 
+    /** Column name IsAlwaysPosted */
+    public static final String COLUMNNAME_IsAlwaysPosted = "IsAlwaysPosted";
+
+	/** Set Always Posted.
+	  * Posts the document if &quot;
+AlwaysPosted&quot;
+ is checked, even without a valid accounting schema.
+	  */
+	public void setIsAlwaysPosted (boolean IsAlwaysPosted);
+
+	/** Get Always Posted.
+	  * Posts the document if &quot;
+AlwaysPosted&quot;
+ is checked, even without a valid accounting schema.
+	  */
+	public boolean isAlwaysPosted();
+
     /** Column name IsAutoGenerateInout */
     public static final String COLUMNNAME_IsAutoGenerateInout = "IsAutoGenerateInout";
 
