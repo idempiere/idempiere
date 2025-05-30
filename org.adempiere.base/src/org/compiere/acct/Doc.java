@@ -449,9 +449,34 @@ public abstract class Doc
 
 	/**	Actual Document Status  */
 	protected String			p_Status = null;
-	public String getPostStatus() {
+
+	public String getPostStatus()
+	{
 		return p_Status;
 	}
+
+	/**
+	 * Document is Post if the document type is always posted or if the accounting date is within
+	 * the schema's valid range.
+	 * 
+	 * @return {@code true} if the document type is always posted or if the accounting date is
+	 *         within the
+	 *         valid range of the accounting schema; {@code false} otherwise.
+	 */
+	public boolean isPostForAcctSchema()
+	{
+		return isAlwaysPosted() || m_as.isAcctDateInRange(getDateAcct());
+	} // isPostForAcctSchema
+
+	/**
+	 * Checks if the document type is configured to always be posted.
+	 * 
+	 * @return {@code true} if the document type has the "always posted" flag enabled; {@code false} otherwise.
+	 */
+	public boolean isAlwaysPosted()
+	{
+	    return getC_DocType_ID() > 0 && MDocType.get(getC_DocType_ID()).isAlwaysPosted();
+	}// isAlwaysPosted
 
 	/** Error Message			*/
 	protected String			p_Error = null;
@@ -633,6 +658,10 @@ public abstract class Doc
 					}
 				}
 			}
+
+			if (!skip && !isPostForAcctSchema())
+				skip = true;
+
 			if (!skip)
 			{
 				//	post
