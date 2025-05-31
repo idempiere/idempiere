@@ -1289,6 +1289,38 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return qty;
 	}
 	
+	public static BigDecimal getQtyOnHandForLocatorWithASIMovementDate(int M_Product_ID, int M_Locator_ID, 
+			int M_AttributeSetInstance_ID, Timestamp MovementDate, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT NVL((")
+			.append("SELECT SUM(QtyOnHand) FROM M_StorageOnHand ")
+			.append("WHERE M_Product_ID=?")
+			.append(" AND M_Locator_ID=?")
+			.append(" AND M_AttributeSetInstance_ID=?")
+			.append("),0) - NVL((")
+			.append("SELECT SUM(MovementQty) FROM M_Transaction ")
+			.append("WHERE M_Product_ID=?")
+			.append(" AND M_Locator_ID=?")
+			.append(" AND M_AttributeSetInstance_ID=?")
+			.append(" AND MovementDate>?")
+			.append("),0) FROM DUAL");
+		
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Locator_ID);
+		params.add(M_AttributeSetInstance_ID);
+		params.add(M_Product_ID);
+		params.add(M_Locator_ID);
+		params.add(M_AttributeSetInstance_ID);
+		params.add(MovementDate);
+		
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
 	/**
 	 *	String Representation
 	 * 	@return info
