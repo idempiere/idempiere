@@ -1308,6 +1308,8 @@ public class MCostDetail extends X_M_CostDetail
 			sb.append (",M_InventoryLine_ID=").append (getM_InventoryLine_ID());
 		if (getM_ProductionLine_ID() != 0)
 			sb.append (",M_ProductionLine_ID=").append (getM_ProductionLine_ID());
+		if (getM_MatchInv_ID() != 0)
+			sb.append (",M_MatchInv_ID=").append (getM_MatchInv_ID());
 		sb.append(",Amt=").append(getAmt())
 			.append(",Qty=").append(getQty());
 		if (isDelta())
@@ -1488,7 +1490,8 @@ public class MCostDetail extends X_M_CostDetail
 			
 			if (ce.isAveragePO())
 			{
-				cost.setWeightedAverage(amt, qty);
+				if (!(qty.signum() == 0 && cost.getCurrentQty().signum() <= 0))
+					cost.setWeightedAverage(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("PO - AveragePO - " + cost);
 			}
 			else if (ce.isLastPOPrice() && !costAdjustment)
@@ -1548,8 +1551,7 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				cost.setWeightedAverage(amt, qty);
 			}
-			else if (ce.isFifo()
-				|| ce.isLifo())
+			else if ((ce.isFifo() || ce.isLifo()))
 			{
 				//	Real ASI - costing level Org
 				MCostQueue cq = MCostQueue.get(product, getM_AttributeSetInstance_ID(), 
@@ -1791,7 +1793,8 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			if (ce.isAveragePO())
 			{
-				cost.setWeightedAverage(amt, qty);
+				if (!(qty.signum() == 0 && cost.getCurrentQty().signum() <= 0))
+					cost.setWeightedAverage(amt, qty);
 			}			
 		}
 		else	//	unknown or no id
@@ -1938,6 +1941,8 @@ public class MCostDetail extends X_M_CostDetail
 				if (tableID == MInvoice.Table_ID) {
 					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
 					for (MMatchInv mi : miList) {
+						if (mi.getDateAcct().compareTo(DateAcct) < 0)
+							continue;
 						repostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
 						if (repostedRecordIds.contains(repostedRecordId))
 							continue;
