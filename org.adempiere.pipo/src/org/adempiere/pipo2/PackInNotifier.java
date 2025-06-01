@@ -175,6 +175,7 @@ public class PackInNotifier {
 		}
 
 		/* Send EMail */
+		boolean mailOK = true;
 		if (!emailList.isEmpty()) {
 			StringTokenizer st = new StringTokenizer(emailList, " ,;", false);
 			String to = st.nextToken();
@@ -201,12 +202,13 @@ public class PackInNotifier {
 				}
 				while (st.hasMoreTokens())
 					email.addTo(st.nextToken());
-				email.send();
+				String mailStatus = email.send();
+				mailOK = EMail.SENT_OK.equals(mailStatus);
 			}
 		}
 
 		/* Attach Error */
-		if (attachNotify) {
+		if (attachNotify || !mailOK) {
 			String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis()));
 			StringBuilder attachFileName = new StringBuilder();
 			if (packIn.isSuccess()) {
@@ -215,7 +217,12 @@ public class PackInNotifier {
 				attachFileName.append("error_");
 			}
 			attachFileName.append(timestamp).append(".log");
-	        StringBuilder fullContent = new StringBuilder().append(subject).append("\n").append(message);
+	        StringBuilder fullContent = new StringBuilder()
+	        		.append(subject)
+	        		.append("\n")
+	        		.append(message);
+	        if (! mailOK)
+	        	fullContent.append("Email notification failed");
 
 	        MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp_Proc.Table_ID, packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID()); 
 	        if (attachment != null) {
