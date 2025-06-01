@@ -24,7 +24,14 @@
  **********************************************************************/
 package org.idempiere.test.model;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.compiere.model.MArchive;
 import org.compiere.model.MProduct;
@@ -71,5 +78,31 @@ public class MArchiveTest extends AbstractTestCase {
 		recordCounts1 = MArchive.getReportAndDocumentCountByRecordId(MProduct.Table_ID, DictionaryIDs.M_Product.AZALEA_BUSH.id, DictionaryIDs.M_Product.AZALEA_BUSH.uuid, getTrxName());
 		assertEquals(recordCounts[0]+1, recordCounts1[0], "Unexpected archive report counts by table and record id");
 		assertEquals(recordCounts[1]+1, recordCounts1[1], "Unexpected archive document counts by table and record id");
+	}
+	
+	@Test
+	public void testInputStream() {
+		MArchive marchive = new MArchive(Env.getCtx(), 0, getTrxName());
+		marchive.setAD_Table_ID(MProduct.Table_ID);
+		marchive.setIsReport(false);
+		marchive.setName(getClass().getName());
+		marchive.setRecord_ID(DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		marchive.setRecord_UU(DictionaryIDs.M_Product.AZALEA_BUSH.uuid);
+		marchive.setInputStream(new ByteArrayInputStream(DictionaryIDs.M_Product.AZALEA_BUSH.uuid.getBytes(StandardCharsets.US_ASCII)));
+		marchive.saveEx();
+		
+		marchive = new MArchive(Env.getCtx(),marchive.getAD_Archive_ID(), getTrxName());
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (InputStream is = marchive.getInputStream()) {
+			byte[] buffer = new byte[1024];
+			int bytesRead;
+			while ((bytesRead = is.read(buffer)) != -1) {
+				baos.write(buffer, 0, bytesRead);
+			}
+		} catch (Exception e) {
+			fail("Failed to read archive binary stream: " + e.getMessage());
+		}
+		
+		assertArrayEquals(DictionaryIDs.M_Product.AZALEA_BUSH.uuid.getBytes(StandardCharsets.US_ASCII), baos.toByteArray(), "Unexpected archive binary data");
 	}
 }
