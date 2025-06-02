@@ -222,6 +222,8 @@ public class ArchiveDB implements IArchiveStore {
 						out.write(buffer, 0, length);
 					}
 					return new ByteArrayInputStream(out.toByteArray());
+				} finally {
+					blob.free();
 				}
 			}
 		} catch (SQLException e) {
@@ -238,6 +240,11 @@ public class ArchiveDB implements IArchiveStore {
 			return Files.newInputStream(tempFile);
 		} catch (SQLException e) {
 			throw new DBException("Error reading blob data", e);
+		} finally {
+			try {
+				blob.free();
+			} catch (SQLException e) {
+			}
 		}
 	}
 	
@@ -270,13 +277,7 @@ public class ArchiveDB implements IArchiveStore {
 				if (rs.next()) {
 					Blob blob = rs.getBlob(1);
 					if (blob != null) {
-						InputStream in = null;
-						if (conn != null) {
-							in = blobToLocalInputStream(blob);
-						} else {
-							in = blob.getBinaryStream();
-						}
-						return in;
+						return blobToLocalInputStream(blob);
 					}
 				}
 			}
