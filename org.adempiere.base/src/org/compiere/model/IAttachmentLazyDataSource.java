@@ -27,6 +27,8 @@
 
 package org.compiere.model;
 
+import java.io.InputStream;
+
 /**
  *	IDEMPIERE-4889 interface for lazy loading of attachment content
  * 	@author Carlos Ruiz - globalqss
@@ -40,4 +42,15 @@ public interface IAttachmentLazyDataSource {
 	 */
 	public byte[] getData();
 
+    /**
+     * Get input stream for attachment entry
+     * @return input stream
+     */
+    InputStream getInputStream();
+
+    /**
+     * Get size of attachment entry
+     * @return size
+     */
+    long getSize();
 }

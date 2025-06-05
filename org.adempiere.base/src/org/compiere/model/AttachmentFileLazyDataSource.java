@@ -27,11 +27,9 @@
 
 package org.compiere.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 
 /**
@@ -71,5 +69,19 @@ public class AttachmentFileLazyDataSource implements IAttachmentLazyDataSource {
 		}
 		return dataEntry;
 	}
+
+    @Override
+    public InputStream getInputStream() {
+        try {
+            return new FileInputStream(m_file);
+        } catch (FileNotFoundException e) {
+            throw new AdempiereException(e);
+        }
+    }
+
+    @Override
+    public long getSize() {
+        return m_file.length();
+    }
 
 }
