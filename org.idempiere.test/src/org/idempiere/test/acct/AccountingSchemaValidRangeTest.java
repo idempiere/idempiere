@@ -207,7 +207,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 
 			// Payment 4: Outside schema date range
 			factAccts = docCompleteAndPostWithFactEntries(acctSchema, bp, docType, pmt_DateOutOfRange, 777);
-			assertTrue(factAccts.size() == 0, "Posting should exist for payment outside schema date range with DocType is always post as False");
+			assertTrue(factAccts.size() == 0, "Posting should not exist for payment outside schema date range with DocType is always post as False");
 		}
 		finally
 		{
