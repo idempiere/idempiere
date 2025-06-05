@@ -297,7 +297,8 @@ public final class DictionaryIDs {
 	}
 
 	public enum C_ElementValue {
-		CHECKING_IN_TRANSFER(509);
+		CHECKING_IN_TRANSFER(509),
+		DEFAULT_ACCOUNT(697);
 		
 		public final int id;
 		
@@ -744,4 +745,25 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
+
+	public enum C_Element {
+		GardenWorld_Account(105);
+		
+		public final int id;
+
+		private C_Element(int id) {
+			this.id = id;
+		}
+	}
+
+	public enum GL_Category {
+		AR_RECEIPT(110);
+		
+		public final int id;
+
+		private GL_Category(int id) {
+			this.id = id;
+		}
+	}
+
 }
