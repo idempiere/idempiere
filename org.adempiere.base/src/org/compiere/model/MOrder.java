@@ -48,6 +48,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.ReservationUtil;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
@@ -1651,13 +1652,33 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Lines
 		if (explodeBOM())
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
-		if (!reserveStock(dt, lines))
-		{
-			String innerMsg = CLogger.retrieveErrorString("");
-			m_processMsg = "Cannot reserve Stock";
-			if (! Util.isEmpty(innerMsg))
-				m_processMsg = m_processMsg + " -> " + innerMsg;
-			return DocAction.STATUS_Invalid;
+
+		// Reserve stock if does not generate shipment on complete
+		if (!evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())) {
+			if (!reserveStock(dt, lines))
+			{
+				String innerMsg = CLogger.retrieveErrorString("");
+				m_processMsg = "Cannot reserve Stock";
+				if (! Util.isEmpty(innerMsg))
+					m_processMsg = m_processMsg + " -> " + innerMsg;
+				return DocAction.STATUS_Invalid;
+			}
+		} else {
+			for (MOrderLine line : getLines()) {
+				if (line.getQtyReserved().signum() > 0) {
+					ReservationUtil.releaseStorageReservation(
+							getCtx(), 
+							line, 
+							line.getQtyReserved().negate(), 
+							isSOTrx(), 
+							get_TrxName(), 
+							getC_DocType_ID(), 
+							getDocumentNo(), 
+							line.getLine(), 
+							line.get_Table_ID(), 
+							line.get_ID());
+				}
+			}
 		}
 		if (!calculateTaxTotal())
 		{
@@ -2171,10 +2192,7 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		//	Create SO Shipment - Force Shipment
 		MInOut shipment = null;
-		if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)		//	(W)illCall(I)nvoice
-			|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)	//	(W)illCall(P)ickup	
-			|| MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)			//	(W)alkIn(R)eceipt
-			|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInout())) 
+		if (evalAutoGenerateInOutRule(DocSubTypeSO, dt.isAutoGenerateInout())) 
 		{
 			if (!DELIVERYRULE_Force.equals(getDeliveryRule()))
 			{
@@ -2243,6 +2261,19 @@ public class MOrder extends X_C_Order implements DocAction
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
+	
+	/**
+	 * Evaluate if the order should auto generate shipment
+	 * @param docSubTypeSO the document subtype of the order
+	 * @param isAutoGenerateInout true if the document type is set to auto generate shipment
+	 * @return true if the order should auto generate shipment
+	 */
+	private boolean evalAutoGenerateInOutRule(String docSubTypeSO, boolean isAutoGenerateInout) {
+		return MDocType.DOCSUBTYPESO_OnCreditOrder.equals(docSubTypeSO)		//	(W)illCall(I)nvoice
+				|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(docSubTypeSO)	//	(W)illCall(P)ickup	
+				|| MDocType.DOCSUBTYPESO_POSOrder.equals(docSubTypeSO)			//	(W)alkIn(R)eceipt
+				|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(docSubTypeSO) && isAutoGenerateInout);
+	}
 	
 	/**
 	 * Update QtyOverReceipt of M_InOutLine
