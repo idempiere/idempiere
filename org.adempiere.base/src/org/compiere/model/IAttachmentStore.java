@@ -38,6 +38,21 @@ public interface IAttachmentStore {
      */
 	boolean save(MAttachment attach, MStorageProvider prov);
 
+    /**
+     * Save attachment content
+     * @param attach
+     * @param prov
+     * @param beforeSave true if call from beforeSave of attachment record, false if call from afterSave
+     * @return true if success, false otherwise
+     */
+    default boolean save(MAttachment attach, MStorageProvider prov, boolean beforeSave) {
+        // default to handle beforeSave only for existing behaviour before addition of the beforeSave flag
+        if (beforeSave)
+            return save(attach, prov);
+        else
+            return true;
+    }
+
 	/**
 	 * Delete stored attachment content
 	 * @param attach

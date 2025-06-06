@@ -16,15 +16,13 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 import org.compiere.util.MimeType;
 
@@ -36,7 +34,9 @@ import org.compiere.util.MimeType;
  */
 public class MAttachmentEntry
 {
-	/**
+    private File m_file;
+
+    /**
 	 * 	Attachment Entry
 	 * 	@param name name
 	 * 	@param data binary data
@@ -59,7 +59,17 @@ public class MAttachmentEntry
 	{
 		this (name, data, 0);
 	}	//	MAttachmentEntry
-	
+
+    public MAttachmentEntry(String name, File file) {
+        this(name, file, 0);
+    }
+
+    public MAttachmentEntry(String name, File file, int index) {
+        setName(name);
+        setIndex(index);
+        setFile(file);
+    }
+
 	/**
 	 * Constructor for delayed loading of content
 	 * @param name
@@ -110,7 +120,8 @@ public class MAttachmentEntry
 	/** True if the entry has been updated (sets by MAttachment.updateEntry(int, byte[]) */
 	private boolean m_isUpdated = false;
 
-	/**
+
+    /**
 	 * @return byte[] content
 	 */
 	public byte[] getData ()
@@ -127,9 +138,36 @@ public class MAttachmentEntry
 	public void setData (byte[] data)
 	{
 		m_data = data;
+        m_file = null;
 		m_isDataSet = true;
 	}
-	
+
+    /**
+     * Set the file content
+     * @param file
+     */
+    public void setFile(File file) {
+        m_file = file;
+        m_data = null;
+        m_isDataSet = true;
+    }
+
+    /**
+     * Get size of data content in bytes
+     * @return size
+     */
+    public long getSize()
+    {
+        if (m_ds != null)
+            return m_ds.getSize();
+        else if (m_file != null)
+            return m_file.length();
+        else if (m_data != null && m_data.length > 0)
+            return m_data.length;
+        else
+            return 0;
+    }
+
 	/**
 	 * @return name of entry
 	 */
@@ -247,7 +285,10 @@ public class MAttachmentEntry
 	 */
 	public File getFile ()
 	{
-		return getFile (getName());
+        if (m_file != null)
+            return m_file;
+		m_file = getFile (getName());
+        return m_file;
 	}	//	getFile
 
 	/**
@@ -259,8 +300,12 @@ public class MAttachmentEntry
 	{
 		if (fileName == null || fileName.length() == 0)
 			fileName = getName();
-		return getFile (new File(System.getProperty("java.io.tmpdir") + File.separator + fileName));
-	}	//	getFile
+        try {
+            return getFile (new File(Files.createTempDirectory("attachment_").toFile() , fileName));
+        } catch (IOException e) {
+            throw new AdempiereException(e);
+        }
+    }	//	getFile
 
 	/**
 	 * 	Get File
@@ -269,19 +314,25 @@ public class MAttachmentEntry
 	 */
 	public File getFile (File file)
 	{
-		if (getData() == null || getData().length == 0)
+		InputStream inputStream = getInputStream();
+        if (inputStream == null)
 			return null;
 		try
 		{
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(getData());
-			fos.close();
+            Files.copy(inputStream, file.toPath());
 		}
 		catch (IOException ioe)
 		{
 			log.log(Level.SEVERE, "getFile", ioe);
-			throw new RuntimeException(ioe);
+			throw new AdempiereException(ioe);
 		}
+        finally
+        {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+            }
+        }
 		return file;
 	}	//	getFile
 
@@ -320,9 +371,19 @@ public class MAttachmentEntry
 	 */
 	public InputStream getInputStream()
 	{
-		if (getData() == null)
-			return null;
-		return new ByteArrayInputStream(getData());
+        if (m_ds != null)
+            return m_ds.getInputStream();
+        else if (m_file != null) {
+            try {
+                return new FileInputStream(m_file);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else if (m_data != null && m_data.length > 0)
+            return new ByteArrayInputStream(m_data);
+        else
+            return null;
 	}	//	getInputStream
 
 	/**
