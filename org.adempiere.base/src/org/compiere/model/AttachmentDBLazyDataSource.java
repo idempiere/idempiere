@@ -43,7 +43,8 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
     private final int AD_Attachment_ID;
     private final int index;
     private final String fileName;
-    private AtomicBoolean loaded = new AtomicBoolean(false);
+    private AtomicBoolean sizeLoaded = new AtomicBoolean(false);
+    private AtomicBoolean dataLoaded = new AtomicBoolean(false);
     private File file;
     private byte[] data;
     private long size = 0;
@@ -56,8 +57,8 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
 
     @Override
     public byte[] getData() {
-        if (!loaded.get()) {
-            loadEntry();
+        if (!dataLoaded.get()) {
+            loadEntry(false);
         }
         if (file == null && data == null)
             return  null;
@@ -82,8 +83,8 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
 
     @Override
     public InputStream getInputStream() {
-        if (!loaded.get()) {
-            loadEntry();
+        if (!dataLoaded.get()) {
+            loadEntry(false);
         }
         if (file == null && data == null)
             return  null;
@@ -96,8 +97,8 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
 
     @Override
     public long getSize() {
-        if (!loaded.get()) {
-            loadEntry();
+        if (!sizeLoaded.get() && !dataLoaded.get()) {
+            loadEntry(true);
         }
         return size;
     }
@@ -108,9 +109,14 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
      * Load attachment entry content from ad_attachment_entry table
      * @return attachment entry file or null
      */
-    private void loadEntry() {
-        if (!loaded.compareAndSet(false, true))
-            return;
+    private void loadEntry(boolean getSize) {
+        if (getSize) {
+            if (!sizeLoaded.compareAndSet(false, true))
+                return;
+        } else {
+            if (!dataLoaded.compareAndSet(false, true))
+                return;
+        }
 
         Connection conn = null;
         // With Postgresql, you need to keep transaction open to access blob
@@ -137,6 +143,11 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                     Blob blob = rs.getBlob(1);
                     if (blob != null) {
                         size = blob.length();
+                        if (!getSize && !sizeLoaded.get())
+                            sizeLoaded.set(true);
+                        if (dataLoaded.get())
+                            return;
+                        // always load data if size is less than 2mb
                         if (size < (1024 * 1024 * 2)) {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             try (InputStream inputStream = blob.getBinaryStream()) {
@@ -145,6 +156,8 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                                 while ((length = inputStream.read(buffer)) != -1)
                                     baos.write(buffer, 0, length);
                                 data = baos.toByteArray();
+                                if (getSize)
+                                    dataLoaded.set(true);
                             } catch (SQLException e) {
                                 throw new DBException("Error reading blob data", e);
                             } finally {
@@ -153,7 +166,7 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                                 } catch (SQLException e) {
                                 }
                             }
-                        } else {
+                        } else if (!getSize) { // delay loading of data for getSize call if temp file is needed
                             Path tempDir = Files.createTempDirectory("attachment_");
                             try (InputStream inputStream = blob.getBinaryStream()) {
                                 Path tempFile = tempDir.resolve(fileName);
