@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DocumentStatus
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_PA_DocumentStatus 
 {
@@ -152,6 +152,15 @@ public interface I_PA_DocumentStatus
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
+    /** Column name Category */
+    public static final String COLUMNNAME_Category = "Category";
+
+	/** Set Category	  */
+	public void setCategory (String Category);
+
+	/** Get Category	  */
+	public String getCategory();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -196,6 +205,19 @@ public interface I_PA_DocumentStatus
 	  */
 	public String getEntityType();
 
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -209,6 +231,19 @@ public interface I_PA_DocumentStatus
 	  */
 	public boolean isActive();
 
+    /** Column name IsHideWhenZero */
+    public static final String COLUMNNAME_IsHideWhenZero = "IsHideWhenZero";
+
+	/** Set Hide when Zero.
+	  * Hide when the Value is Zero
+	  */
+	public void setIsHideWhenZero (boolean IsHideWhenZero);
+
+	/** Get Hide when Zero.
+	  * Hide when the Value is Zero
+	  */
+	public boolean isHideWhenZero();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -221,6 +256,17 @@ public interface I_PA_DocumentStatus
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Name_PrintColorZero_ID */
+    public static final String COLUMNNAME_Name_PrintColorZero_ID = "Name_PrintColorZero_ID";
+
+	/** Set Print Color for Name when Zero	  */
+	public void setName_PrintColorZero_ID (int Name_PrintColorZero_ID);
+
+	/** Get Print Color for Name when Zero	  */
+	public int getName_PrintColorZero_ID();
+
+	public org.compiere.model.I_AD_PrintColor getName_PrintColorZero() throws RuntimeException;
 
     /** Column name Name_PrintColor_ID */
     public static final String COLUMNNAME_Name_PrintColor_ID = "Name_PrintColor_ID";
