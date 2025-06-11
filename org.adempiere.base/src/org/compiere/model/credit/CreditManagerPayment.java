@@ -108,6 +108,7 @@ public class CreditManagerPayment implements ICreditManager
 																MClient.get(ctx).getC_Currency_ID(),
 																payment.getC_ConversionType_ID(),
 																payment.getDateAcct(), payment.get_TrxName());
+					return new CreditStatus(errorMsg, true);
 				}
 				else
 				{
