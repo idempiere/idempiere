@@ -300,6 +300,7 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 
 	@Override
 	public void removePrincipalFromSession(HttpServletRequest httpRequest) {
+		httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
 		httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
 		httpRequest.getSession().removeAttribute(OIDC_STATE);
 	}
