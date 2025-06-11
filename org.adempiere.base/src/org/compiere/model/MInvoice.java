@@ -2907,6 +2907,19 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		updateProjectInvoiceAmt(true);
 
+		// Update qty invoiced on related order line
+		if (!MDocType.get(getCtx(), getC_DocType_ID()).getDocBaseType().equals(MDocType.DOCBASETYPE_ARProFormaInvoice)) {
+			for (MInvoiceLine line : getLines()) {
+
+				if (line.getC_OrderLine_ID() != 0) {
+					MOrderLine  ol = new MOrderLine (getCtx(), line.getC_OrderLine_ID(), get_TrxName());
+					if (line.getQtyInvoiced() != null)
+						ol.setQtyInvoiced(ol.getQtyInvoiced().subtract(line.getQtyInvoiced()));
+					ol.saveEx();
+				}
+			}
+		}
+
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
