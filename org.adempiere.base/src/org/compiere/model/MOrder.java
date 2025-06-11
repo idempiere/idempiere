@@ -48,7 +48,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.ReservationUtil;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
@@ -1662,22 +1661,6 @@ public class MOrder extends X_C_Order implements DocAction
 				if (! Util.isEmpty(innerMsg))
 					m_processMsg = m_processMsg + " -> " + innerMsg;
 				return DocAction.STATUS_Invalid;
-			}
-		} else {
-			for (MOrderLine line : getLines()) {
-				if (line.getQtyReserved().signum() > 0) {
-					ReservationUtil.releaseStorageReservation(
-							getCtx(), 
-							line, 
-							line.getQtyReserved().negate(), 
-							isSOTrx(), 
-							get_TrxName(), 
-							getC_DocType_ID(), 
-							getDocumentNo(), 
-							line.getLine(), 
-							line.get_Table_ID(), 
-							line.get_ID());
-				}
 			}
 		}
 		if (!calculateTaxTotal())

@@ -49,7 +49,6 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.ReservationUtil;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
@@ -1816,13 +1815,23 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 						{					
 							if (sLine.getC_OrderLine_ID() != 0 && oLine.getM_Product_ID() > 0)
 							{
-								String reservationError = ReservationUtil.releaseStorageReservation(
-									getCtx(), oLine, storageReservationToUpdate, isSOTrx(),
-									get_TrxName(), getC_DocType_ID(), getDocumentNo(), sLine.getLine(),
-									sLine.get_Table_ID(), sLine.get_ID()
-								);
-								if (reservationError != null) {
-									m_processMsg = reservationError;
+								IReservationTracer tracer = null;
+								IReservationTracerFactory factory = Core.getReservationTracerFactory();
+								if (factory != null) {
+									tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
+											sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
+											oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
+											get_TrxName());
+								}
+								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
+										oLine.getM_Product_ID(),
+										oLine.getM_AttributeSetInstance_ID(),
+										storageReservationToUpdate.negate(),
+										isSOTrx(),
+										get_TrxName(), tracer))
+								{
+									String lastError = CLogger.retrieveErrorString("");
+									m_processMsg = "Cannot correct Inventory " + (isSOTrx()? "Reserved" : "Ordered") + " (MA) - [" + product.getValue() + "] - " + lastError;
 									return DocAction.STATUS_Invalid;
 								}
 							}
