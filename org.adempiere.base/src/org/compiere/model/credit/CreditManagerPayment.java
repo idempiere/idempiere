@@ -99,28 +99,32 @@ public class CreditManagerPayment implements ICreditManager
 															payment.getC_ConversionType_ID(),
 															payment.getAD_Client_ID(),
 															payment.getAD_Org_ID());
-
-					if (payAmt == null)
-					{
-						errorMsg = MConversionRateUtil.getErrorMessage(	ctx, "ErrorConvertingCurrencyToBaseCurrency",
-																	payment.getC_Currency_ID(),
-																	MClient.get(ctx).getC_Currency_ID(),
-																	payment.getC_ConversionType_ID(),
-																	payment.getDateAcct(), payment.get_TrxName());
-					}
 				}
-				// Total Balance
-				BigDecimal newBalance = bp.getTotalOpenBalance();
-				if (newBalance == null)
-					newBalance = Env.ZERO;
-				if (payment.isReceipt())
-					newBalance = newBalance.subtract(payAmt);
-				else
-					newBalance = newBalance.add(payAmt);
 
-				bp.setTotalOpenBalance(newBalance);
-				bp.setSOCreditStatus();
-				bp.saveEx();
+				if (payAmt == null)
+				{
+					errorMsg = MConversionRateUtil.getErrorMessage(	ctx, "ErrorConvertingCurrencyToBaseCurrency",
+																payment.getC_Currency_ID(),
+																MClient.get(ctx).getC_Currency_ID(),
+																payment.getC_ConversionType_ID(),
+																payment.getDateAcct(), payment.get_TrxName());
+					return new CreditStatus(errorMsg, true);
+				}
+				else
+				{
+					// Total Balance
+					BigDecimal newBalance = bp.getTotalOpenBalance();
+					if (newBalance == null)
+						newBalance = Env.ZERO;
+					if (payment.isReceipt())
+						newBalance = newBalance.subtract(payAmt);
+					else
+						newBalance = newBalance.add(payAmt);
+
+					bp.setTotalOpenBalance(newBalance);
+					bp.setSOCreditStatus();
+					bp.saveEx();
+				}
 			}
 		}
 		else if (MPayment.DOCACTION_Reverse_Accrual.equals(docAction) || MPayment.DOCACTION_Reverse_Correct.equals(docAction))
