@@ -311,6 +311,8 @@ public class OrderPOCreate extends SvrProcess
 		po.setC_Project_ID(so.getC_Project_ID());
 		po.setUser1_ID(so.getUser1_ID());
 		po.setUser2_ID(so.getUser2_ID());
+		po.setC_CostCenter_ID(so.getC_CostCenter_ID());
+		po.setC_Department_ID(so.getC_Department_ID());
 		//
 		po.saveEx();
 		return po;
