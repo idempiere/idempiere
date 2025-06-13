@@ -37,12 +37,14 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Accounting Schema validation test based on Start & End Date + Document Type > Always Post flag
  * 
  * @author Logilite Technologies
  */
+@Isolated   /* must run Isolated because it creates a new accounting schema */
 public class AccountingSchemaValidRangeTest extends AbstractTestCase
 {
 
@@ -225,6 +227,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 			DB.executeUpdate("DELETE FROM C_DocType					WHERE C_DocType_ID = ?", docType.get_ID(), null);
 			//
 			commit();
+			CacheMgt.get().reset();
 		}
 	}
 
