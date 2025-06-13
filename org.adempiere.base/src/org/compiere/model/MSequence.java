@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -569,30 +570,26 @@ public class MSequence extends X_AD_Sequence
 
 		//	create DocumentNo
 		StringBuilder doc = new StringBuilder();
-		if (prefixValue != null && prefixValue.length() > 0) {
-			if (!Util.isEmpty(prefixValue))
-				doc.append(prefixValue);
-		}
+		if (!Util.isEmpty(prefixValue, true))
+			doc.append(prefixValue);
 
 		if (decimalPattern != null && decimalPattern.length() > 0)
 			doc.append(new DecimalFormat(decimalPattern).format(next));
 		else
 			doc.append(next);
 
-		if (suffixValue != null && suffixValue.length() > 0) {
-			if (!Util.isEmpty(suffixValue))
-				doc.append(suffixValue);
-		}
-
+		if (!Util.isEmpty(suffixValue, true))
+			doc.append(suffixValue);
+		
 		String documentNo = doc.toString();
 		if (s_log.isLoggable(Level.FINER)) s_log.finer (documentNo + " (" + incrementNo + ")"
 				+ " - Sequence=" + AD_Sequence_ID + " [" + trx + "]");
 		return documentNo;
 	}
 	
-	private Boolean isSequenceNoLevel = null;
-	private Boolean isUsePrefixAsKey = null;
-	private Boolean isUseSuffixAsKey = null;
+	private AtomicBoolean isSequenceNoLevel = null;
+	private AtomicBoolean isUsePrefixAsKey = null;
+	private AtomicBoolean isUseSuffixAsKey = null;
 	
 	/**
 	 * Is the sequence a sequence no level sequence
@@ -601,13 +598,13 @@ public class MSequence extends X_AD_Sequence
 	 */
 	public boolean isSequenceNoLevel() {
 		if (isSequenceNoLevel == null) {
-			isSequenceNoLevel = Boolean.valueOf(
+			isSequenceNoLevel = new AtomicBoolean(
 					isUsePrefixAsKey() 
 					|| isUseSuffixAsKey()
 					|| isStartNewYear() 
 					|| isOrgLevelSequence());
 		}
-		return isSequenceNoLevel.booleanValue();
+		return isSequenceNoLevel.get();
 	}
 	
 	/**
@@ -616,9 +613,9 @@ public class MSequence extends X_AD_Sequence
 	 */
 	public boolean isUsePrefixAsKey() {
 		if (isUsePrefixAsKey == null) {
-			isUsePrefixAsKey = Boolean.valueOf(!Util.isEmpty(getPrefix()) && getPrefix().contains(KEY_CONTEXT_VARIABLE+"@"));
+			isUsePrefixAsKey = new AtomicBoolean(!Util.isEmpty(getPrefix()) && getPrefix().contains(KEY_CONTEXT_VARIABLE+"@"));
 		}
-		return isUsePrefixAsKey.booleanValue();
+		return isUsePrefixAsKey.get();
 	}
 	
 	/**
@@ -627,9 +624,9 @@ public class MSequence extends X_AD_Sequence
 	 */
 	public boolean isUseSuffixAsKey() {
 		if (isUseSuffixAsKey == null) {
-			isUseSuffixAsKey = Boolean.valueOf(!Util.isEmpty(getSuffix()) && getSuffix().contains(KEY_CONTEXT_VARIABLE+"@"));
+			isUseSuffixAsKey = new AtomicBoolean(!Util.isEmpty(getSuffix()) && getSuffix().contains(KEY_CONTEXT_VARIABLE+"@"));
 		}
-		return isUseSuffixAsKey.booleanValue();
+		return isUseSuffixAsKey.get();
 	}
 
 	/**
@@ -1440,7 +1437,7 @@ public class MSequence extends X_AD_Sequence
 
 				// Parse the variable
 				String value = Env.parseVariable(var, evaluatee, false, false);;
-				if (value != null && isKey) {
+				if (!Util.isEmpty(value, true) && isKey) {
 					results.add(value);
 				}
 
