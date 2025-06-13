@@ -670,7 +670,7 @@ public class MSequence extends X_AD_Sequence
 			return null;
 		}
 
-		MDocType dt = MDocType.get (Env.getCtx(), C_DocType_ID, trxName);	//	wrong for SERVER, but r/o
+		MDocType dt = MDocType.get (Env.getCtx(), C_DocType_ID);	//	wrong for SERVER, but r/o
 		if (dt != null && !dt.isDocNoControlled())
 		{
 			if (s_log.isLoggable(Level.FINER)) s_log.finer("DocType_ID=" + C_DocType_ID + " Not DocNo controlled");

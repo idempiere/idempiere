@@ -108,23 +108,11 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	 */
 	static public MDocType get (Properties ctx, int C_DocType_ID)
 	{
-		return get(ctx, C_DocType_ID, null);
-	}
-		
-	/**
-	 * 	Get Document Type (cached) (immutable)
-	 *	@param ctx context
-	 *	@param C_DocType_ID id
-	 *	@param trxName
-	 *	@return document type
-	 */
-	static public MDocType get (Properties ctx, int C_DocType_ID, String trxName)
-	{
 		MDocType retValue = s_cache.get(ctx, C_DocType_ID, e -> new MDocType(ctx, e));
 		if (retValue != null)
 			return retValue;
 		
-		retValue = new MDocType (ctx, C_DocType_ID, trxName);
+		retValue = new MDocType (ctx, C_DocType_ID, (String)null);
 		if (retValue.getC_DocType_ID() == C_DocType_ID)
 		{
 			s_cache.put(C_DocType_ID, retValue, e -> new MDocType(Env.getCtx(), e));

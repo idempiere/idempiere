@@ -1371,7 +1371,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		// IDEMPIERE-4318 Validation - Prepay Order must not allow Cash payment rule
-		MDocType dt = MDocType.get(getCtx(), getC_DocTypeTarget_ID(), get_TrxName());
+		MDocType dt = MDocType.get(getCtx(), getC_DocTypeTarget_ID());
 		if (   MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
 			&& PAYMENTRULE_Cash.equals(getPaymentRule())) {
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@Invalid@ @PaymentRule@"));

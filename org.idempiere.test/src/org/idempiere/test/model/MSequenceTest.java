@@ -40,7 +40,7 @@ public class MSequenceTest extends AbstractTestCase {
         String trxName = getTrxName();
 
         // Create test sequence
-        MSequence seq = new MSequence(ctx, 0, trxName);
+        MSequence seq = new MSequence(ctx, 0, null);
         seq.setName("Test Sequence with Context Key");
         seq.setDescription("Test sequence for document numbers with context variable key");
         seq.setPrefix(TEST_PREFIX + "@Updated<yyyyMM>/K@"); // /K flag indicates context variable use
@@ -55,7 +55,7 @@ public class MSequenceTest extends AbstractTestCase {
         seq.saveEx();
 
         // Create test document type
-        MDocType docType = new MDocType(ctx, 0, trxName);
+        MDocType docType = new MDocType(ctx, 0, null);
         docType.setName("Test Document Type");
         docType.setPrintName("Test Document");
         docType.setDocNoSequence_ID(seq.get_ID());
@@ -132,5 +132,9 @@ public class MSequenceTest extends AbstractTestCase {
         String seqPart3 = docNo3.substring((TEST_PREFIX + TEST_DATE_yyyyMM).length(), 
                 docNo3.length() - (String.valueOf(newOrgID) + TEST_SUFFIX).length());
         assertEquals("1000", seqPart3, "Sequence number should restart at 1000 for new org key");
+        
+        // Delete the test records
+        docType.deleteEx(true);
+        seq.deleteEx(true);
     }
 }
