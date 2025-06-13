@@ -830,27 +830,43 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 
 		//	Invoice
 		MInvoice invoice = new MInvoice(shipment, currentDate);
-		invoice.saveEx();
-		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
-		invoiceLine.setShipLine(shipmentLine);
-		invoiceLine.setQty(new BigDecimal("10"));
-		invoiceLine.saveEx();
-
-		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-		assertFalse(info.isError(), info.getSummary());
-		invoice.load(getTrxName());
-		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
-
-		line1.load(getTrxName());
-		assertEquals(10, line1.getQtyInvoiced().intValue());
-
-		// Reactivating the invoice should 'reset' the invoiced qty on the order line
-		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_ReActivate);
-		assertFalse(info.isError(), info.getSummary());
-		invoice.load(getTrxName());
-		assertEquals(DocAction.STATUS_InProgress, invoice.getDocStatus());
-
-		line1.load(getTrxName());
-		assertEquals(0, line1.getQtyInvoiced().intValue());
+		MDocType docType = MDocType.get(Env.getCtx(), invoice.getC_DocTypeTarget_ID());
+		boolean docTypeChanged = false;
+		if (!docType.isCanBeReactivated()) {
+			docType = new MDocType(Env.getCtx(), docType.get_ID(), null);
+			docType.setIsCanBeReactivated(true);
+			docType.saveEx();
+			docTypeChanged = true;
+		}
+		try {
+			invoice.saveEx();
+			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+			invoiceLine.setShipLine(shipmentLine);
+			invoiceLine.setQty(new BigDecimal("10"));
+			invoiceLine.saveEx();
+	
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			invoice.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+	
+			line1.load(getTrxName());
+			assertEquals(10, line1.getQtyInvoiced().intValue());
+	
+			// Reactivating the invoice should 'reset' the invoiced qty on the order line
+			invoice.load(getTrxName());
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_ReActivate);
+			assertFalse(info.isError(), info.getSummary());
+			invoice.load(getTrxName());
+			assertEquals(DocAction.STATUS_InProgress, invoice.getDocStatus());
+	
+			line1.load(getTrxName());
+			assertEquals(0, line1.getQtyInvoiced().intValue());
+		} finally {
+			if (docTypeChanged) {
+				docType.setIsCanBeReactivated(false);
+				docType.saveEx();
+			}
+		}
 	}
 }
