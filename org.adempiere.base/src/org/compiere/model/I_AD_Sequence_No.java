@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Sequence_No
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Sequence_No 
 {
@@ -86,19 +86,6 @@ public interface I_AD_Sequence_No
 	/** Get AD_Sequence_No_UU	  */
 	public String getAD_Sequence_No_UU();
 
-    /** Column name CalendarYearMonth */
-    public static final String COLUMNNAME_CalendarYearMonth = "CalendarYearMonth";
-
-	/** Set Year Month.
-	  * YYYYMM
-	  */
-	public void setCalendarYearMonth (String CalendarYearMonth);
-
-	/** Get Year Month.
-	  * YYYYMM
-	  */
-	public String getCalendarYearMonth();
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -140,6 +127,19 @@ public interface I_AD_Sequence_No
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name SequenceKey */
+    public static final String COLUMNNAME_SequenceKey = "SequenceKey";
+
+	/** Set Sequence Key.
+	  * Stores a unique key that determines the sequence numbering scope.
+	  */
+	public void setSequenceKey (String SequenceKey);
+
+	/** Get Sequence Key.
+	  * Stores a unique key that determines the sequence numbering scope.
+	  */
+	public String getSequenceKey();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
