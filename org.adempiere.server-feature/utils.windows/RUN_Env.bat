@@ -44,13 +44,14 @@ tnsping %ADEMPIERE_DB_NAME%
 @Echo Database Connection Test (3) ... system/%ADEMPIERE_DB_SYSTEM% in %ADEMPIERE_DB_HOME%
 @Echo If this test fails, verify the system password in ADEMPIERE_DB_SYSTEM
 @Pause
-sqlplus system/%ADEMPIERE_DB_SYSTEM%@%ADEMPIERE_DB_NAME% @%ADEMPIERE_DB_HOME%\Test.sql
+@if "%ADEMPIERE_DB_SYSTEM_USER%" == "" (set "ADEMPIERE_DB_SYSTEM_USER=SYSTEM")
+sqlplus %ADEMPIERE_DB_SYSTEM_USER%/%ADEMPIERE_DB_SYSTEM%@%ADEMPIERE_DB_NAME% @%ADEMPIERE_DB_HOME%\Test.sql
 
 @Echo .
 @Echo ---------------------------------------------------------------
 @Echo Checking Database Size
 @Pause
-sqlplus system/%ADEMPIERE_DB_SYSTEM%@%ADEMPIERE_DB_NAME% @%ADEMPIERE_DB_HOME%\CheckDB.sql %ADEMPIERE_DB_USER%
+sqlplus %ADEMPIERE_DB_SYSTEM_USER%/%ADEMPIERE_DB_SYSTEM%@%ADEMPIERE_DB_NAME% @%ADEMPIERE_DB_HOME%\CheckDB.sql %ADEMPIERE_DB_USER%
 
 @Echo .
 @Echo ---------------------------------------------------------------
