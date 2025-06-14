@@ -309,7 +309,7 @@ public class DefaultEvaluatee implements Evaluatee {
 				foreignTable = getPO().get_TableName();
 			}
 			//no dot operator and variable name is *_ID
-			if (Util.isEmpty(foreignColumn) && variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX)) {
+			if (Util.isEmpty(foreignColumn) && (variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX) || variableName.equals("CreatedBy") || variableName.equals("UpdatedBy"))) {
 				int id = 0;
 				try {
 					id = Integer.parseInt(value);
