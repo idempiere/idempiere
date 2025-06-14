@@ -607,27 +607,26 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			LayoutUtils.addSclass("medium-toolbarbutton", bRefresh);
 		
 		MPrintFormat pf = m_reportEngine.getPrintFormat();
-		if (pf != null) {
-			if((!pf.isForm()) && (pf.getAD_ReportView_ID() > 0)) {
-				bReRun.setName("ReRun");
-				if (ThemeManager.isUseFontIconForImage())
-					bReRun.setIconSclass("z-icon-ReRun");
-				else
-					bReRun.setImage(ThemeManager.getThemeResource("images/ReRun24.png"));
-				bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
-				if (toolbarPopup != null)
-				{
-					toolbarPopupLayout.appendChild(bReRun);
-					bReRun.setLabel(bReRun.getTooltiptext());
-				}
-				else
-					toolBar.appendChild(bReRun);
-				bReRun.addEventListener(Events.ON_CLICK, this);
-				if (ThemeManager.isUseFontIconForImage())
-					LayoutUtils.addSclass("medium-toolbarbutton", bReRun);
-			}
+		if (   pf != null
+			&& !pf.isForm()
+			&& pf.getAD_ReportView_ID() > 0
+			&& m_reportEngine.isReplaceTabContent()) {
+			bReRun.setName("ReRun");
+			if (ThemeManager.isUseFontIconForImage())
+				bReRun.setIconSclass("z-icon-ReRun");
+			else
+				bReRun.setImage(ThemeManager.getThemeResource("images/ReRun24.png"));
+			bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
+			if (toolbarPopup != null) {
+				toolbarPopupLayout.appendChild(bReRun);
+				bReRun.setLabel(bReRun.getTooltiptext());
+			} else
+				toolBar.appendChild(bReRun);
+			bReRun.addEventListener(Events.ON_CLICK, this);
+			if (ThemeManager.isUseFontIconForImage())
+				LayoutUtils.addSclass("medium-toolbarbutton", bReRun);
 		}
-					
+
 		bWizard.setName("Wizard");
 		if (ThemeManager.isUseFontIconForImage())
 			bWizard.setIconSclass("z-icon-Wizard");
@@ -1544,7 +1543,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void cmd_refresh() {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
-		if(AD_Process_ID <= 0 || m_reportEngine.getPrintInfo().getRecord_ID() > 0)
+		if(AD_Process_ID <= 0 || m_reportEngine.getPrintInfo().getRecord_ID() > 0 || !m_reportEngine.isReplaceTabContent())
 			this.cmd_report();
 		else
 			this.cmd_reRun(MProcess.SHOWHELP_RunSilently_TakeDefaults);
