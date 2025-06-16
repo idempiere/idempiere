@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zk>
+<zscript>
+    import org.compiere.model.MRefList;
+    import org.compiere.model.MSysConfig;
+    import org.compiere.model.MSystem;
+    import org.compiere.util.Env;
+    import org.compiere.util.Msg;
+    import org.compiere.util.Util;
+    var msgText = "";
+    var msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_HEADER_MESSAGE_VALUE);
+	if (!Util.isEmpty(msgValue, true))
+		msgText = Msg.getMsg(Env.getCtx(), msgValue);
+</zscript>
 	<div sclass="desktop-header" use="org.adempiere.webui.panel.HeaderPanel" id="header">
 		<hbox vflex="1" hflex="1" align="center">
 			<hbox  height="100%" pack="start" align="center" sclass="desktop-header-left" hflex="1">
 					<image id="logo"/>
 					<div id="menuLookup"/>
 					<button id="menuButton" sclass="btn-small"/>
+					<span class="systemStatus">${msgText}</span>
 			</hbox>
 			<vbox  hflex="min" apply="org.adempiere.webui.panel.UserPanel" align="end"
 					sclass="desktop-user-panel">

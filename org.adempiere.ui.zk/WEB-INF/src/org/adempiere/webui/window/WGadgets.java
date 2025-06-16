@@ -38,6 +38,7 @@ import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardPreference;
@@ -175,8 +176,8 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		noList.setSeltype("multiple");
 
 		if (ThemeManager.isUseFontIconForImage()) {
-    		bAdd.setIconSclass("z-icon-Next");
-    		bRemove.setIconSclass("z-icon-Previous");
+    		bAdd.setIconSclass(Icon.getIconSclass(Icon.NEXT));
+    		bRemove.setIconSclass(Icon.getIconSclass(Icon.PREVIOUS));
     	} else {
     		bAdd.setImage(ThemeManager.getThemeResource("images/Next24.png"));
     		bRemove.setImage(ThemeManager.getThemeResource("images/Previous24.png"));

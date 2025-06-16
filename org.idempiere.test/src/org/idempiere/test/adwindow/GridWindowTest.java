@@ -30,20 +30,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.adempiere.webui.apps.AEnv;
-import org.compiere.model.GridFieldVO;
-import org.compiere.model.GridWindowVO;
-import org.compiere.model.I_AD_Window;
-import org.compiere.model.MField;
-import org.compiere.model.MSession;
-import org.compiere.model.MTab;
-import org.compiere.model.MUserDefField;
-import org.compiere.model.MUserDefTab;
-import org.compiere.model.MUserDefWin;
-import org.compiere.model.SystemIDs;
-import org.compiere.util.CCache;
-import org.compiere.util.CacheInterface;
-import org.compiere.util.CacheMgt;
-import org.compiere.util.Env;
+import org.compiere.model.*;
+import org.compiere.util.*;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -61,26 +49,25 @@ public class GridWindowTest extends AbstractTestCase {
 	@Test
 	public void testGridWindowCache() {
 		int testRecordIdFieldId = 207570; //advanced field
-		String gridWindowVOCacheName = I_AD_Window.Table_Name+"|GridWindowVO";
-		String gridTabVOsCacheName = "GridTabVOs Cache";
-		
+
 		//init static cache
 		GridWindowVO.get(SystemIDs.WINDOW_TEST, 0);
-		
+
 		//find cache via name
 		CCache<?, ?> gridTabVOsCache = null;
 		CCache<?, ?> gridWindowVOCache = null;
 		CacheInterface[] cacheInstances = CacheMgt.get().getInstancesAsArray();
 		for(CacheInterface cacheInstance : cacheInstances) {
 			if (cacheInstance instanceof CCache<?, ?> ccache) {
-				if (ccache.getName().equals(gridTabVOsCacheName)) {
+				if (ccache.getName().equals(GridWindowVO.GRID_TAB_VO_CACHE_NAME)) {
 					gridTabVOsCache = ccache;
-				} else if (ccache.getName().equals(gridWindowVOCacheName)) {
+				} else if (ccache.getName().equals(GridWindowVO.GRID_WINDOW_VO_CACHE_NAME)) {
 					gridWindowVOCache = ccache;
 				}
-			}			
+                if (gridTabVOsCache != null && gridWindowVOCache != null) break;
+			}
 		}
-		
+
 		assertNotNull(gridWindowVOCache, "Can't find cache for GridWindowVO");
 		assertNotNull(gridTabVOsCache, "Can't find cache for GridTabVOs");
 		gridWindowVOCache.reset();
@@ -277,4 +264,60 @@ public class GridWindowTest extends AbstractTestCase {
 			win.deleteEx(true);			
 		}
 	}
+
+    @Test
+    public void testGridTabContextInfo() {
+        //find cache via name
+        CCache<?, ?> gridTabVOsCache = null;
+        CCache<?, ?> gridWindowVOCache = null;
+        CacheInterface[] cacheInstances = CacheMgt.get().getInstancesAsArray();
+        for(CacheInterface cacheInstance : cacheInstances) {
+            if (cacheInstance instanceof CCache<?, ?> ccache) {
+                if (ccache.getName().equals(GridWindowVO.GRID_TAB_VO_CACHE_NAME)) {
+                    gridTabVOsCache = ccache;
+                } else if (ccache.getName().equals(GridWindowVO.GRID_WINDOW_VO_CACHE_NAME)) {
+                    gridWindowVOCache = ccache;
+                }
+                if (gridTabVOsCache != null && gridWindowVOCache != null) break;
+            }
+        }
+
+        if (gridWindowVOCache != null) {
+            gridWindowVOCache.reset();
+            assertNotNull(gridTabVOsCache);
+            gridTabVOsCache.reset();
+        }
+
+        //test without gridwindowvo and gridtabvo cache
+        GridWindowVO windowVO = GridWindowVO.create(Env.getCtx(), 1, SystemIDs.WINDOW_BUSINESS_PARTNER);
+        assertNotNull(windowVO.Tabs, "Failed to retrieve GridTabVOs");
+        assertFalse(windowVO.Tabs.isEmpty(), "Failed to retrieve GridTabVOs");
+        for (GridTabVO tab : windowVO.Tabs) {
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Tab_ID)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Tab_UU)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Table_ID)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Table_UU)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_Name)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_IsSortTab)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AccessLevel)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_IsLookupOnlySelection)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_IsAllowAdvancedLookup)));
+        }
+
+        //test with gridwindowvo and gridtabvo cache
+        windowVO = GridWindowVO.create(Env.getCtx(), 2, SystemIDs.WINDOW_BUSINESS_PARTNER);
+        assertNotNull(windowVO.Tabs, "Failed to retrieve GridTabVOs");
+        assertFalse(windowVO.Tabs.isEmpty(), "Failed to retrieve GridTabVOs");
+        for (GridTabVO tab : windowVO.Tabs) {
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Tab_ID)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Tab_UU)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Table_ID)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AD_Table_UU)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_Name)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_IsSortTab)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_AccessLevel)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_IsLookupOnlySelection)));
+            assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_IsAllowAdvancedLookup)));
+        }
+    }
 }

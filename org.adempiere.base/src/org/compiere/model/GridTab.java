@@ -115,7 +115,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4560773843887883525L;
+	private static final long serialVersionUID = -3682316929715061899L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -166,6 +166,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private GridTable          	m_mTable = null;
 
 	private String 				m_keyColumnName = "";
+	private String 				m_uuidColumnName = "";
 	private String 				m_linkColumnName = "";
 
 	private String m_parentColumnName = "";
@@ -219,6 +220,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	
 	// Context property names for Tab Info:
 	public static final String CTX_KeyColumnName = "_TabInfo_KeyColumnName";
+	public static final String CTX_UUIDColumnName = "_TabInfo_UUIDColumnName";
 	public static final String CTX_LinkColumnName = "_TabInfo_LinkColumnName";
 	public static final String CTX_TabLevel = "_TabInfo_TabLevel";
 	public static final String CTX_AccessLevel = "_TabInfo_AccessLevel";
@@ -373,7 +375,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return false;
 
 		String uuidExpectedCol = PO.getUUIDColumnName(getTableName());
-		String uuidColumnName = null;
 		//  Add Fields
 		for (int f = 0; f < m_vo.getFields().size(); f++)
 		{
@@ -385,11 +386,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				field.setGridTab(this);
 				String columnName = field.getColumnName();
 				//	Record Info
-				if (field.isKey()) {
+				if (field.isKey())
 					setKeyColumnName(columnName);
-				}
 				if (uuidExpectedCol.equals(columnName))
-					uuidColumnName = columnName;
+					setUUIDColumnName(columnName);
 				//	Parent Column(s)
 				if (field.isParentColumn())
 					m_parents.add(columnName);
@@ -430,9 +430,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 		}   //  for all fields
 
-		if (Util.isEmpty(getKeyColumnName()) && getParentColumnNames().size() == 0 && uuidColumnName != null) {
-			setKeyColumnName(uuidColumnName);
-		}
+		if (Util.isEmpty(getKeyColumnName()) && getParentColumnNames().size() == 0 && getUUIDColumnName() != null)
+			setKeyColumnName(getUUIDColumnName());
 
 		if (! m_mTable.getTableName().equals(X_AD_PInstance_Log.Table_Name)) { // globalqss, bug 1662433
 			//  Add Standard Fields
@@ -1270,6 +1269,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	getKeyColumnName
 	
 	/**
+	 *	Return the name of the UUID column - may be ""
+	 *  @return UUID column name
+	 */
+	public String getUUIDColumnName()
+	{
+		return m_uuidColumnName;
+	}	//	getUUIDColumnName
+	
+	/**
 	 * @return key column index
 	 */
 	public int getKeyColumnIndex()
@@ -1284,6 +1292,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private void setKeyColumnName(String keyColumnName) {
 		this.m_keyColumnName = keyColumnName;
 		Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, CTX_KeyColumnName, m_keyColumnName);
+	}
+
+	/**
+	 * Set Name of the UUID Column
+	 * @param uuidColumnName
+	 */
+	private void setUUIDColumnName(String uuidColumnName) {
+		this.m_uuidColumnName = uuidColumnName;
+		Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, CTX_UUIDColumnName, m_uuidColumnName);
 	}
 
 	/**
@@ -2139,7 +2156,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean canHaveAttachment()
 	{
-		if (getKeyColumnName().endsWith("_ID") || getKeyColumnName().endsWith("_UU"))
+		if (getKeyColumnName().endsWith("_ID") || getKeyColumnName().endsWith("_UU") || !Util.isEmpty(getUUIDColumnName()))
 			return true;
 		return false;
 	}   //	canHaveAttachment

@@ -47,8 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5259015877977440085L;
-
+	private static final long serialVersionUID = 4467301251742419106L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -75,6 +74,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
     public static final String APPLICATION_URL = "APPLICATION_URL";
     public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
+    public static final String ATTACH_NOTIFY_2PACK = "ATTACH_NOTIFY_2PACK";
     public static final String AUTO_ASSIGN_ROLE_TO_CREATOR_USER = "AUTO_ASSIGN_ROLE_TO_CREATOR_USER";
     public static final String AUTOMATIC_PACKIN_FOLDERS = "AUTOMATIC_PACKIN_FOLDERS";
     public static final String AUTOMATIC_PACKIN_INITIAL_DELAY = "AUTOMATIC_PACKIN_INITIAL_DELAY";
@@ -223,6 +223,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT = "VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT";
     public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
+    public static final String XLSX_EXPORT_USE_FAST_METHOD = "XLSX_EXPORT_USE_FAST_METHOD";
     public static final String ZK_ADVANCE_FIND_FILTER_COLUMN_LIST = "ZK_ADVANCE_FIND_FILTER_COLUMN_LIST";
     public static final String ZK_AUTO_SAVE_CHANGES = "ZK_AUTO_SAVE_CHANGES";
     public static final String ZK_AUTO_SAVE_TABS_EXCLUDED = "ZK_AUTO_SAVE_TABS_EXCLUDED";
@@ -236,6 +237,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
     public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
+	public static final String ZK_DESKTOP_HEADER_BACKGROUND_COLOR = "ZK_DESKTOP_HEADER_BACKGROUND_COLOR"; // used in desktop.css.dsp
+	public static final String ZK_DESKTOP_HEADER_MESSAGE_VALUE = "ZK_DESKTOP_HEADER_MESSAGE_VALUE";
     public static final String ZK_DESKTOP_CLASS = "ZK_DESKTOP_CLASS";
     public static final String ZK_DESKTOP_SHOW_HOME_BUTTON = "ZK_DESKTOP_SHOW_HOME_BUTTON";
     public static final String ZK_DESKTOP_SHOW_TAB_LIST_BUTTON = "ZK_DESKTOP_SHOW_TAB_LIST_BUTTON";

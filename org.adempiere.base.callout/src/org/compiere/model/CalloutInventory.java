@@ -17,13 +17,9 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -104,7 +100,19 @@ public class CalloutInventory extends CalloutEngine
 		BigDecimal bd = null;
 		if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
 			try {
-				bd = setQtyBook(M_AttributeSetInstance_ID, M_Product_ID, M_Locator_ID);
+				String trxName = null;
+				if (   mTab != null
+					&& mTab.getTableModel() != null) {
+					GridTable gt = mTab.getTableModel();
+					if (gt.isImporting()) {
+						trxName = gt.get_TrxName();
+					}
+				}
+				if (mTab.getValue("M_Inventory_ID") == null)
+					return null;
+				MInventory inventory = new MInventory(ctx, (Integer) mTab.getValue("M_Inventory_ID"), trxName);
+				bd = MStorageOnHand.getQtyOnHandForLocatorWithASIMovementDate(M_Product_ID, M_Locator_ID, 
+						M_AttributeSetInstance_ID, inventory.getMovementDate(), trxName);
 				mTab.setValue("QtyBook", bd);
 			} catch (Exception e) {
 				return e.getLocalizedMessage();
@@ -119,59 +127,4 @@ public class CalloutInventory extends CalloutEngine
 		return "";
 	}   //  product
 	
-	
-	/**
-	 * kviiksaar
-	 * 
-	 * Returns the current Book Qty for given parameters or 0
-	 * 
-	 * @param M_AttributeSetInstance_ID
-	 * @param M_Product_ID
-	 * @param M_Locator_ID
-	 * @return
-	 * @throws Exception
-	 */
-	private BigDecimal setQtyBook (int M_AttributeSetInstance_ID, int M_Product_ID, int M_Locator_ID) throws Exception {
-		// Set QtyBook from first storage location
-		BigDecimal bd = null;
-		String sql = "SELECT SUM(QtyOnHand) FROM M_StorageOnHand "
-			+ "WHERE M_Product_ID=?"	//	1
-			+ " AND M_Locator_ID=?"		//	2
-			+ " AND M_AttributeSetInstance_ID=?"; //3
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, M_Product_ID);
-			pstmt.setInt(2, M_Locator_ID);
-			pstmt.setInt(3, M_AttributeSetInstance_ID);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				bd = rs.getBigDecimal(1);
-				if (bd != null)
-					return bd;
-			} else {
-				// gwu: 1719401: clear Booked Quantity to zero first in case the query returns no rows, 
-				// for example when the locator has never stored a particular product.
-				return Env.ZERO;
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			throw new Exception(e.getLocalizedMessage());
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-
-		return Env.ZERO;
-	}
-	
-
 }	//	CalloutInventory

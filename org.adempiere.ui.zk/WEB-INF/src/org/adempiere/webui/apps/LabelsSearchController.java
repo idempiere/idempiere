@@ -36,6 +36,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.panel.LabelsPanel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MLabel;
 import org.compiere.model.MLabelAssignment;
@@ -388,13 +389,13 @@ public class LabelsSearchController implements EventListener<Event>{
 			
 			if (data.getC_Label_ID() <= 0) {
 				if (ThemeManager.isUseFontIconForImage())
-					cell2.setIconSclass("z-icon-New");
+					cell2.setIconSclass(Icon.getIconSclass(Icon.NEW));
 				else
 					cell2.setImage(ThemeManager.getThemeResource("images/New16.png"));
 			} else {
 				if (!data.isAllowed()) {
 					if (ThemeManager.isUseFontIconForImage())
-						cell2.setIconSclass("z-icon-NotAllowed");
+						cell2.setIconSclass(Icon.getIconSclass(Icon.NOT_ALLOWED));
 					else
 						cell2.setImage(ThemeManager.getThemeResource("images/Cancel16.png"));
 				}

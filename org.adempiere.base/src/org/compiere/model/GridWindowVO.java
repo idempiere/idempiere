@@ -44,11 +44,11 @@ public class GridWindowVO implements Serializable
 	
 	private static final CLogger log = CLogger.getCLogger(GridWindowVO.class);
 
-	/**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
-	
-	/**
+  public static final String GRID_WINDOW_VO_CACHE_NAME = I_AD_Window.Table_Name + "|GridWindowVO";
+  /**	Window Cache		*/
+	private static CCache<String,GridWindowVO>	s_windowsvo = new CCache<String,GridWindowVO>(I_AD_Window.Table_Name, GRID_WINDOW_VO_CACHE_NAME, 10);
+
+  /**
 	 * @param AD_Window_ID
 	 * @param windowNo
 	 * @return {@link GridWindowVO}
@@ -146,7 +146,8 @@ public class GridWindowVO implements Serializable
 				log.config("AD_Window_ID=" + AD_Window_ID);
 		}
 		
-		GridWindowVO vo = s_windowsvo.get(AD_Window_ID);
+		String keyCache = AD_Window_ID + "|" + Env.getAD_Language(ctx);
+		GridWindowVO vo = s_windowsvo.get(keyCache);
 		boolean clone = false;
 		if (vo != null)
 		{
@@ -194,7 +195,7 @@ public class GridWindowVO implements Serializable
 			{
 				vo = null;
 			}
-			s_windowsvo.put(AD_Window_ID, vo.clone(0, false));
+			s_windowsvo.put(keyCache, vo.clone(0, false));
 		}
 		
 		// Ensure ASP exceptions
@@ -239,7 +240,8 @@ public class GridWindowVO implements Serializable
 		return vo;
 	}   //  create
 
-	private static final CCache<String, ArrayList<GridTabVO>> s_gridTabsCache = new CCache<String, ArrayList<GridTabVO>>(MTab.Table_Name, "GridTabVOs Cache", 100, 0, false, 0);
+    public static final String GRID_TAB_VO_CACHE_NAME = "GridTabVOs Cache";
+    private static final CCache<String, ArrayList<GridTabVO>> s_gridTabsCache = new CCache<String, ArrayList<GridTabVO>>(MTab.Table_Name, GRID_TAB_VO_CACHE_NAME, 100, 0, false, 0);
 	
 	/**
 	 *  Create Window Tabs
@@ -271,8 +273,7 @@ public class GridWindowVO implements Serializable
 				else if (!firstTabIsNull)
 				{
 					GridTabVO.loadUserDefTab(tabvo);
-					if (mWindowVO.Tabs.isEmpty())
-						GridTabVO.updateContext(tabvo);
+                    GridTabVO.updateContext(tabvo);
 					if (!tabvo.IsReadOnly && "N".equals(mWindowVO.IsReadWrite))
 						tabvo.IsReadOnly = true;
 					mWindowVO.Tabs.add(tabvo);
@@ -318,8 +319,7 @@ public class GridWindowVO implements Serializable
 					if (mTabVO != null)
 					{
 						GridTabVO.loadUserDefTab(mTabVO);
-						if (firstTab)
-							GridTabVO.updateContext(mTabVO);
+						GridTabVO.updateContext(mTabVO);
 					}
 
 					if (mTabVO == null && firstTab)
@@ -479,8 +479,7 @@ public class GridWindowVO implements Serializable
 					if (cloneTab == null)
 						return null;
 					clone.Tabs.add(cloneTab);
-					if (clone.Tabs.size() == 1)
-						GridTabVO.updateContext(cloneTab);
+					GridTabVO.updateContext(cloneTab);
 				}
 				//set context, cloneTabs is usually for web client session cache
 				Env.setContext(ctx, windowNo, "IsSOTrx", clone.IsSOTrx);

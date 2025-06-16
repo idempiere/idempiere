@@ -27,6 +27,7 @@ package org.adempiere.webui.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
@@ -215,7 +216,7 @@ public class ListitemGroup extends Listgroup {
 		 */
 		public void setOpen(boolean open) {
 			this.open = open;
-			span.setSclass(this.open ? "z-icon-listgroup-open" : "z-icon-listgroup-close");
+			span.setSclass(Icon.getIconSclass(this.open ? Icon.LIST_GROUP_OPEN : Icon.LIST_GROUP_CLOSE));
 		}
 
 		@Override

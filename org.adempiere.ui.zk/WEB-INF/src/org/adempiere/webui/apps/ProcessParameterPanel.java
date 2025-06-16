@@ -54,6 +54,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
@@ -558,7 +559,7 @@ public class ProcessParameterPanel extends Panel implements
 			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType()) && voF.IsShowNegateButton) {
 				Button bNegate = ButtonFactory.createButton("", null, null);
 				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
-				bNegate.setIconSclass("z-icon-IncludeSelected");
+				bNegate.setIconSclass(Icon.getIconSclass(Icon.INCLUDE_SELECTED));
 				bNegate.setSclass("btn-negate btn-negate-include");
 				bNegate.setAttribute("isSelected", false);
 				bNegate.setVisible(false);
@@ -803,13 +804,13 @@ public class ProcessParameterPanel extends Panel implements
 					if(bNegate != null) {
 						if(para.isNotClause()) {
 							bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "ExcludeSelectedValues"));
-							bNegate.setIconSclass("z-icon-ExcludeSelected");
+							bNegate.setIconSclass(Icon.getIconSclass(Icon.EXCLUDE_SELECTED));
 							bNegate.setSclass("btn-negate btn-negate-exclude");
 							bNegate.setAttribute("isSelected", true);
 						} 
 						else {
 							bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
-							bNegate.setIconSclass("z-icon-IncludeSelected");
+							bNegate.setIconSclass(Icon.getIconSclass(Icon.INCLUDE_SELECTED));
 							bNegate.setSclass("btn-negate btn-negate-include");
 							bNegate.setAttribute("isSelected", false);
 						}
@@ -1129,7 +1130,7 @@ public class ProcessParameterPanel extends Panel implements
 						bNegate.setVisible(false);
 						bNegate.setAttribute("isSelected", false);
 						bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
-	    				bNegate.setIconSclass("z-icon-IncludeSelected");
+	    				bNegate.setIconSclass(Icon.getIconSclass(Icon.INCLUDE_SELECTED));
 	    				bNegate.setSclass("btn-negate btn-negate-include");
 					}
 				}
@@ -1142,12 +1143,12 @@ public class ProcessParameterPanel extends Panel implements
     			boolean isSelected = !(boolean)bNegate.getAttribute("isSelected");
     			if(isSelected) {
     				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "ExcludeSelectedValues"));
-    				bNegate.setIconSclass("z-icon-ExcludeSelected");
+    				bNegate.setIconSclass(Icon.getIconSclass(Icon.EXCLUDE_SELECTED));
     				bNegate.setSclass("btn-negate btn-negate-exclude");
     			} 
     			else {
     				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
-    				bNegate.setIconSclass("z-icon-IncludeSelected");
+    				bNegate.setIconSclass(Icon.getIconSclass(Icon.INCLUDE_SELECTED));
     				bNegate.setSclass("btn-negate btn-negate-include");
     			}
     			bNegate.setAttribute("isSelected", isSelected);

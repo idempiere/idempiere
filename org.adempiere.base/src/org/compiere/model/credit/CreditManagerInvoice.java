@@ -113,6 +113,7 @@ public class CreditManagerInvoice implements ICreditManager
 															mInvoice.getC_ConversionType_ID(),
 															mInvoice.getDateAcct(),
 															mInvoice.get_TrxName());
+				return new CreditStatus(errorMsg, true);
 			}
 			
 			if (MInvoice.DOCACTION_Re_Activate.equals(docAction))
