@@ -2926,6 +2926,10 @@ public class MPayment extends X_C_Payment
 		setDocAction(DOCACTION_Complete);
 		setProcessed(false);
 
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
+			creditManager.checkCreditStatus(DOCACTION_Re_Activate);
+
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)

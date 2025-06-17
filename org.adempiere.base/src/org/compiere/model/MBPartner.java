@@ -724,6 +724,16 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	 */
 	public void setTotalOpenBalance ()
 	{
+		setTotalOpenBalanceUsingCurrentDocument(Env.ZERO);
+	}
+
+	/**
+	 * 	Calculate Total Open Balance and SO_CreditUsed.
+	 * @param amtToSubtractInBaseCurrency : amount
+	 */
+	public void setTotalOpenBalanceUsingCurrentDocument (BigDecimal amtToSubtractInBaseCurrency)
+	{
+
 		log.info("");
 		BigDecimal SO_CreditUsed = null;
 		BigDecimal TotalOpenBalance = null;
@@ -765,9 +775,9 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		}
 		//
 		if (SO_CreditUsed != null)
-			super.setSO_CreditUsed (SO_CreditUsed);
+			super.setSO_CreditUsed (SO_CreditUsed.subtract(amtToSubtractInBaseCurrency));
 		if (TotalOpenBalance != null)
-			super.setTotalOpenBalance(TotalOpenBalance);
+			super.setTotalOpenBalance(TotalOpenBalance.subtract(amtToSubtractInBaseCurrency));
 		setSOCreditStatus();
 	}	//	setTotalOpenBalance
 
