@@ -693,19 +693,23 @@ public class DocManager {
 				String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
 				if (error != null)
 					return error;
-				
-				if (tableID == MInvoice.Table_ID) {
+								
+				if (tableID == MInvoice.Table_ID) { 
+					MMatchPO mpo = null;
+					if (AD_Table_ID == MMatchPO.Table_ID)
+						mpo = new MMatchPO(Env.getCtx(), Record_ID, trxName);
 					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
 					for (MMatchInv mi : miList) {
-						if (AD_Table_ID == MMatchInv.Table_ID)
+						if (AD_Table_ID == MMatchInv.Table_ID) {
 							if (mi.get_ID() != Record_ID && mi.getReversal_ID() != Record_ID)
 								continue;
+						} else if (AD_Table_ID == MMatchPO.Table_ID) {
+							if (mpo != null && mi.getM_Product_ID() != mpo.getM_Product_ID())
+								continue;
+						}
 						if (mi.getDateAcct().compareTo(cd.getDateAcct()) < 0)
 							continue;
-						repostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
-						if (repostedRecordIds.contains(repostedRecordId))
-							continue;
-						repostedRecordIds.add(repostedRecordId);
+						// NOTE: Do not skip reposting match invoices that have already been reposted
 						error = DocManager.postDocument(ass, MMatchInv.Table_ID, mi.get_ID(), true, true, true, trxName);
 						if (error != null)
 							return error;
