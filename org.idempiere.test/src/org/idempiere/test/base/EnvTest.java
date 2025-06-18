@@ -363,4 +363,25 @@ public class EnvTest extends AbstractTestCase {
         String expected = "User Email = %s and Phone=".formatted(user.get_Value("EMail"));
         assertEquals(expected, mMailText.getMailText());
     }
+
+    /**
+     * https://idempiere.atlassian.net/browse/IDEMPIERE-6583
+     */
+    @Test
+    public void testParseMailTextWithCreatedByAndUpdatedBy() {
+
+    	String mailText = "The record @DocumentNo@ about @AD_User_ID<AD_User.Name>@ was created by @CreatedBy<AD_User.Name>@ and updated by @UpdatedBy<AD_User.Name>@";
+    	MMailText mMailText = new MMailText(Env.getCtx(), 0, getTrxName());
+    	mMailText.setMailText(mailText);
+
+    	MOrder order = new MOrder(Env.getCtx(), 100, getTrxName());
+    	order.set_ValueNoCheck("CreatedBy", DictionaryIDs.AD_User.GARDEN_USER.id);
+    	order.set_ValueNoCheck("UpdatedBy", DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+    	order.set_ValueNoCheck("AD_User_ID", DictionaryIDs.AD_User.SUPER_USER.id);
+
+    	mMailText.setPO(order);
+
+    	String expected = "The record 80000 about SuperUser was created by GardenUser and updated by GardenAdmin";
+    	assertEquals(expected, mMailText.getMailText());
+    }
 }
