@@ -46,7 +46,7 @@ BEGIN
 		FROM C_InvoiceLine l
 		LEFT JOIN C_Charge c ON l.C_Charge_ID = c.C_Charge_ID
 		WHERE l.C_Invoice_ID = p_C_Invoice_ID
-		  AND c.isExcludeFromDiscount = 'N';
+		  AND COALESCE(c.isexcludedfromdiscount, 'N') = 'N';
 	ELSE
 		v_Amount := v_GrandTotal;
 	END IF;
