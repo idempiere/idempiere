@@ -42,5 +42,9 @@ ALTER TABLE SSO_PrincipalConfig MODIFY Name VARCHAR2(25 CHAR) DEFAULT NULL
 INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200262,0,0,TO_DATE('2025-04-09 15:26:55','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2025-04-09 15:26:55','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','SSO_SHOW_LOGINPAGE','N','Allows users to access the standard login page alongside SSO, enabling manual login even when SSO is configured.','D','S','be343ea6-d422-4603-8b61-04bf18236797')
 ;
 
+-- Jun 16, 2025, 5:47:35 PM IST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','SSO Principal Service could not be retrieved for the specified provider. Please verify the SSO provider configuration.',0,0,'Y',TO_TIMESTAMP('2025-06-16 17:47:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-06-16 17:47:34','YYYY-MM-DD HH24:MI:SS'),100,200945,'SSOServiceNotFound','D','bd5f5401-a53d-40da-b785-5160d352dab1')
+;
+
 SELECT register_migration_script('202411271710_IDEMPIERE-6304.sql') FROM dual
 ;

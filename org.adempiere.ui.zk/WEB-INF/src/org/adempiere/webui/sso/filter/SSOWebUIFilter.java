@@ -146,7 +146,7 @@ public class SSOWebUIFilter implements Filter
 						else
 						{
 							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
-							// Redirect to SSO sing in page for authentication
+							// Redirect to SSO sign in page for authentication
 							m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 							return;
