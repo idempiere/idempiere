@@ -79,3 +79,6 @@ EXCEPTION
 		RETURN NULL;
 END invoiceDiscount;
 /
+
+-- IDEMPIERE-6588 - Payment Discount excluding freight charges
+SELECT register_migration_script('202506181505_IDEMPIERE-6588.sql') FROM dual;
