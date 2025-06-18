@@ -228,7 +228,8 @@ public class DefaultEvaluatee implements Evaluatee {
 		boolean withTabNo = false;
 		if (globalVariable) {
 			variableName = variableName.substring(1);				
-		} else if (variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0) {
+		} else if (   variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0
+				   && !variableName.startsWith(Env.TAB_INFO + Evaluator.VARIABLE_TAB_NO_SEPARATOR)) {
 			variableName = variableName.substring(variableName.lastIndexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR)+1);
 			withTabNo = true;
 		} else if (variableName.startsWith(Evaluator.VARIABLE_SELF_TAB_OPERATOR)) {
