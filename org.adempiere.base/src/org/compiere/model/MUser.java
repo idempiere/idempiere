@@ -231,7 +231,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		
 		StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
-			where.append("EMail=?");
+			where.append("COALESCE(LDAPUser,EMail)=?");
 		else
 			where.append("COALESCE(LDAPUser,Name)=?");
 		where.append(" AND")
@@ -995,7 +995,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 				}
 				// email with password must be unique on the same tenant
 				int cnt = DB.getSQLValue(get_TrxName(),
-						"SELECT COUNT(*) FROM AD_User WHERE Password IS NOT NULL AND EMail=? AND AD_Client_ID=? AND AD_User_ID!=?",
+						"SELECT COUNT(*) FROM AD_User WHERE Password IS NOT NULL AND COALESCE(LDAPUser,EMail)=? AND AD_Client_ID=? AND AD_User_ID!=?",
 						getEMail(), getAD_Client_ID(), getAD_User_ID());
 				if (cnt > 0) {
 					log.saveError("SaveError", Msg.getMsg(getCtx(), DBException.SAVE_ERROR_NOT_UNIQUE_MSG, true) + Msg.getElement(getCtx(), COLUMNNAME_EMail));
@@ -1077,7 +1077,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		//	#1/2
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
-			sql.append("u.EMail=?");
+			sql.append("COALESCE(u.LDAPUser,u.EMail)=?");
 		else
 			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
 		sql.append(" AND u.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");

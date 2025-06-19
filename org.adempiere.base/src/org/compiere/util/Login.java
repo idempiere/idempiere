@@ -300,7 +300,7 @@ public class Login
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		String userNameCol;
 		if (email_login)
-			userNameCol = "AD_User.EMail";
+			userNameCol = "COALESCE(AD_User.LDAPUser,AD_User.EMail)";
 		else
 			userNameCol = "COALESCE(AD_User.LDAPUser,AD_User.Name)";
 
@@ -1360,7 +1360,7 @@ public class Login
 
 		StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
-			where.append("EMail=?");
+			where.append("COALESCE(LDAPUser,EMail)=?");
 		else
 			where.append("COALESCE(LDAPUser,Name)=?");
 
@@ -1701,7 +1701,7 @@ public class Login
 		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
-			sql.append("u.EMail=?");
+			sql.append("COALESCE(u.LDAPUser,u.EMail)=?");
 		else
 			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
 		sql.append(" AND r.IsMasterRole='N'");
