@@ -490,22 +490,24 @@ public class MSequence extends X_AD_Sequence
 						updateSQL = conn.prepareStatement(updateCmd);
 						next = rs.getInt(2);
 					} else {
-						String sql;
-						if (seq.isSequenceNoLevel())
-							sql = "UPDATE AD_Sequence_No SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=? AND SequenceKey=? AND AD_Org_ID=?";
-						else
-							sql = "UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=?";
+						StringBuilder sql = new StringBuilder("UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=?");
+						if (seq.isOrgLevelSequence())
+							sql.append(" AND AD_Org_ID=?");
+						if (seq.isStartNewYear() || seq.isUsePrefixAsKey() || seq.isUseSuffixAsKey())
+							sql.append(" AND SequenceKey=?");
+						
 						if (!DB.isOracle() && !DB.isPostgreSQL())
-							sql = DB.getDatabase().convertStatement(sql);
-						updateSQL = conn.prepareStatement(sql);
+							sql = new StringBuilder(DB.getDatabase().convertStatement(sql.toString()));
+						updateSQL = conn.prepareStatement(sql.toString());
 						next = rs.getInt(1);
 					}
-					updateSQL.setInt(1, incrementNo);
-					updateSQL.setInt(2, AD_Sequence_ID);
-					if (seq.isSequenceNoLevel()) {
-						updateSQL.setString(3, keyParts.getKey());
-						updateSQL.setInt(4, docOrg_ID);
-					}
+					int idx = 1;
+					updateSQL.setInt(idx++, incrementNo);
+					updateSQL.setInt(idx++, AD_Sequence_ID);
+					if (seq.isOrgLevelSequence())
+						updateSQL.setInt(idx++, docOrg_ID);
+					if (seq.isStartNewYear() || seq.isUsePrefixAsKey() || seq.isUseSuffixAsKey())
+						updateSQL.setString(idx++, keyParts.getKey());
 					updateSQL.executeUpdate();
 				}
 				finally
