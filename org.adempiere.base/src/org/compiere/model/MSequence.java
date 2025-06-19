@@ -1436,9 +1436,11 @@ public class MSequence extends X_AD_Sequence
 				}
 
 				// Parse the variable
-				String value = Env.parseVariable(var, evaluatee, false, false);;
-				if (!Util.isEmpty(value, true) && isKey) {
-					results.add(value);
+				if (isKey) {
+					String value = Env.parseVariable(var, evaluatee, false, false);;
+					if (!Util.isEmpty(value, true)) {
+						results.add(value);
+					}
 				}
 
 				startIndex = end + 1;
