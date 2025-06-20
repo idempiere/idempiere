@@ -490,7 +490,9 @@ public class MSequence extends X_AD_Sequence
 						updateSQL = conn.prepareStatement(updateCmd);
 						next = rs.getInt(2);
 					} else {
-						StringBuilder sql = new StringBuilder("UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=?");
+						StringBuilder sql = new StringBuilder("UPDATE");
+						sql.append(seq.isSequenceNoLevel() ? " AD_Sequence_No " : " AD_Sequence ")
+							.append("SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=?");
 						if (seq.isOrgLevelSequence())
 							sql.append(" AND AD_Org_ID=?");
 						if (seq.isStartNewYear() || seq.isUsePrefixAsKey() || seq.isUseSuffixAsKey())
