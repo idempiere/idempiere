@@ -201,6 +201,25 @@ public class ImportInvoice extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set IsSOTrx=N=" + no);
 
+		// Set Currency
+		sql = new StringBuilder ("UPDATE I_Invoice o ")
+			.append("SET C_Currency_ID=(SELECT C_Currency_ID FROM C_Currency c")
+			.append(" WHERE o.ISO_Code=c.ISO_Code AND c.AD_Client_ID IN (0,o.AD_Client_ID)) ")
+			.append("WHERE C_Currency_ID IS NULL AND o.ISO_Code IS NOT NULL")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			if (log.isLoggable(Level.INFO)) log.info("Set Currency=" + no);
+		
+		sql = new StringBuilder ("UPDATE I_Invoice ")
+				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Currency,' ")
+				.append("WHERE C_Currency_ID IS NULL AND ISO_Code IS NOT NULL")
+				.append(" AND I_IsImported<>'E' ")
+				.append(" AND I_IsImported<>'Y'").append(clientCheck);
+			no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning("No Currency=" + no);
+			
 		//	Price List
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET M_PriceList_ID=(SELECT MAX(M_PriceList_ID) FROM M_PriceList p WHERE p.IsDefault='Y'")

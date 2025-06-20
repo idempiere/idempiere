@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Payment
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_Payment")
 public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250616L;
 
     /** Standard Constructor */
     public X_I_Payment (Properties ctx, int I_Payment_ID, String trxName)
@@ -267,6 +267,22 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 		return (String)get_Value(COLUMNNAME_AccountNo);
 	}
 
+	/** Set Activity Key.
+		@param ActivityValue Text key for Activity
+	*/
+	public void setActivityValue (String ActivityValue)
+	{
+		set_Value (COLUMNNAME_ActivityValue, ActivityValue);
+	}
+
+	/** Get Activity Key.
+		@return Text key for Activity
+	  */
+	public String getActivityValue()
+	{
+		return (String)get_Value(COLUMNNAME_ActivityValue);
+	}
+
 	/** Set Business Partner Key.
 		@param BPartnerValue Key of the Business Partner
 	*/
@@ -297,6 +313,34 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 	public String getBankAccountNo()
 	{
 		return (String)get_Value(COLUMNNAME_BankAccountNo);
+	}
+
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
+
+	/** Set Activity.
+		@param C_Activity_ID Business Activity
+	*/
+	public void setC_Activity_ID (int C_Activity_ID)
+	{
+		if (C_Activity_ID < 1)
+			set_Value (COLUMNNAME_C_Activity_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
+	}
+
+	/** Get Activity.
+		@return Business Activity
+	  */
+	public int getC_Activity_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
@@ -679,6 +723,22 @@ public class X_I_Payment extends PO implements I_I_Payment, I_Persistent
 	public Timestamp getDateTrx()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTrx);
+	}
+
+	/** Set Description.
+		@param Description Optional short description of the record
+	*/
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription()
+	{
+		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Discount Amount.
