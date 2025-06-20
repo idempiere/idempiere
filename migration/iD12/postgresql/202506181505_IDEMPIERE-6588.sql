@@ -50,7 +50,7 @@ BEGIN
 		FROM C_InvoiceLine l
 		LEFT JOIN C_Charge c ON l.C_Charge_ID = c.C_Charge_ID
 		WHERE l.C_Invoice_ID = p_C_Invoice_ID
-		  AND COALESCE(c.isexcludedfromdiscount, 'N') = 'N';
+		 AND COALESCE(c.isexcludedfromdiscount, 'N') = 'N';
 	ELSE
 		v_Amount := v_GrandTotal;
 	END IF;
@@ -85,3 +85,5 @@ END;
 
 $body$ LANGUAGE plpgsql STABLE;
 
+-- IDEMPIERE-6588 - Payment Discount excluding freight charges
+SELECT register_migration_script('202506181505_IDEMPIERE-6588.sql') FROM dual;
