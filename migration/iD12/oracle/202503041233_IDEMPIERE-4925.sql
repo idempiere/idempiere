@@ -1,0 +1,14 @@
+-- IDEMPIERE-4925 - Adding column for UOM and QtyEntered on Inventory Move
+SELECT register_migration_script('202503041233_IDEMPIERE-4925.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Mar 4, 2025, 12:33:28 PM CET
+UPDATE AD_Field SET IsReadOnly='N',Updated=TO_TIMESTAMP('2025-03-04 12:33:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10998
+;
+
+-- Mar 4, 2025, 12:33:54 PM CET
+UPDATE AD_Field SET IsReadOnly='N',Updated=TO_TIMESTAMP('2025-03-04 12:33:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=2699
+;
+

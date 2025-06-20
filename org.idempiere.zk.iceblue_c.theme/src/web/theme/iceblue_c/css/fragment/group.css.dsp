@@ -16,6 +16,17 @@ tr.z-group {
 	padding: 1px 2px;
 	background: #fff !important;
 }
+.mobile .z-group td.z-group-inner {
+    padding: 8px 2px;
+}
+.mobile .z-group td.z-group-inner .z-group-icon {
+    height: 24px;
+    line-height: 24px;
+    font-size: 20px;
+}
+.mobile .z-group td.z-group-inner .z-label {
+    line-height: 24px;
+}
 
 .z-group-icon {
 	display: inline-block;

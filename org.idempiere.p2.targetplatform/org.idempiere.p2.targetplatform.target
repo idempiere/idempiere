@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-12" sequenceNumber="20240715">
+<target name="idempiere-12" sequenceNumber="20250306">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="10.0.1"/>
@@ -358,6 +358,12 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>2.3.5</version>
       <type>jar</type>
     </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.jvnet.mimepull</groupId>
+      <artifactId>mimepull</artifactId>
+      <version>1.9.14</version>
+	  <type>jar</type>
+	</location>
     <location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.sun.net.httpserver</groupId>
 	  <artifactId>http</artifactId>

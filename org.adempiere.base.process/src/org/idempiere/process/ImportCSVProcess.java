@@ -52,6 +52,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 @org.adempiere.base.annotation.Process
 public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
@@ -103,7 +104,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 
 		// Verify ImportMode permission for the role on the template
 		if (!m_importTemplate.isAllowed(p_ImportMode, Env.getAD_Role_ID(Env.getCtx())))
-			throw new AdempiereException("Template/Mode not allowed for this role");
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TemplateNotAllowedRole"));
 
 		m_gridWindow = GridWindow.get(getCtx(), -1, l_AD_Window_ID);
 		Env.setContext(getCtx(), -1, "IsSOTrx", m_gridWindow.isSOTrx());
@@ -121,7 +122,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 		}
 
 		if (m_gridTab == null)
-			throw new Exception("No Active Tab");
+			throw new Exception(Msg.getMsg(getCtx(),"NoActiveTab"));
 		m_gridTab.addDataStatusListener(this);
 		for (GridTab childTab : m_Childs)
 			childTab.addDataStatusListener(this);
@@ -138,7 +139,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 		}
 
 		if (csvImport == null)
-			throw new Exception ("No CSV importer");
+			throw new Exception (Msg.getMsg(getCtx(),"NoCSVImporter"));
 
 		return csvImport;
 	}
@@ -177,7 +178,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
         	GridTable gt = (GridTable) e.getSource();
         	l_gridTab = m_gridWindow.getTab(gt.getTabNo());
         	if (l_gridTab.getAD_Table_ID() != e.AD_Table_ID)
-        		throw new RuntimeException("Table doesn't match with updated tab");
+        		throw new RuntimeException(Msg.getMsg(getCtx(),"TableDoesntMatchWithUpdatedTab"));
         }
         if (log.isLoggable(Level.CONFIG)) log.config("(" + l_gridTab + ") Col=" + col + ": " + e.toString());
 

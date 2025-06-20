@@ -29,7 +29,6 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
@@ -39,8 +38,6 @@ import org.compiere.util.Env;
  */
 public class PackInProcess extends SvrProcess {
 
-	/** Logger */
-	private static final CLogger log = CLogger.getCLogger(PackInProcess.class);
 	//update system maintain dictionary, default to false
 	private boolean m_UpdateDictionary = false;
 	private String m_packageDirectory = null;
@@ -150,6 +147,7 @@ public class PackInProcess extends SvrProcess {
 		} catch (Exception e) {
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
 			packIn.getNotifier().addFailureLine(e.getLocalizedMessage());
+			packIn.getNotifier().addException(e);
 			packIn.setSuccess(false);
 			log.log(Level.SEVERE, "importXML:", e);
 			throw e;

@@ -23,6 +23,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BackgroundJob;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MPInstance;
@@ -98,7 +99,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		if (ThemeManager.isUseFontIconForImage())
 		{
 			ToolBarButton btn = new ToolBarButton();
-			btn.setIconSclass("z-icon-Refresh");
+			btn.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 			btn.setSclass("trash-toolbarbutton");
 			jobsToolbar.appendChild(btn);
 			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
@@ -210,7 +211,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			bxJobs.appendChild(btnJob);
 			btnJob.setLabel(label);
 			if (ThemeManager.isUseFontIconForImage())
-				btnJob.setIconSclass("z-icon-Window");
+				btnJob.setIconSclass(Icon.getIconSclass(Icon.WINDOW));
 			else
 				btnJob.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 			btnJob.addEventListener(Events.ON_CLICK, this);

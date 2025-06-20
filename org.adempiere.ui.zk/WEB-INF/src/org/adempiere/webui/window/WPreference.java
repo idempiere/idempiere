@@ -28,6 +28,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.grid.WQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MMenu;
@@ -128,7 +129,14 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		morePreferences= new A();	
 		morePreferences.setLabel(Msg.translate(Env.getCtx(), "MorePreferences"));
 		morePreferences.addEventListener(Events.ON_CLICK, this);
-		div.appendChild(morePreferences);
+
+		int windowID = Env.getZoomWindowID(MUserPreference.Table_ID, recordId);
+		if (windowID > 0) {
+			Boolean access = MRole.getDefault().getWindowAccess(windowID);
+			if (access != null && access.booleanValue())
+				div.appendChild(morePreferences);
+		}
+
 		this.appendChild(div);
 				
 		MMenu myProfileMenu = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID);		
@@ -137,7 +145,14 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		myProfile= new A();	
 		myProfile.setLabel(myProfileMenu.get_Translation("Name"));
 		myProfile.addEventListener(Events.ON_CLICK, this);
-		div.appendChild(myProfile);		
+		
+		windowID = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID).getAD_Window_ID();
+		if (windowID > 0) {
+			Boolean access = MRole.getDefault().getWindowAccess(windowID);
+			if (access != null && access.booleanValue())
+				div.appendChild(myProfile);
+		}
+
 		this.appendChild(div);
 		
 		div = new Div();
@@ -177,7 +192,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		ToolBarButton btn = new ToolBarButton("");
 		btn.setName("btnSave");
 		if (ThemeManager.isUseFontIconForImage())
-			btn.setIconSclass("z-icon-Save");
+			btn.setIconSclass(Icon.getIconSclass(Icon.SAVE));
 		else
 			btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));

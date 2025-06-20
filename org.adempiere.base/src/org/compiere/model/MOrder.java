@@ -1177,7 +1177,7 @@ public class MOrder extends X_C_Order implements DocAction
 		return valid;
 	}	//	validatePaySchedule
 	
-	private volatile static boolean recursiveCall = false;
+	private static final ThreadLocal<Boolean> recursiveCall = new ThreadLocal<>();
 	
 	@Override
 	protected boolean beforeSave (boolean newRecord)
@@ -1379,8 +1379,8 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		// Validate payment term and update IsPayScheduleValid
-		if (! recursiveCall && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
-			recursiveCall = true;
+		if (!Boolean.TRUE.equals(recursiveCall.get()) && (!newRecord && is_ValueChanged(COLUMNNAME_C_PaymentTerm_ID))) {
+			recursiveCall.set(Boolean.TRUE);
 			try {
 				MPaymentTerm pt = new MPaymentTerm (getCtx(), getC_PaymentTerm_ID(), get_TrxName());
 				boolean valid = pt.applyOrder(this);
@@ -1388,7 +1388,7 @@ public class MOrder extends X_C_Order implements DocAction
 			} catch (Exception e) {
 				throw e;
 			} finally {
-				recursiveCall = false;
+				recursiveCall.remove();
 			}
 		}
 
@@ -1465,6 +1465,13 @@ public class MOrder extends X_C_Order implements DocAction
 					line.setC_Currency_ID(getC_Currency_ID());
 				line.saveEx();
 			}
+			if (is_ValueChanged(MOrder.COLUMNNAME_AD_Org_ID)) {
+				for (MOrderPaySchedule orderPaySchedule : MOrderPaySchedule.getOrderPaySchedule(getCtx(),this.getC_Order_ID(), 0, get_TrxName())) {
+					orderPaySchedule.setAD_Org_ID(getAD_Org_ID());
+					orderPaySchedule.saveEx();
+				}
+			}
+			
 		}
 		//
 		return true;
@@ -1644,13 +1651,17 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Lines
 		if (explodeBOM())
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
-		if (!reserveStock(dt, lines))
-		{
-			String innerMsg = CLogger.retrieveErrorString("");
-			m_processMsg = "Cannot reserve Stock";
-			if (! Util.isEmpty(innerMsg))
-				m_processMsg = m_processMsg + " -> " + innerMsg;
-			return DocAction.STATUS_Invalid;
+
+		// Reserve stock if does not generate shipment on complete
+		if (!evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())) {
+			if (!reserveStock(dt, lines))
+			{
+				String innerMsg = CLogger.retrieveErrorString("");
+				m_processMsg = "Cannot reserve Stock";
+				if (! Util.isEmpty(innerMsg))
+					m_processMsg = m_processMsg + " -> " + innerMsg;
+				return DocAction.STATUS_Invalid;
+			}
 		}
 		if (!calculateTaxTotal())
 		{
@@ -2164,10 +2175,7 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		//	Create SO Shipment - Force Shipment
 		MInOut shipment = null;
-		if (MDocType.DOCSUBTYPESO_OnCreditOrder.equals(DocSubTypeSO)		//	(W)illCall(I)nvoice
-			|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(DocSubTypeSO)	//	(W)illCall(P)ickup	
-			|| MDocType.DOCSUBTYPESO_POSOrder.equals(DocSubTypeSO)			//	(W)alkIn(R)eceipt
-			|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(DocSubTypeSO) && dt.isAutoGenerateInout())) 
+		if (evalAutoGenerateInOutRule(DocSubTypeSO, dt.isAutoGenerateInout())) 
 		{
 			if (!DELIVERYRULE_Force.equals(getDeliveryRule()))
 			{
@@ -2236,6 +2244,19 @@ public class MOrder extends X_C_Order implements DocAction
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}	//	completeIt
+	
+	/**
+	 * Evaluate if the order should auto generate shipment
+	 * @param docSubTypeSO the document subtype of the order
+	 * @param isAutoGenerateInout true if the document type is set to auto generate shipment
+	 * @return true if the order should auto generate shipment
+	 */
+	private boolean evalAutoGenerateInOutRule(String docSubTypeSO, boolean isAutoGenerateInout) {
+		return MDocType.DOCSUBTYPESO_OnCreditOrder.equals(docSubTypeSO)		//	(W)illCall(I)nvoice
+				|| MDocType.DOCSUBTYPESO_WarehouseOrder.equals(docSubTypeSO)	//	(W)illCall(P)ickup	
+				|| MDocType.DOCSUBTYPESO_POSOrder.equals(docSubTypeSO)			//	(W)alkIn(R)eceipt
+				|| (MDocType.DOCSUBTYPESO_PrepayOrder.equals(docSubTypeSO) && isAutoGenerateInout);
+	}
 	
 	/**
 	 * Update QtyOverReceipt of M_InOutLine
@@ -3032,6 +3053,12 @@ public class MOrder extends X_C_Order implements DocAction
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+
+		if (!DocumentEngine.canReactivateThisDocType(getC_DocType_ID())) {
+			m_processMsg = Msg.getMsg(getCtx(), "DocTypeCannotBeReactivated", new Object[] {dt.getNameTrl()});
+			return false;
+		}
+
 		String DocSubTypeSO = dt.getDocSubTypeSO();
 		
 		//	PO - just re-open

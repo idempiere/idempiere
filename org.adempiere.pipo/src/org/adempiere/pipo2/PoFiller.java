@@ -227,9 +227,17 @@ public class PoFiller{
 							foreignTable = MTable.get(Env.getCtx(), tableID, po.get_TrxName());
 							refTableName = foreignTable.getTableName();
 						}
+					} else if (   po.get_TableName().startsWith("AD_TreeNode")
+							   && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName))) {
+						refTableName = e.attributes.getValue("reference-key");
 					}
 				}
-				if (id != null && refTableName != null) {
+				if (id instanceof Number && ((Number)id).intValue() == 0) {
+					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
+						po.set_ValueNoCheck(columnName, id);
+						return id;
+					}
+				} else if (id != null && refTableName != null) {
 					if (foreignTable != null) {
 						if (isMulti) {
 							for (String idstring : id.toString().split(",")) {
@@ -252,11 +260,6 @@ public class PoFiller{
     					}
     				}
 					return id;
-				} else if (id instanceof Number && ((Number)id).intValue() == 0) {
-					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
-						po.set_ValueNoCheck(columnName, id);
-						return id;
-					}
 				}				
 				return -1;
 			} else {
@@ -295,7 +298,7 @@ public class PoFiller{
 					subPo.getAD_Client_ID() != 0)
 				return false;
 		}
-		if (subPo.is_new())
+		if (subPo != null && subPo.is_new())
 			return false;
 		return true;
 	}

@@ -770,7 +770,20 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 			m_default.markImmutable();
 		return this;
 	}
-	
+
+	/**
+	 * Checks if the given accounting date falls within the valid date range (start and end date)
+	 * of the accounting schema.
+	 * 
+	 * @param  dateAcct the accounting date to check
+	 * @return          true if the accounting date is within the range, false otherwise
+	 */
+	public boolean isAcctDateInRange(Timestamp dateAcct)
+	{
+		return (getStartDate() == null || dateAcct.equals(getStartDate()) || dateAcct.after(getStartDate()))
+				&& (getEndDate() == null || dateAcct.equals(getEndDate()) || dateAcct.before(getEndDate()));
+	}
+
 	/**
 	 * Convenient method for testing if a back-date transaction is allowed in primary accounting schema
 	 * @param ctx

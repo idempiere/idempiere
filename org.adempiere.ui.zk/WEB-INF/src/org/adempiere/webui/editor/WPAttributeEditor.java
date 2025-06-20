@@ -26,6 +26,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WPAttributeDialog;
 import org.compiere.model.GridField;
@@ -93,7 +94,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 	 */
 	private void initComponents() {
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-PAttribute");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.PATTRIBUTE));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 

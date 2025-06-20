@@ -191,8 +191,8 @@ public class AmtInWords_IT implements AmtInWords
 			amount = amount.substring (0, pos);
 		
 		// remove points and commas
-		amount = amount.replaceAll( "\\.","");
-		amount = amount.replaceAll( ",","");
+		amount = amount.replace( ".","");
+		amount = amount.replace( ",","");
 
 		long amt = amount.length() > 0 ? Long.parseLong(amount) : 0;
 

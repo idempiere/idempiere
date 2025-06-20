@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250520L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -45,9 +45,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -81,9 +85,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -117,9 +125,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -153,9 +165,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -705,6 +721,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
+	/** Set Always Posted.
+		@param IsAlwaysPosted Posts the document if &quot;AlwaysPosted&quot; is checked, even without a valid accounting schema.
+	*/
+	public void setIsAlwaysPosted (boolean IsAlwaysPosted)
+	{
+		set_Value (COLUMNNAME_IsAlwaysPosted, Boolean.valueOf(IsAlwaysPosted));
+	}
+
+	/** Get Always Posted.
+		@return Posts the document if &quot;AlwaysPosted&quot; is checked, even without a valid accounting schema.
+	  */
+	public boolean isAlwaysPosted()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAlwaysPosted);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Generate Shipment.
 		@param IsAutoGenerateInout Automatically Generate Shipment after (Sales/Purchase) Order completed
 	*/
@@ -742,6 +781,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isAutoGenerateInvoice()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoGenerateInvoice);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Can Be Reactivated.
+		@param IsCanBeReactivated This document can be reactivated
+	*/
+	public void setIsCanBeReactivated (boolean IsCanBeReactivated)
+	{
+		set_Value (COLUMNNAME_IsCanBeReactivated, Boolean.valueOf(IsCanBeReactivated));
+	}
+
+	/** Get Can Be Reactivated.
+		@return This document can be reactivated
+	  */
+	public boolean isCanBeReactivated()
+	{
+		Object oo = get_Value(COLUMNNAME_IsCanBeReactivated);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

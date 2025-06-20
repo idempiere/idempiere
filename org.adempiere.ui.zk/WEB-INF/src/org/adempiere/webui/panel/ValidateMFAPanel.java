@@ -381,16 +381,15 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		}
 
 		if (chkRegisterDevice != null && chkRegisterDevice.isChecked()) {
-			// TODO: generate the random cookie if possible with some fingerprint of the device
 			String cookieValue = UUID.randomUUID().toString();
-			setCookie(getCookieName(), cookieValue);
+			int daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
+			setCookie(getCookieName(), cookieValue, daysExpire * 86400); // 86400 = seconds per day
 			MUser user = MUser.get(Env.getCtx());
 			MMFARegisteredDevice rd = new MMFARegisteredDevice(m_ctx, 0, null);
 			rd.set_ValueOfColumn(MMFARegistration.COLUMNNAME_AD_Client_ID, user.getAD_Client_ID());
 			rd.setAD_Org_ID(0);
 			rd.setAD_User_ID(user.getAD_User_ID());
 			rd.setMFADeviceIdentifier(cookieValue);
-			long daysExpire = MSysConfig.getIntValue(MSysConfig.MFA_REGISTERED_DEVICE_EXPIRATION_DAYS, 30, Env.getAD_Client_ID(m_ctx));
 			rd.setExpiration(new Timestamp(System.currentTimeMillis() + (daysExpire * 86400000L)));
 			rd.setHelp(ClientInfo.get().userAgent);
 			rd.saveCrossTenantSafeEx();
@@ -422,9 +421,11 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	 * @param name
 	 * @param value
 	 */
-	public static void setCookie(String name, String value) {
+	public static void setCookie(String name, String value, int expiry) {
 		Cookie cookie = new Cookie(name, value);
 		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(expiry);
 		((HttpServletResponse) Executions.getCurrent().getNativeResponse()).addCookie(cookie);
 	}
 

@@ -239,7 +239,7 @@ public class MAttachment extends X_AD_Attachment
 			MTable table = MTable.get(getAD_Table_ID());
 			if (table != null) {
 				PO po = null;
-				if (table.isUUIDKeyTable())
+				if (! table.isIDKeyTable())
 					po = table.getPOByUU(getRecord_UU(), get_TrxName());
 				else
 					po = table.getPO(getRecord_ID(), get_TrxName());
@@ -680,17 +680,16 @@ public class MAttachment extends X_AD_Attachment
 		if (log.isLoggable(Level.FINE)) log.fine("updateEntry - " + file);
 		//
 		byte[] data = null;
-		try
-		{
+		try (
 			FileInputStream fis = new FileInputStream (file);
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
+		)
+		{			
 			byte[] buffer = new byte[1024*8];   //  8kB
 			int length = -1;
 			while ((length = fis.read(buffer)) != -1)
 				os.write(buffer, 0, length);
-			fis.close();
 			data = os.toByteArray();
-			os.close();
 		}
 		catch (IOException ioe)
 		{

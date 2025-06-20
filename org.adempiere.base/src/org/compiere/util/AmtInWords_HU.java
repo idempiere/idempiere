@@ -37,7 +37,7 @@ public class AmtInWords_HU implements AmtInWords {
 	@Override
 	public String getAmtInWords(String amount) throws Exception {
 		assert(amount!=null);
-		amount = amount.replaceAll(" ", "").replaceAll("\u00A0", "");
+		amount = amount.replace(" ", "").replace("\u00A0", "");
 		amount = amount.replaceAll("\\"+thousandseparator, "");
 
 		int pos = amount.lastIndexOf(wholeseparator);

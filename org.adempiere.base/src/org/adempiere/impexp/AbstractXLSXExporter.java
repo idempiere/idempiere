@@ -24,16 +24,21 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.Header;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFDataFormat;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
+import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.compiere.model.MSysConfig;
@@ -140,10 +145,11 @@ public abstract class AbstractXLSXExporter
 	/** Logger */
 	protected final CLogger					log				= CLogger.getCLogger(getClass());
 	//
-	protected XSSFWorkbook					m_workbook;
-	private XSSFDataFormat					m_dataFormat;
-	private XSSFFont						m_fontHeader	= null;
-	private XSSFFont						m_fontDefault	= null;
+	protected Workbook					m_workbook;
+	private boolean						m_isUseSXSSF;
+	private DataFormat					m_dataFormat;
+	private Font						m_fontHeader	= null;
+	private Font						m_fontDefault	= null;
 	protected Language						m_lang			= null;
 	private int								m_sheetCount	= 0;
 	//
@@ -151,7 +157,7 @@ public abstract class AbstractXLSXExporter
 	private int								m_rowSplit		= 1;
 	private boolean							currentRowOnly	= false;
 	/** Styles cache */
-	private HashMap<String, XSSFCellStyle>	m_styles		= new HashMap<String, XSSFCellStyle>();
+	private HashMap<String, CellStyle>	m_styles		= new HashMap<String, CellStyle>();
 
 	protected Boolean[]						colSuppressRepeats;
 	private int noOfParameter = 0;
@@ -161,7 +167,14 @@ public abstract class AbstractXLSXExporter
 	 */
 	public AbstractXLSXExporter()
 	{
-		m_workbook = new XSSFWorkbook();
+		m_isUseSXSSF = MSysConfig.getBooleanValue(MSysConfig.XLSX_EXPORT_USE_FAST_METHOD, true, Env.getAD_Client_ID(Env.getCtx()));
+		if (m_isUseSXSSF) {
+			m_workbook = new SXSSFWorkbook(null, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, true, true);
+			((SXSSFWorkbook)m_workbook).getXSSFWorkbook().getProperties().getCoreProperties().setCreator("iDempiere");
+			((SXSSFWorkbook)m_workbook).setZip64Mode(Zip64Mode.Never);
+		} else {
+			m_workbook = new XSSFWorkbook();
+		}
 		m_dataFormat = m_workbook.createDataFormat();
 	}
 
@@ -194,9 +207,9 @@ public abstract class AbstractXLSXExporter
 	 * @param isHeader
 	 * @return XSSFFont
 	 */
-	private XSSFFont getFont(boolean isHeader)
+	private Font getFont(boolean isHeader)
 	{
-		XSSFFont font = null;
+		Font font = null;
 		if (isHeader)
 		{
 			if (m_fontHeader == null)
@@ -273,17 +286,17 @@ public abstract class AbstractXLSXExporter
 	/**
 	 * @param row
 	 * @param col
-	 * @return XSSFCellStyle
+	 * @return CellStyle
 	 */
-	private XSSFCellStyle getStyle(int row, int col)
+	private CellStyle getStyle(int row, int col)
 	{
 		int displayType = getDisplayType(row, col);
 		String key = "cell-" + col + "-" + displayType;
-		XSSFCellStyle cs = m_styles.get(key);
+		CellStyle cs = m_styles.get(key);
 		if (cs == null)
 		{
 			cs = m_workbook.createCellStyle();
-			XSSFFont font = getFont(false);
+			Font font = getFont(false);
 			cs.setFont(font);
 			// Border
 			cs.setBorderLeft(BorderStyle.THIN);
@@ -323,13 +336,13 @@ public abstract class AbstractXLSXExporter
 	 * @param col
 	 * @return XSSFCellStyle for column
 	 */
-	private XSSFCellStyle getHeaderStyle(int col)
+	private CellStyle getHeaderStyle(int col)
 	{
 		String key = "header-" + col;
-		XSSFCellStyle cs_header = m_styles.get(key);
+		CellStyle cs_header = m_styles.get(key);
 		if (cs_header == null)
 		{
-			XSSFFont font_header = getFont(true);
+			Font font_header = getFont(true);
 			cs_header = m_workbook.createCellStyle();
 			cs_header.setFont(font_header);
 			cs_header.setBorderLeft(BorderStyle.MEDIUM);
@@ -348,12 +361,38 @@ public abstract class AbstractXLSXExporter
 	 * @param sheet
 	 * @param lastColumnIndex
 	 */
-	private void fixColumnWidth(XSSFSheet sheet, int colCount)
+	private void fixColumnWidth(Sheet sheet, int colCount)
 	{
-		for (short colnum = 0; colnum < colCount; colnum++)
-		{
-			sheet.autoSizeColumn(colnum);
+		if (m_isUseSXSSF) {
+			// using streaming SXSSFWorkbook, the autoSizeColumn is not available
+			// so, we need to figure a default size depending on the display type
+			//  default here to:
+			//     10 characters for date fields
+			//     12 for numeric
+			//      5 for boolean
+			//     20 for all others
+			int colnum = 0;
+			for (int col = 0; col < getColumnCount(); col++) {				
+				if (isColumnPrinted(col)) {
+					int dt = getDisplayType(0, col);
+					int width = 20*256;
+					if (DisplayType.isDate(dt))
+						width = 10*256;
+					else if (DisplayType.isNumeric(dt))
+						width = 12*256;
+					else if (dt == DisplayType.YesNo)
+						width = 5*256;
+					sheet.setColumnWidth(colnum, width);
+					colnum++;
+				}
+			}
+		} else {
+			for (short colnum = 0; colnum < colCount; colnum++)
+			{
+				sheet.autoSizeColumn(colnum);
+			}
 		}
+
 	}
 
 	/**
@@ -362,7 +401,7 @@ public abstract class AbstractXLSXExporter
 	 * @param prevSheetName
 	 * @param colCount
 	 */
-	private void closeTableSheet(XSSFSheet prevSheet, String prevSheetName, int colCount)
+	private void closeTableSheet(Sheet prevSheet, String prevSheetName, int colCount)
 	{
 		if (prevSheet == null)
 			return;
@@ -386,11 +425,11 @@ public abstract class AbstractXLSXExporter
 
 	/**
 	 * Create new sheet
-	 * @return XSSFSheet
+	 * @return Sheet
 	 */
-	private XSSFSheet createTableSheet()
+	private Sheet createTableSheet()
 	{
-		XSSFSheet sheet = m_workbook.createSheet();
+		Sheet sheet = m_workbook.createSheet();
 		formatPage(sheet);
 		createHeaderFooter(sheet);
 		createParameter(sheet);
@@ -406,7 +445,7 @@ public abstract class AbstractXLSXExporter
 	/**
 	 * @param sheet
 	 */
-	private void createTableHeader(XSSFSheet sheet)
+	private void createTableHeader(Sheet sheet)
 	{
 		createTableHeader(sheet, Math.max(noOfParameter, 0));
 	}
@@ -415,11 +454,11 @@ public abstract class AbstractXLSXExporter
 	 * @param sheet
 	 * @param headerRowNum
 	 */
-	private void createTableHeader(XSSFSheet sheet, int headerRowNum)
+	private void createTableHeader(Sheet sheet, int headerRowNum)
 	{
 		int colnumMax = 0;
 
-		XSSFRow row = sheet.createRow(headerRowNum);
+		Row row = sheet.createRow(headerRowNum);
 		// for all columns
 		int colnum = 0;
 		for (int col = 0; col < getColumnCount(); col++)
@@ -429,9 +468,9 @@ public abstract class AbstractXLSXExporter
 			//
 			if (isColumnPrinted(col))
 			{
-				XSSFCell cell = row.createCell(colnum);
+				Cell cell = row.createCell(colnum);
 				// header row
-				XSSFCellStyle style = getHeaderStyle(col);
+				CellStyle style = getHeaderStyle(col);
 				cell.setCellStyle(style);
 				String str = getHeaderName(col);
 				cell.setCellValue(new XSSFRichTextString(str));
@@ -440,7 +479,7 @@ public abstract class AbstractXLSXExporter
 		} // for all columns
 	}
 
-	protected void createHeaderFooter(XSSFSheet sheet)
+	protected void createHeaderFooter(Sheet sheet)
 	{
 		// Sheet Header
 		Header header = sheet.getHeader();
@@ -467,14 +506,18 @@ public abstract class AbstractXLSXExporter
 	 * Format sheet
 	 * @param sheet
 	 */
-	protected void formatPage(XSSFSheet sheet)
+	protected void formatPage(Sheet sheet)
 	{
 		sheet.setFitToPage(true);
 		// Print Setup
-		XSSFPrintSetup ps = sheet.getPrintSetup();
+		PrintSetup ps;
+		if (m_isUseSXSSF)
+			ps = ((SXSSFSheet)sheet).getPrintSetup();
+		else
+			ps = ((XSSFSheet)sheet).getPrintSetup();
 		ps.setFitWidth((short) 1);
 		ps.setNoColor(true);
-		ps.setPaperSize(XSSFPrintSetup.A4_PAPERSIZE);
+		ps.setPaperSize(PrintSetup.A4_PAPERSIZE);
 		ps.setLandscape(false);
 	}
 
@@ -502,7 +545,7 @@ public abstract class AbstractXLSXExporter
 	 */
 	protected void export(OutputStream out) throws Exception
 	{
-		XSSFSheet sheet = null;
+		Sheet sheet = null;
 		if (out != null) 
 		{
 			sheet = createTableSheet();
@@ -537,7 +580,7 @@ public abstract class AbstractXLSXExporter
 				setCurrentRow(rownum);
 
 			boolean isPageBreak = false;
-			XSSFRow row = sheet.createRow(xls_rownum);
+			Row row = sheet.createRow(xls_rownum);
 			printColIndex = -1;
 			// for all columns
 			int colnum = 0;
@@ -547,7 +590,7 @@ public abstract class AbstractXLSXExporter
 				if (isColumnPrinted(col))
 				{
 					printColIndex++;
-					XSSFCell cell = null;
+					Cell cell = null;
 					// line row
 					Object obj = getValueAt(rownum, col);
 					if (isForm())
@@ -628,7 +671,7 @@ public abstract class AbstractXLSXExporter
 					//
 					if (cell != null) 
 					{
-						XSSFCellStyle style = getStyle(rownum, col);
+						CellStyle style = getStyle(rownum, col);
 						if (isForm())
 							style.setWrapText(true);
 						cell.setCellStyle(style);
@@ -715,7 +758,7 @@ public abstract class AbstractXLSXExporter
 	 * @param language
 	 * @throws Exception
 	 */
-	public void exportToWorkbook(XSSFWorkbook workbook, Language language) throws Exception
+	public void exportToWorkbook(Workbook workbook, Language language) throws Exception
 	{
 		m_lang = language;
 		m_workbook = workbook;
@@ -750,7 +793,7 @@ public abstract class AbstractXLSXExporter
 	 * Create parameter
 	 * @param sheet
 	 */
-	protected void createParameter(XSSFSheet sheet)
+	protected void createParameter(Sheet sheet)
 	{
 		
 	}
@@ -787,7 +830,7 @@ public abstract class AbstractXLSXExporter
 	 * @param colnum
 	 * @return cell for column
 	 */
-	protected XSSFCell getFormCell(XSSFRow row, int colnum) {
+	protected Cell getFormCell(Row row, int colnum) {
 		return null;
 	}
 
@@ -797,7 +840,7 @@ public abstract class AbstractXLSXExporter
 	 * @param colnum
 	 * @return row for column
 	 */
-	protected XSSFRow getFormRow(XSSFSheet sheet, int colnum) {
+	protected Row getFormRow(Sheet sheet, int colnum) {
 		return null;
 	}
 }

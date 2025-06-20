@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -111,6 +112,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
+	private static final String ON_LOGIN_AS = "onLoginAs";
     private static final CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
     protected Properties ctx;
@@ -144,12 +146,16 @@ public class LoginPanel extends Window implements EventListener<Event>
         init();
         this.setId("loginPanel");
         this.setSclass("login-box");
+		if (isLabelAboveInput())
+			LayoutUtils.addSclass("form-label-above-input", this);
 
         txtUserId.setEnabled(false);
         txtPassword.setEnabled(false);
         lstLanguage.setEnabled(false);
         Events.echoEvent(ON_LOAD_TOKEN, this, null);
         this.addEventListener(ON_LOAD_TOKEN, this);
+        if (Adempiere.isLoginInfoShown())
+        	this.addEventListener(ON_LOGIN_AS, this);
     }
 
     /**
@@ -244,10 +250,15 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword.removeEventListener(Events.ON_FOCUS, txtPassword);
     }
 
+	private boolean isLabelAboveInput() {
+		return LayoutUtils.isLabelAboveInputForSmallWidth();
+	}
+
     /**
      * Layout panel
      */
 	protected void createUI() {
+
 		Form form = new Form();
 
 		Div div = new Div();
@@ -282,6 +293,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblUserId);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -294,6 +310,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblPassword);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -306,6 +327,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblLanguage);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -318,6 +344,10 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(new Label(""));
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -331,6 +361,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         	tr.appendChild(td);
         	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
         	td.appendChild(new Label(""));
+			if (isLabelAboveInput()) {
+				tr = new Tr();
+				table.appendChild(tr);
+			}
         	td = new Td();
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
@@ -345,6 +379,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         	tr.appendChild(td);
         	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
         	td.appendChild(new Label(""));
+			if (isLabelAboveInput()) {
+				tr = new Tr();
+				table.appendChild(tr);
+			}
         	td = new Td();
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
@@ -473,6 +511,13 @@ public class LoginPanel extends Window implements EventListener<Event>
             
         	AuFocus auf = new AuFocus(txtUserId);
             Clients.response(auf);
+        }
+        else if (event.getName().equals(ON_LOGIN_AS))
+        {
+        	@SuppressWarnings("unchecked")
+			Map<String, String> data = (Map<String, String>) event.getData();
+        	txtUserId.setValue(data.get("username"));
+        	txtPassword.setValue(data.get("password"));
         }
         //
     }

@@ -26,12 +26,15 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.Env;
@@ -48,7 +51,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
-import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.LabelImageElement;
 
@@ -128,12 +130,18 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	feedbackMenu = new Menupopup();
 		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
-		mi.setIconSclass("z-icon-comment");
+    	if (ThemeManager.isUseFontIconForImage())
+		    mi.setIconSclass(Icon.getIconSclass(Icon.COMMENT));
+    	else
+    		mi.setImage(ThemeManager.getThemeResource("images/Request16.png"));
     	mi.setId("CreateRequest");
     	feedbackMenu.appendChild(mi);
     	mi.addEventListener(Events.ON_CLICK, this);
     	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
-    	mi.setIconSclass("z-icon-envelope");
+    	if (ThemeManager.isUseFontIconForImage())
+    	  mi.setIconSclass(Icon.getIconSclass(Icon.ENVELOPE));
+    	else
+    		mi.setImage(ThemeManager.getThemeResource("images/SendMail16.png"));
     	mi.setId("EmailSupport");
     	mi.addEventListener(Events.ON_CLICK, this);
     	feedbackMenu.appendChild(mi);
@@ -354,7 +362,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		String warehouse = getWarehouseName();
 		if (!Util.isEmpty(warehouse))
 			layout.appendChild(new Label(warehouse));
-		layout.appendChild(new Space());
+		String msgText = "";
+		String msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_HEADER_MESSAGE_VALUE);
+		if (!Util.isEmpty(msgValue, true))
+			msgText = Msg.getMsg(Env.getCtx(), msgValue);
+		layout.appendChild(new Label(msgText));
 		layout.appendChild(userPanelLinksContainer);
 		
 		popup.appendChild(layout);

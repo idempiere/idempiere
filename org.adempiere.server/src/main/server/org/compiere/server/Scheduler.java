@@ -64,6 +64,8 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
+import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
@@ -134,37 +136,44 @@ public class Scheduler extends AdempiereServer
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
 		Env.setContext(getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 
-		//Create new Session and set #AD_Session_ID to context
-		MSession session = MSession.get(Env.getCtx());
-		if(session == null) {
-			session = MSession.create(Env.getCtx());
+		// validate login to check if session is valid
+		String errorMessage = new Login(Env.getCtx()).validateLogin(new KeyNamePair(scheduler.getAD_Org_ID(), ""));
+		if (Util.isEmpty(errorMessage)) {
+			//Create new Session and set #AD_Session_ID to context
+			MSession session = MSession.get(Env.getCtx());
+			if(session == null) {
+				session = MSession.create(Env.getCtx());
+			} else {
+				session = new MSession(Env.getCtx(), session.getAD_Session_ID(), null);
+			}
+			MProcess process = new MProcess(getCtx(), scheduler.getAD_Process_ID(), null);
+			try
+			{
+				m_trx = Trx.get(Trx.createTrxName("Scheduler"), true);
+				m_trx.setDisplayName(getClass().getName()+"_"+getModel().getName()+"_doWork");
+				m_summary.append(runProcess(process));
+				m_trx.commit(true);
+			}
+			catch (Throwable e)
+			{
+				if (m_trx != null)
+					m_trx.rollback();
+				log.log(Level.WARNING, process.toString(), e);
+				m_summary.append(e.toString());
+			}
+			finally
+			{
+				if (m_trx != null)
+					m_trx.close();
+				m_trx = null;
+				session.logout();
+				getCtx().remove(Env.AD_SESSION_ID);
+			}
 		} else {
-			session = new MSession(Env.getCtx(), session.getAD_Session_ID(), null);
+			log.log(Level.WARNING, errorMessage);
+			m_summary.append(errorMessage);
 		}
-		MProcess process = new MProcess(getCtx(), scheduler.getAD_Process_ID(), null);
-		try
-		{
-			m_trx = Trx.get(Trx.createTrxName("Scheduler"), true);
-			m_trx.setDisplayName(getClass().getName()+"_"+getModel().getName()+"_doWork");
-			m_summary.append(runProcess(process));
-			m_trx.commit(true);
-		}
-		catch (Throwable e)
-		{
-			if (m_trx != null)
-				m_trx.rollback();
-			log.log(Level.WARNING, process.toString(), e);
-			m_summary.append(e.toString());
-		}
-		finally
-		{
-			if (m_trx != null)
-				m_trx.close();
-			m_trx = null;
-			session.logout();
-			getCtx().remove(Env.AD_SESSION_ID);
-		}
-		
+
 		//
 		int no = scheduler.deleteLog();
 		m_summary.append(" Logs deleted=").append(no);

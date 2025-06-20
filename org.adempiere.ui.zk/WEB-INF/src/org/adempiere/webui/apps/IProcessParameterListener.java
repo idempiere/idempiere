@@ -38,4 +38,12 @@ public interface IProcessParameterListener {
 	public default String validate(ProcessParameterPanel parameterPanel) {
 		return null;
 	}	
+
+	/**
+	 * Initialization of process parameter form
+	 * @param parameterPanel
+	 */
+	public default void onInit(ProcessParameterPanel parameterPanel) {
+	}
+
 }

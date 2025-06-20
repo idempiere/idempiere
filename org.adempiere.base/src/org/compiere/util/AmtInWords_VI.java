@@ -279,7 +279,7 @@ public class AmtInWords_VI implements AmtInWords
 			if (period != -1) //like 1.000.000,89
 			{
 				decamt = amount.substring(comma+1,amount.length());
-				amount = amount.replaceAll ("\\.", "");
+				amount = amount.replace(".", "");
 				newpos = amount.lastIndexOf (',')+1;
 			}
 			else if ((amount.length()-comma-1) <=2 )
@@ -289,22 +289,22 @@ public class AmtInWords_VI implements AmtInWords
 				}
 				else	//like 1,000,000
 				{	decamt = "";
-					amount = amount.replaceAll (",", "");
+					amount = amount.replace(",", "");
 					newpos = 0;
 				}
 		}
 		if (comma < period) //like 1,000.09 or 1.000.000 or 120.355 (a hundred and twenty 355/100)
 		{	
-			if ((comma !=-1) | (numberOfPeriods ==1))//like 1,000.09
+			if ((comma !=-1) || (numberOfPeriods ==1))//like 1,000.09
 			{
 				decamt = amount.substring(period+1,amount.length());
-				amount = amount.replaceAll (",", "");
+				amount = amount.replace(",", "");
 				newpos = amount.lastIndexOf ('.')+1;
 			} 
 			else //like 1.000.000
 			{
 				decamt = "";
-				amount = amount.replaceAll ("\\.", "");
+				amount = amount.replace(".", "");
 				newpos = 0;
 			}
 		}
@@ -326,7 +326,7 @@ public class AmtInWords_VI implements AmtInWords
 			dollars = Long.parseLong(amount.substring(0,amount.length()));
 			sb.append (convert(dollars));
 		}
-		return sb.toString ().replaceAll("  ", " ").replaceAll("linh nghìn", "nghìn").replaceAll("linh triệu","triệu").replaceAll("linh tỉ","tỉ");
+		return sb.toString ().replace("  ", " ").replaceAll("linh nghìn", "nghìn").replace("linh triệu","triệu").replace("linh tỉ","tỉ");
 	}	//	getAmtInWords
 
 	/**

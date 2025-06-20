@@ -431,7 +431,7 @@ public class InvoicePrint extends SvrProcess
 		}
 		String orgWhere = MRole.getDefault(getCtx(), false).getOrgWhere(MRole.SQL_RO);
 		if (!Util.isEmpty(orgWhere, true)) {
-			orgWhere = orgWhere.replaceAll("AD_Org_ID", "i.AD_Org_ID");
+			orgWhere = orgWhere.replace("AD_Org_ID", "i.AD_Org_ID");
 			sql.append(" AND ");
 			sql.append(orgWhere);
 		}

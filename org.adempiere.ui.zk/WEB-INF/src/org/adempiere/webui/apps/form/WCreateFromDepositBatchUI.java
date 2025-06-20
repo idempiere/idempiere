@@ -50,7 +50,6 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
 import org.compiere.model.SystemIDs;
-import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -96,12 +95,6 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		}
 		AEnv.showWindow(window);
 	}
-	
-	/** Window No */
-	private int p_WindowNo;
-
-	/**	Logger */
-	private static final CLogger log = CLogger.getCLogger(WCreateFromDepositBatchUI.class);
 	
 	/** form parameters for loading of payment transactions ({@link #loadBankAccount}) */
 	

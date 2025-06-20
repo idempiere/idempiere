@@ -48,6 +48,7 @@ public class SystemProperties {
 	private static final String org_idempiere_db_debug = "org.idempiere.db.debug";
 	private static final String org_idempiere_db_debug_convert = "org.idempiere.db.debug.convert";
 	private static final String org_idempiere_db_debug_filter = "org.idempiere.db.debug.filter";
+	private static final String org_idempiere_developermode = "org.idempiere.developermode";
 	private static final String org_idempiere_FileLogPrefix = "org.idempiere.FileLogPrefix";
 	private static final String org_idempiere_FullExceptionTraceInLog = "org.idempiere.FullExceptionTraceInLog";
 	private static final String org_idempiere_postgresql_URLParameters = "org.idempiere.postgresql.URLParameters";
@@ -185,6 +186,14 @@ public class SystemProperties {
 	 */
 	public static boolean isDBDebugConvert() {
 		return "true".equals(System.getProperty(org_idempiere_db_debug_convert));
+	}
+
+	/**
+	 * org_idempiere_developermode=Y to define that iDempiere is running in developer mode (usually in eclipse IDE) Y/N
+	 * @return
+	 */
+	public static boolean isDeveloperMode() {
+		return System.getProperty(org_idempiere_developermode, "N").equals("Y");
 	}
 
 	/**

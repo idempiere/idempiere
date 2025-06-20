@@ -105,11 +105,23 @@ public class DefaultEvaluatee implements Evaluatee {
 	}
 	
 	/**
+	 * Help to use variable from window context 
+	 * @param dataProvider
+	 * @param windowNo
+	 * @param tabNo
+	 */
+	public DefaultEvaluatee(DataProvider dataProvider, int windowNo, int tabNo) {
+		this(dataProvider);
+		this.m_windowNo = windowNo;
+		this.m_tabNo = tabNo;
+	}
+	
+	/**
 	 * @param dataProvider
 	 */
 	public DefaultEvaluatee(DataProvider dataProvider) {
 		this.m_dataProvider = dataProvider;
-		this.m_windowNo = -1;
+		this.m_windowNo = 0;
 		this.m_tabNo = -1;
 		this.m_onlyWindow = false;
 		this.m_onlyTab = null;
@@ -120,7 +132,7 @@ public class DefaultEvaluatee implements Evaluatee {
 	 */
 	public DefaultEvaluatee() {
 		this.m_dataProvider = null;
-		this.m_windowNo = -1;
+		this.m_windowNo = 0;
 		this.m_tabNo = -1;
 		this.m_onlyWindow = false;
 		this.m_onlyTab = null;
@@ -174,12 +186,8 @@ public class DefaultEvaluatee implements Evaluatee {
 		String value = null;
 		boolean globalVariable = Env.isGlobalVariable(variableName);
 		boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
-		// get value from global or window context
-		if (globalVariable)
-		{
-			value = Env.getContext(ctx, variableName);	// get from global context
-		}
-		else if (m_windowNo >= 0)
+		// get value from window context or global
+		if (m_windowNo != 0)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
@@ -187,7 +195,7 @@ public class DefaultEvaluatee implements Evaluatee {
 						m_onlyTab != null ? m_onlyTab.booleanValue() : false);
 				value = Env.getContext(Env.getCtx(), m_windowNo, m_tabNo, keycolumnName, m_onlyTab != null ? m_onlyTab.booleanValue() : false);
 			}
-			else if (m_tabNo <= 0)
+			else if (m_tabNo < 0)
 			{
 				if (!tabOnly)
 					value = Env.getContext (ctx, m_windowNo, variableName, m_onlyWindow);
@@ -201,7 +209,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		    	value = Env.getContext (ctx, m_windowNo, m_tabNo, variableName, tabOnly, true);
 		    }
 		}
-		
+		if (Util.isEmpty(value) && (globalVariable || Env.isPreference(variableName)))
+		{
+			value = Env.getContext(ctx, variableName);	// get from global context
+		}
+
 		// po property operator
 		Object dataValue = null;
 		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
@@ -214,9 +226,10 @@ public class DefaultEvaluatee implements Evaluatee {
 		
 		//remove prefix from variable name
 		boolean withTabNo = false;
-		if (Env.isGlobalVariable(variableName)) {
+		if (globalVariable) {
 			variableName = variableName.substring(1);				
-		} else if (variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0) {
+		} else if (   variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0
+				   && !variableName.startsWith(Env.TAB_INFO + Evaluator.VARIABLE_TAB_NO_SEPARATOR)) {
 			variableName = variableName.substring(variableName.lastIndexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR)+1);
 			withTabNo = true;
 		} else if (variableName.startsWith(Evaluator.VARIABLE_SELF_TAB_OPERATOR)) {
@@ -225,7 +238,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 		
 		//try window context again after removal of tab no
-		if (!globalVariable && Util.isEmpty(value) && m_windowNo >= 0 && withTabNo && !tabOnly) {
+		if (!globalVariable && Util.isEmpty(value) && m_windowNo != 0 && withTabNo && !tabOnly) {
 			value = Env.getContext(ctx, m_windowNo, variableName);
 		}
 		
@@ -290,8 +303,14 @@ public class DefaultEvaluatee implements Evaluatee {
 		// handle format in <> operator
 		if (format != null && format.length() > 0) {
 			String foreignTable = getForeignTableName(variableName, column);
+			if (foreignTable == null && column != null && getPO() != null
+					&& getPO().get_KeyColumns() != null
+					&& getPO().get_KeyColumns().length == 1
+					&& getPO().get_KeyColumns()[0].equalsIgnoreCase(column.getColumnName())) {
+				foreignTable = getPO().get_TableName();
+			}
 			//no dot operator and variable name is *_ID
-			if (Util.isEmpty(foreignColumn) && variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX)) {
+			if (Util.isEmpty(foreignColumn) && (variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX) || variableName.equals("CreatedBy") || variableName.equals("UpdatedBy"))) {
 				int id = 0;
 				try {
 					id = Integer.parseInt(value);
@@ -441,6 +460,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		@Override
 		public void reset(String tableName, int recordId) {
 			String key = tableName + "|" + recordId;
+			remove(key);
+		}
+		
+		@Override
+		public void reset(String tableName, String key) {
 			remove(key);
 		}
 	}

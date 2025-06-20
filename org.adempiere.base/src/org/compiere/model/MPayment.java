@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -70,9 +71,9 @@ public class MPayment extends X_C_Payment
 	implements DocAction, ProcessCall, PaymentInterface, IDocsPostProcess
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -1581098289090430363L;
+	private static final long serialVersionUID = -1157628050370126666L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -843,6 +844,11 @@ public class MPayment extends X_C_Payment
 						log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_ConvertedAmt));
 						return false;
 					}
+					BigDecimal converted = getPayAmt().multiply(getCurrencyRate());
+					int stdPrecision = MCurrency.getStdPrecision(getCtx(), as.getC_Currency_ID());
+					if (converted.scale() > stdPrecision)
+						converted = converted.setScale(stdPrecision, RoundingMode.HALF_UP);
+					setConvertedAmt(converted);
 				}
 				else
 				{
@@ -891,6 +897,13 @@ public class MPayment extends X_C_Payment
 		
 		return true;
 	}	//	beforeSave
+
+	@Override
+	protected boolean beforeDelete() {
+		@SuppressWarnings("unused")
+		boolean ok = MPaySelectionCheck.deleteGeneratedDraft(getCtx(), getC_Payment_ID(), get_TrxName());
+		return true;
+	}
 
 	/**
 	 * 	Document Status is Complete or Closed
@@ -2883,6 +2896,11 @@ public class MPayment extends X_C_Payment
 			return false;	
 		
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+
+		if (!DocumentEngine.canReactivateThisDocType(getC_DocType_ID())) {
+			m_processMsg = Msg.getMsg(getCtx(), "DocTypeCannotBeReactivated", new Object[] {MDocType.get(getC_DocType_ID()).getNameTrl()});
+			return false;
+		}
 
 		MAllocationHdr[] allocations = MAllocationHdr.getOfPayment(getCtx(), getC_Payment_ID(), get_TrxName());
 		if (allocations.length > 0) {

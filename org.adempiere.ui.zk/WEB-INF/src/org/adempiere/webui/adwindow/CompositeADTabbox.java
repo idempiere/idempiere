@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.DetailPane.Tabpanel;
 import org.adempiere.webui.component.ADTabListModel;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
@@ -87,9 +88,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 	/** List of all tab **/
     private List<ADTabListModel.ADTabLabel> tabLabelList = new ArrayList<ADTabListModel.ADTabLabel>();
     
-    /** List of all tab panel **/
-    private List<IADTabpanel> tabPanelList = new ArrayList<IADTabpanel>();
-
     /** main layout component **/
     private Vlayout layout;
 
@@ -422,7 +420,6 @@ public class CompositeADTabbox extends AbstractADTabbox
     	ADTabListModel.ADTabLabel tabLabel = new ADTabListModel.ADTabLabel(gTab.getName(), gTab.getTabLevel(), gTab.getDescription(),
         		gTab.getWindowNo(), gTab.getAD_Tab_ID());
         tabLabelList.add(tabLabel);
-        tabPanelList.add(tabPanel);
         
         tabPanel.setTabNo(tabPanelList.size()-1);
         
@@ -438,7 +435,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (tabPanel != headerTab && headerTab.getDetailPane() != null && tabPanel.getTabLevel() > headerTab.getTabLevel()) {
 					if (b != null && b.booleanValue()) {
 						onActivateDetail(tabPanel);
-						if (headerTab instanceof ADTabpanel) {
+						if (headerTab instanceof ADTabpanel && !ClientInfo.isMobile()) {
 							if (!((ADTabpanel) headerTab).getADWindowContent().focusToLastFocusEditor(true))
 								((ADTabpanel) headerTab).getADWindowContent().focusToActivePanel();
 						}

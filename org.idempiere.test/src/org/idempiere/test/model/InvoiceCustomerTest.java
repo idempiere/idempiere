@@ -777,4 +777,96 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertEquals(date2, creditMemo.getDateInvoiced());
 		assertEquals(date2, creditMemo.getDateAcct());
 	}
+	
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-6067
+	 */
+	@Test
+	public void testInvoiceReactivate() {
+
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.setDateOrdered(currentDate);
+		order.setDatePromised(currentDate);
+		order.setSalesRep_ID(getAD_User_ID());
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id));
+		line1.setQty(new BigDecimal("10"));
+		line1.setDatePromised(currentDate);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(10, line1.getQtyReserved().intValue());
+
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+
+		//	Shipment
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("10"));
+		shipmentLine.setQty(new BigDecimal("10"));
+		shipmentLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+
+		//	Invoice
+		MInvoice invoice = new MInvoice(shipment, currentDate);
+		MDocType docType = MDocType.get(Env.getCtx(), invoice.getC_DocTypeTarget_ID());
+		boolean docTypeChanged = false;
+		if (!docType.isCanBeReactivated()) {
+			docType = new MDocType(Env.getCtx(), docType.get_ID(), null);
+			docType.setIsCanBeReactivated(true);
+			docType.saveEx();
+			docTypeChanged = true;
+		}
+		try {
+			invoice.saveEx();
+			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+			invoiceLine.setShipLine(shipmentLine);
+			invoiceLine.setQty(new BigDecimal("10"));
+			invoiceLine.saveEx();
+	
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			invoice.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+	
+			line1.load(getTrxName());
+			assertEquals(10, line1.getQtyInvoiced().intValue());
+	
+			// Reactivating the invoice should 'reset' the invoiced qty on the order line
+			invoice.load(getTrxName());
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_ReActivate);
+			assertFalse(info.isError(), info.getSummary());
+			invoice.load(getTrxName());
+			assertEquals(DocAction.STATUS_InProgress, invoice.getDocStatus());
+	
+			line1.load(getTrxName());
+			assertEquals(0, line1.getQtyInvoiced().intValue());
+		} finally {
+			if (docTypeChanged) {
+				docType.setIsCanBeReactivated(false);
+				docType.saveEx();
+			}
+		}
+	}
 }
