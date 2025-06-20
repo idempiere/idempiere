@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_SysConfig
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_SysConfig 
 {
@@ -149,6 +149,15 @@ public interface I_AD_SysConfig
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsLoadAsContext */
+    public static final String COLUMNNAME_IsLoadAsContext = "IsLoadAsContext";
+
+	/** Set Load as Context	  */
+	public void setIsLoadAsContext (boolean IsLoadAsContext);
+
+	/** Get Load as Context	  */
+	public boolean isLoadAsContext();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

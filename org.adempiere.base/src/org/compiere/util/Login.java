@@ -792,6 +792,7 @@ public class Login
 		}
 		
 		Env.setPredefinedVariables(Env.getCtx(), -1, MRole.getDefault().getPredefinedContextVariables());
+		Env.setSysConfigAsContext(Env.getCtx(), AD_Client_ID, MSysConfig.getContextBasedSysConfigList());
 
 		return null;
 	}	//	validateLogin

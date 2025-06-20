@@ -2273,5 +2273,19 @@ public final class Env
 	public static boolean isPreference(String variable) {
 		return variable.startsWith("P|");
 	}
+	
+	/**
+	 * Initialize Context Based System Configuration
+	 * 
+	 * @param ctx
+	 * @param AD_Client_ID
+	 * @param contextBasedSysConfig
+	 */
+	public static void setSysConfigAsContext(Properties ctx, int AD_Client_ID,
+			ArrayList<String> contextBasedSysConfig) {
+		for (String name : contextBasedSysConfig) {
+			Env.setContext(ctx, "#" + name, MSysConfig.getValue(name, AD_Client_ID));
+		}
+	}
 
 }   //  Env
