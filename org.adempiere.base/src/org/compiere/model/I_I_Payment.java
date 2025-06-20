@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Payment
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_Payment 
 {
@@ -192,6 +192,19 @@ public interface I_I_Payment
 	  */
 	public String getAccountNo();
 
+    /** Column name ActivityValue */
+    public static final String COLUMNNAME_ActivityValue = "ActivityValue";
+
+	/** Set Activity Key.
+	  * Text key for Activity
+	  */
+	public void setActivityValue (String ActivityValue);
+
+	/** Get Activity Key.
+	  * Text key for Activity
+	  */
+	public String getActivityValue();
+
     /** Column name BPartnerValue */
     public static final String COLUMNNAME_BPartnerValue = "BPartnerValue";
 
@@ -217,6 +230,21 @@ public interface I_I_Payment
 	  * Bank Account Number
 	  */
 	public String getBankAccountNo();
+
+    /** Column name C_Activity_ID */
+    public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
+
+	/** Set Activity.
+	  * Business Activity
+	  */
+	public void setC_Activity_ID (int C_Activity_ID);
+
+	/** Get Activity.
+	  * Business Activity
+	  */
+	public int getC_Activity_ID();
+
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -468,6 +496,19 @@ public interface I_I_Payment
 	  * Transaction Date
 	  */
 	public Timestamp getDateTrx();
+
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
 
     /** Column name DiscountAmt */
     public static final String COLUMNNAME_DiscountAmt = "DiscountAmt";
