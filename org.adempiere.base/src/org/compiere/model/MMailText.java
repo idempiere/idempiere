@@ -505,4 +505,20 @@ public class MMailText extends X_R_MailText
 		return m_user;
 	}
 
+	/**
+	 * 	@return Mail Header (Subject)
+	 */
+	public String getSuperMailHeader()
+	{
+		return super.getMailHeader();
+	}	//	getMailText
+
+	/**
+	 * 	@return Text used for Mail message
+	 */
+	public String getSuperMailText()
+	{
+		return super.getMailText();
+	}	//	getMailText
+
 }	//	MMailText
