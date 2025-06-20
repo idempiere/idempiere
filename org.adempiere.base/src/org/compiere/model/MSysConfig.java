@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -47,7 +48,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4467301251742419106L;
+	private static final long serialVersionUID = 3666926969652795208L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -327,7 +328,7 @@ public class MSysConfig extends X_AD_SysConfig
 	private static CLogger	s_log	= CLogger.getCLogger (MSysConfig.class);
 	/** Cache			*/
 	private static CCache<String, String> s_cache = new CCache<String, String>(Table_Name, 40, 0, false, 0);
-	
+	private static CCache<String, ArrayList<String>> s_ContextCache = new CCache<String, ArrayList<String>>(Table_Name, 1, 0, false, 0);
 	/**
 	 * Get system configuration property of type string
 	 * @param Name
@@ -945,5 +946,36 @@ public class MSysConfig extends X_AD_SysConfig
 		}
 		return success;
 	}
+
+	/**
+	 * get Context Based System Configuration List.
+	 * 
+	 * @return
+	 */
+	public static ArrayList<String> getContextBasedSysConfigList() {
+		ArrayList<String> list = s_ContextCache.get("ContextSysConfig");
+		if(list!=null)
+			return list;
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		list = new ArrayList<String>();
+		String sql = "SELECT Name FROM AD_SysConfig WHERE IsActive='Y' AND IsLoadAsContext='Y' AND AD_Client_ID=0";
+
+		try {
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			s_log.log(Level.SEVERE, "getContextBasedSysConfigList", e);
+		} finally {
+			DB.close(rs, pstmt);
+		}
+
+		s_ContextCache.put("ContextSysConfig", list);
+		return list;
+	} // getContextBasedSysConfigList
 
 }	//	MSysConfig;

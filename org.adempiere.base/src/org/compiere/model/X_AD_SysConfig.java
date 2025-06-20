@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SysConfig
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_SysConfig")
 public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250618L;
 
     /** Standard Constructor */
     public X_AD_SysConfig (Properties ctx, int AD_SysConfig_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 			setAD_SysConfig_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsLoadAsContext (false);
+// N
 			setName (null);
 			setValue (null);
         } */
@@ -56,6 +58,8 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 			setAD_SysConfig_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsLoadAsContext (false);
+// N
 			setName (null);
 			setValue (null);
         } */
@@ -70,6 +74,8 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 			setAD_SysConfig_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsLoadAsContext (false);
+// N
 			setName (null);
 			setValue (null);
         } */
@@ -84,6 +90,8 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 			setAD_SysConfig_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsLoadAsContext (false);
+// N
 			setName (null);
 			setValue (null);
         } */
@@ -211,6 +219,28 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
+	}
+
+	/** Set Load as Context.
+		@param IsLoadAsContext Load as Context
+	*/
+	public void setIsLoadAsContext (boolean IsLoadAsContext)
+	{
+		set_Value (COLUMNNAME_IsLoadAsContext, Boolean.valueOf(IsLoadAsContext));
+	}
+
+	/** Get Load as Context.
+		@return Load as Context	  */
+	public boolean isLoadAsContext()
+	{
+		Object oo = get_Value(COLUMNNAME_IsLoadAsContext);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.
