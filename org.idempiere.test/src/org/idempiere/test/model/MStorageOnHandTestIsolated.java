@@ -27,10 +27,14 @@ package org.idempiere.test.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Properties;
 
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MPInstance;
@@ -49,6 +53,7 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
 
 /**
  * 
@@ -85,8 +90,7 @@ public class MStorageOnHandTestIsolated extends AbstractTestCase {
 		count = query.setParameters(product.get_ID()).count();
 		assertEquals(1, count);
 		
-		//movement get product from cache
-		MProduct product1 = new MProduct(Env.getCtx(), 0, null);
+		MProduct product1 = new MProduct(Env.getCtx(), 0, getTrxName());
 		product1.setName("testStorageCleanUp#1");
 		product1.setValue(product1.getName());
 		product1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
@@ -97,7 +101,8 @@ public class MStorageOnHandTestIsolated extends AbstractTestCase {
 		product1.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 		product1.saveEx();
 		
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			mockProductGet(productMock, product1);
 			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
 			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			asi1.setLot("Lot1");
@@ -222,9 +227,12 @@ public class MStorageOnHandTestIsolated extends AbstractTestCase {
 			onhand = query.setParameters(product2.get_ID(), asi3.get_ID()).first();
 			assertNotNull(onhand);
 			assertEquals(1, onhand.getQtyOnHand().intValue());
-		} finally {
-			getTrx().rollback();
-			product1.deleteEx(true);
 		}
+	}
+	
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
 	}
 }

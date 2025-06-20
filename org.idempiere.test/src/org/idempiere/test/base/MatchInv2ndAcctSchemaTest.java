@@ -27,6 +27,10 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -65,12 +70,13 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
+import org.mockito.MockedStatic;
 
 /**
  * @author Elaine Tan - etantg
@@ -81,7 +87,6 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty1=2400, Qty2=2400 
@@ -93,18 +98,19 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
 		MProduct product1 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		MProduct product2 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id); // Oak Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal usdToEur = new BigDecimal(31.526248754713);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, usdToEur);
-		BigDecimal eurToUsd = cr.getDivideRate();
+		BigDecimal eurToUsd = BigDecimal.valueOf(1d / usdToEur.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, C_ConversionType_ID, currentDate, usdToEur);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur1 = new BigDecimal(1);
 			BigDecimal qtyOrdered1 = new BigDecimal(2400);
@@ -164,14 +170,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, accountedAmtDr, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=10, Price=33.75
@@ -184,17 +186,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testCreditMemoPosting_2() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(31.526248754713);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, currentDate, eurToUsd);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(33.75);
 			BigDecimal qtyOrdered = new BigDecimal(10);
@@ -282,14 +285,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, Env.ZERO, accountedAmtCr));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (different period)
 	 * PO Qty=3, Price=0.3023, Period 1
@@ -300,7 +299,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testCreditMemoPosting_3() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -310,7 +309,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Purchase GBP " + System.currentTimeMillis());
 		MCurrency britishPound = MCurrency.get(DictionaryIDs.C_Currency.GBP.id); // British Pound (GBP)
 		priceList.setC_Currency_ID(britishPound.getC_Currency_ID());
@@ -328,21 +327,27 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal usdToPound1 = new BigDecimal(0.88917098794);
-		MConversionRate crUsd1 = createConversionRate(britishPound.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, usdToPound1, false);
-		BigDecimal poundToUsd1 = crUsd1.getMultiplyRate();
+		BigDecimal poundToUsd1 = BigDecimal.valueOf(1d / usdToPound1.doubleValue());
 		
 		BigDecimal usdToPound2 = new BigDecimal(0.84225);
-		MConversionRate crUsd2 = createConversionRate(britishPound.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, usdToPound2, false);
-		BigDecimal poundToUsd2 = crUsd2.getMultiplyRate();
+		BigDecimal poundToUsd2 = BigDecimal.valueOf(1d / usdToPound2.doubleValue());
 		
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal poundToEuro1 = new BigDecimal(34.7186);
-		MConversionRate crEur1 = createConversionRate(britishPound.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, poundToEuro1, true);
 		
 		BigDecimal poundToEuro2 = new BigDecimal(37.1828);
-		MConversionRate crEur2 = createConversionRate(britishPound.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, poundToEuro2, true);
 
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, usd, britishPound, C_ConversionType_ID, date1, usdToPound1);
+			mockGetRate(conversionRateMock, usd, britishPound, C_ConversionType_ID, date2, usdToPound2);
+			
+			mockGetRate(conversionRateMock, britishPound, euro, C_ConversionType_ID, date1, poundToEuro1);
+			mockGetRate(conversionRateMock, britishPound, euro, C_ConversionType_ID, date2, poundToEuro2);
+					
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MOrder order = createPurchaseOrder(bpartner, date1, priceList.getM_PriceList_ID(), C_ConversionType_ID);			
 			BigDecimal qtyOrdered = new BigDecimal(3);
 			MOrderLine orderLine = createPurchaseOrderLine(order, 10, product, qtyOrdered, priceInPound);
@@ -400,22 +405,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, accountedAmtDr, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			rollback();
-			
-			deleteConversionRate(crUsd1);
-			deleteConversionRate(crUsd2);
-			deleteConversionRate(crEur1);
-			deleteConversionRate(crEur2);
-			
-			pp.deleteEx(true);
-			plv.deleteEx(true);
-			priceList.deleteEx(true);						
 		}		
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (different period)
 	 * PO Qty1=1000, Qty2=1000, Qty3=1000, Price1=3.00, Price2=2.70, Price3=3.15, Period 1
@@ -428,7 +421,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MProduct product1 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		MProduct product2 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id); // Oak Tree
 		MProduct product3 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.PLUM_TREE.id); // Plum Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -444,17 +437,16 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30.212666962751);
-		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
-		
 		BigDecimal eurToUsd2 = new BigDecimal(31.526248754713);
-		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
-		
 		BigDecimal eurToUsd3 = new BigDecimal(29.326631220545);
-		MConversionRate cr3 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date3, eurToUsd3, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, date2, eurToUsd2);
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, date3, eurToUsd3);
+			
 			MOrder order = createPurchaseOrder(bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur1 = new BigDecimal(3.00);
 			BigDecimal qtyOrdered1 = new BigDecimal(1000);
@@ -580,16 +572,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, accountedAmtDr, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			deleteConversionRate(cr3);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=2, Price=0.1875
@@ -600,17 +586,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testCreditMemoPosting_5() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, currentDate, eurToUsd);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.1875);
 			BigDecimal qtyOrdered = new BigDecimal(2);
@@ -671,14 +658,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=200, Price=0.1875
@@ -689,17 +672,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testCreditMemoPosting_6() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, currentDate, eurToUsd);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.1875);
 			BigDecimal qtyOrdered = new BigDecimal(200);
@@ -760,14 +744,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=45, Price=0.3742
@@ -778,17 +758,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testCreditMemoPosting_7() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, currentDate, eurToUsd);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.3742);
 			BigDecimal qtyOrdered = new BigDecimal(45);
@@ -847,14 +828,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, accountedAmtDr, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period + reversal)
 	 * PO Qty=2, Price=0.1875
@@ -867,17 +844,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testCreditMemoPosting_8() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, currentDate, eurToUsd);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.1875);
 			BigDecimal qtyOrdered = new BigDecimal(2);
@@ -981,14 +959,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period)
 	 * PO Qty=1200, Price=0.3742
@@ -999,17 +973,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testMatReceiptPosting_1() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, currentDate, eurToUsd);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.3742);
 			BigDecimal qtyOrdered = new BigDecimal(1200);
@@ -1068,14 +1043,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, Env.ZERO, accountedAmtCr));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (different period)
 	 * PO Qty=1200, Price=0.3742, Period 1
@@ -1086,7 +1057,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testMatReceiptPosting_2() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1099,14 +1070,14 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30.870771861909);
-		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
-		
 		BigDecimal eurToUsd2 = new BigDecimal(31.326259863856);
-		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, date2, eurToUsd2);
+			
 			MOrder order = createPurchaseOrder(bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.3742);
 			BigDecimal qtyOrdered = new BigDecimal(1200);
@@ -1165,15 +1136,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, Env.ZERO, accountedAmtCr));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period + reversal)
 	 * PO Qty=2, Price=0.1875
@@ -1186,17 +1152,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testMatReceiptPosting_3() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, currentDate, eurToUsd);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.1875);
 			BigDecimal qtyOrdered = new BigDecimal(2);
@@ -1300,14 +1267,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (different period + reversal)
 	 * PO Qty=2, Price=0.1875, Period 1
@@ -1320,7 +1283,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testMatReceiptPosting_4() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id);
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1333,14 +1296,14 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30.870771861909);
-		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
-		
 		BigDecimal eurToUsd2 = new BigDecimal(31.326259863856);
-		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, C_ConversionType_ID, date2, eurToUsd2);
+			
 			MOrder order = createPurchaseOrder(bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal priceInEur = new BigDecimal(0.1875);
 			BigDecimal qtyOrdered = new BigDecimal(2);
@@ -1444,15 +1407,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			inventoryClearingLineList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period)
 	 * PO Qty=500, Price=23.32
@@ -1463,11 +1421,11 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testMatReceiptPosting_5() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Purchase GBP " + System.currentTimeMillis());
 		MCurrency britishPound = MCurrency.get(DictionaryIDs.C_Currency.GBP.id); // British Pound (GBP)
 		priceList.setC_Currency_ID(britishPound.getC_Currency_ID());
@@ -1485,13 +1443,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal poundToUsd = new BigDecimal(0.676234);
-		MConversionRate crUsd = createConversionRate(britishPound.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, currentDate, poundToUsd);
 		
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal poundToEuro = new BigDecimal(22.5062);
-		MConversionRate crEur = createConversionRate(britishPound.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, poundToEuro);
 
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, britishPound, usd, C_ConversionType_ID, currentDate, poundToUsd);
+			mockGetRate(conversionRateMock, britishPound, euro, C_ConversionType_ID, currentDate, poundToEuro);
+			
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), C_ConversionType_ID);			
 			BigDecimal qtyOrdered = new BigDecimal(500);
 			MOrderLine orderLine = createPurchaseOrderLine(order, 10, product, qtyOrdered, priceInPound);
@@ -1553,19 +1516,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			notInvoicedReceiptsLineList.add(new PostingLine(usd, Env.ZERO, currBalAmt));
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
-		} finally {
-			rollback();
-			deleteConversionRate(crUsd);
-			deleteConversionRate(crEur);
-			
-			pp.deleteEx(true);
-			plv.deleteEx(true);
-			priceList.deleteEx(true);						
 		}		
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period + reversal)
 	 * PO Qty=5, Price=65
@@ -1576,11 +1530,11 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	public void testMatReceiptPostingWithDiffCurrencyPrecision() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Purchase JPY " + System.currentTimeMillis());
 		MCurrency japaneseYen = MCurrency.get(DictionaryIDs.C_Currency.JPY.id); // Japanese Yen (JPY)
 		priceList.setC_Currency_ID(japaneseYen.getC_Currency_ID());
@@ -1598,13 +1552,18 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal yenToUsd = new BigDecimal(0.00956427);
-		MConversionRate crUsd = createConversionRate(japaneseYen.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, currentDate, yenToUsd);
 		
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal yenToEuro = new BigDecimal(0.29);
-		MConversionRate crEur = createConversionRate(japaneseYen.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, yenToEuro);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, japaneseYen, usd, C_ConversionType_ID, currentDate, yenToUsd);
+			mockGetRate(conversionRateMock, japaneseYen, euro, C_ConversionType_ID, currentDate, yenToEuro);
+			
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), C_ConversionType_ID);
 			BigDecimal qtyOrdered = new BigDecimal(5);
 			MOrderLine orderLine = createPurchaseOrderLine(order, 10, product, qtyOrdered, priceInYen);
@@ -1657,29 +1616,15 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			for (PostingLine inventoryClearingLine : inventoryClearingLineList)
 				inventoryClearingLineList2.add(new PostingLine(inventoryClearingLine.currency, inventoryClearingLine.amtAcctCr, inventoryClearingLine.amtAcctDr));
 			testMatchInvoicePosting(ass, miList0.toArray(miList2), notInvoicedReceiptsLineList2, inventoryClearingLineList2);
-		} finally {
-			rollback();
-			deleteConversionRate(crUsd);
-			deleteConversionRate(crEur);
-			
-			pp.deleteEx(true);
-			plv.deleteEx(true);
-			priceList.deleteEx(true);		
 		}
 	}
-	
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate) {
-		return createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, true);
-	}
-	
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
-	}
-	
-	private void deleteConversionRate(MConversionRate cr) {
-		ConversionRateHelper.deleteConversionRate(cr);
+
+	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
+		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
+				conversionDate, multiplyRate, getAD_Client_ID(), getAD_Org_ID());
+		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
+				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
 	}
 	
 	private MOrder createPurchaseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {

@@ -26,10 +26,14 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Properties;
 import java.util.TimeZone;
 
 import org.compiere.model.MClientInfo;
@@ -41,6 +45,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author hengsin
@@ -56,19 +62,19 @@ public class MSchedulerTest extends AbstractTestCase {
 
 	@Test
 	public void testCronSchedulingPatternWithTimeZone() {
-		MSchedule schedule = null;
 		MClientInfo clientInfo = MClientInfo.getCopy(Env.getCtx(), getAD_Client_ID(), null);
 		String currentTimeZone = clientInfo.getTimeZone();
 		MOrgInfo orgInfo = MOrgInfo.getCopy(Env.getCtx(), getAD_Org_ID(), null);
 		String currentTimeZoneOrg = orgInfo.getTimeZone();
 		
-		try {
-			schedule = new MSchedule(Env.getCtx(), 0, null);
+		try (MockedStatic<MSchedule> mockedSchedule = mockStatic(MSchedule.class, Mockito.CALLS_REAL_METHODS)) {
+			MSchedule schedule = new MSchedule(Env.getCtx(), 0, getTrxName());
 			schedule.setName("Every Day at 5 pm Test");
 			schedule.setScheduleType(MSchedule.SCHEDULETYPE_CronSchedulingPattern);
 			schedule.setIsSystemSchedule(false);
 			schedule.setCronPattern("0 17 * * *");
 			schedule.saveCrossTenantSafeEx();
+			mockedSchedule.when(() -> MSchedule.get(any(Properties.class), eq(schedule.get_ID()))).thenReturn(schedule);
 			
 			//get jvm timezone
 			//this test assume jvm and db server is using the same default time zone
@@ -182,8 +188,6 @@ public class MSchedulerTest extends AbstractTestCase {
 			
 		} finally {
 			rollback();
-			if (schedule != null && schedule.get_ID() > 0)
-				schedule.deleteEx(true);
 			clientInfo.setTimeZone(currentTimeZone);
 			if (clientInfo.is_Changed()) {
 				clientInfo.saveEx();

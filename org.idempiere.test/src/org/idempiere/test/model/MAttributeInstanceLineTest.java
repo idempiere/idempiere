@@ -22,8 +22,12 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeInstance;
@@ -35,6 +39,7 @@ import org.compiere.model.X_M_AttributeUse;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 /**
  * Unit test for maintenance of MAttributeInstanceLine 
@@ -46,12 +51,14 @@ public class MAttributeInstanceLineTest extends AbstractTestCase {
 
 	@Test
 	public void testSyncByEventHandler() {
-		MAttribute attribute = new MAttribute(Env.getCtx(), 0, null);
+		MAttribute attribute = new MAttribute(Env.getCtx(), 0, getTrxName());
 		attribute.setName("MAttributeInstanceLineTest Attribute");
 		attribute.setAttributeValueType(MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList);
 		attribute.saveEx();
 		
-		try {
+		try (MockedStatic<MAttribute> attributeMock = mockStatic(MAttribute.class)) {
+			attributeMock.when(() -> MAttribute.get(any(Properties.class), eq(attribute.get_ID())))
+				.thenReturn(attribute);
 			MAttributeSet as = new MAttributeSet(Env.getCtx(), 0, getTrxName());
 			as.setName("MAttributeInstanceLineTest");
 			as.saveEx();
@@ -124,9 +131,6 @@ public class MAttributeInstanceLineTest extends AbstractTestCase {
 			assertEquals(av3.get_ID(), lines.get(0).getM_AttributeValue_ID(), "MAttributeInstanceLine[0] not of expected attribute value");
 			
 			masi.deleteEx(true);
-		} finally {
-			rollback();
-			attribute.deleteEx(true);
 		}
 	}
 }

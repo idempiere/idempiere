@@ -29,10 +29,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Properties;
 
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSetInstance;
@@ -66,6 +70,8 @@ import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * 
@@ -124,7 +130,7 @@ public class ProductionTest extends AbstractTestCase {
 	public void testAutoProduce() {
 		MProduct mulch = MProduct.get(DictionaryIDs.M_Product.MULCH.id);
 		
-		MProduct mulchX = new MProduct(Env.getCtx(), 0, null);
+		MProduct mulchX = new MProduct(Env.getCtx(), 0, getTrxName());
 		mulchX.setName("MulchX2");
 		mulchX.setIsBOM(true);
 		mulchX.setIsStocked(true);
@@ -136,7 +142,8 @@ public class ProductionTest extends AbstractTestCase {
 		mulchX.setIsAutoProduce(true);
 		mulchX.saveEx();
 		
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS)) {
+			mockProductGet(productMock, mulchX);
 			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id);  // create some stock to avoid negative qty average cost exception
 			
 			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
@@ -151,7 +158,7 @@ public class ProductionTest extends AbstractTestCase {
 			line.setQtyBOM(new BigDecimal("2"));
 			line.saveEx();
 	
-			mulchX.load((String)null);
+			mulchX.load(getTrxName());
 			mulchX.setIsVerified(true);
 			mulchX.saveEx();
 			
@@ -217,10 +224,6 @@ public class ProductionTest extends AbstractTestCase {
 			assertTrue(productionLines[0].getMovementQty().equals(shipmentLine.getMovementQty()), "Production Line Qty <> Shipment Line Qty");
 			assertTrue(productionLines[1].getM_Product_ID()==DictionaryIDs.M_Product.MULCH.id,"Production Line 2 Product is not the expected component product");
 			assertTrue(productionLines[1].getMovementQty().intValue()==-2,"Production Line 2 Qty is not the expected component qty");
-		} finally {
-			rollback();
-			DB.executeUpdateEx("delete from m_cost where m_product_id=?", new Object[] {mulchX.get_ID()}, null);
-			mulchX.deleteEx(true);
 		}
 	}
 	
@@ -344,7 +347,7 @@ public class ProductionTest extends AbstractTestCase {
 		DB.executeUpdateEx("UPDATE M_CostElement SET IsActive = 'N' WHERE AD_Client_ID=? AND CostingMethod IS NOT NULL AND CostingMethod != ?", 
 				new Object[] {getAD_Client_ID(), MCostElement.COSTINGMETHOD_StandardCosting}, getTrxName());
 		
-		MProductCategory category = new MProductCategory(Env.getCtx(), 0, null);
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, getTrxName());
 		category.setName("Standard Costing");
 		category.saveEx();
 		
@@ -357,8 +360,7 @@ public class ProductionTest extends AbstractTestCase {
 			categoryAcct.saveEx();
 		}
 		
-		//storageonhand api doesn't use trx to retrieve product 
-		MProduct component = new MProduct(Env.getCtx(), 0, null);
+		MProduct component = new MProduct(Env.getCtx(), 0, getTrxName());
 		component.setName("testMultipleDateMPolicy_Child");
 		component.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 		component.setIsStocked(true);
@@ -368,7 +370,10 @@ public class ProductionTest extends AbstractTestCase {
 		component.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 		component.saveEx();
 		
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class)) {
+			mockProductGet(productMock, component);
+			categoryMock.when(() -> MProductCategory.get(any(Properties.class), eq(category.get_ID()))).thenReturn(category);
 			Timestamp today = TimeUtil.getDay(null);
 			MProduct parent = new MProduct(Env.getCtx(), 0, getTrxName());
 			parent.setName("testMultipleDateMPolicy_Parent");
@@ -440,10 +445,6 @@ public class ProductionTest extends AbstractTestCase {
 			BigDecimal endProductOnHand2 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());
 			
 			assertEquals(1, endProductOnHand2.intValue(), "On hand of end product doesn't increase as expected");
-		} finally {
-			getTrx().rollback();
-			component.deleteEx(true);
-			category.deleteEx(true);
 		}
 	}
 	
@@ -453,7 +454,7 @@ public class ProductionTest extends AbstractTestCase {
 		DB.executeUpdateEx("UPDATE M_CostElement SET IsActive = 'N' WHERE AD_Client_ID=? AND CostingMethod IS NOT NULL AND CostingMethod != ?", 
 				new Object[] {getAD_Client_ID(), MCostElement.COSTINGMETHOD_StandardCosting}, getTrxName());
 		
-		MProductCategory category = new MProductCategory(Env.getCtx(), 0, null);
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, getTrxName());
 		category.setName("Standard Costing");
 		category.saveEx();
 		
@@ -466,8 +467,7 @@ public class ProductionTest extends AbstractTestCase {
 			categoryAcct.saveEx();
 		}
 		
-		//storageonhand api doesn't use trx to retrieve product 
-		MProduct component = new MProduct(Env.getCtx(), 0, null);
+		MProduct component = new MProduct(Env.getCtx(), 0, getTrxName());
 		component.setName("testMultipleDateMPolicy_Child");
 		component.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 		component.setIsStocked(true);
@@ -477,7 +477,10 @@ public class ProductionTest extends AbstractTestCase {
 		component.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 		component.saveEx();
 		
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class)) {
+			mockProductGet(productMock, component);
+			categoryMock.when(() -> MProductCategory.get(any(Properties.class), eq(category.get_ID()))).thenReturn(category);
 			Timestamp today = TimeUtil.getDay(null);
 			MProduct parent = new MProduct(Env.getCtx(), 0, getTrxName());
 			parent.setName("testMultipleDateMPolicy_Parent");
@@ -584,10 +587,12 @@ public class ProductionTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, production2.getDocStatus(), "Production Status="+production2.getDocStatus());			
 			endProductOnHand2 = MStorageOnHand.getQtyOnHand(parent.get_ID(), getM_Warehouse_ID(), 0, getTrxName());			
 			assertEquals(2, endProductOnHand2.intValue(), "On hand of end product doesn't increase as expected");
-		} finally {
-			getTrx().rollback();
-			component.deleteEx(true);
-			category.deleteEx(true);
 		}
+	}
+	
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
 	}
 }

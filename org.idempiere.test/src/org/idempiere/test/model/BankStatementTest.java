@@ -27,6 +27,9 @@ package org.idempiere.test.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -36,10 +39,8 @@ import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MPayment;
 import org.compiere.model.MSysConfig;
-import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
-import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -48,7 +49,8 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author hengsin
@@ -90,21 +92,11 @@ public class BankStatementTest extends AbstractTestCase {
 	}
 	
 	@Test
-	@ResourceLock(value = MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT)
 	public void testReversalOfReconciledPayment1() {
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		
-		Query query = new Query(Env.getCtx(), MSysConfig.Table_Name, "Name=? AND AD_Client_ID IN (0, ?)", null);
-		MSysConfig sysConfig = query.setOrderBy("AD_Client_ID Desc").setParameters(MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT, getAD_Client_ID()).first();
-		if (!sysConfig.getValue().equals("Y")) {
-			sysConfig.setValue("Y");
-			sysConfig.saveCrossTenantSafeEx();
-			CacheMgt.get().reset();
-		} else {
-			sysConfig = null;
-		}
-		
-		try {
+		try (MockedStatic<MSysConfig> msysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			msysConfigMock.when(() -> MSysConfig.getBooleanValue(eq(MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT), anyBoolean(), eq(getAD_Client_ID()))).thenReturn(true);
 			MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
 			DB.getDatabase().forUpdate(bp, 0);
 			
@@ -156,29 +148,15 @@ public class BankStatementTest extends AbstractTestCase {
 			pi = MWorkflow.runDocumentActionWorkflow(payment1, DocAction.ACTION_Reverse_Correct);		
 			assertFalse(pi.isError(), "Error reversing payment: " + pi.getSummary());
 			assertEquals(DocAction.STATUS_Reversed, payment1.getDocStatus(), "Unexpected Payment Document Status");
-		} finally {
-			if (sysConfig != null) {
-				sysConfig.setValue("N");
-				sysConfig.saveCrossTenantSafeEx();
-			}
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT)
 	public void testReversalOfReconciledPayment2() {
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		
-		Query query = new Query(Env.getCtx(), MSysConfig.Table_Name, "Name=? AND AD_Client_ID IN (0, ?)", null);
-		MSysConfig sysConfig = query.setOrderBy("AD_Client_ID Desc").setParameters(MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT, getAD_Client_ID()).first();
-		if (!sysConfig.getValue().equals("N")) {
-			sysConfig.setValue("N");
-			sysConfig.saveCrossTenantSafeEx();
-			CacheMgt.get().reset();
-		} else {
-			sysConfig = null;
-		}
-		try {
+		try (MockedStatic<MSysConfig> msysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			msysConfigMock.when(() -> MSysConfig.getBooleanValue(eq(MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT), anyBoolean(), eq(getAD_Client_ID()))).thenReturn(false);
 			MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
 			DB.getDatabase().forUpdate(bp, 0);
 			
@@ -230,11 +208,6 @@ public class BankStatementTest extends AbstractTestCase {
 			pi = MWorkflow.runDocumentActionWorkflow(payment1, DocAction.ACTION_Reverse_Correct);		
 			assertTrue(pi.isError(), "Reversal of reconciled payment should fail here.");
 			assertTrue(pi.getSummary() != null && pi.getSummary().contains(Msg.getMsg(Env.getCtx(), "NotAllowReversalOfReconciledPayment")), "Unexpected error message: " + pi.getSummary());
-		} finally {
-			if (sysConfig != null) {
-				sysConfig.setValue("Y");
-				sysConfig.saveCrossTenantSafeEx();
-			}
 		}
 	}
 }

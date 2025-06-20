@@ -30,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -82,6 +86,7 @@ import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
 
 /**
  * 
@@ -275,13 +280,12 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 	 */
 	@Test
 	public void testAverageCostingIPV() {
-		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
-		try {						
-			product = new MProduct(Env.getCtx(), 0, null);
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {						
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testAverageCostingIPV");
 			product.setProductType(MProduct.PRODUCTTYPE_Item);
@@ -291,6 +295,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
 			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 			product.saveEx();
+			
+			mockProductGet(productMock, product);
 			
 			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
 			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
@@ -409,13 +415,6 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 						new FactAcct(acctInvClr, invoicePrice.multiply(BigDecimal.TEN), 2, false));
 				assertFactAcctEntries(factAccts, expected);
 			}
-		} finally {
-			rollback();
-			
-			if (product != null) {
-				product.set_TrxName(null);
-				product.deleteEx(true);
-			}
 		}
 	}
 	
@@ -424,7 +423,6 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 	 */
 	@Test
 	public void testAverageCostingIPVAfterShipment() {
-		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 		List<MAcctSchema> allowNegatives = new ArrayList<MAcctSchema>();
@@ -445,13 +443,13 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 					
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); 
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); 
-		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; 
 		Timestamp today = TimeUtil.getDay(null);		
 		Timestamp tomorrow = TimeUtil.addDays(today, 1);
-		MConversionRate cr1 = ConversionRateHelper.createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, today, new BigDecimal("0.91"), true);	
-		MConversionRate cr2 = ConversionRateHelper.createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, tomorrow, new BigDecimal("0.85"), true);
-		try {						
-			product = new MProduct(Env.getCtx(), 0, null);
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			mockGetRate(conversionRateMock, usd, euro, 0, today, new BigDecimal("0.91"));
+			mockGetRate(conversionRateMock, usd, euro, 0, tomorrow, new BigDecimal("0.85"));
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testAverageCostingIPVAfterShipment");
 			product.setProductType(MProduct.PRODUCTTYPE_Item);
@@ -461,6 +459,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
 			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 			product.saveEx();
+			
+			mockProductGet(productMock, product);
 			
 			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
 			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
@@ -714,13 +714,6 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 		} finally {
 			rollback();
 			
-			if (product != null) {
-				product.set_TrxName(null);
-				product.deleteEx(true);
-			}
-			ConversionRateHelper.deleteConversionRate(cr1);
-			ConversionRateHelper.deleteConversionRate(cr2);
-			
 			if (allowNegatives.size() > 0) {
 				allowNegatives.forEach(e -> {
 					e.setIsAllowNegativePosting(true);
@@ -736,13 +729,12 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 	 */
 	@Test
 	public void testAverageCostingIPVPartialMR() {
-		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
-		try {						
-			product = new MProduct(Env.getCtx(), 0, null);
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {						
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testAverageCostingIPVPartialMR");
 			product.setProductType(MProduct.PRODUCTTYPE_Item);
@@ -752,6 +744,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
 			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 			product.saveEx();
+			
+			mockProductGet(productMock, product);
 			
 			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
 			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
@@ -873,13 +867,20 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 						new FactAcct(acctInvClr, invoicePrice.multiply(mrQty), 2, false));
 				assertFactAcctEntries(factAccts, expected);
 			}
-		} finally {
-			rollback();
-			
-			if (product != null) {
-				product.set_TrxName(null);
-				product.deleteEx(true);
-			}
 		}
+	}
+	
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
+	}
+	
+	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
+		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
+				conversionDate, multiplyRate, getAD_Client_ID(), getAD_Org_ID());
+		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
+				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
 	}
 }

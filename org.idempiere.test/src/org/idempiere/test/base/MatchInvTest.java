@@ -27,12 +27,17 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -68,9 +73,11 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 /**
  * @author Elaine Tan - etantg
@@ -510,9 +517,9 @@ public class MatchInvTest extends AbstractTestCase {
 	public void testMatReceiptPostingWithDiffCurrencyPrecision() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), Env.DATE);
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), Env.DATE));
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Purchase JPY " + System.currentTimeMillis());
 		MCurrency japaneseYen = MCurrency.get(DictionaryIDs.C_Currency.JPY.id); // Japanese Yen (JPY)
 		priceList.setC_Currency_ID(japaneseYen.getC_Currency_ID());
@@ -528,27 +535,20 @@ public class MatchInvTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInYen, priceInYen, Env.ZERO);
 		pp.saveEx();
 		
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
+		
 		BigDecimal yenToUsd = new BigDecimal(0.277582);
-		MConversionRate cr1 = new MConversionRate(Env.getCtx(), 0, null);
-		cr1.setC_Currency_ID(japaneseYen.getC_Currency_ID());
-		cr1.setC_Currency_ID_To(DictionaryIDs.C_Currency.USD.id); // USD
-		cr1.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id); // Spot
-		cr1.setValidFrom(currentDate);
-		cr1.setValidTo(currentDate);
-		cr1.setMultiplyRate(yenToUsd);
-		cr1.saveEx();
+		BigDecimal yenToEuro = new BigDecimal(0.236675);
 		
-		BigDecimal euroToUsd = new BigDecimal(0.236675);
-		MConversionRate cr2 = new MConversionRate(Env.getCtx(), 0, null);
-		cr2.setC_Currency_ID(japaneseYen.getC_Currency_ID());
-		cr2.setC_Currency_ID_To(DictionaryIDs.C_Currency.EUR.id); // EUR
-		cr2.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id); // Spot
-		cr2.setValidFrom(currentDate);
-		cr2.setValidTo(currentDate);
-		cr2.setMultiplyRate(euroToUsd);
-		cr2.saveEx();
-		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, japaneseYen, usd, 0, currentDate, yenToUsd);
+			mockGetRate(conversionRateMock, japaneseYen, euro, 0, currentDate, yenToEuro);
+			
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			order.setBPartner(bpartner);
 			order.setIsSOTrx(false);
@@ -592,7 +592,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			if (!receipt.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), MInOut.Table_ID, receipt.get_ID(), false, getTrxName());
-				assertTrue(error == null);
+				assertTrue(error == null, error);
 			}
 			receipt.load(getTrxName());
 			assertTrue(receipt.isPosted());
@@ -654,35 +654,6 @@ public class MatchInvTest extends AbstractTestCase {
 					assertTrue(fa.getC_Currency_ID() == japaneseYen.getC_Currency_ID());
 				}
 			}
-		} finally {
-			rollback();
-			String whereClause = "ValidFrom=? AND ValidTo=? "
-					+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
-					+ "AND C_ConversionType_ID=? "
-					+ "AND AD_Client_ID=? AND AD_Org_ID=?";
-			MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-					.setParameters(cr1.getValidFrom(), cr1.getValidTo(), 
-							cr1.getC_Currency_ID_To(), cr1.getC_Currency_ID(),
-							cr1.getC_ConversionType_ID(),
-							cr1.getAD_Client_ID(), cr1.getAD_Org_ID())
-					.firstOnly();
-			if (reciprocal != null)
-				reciprocal.deleteEx(true);
-			cr1.deleteEx(true);
-			
-			reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-					.setParameters(cr2.getValidFrom(), cr2.getValidTo(), 
-							cr2.getC_Currency_ID_To(), cr2.getC_Currency_ID(),
-							cr2.getC_ConversionType_ID(),
-							cr2.getAD_Client_ID(), cr2.getAD_Org_ID())
-					.firstOnly();
-			if (reciprocal != null)
-				reciprocal.deleteEx(true);
-			cr2.deleteEx(true);
-			
-			pp.deleteEx(true);
-			plv.deleteEx(true);
-			priceList.deleteEx(true);			
 		}
 	}
 	
@@ -1197,5 +1168,13 @@ public class MatchInvTest extends AbstractTestCase {
 				product.deleteEx(true);
 			}
 		}
+	}
+	
+	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
+		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
+				conversionDate, multiplyRate, getAD_Client_ID(), getAD_Org_ID());
+		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
+				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
 	}
 }

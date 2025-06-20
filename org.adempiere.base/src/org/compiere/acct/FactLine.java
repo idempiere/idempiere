@@ -752,17 +752,35 @@ public final class FactLine extends X_Fact_Acct
 			if (amtAcctCr.scale() > stdPrecision)
 				amtAcctCr = amtAcctCr.setScale(stdPrecision, RoundingMode.HALF_UP);
 			setAmtAcctCr(amtAcctCr);
-		} 
+		} 	
 		else 
 		{
-			setAmtAcctDr (MConversionRate.convert (getCtx(),
+			BigDecimal amtSourceDr = getAmtSourceDr();
+			BigDecimal amtAcctDr = MConversionRate.convert (getCtx(),
 					getAmtSourceDr(), getC_Currency_ID(), m_acctSchema.getC_Currency_ID(),
-					convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID));
+					convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID);
+			if (amtSourceDr.signum() != 0) {
+				if (amtAcctDr == null || amtAcctDr.signum() == 0) {
+					log.warning("No conversion from " + getC_Currency_ID() + " to " + m_acctSchema.getC_Currency_ID() +
+							" ConverstionType="+C_ConversionType_ID + " ConversionDate="+convDate.toString());
+					return false;
+				}
+			}
+			setAmtAcctDr (amtAcctDr);
 			if (getAmtAcctDr() == null)
 				return false;
-			setAmtAcctCr (MConversionRate.convert (getCtx(),
+			BigDecimal amtSourceCr = getAmtSourceCr();
+			BigDecimal amtAcctCr = MConversionRate.convert (getCtx(),
 					getAmtSourceCr(), getC_Currency_ID(), m_acctSchema.getC_Currency_ID(),
-					convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID));
+					convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID);
+			if (amtSourceCr.signum() != 0) {
+				if (amtAcctCr == null || amtAcctCr.signum() == 0) {
+					log.warning("No conversion from " + getC_Currency_ID() + " to " + m_acctSchema.getC_Currency_ID() +
+							" ConverstionType="+C_ConversionType_ID + " ConversionDate="+convDate.toString());
+					return false;
+				}
+			}
+			setAmtAcctCr (amtAcctCr);
 		}
 		return true;
 	}	//	convert

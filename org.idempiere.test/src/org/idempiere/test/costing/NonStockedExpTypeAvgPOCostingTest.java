@@ -17,12 +17,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -71,6 +75,7 @@ import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
 
 /**
  * Test cases Stocked Expense type product with Average PO Costing Method.
@@ -92,13 +97,13 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 	@Test
 	public void testMaterialReceipt()
 	{
-		//need to create category and product for the every test case because after the first test completed it's rollback 
-		//and also need to delete category and product at the end of the each test case otherwise next test case failed
 		MProductCategory category = createProductCategory();
 		MProduct product = createProduct(category.get_ID());
 
-		try
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) 
 		{
+			mockProductGet(productMock, product);
+			
 			MAcctSchema as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
@@ -141,14 +146,6 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 					new FactAcct(productExpense, BD_20, 2, true, BigDecimal.TEN));
 			assertFactAcctEntries(factAccts, expected);
 		}
-		finally
-		{
-			rollback();
-			if (product != null)
-				product.deleteEx(true);
-			if (category != null)
-				category.deleteEx(true);
-		}
 	}
 
 	@Test
@@ -157,8 +154,12 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 		MProductCategory category = createProductCategory();
 		MProduct product = createProduct(category.get_ID());
 
-		try
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class)) 
 		{
+			mockProductGet(productMock, product);
+			mockCategoryGet(categoryMock, category);
+			
 			MAcctSchema as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
@@ -177,15 +178,6 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			                                                   DictionaryIDs.M_Locator.HQ.id, getTrxName(), false, 0);
 			assertEquals(0,storages.length,"No storage records should be created for expense type product");
 		}
-		finally
-		{
-			rollback();
-			if (product != null)
-				product.deleteEx(true);
-			if (category != null)
-				category.deleteEx(true);
-		}
-
 	}
 
 	@Test
@@ -194,8 +186,12 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 		MProductCategory category = createProductCategory();
 		MProduct product = createProduct(category.get_ID());
 
-		try
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class)) 
 		{
+			mockProductGet(productMock, product);
+			mockCategoryGet(categoryMock, category);
+			
 			MAcctSchema as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
@@ -294,14 +290,6 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			assertEquals(0,storages.length,"No storage records should be created for expense type product");
 
 		}
-		finally
-		{
-			rollback();
-			if (product != null)
-				product.deleteEx(true);
-			if (category != null)
-				category.deleteEx(true);
-		}
 	}
 
 	@Test
@@ -310,8 +298,12 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 		MProductCategory category = createProductCategory();
 		MProduct product = createProduct(category.get_ID());
 
-		try
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class)) 
 		{
+			mockProductGet(productMock, product);
+			mockCategoryGet(categoryMock, category);
+			
 			MAcctSchema as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
@@ -381,15 +373,6 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 					new FactAcct(productExpense, BD_20, 2, false, BigDecimal.TEN.negate()));
 			assertFactAcctEntries(factAccts, expected);
 		}
-		finally
-		{
-			rollback();
-			if (product != null)
-				product.deleteEx(true);
-			if (category != null)
-				category.deleteEx(true);
-		}
-
 	}
 
 	@Test
@@ -397,10 +380,11 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 	{
 		MProductCategory category = createProductCategory();
 		MProduct product = createProduct(category.get_ID());
-		MProduct fgProdcut = null;
-
-		try
+		
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) 
 		{
+			mockProductGet(productMock, product);
+			
 			MAcctSchema as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
@@ -410,7 +394,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			assertNoAveragePOCost(product.get_ID());
 
 			// Create Product in which isBOM Flag true
-			fgProdcut = new MProduct(Env.getCtx(), 0, null);
+			MProduct fgProdcut = new MProduct(Env.getCtx(), 0, getTrxName());
 			fgProdcut.setName("Test_BOM");
 			fgProdcut.setIsBOM(true);
 			fgProdcut.setIsStocked(true);
@@ -421,6 +405,8 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			fgProdcut.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 			fgProdcut.saveEx();
 
+			mockProductGet(productMock, fgProdcut);
+			
 			MCost fgCost = MCost.get(fgProdcut, 0, as, 0, DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
 
 			// create Product BOM
@@ -494,16 +480,6 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 
 
 		}
-		finally
-		{
-			rollback();
-			if (product != null)
-				product.deleteEx(true);
-			if (fgProdcut != null)
-				fgProdcut.deleteEx(true);
-			if (category != null)
-				category.deleteEx(true);
-		}
 	}
 
 	/**
@@ -514,7 +490,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 	 */
 	private MProduct createProduct(int category_ID)
 	{
-		MProduct product = new MProduct(Env.getCtx(), 0, null);
+		MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 		product.setName("testStandardCosting");
 		product.setValue("testStandardCosting");
 		product.setProductType(MProduct.PRODUCTTYPE_ExpenseType);
@@ -682,11 +658,11 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 	 */
 	private MProductCategory createProductCategory()
 	{
-		MProductCategory category = new MProductCategory(Env.getCtx(), 0, null);
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, getTrxName());
 		category.setName("Average PO");
 		category.saveEx();
 		String whereClause = "M_Product_Category_ID=?";
-		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, null)
+		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, getTrxName())
 														.setParameters(category.get_ID())
 														.list();
 		for (MProductCategoryAcct categoryAcct : categoryAccts)
@@ -707,5 +683,16 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			assertFalse(DictionaryIDs.M_CostElement.AVERAGE_PO.id == cost.getM_CostElement_ID(),"Average PO cost should not be created for Expense type product");
 		}
 
+	}
+	
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
+	}
+	
+	private void mockCategoryGet(MockedStatic<MProductCategory> categoryMock, MProductCategory category) {
+		categoryMock.when(() -> MProductCategory.get(eq(category.get_ID()))).thenReturn(category);
+		categoryMock.when(() -> MProductCategory.get(any(Properties.class), eq(category.get_ID()))).thenReturn(category);
 	}
 }

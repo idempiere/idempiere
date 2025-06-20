@@ -26,9 +26,13 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Properties;
 
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
@@ -42,6 +46,7 @@ import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 /**
  * 
@@ -55,8 +60,7 @@ public class MStorageOnHandTest extends AbstractTestCase {
 
 	@Test
 	public void testGetAll() {
-		//storageonhand api doesn't use trx to retrieve product 
-		MProduct product = new MProduct(Env.getCtx(), 0, null);
+		MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 		product.setName("testGetAll");
 		product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 		product.setIsStocked(true);
@@ -66,7 +70,8 @@ public class MStorageOnHandTest extends AbstractTestCase {
 		product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 		product.saveEx();
 				
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			mockProductGet(productMock, product);
 			Timestamp today = TimeUtil.getDay(null);
 			Timestamp tomorrow = TimeUtil.addDays(today, 1);
 			MStorageOnHand.add(Env.getCtx(), DictionaryIDs.M_Locator.HQ.id, product.get_ID(), 0, new BigDecimal("1"), today, getTrxName());
@@ -139,9 +144,6 @@ public class MStorageOnHandTest extends AbstractTestCase {
 				as.setUseGuaranteeDateForMPolicy(false);
 				as.saveEx();
 			}
-		} finally {
-			rollback();
-			product.deleteEx(true);			
 		}
 	}
 	
@@ -187,5 +189,11 @@ public class MStorageOnHandTest extends AbstractTestCase {
 		MStorageOnHand.add(Env.getCtx(), hqLocator1.get_ID(), product.get_ID(), asi1.get_ID(), new BigDecimal("2"), today, getTrxName());
 		M_Locator_ID = MStorageOnHand.getM_Locator_ID(hqLocator.getM_Warehouse_ID(), product.get_ID(), -1, new BigDecimal("1"), getTrxName());
 		assertEquals(hqLocator1.get_ID(), M_Locator_ID);
-	}		
+	}
+	
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
+	}
 }
