@@ -24,6 +24,7 @@
 package org.adempiere.webui.panel;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
@@ -53,6 +57,7 @@ import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
@@ -389,6 +394,34 @@ public class LoginPanel extends Window implements EventListener<Event>
         	td.appendChild(btnResetPassword);
         	btnResetPassword.addEventListener(Events.ON_CLICK, this);
     	}
+    	
+    	boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		if (isSSOEnable)
+		{
+			List<MSSOPrincipalConfig> configs = MSSOPrincipalConfig.getAllSSOPrincipalConfig();
+			if (configs != null && !configs.isEmpty())
+			{
+				tr = null;
+				for (int i = 0; i < configs.size(); i++)
+				{
+					MSSOPrincipalConfig config = configs.get(i);
+
+					tr = new Tr();
+					table.appendChild(tr);
+					td = new Td();
+					tr.appendChild(td);
+					td = new Td();
+					tr.appendChild(td);
+					// Apply styles and add button
+					td.setStyle("display: flex; align-items: center;");
+					Button loginButton = createSSOLoginButton(config);
+					td.appendChild(loginButton);
+
+					td = new Td();
+					tr.appendChild(td);
+				}
+			}
+		}
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
@@ -817,5 +850,45 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 		return arrstr;
 	}
+	
+	/**
+	 * Creates a styled login button for SSO (Single Sign-On) functionality.
+	 * The button includes configuration details such as name and image, and sets up a click event
+	 * listener to handle redirection.
+	 *
+	 * @param  config the SSO principle configuration used to customize the button and generate the
+	 *                redirect URL
+	 * @return        a configured {@link Button} object for SSO login
+	 */
+	private Button createSSOLoginButton(MSSOPrincipalConfig config)
+	{
+		Button button = new Button(config.getName());
+		button.setTooltip(config.getName());
+		button.setSclass("sso-login-btn");
+		button.setStyle("display: flex; align-items: center; ");
+		button.addEventListener("onClick", event -> {
 
+			String referrerUrl = null;
+			if (Executions.getCurrent().getNativeRequest() != null && Executions.getCurrent().getNativeRequest() instanceof HttpServletRequest)
+			{
+				// Pass the current request param along with the selected provider so it can passed
+				// in the redirected URL after login
+				HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+				referrerUrl = request.getHeader("Referer");
+				if (!Util.isEmpty(referrerUrl) && referrerUrl.indexOf("?") > 0)
+					referrerUrl = referrerUrl.substring(referrerUrl.indexOf("?") + 1);
+				else
+					referrerUrl = null;
+			}
+
+			StringBuffer ssoURL = new StringBuffer("?").append(ISSOPrincipalService.SSO_SELECTED_PROVIDER).append("=").append(URLEncoder.encode(config.getSSO_PrincipalConfig_UU(), "UTF-8"));
+			if (referrerUrl != null)
+				ssoURL.append("&").append(ISSOPrincipalService.SSO_QUERY_STRING).append("=").append(URLEncoder.encode(referrerUrl, "UTF-8"));
+			Executions.sendRedirect(ssoURL.toString());
+		});
+
+		button.setImage(config.getBase64Src());
+
+		return button;
+	}// createSSOLoginButton
 }
