@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -591,9 +591,9 @@ public class MSequence extends X_AD_Sequence
 		return documentNo;
 	}
 	
-	private AtomicBoolean isSequenceNoLevel = null;
-	private AtomicBoolean isUsePrefixAsKey = null;
-	private AtomicBoolean isUseSuffixAsKey = null;
+	private AtomicReference<Boolean> isSequenceNoLevel = new AtomicReference<>();
+	private AtomicReference<Boolean> isUsePrefixAsKey = new AtomicReference<>();
+	private AtomicReference<Boolean> isUseSuffixAsKey = new AtomicReference<>();
 	
 	/**
 	 * Is the sequence a sequence no level sequence
@@ -601,14 +601,15 @@ public class MSequence extends X_AD_Sequence
 	 * @return true if the sequence is a sequence no level sequence
 	 */
 	public boolean isSequenceNoLevel() {
-		if (isSequenceNoLevel == null) {
-			isSequenceNoLevel = new AtomicBoolean(
-					isUsePrefixAsKey() 
+		Boolean value = isSequenceNoLevel.get();
+		if (value == null) {
+			value = isUsePrefixAsKey() 
 					|| isUseSuffixAsKey()
 					|| isStartNewYear() 
-					|| isOrgLevelSequence());
+					|| isOrgLevelSequence();
+			isSequenceNoLevel.set(value);
 		}
-		return isSequenceNoLevel.get();
+		return value;
 	}
 	
 	/**
@@ -616,10 +617,12 @@ public class MSequence extends X_AD_Sequence
 	 * @return true if the prefix starts with prefix key
 	 */
 	public boolean isUsePrefixAsKey() {
-		if (isUsePrefixAsKey == null) {
-			isUsePrefixAsKey = new AtomicBoolean(!Util.isEmpty(getPrefix()) && getPrefix().contains(KEY_CONTEXT_VARIABLE+"@"));
+		Boolean value = isUsePrefixAsKey.get();
+		if (value == null) {
+			value = !Util.isEmpty(getPrefix()) && getPrefix().contains(KEY_CONTEXT_VARIABLE+"@");
+			isUsePrefixAsKey.set(value);
 		}
-		return isUsePrefixAsKey.get();
+		return value;
 	}
 	
 	/**
@@ -627,10 +630,12 @@ public class MSequence extends X_AD_Sequence
 	 * @return true if the suffix starts with prefix key
 	 */
 	public boolean isUseSuffixAsKey() {
-		if (isUseSuffixAsKey == null) {
-			isUseSuffixAsKey = new AtomicBoolean(!Util.isEmpty(getSuffix()) && getSuffix().contains(KEY_CONTEXT_VARIABLE+"@"));
+		Boolean value = isUseSuffixAsKey.get();
+		if (value == null) {
+			value = !Util.isEmpty(getSuffix()) && getSuffix().contains(KEY_CONTEXT_VARIABLE+"@");
+			isUseSuffixAsKey.set(value);
 		}
-		return isUseSuffixAsKey.get();
+		return value;
 	}
 
 	/**
