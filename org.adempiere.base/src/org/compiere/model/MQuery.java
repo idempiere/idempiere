@@ -179,6 +179,12 @@ public class MQuery implements Serializable, Cloneable
 					query = reportQuery.getReportProcessQuery();
 				}
 
+				if (table != null && table.getColumn(ParameterName) != null) {
+					MColumn column = table.getColumn(ParameterName);
+					if (column != null && !Util.isEmpty(column.getColumnSQL()))
+						ParameterName = column.getColumnSQL();
+				}
+
 				//-------------------------------------------------------------
 				if (P_String != null)
 				{
