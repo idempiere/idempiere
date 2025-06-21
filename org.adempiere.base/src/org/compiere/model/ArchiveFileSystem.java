@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -55,7 +56,70 @@ public class ArchiveFileSystem implements IArchiveStore {
 
 	//temporary buffer when AD_Archive_ID=0;
 	private byte[] buffer;
+	private InputStream bufferInputStream;
 
+	/**
+	 * Parse XML data to get the file path
+	 * @param archivePathRoot
+	 * @param data xml data
+	 * @return File object or null if not found
+	 */
+	protected File parseXML(String archivePathRoot, byte[] data) {
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		try {
+			final DocumentBuilder builder = factory.newDocumentBuilder();
+			final Document document = builder.parse(new ByteArrayInputStream(data));
+			final NodeList entries = document.getElementsByTagName("entry");
+			if(entries.getLength()!=1){
+				log.severe("no archive entry found");
+			}
+			final Node entryNode = entries.item(0);
+			final NamedNodeMap attributes = entryNode.getAttributes();
+			final Node	 fileNode = attributes.getNamedItem("file");
+			if(fileNode==null ){
+				log.severe("no filename for entry");
+				return null;
+			}
+			String filePath = fileNode.getNodeValue();
+			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+			if(filePath!=null){
+				filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
+				//just to be sure...
+				String replaceSeparator = File.separator;
+				if(!replaceSeparator.equals("/")){
+					replaceSeparator = "\\\\";
+				}
+				filePath = filePath.replaceAll("/", replaceSeparator);
+				filePath = filePath.replaceAll("\\\\", replaceSeparator);
+			}
+			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+			final File file = new File(filePath);
+			if (file.exists()) {
+				return file;
+			} else {
+				log.severe("file not found: " + file.getAbsolutePath());
+				return null;
+			}
+		} catch (SAXException sxe) {
+			// Error generated during parsing)
+			Exception x = sxe;
+			if (sxe.getException() != null)
+				x = sxe.getException();
+			log.log(Level.SEVERE, x.getMessage(), x);
+
+		} catch (ParserConfigurationException pce) {
+			// Parser with specified options can't be built
+			log.log(Level.SEVERE, pce.getMessage(), pce);
+			log.severe(pce.getMessage());
+
+		} catch (IOException ioe) {
+			// I/O error
+			log.log(Level.SEVERE, ioe.getMessage(), ioe);
+		}
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.compiere.model.IArchiveStore#loadLOBData(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)
 	 */
@@ -66,78 +130,49 @@ public class ArchiveFileSystem implements IArchiveStore {
 			throw new IllegalArgumentException("no attachmentPath defined");
 		}
 		buffer = null;
+		bufferInputStream = null;
 		byte[] data = archive.getByteData();
 		if (data == null) {
 			return null;
 		}
 
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-		try {
-			final DocumentBuilder builder = factory.newDocumentBuilder();
-			final Document document = builder.parse(new ByteArrayInputStream(data));
-			final NodeList entries = document.getElementsByTagName("entry");
-			if(entries.getLength()!=1){
-				log.severe("no archive entry found");
+		File file = parseXML(archivePathRoot, data);
+		if (file != null) {
+			// read files into byte[]
+			final byte[] dataEntry = new byte[(int) file.length()];
+			try (FileInputStream fileInputStream = new FileInputStream(file)) {
+				fileInputStream.read(dataEntry);
+				return dataEntry;
+			} catch (FileNotFoundException e) {
+				log.severe("File Not Found.");
+				e.printStackTrace();
+			} catch (IOException e1) {
+				log.severe("Error Reading The File.");
+				e1.printStackTrace();
 			}
-				final Node entryNode = entries.item(0);
-				final NamedNodeMap attributes = entryNode.getAttributes();
-				final Node	 fileNode = attributes.getNamedItem("file");
-				if(fileNode==null ){
-					log.severe("no filename for entry");
-					return null;
-				}
-				String filePath = fileNode.getNodeValue();
-				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
-				if(filePath!=null){
-					filePath = filePath.replaceFirst(ARCHIVE_FOLDER_PLACEHOLDER, archivePathRoot.replaceAll("\\\\","\\\\\\\\"));
-					//just to be sure...
-					String replaceSeparator = File.separator;
-					if(!replaceSeparator.equals("/")){
-						replaceSeparator = "\\\\";
-					}
-					filePath = filePath.replaceAll("/", replaceSeparator);
-					filePath = filePath.replaceAll("\\\\", replaceSeparator);
-				}
-				if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
-				final File file = new File(filePath);
-				if (file.exists()) {
-					// read files into byte[]
-					final byte[] dataEntry = new byte[(int) file.length()];
-					try (FileInputStream fileInputStream = new FileInputStream(file)) {
-						fileInputStream.read(dataEntry);
-					} catch (FileNotFoundException e) {
-						log.severe("File Not Found.");
-						e.printStackTrace();
-					} catch (IOException e1) {
-						log.severe("Error Reading The File.");
-						e1.printStackTrace();
-					}
-					return dataEntry;
-				} else {
-					log.severe("file not found: " + file.getAbsolutePath());
-					return null;
-				}
-
-		} catch (SAXException sxe) {
-			// Error generated during parsing)
-			Exception x = sxe;
-			if (sxe.getException() != null)
-				x = sxe.getException();
-			x.printStackTrace();
-			log.severe(x.getMessage());
-
-		} catch (ParserConfigurationException pce) {
-			// Parser with specified options can't be built
-			pce.printStackTrace();
-			log.severe(pce.getMessage());
-
-		} catch (IOException ioe) {
-			// I/O error
-			ioe.printStackTrace();
-			log.severe(ioe.getMessage());
 		}
-		
+		return null;
+	}
+	
+	@Override
+	public InputStream loadLOBDataAsStream(MArchive archive, MStorageProvider prov) {
+		String archivePathRoot = getArchivePathRoot(prov);
+		if ("".equals(archivePathRoot)) {
+			throw new IllegalArgumentException("no attachmentPath defined");
+		}
+		buffer = null;
+		bufferInputStream = null;
+		byte[] data = archive.getByteData();
+		if (data == null) {
+			return null;
+		}
+
+		File file = parseXML(archivePathRoot, data);		
+		try {
+			return file != null ? new FileInputStream(file) : null;
+		} catch (FileNotFoundException e) {
+			log.log(Level.SEVERE, "File Not Found.", e);
+		}	
 		return null;
 	}
 
@@ -145,7 +180,7 @@ public class ArchiveFileSystem implements IArchiveStore {
 	 * @see org.compiere.model.IArchiveStore#save(org.compiere.model.MArchive, org.compiere.model.MStorageProvider)
 	 */
 	@Override
-	public void  save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {		
+	public void save(MArchive archive, MStorageProvider prov,byte[] inflatedData) {		
 		if (inflatedData == null || inflatedData.length == 0) {
 			throw new IllegalArgumentException("InflatedData is NULL");
 		}
@@ -153,8 +188,24 @@ public class ArchiveFileSystem implements IArchiveStore {
 			//set binary data otherwise save will fail
 			archive.setByteData(new byte[]{'0'});
 			buffer = inflatedData;
+			bufferInputStream = null;
 		} else {		
-			write(archive, prov, inflatedData);			
+			write(archive, prov, inflatedData, null);			
+		}
+	}
+
+	@Override
+	public void save(MArchive archive, MStorageProvider prov, InputStream inputStream) {
+		if (inputStream == null) {
+			throw new IllegalArgumentException("inputStream is NULL");
+		}
+		if(archive.get_ID()==0){
+			//set binary data otherwise save will fail
+			archive.setByteData(new byte[]{'0'});
+			bufferInputStream = inputStream;
+			buffer = null;
+		} else {		
+			write(archive, prov, null, inputStream);			
 		}
 	}
 
@@ -163,9 +214,10 @@ public class ArchiveFileSystem implements IArchiveStore {
 	 * @param archive
 	 * @param prov
 	 * @param inflatedData archive data
+	 * @param inputStream input stream to read data from
 	 */
 	private void write(MArchive archive, MStorageProvider prov,
-			byte[] inflatedData) {		
+			byte[] inflatedData, InputStream inputStream) {		
 		BufferedOutputStream out = null;
 		try {
 			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -189,7 +241,15 @@ public class ArchiveFileSystem implements IArchiveStore {
 			final File destFile = new File(msgfile.toString());
 
 			out = new BufferedOutputStream(new FileOutputStream(destFile));
-			out.write(inflatedData);
+			if (inflatedData != null) {
+				out.write(inflatedData);
+			} else if (inputStream != null) {
+				byte[] buffer = new byte[8192];
+				int length = -1;
+				while((length = inputStream.read(buffer)) != -1) {
+					out.write(buffer, 0, length);
+				}
+			}
 			out.flush();
 
 			//create xml entry
@@ -263,14 +323,20 @@ public class ArchiveFileSystem implements IArchiveStore {
 
 	@Override
 	public boolean isPendingFlush() {
-		return buffer != null && buffer.length > 0;
+		return (buffer != null && buffer.length > 0) || bufferInputStream != null;
 	}
 
 	@Override
 	public void flush(MArchive archive, MStorageProvider prov) {
-		if (buffer != null && buffer.length > 0) {
-			write(archive, prov, buffer);
+		try {
+			if ((buffer != null && buffer.length > 0) || bufferInputStream != null) {
+				write(archive, prov, buffer, bufferInputStream);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
 			buffer = null;
+			bufferInputStream = null;
 		}
 	}
 
