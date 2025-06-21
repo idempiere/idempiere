@@ -28,6 +28,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -35,7 +36,12 @@ import java.nio.file.Path;
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+/**
+ * Lazy loading data source for {@link AttachmentDBLOB}
+ */
 public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
 
     private static final org.compiere.util.CLogger log = CLogger.getCLogger(AttachmentDBLazyDataSource.class);
@@ -43,16 +49,28 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
     private final int AD_Attachment_ID;
     private final int index;
     private final String fileName;
-    private AtomicBoolean sizeLoaded = new AtomicBoolean(false);
-    private AtomicBoolean dataLoaded = new AtomicBoolean(false);
+    private final AtomicBoolean dataLoaded = new AtomicBoolean(false);
     private File file;
     private byte[] data;
-    private long size = 0;
+    private long size = -1;
 
-    public AttachmentDBLazyDataSource(int AD_Attachment_ID, int index, String fileName) {
+    /**
+     * @param AD_Attachment_ID attachment record id
+     * @param index attachment entry index (start from 0)
+     * @param fileName attachment entry file name
+     * @param sizeValue attachment entry uncompress size
+     */
+    public AttachmentDBLazyDataSource(int AD_Attachment_ID, int index, String fileName, String sizeValue) {
         this.AD_Attachment_ID = AD_Attachment_ID;
         this.index = index;
         this.fileName = fileName;
+        if (!Util.isEmpty(sizeValue, true)) {
+            try {
+                this.size = Long.parseLong(sizeValue);
+            } catch (NumberFormatException e) {
+                log.log(Level.WARNING, e.getMessage(), e);
+            }
+        }
     }
 
     @Override
@@ -64,15 +82,16 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
             return  null;
 
         if (file != null) {
+            if (file.length() > Integer.MAX_VALUE) {
+                throw new IllegalStateException("File too large to load into a byte array");
+            }
             try (FileInputStream inputStream = new FileInputStream(file)) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int length = 0;
+                int length;
                 byte[] buffer = new byte[2048];
                 while ((length = inputStream.read(buffer)) != -1)
                     baos.write(buffer, 0, length);
                 return baos.toByteArray();
-            } catch (FileNotFoundException e) {
-                throw new AdempiereException(e);
             } catch (IOException e) {
                 throw new AdempiereException(e);
             }
@@ -97,7 +116,7 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
 
     @Override
     public long getSize() {
-        if (!sizeLoaded.get() && !dataLoaded.get()) {
+        if (size == -1) {
             loadEntry(true);
         }
         return size;
@@ -107,16 +126,11 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
 
     /**
      * Load attachment entry content from ad_attachment_entry table
-     * @return attachment entry file or null
      */
     private void loadEntry(boolean getSize) {
-        if (getSize) {
-            if (!sizeLoaded.compareAndSet(false, true))
-                return;
-        } else {
+        if (!getSize)
             if (!dataLoaded.compareAndSet(false, true))
                 return;
-        }
 
         Connection conn = null;
         // With Postgresql, you need to keep transaction open to access blob
@@ -128,6 +142,7 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                 try {
                     conn.close();
                 } catch (SQLException e1) {
+                    log.log(Level.WARNING, e1.getMessage(), e1);
                 }
                 throw new AdempiereException("Error setting auto commit to false", e);
             }
@@ -142,43 +157,39 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                 if (rs.next()) {
                     Blob blob = rs.getBlob(1);
                     if (blob != null) {
-                        size = blob.length();
-                        if (!getSize && !sizeLoaded.get())
-                            sizeLoaded.set(true);
-                        if (dataLoaded.get())
-                            return;
-                        // always load data if size is less than 2mb
-                        if (size < (1024 * 1024 * 2)) {
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            try (InputStream inputStream = blob.getBinaryStream()) {
-                                int length = 0;
+                        try (InputStream inputStream = blob.getBinaryStream();
+                             ZipInputStream zis = new ZipInputStream(inputStream)) {
+                            ZipEntry entry = zis.getNextEntry();
+                            assert entry != null;
+                            if (getSize || size == -1)
+                                size = entry.getSize();
+                            // always load data if size is less than 2mb
+                            if (size < (1024 * 1024 * 2) && size > 0) {
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                int length;
                                 byte[] buffer = new byte[2048];
-                                while ((length = inputStream.read(buffer)) != -1)
+                                while ((length = zis.read(buffer)) != -1)
                                     baos.write(buffer, 0, length);
                                 data = baos.toByteArray();
                                 if (getSize)
                                     dataLoaded.set(true);
-                            } catch (SQLException e) {
-                                throw new DBException("Error reading blob data", e);
-                            } finally {
-                                try {
-                                    blob.free();
-                                } catch (SQLException e) {
-                                }
-                            }
-                        } else if (!getSize) { // delay loading of data for getSize call if temp file is needed
-                            Path tempDir = Files.createTempDirectory("attachment_");
-                            try (InputStream inputStream = blob.getBinaryStream()) {
+                            } else if (!getSize || size == -1) { // delay loading of data for getSize call if temp file is needed
+                                Path tempDir = Files.createTempDirectory("attachment_");
                                 Path tempFile = tempDir.resolve(fileName);
-                                Files.copy(inputStream, tempFile);
+                                Files.copy(zis, tempFile);
                                 file = tempFile.toFile();
+                                // make sure size is correct
+                                size = file.length();
+                                if (getSize)
+                                    dataLoaded.set(true);
+                            }
+                        } catch (SQLException e) {
+                            throw new DBException("Error reading blob data", e);
+                        } finally {
+                            try {
+                                blob.free();
                             } catch (SQLException e) {
-                                throw new DBException("Error reading blob data", e);
-                            } finally {
-                                try {
-                                    blob.free();
-                                } catch (SQLException e) {
-                                }
+                                log.log(Level.WARNING, e.getMessage(), e);
                             }
                         }
                     }
@@ -190,6 +201,7 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                 try {
                     conn.rollback();
                 } catch (SQLException e1) {
+                    log.log(Level.WARNING, e1.getMessage(), e1);
                 }
             }
         } finally {
@@ -197,14 +209,17 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                 try {
                     conn.commit();
                 } catch (SQLException e) {
+                    log.log(Level.WARNING, e.getMessage(), e);
                 }
                 try {
                     conn.setAutoCommit(true);
                 } catch (SQLException e) {
+                    log.log(Level.WARNING, e.getMessage(), e);
                 }
                 try {
                     conn.close();
                 } catch (SQLException e) {
+                    log.log(Level.WARNING, e.getMessage(), e);
                 }
             }
         }

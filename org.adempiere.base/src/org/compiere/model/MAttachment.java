@@ -787,8 +787,12 @@ public class MAttachment extends X_AD_Attachment
 			entry = entries[i];
 			index = i;
 			File destinationFile = new File(tempfolder, entry.getName());
-			FileUtil.copy(this, destinationFile, index);
-		}	
+            try {
+                Files.copy(entry.getInputStream(), destinationFile.toPath());
+            } catch (IOException e) {
+                throw new AdempiereException(e);
+            }
+        }
 
 		Zip zipper = new Zip();
 		zipper.setDestFile(destZipFile);

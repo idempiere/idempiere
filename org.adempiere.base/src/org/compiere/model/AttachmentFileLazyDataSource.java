@@ -57,7 +57,11 @@ public class AttachmentFileLazyDataSource implements IAttachmentLazyDataSource {
 	@Override
 	public byte[] getData() {
 		// read files into byte[]
-		final byte[] dataEntry = new byte[(int) m_file.length()];
+        long length = m_file.length();
+        if (length > Integer.MAX_VALUE) {
+            throw new IllegalStateException("File too large to load into a byte array");
+        }
+		final byte[] dataEntry = new byte[(int) length];
 		try (FileInputStream fileInputStream = new FileInputStream(m_file)) {
 			fileInputStream.read(dataEntry);
 		} catch (FileNotFoundException e) {

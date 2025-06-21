@@ -16,10 +16,8 @@ package org.compiere.model;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -54,7 +52,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 	@Override
 	public boolean save(MAttachment attach,MStorageProvider prov) {
 		String attachmentPathRoot = getAttachmentPathRoot(prov);
-		if (attach.m_items == null || attach.m_items.size() == 0) {
+		if (attach.m_items == null || attach.m_items.isEmpty()) {
 			attach.setBinaryData(null);
 			return true;
 		}
@@ -106,10 +104,6 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				if (log.isLoggable(Level.FINE)) log.fine(path + " - " + attachmentPathRoot);
 				if (!path.startsWith(attachmentPathRoot)) {
 					if (log.isLoggable(Level.FINE)) log.fine("move file: " + path);
-					FileChannel in = null;
-					FileChannel out = null;
-					FileInputStream fis = null;
-					FileOutputStream fos = null;
 					try {
 						//create destination folder
 						StringBuilder msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet(attach));
@@ -122,33 +116,13 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator)
 								.append(getAttachmentPathSnippet(attach)).append(File.separator).append(entryFile.getName());
 						final File destFile = new File(msgfile.toString());
-						fis = new FileInputStream(entryFile);
-						in = fis.getChannel();
-						fos = new FileOutputStream(destFile);
-						out = fos.getChannel();
-						in.transferTo(0, in.size(), out);
+                        Files.copy(entryFile.toPath(), destFile.toPath());
 						entryFile = destFile;
 
 					} catch (IOException e) {
-						e.printStackTrace();
-						log.severe("unable to copy file " + entryFile.getAbsolutePath() + " to "
+						log.log(Level.SEVERE, "unable to copy file " + entryFile.getAbsolutePath() + " to "
 								+ attachmentPathRoot + File.separator + 
-								getAttachmentPathSnippet(attach) + File.separator + entryFile.getName());
-					} finally {
-						if (fis != null) {
-							try{
-								fis.close();
-							}catch(Exception e) {
-								//do nothing
-							}
-						}
-						if (fos != null) {
-							try{
-								fos.close();
-							}catch(Exception e) {
-								//do nothing
-							}
-						}
+								getAttachmentPathSnippet(attach) + File.separator + entryFile.getName(), e);
 					}
 				}
 				final Element entry = document.createElement("entry");
@@ -186,7 +160,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			return false;
 		}
 		// Reset
-		attach.m_items = new ArrayList<MAttachmentEntry>();
+		attach.m_items = new ArrayList<>();
 		//
 		byte[] data = attach.getBinaryData();
 		if (data == null)
@@ -253,18 +227,15 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			Exception x = sxe;
 			if (sxe.getException() != null)
 				x = sxe.getException();
-			x.printStackTrace();
-			log.severe(x.getMessage());
+			log.log(Level.SEVERE, x.getMessage(), x);
 
 		} catch (ParserConfigurationException pce) {
 			// Parser with specified options can't be built
-			pce.printStackTrace();
-			log.severe(pce.getMessage());
+			log.log(Level.SEVERE, pce.getMessage(), pce);
 
 		} catch (IOException ioe) {
 			// I/O error
-			ioe.printStackTrace();
-			log.severe(ioe.getMessage());
+			log.log(Level.SEVERE, ioe.getMessage(), ioe);
 		}
 		return entries;
 	}
@@ -309,7 +280,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		final MAttachmentEntry entry = attach.m_items.get(index);
 		final File file = new File(folder, entry.getName());
 		if (log.isLoggable(Level.FINE)) log.fine("delete: " + file.getAbsolutePath());
-		if (file != null && file.exists()) {
+		if (file.exists()) {
 			if (!file.delete()) {
 				log.warning("unable to delete " + file.getAbsolutePath());
 			}

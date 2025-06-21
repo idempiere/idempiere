@@ -94,6 +94,7 @@ public class MAttachmentEntry
 		this.m_data = copy.m_data != null ? Arrays.copyOf(copy.m_data, copy.m_data.length) : null;
 		this.m_index = copy.m_index;
 		this.m_name = copy.m_name;
+        this.m_file = copy.m_file;
 	}
 	
 	/**	The Name				*/
@@ -126,9 +127,18 @@ public class MAttachmentEntry
 	 */
 	public byte[] getData ()
 	{
-		if (! m_isDataSet && m_ds != null) {
-			setData(m_ds.getData());
-		}
+		if (! m_isDataSet) {
+            if (m_ds != null)
+			    setData(m_ds.getData());
+		} else {
+            if (m_data == null && m_file != null) {
+                try {
+                    m_data = Files.readAllBytes(m_file.toPath());
+                } catch (IOException e) {
+                    log.log(Level.WARNING, e.getMessage(), e);
+                }
+            }
+        }
 		return m_data;
 	}
 	
