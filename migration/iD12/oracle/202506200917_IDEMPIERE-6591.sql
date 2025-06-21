@@ -1,0 +1,86 @@
+-- IDEMPIERE-6591
+SELECT register_migration_script('202506200917_IDEMPIERE-6591.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Jun 20, 2025, 9:17:55 AM CEST
+UPDATE AD_Column SET FKConstraintType='C',Updated=TO_TIMESTAMP('2025-06-20 09:17:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=8672
+;
+
+-- Jun 20, 2025, 9:17:56 AM CEST
+ALTER TABLE C_Recurring_Run MODIFY C_Invoice_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Jun 20, 2025, 9:17:56 AM CEST
+ALTER TABLE C_Recurring_Run DROP CONSTRAINT cinvoice_crecurringrun
+;
+
+-- Jun 20, 2025, 9:17:56 AM CEST
+ALTER TABLE C_Recurring_Run ADD CONSTRAINT cinvoice_crecurringrun FOREIGN KEY (C_Invoice_ID) REFERENCES c_invoice(c_invoice_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 20, 2025, 9:18:02 AM CEST
+UPDATE AD_Column SET FKConstraintType='C',Updated=TO_TIMESTAMP('2025-06-20 09:18:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=8666
+;
+
+-- Jun 20, 2025, 9:18:03 AM CEST
+ALTER TABLE C_Recurring_Run MODIFY C_Order_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Jun 20, 2025, 9:18:03 AM CEST
+ALTER TABLE C_Recurring_Run DROP CONSTRAINT corder_crecurringrun
+;
+
+-- Jun 20, 2025, 9:18:03 AM CEST
+ALTER TABLE C_Recurring_Run ADD CONSTRAINT corder_crecurringrun FOREIGN KEY (C_Order_ID) REFERENCES c_order(c_order_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 20, 2025, 9:18:10 AM CEST
+UPDATE AD_Column SET FKConstraintType='C',Updated=TO_TIMESTAMP('2025-06-20 09:18:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=8664
+;
+
+-- Jun 20, 2025, 9:18:11 AM CEST
+ALTER TABLE C_Recurring_Run MODIFY C_Payment_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Jun 20, 2025, 9:18:11 AM CEST
+ALTER TABLE C_Recurring_Run DROP CONSTRAINT cpayment_crecurringrun
+;
+
+-- Jun 20, 2025, 9:18:11 AM CEST
+ALTER TABLE C_Recurring_Run ADD CONSTRAINT cpayment_crecurringrun FOREIGN KEY (C_Payment_ID) REFERENCES c_payment(c_payment_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 20, 2025, 9:18:18 AM CEST
+UPDATE AD_Column SET FKConstraintType='C',Updated=TO_TIMESTAMP('2025-06-20 09:18:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=8671
+;
+
+-- Jun 20, 2025, 9:18:19 AM CEST
+ALTER TABLE C_Recurring_Run MODIFY C_Project_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Jun 20, 2025, 9:18:19 AM CEST
+ALTER TABLE C_Recurring_Run DROP CONSTRAINT cproject_crecurringrun
+;
+
+-- Jun 20, 2025, 9:18:19 AM CEST
+ALTER TABLE C_Recurring_Run ADD CONSTRAINT cproject_crecurringrun FOREIGN KEY (C_Project_ID) REFERENCES c_project(c_project_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 20, 2025, 9:19:05 AM CEST
+UPDATE AD_Column SET FKConstraintType='C',Updated=TO_TIMESTAMP('2025-06-20 09:19:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=8673
+;
+
+-- Jun 20, 2025, 9:19:06 AM CEST
+ALTER TABLE C_Recurring_Run MODIFY GL_JournalBatch_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Jun 20, 2025, 9:19:06 AM CEST
+ALTER TABLE C_Recurring_Run DROP CONSTRAINT gljournalbatch_crecurringrun
+;
+
+-- Jun 20, 2025, 9:19:06 AM CEST
+ALTER TABLE C_Recurring_Run ADD CONSTRAINT gljournalbatch_crecurringrun FOREIGN KEY (GL_JournalBatch_ID) REFERENCES gl_journalbatch(gl_journalbatch_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+;
+
