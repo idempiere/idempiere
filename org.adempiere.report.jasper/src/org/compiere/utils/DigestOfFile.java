@@ -33,14 +33,27 @@ public class DigestOfFile
      */
     synchronized public byte[] digestAsByteArray(File file) throws Exception
     {
-        digestAgent.reset();
-        try (InputStream is = new BufferedInputStream(new FileInputStream(file));
-        	 DigestInputStream dis = new DigestInputStream(is, digestAgent))
+        try (InputStream is = new BufferedInputStream(new FileInputStream(file)))
         {
-	        while(dis.read() != -1){}
-	        byte[] digest = digestAgent.digest();
-	        return digest;
-        }                
+            return digestAsByteArray(is);
+        }
+    }
+
+    /**
+     *
+     * @param inputStream
+     * @return md5 hash
+     * @throws Exception
+     */
+    synchronized public byte[] digestAsByteArray(InputStream inputStream) throws Exception
+    {
+        digestAgent.reset();
+        try (DigestInputStream dis = new DigestInputStream(inputStream, digestAgent))
+        {
+            while(dis.read() != -1){}
+            byte[] digest = digestAgent.digest();
+            return digest;
+        }
     }
 
     public synchronized byte[] digestAsByteArray(byte[] input) throws Exception
@@ -86,6 +99,18 @@ public class DigestOfFile
     public synchronized String digestAsHex(File file) throws Exception
     {
         byte[] digest = digestAsByteArray(file);
+        return Hex.encodeHexString(digest);
+    }
+
+    /**
+     *
+     * @param inputStream
+     * @return hex encoded md5 string
+     * @throws Exception
+     */
+    public synchronized String digestAsHex(InputStream inputStream) throws Exception
+    {
+        byte[] digest = digestAsByteArray(inputStream);
         return Hex.encodeHexString(digest);
     }
 
@@ -166,6 +191,25 @@ public class DigestOfFile
 		{
     		return null;			//if there is an error during comparison return files are difs
 		}
+    }
+
+    /**
+     * @param inputStream
+     * @return md5 hash
+     */
+    public static String getMD5Hash(InputStream inputStream)
+    {
+        String hash;
+        try
+        {
+            DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
+            hash = md5DigestAgent.digestAsHex(inputStream);
+            return hash;
+        }
+        catch (Exception e)
+        {
+            return null;			//if there is an error during comparison return files are difs
+        }
     }
 
     /**
