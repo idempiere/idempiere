@@ -68,6 +68,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 	private A 				myProfile;
 	private MUserPreference preferences = null;
 	private int             recordId    = 0;
+	private ToolBar 		toolbar = null;
 
 	/**
 	 * Default constructor
@@ -97,7 +98,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 	/**
 	 * Load user preferences
 	 */
-	private void loadPreferences(){
+	protected void loadPreferences(){
 		preferences = MUserPreference.getUserPreference(Env.getAD_User_ID(Env.getCtx()), Env.getAD_Client_ID(Env.getCtx()));
 		recordId = preferences.get_ID();
 
@@ -122,85 +123,19 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 	/**
 	 * Layout dialog
 	 */
-	private void init() {
-
-		Div div = new Div();
-		div.setStyle(LINE_DIV_STYLE);
-		morePreferences= new A();	
-		morePreferences.setLabel(Msg.translate(Env.getCtx(), "MorePreferences"));
-		morePreferences.addEventListener(Events.ON_CLICK, this);
-
-		int windowID = Env.getZoomWindowID(MUserPreference.Table_ID, recordId);
-		if (windowID > 0) {
-			Boolean access = MRole.getDefault().getWindowAccess(windowID);
-			if (access != null && access.booleanValue())
-				div.appendChild(morePreferences);
-		}
-
-		this.appendChild(div);
-				
-		MMenu myProfileMenu = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID);		
-		div = new Div();
-		div.setStyle(LINE_DIV_STYLE);
-		myProfile= new A();	
-		myProfile.setLabel(myProfileMenu.get_Translation("Name"));
-		myProfile.addEventListener(Events.ON_CLICK, this);
-		
-		windowID = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID).getAD_Window_ID();
-		if (windowID > 0) {
-			Boolean access = MRole.getDefault().getWindowAccess(windowID);
-			if (access != null && access.booleanValue())
-				div.appendChild(myProfile);
-		}
-
-		this.appendChild(div);
-		
-		div = new Div();
-		div.setStyle(LINE_DIV_STYLE);
-		addgadgets= new A();	
-		addgadgets.setLabel( Msg.translate(Env.getCtx(), "ManageGadgets"));
-		addgadgets.addEventListener(Events.ON_CLICK, this);
-		div.appendChild(addgadgets);		
-		this.appendChild(div);
+	protected void init() {
+		this.appendChild(getMorePreferences());
+		this.appendChild(getMyProfile());
+		this.appendChild(getGadgets());
 
 		if (Env.getAD_Client_ID(Env.getCtx()) <= 20 && Env.getAD_User_ID(Env.getCtx()) <= 102) {
 			this.appendChild(new Space());
-			adempiereSys = new WYesNoEditor(Ini.P_ADEMPIERESYS, Msg.getMsg(Env.getCtx(), Ini.P_ADEMPIERESYS, true),
-					null, false, false, true);
-			adempiereSys.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), Ini.P_ADEMPIERESYS, false));
-			div = new Div();
-			div.setStyle(LINE_DIV_STYLE);
-			div.appendChild(adempiereSys.getComponent());
-			this.appendChild(div);
-			adempiereSys.setValue(Env.getCtx().getProperty(Ini.P_ADEMPIERESYS));
-			adempiereSys.addValueChangeListener(this);
-
-			logMigrationScript = new WYesNoEditor(Ini.P_LOGMIGRATIONSCRIPT, Msg.getMsg(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, true),
-					null, false, false, true);
-			logMigrationScript.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, false));
-			div = new Div();
-			div.setStyle(LINE_DIV_STYLE);
-			div.appendChild(logMigrationScript.getComponent());
-			this.appendChild(div);
-			logMigrationScript.setValue(Env.getCtx().getProperty(Ini.P_LOGMIGRATIONSCRIPT));
-			logMigrationScript.addValueChangeListener(this);			
+			this.appendChild(getDictionaryMaintenance());
+			this.appendChild(getLogMigrationScript());
 		}
 
-		ToolBar toolbar = new ToolBar();
-		toolbar.setAlign("end");
-		this.appendChild(toolbar);
-		ToolBarButton btn = new ToolBarButton("");
-		btn.setName("btnSave");
-		if (ThemeManager.isUseFontIconForImage())
-			btn.setIconSclass(Icon.getIconSclass(Icon.SAVE));
-		else
-			btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
-		btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
-		btn.addEventListener(Events.ON_CLICK, this);
-		toolbar.appendChild(btn);
-		toolbar.setStyle("border: none");
-		if (ThemeManager.isUseFontIconForImage())
-        	LayoutUtils.addSclass("large-toolbarbutton", btn);
+		initToolbar();
+		this.appendChild(getToolbar());
 
 	} //init
 
@@ -281,7 +216,7 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 	/**
 	 * Save changes
 	 */
-	private void onSave() {
+	protected void onSave() {
 		actionSave();
 
 		// Log Migration Script and AdempiereSys are just in-memory preferences, must not be saved
@@ -313,4 +248,120 @@ public class WPreference extends WQuickEntry implements EventListener<Event>, Va
 		super.valueChange(evt);
 	}
 
+	/**
+	 * @return the Div which allow to open the User Preferences window
+	 */
+	protected Div getMorePreferences() {
+		Div div = new Div();
+		div.setStyle(LINE_DIV_STYLE);
+		morePreferences= new A();	
+		morePreferences.setLabel(Msg.translate(Env.getCtx(), "MorePreferences"));
+		morePreferences.addEventListener(Events.ON_CLICK, this);
+
+		int windowID = Env.getZoomWindowID(MUserPreference.Table_ID, recordId);
+		if (windowID > 0) {
+			Boolean access = MRole.getDefault().getWindowAccess(windowID);
+			if (access != null && access.booleanValue())
+				div.appendChild(morePreferences);
+		}
+
+		return div;
+	}
+
+	/**
+	 * @return the preference entry associated with the standard menuID
+	 */
+	protected Div getMyProfile() {
+		return getMyProfile(SystemIDs.MY_PROFILE_MENU_ID);
+	}
+
+	/**
+	 * @param menuID - the menu associated with the window My Profile
+	 * @return the preference entry associated with the menuID
+	 */
+	protected Div getMyProfile(int menuID) {
+		MMenu myProfileMenu = MMenu.get(SystemIDs.MY_PROFILE_MENU_ID);		
+		Div div = new Div();
+		div.setStyle(LINE_DIV_STYLE);
+		myProfile= new A();	
+		myProfile.setLabel(myProfileMenu.get_Translation("Name"));
+		myProfile.addEventListener(Events.ON_CLICK, this);
+
+		int windowID = MMenu.get(menuID).getAD_Window_ID();
+		if (windowID > 0) {
+			Boolean access = MRole.getDefault().getWindowAccess(windowID);
+			if (access != null && access.booleanValue())
+				div.appendChild(myProfile);
+		}
+
+		return div;
+	}
+
+	/**
+	 * @return the Div which allow to open the ManageGadgets panel
+	 */
+	protected Div getGadgets() {
+		Div div = new Div();
+		div.setStyle(LINE_DIV_STYLE);
+		addgadgets= new A();	
+		addgadgets.setLabel( Msg.translate(Env.getCtx(), "ManageGadgets"));
+		addgadgets.addEventListener(Events.ON_CLICK, this);
+		div.appendChild(addgadgets);		
+		return div;
+	}
+
+	/**
+	 * @return the Div which allow to register Dictionary objects
+	 */
+	protected Div getDictionaryMaintenance() {
+		adempiereSys = new WYesNoEditor(Ini.P_ADEMPIERESYS, Msg.getMsg(Env.getCtx(), Ini.P_ADEMPIERESYS, true),
+				null, false, false, true);
+		adempiereSys.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), Ini.P_ADEMPIERESYS, false));
+		Div div = new Div();
+		div.setStyle(LINE_DIV_STYLE);
+		div.appendChild(adempiereSys.getComponent());
+
+		adempiereSys.setValue(Env.getCtx().getProperty(Ini.P_ADEMPIERESYS));
+		adempiereSys.addValueChangeListener(this);
+
+		return div;
+	}
+
+	/**
+	 * @return the Div which allow to register save migration scripts
+	 */
+	protected Div getLogMigrationScript() {
+		logMigrationScript = new WYesNoEditor(Ini.P_LOGMIGRATIONSCRIPT, Msg.getMsg(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, true),
+				null, false, false, true);
+		logMigrationScript.getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, false));
+		Div div = new Div();
+		div.setStyle(LINE_DIV_STYLE);
+		div.appendChild(logMigrationScript.getComponent());
+
+		logMigrationScript.setValue(Env.getCtx().getProperty(Ini.P_LOGMIGRATIONSCRIPT));
+		logMigrationScript.addValueChangeListener(this);
+		return div;
+	}
+
+	protected void initToolbar() {
+		toolbar = new ToolBar();
+		toolbar.setAlign("end");
+
+		ToolBarButton btn = new ToolBarButton("");
+		btn.setName("btnSave");
+		if (ThemeManager.isUseFontIconForImage())
+			btn.setIconSclass(Icon.getIconSclass(Icon.SAVE));
+		else
+			btn.setImage(ThemeManager.getThemeResource("images/Save24.png"));
+		btn.setTooltiptext(Msg.getMsg(Env.getCtx(),"Save"));
+		btn.addEventListener(Events.ON_CLICK, this);
+		toolbar.appendChild(btn);
+		toolbar.setStyle("border: none");
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("large-toolbarbutton", btn);
+	}
+
+	public ToolBar getToolbar() {
+		return toolbar;
+	}
 }
