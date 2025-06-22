@@ -17,14 +17,10 @@
 package org.compiere.print;
 
 import java.awt.print.Pageable;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pdf.Document;
 import org.compiere.model.MArchive;
 import org.compiere.model.MClient;
@@ -32,7 +28,6 @@ import org.compiere.model.PrintInfo;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.jfree.io.IOUtils;
 
 /**
  *	Archive Engine.<br/>
@@ -121,30 +116,16 @@ public class ArchiveEngine
 				return;
 		}
 		
-		ByteArrayOutputStream bas = new ByteArrayOutputStream();
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(pdfFile);
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			IOUtils.getInstance().copyStreams(bis, bas);
-		} catch (FileNotFoundException e) {
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		} catch (IOException e) {
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {}
-			}
-		}
-		
-		byte[] data = bas.toByteArray();  
-				
-		//	TODO to be done async
 		MArchive archive = new MArchive (Env.getCtx(),info, null);
-		archive.setBinaryData(data);
-		archive.saveEx();
+		try (FileInputStream fis = new FileInputStream(pdfFile)){
+			archive.setInputStream(fis);
+			archive.saveEx();
+		} catch (Exception e) {
+			if (e instanceof RuntimeException)
+				throw (RuntimeException)e;
+			else
+				throw new AdempiereException("Could not archive file: " + pdfFile.getAbsolutePath(), e);
+		}		
 	}	//	archive
 	
 	/**
@@ -176,6 +157,7 @@ public class ArchiveEngine
 	}
 	
 	/**	Logger			*/
+	@SuppressWarnings("unused")
 	private static CLogger log = CLogger.getCLogger(ArchiveEngine.class);
 	/** Singleton		*/
 	private volatile static ArchiveEngine s_engine = null;
