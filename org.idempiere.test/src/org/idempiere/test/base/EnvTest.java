@@ -303,6 +303,14 @@ public class EnvTest extends AbstractTestCase {
         String sysConfigValue = MSysConfig.getValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
         parsedText = Env.parseContext(Env.getCtx(), -1, expr, false);
         assertEquals(sysConfigValue, parsedText, "Unexpected parsed text for "+expr);
+        // test logic evaluation
+        evaluatee = new DefaultEvaluatee(null, -1, -1, false);
+		expr = "@"+Env.PREFIX_SYSCONFIG_VARIABLE + MSysConfig.ZK_MAX_UPLOAD_SIZE+"@='"+sysConfigValue+"'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertTrue(evaluation, "Unexpected logic evaluation result");
+		expr = "@"+Env.PREFIX_SYSCONFIG_VARIABLE + MSysConfig.ZK_MAX_UPLOAD_SIZE+"@='0'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertFalse(evaluation, "Unexpected logic evaluation result");
 	}
 
 	@Test
