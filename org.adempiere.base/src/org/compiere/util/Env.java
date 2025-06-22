@@ -139,6 +139,8 @@ public final class Env
 	public static final String USER_LEVEL = "#User_Level";
 
 	public static final String PREFIX_SYSTEM_VARIABLE = "$env.";
+	
+	public static final String PREFIX_SYSCONFIG_VARIABLE = "$sysconfig.";
 
 	@Deprecated
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
@@ -602,6 +604,11 @@ public final class Env
 			String retValue = System.getenv(context.substring(PREFIX_SYSTEM_VARIABLE.length()));
 			if (retValue == null)
 				retValue = System.getProperty(context.substring(PREFIX_SYSTEM_VARIABLE.length()), "");
+			return retValue;
+		} else if (context.startsWith(PREFIX_SYSCONFIG_VARIABLE)) {
+			String retValue = MSysConfig.getValue(context.substring(PREFIX_SYSCONFIG_VARIABLE.length()), Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
+			if (retValue == null)
+				retValue = "";
 			return retValue;
 		}
 		String value = ctx.getProperty(context, "");

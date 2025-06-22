@@ -296,6 +296,13 @@ public class EnvTest extends AbstractTestCase {
         Env.setContext(Env.getCtx(), windowNo, 0, "Bill_BPartner_ID", null);
         parsedText = Env.parseContext(Env.getCtx(), windowNo, 0, expr, false);
         assertEquals("AD_User.C_BPartner_ID IN (%s, 0)".formatted(DictionaryIDs.C_BPartner.C_AND_W.id), parsedText, "Unexpected parsed text for "+expr);
+        
+        // AD_SysConfig
+        // @$sysconfig.ZK_MAX_UPLOAD_SIZE@
+        expr = "@"+Env.PREFIX_SYSCONFIG_VARIABLE + MSysConfig.ZK_MAX_UPLOAD_SIZE+"@";
+        String sysConfigValue = MSysConfig.getValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
+        parsedText = Env.parseContext(Env.getCtx(), -1, expr, false);
+        assertEquals(sysConfigValue, parsedText, "Unexpected parsed text for "+expr);
 	}
 
 	@Test
