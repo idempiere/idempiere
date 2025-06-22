@@ -38,7 +38,7 @@ import org.compiere.util.Util;
 public class SSOWebUIFilter implements Filter
 {
 	/** Logger */
-	protected static CLogger		log				= CLogger.getCLogger(SSOWebUIFilter.class);
+	protected static CLogger log = CLogger.getCLogger(SSOWebUIFilter.class);
 
 	/**
 	 * SSOWebUIFilter
@@ -47,13 +47,16 @@ public class SSOWebUIFilter implements Filter
 	{
 		super();
 	} // SSOWebUIFilter
-	
+
 	/**
 	 * Filter
 	 * 
-	 * @param  request          request
-	 * @param  response         response
-	 * @param  chain            chain
+	 * @param request
+	 *            request
+	 * @param response
+	 *            response
+	 * @param chain
+	 *            chain
 	 * @throws IOException
 	 * @throws ServletException
 	 */
@@ -65,15 +68,15 @@ public class SSOWebUIFilter implements Filter
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-			//handle ping request
+			// handle ping request
 			String ping = httpRequest.getHeader("X-PING");
 			if (!Util.isEmpty(ping, true))
 			{
 				chain.doFilter(request, response);
 				return;
 			}
-			
-			// Ignore the resource request	
+
+			// Ignore the resource request
 			if (SSOUtils.isResourceRequest(httpRequest, true))
 			{
 				chain.doFilter(request, response);
@@ -84,23 +87,31 @@ public class SSOWebUIFilter implements Filter
 			if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
 				isAdminResRequest = (boolean) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
 			isAdminResRequest = isAdminResRequest || httpRequest.getServletPath().toLowerCase().startsWith("/admin");
-			
+
 			// work as default log in
 			if (httpRequest.getServletPath().toLowerCase().startsWith("/index") || httpRequest.getServletPath().equalsIgnoreCase("/"))
 				isAdminResRequest = false;
-			
+
 			httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN, isAdminResRequest);
 			// redirect to admin zul file
-			if(isAdminResRequest && httpRequest.getServletPath().toLowerCase().endsWith("admin"))
-			 {
+			if (isAdminResRequest && httpRequest.getServletPath().toLowerCase().endsWith("admin"))
+			{
 				httpResponse.sendRedirect("/webui/admin.zul");
 				return;
-			 }
-			
+			}
+
+			boolean isProviderFromSession = false;
+			String provider = httpRequest.getParameter(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+			if (Util.isEmpty(provider) && httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
+			{
+				isProviderFromSession = true;
+				provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+			}
+
 			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
-				m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
+				m_SSOPrincipal = SSOUtils.getSSOPrincipalService(provider);
 
 				if (m_SSOPrincipal != null && !isAdminResRequest)
 				{
@@ -112,20 +123,34 @@ public class SSOWebUIFilter implements Filter
 
 						if (!httpResponse.isCommitted())
 						{
-							// Redirect to default request URL after authentication and handle query string. 
+							// Redirect to default request URL after authentication and handle query
+							// string.
 							Object queryString = httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
 							if (queryString != null && queryString instanceof String && !Util.isEmpty((String) queryString))
 								currentUri += "?" + (String) queryString;
-							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);						
+							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
 							httpResponse.sendRedirect(currentUri);
 						}
 					}
 					else if (!m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{
-						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
-						// Redirect to SSO sing in page for authentication
-						m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
-						return;
+						if (isProviderFromSession)
+						{
+							// If there is an issue on the SSO provide side & if a request is not
+							// the
+							// Authentication code or refresh request then have to remove the
+							// provide from the
+							// session.
+							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+						}
+						else
+						{
+							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
+							// Redirect to SSO sign in page for authentication
+							m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
+							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+							return;
+						}
 					}
 				}
 			}
@@ -150,7 +175,7 @@ public class SSOWebUIFilter implements Filter
 	} // doFilter
 
 	@Override
-	public void destroy()
+	public void destroy( )
 	{
 
 	}
@@ -159,5 +184,5 @@ public class SSOWebUIFilter implements Filter
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
 	}
-	
+
 } // AdempiereMonitorFilter

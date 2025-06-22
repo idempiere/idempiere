@@ -87,6 +87,40 @@
 	position: relative;
 	border: none;
 }
+
+/* SSO buttons */
+.sso-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 65% !important;
+    max-width: 300px;
+    border-radius: 20px !important;
+    overflow: hidden;
+    padding: 8px 15px !important;
+}
+
+.sso-login-btn img {
+    position: absolute;
+    left: 15px;
+    height: 24px;
+    margin-right: 0;
+}
+
+.sso-login-btn.icon-only img {
+    margin: 0 !important;
+    height: 24px;
+}
+
+@media (max-width: 600px) {
+    .sso-login-btn {
+        width: 95% !important;
+        overflow: hidden;
+    	text-overflow: ellipsis;
+    }
+}
+
 @media screen and (max-width: 659px) {
 	.login-box-body, .login-box-header, .login-box-footer {
 		background-image: none;

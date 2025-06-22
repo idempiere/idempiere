@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +31,6 @@ import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
-import org.adempiere.base.sso.ISSOPrincipalService;
-import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
@@ -1298,15 +1295,8 @@ public class Login
 
 		//	Authentication
 		boolean authenticated = false;
-		try
-		{
-			isSSOLogin = token != null && SSOUtils.getSSOPrincipalService() != null && SSOUtils.getSSOPrincipalService().getUserName(token).equalsIgnoreCase(app_user);
-		}
-		catch (ParseException e)
-		{
-			log.warning("Parsing failed: " + e.getLocalizedMessage());
-			isSSOLogin = false;
-		}
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		isSSOLogin = isSSOEnable && token != null;
 
 		MSystem system = MSystem.get(m_ctx);
 		if (system == null)
@@ -1364,13 +1354,11 @@ public class Login
 		else
 			where.append("COALESCE(LDAPUser,Name)=?");
 
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
-		ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
 		where.append("	AND EXISTS (SELECT * FROM AD_User u ")
 						.append("	INNER JOIN	AD_Client c ON (u.AD_Client_ID = c.AD_Client_ID)	")
 						.append("	WHERE (COALESCE(u.AuthenticationType, c.AuthenticationType) IN ");
 		//If Enable_SSO=N then don't allow SSO only users. 
-		where.append((isSSOEnable && ssoPrincipal != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
+		where.append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
 		where.append("	OR COALESCE(u.AuthenticationType, c.AuthenticationType) IS NULL) AND u.AD_User_ID = AD_User.AD_User_ID) ");
 
 		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
@@ -1472,7 +1460,7 @@ public class Login
 				if (! Util.isEmpty(whereRoleType)) {
 					sql.append(" AND ").append(whereRoleType);
 				}
-				sql.append(" AND  cli.AuthenticationType IN ").append((isSSOEnable && ssoPrincipal != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
+				sql.append(" AND  cli.AuthenticationType IN ").append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
 				sql.append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
 			      PreparedStatement pstmt=null;
 			      ResultSet rs=null;
@@ -1776,7 +1764,6 @@ public class Login
 		
 		loginErrMsg = null;
 		isPasswordExpired = false;
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		int AD_User_ID = Env.getContextAsInt(m_ctx, Env.AD_USER_ID);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
@@ -1788,7 +1775,7 @@ public class Login
                          .append(" AND cli.IsActive='Y'")
                          .append(" AND u.IsActive='Y'")
                          .append(" AND u.AD_User_ID=? ")
-						 .append(" AND cli.AuthenticationType IN ").append((isSSOEnable && SSOUtils.getSSOPrincipalService() != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ")
+						 .append(" AND cli.AuthenticationType IN ").append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ")
 						 .append(" ORDER BY cli.Name");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
