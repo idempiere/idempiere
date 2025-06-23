@@ -180,6 +180,19 @@ public interface I_C_Charge
 	  */
 	public boolean isActive();
 
+    /** Column name IsExcludedFromDiscount */
+    public static final String COLUMNNAME_IsExcludedFromDiscount = "IsExcludedFromDiscount";
+
+	/** Set Exclude from Payment Discount.
+	  * If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	  */
+	public void setIsExcludedFromDiscount (boolean IsExcludedFromDiscount);
+
+	/** Get Exclude from Payment Discount.
+	  * If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	  */
+	public boolean isExcludedFromDiscount();
+
     /** Column name IsSameCurrency */
     public static final String COLUMNNAME_IsSameCurrency = "IsSameCurrency";
 

@@ -18,12 +18,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema")
 public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 {
@@ -31,7 +32,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250520L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)
@@ -467,6 +468,22 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set End Date.
+		@param EndDate Last effective date (inclusive)
+	*/
+	public void setEndDate (Timestamp EndDate)
+	{
+		set_Value (COLUMNNAME_EndDate, EndDate);
+	}
+
+	/** Get End Date.
+		@return Last effective date (inclusive)
+	  */
+	public Timestamp getEndDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_EndDate);
+	}
+
 	/** GAAP AD_Reference_ID=123 */
 	public static final int GAAP_AD_Reference_ID=123;
 	/** German HGB = DE */
@@ -852,6 +869,22 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public String getSeparator()
 	{
 		return (String)get_Value(COLUMNNAME_Separator);
+	}
+
+	/** Set Start Date.
+		@param StartDate First effective day (inclusive)
+	*/
+	public void setStartDate (Timestamp StartDate)
+	{
+		set_Value (COLUMNNAME_StartDate, StartDate);
+	}
+
+	/** Get Start Date.
+		@return First effective day (inclusive)
+	  */
+	public Timestamp getStartDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}
 
 	/** TaxCorrectionType AD_Reference_ID=392 */
