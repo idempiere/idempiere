@@ -603,22 +603,53 @@ public class DocManager {
 			updateSql.append("WHERE AD_Client_ID=? ");
 			updateSql.append("AND C_AcctSchema_ID=? ");
 			updateSql.append("AND M_Product_ID=? ");
-			updateSql.append("AND (DateAcct, COALESCE(Ref_CostDetail_ID,M_CostDetail_ID), M_CostDetail_ID) > ("); 
-			updateSql.append(" SELECT cd.DateAcct, ");
-			updateSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
-			updateSql.append(" cd.M_CostDetail_ID ");
-			updateSql.append(" FROM M_CostDetail cd "); 
-			updateSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-			updateSql.append(" WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append("AND ( ");
+			updateSql.append(" DateAcct > ( ");
+			updateSql.append("  SELECT cd.DateAcct ");
+			updateSql.append("  FROM M_CostDetail cd "); 
+			updateSql.append("  WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append(" ) ");
+			updateSql.append(" OR ( ");
+			updateSql.append("  DateAcct = ( ");
+			updateSql.append("   SELECT cd.DateAcct ");
+			updateSql.append("   FROM M_CostDetail cd "); 
+			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append("  ) AND COALESCE(Ref_CostDetail_ID, M_CostDetail_ID) > ( ");
+			updateSql.append("   SELECT CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END ");
+			updateSql.append("   FROM M_CostDetail cd "); 
+			updateSql.append("   LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append("  ) ");
+			updateSql.append(" ) ");
+			updateSql.append(" OR ( ");
+			updateSql.append("  DateAcct = ( ");
+			updateSql.append("   SELECT cd.DateAcct ");
+			updateSql.append("   FROM M_CostDetail cd "); 
+			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append("  ) AND COALESCE(Ref_CostDetail_ID, M_CostDetail_ID) = ( ");
+			updateSql.append("   SELECT CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END ");
+			updateSql.append("   FROM M_CostDetail cd "); 
+			updateSql.append("   LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append("  ) ");
+			updateSql.append("  AND M_CostDetail_ID > ( ");
+			updateSql.append("   SELECT cd.M_CostDetail_ID ");
+			updateSql.append("   FROM M_CostDetail cd "); 
+			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append("  ) ");
+			updateSql.append(" ) ");
 			updateSql.append(") "); 
 			updateSql.append("AND DateAcct >= ? ");
 			updateSql.append("AND Processed='Y' ");
 			noUpdate += DB.executeUpdateEx(updateSql.toString(), 
-					new Object[] {bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getM_CostDetail_ID(), bdcd.getDateAcct()}, 
+					new Object[] {bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), 
+							bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(), 
+							bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(),
+							bdcd.getDateAcct()}, 
 					trxName);
+			if (s_log.isLoggable(Level.INFO))
+				s_log.info("Update cost detail to unprocessed: " + noUpdate);
 		}
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info("Update cost detail to unprocessed: " + noUpdate);
 		
 		MCostDetail cd = bdcds.get(0);
 		

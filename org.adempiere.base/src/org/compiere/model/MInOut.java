@@ -3380,13 +3380,41 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			whereClause.append("AD_Client_ID=? ");
 			whereClause.append("AND C_AcctSchema_ID=? ");
 			whereClause.append("AND M_Product_ID=? ");
-			whereClause.append("AND (DateAcct, COALESCE(Ref_CostDetail_ID,M_CostDetail_ID), M_CostDetail_ID) > ("); 
-			whereClause.append(" SELECT cd.DateAcct, ");
-			whereClause.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
-			whereClause.append(" cd.M_CostDetail_ID ");
-			whereClause.append(" FROM M_CostDetail cd ");
-			whereClause.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-			whereClause.append(" WHERE cd.M_CostDetail_ID=? ");
+			whereClause.append("AND ( ");
+			whereClause.append(" DateAcct > ( ");
+			whereClause.append("  SELECT cd.DateAcct ");
+			whereClause.append("  FROM M_CostDetail cd "); 
+			whereClause.append("  WHERE cd.M_CostDetail_ID=? ");
+			whereClause.append(" ) ");
+			whereClause.append(" OR ( ");
+			whereClause.append("  DateAcct = ( ");
+			whereClause.append("   SELECT cd.DateAcct ");
+			whereClause.append("   FROM M_CostDetail cd "); 
+			whereClause.append("   WHERE cd.M_CostDetail_ID=? ");
+			whereClause.append("  ) AND COALESCE(Ref_CostDetail_ID, M_CostDetail_ID) > ( ");
+			whereClause.append("   SELECT CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END ");
+			whereClause.append("   FROM M_CostDetail cd "); 
+			whereClause.append("   LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+			whereClause.append("   WHERE cd.M_CostDetail_ID=? ");
+			whereClause.append("  ) ");
+			whereClause.append(" ) ");
+			whereClause.append(" OR ( ");
+			whereClause.append("  DateAcct = ( ");
+			whereClause.append("   SELECT cd.DateAcct ");
+			whereClause.append("   FROM M_CostDetail cd "); 
+			whereClause.append("   WHERE cd.M_CostDetail_ID=? ");
+			whereClause.append("  ) AND COALESCE(Ref_CostDetail_ID, M_CostDetail_ID) = ( ");
+			whereClause.append("   SELECT CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END ");
+			whereClause.append("   FROM M_CostDetail cd "); 
+			whereClause.append("   LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+			whereClause.append("   WHERE cd.M_CostDetail_ID=? ");
+			whereClause.append("  ) ");
+			whereClause.append("  AND M_CostDetail_ID > ( ");
+			whereClause.append("   SELECT cd.M_CostDetail_ID ");
+			whereClause.append("   FROM M_CostDetail cd "); 
+			whereClause.append("   WHERE cd.M_CostDetail_ID=? ");
+			whereClause.append("  ) ");
+			whereClause.append(" ) ");
 			whereClause.append(") ");
 			whereClause.append("AND DateAcct >= ? ");
 			whereClause.append("AND Processed='Y' ");
@@ -3406,7 +3434,10 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				BigDecimal qty = cd.getQty().negate();
 				
 				List<MCostDetail> costDetailList = new Query(getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-						.setParameters(getAD_Client_ID(), as.getC_AcctSchema_ID(), cd.getM_Product_ID(), cd.getM_CostDetail_ID(), cd.getDateAcct())
+						.setParameters(getAD_Client_ID(), as.getC_AcctSchema_ID(), cd.getM_Product_ID(), 
+								cd.getM_CostDetail_ID(), cd.getM_CostDetail_ID(), cd.getM_CostDetail_ID(), 
+								cd.getM_CostDetail_ID(), cd.getM_CostDetail_ID(), cd.getM_CostDetail_ID(), 
+								cd.getDateAcct())
 						.list();
 				for (MCostDetail costDetail : costDetailList) {
 					if (costDetail.getM_InOutLine_ID() > 0) {
