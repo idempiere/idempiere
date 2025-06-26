@@ -598,54 +598,41 @@ public class DocManager {
 		int noUpdate = 0;
 		for (MCostDetail bdcd : bdcds) {
 			StringBuilder updateSql = new StringBuilder();
-			updateSql.append("UPDATE M_CostDetail ");
-			updateSql.append("SET Processed='N' ");
-			updateSql.append("WHERE AD_Client_ID=? ");
-			updateSql.append("AND C_AcctSchema_ID=? ");
-			updateSql.append("AND M_Product_ID=? ");
-			updateSql.append("AND ( ");
-			updateSql.append(" DateAcct > ( ");
-			updateSql.append("  SELECT cd.DateAcct ");
-			updateSql.append("  FROM M_CostDetail cd "); 
-			updateSql.append("  WHERE cd.M_CostDetail_ID=? ");
-			updateSql.append(" ) ");
-			updateSql.append(" OR ( ");
-			updateSql.append("  DateAcct = ( ");
-			updateSql.append("   SELECT cd.DateAcct ");
-			updateSql.append("   FROM M_CostDetail cd "); 
-			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
-			updateSql.append("  ) AND COALESCE(Ref_CostDetail_ID, M_CostDetail_ID) > ( ");
-			updateSql.append("   SELECT CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END ");
-			updateSql.append("   FROM M_CostDetail cd "); 
-			updateSql.append("   LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
+			updateSql.append("WITH base_cd AS (");
+			updateSql.append("  SELECT ");
+			updateSql.append("    cd.DateAcct, ");
+			updateSql.append("    cd.M_CostDetail_ID, ");
+			updateSql.append("    CASE ");
+			updateSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
+			updateSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
+			updateSql.append("      ELSE cd.M_CostDetail_ID ");
+			updateSql.append("    END AS Ref_CostDetail_ID ");
+			updateSql.append("  FROM M_CostDetail cd ");
+			updateSql.append("  LEFT JOIN M_CostDetail refcd ON refcd.M_CostDetail_ID = cd.Ref_CostDetail_ID ");
+			updateSql.append("  WHERE cd.M_CostDetail_ID = ? ");
+			updateSql.append(") ");
+			updateSql.append("UPDATE M_CostDetail t ");
+			updateSql.append("SET Processed = 'N' ");
+			updateSql.append("WHERE ");
+			updateSql.append("  t.AD_Client_ID = ? ");
+			updateSql.append("  AND t.C_AcctSchema_ID = ? ");
+			updateSql.append("  AND t.M_Product_ID = ? ");
+			updateSql.append("  AND ( ");
+			updateSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
+			updateSql.append("    OR ( ");
+			updateSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+			updateSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) > (SELECT Ref_CostDetail_ID FROM base_cd) ");
+			updateSql.append("    ) ");
+			updateSql.append("    OR ( ");
+			updateSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+			updateSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) = (SELECT Ref_CostDetail_ID FROM base_cd) ");
+			updateSql.append("      AND t.M_CostDetail_ID > (SELECT M_CostDetail_ID FROM base_cd) ");
+			updateSql.append("    ) ");
 			updateSql.append("  ) ");
-			updateSql.append(" ) ");
-			updateSql.append(" OR ( ");
-			updateSql.append("  DateAcct = ( ");
-			updateSql.append("   SELECT cd.DateAcct ");
-			updateSql.append("   FROM M_CostDetail cd "); 
-			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
-			updateSql.append("  ) AND COALESCE(Ref_CostDetail_ID, M_CostDetail_ID) = ( ");
-			updateSql.append("   SELECT CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END ");
-			updateSql.append("   FROM M_CostDetail cd "); 
-			updateSql.append("   LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
-			updateSql.append("  ) ");
-			updateSql.append("  AND M_CostDetail_ID > ( ");
-			updateSql.append("   SELECT cd.M_CostDetail_ID ");
-			updateSql.append("   FROM M_CostDetail cd "); 
-			updateSql.append("   WHERE cd.M_CostDetail_ID=? ");
-			updateSql.append("  ) ");
-			updateSql.append(" ) ");
-			updateSql.append(") "); 
-			updateSql.append("AND DateAcct >= ? ");
-			updateSql.append("AND Processed='Y' ");
+			updateSql.append("  AND t.DateAcct >= ? ");
+			updateSql.append("  AND t.Processed = 'Y' ");
 			noUpdate += DB.executeUpdateEx(updateSql.toString(), 
-					new Object[] {bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), 
-							bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(), 
-							bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(), bdcd.getM_CostDetail_ID(),
-							bdcd.getDateAcct()}, 
+					new Object[] {bdcd.getM_CostDetail_ID(), bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getDateAcct()}, 
 					trxName);
 			if (s_log.isLoggable(Level.INFO))
 				s_log.info("Update cost detail to unprocessed: " + noUpdate);
