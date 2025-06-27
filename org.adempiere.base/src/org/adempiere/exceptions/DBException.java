@@ -43,9 +43,9 @@ import org.compiere.util.Util;
 public class DBException extends AdempiereException
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -1961265420169932726L;
+	private static final long serialVersionUID = 3074599079851510411L;
 
 	public static final String DATABASE_OPERATION_TIMEOUT_MSG = "DatabaseOperationTimeout";
 	public static final String DELETE_ERROR_DEPENDENT_MSG = "DeleteErrorDependent";
@@ -215,6 +215,17 @@ public class DBException extends AdempiereException
     	if (DB.isPostgreSQL())
     		return isSQLState(e, "42P01");
     	return isErrorCode(e, 904);
+    }
+
+    /**
+     * Check if "Invalid column name" exception (aka ORA-17006)
+     * @param e exception
+     * @return true if e is invalid identifier exception
+     */
+    public static boolean isColumnNotFound(Exception e) {
+    	if (DB.isPostgreSQL())
+    		return isSQLState(e, "42703");
+    	return isErrorCode(e, 17006);
     }
 
     /**
