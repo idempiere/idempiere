@@ -113,7 +113,15 @@ public class DocLine
 	private int					m_C_Currency_ID = -1;
 	/** Conversion Type				*/
 	private int					m_C_ConversionType_ID = -1;
-	/** Period						*/
+	/** Department */
+	private int					m_C_Department_ID		= -1;
+	/** Cost Center */
+	private int					m_C_CostCenter_ID		= -1;
+	/** B Partner Employee */
+	private int					m_C_Employee_ID			= -1;
+	/** Asset */
+	private int					m_A_Asset_ID			= -1;
+    /** Period                        */
 	private int					m_C_Period_ID = -1;
 	private BigDecimal 			m_currencyRate = null;
 
@@ -606,6 +614,22 @@ public class DocLine
 		}
 		return 0;
 	}   //  getM_AttributeSetInstance_ID
+	
+	/**
+	 *  ASI
+	 *  @return getM_AttributeSetInstanceTo_ID
+	 */
+	public int getM_AttributeSetInstanceTo_ID()
+	{
+		int index = p_po.get_ColumnIndex("M_AttributeSetInstanceTo_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getM_AttributeSetInstanceTo_ID
 
 	/**
 	 *  Get Warehouse Locator (from)
@@ -958,6 +982,36 @@ public class DocLine
 	}   //  getC_BPartner_ID
 
 	/**
+	 *  Get BPartner Employee
+	 *  @return C_Employee_ID
+	 */
+	public int getC_Employee_ID()
+	{
+		if (m_C_Employee_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("C_Employee_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer)p_po.get_Value(index);
+				if (ii != null)
+					m_C_Employee_ID = ii.intValue();
+			}
+			if (m_C_Employee_ID <= 0)
+				m_C_Employee_ID = 0;
+		}
+		return m_C_Employee_ID;
+	}// getC_Employee_ID
+	
+	/**
+	 * 	Set C_Employee_ID
+	 *	@param C_Employee_ID id
+	 */
+	protected void setC_Employee_ID (int C_Employee_ID)
+	{
+		m_C_Employee_ID = C_Employee_ID;
+	}	//	setC_Employee_ID
+
+	/**
 	 * 	Set C_BPartner_ID
 	 *	@param C_BPartner_ID id
 	 */
@@ -1105,7 +1159,117 @@ public class DocLine
 		}
 		return 0;
 	}   //  getC_Activity_ID
+	
+	/**
+	 * 	Get header level A_Asset_ID
+	 *	@return A_Asset_ID or 0
+	 */
+	public int getA_Asset_ID()
+	{
+		if(m_A_Asset_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("A_Asset_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer) p_po.get_Value(index);
+				if (ii != null)
+					m_A_Asset_ID = ii.intValue();
+			}
+			if (m_A_Asset_ID == -1)
+				m_A_Asset_ID = 0;
+		}
+		return m_A_Asset_ID;
+	}	//	getA_Asset_ID
 
+	/**
+	 * Set A_Asset_ID
+	 * @param m_A_Asset_ID Asset
+	 */
+	public void setA_Asset_ID(int m_A_Asset_ID)
+	{
+		this.m_A_Asset_ID = m_A_Asset_ID;
+	}// setA_Asset_ID
+	
+	/**
+	 * 	Get M_Warehouse_ID
+	 *	@return M_Warehouse_ID or 0
+	 */
+	public int getM_Warehouse_ID()
+	{
+		int index = p_po.get_ColumnIndex("M_Warehouse_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}	//	getM_Warehouse_ID
+	
+	/**
+	 * Get C_CostCenter_ID
+	 * 
+	 * @return C_CostCenter_ID or 0
+	 */
+	public int getC_CostCenter_ID()
+	{
+		if (m_C_CostCenter_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("C_CostCenter_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer) p_po.get_Value(index);
+				if (ii != null)
+					m_C_CostCenter_ID = ii.intValue();
+			}
+			if (m_C_CostCenter_ID == -1)
+				m_C_CostCenter_ID = 0;
+		}
+		return m_C_CostCenter_ID;
+	}// getC_CostCenter_ID
+	
+	/**
+	 * Set C_CostCenter_ID
+	 * 
+	 * @param m_C_CostCenter_ID Cost Center
+	 */
+	public void setC_CostCenter_ID(int m_C_CostCenter_ID)
+	{
+		this.m_C_CostCenter_ID = m_C_CostCenter_ID;
+	}// setC_CostCenter_ID
+
+	/**
+	 * Get C_Department_ID
+	 * 
+	 * @return C_Department_ID or 0
+	 */
+	public int getC_Department_ID()
+	{
+		if (m_C_Department_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("C_Department_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer) p_po.get_Value(index);
+				if (ii != null)
+					m_C_Department_ID = ii.intValue();
+			}
+			if (m_C_Department_ID == -1)
+				m_C_Department_ID = 0;
+		}
+		return m_C_Department_ID;
+	}// getC_Department_ID
+	
+	/**
+	 * Set C_Department_ID
+	 * 
+	 * @param m_C_Department_ID Department
+	 */
+	public void setC_Department_ID(int m_C_Department_ID)
+	{
+		this.m_C_Department_ID = m_C_Department_ID;
+	} // setC_Department_ID
+	
 	/**
 	 *  Get user defined id 1
 	 *  @return User1_ID
@@ -1154,6 +1318,21 @@ public class DocLine
 		}
 		return 0;
 	}   //  getValue
+	
+    /**
+	 * Get value by column name
+	 * @param ColumnName
+	 * @return column value or null (if column doesn't exists)
+	 */
+	public String get_ValueAsString (String ColumnName)
+	{
+		int index = p_po.get_ColumnIndex(ColumnName);
+		if (index != -1)
+		{
+			return p_po.get_ValueAsString(index);
+		}
+		return null;
+	}	//	get_ValueAsString
 
 	//AZ Goodwill
 	private int         		m_ReversalLine_ID = 0;

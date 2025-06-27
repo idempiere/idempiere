@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Fact_Acct
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="Fact_Acct")
 public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_Fact_Acct (Properties ctx, int Fact_Acct_ID, String trxName)
@@ -442,6 +442,61 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
+
+	/** Set Charge.
+		@param C_Charge_ID Additional document charges
+	*/
+	public void setC_Charge_ID (int C_Charge_ID)
+	{
+		if (C_Charge_ID < 1)
+			set_Value (COLUMNNAME_C_Charge_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
+	}
+
+	/** Get Charge.
+		@return Additional document charges
+	  */
+	public int getC_Charge_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -465,6 +520,61 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Department_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_Employee_ID(), get_TrxName());
+	}
+
+	/** Set Employee.
+		@param C_Employee_ID Identifies a Business Partner
+	*/
+	public void setC_Employee_ID (int C_Employee_ID)
+	{
+		if (C_Employee_ID < 1)
+			set_Value (COLUMNNAME_C_Employee_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Employee_ID, Integer.valueOf(C_Employee_ID));
+	}
+
+	/** Get Employee.
+		@return Identifies a Business Partner
+	  */
+	public int getC_Employee_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Employee_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -750,6 +860,70 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Text Column 1.
+		@param CustomFieldText1 User defined accounting Element
+	*/
+	public void setCustomFieldText1 (String CustomFieldText1)
+	{
+		set_Value (COLUMNNAME_CustomFieldText1, CustomFieldText1);
+	}
+
+	/** Get Text Column 1.
+		@return User defined accounting Element
+	  */
+	public String getCustomFieldText1()
+	{
+		return (String)get_Value(COLUMNNAME_CustomFieldText1);
+	}
+
+	/** Set Text Column 2.
+		@param CustomFieldText2 User defined accounting Element
+	*/
+	public void setCustomFieldText2 (String CustomFieldText2)
+	{
+		set_Value (COLUMNNAME_CustomFieldText2, CustomFieldText2);
+	}
+
+	/** Get Text Column 2.
+		@return User defined accounting Element
+	  */
+	public String getCustomFieldText2()
+	{
+		return (String)get_Value(COLUMNNAME_CustomFieldText2);
+	}
+
+	/** Set Text Column 3.
+		@param CustomFieldText3 User defined accounting Element
+	*/
+	public void setCustomFieldText3 (String CustomFieldText3)
+	{
+		set_Value (COLUMNNAME_CustomFieldText3, CustomFieldText3);
+	}
+
+	/** Get Text Column 3.
+		@return User defined accounting Element
+	  */
+	public String getCustomFieldText3()
+	{
+		return (String)get_Value(COLUMNNAME_CustomFieldText3);
+	}
+
+	/** Set Text Column 4.
+		@param CustomFieldText4 User defined accounting Element
+	*/
+	public void setCustomFieldText4 (String CustomFieldText4)
+	{
+		set_Value (COLUMNNAME_CustomFieldText4, CustomFieldText4);
+	}
+
+	/** Get Text Column 4.
+		@return User defined accounting Element
+	  */
+	public String getCustomFieldText4()
+	{
+		return (String)get_Value(COLUMNNAME_CustomFieldText4);
+	}
+
 	/** Set Account Date.
 		@param DateAcct Accounting Date
 	*/
@@ -920,6 +1094,34 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_AttributeSetInstance)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
+
+	/** Set Attribute Set Instance.
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
+	{
+		if (M_AttributeSetInstance_ID < 0)
+			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
+		else
+			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
+	}
+
+	/** Get Attribute Set Instance.
+		@return Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_ID)
@@ -971,6 +1173,34 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
+
+	/** Set Warehouse.
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
+	public void setM_Warehouse_ID (int M_Warehouse_ID)
+	{
+		if (M_Warehouse_ID < 1)
+			set_Value (COLUMNNAME_M_Warehouse_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
+	}
+
+	/** Get Warehouse.
+		@return Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
