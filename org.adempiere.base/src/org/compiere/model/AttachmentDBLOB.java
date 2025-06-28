@@ -146,12 +146,7 @@ public class AttachmentDBLOB implements IAttachmentStore
         } else {
             try {
                 for (int i = 0; i < attach.m_items.size(); i++) {
-                    File entryFile = attach.m_items.get(i).getFile();
-                    if (entryFile == null) {
-                        throw new AdempiereException("Attachment file not found: " + attach.getEntryName(i));
-                    }
-
-                    insertOrReplace(attach, i, entryFile);
+                    insertOrReplace(attach, i);
                 }
             } catch (Exception e) {
                 log.log(Level.SEVERE, e.getMessage(), e);
@@ -169,13 +164,14 @@ public class AttachmentDBLOB implements IAttachmentStore
 
     private static final String AD_ATTACHMENT_ENTRIES_DELETE = "DELETE FROM AD_Attachment_Entry WHERE AD_Attachment_ID=?";
 
+    private static final String AD_ATTACHMENT_AFTER_ENTRY_DELETE = "UPDATE AD_Attachment_Entry SET SeqNo=SeqNo-1 WHERE AD_Attachment_ID=? AND SeqNo > ?";
+
     /**
      * Insert or update attachment entry (ad_attachment_entry)
      * @param attach attachment record
      * @param index entry index
-     * @param entryFile attachment entry file
      */
-    private void insertOrReplace(MAttachment attach, int index, File entryFile) {
+    private void insertOrReplace(MAttachment attach, int index) {
         Connection conn = null;
         // With Postgresql, you need to keep transaction open to access blob
         if (attach.get_TrxName() == null && DB.isPostgreSQL()) {
@@ -205,20 +201,34 @@ public class AttachmentDBLOB implements IAttachmentStore
             pstmt.setInt(2, index);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    updateBlob = true;
-                    Blob blob = rs.getBlob(1);
-                    try (ZipOutputStream zos = new ZipOutputStream(blob.setBinaryStream(1));
-                         InputStream inputStream = new FileInputStream(entryFile)) {
-                        ZipEntry zipEntry = new ZipEntry(entryFile.getName());
-                        zipEntry.setSize(entryFile.length());
-                        zos.putNextEntry(zipEntry);
-                        byte[] buffer = new byte[2048];
-                        int length;
-                        while ((length = inputStream.read(buffer)) != -1) {
-                            zos.write(buffer, 0, length);
+                    if (attach.m_items.get(index).isUpdated()) {
+                        File entryFile = attach.m_items.get(index).getFile();
+                        if (entryFile == null) {
+                            throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
                         }
-                    } finally {
-                        blob.free();
+                        updateBlob = true;
+                        Blob blob = rs.getBlob(1);
+                        try (ZipOutputStream zos = new ZipOutputStream(blob.setBinaryStream(1));
+                             InputStream inputStream = new FileInputStream(entryFile)) {
+                            ZipEntry zipEntry = new ZipEntry(entryFile.getName());
+                            zipEntry.setSize(entryFile.length());
+                            zos.putNextEntry(zipEntry);
+                            byte[] buffer = new byte[2048];
+                            int length;
+                            while ((length = inputStream.read(buffer)) != -1) {
+                                zos.write(buffer, 0, length);
+                            }
+                        } finally {
+                            blob.free();
+                        }
+                    }
+                    if (updateBlob && conn != null)
+                    {
+                        try {
+                            conn.commit();
+                        } catch (SQLException e) {
+                            throw new DBException(e);
+                        }
                     }
                     return;
                 }
@@ -233,7 +243,7 @@ public class AttachmentDBLOB implements IAttachmentStore
             }
             throw new AdempiereException(e);
         } finally {
-            if (updateBlob && conn != null)
+            if (conn != null)
             {
                 try {
                     conn.setAutoCommit(true);
@@ -250,6 +260,10 @@ public class AttachmentDBLOB implements IAttachmentStore
 
         // no existing blob found, create a new one
         sql = AD_ATTACHMENT_ENTRY_INSERT;
+        File entryFile = attach.m_items.get(index).getFile();
+        if (entryFile == null) {
+            throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
+        }
         try {
             // compress to temp file
             Path tempFile;
@@ -355,7 +369,13 @@ public class AttachmentDBLOB implements IAttachmentStore
     @Override
     public boolean deleteEntry(MAttachment attach, MStorageProvider provider, int index) {
         DB.executeUpdateEx(AD_ATTACHMENT_ENTRY_DELETE, new Object[] {attach.getAD_Attachment_ID(), index}, attach.get_TrxName());
+        DB.executeUpdateEx(AD_ATTACHMENT_AFTER_ENTRY_DELETE, new Object[] {attach.getAD_Attachment_ID(), index}, attach.get_TrxName());
         attach.m_items.remove(index);
+        for (MAttachmentEntry entry : attach.m_items) {
+            IAttachmentLazyDataSource ds = entry.getLazyDataSource();
+            if (ds instanceof AttachmentDBLazyDataSource adds)
+                adds.afterDelete(index);
+        }
         return true;
     }
 }

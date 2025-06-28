@@ -47,7 +47,7 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
     private static final org.compiere.util.CLogger log = CLogger.getCLogger(AttachmentDBLazyDataSource.class);
 
     private final int AD_Attachment_ID;
-    private final int index;
+    private int index;
     private final String fileName;
     private final AtomicBoolean dataLoaded = new AtomicBoolean(false);
     private File file;
@@ -120,6 +120,11 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
             loadEntry(true);
         }
         return size;
+    }
+
+    protected void afterDelete(int deletedIndex) {
+        if (index > deletedIndex)
+            index--;
     }
 
     private static final String AD_ATTACHMENT_ENTRY_GET = "SELECT BinaryData FROM AD_Attachment_Entry WHERE AD_Attachment_ID=? AND SeqNo=?";
