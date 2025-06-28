@@ -780,13 +780,9 @@ public class MAttachment extends X_AD_Attachment
 		destZipFile.delete();
 
 		MAttachmentEntry[] entries = getEntries();
-		MAttachmentEntry entry = null;
-		int index = 0;
 
-		for (int i = 0; i < entries.length; i++) {
-			entry = entries[i];
-			index = i;
-			File destinationFile = new File(tempfolder, entry.getName());
+        for (MAttachmentEntry entry : entries) {
+            File destinationFile = new File(tempfolder, entry.getName());
             try {
                 Files.copy(entry.getInputStream(), destinationFile.toPath());
             } catch (IOException e) {
