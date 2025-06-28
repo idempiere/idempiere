@@ -27,6 +27,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -43,6 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 /**
  * DB LOB implementation of {@link IAttachmentStore}
  */
+@Component(immediate = true, service = {IAttachmentStore.class}, property = {"method=DB_LOB"})
 public class AttachmentDBLOB implements IAttachmentStore
 {
     private static final CLogger log = CLogger.getCLogger(AttachmentDBLOB.class);
@@ -192,6 +194,9 @@ public class AttachmentDBLOB implements IAttachmentStore
 
         // try to find existing blob
         String sql = AD_ATTACHMENT_ENTRY_GET;
+        //ORA-22920: row containing the LOB value is not locked prior to update
+        if (DB.isOracle())
+            sql += " FOR UPDATE ";
         boolean updateBlob = false;
         try (PreparedStatement pstmt = conn != null
                 ? DB.prepareStatement(conn, sql)
