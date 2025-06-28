@@ -605,11 +605,8 @@ public final class Env
 			if (retValue == null)
 				retValue = System.getProperty(context.substring(PREFIX_SYSTEM_VARIABLE.length()), "");
 			return retValue;
-		} else if (context.startsWith(PREFIX_SYSCONFIG_VARIABLE)) {
-			String retValue = MSysConfig.getValue(context.substring(PREFIX_SYSCONFIG_VARIABLE.length()), Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
-			if (retValue == null)
-				retValue = "";
-			return retValue;
+		} else if (isSysConfig(context)) {
+			return getSysConfigValue(context, Env.getAD_Org_ID(ctx));
 		}
 		String value = ctx.getProperty(context, "");
 		if (Util.isEmpty(value) && !context.startsWith("#"))
@@ -635,7 +632,12 @@ public final class Env
 		String s = ctx.getProperty(WindowNo+"|"+context);
 		if (s == null)
 		{
-			//	Explicit Base Values
+			if (isSysConfig(context))
+			{
+				int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, Env.AD_ORG_ID, false);
+				return getSysConfigValue(context, AD_Org_ID);
+			}
+			//	Explicit Base Values			
 			if (Env.isGlobalVariable(context) || Env.isPreference(context))
 				return getContext(ctx, context);
 			if (onlyWindow)			//	no Default values
@@ -644,6 +646,13 @@ public final class Env
 		}
 		return s;
 	}	//	getContext
+
+	private static String getSysConfigValue(String context, int AD_Org_ID) {
+		String retValue = MSysConfig.getValue(context.substring(PREFIX_SYSCONFIG_VARIABLE.length()), Env.getAD_Client_ID(Env.getCtx()), AD_Org_ID);
+		if (retValue == null)
+			retValue = "";
+		return retValue;
+	}
 
 	/**
 	 *	Get Value of Context for WindowNo.<br/>
@@ -678,7 +687,14 @@ public final class Env
 			return s != null ? s : "";
 		//
 		if (Util.isEmpty(s))
+		{
+			if (isSysConfig(context))
+			{
+				int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, TabNo, Env.AD_ORG_ID);
+				return getSysConfigValue(context, AD_Org_ID);
+			}
 			return getContext(ctx, WindowNo, context, false);
+		}
 		return s;
 	}	//	getContext
 
@@ -2258,9 +2274,9 @@ public final class Env
 	}
 
 	/**
-	 * Verifies if a context variable name is global, this is, starting with:
-	 *   #  Login
-	 *   $  Accounting
+	 * Verifies if a context variable name is global, this is, starting with:<br/>
+	 *   #  Login<br/>
+	 *   $  Accounting<br/>
 	 *   +  Role Injected
 	 * @param variable
 	 * @return
@@ -2272,7 +2288,7 @@ public final class Env
 	}
 
 	/**
-	 * Verifies if a context variable name is a preference, this is, starting with:
+	 * Verifies if a context variable name is a preference, this is, starting with:<br/>
 	 *   P| Preference
 	 * @param variable
 	 * @return
@@ -2281,4 +2297,13 @@ public final class Env
 		return variable.startsWith("P|");
 	}
 
+	/**
+	 * Verifies if a context variable name is a system configuration, this is, starting with:<br/>
+	 *   $sysconfig.
+	 * @param variable
+	 * @return
+	 */
+	public static boolean isSysConfig(String variable) {
+		return variable.startsWith(PREFIX_SYSCONFIG_VARIABLE);
+	}
 }   //  Env
