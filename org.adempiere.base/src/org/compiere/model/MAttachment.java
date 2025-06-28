@@ -258,7 +258,10 @@ public class MAttachment extends X_AD_Attachment
 					if (testExists == -1) // Orphan Record, not read-only as it can be deleted
 						isReadOnly = false;
 				}
-				if (po != null && ! po.is_new() && po.getAD_Client_ID() == Env.getAD_Client_ID(getCtx()))
+				if (   po != null
+					&& ! po.is_new()
+					&& (   po.getAD_Client_ID() == Env.getAD_Client_ID(getCtx())
+						|| Env.getAD_Client_ID(getCtx()) == 0)) // System is allowed to migrate tenant attachments
 					isReadOnly = false;
 			}
 		}
