@@ -32,6 +32,7 @@
 		<extra.iu.install>org.eclipse.equinox.p2.director,org.idempiere.equinox.p2.director.feature.feature.group</extra.iu.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<skipClean>false</skipClean>
+    <skipDS>true</skipDS>
     <target.version>17</target.version>
     <maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
@@ -537,11 +538,13 @@
 				<plugin>
 				  <groupId>org.eclipse.tycho</groupId>
 				  <artifactId>tycho-ds-plugin</artifactId>
-				  <version>${tycho.version}</version>
+				  <version>${tycho.version}</version>          
 				  <configuration>
-					 <skip>true</skip>
+           <enabled>true</enabled>
+					 <skip>${skipDS}</skip>
+           <path>../../OSGI-INF</path>
 				  </configuration>
-			    </plugin>
+        </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
