@@ -16,10 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.ResultSet;
@@ -415,7 +412,20 @@ public class MAttachment extends X_AD_Attachment
 			return false;
 		return addEntry (new MAttachmentEntry (name, data));	//	random index
 	}	//	addEntry
-	
+
+    /**
+     * Add attachment entry
+     * @param name
+     * @param file
+     * @return true if success, false otherwise
+     */
+    public boolean addEntry(String name, File file)
+    {
+        if (name == null || file  == null)
+            return false;
+        return addEntry(new MAttachmentEntry(name, file));
+    }
+
 	/**
 	 * 	Add item to attachment
 	 * 	@param item attachment entry
@@ -427,7 +437,6 @@ public class MAttachment extends X_AD_Attachment
 		boolean retValue = false;
 		if (item == null)
 			return false;
-		item.getData(); // in case of lazy load enforce reading
 		if (m_items == null)
 			loadLOBData();
 		for (int i = 0; i < m_items.size(); i++) {
@@ -600,13 +609,14 @@ public class MAttachment extends X_AD_Attachment
 
 	/**
 	 * 	Save attachment content through storage provider
+     *  @param beforeSave true if call from beforeSave, false if call from afterSave
 	 *	@return true if saved
 	 */
-	private boolean saveLOBData()
+	private boolean saveLOBData(boolean beforeSave)
 	{
 		IAttachmentStore prov = provider.getAttachmentStore();
 		if (prov != null)
-			return prov.save(this,provider);
+			return prov.save(this,provider,beforeSave);
 		return false;
 	}
 	
@@ -636,10 +646,19 @@ public class MAttachment extends X_AD_Attachment
 			if (po != null)
 				setRecord_UU(po.get_UUID());
 		}
-		return saveLOBData();		//	save in BinaryData
+		return saveLOBData(true);		//	save in BinaryData
 	}	//	beforeSave
 
-	@Override
+    @Override
+    protected boolean afterSave(boolean newRecord, boolean success) {
+        if (success) {
+            return saveLOBData(false);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
 	protected boolean beforeDelete() {
 		if (isReadOnly(true))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
@@ -682,24 +701,11 @@ public class MAttachment extends X_AD_Attachment
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("updateEntry - " + file);
 		//
-		byte[] data = null;
-		try (
-			FileInputStream fis = new FileInputStream (file);
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-		)
-		{			
-			byte[] buffer = new byte[1024*8];   //  8kB
-			int length = -1;
-			while ((length = fis.read(buffer)) != -1)
-				os.write(buffer, 0, length);
-			data = os.toByteArray();
-		}
-		catch (IOException ioe)
-		{
-			log.log(Level.SEVERE, "(file)", ioe);
-		}
-		return updateEntry (i, data);
-		
+        MAttachmentEntry entry = getEntry(i);
+        if (entry == null) return false;
+        entry.setFile(file);
+        entry.setUpdated(true);
+        return true;
 	}
 	
 	/**
@@ -777,15 +783,15 @@ public class MAttachment extends X_AD_Attachment
 		destZipFile.delete();
 
 		MAttachmentEntry[] entries = getEntries();
-		MAttachmentEntry entry = null;
-		int index = 0;
 
-		for (int i = 0; i < entries.length; i++) {
-			entry = entries[i];
-			index = i;
-			File destinationFile = new File(tempfolder, entry.getName());
-			FileUtil.copy(this, destinationFile, index);
-		}	
+        for (MAttachmentEntry entry : entries) {
+            File destinationFile = new File(tempfolder, entry.getName());
+            try {
+                Files.copy(entry.getInputStream(), destinationFile.toPath());
+            } catch (IOException e) {
+                throw new AdempiereException(e);
+            }
+        }
 
 		Zip zipper = new Zip();
 		zipper.setDestFile(destZipFile);
