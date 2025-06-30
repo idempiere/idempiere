@@ -994,9 +994,12 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 					return false;
 				}
 				// email with password must be unique on the same tenant
+				String emailToValidate = getLDAPUser();
+				if (Util.isEmpty(emailToValidate))
+					emailToValidate = getEMail();
 				int cnt = DB.getSQLValue(get_TrxName(),
 						"SELECT COUNT(*) FROM AD_User WHERE Password IS NOT NULL AND COALESCE(LDAPUser,EMail)=? AND AD_Client_ID=? AND AD_User_ID!=?",
-						getEMail(), getAD_Client_ID(), getAD_User_ID());
+						emailToValidate, getAD_Client_ID(), getAD_User_ID());
 				if (cnt > 0) {
 					log.saveError("SaveError", Msg.getMsg(getCtx(), DBException.SAVE_ERROR_NOT_UNIQUE_MSG, true) + Msg.getElement(getCtx(), COLUMNNAME_EMail));
 					return false;
