@@ -28,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -73,6 +76,8 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * 
@@ -208,16 +213,14 @@ public class MTaxTest extends AbstractTestCase {
 	}
 
 	@Test
-	public void testDistributeTaxToProductCost() {
-		MProduct product = null;
+	public void testDistributeTaxToProductCost() {		
 		MTaxCategory category = null;
 		MTax tax = null;
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS)) {
 			category = new MTaxCategory(Env.getCtx(), 0, null);
 			category.setName("testDistributeTaxToProductCost");
 			category.saveEx();
 			
-			//need to create tax without trx as tax is cache
 			tax = new MTax(Env.getCtx(), 0, null);
 			tax.setC_TaxCategory_ID(category.get_ID());
 			tax.setIsDocumentLevel(false);
@@ -229,9 +232,8 @@ public class MTaxTest extends AbstractTestCase {
 			tax.saveEx();
 			CacheMgt.get().reset();
 			
-			//need to create product with trx as order line get product from cache
 			MProduct p = MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id);
-			product = new MProduct(Env.getCtx(), 0, null);
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());
 			product.setIsStocked(true);
@@ -242,6 +244,7 @@ public class MTaxTest extends AbstractTestCase {
 			product.setName("testDistributeTaxToProductCost");
 			product.setC_UOM_ID(p.getC_UOM_ID());
 			product.saveEx();
+			mockProductGet(productMock, product);
 			
 			MPriceList priceList = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id);
 			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
@@ -338,8 +341,6 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, totalDebit.setScale(2, RoundingMode.HALF_EVEN), "Un-expected product asset account posted amount");
 		} finally {
 			rollback();
-			if (product != null && product.get_ID() > 0)
-				product.deleteEx(true);
 			if (tax != null && tax.get_ID() > 0)
 				tax.deleteEx(true);
 			if (category != null && category.get_ID() > 0)
@@ -349,10 +350,9 @@ public class MTaxTest extends AbstractTestCase {
 	
 	@Test
 	public void testSeparateTaxPosting() {
-		MProduct product = null;
 		MTaxCategory category = null;
 		MTax tax = null;
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS)) {
 			category = new MTaxCategory(Env.getCtx(), 0, null);
 			category.setName("testSeparateTaxPosting");
 			category.saveEx();
@@ -369,9 +369,8 @@ public class MTaxTest extends AbstractTestCase {
 			tax.saveEx();
 			CacheMgt.get().reset();
 			
-			//need to create product with trx as order line get product from cache
 			MProduct p = MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id);
-			product = new MProduct(Env.getCtx(), 0, null);
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());
 			product.setIsStocked(true);
@@ -382,6 +381,7 @@ public class MTaxTest extends AbstractTestCase {
 			product.setName("testSeparateTaxPosting");
 			product.setC_UOM_ID(p.getC_UOM_ID());
 			product.saveEx();
+			mockProductGet(productMock, product);
 			
 			MPriceList priceList = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id);
 			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
@@ -480,8 +480,6 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, totalDebit.setScale(2, RoundingMode.HALF_EVEN), "Un-expected product asset account posted amount");
 		} finally {
 			rollback();
-			if (product != null && product.get_ID() > 0)
-				product.deleteEx(true);
 			if (tax != null && tax.get_ID() > 0)
 				tax.deleteEx(true);
 			if (category != null && category.get_ID() > 0)
@@ -489,4 +487,9 @@ public class MTaxTest extends AbstractTestCase {
 		}
 	}
 
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
+	}
 }
