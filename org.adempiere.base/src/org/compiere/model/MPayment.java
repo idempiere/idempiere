@@ -2265,6 +2265,8 @@ public class MPayment extends X_C_Payment
 		counter.setC_Project_ID(getC_Project_ID());
 		counter.setUser1_ID(getUser1_ID());
 		counter.setUser2_ID(getUser2_ID());
+		counter.setC_CostCenter_ID(getC_CostCenter_ID());
+		counter.setC_Department_ID(getC_Department_ID());
 		counter.saveEx(get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine(counter.toString());
 		setRef_Payment_ID(counter.getC_Payment_ID());

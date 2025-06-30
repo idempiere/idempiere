@@ -143,6 +143,19 @@ public class OrderCreateProduction extends SvrProcess {
 			} else {
 				production.setAD_OrgTrx_ID(order.getAD_OrgTrx_ID());
 			}
+			
+			if (line.getC_CostCenter_ID() > 0) {
+				production.setC_CostCenter_ID(line.getC_CostCenter_ID());
+			} else {
+				production.setC_CostCenter_ID(order.getC_CostCenter_ID());
+			}
+
+			if (line.getC_Department_ID() > 0) {
+				production.setC_Department_ID(line.getC_Department_ID());
+			} else {
+				production.setC_Department_ID(order.getC_Department_ID());
+			}
+
 
 			production.saveEx();
 
