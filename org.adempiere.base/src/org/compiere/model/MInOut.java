@@ -3407,7 +3407,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			selectSql.append("  LEFT JOIN M_CostDetail refcd ON refcd.M_CostDetail_ID = cd.Ref_CostDetail_ID ");
 			selectSql.append("  WHERE cd.M_CostDetail_ID = ? ");
 			selectSql.append(") ");
-			selectSql.append("SELECT t.M_CostDetail_ID ");
+			selectSql.append("SELECT t.* ");
 			selectSql.append("FROM M_CostDetail t ");
 			selectSql.append("WHERE ");
 			selectSql.append("  t.AD_Client_ID = ? ");

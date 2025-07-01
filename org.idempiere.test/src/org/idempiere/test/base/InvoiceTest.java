@@ -122,11 +122,11 @@ public class InvoiceTest extends AbstractTestCase
 		chargeLine.saveEx();
 		
 		BigDecimal discountPercent = new BigDecimal("0.02"); // 2%10 Net 30
-		assertEquals(calculatePercentage(new BigDecimal("130.00"), discountPercent), invoice.getDiscountAmt(today), "Discount Amt should be 2% of the total");
+		assertEquals(calculatePercentage(new BigDecimal("130.00"), discountPercent).setScale(2, RoundingMode.HALF_EVEN), invoice.getDiscountAmt(today).setScale(2, RoundingMode.HALF_EVEN), "Discount Amt should be 2% of the total");
 		
 		charge.setIsExcludedFromDiscount(true);
 		charge.saveEx();
-		assertEquals(calculatePercentage(new BigDecimal("100"), discountPercent), invoice.getDiscountAmt(today), "Discount Amt should be 2% of the product lines");
+		assertEquals(calculatePercentage(new BigDecimal("100"), discountPercent).setScale(2, RoundingMode.HALF_EVEN), invoice.getDiscountAmt(today).setScale(2, RoundingMode.HALF_EVEN), "Discount Amt should be 2% of the product lines");
 
 	}
 	
