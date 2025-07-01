@@ -89,8 +89,8 @@ public final class ModelEventHandler<T extends PO> extends BaseEventHandler {
 			return;
 		
 		if (!modelClassType.isAssignableFrom(po.getClass())) {
-			if (log.isLoggable(Level.WARNING))
-		        log.warning(String.format("ModelEventHandler %s was skipped: the po class %s is not assignable to the expected type %s",
+			if (log.isLoggable(Level.INFO))
+		        log.info(String.format("ModelEventHandler %s was skipped: the po class %s is not assignable to the expected type %s",
 		            delegateClass.getName(), po.getClass().getName(), modelClassType.getName()));
 		    return;
 		}
