@@ -73,11 +73,13 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 
 /**
  * @author Elaine Tan - etantg
  */
+@Isolated
 public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	
 	public Allocation2ndAcctSchemaTest() {
