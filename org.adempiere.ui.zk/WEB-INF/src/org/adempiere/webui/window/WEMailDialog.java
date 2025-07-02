@@ -956,7 +956,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		MMailText mt = (MMailText) MUser.get(Env.getCtx()).getR_DefaultMailText();
 		if (mt.get_ID() > 0) {
 			mt.setPO(MUser.get(Env.getCtx()));
-			MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID(), null, null);
+			try (MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID(), null, null);) {
 			if (attachment != null) {
 				MAttachmentEntry[] entries = attachment.getEntries();
 				for (MAttachmentEntry entry : entries) {
@@ -973,8 +973,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				}
 			}
 
-			fMessage.setValue(getMessage() + "\n" + embedImgToEmail(mt, attachment));
-			
+			fMessage.setValue(getMessage() + "\n" + embedImgToEmail(mt, attachment));}
 		}
 	}
 

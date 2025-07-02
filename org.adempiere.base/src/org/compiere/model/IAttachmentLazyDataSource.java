@@ -27,6 +27,7 @@
 
 package org.compiere.model;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -53,4 +54,15 @@ public interface IAttachmentLazyDataSource {
      * @return size
      */
     long getSize();
+
+    /**
+     * Get file attachment
+     * @return file attachment or null
+     */
+    File getFile();
+
+    /**
+     * Clean up resources held
+     */
+    default void cleanUp() {}
 }

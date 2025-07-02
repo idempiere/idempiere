@@ -53,7 +53,7 @@ import org.compiere.util.Util;
  *
  *  @version $Id: MAttachment.java,v 1.4 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MAttachment extends X_AD_Attachment
+public class MAttachment extends X_AD_Attachment implements AutoCloseable
 {
 	/**
 	 * 
@@ -844,7 +844,7 @@ public class MAttachment extends X_AD_Attachment
 					// check security
 					if (!MRole.getDefault().checkAccessSQL(table, recordId, recordUU, false))
 						return null;
-					MAttachment attachment = MAttachment.get(Env.getCtx(), table.get_ID(), recordId, recordUU, null);
+					try (MAttachment attachment = MAttachment.get(Env.getCtx(), table.get_ID(), recordId, recordUU, null);) {
 					if (attachment != null && attachment.get_ID() > 0) {
 						//first, check whether is via index
 						int index = -1;
@@ -879,7 +879,7 @@ public class MAttachment extends X_AD_Attachment
 								return new AttachmentData(attachment.getEntryName(i), attachment.getEntryData(i));
 							}
 						}								
-					}							
+					}}
 				}
 			}
 		}
@@ -965,5 +965,14 @@ public class MAttachment extends X_AD_Attachment
 			}
 		}
 		return null;
-	}		
+	}
+
+    @Override
+    public void close() {
+        if (m_items != null && !m_items.isEmpty()) {
+            for(MAttachmentEntry entry : m_items) {
+                entry.cleanUp();
+            }
+        }
+    }
 }	//	MAttachment

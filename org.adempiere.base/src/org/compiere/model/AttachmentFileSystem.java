@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -116,9 +117,16 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator)
 								.append(getAttachmentPathSnippet(attach)).append(File.separator).append(entryFile.getName());
 						final File destFile = new File(msgfile.toString());
-                        Files.copy(entryFile.toPath(), destFile.toPath());
+                        boolean copyOrReplace = true;
+                        if (destFile.exists()) {
+                            if (destFile.length() == entryFile.length()) {
+                                if (Files.mismatch(entryFile.toPath(), destFile.toPath()) == -1L)
+                                    copyOrReplace = false;
+                            }
+                        }
+                        if (copyOrReplace)
+                            Files.copy(entryFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						entryFile = destFile;
-
 					} catch (IOException e) {
 						log.log(Level.SEVERE, "unable to copy file " + entryFile.getAbsolutePath() + " to "
 								+ attachmentPathRoot + File.separator + 
@@ -129,7 +137,8 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				entry.setAttribute("name", attach.getEntryName(i));
 				String filePathToStore = entryFile.getAbsolutePath();
 				filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
-				log.fine(filePathToStore);
+                if (log.isLoggable(Level.FINE))
+				    log.fine(filePathToStore);
 				entry.setAttribute("file", filePathToStore);
 				root.appendChild(entry);
 			}

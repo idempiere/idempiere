@@ -454,8 +454,12 @@ public class WAttachment extends Window implements EventListener<Event>
 	public void dispose ()
 	{
 		preview = null;
-		this.detach();
-	} // dispose
+		if (m_attachment != null) {
+            m_attachment.close();
+            m_attachment = null;
+        }
+        this.detach();
+    } // dispose
 
 	/**
 	 * Load Attachment items

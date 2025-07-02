@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
@@ -310,6 +311,14 @@ public class MAttachmentEntry
 	{
 		if (fileName == null || fileName.length() == 0)
 			fileName = getName();
+
+        //return file from lazy data source (if name match)
+        if (m_ds != null) {
+            File file = m_ds.getFile();
+            if (file != null && file.exists() && file.getName().equals(fileName))
+                return file;
+        }
+
         try {
             return getFile (new File(Files.createTempDirectory("attachment_").toFile() , fileName));
         } catch (IOException e) {
@@ -329,7 +338,7 @@ public class MAttachmentEntry
 			return null;
 		try
 		{
-            Files.copy(inputStream, file.toPath());
+            Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 		catch (IOException ioe)
 		{
@@ -448,4 +457,19 @@ public class MAttachmentEntry
 		return m_isUpdated;
 	}
 
+    /**
+     * Clean up resources held. Should stop using the instance after calling this method.
+     */
+    public void cleanUp() {
+        if (m_ds == null && m_file != null && m_file.exists()) {
+            if (!m_file.delete())
+                m_file.deleteOnExit();
+            m_file = null;
+        }
+        if (m_data != null)
+            m_data = null;
+        if (m_ds != null) {
+            m_ds.cleanUp();
+        }
+    }
 }	//	MAttachmentItem

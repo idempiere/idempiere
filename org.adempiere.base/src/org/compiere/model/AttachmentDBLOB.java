@@ -264,9 +264,10 @@ public class AttachmentDBLOB implements IAttachmentStore
         if (entryFile == null) {
             throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
         }
+
+        // compress to temp file
+        Path tempFile = null;
         try {
-            // compress to temp file
-            Path tempFile;
             try {
                 Path tempDir = Files.createTempDirectory("attachment_");
                 tempFile = tempDir.resolve(entryFile.getName() + ".zip");
@@ -324,6 +325,13 @@ public class AttachmentDBLOB implements IAttachmentStore
                     conn.close();
                 } catch (SQLException e) {
                     log.log(Level.WARNING, e.getMessage(), e);
+                }
+            }
+            if (tempFile != null) {
+                File f = tempFile.toFile();
+                if (f.exists()) {
+                    if (!f.delete())
+                        f.deleteOnExit();;
                 }
             }
         }

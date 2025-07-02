@@ -33,6 +33,7 @@ import org.compiere.util.Util;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -115,6 +116,41 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
     }
 
     @Override
+    public File getFile() {
+        if (!dataLoaded.get()) {
+            loadEntry(false);
+        }
+        if (file == null && data != null) {
+            Path tempDir = null;
+            try {
+                tempDir = Files.createTempDirectory("attachment_");
+            } catch (IOException e) {
+                throw new AdempiereException(e);
+            }
+            Path tempFile = tempDir.resolve(fileName);
+            try {
+                Files.copy(new ByteArrayInputStream(data), tempFile, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new AdempiereException(e);
+            }
+            file = tempFile.toFile();
+        }
+        return file;
+    }
+
+    @Override
+    public void cleanUp() {
+        if (file != null && file.exists()) {
+            if (!file.delete())
+                file.deleteOnExit();
+            file = null;
+        }
+        if (data != null)
+            data = null;
+        dataLoaded.set(false);
+    }
+
+    @Override
     public long getSize() {
         if (size == -1) {
             loadEntry(true);
@@ -181,7 +217,7 @@ public class AttachmentDBLazyDataSource implements IAttachmentLazyDataSource {
                             } else if (!getSize || size == -1) { // delay loading of data for getSize call if temp file is needed
                                 Path tempDir = Files.createTempDirectory("attachment_");
                                 Path tempFile = tempDir.resolve(fileName);
-                                Files.copy(zis, tempFile);
+                                Files.copy(zis, tempFile, StandardCopyOption.REPLACE_EXISTING);
                                 file = tempFile.toFile();
                                 // make sure size is correct
                                 size = file.length();
