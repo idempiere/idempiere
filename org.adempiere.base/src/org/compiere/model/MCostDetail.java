@@ -1843,6 +1843,15 @@ public class MCostDetail extends X_M_CostDetail
 		List<String> repostedRecordIds = new ArrayList<String>();
 		
 		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("WITH base_cd AS (");
+		selectSql.append(" SELECT cd.DateAcct, ");
+		selectSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct ");
+		selectSql.append(" THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END AS Ref_CostDetail_ID, ");
+		selectSql.append(" cd.M_CostDetail_ID ");
+		selectSql.append(" FROM M_CostDetail cd ");
+		selectSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+		selectSql.append(" WHERE cd.M_CostDetail_ID=? ");
+		selectSql.append(") ");
 		selectSql.append("SELECT mpo.M_MatchPO_ID, il.C_Invoice_ID, iol.M_InOut_ID, mi.M_MatchInv_ID, invl.M_Inventory_ID, ");
 		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID ");
 		selectSql.append("FROM M_CostDetail cd ");
@@ -1858,14 +1867,16 @@ public class MCostDetail extends X_M_CostDetail
 		selectSql.append("WHERE cd.AD_Client_ID=? ");
 		selectSql.append("AND cd.C_AcctSchema_ID=? ");
 		selectSql.append("AND cd.M_Product_ID=? ");
-		selectSql.append("AND (cd.DateAcct, COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID), cd.M_CostDetail_ID) > ("); 
-		selectSql.append(" SELECT cd.DateAcct, ");
-		selectSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct ");
-		selectSql.append(" THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
-		selectSql.append(" cd.M_CostDetail_ID ");
-		selectSql.append(" FROM M_CostDetail cd ");
-		selectSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append(" WHERE cd.M_CostDetail_ID=? ");
+		selectSql.append("AND (cd.DateAcct > (SELECT DateAcct FROM base_cd)");
+		selectSql.append(" OR (");
+		selectSql.append("   cd.DateAcct = (SELECT DateAcct FROM base_cd) ");
+		selectSql.append("   AND COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) > (SELECT Ref_CostDetail_ID FROM base_cd) ");
+		selectSql.append(" ) ");
+		selectSql.append(" OR (");
+		selectSql.append("   cd.DateAcct = (SELECT DateAcct FROM base_cd) ");
+		selectSql.append("   AND COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) = (SELECT Ref_CostDetail_ID FROM base_cd) ");
+		selectSql.append("   AND cd.M_CostDetail_ID > (SELECT M_CostDetail_ID FROM base_cd) ");
+		selectSql.append(" ) ");
 		selectSql.append(") ");
 		selectSql.append("AND cd.DateAcct >= ? "); 
 		selectSql.append("AND cd.Processed='Y' ");
@@ -1879,7 +1890,7 @@ public class MCostDetail extends X_M_CostDetail
     	try
     	{
     		pstmt = DB.prepareStatement(selectSql.toString(), trxName);
-    		DB.setParameters(pstmt, new Object[] {AD_Client_ID, C_AcctSchema_ID, M_Product_ID, M_CostDetail_ID, DateAcct});
+    		DB.setParameters(pstmt, new Object[] {M_CostDetail_ID, AD_Client_ID, C_AcctSchema_ID, M_Product_ID, DateAcct});
     		rs = pstmt.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
     		while (rs.next()) {
