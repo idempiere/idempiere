@@ -3541,7 +3541,9 @@ public abstract class PO
 			}
 		}
 		// ticket 1007459 - exclude M_AttributeInstance from filling Value column
-		if (! MAttributeInstance.Table_Name.equals(get_TableName())) {
+		// IDEMPIERE-4224 - exclude AD_TableAttribute from filling Value column
+		if (!MAttributeInstance.Table_Name.equals(get_TableName())
+			&& !MTableAttribute.Table_Name.equals(get_TableName())) {
 			//	Set empty Value
 			columnName = "Value";
 			index = p_info.getColumnIndex(columnName);
@@ -6384,8 +6386,6 @@ public abstract class PO
 	 * TODO can write different method to get directly cast value like get_TableAttributeAsString, get_TableAttributeAsDate etc..
 	 * 
 	 * @param  attributeName
-	 * @param  table_ID
-	 * @param  record_ID
 	 * @return
 	 */
 	public Object get_TableAttribute(String attributeName)

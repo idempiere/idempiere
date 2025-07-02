@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Attribute Use Model
@@ -34,6 +35,12 @@ public class MAttributeUse extends X_M_AttributeUse
 	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -9159120094145438975L;
+
+	private static final String	SQL_GET_TA_DUPLICATE_ATTRIBSET	= "SELECT st.Name FROM M_AttributeSet st "
+																	+ "	INNER JOIN M_AttributeUse 	u ON (u.M_AttributeSet_ID  = st.M_AttributeSet_ID)	"
+																	+ "	INNER JOIN M_Attribute 		a ON (a.M_Attribute_ID = u.M_Attribute_ID 			"
+																	+ "									  AND a.AD_Client_ID IN (0, ?) AND UPPER(a.Name) = UPPER(?) )"
+																	+ "	WHERE st.M_AttributeSet_Type = 'TA' ";
 
     /**
      * UUID based Constructor
@@ -86,7 +93,17 @@ public class MAttributeUse extends X_M_AttributeUse
 			int seqNo = DB.getSQLValue (get_TrxName(), sql, getM_AttributeSet_ID());
 			setSeqNo(seqNo);
 		}
-			
+
+		if (getM_Attribute_ID() > 0 && getM_AttributeSet_ID() > 0
+			&& MAttributeSet.M_ATTRIBUTESET_TYPE_TableAttribute.equals(getM_AttributeSet().getM_AttributeSet_Type()))
+		{
+			String dupAttribSetName = DB.getSQLValueString(get_TrxName(), SQL_GET_TA_DUPLICATE_ATTRIBSET, getAD_Client_ID(), getM_Attribute().getName());
+			if (!Util.isEmpty(dupAttribSetName, true))
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "UniqueAttribute", new Object[] { getM_Attribute().getName(), dupAttribSetName }));
+				return false;
+			}
+		}
 		return true;
 	}
 
