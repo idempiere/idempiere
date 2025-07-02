@@ -395,7 +395,9 @@ public class LoginPanel extends Window implements EventListener<Event>
         	btnResetPassword.addEventListener(Events.ON_CLICK, this);
     	}
     	
-    	boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		boolean isShowOKButton = true;
+		boolean isShowLoginPage = MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, true);
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		if (isSSOEnable)
 		{
 			List<MSSOPrincipalConfig> configs = MSSOPrincipalConfig.getAllSSOPrincipalConfig();
@@ -420,6 +422,19 @@ public class LoginPanel extends Window implements EventListener<Event>
 					td = new Td();
 					tr.appendChild(td);
 				}
+				
+				// Toggle visibility of user credentials and language selection fields based on configuration
+				lblUserId.setVisible(isShowLoginPage);
+				lblPassword.setVisible(isShowLoginPage);
+				lblLanguage.setVisible(isShowLoginPage);
+				lblLogin.setVisible(isShowLoginPage);
+				txtUserId.setVisible(isShowLoginPage);
+				txtPassword.setVisible(isShowLoginPage);
+				lstLanguage.setVisible(isShowLoginPage);
+				chkRememberMe.setVisible(isShowLoginPage);
+				chkSelectRole.setVisible(isShowLoginPage);
+				// Display the OK button only when the traditional login form is visible
+				isShowOKButton = isShowLoginPage;
 			}
 		}
 
@@ -428,6 +443,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         pnlButtons = new ConfirmPanel(false, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
         Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
+        okBtn.setVisible(isShowOKButton);
         okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
         okBtn.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> ((AbstractComponent)t).setWidgetListener("onClick", null));
 
@@ -862,8 +878,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 	 */
 	private Button createSSOLoginButton(MSSOPrincipalConfig config)
 	{
-		Button button = new Button(config.getName());
-		button.setTooltip(config.getName());
+		String name = config.getName();
+		String shortName = (!Util.isEmpty(name) && name.length() > 25) ? name.substring(0, 22) + "..." : name;
+		Button button = new Button(shortName);
+		button.setTooltip(name);
 		button.setSclass("sso-login-btn");
 		button.setStyle("display: flex; align-items: center; ");
 		button.addEventListener("onClick", event -> {

@@ -30,14 +30,6 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 UPDATE AD_Column SET Description='Indicates whether this SSO configuration is set as the default for logging in to the iDempiere Monitor and Felix Web Console.', Help='When IsDefault is set to Y, this SSO configuration will be used for logging in to the iDempiere Monitor and Felix Web Console.',Updated=TO_DATE('2024-11-27 17:19:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215303
 ;
 
--- Dec 2, 2024, 6:31:36 PM IST
-UPDATE AD_Column SET FieldLength=25,Updated=TO_DATE('2024-12-02 18:31:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215296
-;
-
--- Dec 2, 2024, 6:31:38 PM IST
-ALTER TABLE SSO_PrincipalConfig MODIFY Name VARCHAR2(25 CHAR) DEFAULT NULL 
-;
-
 -- 09-Apr-2025, 3:26:56 PM IST
 INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200262,0,0,TO_DATE('2025-04-09 15:26:55','YYYY-MM-DD HH24:MI:SS'),TO_DATE('2025-04-09 15:26:55','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','SSO_SHOW_LOGINPAGE','N','Allows users to access the standard login page alongside SSO, enabling manual login even when SSO is configured.','D','S','be343ea6-d422-4603-8b61-04bf18236797')
 ;
