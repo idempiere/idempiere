@@ -40,7 +40,7 @@ public class MSequenceTest extends AbstractTestCase {
         MSequence seq = new MSequence(ctx, 0, trxName);
         seq.setName("Test Sequence with Context Key");
         seq.setDescription("Test sequence for document numbers with context variable key");
-        seq.setPrefix(TEST_PREFIX + "@Updated<yyyyMM>/K@"); // /K flag indicates context variable use
+        seq.setPrefix(TEST_PREFIX + "@DateOrdered<yyyyMM>/K@"); // /K flag indicates context variable use
         seq.setSuffix("@AD_Org_ID/K@" + TEST_SUFFIX);
         seq.setStartNo(1000);
         seq.setCurrentNext(1000);
@@ -87,9 +87,9 @@ public class MSequenceTest extends AbstractTestCase {
 
 	        // The document number should follow pattern: TestSeq-202506{seq}11-End
 	        assertTrue(docNo.startsWith(TEST_PREFIX + TEST_DATE_yyyyMM),
-	                "Document number should start with prefix and date key");
+	        		"Document number should start with prefix and date key: "+docNo);
 	        assertTrue(docNo.endsWith(testOrgID + TEST_SUFFIX),
-	                "Document number should end with org ID key and suffix");
+	        		"Document number should end with org ID key and suffix: "+docNo);
 
 	        // Check sequence number part
 	        String seqPart = docNo.substring((TEST_PREFIX + TEST_DATE_yyyyMM).length(),
