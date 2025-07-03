@@ -461,11 +461,6 @@ public class MAttachmentEntry
      * Clean up resources held. Should stop using the instance after calling this method.
      */
     public void cleanUp() {
-        if (m_ds == null && m_file != null && m_file.exists()) {
-            if (!m_file.delete())
-                m_file.deleteOnExit();
-            m_file = null;
-        }
         if (m_data != null)
             m_data = null;
         if (m_ds != null) {

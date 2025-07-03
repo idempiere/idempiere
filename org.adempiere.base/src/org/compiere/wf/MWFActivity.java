@@ -1185,6 +1185,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			attachment.addEntry(report);
 			attachment.setTextMsg(m_node.getName(true));
 			attachment.saveEx();
+			attachment.close();
 			return true;
 		}
 

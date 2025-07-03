@@ -65,6 +65,7 @@ public class AttachmentProviderTest extends AbstractTestCase {
             attachment.addEntry("AmtInWordsTest.class", amtInWordsTest.toFile());
             attachment.addEntry("EnvTest.class", envTest.toFile());
             attachment.saveEx();
+            attachment.close();
 
             attachment = MAttachment.get(Env.getCtx(), MTest.Table_ID, test.getTest_ID(), test.getTest_UU(), null);
             assertNotNull(attachment);
@@ -168,6 +169,7 @@ public class AttachmentProviderTest extends AbstractTestCase {
             attachment.addEntry("AmtInWordsTest.class", amtInWordsTest.toFile());
             attachment.addEntry("EnvTest.class", envTest.toFile());
             attachment.saveEx();
+            attachment.close();
 
             attachment = MAttachment.get(Env.getCtx(), MTest.Table_ID, test.getTest_ID(), test.getTest_UU(), null);
             assertNotNull(attachment);
@@ -269,6 +271,7 @@ public class AttachmentProviderTest extends AbstractTestCase {
             attachment.addEntry("AmtInWordsTest.class", amtInWordsTest.toFile());
             attachment.addEntry("EnvTest.class", envTest.toFile());
             attachment.saveEx();
+            attachment.close();
 
             attachment = MAttachment.get(Env.getCtx(), MTest.Table_ID, test.getTest_ID(), test.getTest_UU(), null);
             assertNotNull(attachment);
