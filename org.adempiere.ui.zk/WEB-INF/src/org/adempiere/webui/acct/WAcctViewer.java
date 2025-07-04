@@ -113,10 +113,14 @@ import org.zkoss.zul.Space;
  */
 public class WAcctViewer extends ADForm implements EventListener<Event>
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 3440375640756094077L;
+	private static final long serialVersionUID = 5582897718567800420L;
+
+	/* Predefined context variables to initialize the form */
+	public static final String INITIAL_RECORD_ID = "_Initial_Record_ID_";
+	public static final String INITIAL_AD_TABLE_ID = "_Initial_AD_Table_ID_";
 
 	private static final String TITLE = "Posting";
 
@@ -1428,8 +1432,8 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 	@Override
 	protected void initForm() {
 		setTitle(Msg.getMsg(Env.getCtx(), TITLE));
-		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + "AD_Table_ID", true);
-		int Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + "Record_ID", true);
+		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + INITIAL_AD_TABLE_ID, true);
+		int Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + INITIAL_RECORD_ID, true);
 		dynInit(AD_Table_ID, Record_ID);
 	}
 }
