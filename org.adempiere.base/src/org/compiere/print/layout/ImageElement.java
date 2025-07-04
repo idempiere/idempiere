@@ -287,7 +287,7 @@ public class ImageElement extends PrintElement
 	 */
 	private void loadAttachment(int AD_PrintFormatItem_ID)
 	{
-		MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, AD_PrintFormatItem_ID, null, null);
+		try (MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, AD_PrintFormatItem_ID, null, null);) {
 		if (attachment == null)
 		{
 			log.log(Level.WARNING, "No Attachment - AD_PrintFormatItem_ID=" + AD_PrintFormatItem_ID);
@@ -307,7 +307,7 @@ public class ImageElement extends PrintElement
 		} else {
 			log.log(Level.WARNING, attachment.getEntryName(0)
 					+ " - not loaded (must be gif or jpg) - AD_PrintFormatItem_ID=" + AD_PrintFormatItem_ID);
-		}
+		}}
 	}	//	loadAttachment
 
 	/**
