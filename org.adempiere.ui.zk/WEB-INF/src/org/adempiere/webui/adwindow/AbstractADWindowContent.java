@@ -47,6 +47,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
 import org.adempiere.webui.WZoomAcross;
+import org.adempiere.webui.acct.WAcctViewer;
 import org.adempiere.webui.adwindow.validator.WindowValidatorEvent;
 import org.adempiere.webui.adwindow.validator.WindowValidatorEventType;
 import org.adempiere.webui.adwindow.validator.WindowValidatorManager;
@@ -3856,8 +3857,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 			if (ps != null && ps.equals("Y"))
 			{
-				ADForm form = ADForm.openForm(SystemIDs.FORM_ACCOUNT_INFO, 
-						"AD_Table_ID=" + tableId + "\nRecord_ID=" + recordId);
+				ADForm form = ADForm.openForm(SystemIDs.FORM_ACCOUNT_INFO,
+						WAcctViewer.INITIAL_AD_TABLE_ID + "=" + tableId + "\n" + WAcctViewer.INITIAL_RECORD_ID + "=" + recordId);
 				AEnv.showWindow(form);
 			}
 			else
