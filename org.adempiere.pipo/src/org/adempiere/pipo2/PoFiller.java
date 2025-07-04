@@ -137,6 +137,8 @@ public class PoFiller{
 
 		if (value!=null && value.trim().length() == 0)
 			value = null;
+		if ("AD_Org_ID".equals(qName) && value != null && value.equals("@AD_Org_ID@"))
+			value = String.valueOf(Env.getAD_Org_ID(ctx.ctx));
 		Integer i = value != null ? Integer.valueOf(value) : null;
 
 		Object oldValue = po.get_Value(qName);

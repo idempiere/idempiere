@@ -686,7 +686,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		//
 		if(isImageIsAttached())
 		{	
-			MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID(), get_UUID(), null);
+			try (MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID(), get_UUID(), null);) {
 			if (attachment == null)
 			{
 				log.log(Level.WARNING, "No Attachment - ID=" + get_ID());
@@ -709,7 +709,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 			else
 			{
 				log.log(Level.WARNING, attachment.getEntryName(0) + " - not loaded (must be gif or jpg) - ID=" + get_ID());
-			}
+			}}
 		}
 		else if (getImageURL() != null)
 		{		

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Order 
 {
@@ -269,6 +269,17 @@ public interface I_C_Order
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
 
@@ -283,6 +294,17 @@ public interface I_C_Order
 	public int getC_Currency_ID();
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_DocTypeTarget_ID */
     public static final String COLUMNNAME_C_DocTypeTarget_ID = "C_DocTypeTarget_ID";

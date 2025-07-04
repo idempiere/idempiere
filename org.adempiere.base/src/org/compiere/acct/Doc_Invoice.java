@@ -1255,7 +1255,9 @@ public class Doc_Invoice extends Doc
 						if (savepoint != null) {
 							try {
 								trx.releaseSavepoint(savepoint);
-							} catch (SQLException e) {}
+							} catch (SQLException e) {
+								log.log(Level.WARNING, e.getMessage(), e);
+							}
 						}
 					}
 				} else if (reversal) {
@@ -1348,7 +1350,7 @@ public class Doc_Invoice extends Doc
 									amtAsset = BigDecimal.ZERO;
 								} else if (c.getCurrentQty().compareTo(costDetailQty) < 0) {
 									BigDecimal currentAmtAsset = amtAsset;
-									amtAsset = amtAsset.divide(costDetailQty, RoundingMode.HALF_UP).multiply(c.getCurrentQty());
+									amtAsset = amtAsset.divide(costDetailQty, 12, RoundingMode.HALF_UP).multiply(c.getCurrentQty());
 									amtVariance = amtVariance.add(currentAmtAsset.subtract(amtAsset));
 									costDetailQty = c.getCurrentQty();
 								}

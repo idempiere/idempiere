@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Distribution
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="GL_Distribution")
 public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250307L;
 
     /** Standard Constructor */
     public X_GL_Distribution (Properties ctx, int GL_Distribution_ID, String trxName)
@@ -46,9 +46,21 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 // Y
 			setAnyActivity (true);
 // Y
+			setAnyAsset (true);
+// Y
+			setAnyAttributeSetInstance (true);
+// Y
 			setAnyBPartner (true);
 // Y
 			setAnyCampaign (true);
+// Y
+			setAnyCharge (true);
+// Y
+			setAnyCostCenter (true);
+// Y
+			setAnyDepartment (true);
+// Y
+			setAnyEmployee (true);
 // Y
 			setAnyLocFrom (true);
 // Y
@@ -67,6 +79,8 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 			setAnyUser1 (true);
 // Y
 			setAnyUser2 (true);
+// Y
+			setAnyWarehouse (true);
 // Y
 			setC_AcctSchema_ID (0);
 			setGL_Distribution_ID (0);
@@ -91,9 +105,21 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 // Y
 			setAnyActivity (true);
 // Y
+			setAnyAsset (true);
+// Y
+			setAnyAttributeSetInstance (true);
+// Y
 			setAnyBPartner (true);
 // Y
 			setAnyCampaign (true);
+// Y
+			setAnyCharge (true);
+// Y
+			setAnyCostCenter (true);
+// Y
+			setAnyDepartment (true);
+// Y
+			setAnyEmployee (true);
 // Y
 			setAnyLocFrom (true);
 // Y
@@ -112,6 +138,8 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 			setAnyUser1 (true);
 // Y
 			setAnyUser2 (true);
+// Y
+			setAnyWarehouse (true);
 // Y
 			setC_AcctSchema_ID (0);
 			setGL_Distribution_ID (0);
@@ -136,9 +164,21 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 // Y
 			setAnyActivity (true);
 // Y
+			setAnyAsset (true);
+// Y
+			setAnyAttributeSetInstance (true);
+// Y
 			setAnyBPartner (true);
 // Y
 			setAnyCampaign (true);
+// Y
+			setAnyCharge (true);
+// Y
+			setAnyCostCenter (true);
+// Y
+			setAnyDepartment (true);
+// Y
+			setAnyEmployee (true);
 // Y
 			setAnyLocFrom (true);
 // Y
@@ -157,6 +197,8 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 			setAnyUser1 (true);
 // Y
 			setAnyUser2 (true);
+// Y
+			setAnyWarehouse (true);
 // Y
 			setC_AcctSchema_ID (0);
 			setGL_Distribution_ID (0);
@@ -181,9 +223,21 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 // Y
 			setAnyActivity (true);
 // Y
+			setAnyAsset (true);
+// Y
+			setAnyAttributeSetInstance (true);
+// Y
 			setAnyBPartner (true);
 // Y
 			setAnyCampaign (true);
+// Y
+			setAnyCharge (true);
+// Y
+			setAnyCostCenter (true);
+// Y
+			setAnyDepartment (true);
+// Y
+			setAnyEmployee (true);
 // Y
 			setAnyLocFrom (true);
 // Y
@@ -202,6 +256,8 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 			setAnyUser1 (true);
 // Y
 			setAnyUser2 (true);
+// Y
+			setAnyWarehouse (true);
 // Y
 			setC_AcctSchema_ID (0);
 			setGL_Distribution_ID (0);
@@ -261,6 +317,34 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public int getAD_OrgTrx_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
+
+	/** Set Asset.
+		@param A_Asset_ID Asset used internally or by customers
+	*/
+	public void setA_Asset_ID (int A_Asset_ID)
+	{
+		if (A_Asset_ID < 1)
+			set_Value (COLUMNNAME_A_Asset_ID, null);
+		else
+			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
+	}
+
+	/** Get Asset.
+		@return Asset used internally or by customers
+	  */
+	public int getA_Asset_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -340,6 +424,52 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 		return false;
 	}
 
+	/** Set Any Asset.
+		@param AnyAsset Match any value of the Asset segment
+	*/
+	public void setAnyAsset (boolean AnyAsset)
+	{
+		set_Value (COLUMNNAME_AnyAsset, Boolean.valueOf(AnyAsset));
+	}
+
+	/** Get Any Asset.
+		@return Match any value of the Asset segment
+	  */
+	public boolean isAnyAsset()
+	{
+		Object oo = get_Value(COLUMNNAME_AnyAsset);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Any Attribute Set Instance.
+		@param AnyAttributeSetInstance Match any value of the Employee segment
+	*/
+	public void setAnyAttributeSetInstance (boolean AnyAttributeSetInstance)
+	{
+		set_Value (COLUMNNAME_AnyAttributeSetInstance, Boolean.valueOf(AnyAttributeSetInstance));
+	}
+
+	/** Get Any Attribute Set Instance.
+		@return Match any value of the Employee segment
+	  */
+	public boolean isAnyAttributeSetInstance()
+	{
+		Object oo = get_Value(COLUMNNAME_AnyAttributeSetInstance);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Any Bus.Partner.
 		@param AnyBPartner Match any value of the Business Partner segment
 	*/
@@ -377,6 +507,98 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyCampaign()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyCampaign);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Any Charge.
+		@param AnyCharge Match any value of the Charge segment
+	*/
+	public void setAnyCharge (boolean AnyCharge)
+	{
+		set_Value (COLUMNNAME_AnyCharge, Boolean.valueOf(AnyCharge));
+	}
+
+	/** Get Any Charge.
+		@return Match any value of the Charge segment
+	  */
+	public boolean isAnyCharge()
+	{
+		Object oo = get_Value(COLUMNNAME_AnyCharge);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Any Cost Center.
+		@param AnyCostCenter Match any value of the Cost Center segment
+	*/
+	public void setAnyCostCenter (boolean AnyCostCenter)
+	{
+		set_Value (COLUMNNAME_AnyCostCenter, Boolean.valueOf(AnyCostCenter));
+	}
+
+	/** Get Any Cost Center.
+		@return Match any value of the Cost Center segment
+	  */
+	public boolean isAnyCostCenter()
+	{
+		Object oo = get_Value(COLUMNNAME_AnyCostCenter);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Any Department.
+		@param AnyDepartment Match any value of the Department segment
+	*/
+	public void setAnyDepartment (boolean AnyDepartment)
+	{
+		set_Value (COLUMNNAME_AnyDepartment, Boolean.valueOf(AnyDepartment));
+	}
+
+	/** Get Any Department.
+		@return Match any value of the Department segment
+	  */
+	public boolean isAnyDepartment()
+	{
+		Object oo = get_Value(COLUMNNAME_AnyDepartment);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Any Employee.
+		@param AnyEmployee Match any value of the Employee segment
+	*/
+	public void setAnyEmployee (boolean AnyEmployee)
+	{
+		set_Value (COLUMNNAME_AnyEmployee, Boolean.valueOf(AnyEmployee));
+	}
+
+	/** Get Any Employee.
+		@return Match any value of the Employee segment
+	  */
+	public boolean isAnyEmployee()
+	{
+		Object oo = get_Value(COLUMNNAME_AnyEmployee);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
@@ -593,6 +815,29 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 		return false;
 	}
 
+	/** Set Any Warehouse.
+		@param AnyWarehouse Match any value of the Warehouse segment
+	*/
+	public void setAnyWarehouse (boolean AnyWarehouse)
+	{
+		set_Value (COLUMNNAME_AnyWarehouse, Boolean.valueOf(AnyWarehouse));
+	}
+
+	/** Get Any Warehouse.
+		@return Match any value of the Warehouse segment
+	  */
+	public boolean isAnyWarehouse()
+	{
+		Object oo = get_Value(COLUMNNAME_AnyWarehouse);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -705,6 +950,88 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
+
+	/** Set Charge.
+		@param C_Charge_ID Additional document charges
+	*/
+	public void setC_Charge_ID (int C_Charge_ID)
+	{
+		if (C_Charge_ID < 1)
+			set_Value (COLUMNNAME_C_Charge_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
+	}
+
+	/** Get Charge.
+		@return Additional document charges
+	  */
+	public int getC_Charge_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -728,6 +1055,34 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_Employee_ID(), get_TrxName());
+	}
+
+	/** Set Employee.
+		@param C_Employee_ID Identifies a Business Partner
+	*/
+	public void setC_Employee_ID (int C_Employee_ID)
+	{
+		if (C_Employee_ID < 1)
+			set_Value (COLUMNNAME_C_Employee_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Employee_ID, Integer.valueOf(C_Employee_ID));
+	}
+
+	/** Get Employee.
+		@return Identifies a Business Partner
+	  */
+	public int getC_Employee_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Employee_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -960,6 +1315,34 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 		return false;
 	}
 
+	public org.compiere.model.I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_AttributeSetInstance)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
+
+	/** Set Attribute Set Instance.
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
+	{
+		if (M_AttributeSetInstance_ID < 0)
+			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
+		else
+			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
+	}
+
+	/** Get Attribute Set Instance.
+		@return Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -983,6 +1366,34 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
+
+	/** Set Warehouse.
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
+	public void setM_Warehouse_ID (int M_Warehouse_ID)
+	{
+		if (M_Warehouse_ID < 1)
+			set_Value (COLUMNNAME_M_Warehouse_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
+	}
+
+	/** Get Warehouse.
+		@return Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

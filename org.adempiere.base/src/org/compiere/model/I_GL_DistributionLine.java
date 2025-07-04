@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_DistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_GL_DistributionLine 
 {
@@ -74,6 +74,21 @@ public interface I_GL_DistributionLine
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_Asset_ID */
+    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+
+	/** Set Asset.
+	  * Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID);
+
+	/** Get Asset.
+	  * Asset used internally or by customers
+	  */
+	public int getA_Asset_ID();
+
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name Account_ID */
     public static final String COLUMNNAME_Account_ID = "Account_ID";
@@ -132,6 +147,58 @@ public interface I_GL_DistributionLine
 	public int getC_Campaign_ID();
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
+
+    /** Column name C_Charge_ID */
+    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
+
+	/** Set Charge.
+	  * Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID);
+
+	/** Get Charge.
+	  * Additional document charges
+	  */
+	public int getC_Charge_ID();
+
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
+
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
+
+    /** Column name C_Employee_ID */
+    public static final String COLUMNNAME_C_Employee_ID = "C_Employee_ID";
+
+	/** Set Employee.
+	  * Identifies a Business Partner
+	  */
+	public void setC_Employee_ID (int C_Employee_ID);
+
+	/** Get Employee.
+	  * Identifies a Business Partner
+	  */
+	public int getC_Employee_ID();
+
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException;
 
     /** Column name C_LocFrom_ID */
     public static final String COLUMNNAME_C_LocFrom_ID = "C_LocFrom_ID";
@@ -285,6 +352,21 @@ public interface I_GL_DistributionLine
 	  */
 	public int getLine();
 
+    /** Column name M_AttributeSetInstance_ID */
+    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+
+	/** Set Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
+
+	/** Get Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID();
+
+	public org.compiere.model.I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
+
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
 
@@ -299,6 +381,21 @@ public interface I_GL_DistributionLine
 	public int getM_Product_ID();
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Warehouse_ID */
+    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
+
+	/** Set Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public void setM_Warehouse_ID (int M_Warehouse_ID);
+
+	/** Get Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID();
+
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Org_ID */
     public static final String COLUMNNAME_Org_ID = "Org_ID";
@@ -339,6 +436,32 @@ public interface I_GL_DistributionLine
 	  */
 	public boolean isOverwriteActivity();
 
+    /** Column name OverwriteAsset */
+    public static final String COLUMNNAME_OverwriteAsset = "OverwriteAsset";
+
+	/** Set Overwrite Asset.
+	  * Overwrite the account segment Asset with the value specified
+	  */
+	public void setOverwriteAsset (boolean OverwriteAsset);
+
+	/** Get Overwrite Asset.
+	  * Overwrite the account segment Asset with the value specified
+	  */
+	public boolean isOverwriteAsset();
+
+    /** Column name OverwriteAttributeSetInstance */
+    public static final String COLUMNNAME_OverwriteAttributeSetInstance = "OverwriteAttributeSetInstance";
+
+	/** Set Overwrite Attribute Set Instance.
+	  * Overwrite the account segment Attribute Set Instance with the value specified
+	  */
+	public void setOverwriteAttributeSetInstance (boolean OverwriteAttributeSetInstance);
+
+	/** Get Overwrite Attribute Set Instance.
+	  * Overwrite the account segment Attribute Set Instance with the value specified
+	  */
+	public boolean isOverwriteAttributeSetInstance();
+
     /** Column name OverwriteBPartner */
     public static final String COLUMNNAME_OverwriteBPartner = "OverwriteBPartner";
 
@@ -364,6 +487,58 @@ public interface I_GL_DistributionLine
 	  * Overwrite the account segment Campaign with the value specified
 	  */
 	public boolean isOverwriteCampaign();
+
+    /** Column name OverwriteCharge */
+    public static final String COLUMNNAME_OverwriteCharge = "OverwriteCharge";
+
+	/** Set Overwrite Charge.
+	  * Overwrite the account segment Charge with the value specified
+	  */
+	public void setOverwriteCharge (boolean OverwriteCharge);
+
+	/** Get Overwrite Charge.
+	  * Overwrite the account segment Charge with the value specified
+	  */
+	public boolean isOverwriteCharge();
+
+    /** Column name OverwriteCostCenter */
+    public static final String COLUMNNAME_OverwriteCostCenter = "OverwriteCostCenter";
+
+	/** Set Overwrite Cost Center.
+	  * Overwrite the account segment Cost Center with the value specified
+	  */
+	public void setOverwriteCostCenter (boolean OverwriteCostCenter);
+
+	/** Get Overwrite Cost Center.
+	  * Overwrite the account segment Cost Center with the value specified
+	  */
+	public boolean isOverwriteCostCenter();
+
+    /** Column name OverwriteDepartment */
+    public static final String COLUMNNAME_OverwriteDepartment = "OverwriteDepartment";
+
+	/** Set Overwrite Department.
+	  * Overwrite the account segment Department with the value specified
+	  */
+	public void setOverwriteDepartment (boolean OverwriteDepartment);
+
+	/** Get Overwrite Department.
+	  * Overwrite the account segment Department with the value specified
+	  */
+	public boolean isOverwriteDepartment();
+
+    /** Column name OverwriteEmployee */
+    public static final String COLUMNNAME_OverwriteEmployee = "OverwriteEmployee";
+
+	/** Set Overwrite Employee.
+	  * Overwrite the account segment Employee with the value specified
+	  */
+	public void setOverwriteEmployee (boolean OverwriteEmployee);
+
+	/** Get Overwrite Employee.
+	  * Overwrite the account segment Employee with the value specified
+	  */
+	public boolean isOverwriteEmployee();
 
     /** Column name OverwriteLocFrom */
     public static final String COLUMNNAME_OverwriteLocFrom = "OverwriteLocFrom";
@@ -481,6 +656,19 @@ public interface I_GL_DistributionLine
 	  * Overwrite the account segment User 2 with the value specified
 	  */
 	public boolean isOverwriteUser2();
+
+    /** Column name OverwriteWarehouse */
+    public static final String COLUMNNAME_OverwriteWarehouse = "OverwriteWarehouse";
+
+	/** Set Overwrite Warehouse.
+	  * Overwrite the account segment Warehouse with the value specified
+	  */
+	public void setOverwriteWarehouse (boolean OverwriteWarehouse);
+
+	/** Get Overwrite Warehouse.
+	  * Overwrite the account segment Warehouse with the value specified
+	  */
+	public boolean isOverwriteWarehouse();
 
     /** Column name Percent */
     public static final String COLUMNNAME_Percent = "Percent";

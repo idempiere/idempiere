@@ -251,7 +251,7 @@ public class MigrateStorageProvider extends SvrProcess {
 			MAttachment attachment = new MAttachment(getCtx(), attachId, get_TrxName());
 			int oldProviderId = attachment.getAD_StorageProvider_ID();
 			for (MAttachmentEntry entry : attachment.getEntries()) {
-				entry.getData(); // force load in case old provider is delayed 
+				entry.getFile(); // force load in case old provider is delayed
 			}
 			attachment.setStorageProvider(newProvider);
 			attachment.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
