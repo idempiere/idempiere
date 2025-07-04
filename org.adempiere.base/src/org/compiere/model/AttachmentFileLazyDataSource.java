@@ -27,11 +27,9 @@
 
 package org.compiere.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 
 /**
@@ -59,7 +57,11 @@ public class AttachmentFileLazyDataSource implements IAttachmentLazyDataSource {
 	@Override
 	public byte[] getData() {
 		// read files into byte[]
-		final byte[] dataEntry = new byte[(int) m_file.length()];
+        long length = m_file.length();
+        if (length > Integer.MAX_VALUE) {
+            throw new IllegalStateException("File too large to load into a byte array");
+        }
+		final byte[] dataEntry = new byte[(int) length];
 		try (FileInputStream fileInputStream = new FileInputStream(m_file)) {
 			fileInputStream.read(dataEntry);
 		} catch (FileNotFoundException e) {
@@ -71,5 +73,24 @@ public class AttachmentFileLazyDataSource implements IAttachmentLazyDataSource {
 		}
 		return dataEntry;
 	}
+
+    @Override
+    public InputStream getInputStream() {
+        try {
+            return new FileInputStream(m_file);
+        } catch (FileNotFoundException e) {
+            throw new AdempiereException(e);
+        }
+    }
+
+    @Override
+    public File getFile() {
+        return m_file;
+    }
+
+    @Override
+    public long getSize() {
+        return m_file.length();
+    }
 
 }

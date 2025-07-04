@@ -224,11 +224,11 @@ public class PackInNotifier {
 	        if (! mailOK)
 	        	fullContent.append("Email notification failed");
 
-	        MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp_Proc.Table_ID, packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID()); 
+	        try (MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp_Proc.Table_ID, packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID());) {
 	        if (attachment != null) {
 		        attachment.addEntry(attachFileName.toString(), fullContent.toString().getBytes(StandardCharsets.UTF_8));
 		        attachment.saveEx();
-	        }
+	        }}
 		}
 
 	}

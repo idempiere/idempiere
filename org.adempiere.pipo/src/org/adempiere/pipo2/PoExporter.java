@@ -354,9 +354,8 @@ public class PoExporter {
 			if (po.get_Table_ID() == MAttachment.Table_ID && ci.getAD_StorageProvider_ID() > 0) {
 				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getAD_StorageProvider_ID());
 				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
-					MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName());
-					File tmpfile = att.saveAsZip();
-					try {
+					try (MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName())) {
+						File tmpfile = att.saveAsZip();					
 						value = Files.readAllBytes(tmpfile.toPath());
 					} catch (IOException e) {
 						throw new AdempiereException(e);

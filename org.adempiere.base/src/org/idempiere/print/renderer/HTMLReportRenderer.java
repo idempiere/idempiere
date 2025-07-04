@@ -874,7 +874,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		}
 		else if (item.isImageIsAttached())
 		{
-			MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, item.get_ID(), null, null);
+			try (MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, item.get_ID(), null, null);) {
 			if (attachment != null)
 			{
 				if (attachment.getEntryCount() != 1)
@@ -884,7 +884,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 				}
 				byte[] imageData = attachment.getEntryData(0);
 				createDataURLImageElement(td, imageData, item);
-			}
+			}}
 		}
 		else if (!Util.isEmpty(item.getImageURL(), true))
 		{
