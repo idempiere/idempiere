@@ -244,7 +244,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		north.appendChild(pnlImage);
 		north.appendChild(pnlText);
 		north.setSclass("dialog-content");
-		north.setWidth("100%");;
+		north.setWidth("100%");
 
 		Hbox pnlButtons = new Hbox();
 		pnlButtons.setAlign("center");

@@ -599,7 +599,7 @@ public class AllocationTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(invoice.getC_BPartner_ID());
 				
 				MAccount acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);;
+				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 				
 				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> factAccts = query.list();

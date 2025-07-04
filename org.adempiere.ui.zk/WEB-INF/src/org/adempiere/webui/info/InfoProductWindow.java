@@ -493,7 +493,7 @@ public class InfoProductWindow extends InfoWindow {
 			return;
 
 		String title = getSelectedWarehouseLabel() + " - " + productName;
-		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");;
+		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
 		final InfoPAttributeInstancePanel pai = new InfoPAttributeInstancePanel(this, title,
 			M_Warehouse_ID, 0, productInteger.intValue(), C_BPartner_ID);
 		pai.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
