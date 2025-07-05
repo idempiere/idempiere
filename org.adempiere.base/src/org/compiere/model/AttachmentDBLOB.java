@@ -14,22 +14,23 @@
 
 package org.compiere.model;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.exceptions.DBException;
-import org.compiere.util.CLogger;
-import org.compiere.util.DB;
-import org.osgi.service.component.annotations.Component;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,6 +41,18 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
+import org.osgi.service.component.annotations.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * DB LOB implementation of {@link IAttachmentStore}
@@ -331,7 +344,7 @@ public class AttachmentDBLOB implements IAttachmentStore
                 File f = tempFile.toFile();
                 if (f.exists()) {
                     if (!f.delete())
-                        f.deleteOnExit();;
+                        f.deleteOnExit();
                 }
             }
         }

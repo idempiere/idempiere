@@ -3631,7 +3631,7 @@ public abstract class PO
 					log.log(Level.SEVERE, "reloading");
 				else
 					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
-				ok = false;;
+				ok = false;
 			}
 		}
 		else
