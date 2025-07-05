@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Invoice
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_Invoice")
 public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250616L;
 
     /** Standard Constructor */
     public X_I_Invoice (Properties ctx, int I_Invoice_ID, String trxName)
@@ -732,7 +732,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 	}
 
 	/** Set ISO Country Code.
-		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	*/
 	public void setCountryCode (boolean CountryCode)
 	{
@@ -740,7 +740,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 	}
 
 	/** Get ISO Country Code.
-		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public boolean isCountryCode()
 	{
@@ -848,6 +848,22 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
+	}
+
+	/** Set ISO Currency Code.
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
+	public void setISO_Code (String ISO_Code)
+	{
+		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
+	}
+
+	/** Get ISO Currency Code.
+		@return Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code()
+	{
+		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Import Error Message.

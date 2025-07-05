@@ -406,6 +406,44 @@ public class ImportPayment extends SvrProcess
 		if (no != 0)
 			log.warning ("No DocType=" + no);
 
+		//	Activity
+		sql = new StringBuilder ("UPDATE I_Payment i ")
+			  .append("SET C_Activity_ID=(SELECT MAX(C_Activity_ID) FROM C_Activity ac")
+			  .append(" WHERE i.ActivityValue=ac.Value AND ac.AD_Client_ID in (0,i.AD_Client_ID)) ")
+			  .append("WHERE C_Activity_ID IS NULL AND ActivityValue IS NOT NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			if (log.isLoggable(Level.FINE)) log.fine("Set Activity from Value=" + no);
+		
+		sql = new StringBuilder ("UPDATE I_Payment ")
+			.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Activity,' ")
+			.append("WHERE C_Activity_ID IS NULL AND ActivityValue IS NOT NULL")
+			.append(" AND I_IsImported<>'E' ")
+			.append(" AND I_IsImported<>'Y'").append(clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning("No Activity=" + no);
+		
+		// Charge
+		sql = new StringBuilder("UPDATE I_Payment i ")
+				.append("SET C_Charge_ID=(SELECT MAX(C_Charge_ID) FROM C_Charge cc")
+				.append(" WHERE i.ChargeName=cc.Name AND i.AD_Client_ID=cc.AD_Client_ID) ")
+				.append("WHERE C_Charge_ID IS NULL AND ChargeName IS NOT NULL").append(" AND I_IsImported<>'Y'")
+				.append(clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			if (log.isLoggable(Level.FINE))
+				log.fine("Set Charge from Name=" + no);
+
+		sql = new StringBuilder("UPDATE I_Payment ")
+				.append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No Charge,' ")
+				.append("WHERE C_Charge_ID IS NULL AND ChargeName IS NOT NULL").append(" AND I_IsImported<>'E' ")
+				.append(" AND I_IsImported<>'Y'").append(clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning("No Charge=" + no);
+		
 		commitEx();
 		
 		//Import Bank Statement
@@ -489,7 +527,9 @@ public class ImportPayment extends SvrProcess
 				payment.setR_Result(imp.getR_Result());
 				payment.setOrig_TrxID(imp.getOrig_TrxID());
 				payment.setVoiceAuthCode(imp.getVoiceAuthCode());
-				
+				payment.setDescription(imp.getDescription());
+				payment.setC_Activity_ID(imp.getC_Activity_ID());
+
 				//	Save payment
 				if (payment.save())
 				{
