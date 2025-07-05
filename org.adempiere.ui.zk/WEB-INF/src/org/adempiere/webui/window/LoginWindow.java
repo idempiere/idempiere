@@ -470,10 +470,14 @@ public class LoginWindow extends Window implements EventListener<Event>
     	MUser user = MUser.get(ctx, Env.getAD_User_ID(ctx));
     	String loginName;
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
-		if (email_login)
+		if (user.getLDAPUser() != null) {
+			loginName = user.getLDAPUser();
+		}else if (email_login) {
 			loginName = user.getEMail();
-		else
-			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
+		}else {
+			loginName = user.getName();
+		}
+
     	loginOk(loginName, true, login.getClients());
     	getDesktop().getSession().setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
     	pnlRole.setChangeRole(true);

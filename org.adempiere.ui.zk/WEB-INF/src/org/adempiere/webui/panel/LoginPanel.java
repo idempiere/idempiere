@@ -189,15 +189,13 @@ public class LoginPanel extends Window implements EventListener<Event>
 							    	onUserIdChange(AD_User_ID);
 							    	if (MSystem.isZKRememberUserAllowed()) {
 							    		String fillUser = null;
-							    		if (email_login) {
-							    			fillUser = user.getEMail();
-							    		} else {
-							    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
-							    				fillUser = user.getLDAPUser();
-							    			} else {
-							    				fillUser = user.getName();
-							    			}
-							    		}
+						    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
+						    				fillUser = user.getLDAPUser();
+						    			} else if (email_login){
+						    				fillUser = user.getEMail();
+						    			}else {
+						    				fillUser = user.getName();
+						    			}
 							    		if (MSystem.isUseLoginPrefix()) {
 							    			MClient client = MClient.get(session.getAD_Client_ID());
 							    			if (! Util.isEmpty(client.getLoginPrefix())) {
@@ -551,7 +549,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		{
 			String column;
 			if (email_login)
-				column = "EMail";
+				column = "COALESCE(LDAPUser,EMail)";
 			else
 				column = "COALESCE(LDAPUser,Name)";
 			List<MUser> users = new Query(Env.getCtx(), MUser.Table_Name, "Password IS NOT NULL AND IsActive='Y' AND " + column + "=?", null)
@@ -758,7 +756,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
     	StringBuilder whereClause = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
-			whereClause.append("EMail=?");
+			whereClause.append("COALESCE(LDAPUser,EMail)=?");
 		else
 			whereClause.append("COALESCE(LDAPUser,Name)=?");
 		whereClause.append(" AND")
