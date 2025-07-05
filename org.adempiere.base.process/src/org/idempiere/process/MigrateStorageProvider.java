@@ -26,6 +26,8 @@
  **********************************************************************/
 package org.idempiere.process;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
@@ -292,12 +294,16 @@ public class MigrateStorageProvider extends SvrProcess {
 			}
 			MArchive archive = new MArchive(getCtx(), archiveId, get_TrxName());
 			int oldProviderId = archive.getAD_StorageProvider_ID();
-			byte[] data = archive.getBinaryData();
+			InputStream stream = archive.getInputStream();
 			archive.setStorageProvider(newProvider);
-			archive.setBinaryData(data);
+			archive.setInputStream(stream); // set the stream to the new provider
 			archive.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 			// create file on the new storage provider
 			archive.saveEx();
+			try {
+				stream.close();
+			} catch (IOException e) {
+			} // close the stream after save
 			cntArchive++;
 			// commit on every record migrated
 			commitEx();
