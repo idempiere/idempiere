@@ -82,8 +82,8 @@ public class BPGroupAcctCopy extends SvrProcess
 
 		//	Update existing Customers
 		sql = "UPDATE C_BP_Customer_Acct ca "
-			+ "SET (C_Receivable_Acct,C_Receivable_Services_Acct,C_PrePayment_Acct)="
-			 + " (SELECT C_Receivable_Acct,C_Receivable_Services_Acct,C_PrePayment_Acct "
+			+ "SET (C_Receivable_Acct,C_Receivable_Services_Acct,C_PrePayment_Acct,B_UnallocatedCash_Acct)="
+			 + " (SELECT C_Receivable_Acct,C_Receivable_Services_Acct,C_PrePayment_Acct,B_UnallocatedCash_Acct "
 			 + " FROM C_BP_Group_Acct"
 			 + " WHERE C_BP_Group_ID=" + p_C_BP_Group_ID
 			 + " AND C_AcctSchema_ID=" + p_C_AcctSchema_ID
@@ -100,10 +100,10 @@ public class BPGroupAcctCopy extends SvrProcess
 		sql = "INSERT INTO C_BP_Customer_Acct "
 			+ "(C_BPartner_ID, C_AcctSchema_ID,"
 			+ " AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,"
-			+ " C_Receivable_Acct, C_Receivable_Services_Acct, C_PrePayment_Acct) "
+			+ " C_Receivable_Acct, C_Receivable_Services_Acct, C_PrePayment_Acct,B_UnallocatedCash_Acct) "
 			+ "SELECT p.C_BPartner_ID, acct.C_AcctSchema_ID,"
 			+ " p.AD_Client_ID, p.AD_Org_ID, 'Y', getDate(), 0, getDate(), 0,"
-			+ " acct.C_Receivable_Acct, acct.C_Receivable_Services_Acct, acct.C_PrePayment_Acct "
+			+ " acct.C_Receivable_Acct, acct.C_Receivable_Services_Acct, acct.C_PrePayment_Acct,B_UnallocatedCash_Acct "
 			+ "FROM C_BPartner p"
 			+ " INNER JOIN C_BP_Group_Acct acct ON (acct.C_BP_Group_ID=p.C_BP_Group_ID)"
 			+ "WHERE acct.C_AcctSchema_ID=" + p_C_AcctSchema_ID			//	#
@@ -118,8 +118,8 @@ public class BPGroupAcctCopy extends SvrProcess
 		
 		//	Update existing Vendors
 		sql = "UPDATE C_BP_Vendor_Acct va "
-			+ "SET (V_Liability_Acct,V_Liability_Services_Acct,V_PrePayment_Acct)="
-			 + " (SELECT V_Liability_Acct,V_Liability_Services_Acct,V_PrePayment_Acct "
+			+ "SET (V_Liability_Acct,V_Liability_Services_Acct,V_PrePayment_Acct,B_PaymentSelect_Acct)="
+			 + " (SELECT V_Liability_Acct,V_Liability_Services_Acct,V_PrePayment_Acct,B_PaymentSelect_Acct "
 			 + " FROM C_BP_Group_Acct"
 			 + " WHERE C_BP_Group_ID=" + p_C_BP_Group_ID
 			 + " AND C_AcctSchema_ID=" + p_C_AcctSchema_ID
@@ -136,10 +136,10 @@ public class BPGroupAcctCopy extends SvrProcess
 		sql = "INSERT INTO C_BP_Vendor_Acct "
 			+ "(C_BPartner_ID, C_AcctSchema_ID,"
 			+ " AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,"
-			+ " V_Liability_Acct, V_Liability_Services_Acct, V_PrePayment_Acct) "
+			+ " V_Liability_Acct, V_Liability_Services_Acct, V_PrePayment_Acct, B_PaymentSelect_Acct) "
 			+ "SELECT p.C_BPartner_ID, acct.C_AcctSchema_ID,"
 			+ " p.AD_Client_ID, p.AD_Org_ID, 'Y', getDate(), 0, getDate(), 0,"
-			+ " acct.V_Liability_Acct, acct.V_Liability_Services_Acct, acct.V_PrePayment_Acct "
+			+ " acct.V_Liability_Acct, acct.V_Liability_Services_Acct, acct.V_PrePayment_Acct, acct.B_PaymentSelect_Acct "
 			+ "FROM C_BPartner p"
 			+ " INNER JOIN C_BP_Group_Acct acct ON (acct.C_BP_Group_ID=p.C_BP_Group_ID)"
 			+ "WHERE acct.C_AcctSchema_ID=" + p_C_AcctSchema_ID			//	#

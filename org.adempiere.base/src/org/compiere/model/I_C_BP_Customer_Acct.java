@@ -62,6 +62,21 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name B_UnallocatedCash_Acct */
+    public static final String COLUMNNAME_B_UnallocatedCash_Acct = "B_UnallocatedCash_Acct";
+
+	/** Set Unallocated Cash.
+	  * Unallocated Cash Clearing Account
+	  */
+	public void setB_UnallocatedCash_Acct (int B_UnallocatedCash_Acct);
+
+	/** Get Unallocated Cash.
+	  * Unallocated Cash Clearing Account
+	  */
+	public int getB_UnallocatedCash_Acct();
+
+	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
