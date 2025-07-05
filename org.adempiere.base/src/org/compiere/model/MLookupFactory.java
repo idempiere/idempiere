@@ -1027,9 +1027,9 @@ public class MLookupFactory
 		//
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
 
-		StringBuilder displayColumn = getDisplayColumn(language, TableName, list, BaseTable);
+		StringBuilder displayColumn = getDisplayColumn(language, "a", list, BaseTable);
 		embedSQL.append(displayColumn.toString());
-		embedSQL.append(" FROM ").append(TableName);
+		embedSQL.append(" FROM ").append(TableName).append(" a");
 		//  Translation
 		if (   isTranslated && !Env.isBaseLanguage(language, TableName)
 			&& !(TableName+"_Trl").equalsIgnoreCase(BaseTable))  // IDEMPIERE-1070
@@ -1047,7 +1047,7 @@ public class MLookupFactory
 		} else {
 			embedSQL.append(BaseColumn);
 		}
-		embedSQL.append("=").append(TableName).append(".").append(ColumnName);
+		embedSQL.append("=").append("a").append(".").append(ColumnName);
 		//
 		return embedSQL.toString();
 	}	//  getLookup_TableDirEmbed
