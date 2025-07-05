@@ -34,6 +34,7 @@ import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -46,10 +47,10 @@ import org.zkoss.zk.ui.event.KeyEvent;
  */
 public abstract class ADForm extends Window implements EventListener<Event>, IHelpContext
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -5381283117636286759L;
+	private static final long serialVersionUID = -836186022208822051L;
 
 	/** The class' logging enabler */
     protected static final CLogger logger;
@@ -317,5 +318,12 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 			keyEvent.stopPropagation();
 			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
+	}
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		if (m_WindowNo > 0)
+			Env.clearWinContext(m_WindowNo);
 	}
 }
