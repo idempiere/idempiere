@@ -789,6 +789,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			descriptionField.setText("");
 			helpField.setText("");
 			iframe.getChildren().clear();
+			iframe.setSrc(null);
 			return;
 		}
 		
@@ -805,13 +806,16 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			InputStream in = ar.getInputStream();
 			if (in != null)
 				reportViewer(ar.getName(), in);
-			else
+			else {
 				iframe.getChildren().clear();
+				iframe.setSrc(null);
+			}
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, e.getMessage(), e);
 			iframe.getChildren().clear();
+			iframe.setSrc(null);
 		}
 	}	//	updateVDisplay
 

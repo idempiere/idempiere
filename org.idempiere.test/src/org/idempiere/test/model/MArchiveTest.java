@@ -26,19 +26,33 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
 
 import org.compiere.model.MArchive;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MProduct;
+import org.compiere.model.MStorageProvider;
+import org.compiere.model.Query;
+import org.compiere.model.X_AD_StorageProvider;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 public class MArchiveTest extends AbstractTestCase {
 
@@ -82,6 +96,10 @@ public class MArchiveTest extends AbstractTestCase {
 	
 	@Test
 	public void testInputStream() {
+		createArchiveFromInputStream();
+	}
+
+	private int createArchiveFromInputStream() {
 		MArchive marchive = new MArchive(Env.getCtx(), 0, getTrxName());
 		marchive.setAD_Table_ID(MProduct.Table_ID);
 		marchive.setIsReport(false);
@@ -104,5 +122,78 @@ public class MArchiveTest extends AbstractTestCase {
 		}
 		
 		assertArrayEquals(DictionaryIDs.M_Product.AZALEA_BUSH.uuid.getBytes(StandardCharsets.US_ASCII), baos.toByteArray(), "Unexpected archive binary data");
+		
+		return marchive.getAD_Archive_ID();
+	}
+	
+	@Test
+	public void testDBLOBProviderForArchive() {
+		MStorageProvider provider = new MStorageProvider(Env.getCtx(), 0, getTrxName());
+        provider.setName("DB LOB Provider");
+        provider.setMethod(X_AD_StorageProvider.METHOD_DatabaseWithLargeObjectSupport);
+        provider.saveEx();
+        
+        MClientInfo clientInfo = new Query(Env.getCtx(), MClientInfo.Table_Name, "AD_Client_ID=?", null)
+				.setParameters(getAD_Client_ID())
+				.firstOnly();
+        clientInfo = new MClientInfo(clientInfo);
+        clientInfo.setStorageArchive_ID(provider.getAD_StorageProvider_ID());
+        try (MockedStatic<MStorageProvider> storageProviderMock = Mockito.mockStatic(MStorageProvider.class, Mockito.CALLS_REAL_METHODS);
+             MockedStatic<MClientInfo> clientInfoMock = Mockito.mockStatic(MClientInfo.class, Mockito.CALLS_REAL_METHODS)) {
+            storageProviderMock.when(() -> MStorageProvider.get(any(Properties.class), eq(provider.get_ID()))).thenReturn(provider);
+            clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(getAD_Client_ID()))).thenReturn(clientInfo);
+            
+            int id = createArchiveFromInputStream();
+            int count = DB.getSQLValueEx(getTrxName(), "SELECT COUNT(*) FROM AD_Archive_Blob WHERE AD_Archive_ID=?", id);
+            assertTrue(count > 0, "No archive blob found for ID: " + id);
+        }
+	}
+	
+	@Test
+	public void testDBProviderForArchive() {
+		MStorageProvider provider = new MStorageProvider(Env.getCtx(), 0, getTrxName());
+        provider.setName("DB Provider");
+        provider.setMethod(X_AD_StorageProvider.METHOD_Database);
+        provider.saveEx();
+        
+        MClientInfo clientInfo = new Query(Env.getCtx(), MClientInfo.Table_Name, "AD_Client_ID=?", getTrxName())
+				.setParameters(getAD_Client_ID())
+				.firstOnly();
+        clientInfo = new MClientInfo(clientInfo);
+        clientInfo.setStorageArchive_ID(provider.getAD_StorageProvider_ID());
+        try (MockedStatic<MStorageProvider> storageProviderMock = Mockito.mockStatic(MStorageProvider.class, Mockito.CALLS_REAL_METHODS);
+             MockedStatic<MClientInfo> clientInfoMock = Mockito.mockStatic(MClientInfo.class, Mockito.CALLS_REAL_METHODS)) {
+            storageProviderMock.when(() -> MStorageProvider.get(any(Properties.class), eq(provider.get_ID()))).thenReturn(provider);
+            clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(getAD_Client_ID()))).thenReturn(clientInfo);
+            
+            int id = createArchiveFromInputStream();
+            int providerId = DB.getSQLValueEx(getTrxName(), "SELECT AD_StorageProvider_ID FROM AD_Archive WHERE AD_Archive_ID=?", id);
+            assertEquals(provider.getAD_StorageProvider_ID(), providerId, "Unexpected storage provider ID for archive blob");
+        }
+	}
+	
+	@Test
+	public void testFileSystemProviderForArchive() throws IOException {
+		MStorageProvider provider = new MStorageProvider(Env.getCtx(), 0, getTrxName());
+        provider.setName("File System Provider");
+        provider.setMethod(X_AD_StorageProvider.METHOD_FileSystem);
+        Path tempDir = Files.createTempDirectory("root_");
+        provider.setFolder(tempDir.toFile().getAbsolutePath());
+        provider.saveEx();
+        
+        MClientInfo clientInfo = new Query(Env.getCtx(), MClientInfo.Table_Name, "AD_Client_ID=?", getTrxName())
+				.setParameters(getAD_Client_ID())
+				.firstOnly();
+        clientInfo = new MClientInfo(clientInfo);
+        clientInfo.setStorageArchive_ID(provider.getAD_StorageProvider_ID());
+        try (MockedStatic<MStorageProvider> storageProviderMock = Mockito.mockStatic(MStorageProvider.class, Mockito.CALLS_REAL_METHODS);
+             MockedStatic<MClientInfo> clientInfoMock = Mockito.mockStatic(MClientInfo.class, Mockito.CALLS_REAL_METHODS)) {
+            storageProviderMock.when(() -> MStorageProvider.get(any(Properties.class), eq(provider.get_ID()))).thenReturn(provider);
+            clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(getAD_Client_ID()))).thenReturn(clientInfo);
+            
+            int id = createArchiveFromInputStream();
+            int providerId = DB.getSQLValueEx(getTrxName(), "SELECT AD_StorageProvider_ID FROM AD_Archive WHERE AD_Archive_ID=?", id);
+            assertEquals(provider.getAD_StorageProvider_ID(), providerId, "Unexpected storage provider ID for archive blob");
+        }
 	}
 }
