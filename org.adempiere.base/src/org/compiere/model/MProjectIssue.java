@@ -30,7 +30,6 @@ import org.adempiere.model.DocActionDelegate;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocOptions;
 import org.compiere.process.DocumentEngine;
-import org.adempiere.util.ProjectIssueUtil;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -559,23 +558,20 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	private BigDecimal updateBalanceAmt()
 	{
 		MProject proj = (MProject) getC_Project();
-		BigDecimal cost = Env.ZERO;
+		BigDecimal cost = null;
 		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
 		if (getM_InOutLine_ID() > 0)
 		{
-			cost = ProjectIssueUtil.getPOCost(as, getM_InOutLine_ID(), getMovementQty());
+			cost = ((MInOutLine) getM_InOutLine()).getPOCost(as, getM_InOutLine_ID(), getMovementQty());
 		}
 		else if (getS_TimeExpenseLine_ID() > 0)
 		{
-			cost = ProjectIssueUtil.getLaborCost(as, getS_TimeExpenseLine_ID());
+			cost = ((MTimeExpenseLine) getS_TimeExpenseLine()).getLaborCost(as, getS_TimeExpenseLine_ID());
 		}
 		else
 		{
-			cost = ProjectIssueUtil.getProductCosts(as, (MProduct) getM_Product(), getM_AttributeSetInstance_ID(), getAD_Org_ID(), getMovementQty(), true);
-		}
-		if (cost == null && getM_Product_ID() > 0) // standard Product Costs
-		{
-			cost = ProjectIssueUtil.getProductStdCost(as, getAD_Org_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName(), getMovementQty());
+			cost = MCost.getCost(	(MProduct) getM_Product(), getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0,
+									true, null, null, false, as.get_TrxName());
 		}
 		if (cost != null)
 		{

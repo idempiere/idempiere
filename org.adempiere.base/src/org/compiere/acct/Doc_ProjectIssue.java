@@ -21,12 +21,13 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.adempiere.util.ProjectIssueUtil;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
+import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
 import org.compiere.util.Env;
 
@@ -138,9 +139,9 @@ public class Doc_ProjectIssue extends Doc
 		//  Issue Cost
 		BigDecimal cost = null;
 		if (m_issue.getM_InOutLine_ID() != 0)
-			cost = ProjectIssueUtil.getPOCost(as, m_issue.getM_InOutLine_ID(), m_line.getQty());
+			cost = ((MInOutLine) m_issue.getM_InOutLine()).getPOCost(as, m_issue.getM_InOutLine_ID(), m_line.getQty());
 		else if (m_issue.getS_TimeExpenseLine_ID() != 0)
-			cost = ProjectIssueUtil.getLaborCost(as, m_issue.getS_TimeExpenseLine_ID());
+			cost = ((MTimeExpenseLine) m_issue.getS_TimeExpenseLine()).getLaborCost(as, m_issue.getS_TimeExpenseLine_ID());
 		if (cost == null)	//	standard Product Costs
 			cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
 
