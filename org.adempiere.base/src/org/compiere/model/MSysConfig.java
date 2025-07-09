@@ -115,6 +115,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ENABLE_SSO = "ENABLE_SSO";
     public static final String ENABLE_SSO_OSGI_CONSOLE = "ENABLE_SSO_OSGI_CONSOLE";
     public static final String ENABLE_SSO_IDEMPIERE_MONITOR = "ENABLE_SSO_IDEMPIERE_MONITOR";
+	public static final String SSO_SHOW_LOGINPAGE = "SSO_SHOW_LOGINPAGE";
     public static final String EXPORT_BLOB_COLUMN_FOR_INSERT = "EXPORT_BLOB_COLUMN_FOR_INSERT";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
