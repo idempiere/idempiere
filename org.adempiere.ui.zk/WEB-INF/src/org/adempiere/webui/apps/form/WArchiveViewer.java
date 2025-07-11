@@ -80,6 +80,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.io.RepeatableInputStream;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Page;
@@ -272,11 +273,11 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	/**
 	 * Show archive content in {@link #iframe}.
 	 * @param name
-	 * @param data
+	 * @param inputStream
 	 */
-	private void reportViewer(String name, byte[] data)
+	private void reportViewer(String name, InputStream inputStream)
 	{	
-		media = new AMedia(name + ".pdf", "pdf", "application/pdf", data);
+		media = new AMedia(name + ".pdf", "pdf", "application/pdf", RepeatableInputStream.getInstance(inputStream));
 		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())))
 		{
 			mediaVersion ++;
@@ -739,7 +740,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
 		File attachment = new File(FileUtil.getTempMailName(ar.getName(), ".pdf"));
 		try {
-			Files.write(attachment.toPath(), ar.getBinaryData());
+			Files.copy(ar.getInputStream(), attachment.toPath());
 		} catch (IOException e) {
 			throw new AdempiereException(e);
 		}
@@ -788,6 +789,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			descriptionField.setText("");
 			helpField.setText("");
 			iframe.getChildren().clear();
+			iframe.setSrc(null);
 			return;
 		}
 		
@@ -799,30 +801,21 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		descriptionField.setText(ar.getDescription());
 		helpField.setText(ar.getHelp());
 		
-		InputStream in = null;
 		try
 		{
-			in = ar.getInputStream();
+			InputStream in = ar.getInputStream();
 			if (in != null)
-				reportViewer(ar.getName(), ar.getBinaryData());
-			else
+				reportViewer(ar.getName(), in);
+			else {
 				iframe.getChildren().clear();
+				iframe.setSrc(null);
+			}
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, e.getMessage(), e);
 			iframe.getChildren().clear();
-		}
-		finally
-		{
-			if (in != null)
-			{
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			iframe.setSrc(null);
 		}
 	}	//	updateVDisplay
 
