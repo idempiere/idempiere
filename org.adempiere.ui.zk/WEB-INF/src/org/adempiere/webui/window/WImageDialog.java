@@ -412,8 +412,14 @@ public class WImageDialog extends Window implements EventListener<Event>
 			m_mImage = new MImage (Env.getCtx(), 0, null);
 		m_mImage.setName(fileName);
 		m_mImage.setImageURL(fileName);
-		if (image.getContent() != null)
-			m_mImage.setBinaryData(image.getContent().getByteData());
+		Media uploadedMedia = image.getContent();
+		if (uploadedMedia != null)
+		{
+			if (uploadedMedia.inMemory())
+				m_mImage.setBinaryData(uploadedMedia.getByteData());
+			else
+				m_mImage.setInputStream(uploadedMedia.getStreamData());
+		}	
 		else
 			m_mImage.setBinaryData(null);
 	}
