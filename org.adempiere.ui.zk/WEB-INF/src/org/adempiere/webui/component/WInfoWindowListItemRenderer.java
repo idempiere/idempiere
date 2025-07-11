@@ -39,6 +39,7 @@ import org.compiere.model.MStyle;
 import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -209,10 +210,14 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 			{
 				if (ic != null && ic.getColumnName().equals(columnName))
 				{
-					value = String.valueOf(table.getValueAt(rowIndex, idx));
+					if (table.getValueAt(rowIndex, idx) instanceof NamePair)
+					{
+						value = ((NamePair) table.getValueAt(rowIndex, idx)).getID();
+					}
+					else
+						value = String.valueOf(table.getValueAt(rowIndex, idx));
 					break;
 				}
-
 				idx++;
 			}
 
