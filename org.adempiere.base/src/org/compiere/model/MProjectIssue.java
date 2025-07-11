@@ -204,6 +204,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		if (!product.isStocked())
 		{
 			setProcessed(true);
+			updateBalanceAmt();
 			saveEx();
 			return null;
 		}
@@ -276,6 +277,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		if (ok)
 		{
 			mTrx.saveEx(get_TrxName());
+			updateBalanceAmt();
 		}
 		else
 		{
@@ -546,4 +548,42 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		return true;
 	}
+	
+	/**
+	 * Update Project Balance on Project issue posted
+	 * 
+	 * @param isCreaditAmt true than Reduce Project Balance Amt otherwise Project Balance Amt is Add
+	 *                     cost of Project Issue
+	 */
+	private BigDecimal updateBalanceAmt()
+	{
+		MProject proj = (MProject) getC_Project();
+		BigDecimal cost = null;
+		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
+		if (getM_InOutLine_ID() > 0)
+		{
+			cost = ((MInOutLine) getM_InOutLine()).getPOCost(as, getM_InOutLine_ID(), getMovementQty());
+		}
+		else if (getS_TimeExpenseLine_ID() > 0)
+		{
+			cost = ((MTimeExpenseLine) getS_TimeExpenseLine()).getLaborCost(as, getS_TimeExpenseLine_ID());
+		}
+		else
+		{
+			cost = MCost.getCost(	(MProduct) getM_Product(), getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0,
+									true, null, null, false, as.get_TrxName());
+		}
+		if (cost != null)
+		{
+			proj.setProjectBalanceAmt(proj.getProjectBalanceAmt().add(cost));
+			proj.saveEx(get_TrxName());
+		}
+		if (getReversal_ID() < 0 && (cost == null || cost.signum() <= 0))
+		{
+			throw new IllegalArgumentException(	"Product: ("	+ getM_Product().getName() + ") is not present at Locator: (" +
+												getM_Locator().getM_Warehouse().getValue() + ") for ASI: (" + getM_AttributeSetInstance().getDescription()
+												+ ")");
+		}
+		return cost;
+	} // updateBalanceAmt
 }	//	MProjectIssue
