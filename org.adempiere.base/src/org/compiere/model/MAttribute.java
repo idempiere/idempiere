@@ -50,8 +50,8 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MAttribute.class);
 
-	private static CCache<Integer, MAttribute>	s_cache				= new CCache<Integer, MAttribute>(Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);
-	
+	private static CCache<Integer, MAttribute>	s_cache		= new CCache<Integer, MAttribute>(Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);
+
 	/**	Values						*/
 	private MAttributeValue[]		m_values = null;
 
@@ -386,6 +386,17 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 				&& ! MRole.getDefault().isAccessAdvanced()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
 			return false;
+		}
+
+		if (!newRecord && is_ValueChanged(COLUMNNAME_Name))
+		{
+			String dupAttribSetName = DB.getSQLValueString(	get_TrxName(), MAttributeUse.SQL_GET_TA_DUPLICATE_ATTRIBUTE + " AND a.M_Attribute_ID <> ? ",
+															getAD_Client_ID(), getName(), getM_Attribute_ID());
+			if (!Util.isEmpty(dupAttribSetName, true))
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "UniqueAttribute", new Object[] { getName(), dupAttribSetName }));
+				return false;
+			}
 		}
 		return true;
 	}
