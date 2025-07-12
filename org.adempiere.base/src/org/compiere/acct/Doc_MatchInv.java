@@ -355,8 +355,14 @@ public class Doc_MatchInv extends Doc
 		cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
 		cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
 		cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+		cr.setC_Charge_ID(m_invoiceLine.getC_Charge_ID());
+		cr.setA_Asset_ID(m_invoiceLine.getA_Asset_ID());
 		cr.setUser1_ID(m_invoiceLine.getUser1_ID());
 		cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+		cr.setC_CostCenter_ID(m_invoiceLine.getC_CostCenter_ID());
+		cr.setC_Department_ID(m_invoiceLine.getC_Department_ID());
+		cr.setM_AttributeSetInstance_ID(m_invoiceLine.getM_AttributeSetInstance_ID());
+
 		if (m_matchInv.isReversal())
 		{
 			cr.setQty(getQty().negate());
@@ -739,7 +745,7 @@ public class Doc_MatchInv extends Doc
 				if (cd != null)
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			}		
-			// Set Total Amount and Total Quantity from Matched Invoice //TODO DateAcct
+			// Set Total Amount and Total Quantity from Matched Invoice
 			if (!MCostDetail.createInvoice(as, getAD_Org_ID(), 
 					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 					m_invoiceLine.getC_InvoiceLine_ID(), 0,		//	No cost element
@@ -1005,8 +1011,12 @@ public class Doc_MatchInv extends Doc
 			cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
 			cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
 			cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+			cr.setC_Charge_ID(m_invoiceLine.getC_Charge_ID());
+			cr.setA_Asset_ID(m_invoiceLine.getA_Asset_ID());
 			cr.setUser1_ID(m_invoiceLine.getUser1_ID());
 			cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+			cr.setC_CostCenter_ID(m_invoiceLine.getC_CostCenter_ID());
+			cr.setC_Department_ID(m_invoiceLine.getC_Department_ID());
 		}
 		else
 		{
@@ -1183,8 +1193,14 @@ public class Doc_MatchInv extends Doc
 			dr.setC_ProjectPhase_ID(refInvLine.getC_ProjectPhase_ID());
 			dr.setC_ProjectTask_ID(refInvLine.getC_ProjectTask_ID());
 			dr.setC_UOM_ID(refInvLine.getC_UOM_ID());
+			dr.setC_Charge_ID(refInvLine.getC_Charge_ID());
+			dr.setA_Asset_ID(refInvLine.getA_Asset_ID());
 			dr.setUser1_ID(refInvLine.getUser1_ID());
 			dr.setUser2_ID(refInvLine.getUser2_ID());
+			dr.setC_CostCenter_ID(refInvLine.getC_CostCenter_ID());
+			dr.setC_Department_ID(refInvLine.getC_Department_ID());
+			dr.setM_AttributeSetInstance_ID(refInvLine.getM_AttributeSetInstance_ID());
+			
 		}
 		else
 		{
@@ -1316,8 +1332,13 @@ public class Doc_MatchInv extends Doc
 			cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
 			cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
 			cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+			cr.setC_Charge_ID(m_invoiceLine.getC_Charge_ID());
+			cr.setA_Asset_ID(m_invoiceLine.getA_Asset_ID());
 			cr.setUser1_ID(m_invoiceLine.getUser1_ID());
 			cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+			cr.setC_CostCenter_ID(m_invoiceLine.getC_CostCenter_ID());
+			cr.setC_Department_ID(m_invoiceLine.getC_Department_ID());
+			cr.setM_AttributeSetInstance_ID(m_invoiceLine.getM_AttributeSetInstance_ID());
 		}
 		else
 		{
@@ -1389,9 +1410,14 @@ public class Doc_MatchInv extends Doc
 		factLine.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
 		factLine.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
 		factLine.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+		factLine.setC_Charge_ID(m_invoiceLine.getC_Charge_ID());
+		factLine.setA_Asset_ID(m_invoiceLine.getA_Asset_ID());
 		factLine.setUser1_ID(m_invoiceLine.getUser1_ID());
 		factLine.setUser2_ID(m_invoiceLine.getUser2_ID());
 		factLine.setM_Product_ID(m_invoiceLine.getM_Product_ID());
+		factLine.setC_CostCenter_ID(m_invoiceLine.getC_CostCenter_ID());
+		factLine.setC_Department_ID(m_invoiceLine.getC_Department_ID());
+		factLine.setM_AttributeSetInstance_ID(m_invoiceLine.getM_AttributeSetInstance_ID());
 		factLine.setQty(getQty());
 	}
 	

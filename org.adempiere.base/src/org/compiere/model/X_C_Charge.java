@@ -33,7 +33,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250618L;
 
     /** Standard Constructor */
     public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName)
@@ -44,6 +44,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 			setC_Charge_ID (0);
 			setC_TaxCategory_ID (0);
 			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -61,6 +63,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 			setC_Charge_ID (0);
 			setC_TaxCategory_ID (0);
 			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -78,6 +82,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 			setC_Charge_ID (0);
 			setC_TaxCategory_ID (0);
 			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -95,6 +101,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 			setC_Charge_ID (0);
 			setC_TaxCategory_ID (0);
 			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -284,6 +292,29 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Exclude from Payment Discount.
+		@param IsExcludedFromDiscount If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	*/
+	public void setIsExcludedFromDiscount (boolean IsExcludedFromDiscount)
+	{
+		set_Value (COLUMNNAME_IsExcludedFromDiscount, Boolean.valueOf(IsExcludedFromDiscount));
+	}
+
+	/** Get Exclude from Payment Discount.
+		@return If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	  */
+	public boolean isExcludedFromDiscount()
+	{
+		Object oo = get_Value(COLUMNNAME_IsExcludedFromDiscount);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Same Currency.

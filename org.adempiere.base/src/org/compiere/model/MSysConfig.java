@@ -47,7 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4691166258996679504L;
+	private static final long serialVersionUID = 4467301251742419106L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -74,6 +74,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
     public static final String APPLICATION_URL = "APPLICATION_URL";
     public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
+    public static final String ATTACH_NOTIFY_2PACK = "ATTACH_NOTIFY_2PACK";
     public static final String AUTO_ASSIGN_ROLE_TO_CREATOR_USER = "AUTO_ASSIGN_ROLE_TO_CREATOR_USER";
     public static final String AUTOMATIC_PACKIN_FOLDERS = "AUTOMATIC_PACKIN_FOLDERS";
     public static final String AUTOMATIC_PACKIN_INITIAL_DELAY = "AUTOMATIC_PACKIN_INITIAL_DELAY";
@@ -115,6 +116,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ENABLE_SSO = "ENABLE_SSO";
     public static final String ENABLE_SSO_OSGI_CONSOLE = "ENABLE_SSO_OSGI_CONSOLE";
     public static final String ENABLE_SSO_IDEMPIERE_MONITOR = "ENABLE_SSO_IDEMPIERE_MONITOR";
+	public static final String SSO_SHOW_LOGINPAGE = "SSO_SHOW_LOGINPAGE";
     public static final String EXPORT_BLOB_COLUMN_FOR_INSERT = "EXPORT_BLOB_COLUMN_FOR_INSERT";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";

@@ -430,7 +430,14 @@ public abstract class Doc
 	private int					m_BP_C_SalesRegion_ID = -1;
 	/** B Partner	    			*/
 	private int					m_C_BPartner_ID = -1;
-
+	/** Department */
+	private int					m_C_Department_ID		= -1;
+	/** Cost Center */
+	private int					m_C_CostCenter_ID		= -1;
+	/** B Partner Employee */
+	private int					m_C_Employee_ID	= -1;
+	/** Asset */
+	private int					m_A_Asset_ID			= -1;
 	/** Bank Account				*/
 	private int 				m_C_BankAccount_ID = -1;
 	/** Cach Book					*/
@@ -449,9 +456,34 @@ public abstract class Doc
 
 	/**	Actual Document Status  */
 	protected String			p_Status = null;
-	public String getPostStatus() {
+
+	public String getPostStatus()
+	{
 		return p_Status;
 	}
+
+	/**
+	 * Document is Post if the document type is always posted or if the accounting date is within
+	 * the schema's valid range.
+	 * 
+	 * @return {@code true} if the document type is always posted or if the accounting date is
+	 *         within the
+	 *         valid range of the accounting schema; {@code false} otherwise.
+	 */
+	public boolean isPostForAcctSchema()
+	{
+		return isAlwaysPosted() || m_as.isAcctDateInRange(getDateAcct());
+	} // isPostForAcctSchema
+
+	/**
+	 * Checks if the document type is configured to always be posted.
+	 * 
+	 * @return {@code true} if the document type has the "always posted" flag enabled; {@code false} otherwise.
+	 */
+	public boolean isAlwaysPosted()
+	{
+	    return getC_DocType_ID() > 0 && MDocType.get(getC_DocType_ID()).isAlwaysPosted();
+	}// isAlwaysPosted
 
 	/** Error Message			*/
 	protected String			p_Error = null;
@@ -633,6 +665,10 @@ public abstract class Doc
 					}
 				}
 			}
+
+			if (!skip && !isPostForAcctSchema())
+				skip = true;
+
 			if (!skip)
 			{
 				//	post
@@ -1944,6 +1980,36 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getC_Charge_ID
+	
+	/**
+	 * 	Get header level A_Asset_ID
+	 *	@return A_Asset_ID or 0
+	 */
+	public int getA_Asset_ID()
+	{
+		if(m_A_Asset_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("A_Asset_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer) p_po.get_Value(index);
+				if (ii != null)
+					m_A_Asset_ID = ii.intValue();
+			}
+			if (m_A_Asset_ID == -1)
+				m_A_Asset_ID = 0;
+		}
+		return m_A_Asset_ID;
+	}	//	getA_Asset_ID
+
+	/**
+	 * Set A_Asset_ID
+	 * @param m_A_Asset_ID Asset
+	 */
+	public void setA_Asset_ID(int m_A_Asset_ID)
+	{
+		this.m_A_Asset_ID = m_A_Asset_ID;
+	}// setA_Asset_ID
 
 	/**
 	 * 	Get SalesRep_ID
@@ -2036,7 +2102,102 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getM_Warehouse_ID
+	
+	/**
+	 * 	Get M_WarehouseTo_ID
+	 *	@return M_WarehouseTo_ID or 0
+	 */
+	public int getM_WarehouseTo_ID()
+	{
+		int index = p_po.get_ColumnIndex("M_WarehouseTo_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}	//	getM_WarehouseTo_ID
 
+	/**
+	 * Get C_CostCenter_ID
+	 * 
+	 * @return C_CostCenter_ID or 0
+	 */
+	public int getC_CostCenter_ID()
+	{
+		if (m_C_CostCenter_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("C_CostCenter_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer) p_po.get_Value(index);
+				if (ii != null)
+					m_C_CostCenter_ID = ii.intValue();
+			}
+			if (m_C_CostCenter_ID == -1)
+				m_C_CostCenter_ID = 0;
+		}
+		return m_C_CostCenter_ID;
+	}// getC_CostCenter_ID
+	
+	/**
+	 * Set C_CostCenter_ID
+	 * 
+	 * @param m_C_CostCenter_ID Cost Center
+	 */
+	public void setC_CostCenter_ID(int m_C_CostCenter_ID)
+	{
+		this.m_C_CostCenter_ID = m_C_CostCenter_ID;
+	}// setC_CostCenter_ID
+
+	/**
+	 * Get C_Department_ID
+	 * 
+	 * @return C_Department_ID or 0
+	 */
+	public int getC_Department_ID()
+	{
+		if (m_C_Department_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("C_Department_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer) p_po.get_Value(index);
+				if (ii != null)
+					m_C_Department_ID = ii.intValue();
+			}
+			if (m_C_Department_ID == -1)
+				m_C_Department_ID = 0;
+		}
+		return m_C_Department_ID;
+	}// getC_Department_ID
+	
+	/**
+	 *  ASI
+	 *  @return M_AttributeSetInstance_ID
+	 */
+	public int getM_AttributeSetInstance_ID()
+	{
+		int index = p_po.get_ColumnIndex("M_AttributeSetInstance_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getM_AttributeSetInstance_ID
+	
+	/**
+	 * Set C_Department_ID
+	 * 
+	 * @param m_C_Department_ID Department
+	 */
+	public void setC_Department_ID(int m_C_Department_ID)
+	{
+		this.m_C_Department_ID = m_C_Department_ID;
+	} // setC_Department_ID
 
 	/**
 	 * 	Get C_BPartner_ID
@@ -2067,6 +2228,36 @@ public abstract class Doc
 	{
 		m_C_BPartner_ID = C_BPartner_ID;
 	}	//	setC_BPartner_ID
+	
+	/**
+	 *  Get BPartner Employee
+	 *  @return C_Employee_ID
+	 */
+	public int getC_Employee_ID()
+	{
+		if (m_C_Employee_ID == -1)
+		{
+			int index = p_po.get_ColumnIndex("C_Employee_ID");
+			if (index != -1)
+			{
+				Integer ii = (Integer) p_po.get_Value(index);
+				if (ii != null)
+					m_C_Employee_ID = ii.intValue();
+			}
+			if (m_C_Employee_ID == -1)
+				m_C_Employee_ID = 0;
+		}
+		return m_C_Employee_ID;
+	}// getC_Employee_ID
+
+	/**
+	 * Set C_Employee_ID
+	 * 
+	 * @param C_Employee_ID bp
+	 */
+	public void setC_Employee_ID(int C_Employee_ID) {
+		m_C_Employee_ID = C_Employee_ID;
+	} // setC_Employee_ID
 
 	/**
 	 * 	Get C_BPartner_Location_ID
@@ -2326,6 +2517,21 @@ public abstract class Doc
 		}
 		return 0;
 	}	//	getValue
+
+	 /**
+	 * Get value by column name
+	 * @param ColumnName
+	 * @return column value or null (if column doesn't exists)
+	 */
+	public String get_ValueAsString (String ColumnName)
+	{
+		int index = p_po.get_ColumnIndex(ColumnName);
+		if (index != -1)
+		{
+			return p_po.get_ValueAsString(index);
+		}
+		return null;
+	}	//	get_ValueAsString
 
 	/**
 	 *  Load Document Details

@@ -598,27 +598,82 @@ public class DocManager {
 		int noUpdate = 0;
 		for (MCostDetail bdcd : bdcds) {
 			StringBuilder updateSql = new StringBuilder();
-			updateSql.append("UPDATE M_CostDetail ");
-			updateSql.append("SET Processed='N' ");
-			updateSql.append("WHERE AD_Client_ID=? ");
-			updateSql.append("AND C_AcctSchema_ID=? ");
-			updateSql.append("AND M_Product_ID=? ");
-			updateSql.append("AND (DateAcct, COALESCE(Ref_CostDetail_ID,M_CostDetail_ID), M_CostDetail_ID) > ("); 
-			updateSql.append(" SELECT cd.DateAcct, ");
-			updateSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
-			updateSql.append(" cd.M_CostDetail_ID ");
-			updateSql.append(" FROM M_CostDetail cd "); 
-			updateSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-			updateSql.append(" WHERE cd.M_CostDetail_ID=? ");
-			updateSql.append(") "); 
-			updateSql.append("AND DateAcct >= ? ");
-			updateSql.append("AND Processed='Y' ");
+			if (DB.isOracle()) {
+				updateSql.append("MERGE INTO M_CostDetail t ");
+				updateSql.append("USING (");
+				updateSql.append("  SELECT ");
+				updateSql.append("    cd.DateAcct, ");
+				updateSql.append("    cd.M_CostDetail_ID, ");
+				updateSql.append("    CASE ");
+				updateSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
+				updateSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
+				updateSql.append("      ELSE cd.M_CostDetail_ID ");
+				updateSql.append("    END AS Ref_CostDetail_ID ");
+				updateSql.append("  FROM M_CostDetail cd ");
+				updateSql.append("  LEFT JOIN M_CostDetail refcd ON refcd.M_CostDetail_ID = cd.Ref_CostDetail_ID ");
+				updateSql.append("  WHERE cd.M_CostDetail_ID = ? ");
+				updateSql.append(") base_cd ");			
+				updateSql.append("ON ( ");
+				updateSql.append("  t.AD_Client_ID = ? ");
+				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
+				updateSql.append("  AND t.M_Product_ID = ? ");
+				updateSql.append("  AND ( ");
+				updateSql.append("    t.DateAcct > base_cd.DateAcct ");
+				updateSql.append("    OR ( ");
+				updateSql.append("      t.DateAcct = base_cd.DateAcct ");
+				updateSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) > base_cd.Ref_CostDetail_ID ");
+				updateSql.append("    ) ");
+				updateSql.append("    OR ( ");
+				updateSql.append("      t.DateAcct = base_cd.DateAcct ");
+				updateSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) = base_cd.Ref_CostDetail_ID ");
+				updateSql.append("      AND t.M_CostDetail_ID > base_cd.M_CostDetail_ID ");
+				updateSql.append("    ) ");
+				updateSql.append("  ) ");
+				updateSql.append("  AND t.DateAcct >= ? ");
+				updateSql.append("  ) WHEN MATCHED THEN ");
+				updateSql.append("UPDATE SET Processed = 'N' ");
+				updateSql.append("WHERE t.Processed = 'Y' ");
+			} else {
+				updateSql.append("WITH base_cd AS (");
+				updateSql.append("  SELECT ");
+				updateSql.append("    cd.DateAcct, ");
+				updateSql.append("    cd.M_CostDetail_ID, ");
+				updateSql.append("    CASE ");
+				updateSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
+				updateSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
+				updateSql.append("      ELSE cd.M_CostDetail_ID ");
+				updateSql.append("    END AS Ref_CostDetail_ID ");
+				updateSql.append("  FROM M_CostDetail cd ");
+				updateSql.append("  LEFT JOIN M_CostDetail refcd ON refcd.M_CostDetail_ID = cd.Ref_CostDetail_ID ");
+				updateSql.append("  WHERE cd.M_CostDetail_ID = ? ");
+				updateSql.append(") ");
+				updateSql.append("UPDATE M_CostDetail t ");
+				updateSql.append("SET Processed = 'N' ");
+				updateSql.append("WHERE ");
+				updateSql.append("  t.AD_Client_ID = ? ");
+				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
+				updateSql.append("  AND t.M_Product_ID = ? ");
+				updateSql.append("  AND ( ");
+				updateSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
+				updateSql.append("    OR ( ");
+				updateSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+				updateSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) > (SELECT Ref_CostDetail_ID FROM base_cd) ");
+				updateSql.append("    ) ");
+				updateSql.append("    OR ( ");
+				updateSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+				updateSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) = (SELECT Ref_CostDetail_ID FROM base_cd) ");
+				updateSql.append("      AND t.M_CostDetail_ID > (SELECT M_CostDetail_ID FROM base_cd) ");
+				updateSql.append("    ) ");
+				updateSql.append("  ) ");
+				updateSql.append("  AND t.DateAcct >= ? ");
+				updateSql.append("  AND t.Processed = 'Y' ");
+			}
 			noUpdate += DB.executeUpdateEx(updateSql.toString(), 
-					new Object[] {bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getM_CostDetail_ID(), bdcd.getDateAcct()}, 
+					new Object[] {bdcd.getM_CostDetail_ID(), bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getDateAcct()}, 
 					trxName);
+			if (s_log.isLoggable(Level.INFO))
+				s_log.info("Update cost detail to unprocessed: " + noUpdate);
 		}
-		if (s_log.isLoggable(Level.INFO))
-			s_log.info("Update cost detail to unprocessed: " + noUpdate);
 		
 		MCostDetail cd = bdcds.get(0);
 		
@@ -693,14 +748,23 @@ public class DocManager {
 				String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
 				if (error != null)
 					return error;
-				
-				if (tableID == MInvoice.Table_ID) {
+								
+				if (tableID == MInvoice.Table_ID) { 
+					MMatchPO mpo = null;
+					if (AD_Table_ID == MMatchPO.Table_ID)
+						mpo = new MMatchPO(Env.getCtx(), Record_ID, trxName);
 					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
 					for (MMatchInv mi : miList) {
-						repostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
-						if (repostedRecordIds.contains(repostedRecordId))
+						if (AD_Table_ID == MMatchInv.Table_ID) {
+							if (mi.get_ID() != Record_ID && mi.getReversal_ID() != Record_ID)
+								continue;
+						} else if (AD_Table_ID == MMatchPO.Table_ID) {
+							if (mpo != null && mi.getM_Product_ID() != mpo.getM_Product_ID())
+								continue;
+						}
+						if (mi.getDateAcct().compareTo(cd.getDateAcct()) < 0)
 							continue;
-						repostedRecordIds.add(repostedRecordId);
+						// NOTE: Do not skip reposting match invoices that have already been reposted
 						error = DocManager.postDocument(ass, MMatchInv.Table_ID, mi.get_ID(), true, true, true, trxName);
 						if (error != null)
 							return error;

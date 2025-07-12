@@ -17,9 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 
 import org.compiere.model.MBPartner;
+import org.compiere.model.MCharge;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MProduct;
@@ -87,5 +89,48 @@ public class InvoiceTest extends AbstractTestCase
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+	}
+	
+
+	@Test
+	public void testDiscountAmt() {
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoice.setC_DocTypeTarget_ID(MInvoice.DOCBASETYPE_ARInvoice);
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setM_PriceList_ID(DictionaryIDs.M_PriceList.STANDARD.id);
+		invoice.saveEx();
+		
+		MInvoiceLine invoiceLine = 	new MInvoiceLine(invoice);
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id));
+		invoiceLine.setQty(new BigDecimal("1"));
+		invoiceLine.setPrice(new BigDecimal("100.00"));
+		invoiceLine.saveEx();
+		
+		MCharge charge = new MCharge(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id, getTrxName());
+		
+		MInvoiceLine chargeLine = new MInvoiceLine(invoice);
+		chargeLine.setLine(10);
+		chargeLine.setC_Charge_ID(charge.getC_Charge_ID());
+		chargeLine.setQty(new BigDecimal("1"));
+		chargeLine.setPrice(new BigDecimal("30.00"));
+		chargeLine.saveEx();
+		
+		BigDecimal discountPercent = new BigDecimal("0.02"); // 2%10 Net 30
+		assertEquals(calculatePercentage(new BigDecimal("130.00"), discountPercent).setScale(2, RoundingMode.HALF_EVEN), invoice.getDiscountAmt(today).setScale(2, RoundingMode.HALF_EVEN), "Discount Amt should be 2% of the total");
+		
+		charge.setIsExcludedFromDiscount(true);
+		charge.saveEx();
+		assertEquals(calculatePercentage(new BigDecimal("100"), discountPercent).setScale(2, RoundingMode.HALF_EVEN), invoice.getDiscountAmt(today).setScale(2, RoundingMode.HALF_EVEN), "Discount Amt should be 2% of the product lines");
+
+	}
+	
+	public BigDecimal calculatePercentage(BigDecimal base, BigDecimal percent) {
+	    return base.multiply(percent).setScale(2, RoundingMode.HALF_UP);
 	}
 }

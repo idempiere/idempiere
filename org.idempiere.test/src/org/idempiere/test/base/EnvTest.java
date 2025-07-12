@@ -296,6 +296,21 @@ public class EnvTest extends AbstractTestCase {
         Env.setContext(Env.getCtx(), windowNo, 0, "Bill_BPartner_ID", null);
         parsedText = Env.parseContext(Env.getCtx(), windowNo, 0, expr, false);
         assertEquals("AD_User.C_BPartner_ID IN (%s, 0)".formatted(DictionaryIDs.C_BPartner.C_AND_W.id), parsedText, "Unexpected parsed text for "+expr);
+        
+        // AD_SysConfig
+        // @$sysconfig.ZK_MAX_UPLOAD_SIZE@
+        expr = "@"+Env.PREFIX_SYSCONFIG_VARIABLE + MSysConfig.ZK_MAX_UPLOAD_SIZE+"@";
+        String sysConfigValue = MSysConfig.getValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
+        parsedText = Env.parseContext(Env.getCtx(), -1, expr, false);
+        assertEquals(sysConfigValue, parsedText, "Unexpected parsed text for "+expr);
+        // test logic evaluation
+        evaluatee = new DefaultEvaluatee(null, -1, -1, false);
+		expr = "@"+Env.PREFIX_SYSCONFIG_VARIABLE + MSysConfig.ZK_MAX_UPLOAD_SIZE+"@='"+sysConfigValue+"'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertTrue(evaluation, "Unexpected logic evaluation result");
+		expr = "@"+Env.PREFIX_SYSCONFIG_VARIABLE + MSysConfig.ZK_MAX_UPLOAD_SIZE+"@='0'";
+		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
+		assertFalse(evaluation, "Unexpected logic evaluation result");
 	}
 
 	@Test
@@ -362,5 +377,26 @@ public class EnvTest extends AbstractTestCase {
         mMailText.setPO(MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id));
         String expected = "User Email = %s and Phone=".formatted(user.get_Value("EMail"));
         assertEquals(expected, mMailText.getMailText());
+    }
+
+    /**
+     * https://idempiere.atlassian.net/browse/IDEMPIERE-6583
+     */
+    @Test
+    public void testParseMailTextWithCreatedByAndUpdatedBy() {
+
+    	String mailText = "The record @DocumentNo@ about @AD_User_ID<AD_User.Name>@ was created by @CreatedBy<AD_User.Name>@ and updated by @UpdatedBy<AD_User.Name>@";
+    	MMailText mMailText = new MMailText(Env.getCtx(), 0, getTrxName());
+    	mMailText.setMailText(mailText);
+
+    	MOrder order = new MOrder(Env.getCtx(), 100, getTrxName());
+    	order.set_ValueNoCheck("CreatedBy", DictionaryIDs.AD_User.GARDEN_USER.id);
+    	order.set_ValueNoCheck("UpdatedBy", DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+    	order.set_ValueNoCheck("AD_User_ID", DictionaryIDs.AD_User.SUPER_USER.id);
+
+    	mMailText.setPO(order);
+
+    	String expected = "The record 80000 about SuperUser was created by GardenUser and updated by GardenAdmin";
+    	assertEquals(expected, mMailText.getMailText());
     }
 }

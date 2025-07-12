@@ -13,6 +13,9 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_CLOSING_TAG;
+import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_OPENING_TAG;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -66,9 +69,6 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vlayout;
-
-import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_OPENING_TAG;
-import static org.adempiere.base.markdown.IMarkdownRenderer.MARKDOWN_CLOSING_TAG;
 
 /**
  * @author hengsin
@@ -825,7 +825,7 @@ public class DocumentSearchController implements EventListener<Event>{
 		private String label;
 		private String name;
 		private Object[] valus;
-		private Map<String, Object> valueMap = null;;
+		private Map<String, Object> valueMap = null;
 		private int AD_Message_ID = 0;
 		private int AD_Style_ID = 0;		
 		private int row = -1;

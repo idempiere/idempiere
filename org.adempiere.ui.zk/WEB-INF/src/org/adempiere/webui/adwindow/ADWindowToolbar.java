@@ -1146,8 +1146,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
-			if (overflows != null)
-				toolbarCustomBtn.dynamicDisplay(overflows.contains(toolbarCustomBtn.getToolbarbutton()));
+			toolbarCustomBtn.dynamicDisplay(overflows == null || overflows.contains(toolbarCustomBtn.getToolbarbutton()));
 			customButtons.add(toolbarCustomBtn.getToolbarbutton());
 		}
 		

@@ -715,7 +715,7 @@ public class EmailSrv {
 			if (i == 0)
 				reconstructSign.append(lsPart.get(0));
 			
-			String imageBase64 = provideBase64Data.getBase64Data(lsImgSrc.get(i));;
+			String imageBase64 = provideBase64Data.getBase64Data(lsImgSrc.get(i));
 			
 			if (imageBase64 == null){
 				// no attach map with this src value 

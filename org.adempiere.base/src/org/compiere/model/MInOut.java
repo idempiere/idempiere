@@ -669,6 +669,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		setAD_OrgTrx_ID(order.getAD_OrgTrx_ID());
 		setUser1_ID(order.getUser1_ID());
 		setUser2_ID(order.getUser2_ID());
+		setC_CostCenter_ID(order.getC_CostCenter_ID());
+		setC_Department_ID(order.getC_Department_ID());
 		setPriorityRule(order.getPriorityRule());
 		// Drop shipment
 		setIsDropShip(order.isDropShip());
@@ -728,6 +730,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		setAD_OrgTrx_ID(invoice.getAD_OrgTrx_ID());
 		setUser1_ID(invoice.getUser1_ID());
 		setUser2_ID(invoice.getUser2_ID());
+		setC_CostCenter_ID(invoice.getC_CostCenter_ID());
+		setC_Department_ID(invoice.getC_Department_ID());
 
 		if (order != null)
 		{
@@ -794,6 +798,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		setAD_OrgTrx_ID(original.getAD_OrgTrx_ID());
 		setUser1_ID(original.getUser1_ID());
 		setUser2_ID(original.getUser2_ID());
+		setC_CostCenter_ID(original.getC_CostCenter_ID());
+		setC_Department_ID(original.getC_Department_ID());
 
 		// DropShipment
 		setIsDropShip(original.isDropShip());
@@ -3231,6 +3237,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			iol.setAD_OrgTrx_ID(ol.getAD_OrgTrx_ID());
 			iol.setUser1_ID(ol.getUser1_ID());
 			iol.setUser2_ID(ol.getUser2_ID());
+			iol.setC_CostCenter_ID(ol.getC_CostCenter_ID());
+			iol.setC_Department_ID(ol.getC_Department_ID());
 		}
 		else if (il != null)
 		{
@@ -3252,6 +3260,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			iol.setAD_OrgTrx_ID(il.getAD_OrgTrx_ID());
 			iol.setUser1_ID(il.getUser1_ID());
 			iol.setUser2_ID(il.getUser2_ID());
+			iol.setC_CostCenter_ID(il.getC_CostCenter_ID());
+			iol.setC_Department_ID(il.getC_Department_ID());
 		}
 		else if (M_RMALine_ID != 0)
 		{
@@ -3267,6 +3277,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			iol.setAD_OrgTrx_ID(rmal.getAD_OrgTrx_ID());
 			iol.setUser1_ID(rmal.getUser1_ID());
 			iol.setUser2_ID(rmal.getUser2_ID());
+			iol.setC_CostCenter_ID(rmal.getC_CostCenter_ID());
+			iol.setC_Department_ID(rmal.getC_Department_ID());
 		}
 
 		//	Charge
@@ -3312,7 +3324,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setSalesRep_ID (order.getSalesRep_ID());
 			setUser1_ID(order.getUser1_ID());
 			setUser2_ID(order.getUser2_ID());
-
+			setC_CostCenter_ID(order.getC_CostCenter_ID());
+			setC_Department_ID(order.getC_Department_ID());
 			if ( order.isDropShip() )
 			{
 				setM_Warehouse_ID( order.getM_Warehouse_ID() );
@@ -3338,6 +3351,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setC_Activity_ID(invoice.getC_Activity_ID());
 			setUser1_ID(invoice.getUser1_ID());
 			setUser2_ID(invoice.getUser2_ID());
+			setC_CostCenter_ID(invoice.getC_CostCenter_ID());
+			setC_Department_ID(invoice.getC_Department_ID());
 		}
 		if (rma != null && rma.getM_RMA_ID() != 0)
 		{
@@ -3352,6 +3367,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setC_Activity_ID(originalIO.getC_Activity_ID());
 			setUser1_ID(originalIO.getUser1_ID());
 			setUser2_ID(originalIO.getUser2_ID());
+			setC_CostCenter_ID(originalIO.getC_CostCenter_ID());
+			setC_Department_ID(originalIO.getC_Department_ID());
 		}
 		saveEx();
 	}
@@ -3376,21 +3393,41 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		
 		String MovementType = getMovementType();
 		if (reversalDate != null && MovementType.equals(MOVEMENTTYPE_VendorReceipts)) {
-			final StringBuilder whereClause = new StringBuilder();
-			whereClause.append("AD_Client_ID=? ");
-			whereClause.append("AND C_AcctSchema_ID=? ");
-			whereClause.append("AND M_Product_ID=? ");
-			whereClause.append("AND (DateAcct, COALESCE(Ref_CostDetail_ID,M_CostDetail_ID), M_CostDetail_ID) > ("); 
-			whereClause.append(" SELECT cd.DateAcct, ");
-			whereClause.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
-			whereClause.append(" cd.M_CostDetail_ID ");
-			whereClause.append(" FROM M_CostDetail cd ");
-			whereClause.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-			whereClause.append(" WHERE cd.M_CostDetail_ID=? ");
-			whereClause.append(") ");
-			whereClause.append("AND DateAcct >= ? ");
-			whereClause.append("AND Processed='Y' ");
-			whereClause.append("AND (M_InOutLine_ID <> 0 OR C_ProjectIssue_ID <> 0) ");
+			final StringBuilder selectSql = new StringBuilder();
+			selectSql.append("WITH base_cd AS (");
+			selectSql.append("  SELECT ");
+			selectSql.append("    cd.DateAcct, ");
+			selectSql.append("    cd.M_CostDetail_ID, ");
+			selectSql.append("    CASE ");
+			selectSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
+			selectSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
+			selectSql.append("      ELSE cd.M_CostDetail_ID ");
+			selectSql.append("    END AS Ref_CostDetail_ID ");
+			selectSql.append("  FROM M_CostDetail cd ");
+			selectSql.append("  LEFT JOIN M_CostDetail refcd ON refcd.M_CostDetail_ID = cd.Ref_CostDetail_ID ");
+			selectSql.append("  WHERE cd.M_CostDetail_ID = ? ");
+			selectSql.append(") ");
+			selectSql.append("SELECT t.* ");
+			selectSql.append("FROM M_CostDetail t ");
+			selectSql.append("WHERE ");
+			selectSql.append("  t.AD_Client_ID = ? ");
+			selectSql.append("  AND t.C_AcctSchema_ID = ? ");
+			selectSql.append("  AND t.M_Product_ID = ? ");
+			selectSql.append("  AND ( ");
+			selectSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
+			selectSql.append("    OR ( ");
+			selectSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+			selectSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) > (SELECT Ref_CostDetail_ID FROM base_cd) ");
+			selectSql.append("    ) ");
+			selectSql.append("    OR ( ");
+			selectSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+			selectSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) = (SELECT Ref_CostDetail_ID FROM base_cd) ");
+			selectSql.append("      AND t.M_CostDetail_ID > (SELECT M_CostDetail_ID FROM base_cd) ");
+			selectSql.append("    ) ");
+			selectSql.append("  ) ");
+			selectSql.append("  AND t.DateAcct >= ? ");
+			selectSql.append("  AND t.Processed = 'Y' ");
+			selectSql.append("  AND (M_InOutLine_ID <> 0 OR C_ProjectIssue_ID <> 0) ");
 			
 			MMatchPO[] mMatchPOList = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
 			for (MMatchPO mMatchPO : mMatchPOList)
@@ -3404,10 +3441,26 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					continue;
 				
 				BigDecimal qty = cd.getQty().negate();
+				List<MCostDetail> costDetailList = new ArrayList<MCostDetail>();
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				try {
+					pstmt = DB.prepareStatement(selectSql.toString(), get_TrxName());
+					pstmt.setInt(1, cd.getM_CostDetail_ID());
+					pstmt.setInt(2, getAD_Client_ID());
+					pstmt.setInt(3, as.getC_AcctSchema_ID());
+					pstmt.setInt(4, cd.getM_Product_ID());
+					pstmt.setTimestamp(5, cd.getDateAcct());
+					rs = pstmt.executeQuery();
+					while (rs.next())
+						costDetailList.add(new MCostDetail(getCtx(), rs, get_TrxName()));
+				} catch (SQLException e) {
+					throw new DBException(e, selectSql.toString());
+				} finally {
+					DB.close(rs, pstmt);
+					rs = null; pstmt = null;
+				}
 				
-				List<MCostDetail> costDetailList = new Query(getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-						.setParameters(getAD_Client_ID(), as.getC_AcctSchema_ID(), cd.getM_Product_ID(), cd.getM_CostDetail_ID(), cd.getDateAcct())
-						.list();
 				for (MCostDetail costDetail : costDetailList) {
 					if (costDetail.getM_InOutLine_ID() > 0) {
 						if (costDetail.getM_InOutLine().getM_InOut().getReversal_ID() > 0)
