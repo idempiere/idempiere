@@ -303,25 +303,30 @@ public class ConfigOracle implements IDatabaseConfig
 	 */
 	public String test(IDBConfigMonitor monitor, ConfigurationData data)
 	{
+		String databaseName = data.getDatabaseName();	//	Service Name
+		
 		//	Database Server
 		String server = data.getDatabaseServer();
-		boolean pass = server != null && server.length() > 0;
+		boolean pass = databaseName.startsWith("@") || ( server != null && server.length() > 0);
 		String error = "Not correct: DB Server = " + server;
 		InetAddress databaseServer = null;
-		try
-		{
-			if (pass)
-				databaseServer = InetAddress.getByName(server);
+		if (!databaseName.startsWith("@"))
+		{			
+			try
+			{
+				if (pass)
+					databaseServer = InetAddress.getByName(server);
+			}
+			catch (Exception e)
+			{
+				error += " - " + e.getMessage();
+				pass = false;
+			}
+			if (monitor != null)
+				monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabaseServer",
+					pass, false, error));
+			if (log.isLoggable(Level.INFO)) log.info("OK: Database Server = " + databaseServer);
 		}
-		catch (Exception e)
-		{
-			error += " - " + e.getMessage();
-			pass = false;
-		}
-		if (monitor != null)
-			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabaseServer",
-				pass, false, error));
-		if (log.isLoggable(Level.INFO)) log.info("OK: Database Server = " + databaseServer);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer!=null ? databaseServer.getHostName() : "");
 		//store as lower case for better script level backward compatibility
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType());
@@ -329,19 +334,21 @@ public class ConfigOracle implements IDatabaseConfig
 
 		//	Database Port
 		int databasePort = data.getDatabasePort();
-		pass = pass ? data.testPort (databaseServer, databasePort, true) : false;
-		error = "DB Server Port = " + databasePort;
-		if (monitor != null)
-			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabasePort",
-				pass, false, error));
-		// if (!pass)
-		// 	return error;
-		if (log.isLoggable(Level.INFO)) log.info("OK: Database Port = " + databasePort);
+		if (!databaseName.startsWith("@"))
+		{
+			pass = pass ? data.testPort (databaseServer, databasePort, true) : false;
+			error = "DB Server Port = " + databasePort;
+			if (monitor != null)
+				monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SERVER, "ErrorDatabasePort",
+					pass, false, error));
+			// if (!pass)
+			// 	return error;
+			if (log.isLoggable(Level.INFO)) log.info("OK: Database Port = " + databasePort);
+		}
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_PORT, String.valueOf(databasePort));
 
 		boolean  isDBExists =  data.getDatabaseExists();
 		//	JDBC Database Info
-		String databaseName = data.getDatabaseName();	//	Service Name
 		String systemPassword = data.getDatabaseSystemPassword();
 		pass = systemPassword != null && systemPassword.length() > 0;
 		error = "No Database System Password entered";
@@ -358,9 +365,9 @@ public class ConfigOracle implements IDatabaseConfig
 		//
 		//	URL (derived)	jdbc:oracle:thin:@//prod1:1521/prod1
 		String url = "jdbc:oracle:thin:@"
-			+ (server != null && server.length() > 0
-				? "//" + databaseServer.getHostName() + ":" + databasePort + "/" + databaseName
-				: databaseName);
+			+ (databaseName.startsWith("@")
+				? databaseName.substring(1)	//	tns alias
+				: "//" + databaseServer.getHostName() + ":" + databasePort + "/" + databaseName);
 		pass = testJDBC(url, p_db.getSystemUser(), systemPassword);
 		error = "Error connecting: " + url
 			+ " - as "+ p_db.getSystemUser() + "/" + systemPassword;
@@ -379,7 +386,6 @@ public class ConfigOracle implements IDatabaseConfig
 		if (log.isLoggable(Level.INFO)) log.info("OK: Database System User " + databaseName);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_NAME, databaseName);
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_SYSTEM, systemPassword);
-
 
 		//	Database User Info
 		String databaseUser = data.getDatabaseUser();	//	UID
@@ -442,9 +448,9 @@ public class ConfigOracle implements IDatabaseConfig
 				dockerCmd = "docker exec -i " + oracleDockerContainer + " ";
 
 			String sqlplus = dockerCmd + "sqlplus " + p_db.getSystemUser() + "/" + systemPassword + "@"
-				+ (server != null && server.length() > 0
-					? "//" + databaseServer.getHostName() + ":" + databasePort + "/" + databaseName
-					: databaseName);
+				+ (databaseName.startsWith("@")
+					? databaseName.substring(1)	//	tns alias	
+					: "//" + databaseServer.getHostName() + ":" + databasePort + "/" + databaseName);
 			log.config(sqlplus);
 			pass = testSQL(sqlplus, testFile);
 			error = "Error connecting via: " + sqlplus;

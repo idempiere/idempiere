@@ -34,9 +34,9 @@ fi
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-if [ "$ADEMPIERE_DB_SERVER" = "" ]
+if [ "$ADEMPIERE_DB_NAME" = "@"* ]
   then
-    DB_CONNECTION="$ADEMPIERE_DB_NAME"
+    DB_CONNECTION="${ADEMPIERE_DB_NAME:1}"
   else
     DB_CONNECTION="$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME"
 fi

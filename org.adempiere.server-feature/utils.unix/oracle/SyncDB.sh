@@ -20,14 +20,22 @@ if [ "$IDEMPIERE_HOME" = "" ] || [ "$ADEMPIERE_DB_NAME" = "" ]
     echo "	ADEMPIERE_DB_NAME	e.g. adempiere or xe"
     exit 1
 fi
+if [ "$ADEMPIERE_DB_SERVER" = "" ] || [ "$ADEMPIERE_DB_PORT" = "" ]; then
+  if [ ! "$ADEMPIERE_DB_NAME" = "@"* ]; then
+    echo "Please make sure that the environment variables are set correctly:"
+    echo "  ADEMPIERE_DB_SERVER e.g. dbserver.adempiere.org"
+    echo "  ADEMPIERE_DB_PORT e.g. 5432 or 1521"
+    exit 1
+  fi
+fi
 
 TMPFOLDER=/tmp
 ADEMPIERE_DB_USER=$1
 ADEMPIERE_DB_PASSWORD=$2
 ADEMPIERE_DB_PATH=$3
-if [ "$ADEMPIERE_DB_SERVER" = "" ]
+if [ "$ADEMPIERE_DB_NAME" = "@"* ]
   then
-    DB_CONNECTION="$ADEMPIERE_DB_NAME"
+    DB_CONNECTION="${ADEMPIERE_DB_NAME:1}"
   else
     DB_CONNECTION="$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME"
 fi

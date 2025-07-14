@@ -12,8 +12,8 @@
 @echo -------------------------------------
 @echo Re-Create DataPump Directory
 @echo -------------------------------------
-@if (%ADEMPIERE_DB_SERVER%) == () (
-    @set DB_CONNECTION=%ADEMPIERE_DB_NAME%
+@if ("%ADEMPIERE_DB_Name:~0,1%") == "@" (
+    @set DB_CONNECTION="%ADEMPIERE_DB_NAME:~1%"
 ) else (
     @set DB_CONNECTION=%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME%
 )

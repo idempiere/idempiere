@@ -235,9 +235,9 @@ public class DB_Oracle implements AdempiereDatabase
                 //  old: jdbc:oracle:thin:@dev2:1521:sid
                 //  new: jdbc:oracle:thin:@//dev2:1521/serviceName
 				//  best: jdbc:oracle:thin:@tnsName
-				sb.append(connection.getDbHost() != null && connection.getDbHost().length() > 0
-					? "//" + connection.getDbHost() + ":" + connection.getDbPort() + "/" + connection.getDbName()
-					: connection.getDbName());
+				sb.append(connection.getDbName().startsWith("@")
+					? connection.getDbName().substring(1) // tns alias
+					: "//" + connection.getDbHost() + ":" + connection.getDbPort() + "/" + connection.getDbName());
             }
         }
         m_connectionURL = sb.toString();
@@ -261,9 +261,9 @@ public class DB_Oracle implements AdempiereDatabase
     {
         m_userName = userName;
 		m_connectionURL = "jdbc:oracle:thin:@"
-			+ (dbHost != null && dbHost.length() > 0
-				? "//" + dbHost + ":" + dbPort + "/" + dbName 
-				: dbName);
+			+ (dbName.startsWith("@")
+				? dbName.substring(1) //tns alias
+				: "//" + dbHost + ":" + dbPort + "/" + dbName);
         return m_connectionURL;
     }   //  getConnectionURL
 
@@ -425,6 +425,8 @@ public class DB_Oracle implements AdempiereDatabase
     public String getSystemUser()
     {
     	String systemUser = SystemProperties.getAdempiereDBSystemUser();
+    	if (systemUser == null)
+    		systemUser = System.getenv(SystemProperties.ADEMPIERE_DB_SYSTEM_USER);
     	if (systemUser == null)
     		systemUser = "system";
         return systemUser;
