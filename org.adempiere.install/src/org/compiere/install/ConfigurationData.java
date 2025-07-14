@@ -896,6 +896,11 @@ public class ConfigurationData
 			p_properties.put(ADEMPIERE_KEYSTOREPASS, obfKeystorePass);
 			p_properties.store(fos, IDEMPIERE_ENV_FILE);
 			p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);
+			if (System.getenv(SystemProperties.ADEMPIERE_DB_SYSTEM_USER) != null) {
+				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, System.getenv(SystemProperties.ADEMPIERE_DB_SYSTEM_USER));
+			} else {
+				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, "");
+			}
 			// put back secrets in properties
 			if (MSystem.isSecureProps())
 				p_properties.putAll(secretProperties);
