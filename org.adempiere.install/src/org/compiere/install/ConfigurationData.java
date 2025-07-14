@@ -890,17 +890,20 @@ public class ConfigurationData
 					p_properties.remove(secretVar);
 				}
 			}
-			// obfuscate keystore pass
-			String keystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
-			String obfKeystorePass = Password.obfuscate(keystorePass);
-			p_properties.put(ADEMPIERE_KEYSTOREPASS, obfKeystorePass);
-			p_properties.store(fos, IDEMPIERE_ENV_FILE);
-			p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);
+			
+			// store ADEMPIERE_DB_SYSTEM_USER
 			if (System.getenv(SystemProperties.ADEMPIERE_DB_SYSTEM_USER) != null) {
 				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, System.getenv(SystemProperties.ADEMPIERE_DB_SYSTEM_USER));
 			} else {
 				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, "");
 			}
+			
+			// obfuscate keystore pass
+			String keystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
+			String obfKeystorePass = Password.obfuscate(keystorePass);
+			p_properties.put(ADEMPIERE_KEYSTOREPASS, obfKeystorePass);
+			p_properties.store(fos, IDEMPIERE_ENV_FILE);
+			p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);			
 			// put back secrets in properties
 			if (MSystem.isSecureProps())
 				p_properties.putAll(secretProperties);
