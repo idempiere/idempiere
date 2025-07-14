@@ -37,7 +37,7 @@ if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
 fi
 
 # Cleanup
-if [ "$ADEMPIERE_DB_NAME" = "@"* ]
+if [ "${ADEMPIERE_DB_NAME:0:1}" = "@" ]
   then
     DB_CONNECTION="${ADEMPIERE_DB_NAME:1}"
   else

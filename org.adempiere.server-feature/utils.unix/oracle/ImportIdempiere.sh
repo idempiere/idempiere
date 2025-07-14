@@ -41,7 +41,7 @@ fi
 echo -------------------------------------
 echo Re-Create DB user
 echo -------------------------------------
-if [ "$ADEMPIERE_DB_NAME" = "@"* ]
+if [ "${ADEMPIERE_DB_NAME:0:1}" = "@" ]
   then
     DB_CONNECTION="${ADEMPIERE_DB_NAME:1}"
   else
