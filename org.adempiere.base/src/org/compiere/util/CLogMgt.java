@@ -723,9 +723,16 @@ public class CLogMgt
 	private static String getDatabaseInfo()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(CConnection.get().getDbHost()).append(":")
-			.append(CConnection.get().getDbPort()).append("/")
-			.append(CConnection.get().getDbName());
+		if (DB.isOracle() && CConnection.get().getDbName().startsWith("@"))
+		{
+			sb.append(CConnection.get().getDbName());
+		}
+		else
+		{
+			sb.append(CConnection.get().getDbHost()).append(":")
+				.append(CConnection.get().getDbPort()).append("/")
+				.append(CConnection.get().getDbName());
+		}
 		
 		AdempiereDatabase db = DB.getDatabase();
 		sb.append(" (").append(db.getName());
