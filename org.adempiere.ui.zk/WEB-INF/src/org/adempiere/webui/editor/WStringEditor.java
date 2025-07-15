@@ -44,6 +44,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.sys.ComponentCtrl;
 
 /**
@@ -206,6 +207,19 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	@Override
 	public void onEvent(Event event)
     {
+	    if (Events.ON_OK.equals(event.getName())) {
+	    	// Check if this is Shift+Enter - ZK processes Enter as OK	event
+	        if (event instanceof KeyEvent) {
+	            KeyEvent keyEvent = (KeyEvent) event;
+	            if (keyEvent.isShiftKey() && getComponent().isMultiline()) {
+	                String currentValue = getComponent().getValue();
+	                getComponent().setValue(currentValue + "\n");
+	                getComponent().focus(); // Keep focus on the textbox
+	                return;
+	             }
+	        }
+	    }
+	    
 		boolean isStartEdit = INIT_EDIT_EVENT.equalsIgnoreCase (event.getName());
     	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()) || isStartEdit)
     	{
