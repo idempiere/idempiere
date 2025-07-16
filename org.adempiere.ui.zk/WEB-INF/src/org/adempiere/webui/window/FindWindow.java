@@ -876,6 +876,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			chkShare.setVisible(false);
 			if (userQuery.isShared()) {
 				// If the query is shared but user cannot share, disable updating
+	            btnMoreOptions.setDisabled(true);
                 btnSave.setDisabled(true);
 			}
 		}
@@ -2146,7 +2147,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
    private boolean shareSavedQuery(boolean isShared) {
 	   MUserQuery userQuery = getActiveUserQuery();
 
-       if (!isValidUserQuery(userQuery)) {
+       if (!isValidUserQuery(userQuery) || !userQuery.userCanShare()) {
            return false;
        }
        
