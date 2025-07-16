@@ -858,6 +858,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Button btnDelete = new Button("Delete");
         btnDelete.setSclass("modern-menu-item modern-menu-delete");
         btnDelete.addEventListener(Events.ON_CLICK, e -> {
+            deleteSavedQuery((isSuccess) -> {
+            	if (isSuccess) {
+                    Clients.showNotification("Query deleted successfully.", //TODO: Translatable
+                            Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
+                }
+            });
         });
 
         vlayout.appendChild(chkSaveDefault);
@@ -2133,29 +2139,62 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     * @param callback Callback to handle the result
     */
    private void confirmAndSaveDefaultQuery(MUserQuery userQuery, MUserQuery existingDefault, Callback<Boolean> callback) {
-	   Dialog.ask(m_targetWindowNo, "AlreadyExistsADefaultQuery", new Callback<Boolean>() {
-		   @Override
-		   public void onCallback(Boolean result) {
-			   if (result != null && result) {
-				   try {
-					   // User confirmed, proceed with saving
-					   if (existingDefault != null) {
-						   existingDefault.setIsDefault(false);
-						   existingDefault.saveEx();
-					   }
+	   Dialog.ask(m_targetWindowNo, "AlreadyExistsADefaultQuery", result -> {
+	        if (Boolean.TRUE.equals(result)) {
+	            try {
+	                if (existingDefault != null) {
+	                    existingDefault.setIsDefault(false);
+	                    existingDefault.saveEx();
+	                }
+	                userQuery.setIsDefault(true);
+	                userQuery.saveEx();
+	                callback.onCallback(true);
+	            } catch (Exception e) {
+	                log.severe("Error while saving default query: " + e.getMessage());
+	                callback.onCallback(false);
+	            }
+	        } else {
+	            callback.onCallback(false);
+	        }
+	   });
+   }
+   
+   /**
+    * Deletes the currently active user query after user confirmation.
+    *
+    * @param callback A callback to handle the result of the deletion operation.
+    *                 The callback is invoked with `true` if the query is successfully deleted,
+    *                 and `false` otherwise.
+    *
+    * The method performs the following steps:
+    * 1. Retrieves the active user query using `getActiveUserQuery()`.
+    * 2. Validates the user query using `isValidUserQuery()`. If invalid, the callback is invoked with `false`.
+    * 3. Displays a confirmation dialog using `Dialog.ask()`.
+    *    - If the user confirms, the query is deleted using `userQuery.deleteEx(true)`.
+    *    - If an exception occurs during deletion, logs the error and invokes the callback with `false`.
+    *    - If the user cancels or an error occurs, the callback is invoked with `false`.
+    */
+   private void deleteSavedQuery(Callback<Boolean> callback) {
+	   MUserQuery userQuery = getActiveUserQuery();
 
-					   userQuery.setIsDefault(true);
-					   userQuery.saveEx();
-					   callback.onCallback(true);
-				   } catch (Exception e) {
-					   log.severe("Error while saving default query: " + e.getMessage());
-					   callback.onCallback(false);
-				   }
-			   } else {
-				   // User cancelled or error occurred
-				   callback.onCallback(false);
-			   }
-		   }
+       if (!isValidUserQuery(userQuery)) {
+           callback.onCallback(false);
+           return;
+       }
+       
+	   Dialog.ask(m_targetWindowNo, "DeleteQuery?", result -> {
+		   if (Boolean.TRUE.equals(result)) {
+	            try {
+	                userQuery.deleteEx(true);
+					refreshUserQueries();
+	                callback.onCallback(true);
+	            } catch (Exception e) {
+	                log.severe("Error while deleting query: " + e.getMessage());
+	                callback.onCallback(false);
+	            }
+	        } else {
+	            callback.onCallback(false);
+	        }
 	   });
    }
 
@@ -2969,7 +3008,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			}
 		}
 
-		if(!selected) fQueryName.setSelectedIndex(0);	}
+		if(!selected) { 
+			fQueryName.setSelectedIndex(0);
+			enableSavedQueryMoreOptions(null);
+		}
+	}
 
     /**
      * retrieve the columnName of the Column item selected
