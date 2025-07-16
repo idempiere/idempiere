@@ -373,5 +373,9 @@ public class MUserQuery extends X_AD_UserQuery
 				.setOnlyActiveRecords(true)
 				.first();
 	}	//	getDefaultQueriesForUserAndTab
+	
+	public boolean isShared() {
+		return getAD_User_ID() <= 0;
+	} // isShared
 
 }	//	MUserQuery
