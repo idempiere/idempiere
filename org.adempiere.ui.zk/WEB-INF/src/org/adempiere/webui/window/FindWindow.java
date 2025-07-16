@@ -779,7 +779,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void initSavedQueryMoreOptions() {
     	btnMoreOptions = new ToolBarButton();
 		btnMoreOptions.setAttribute("name","btnAdvOptions");
-		btnMoreOptions.setTooltiptext("Advanced Options"); //TODO: Translatable
+		btnMoreOptions.setTooltiptext(Msg.getMsg(Env.getCtx(), "AdvancedOptions"));
 		btnMoreOptions.setDisabled(true);
         if (ThemeManager.isUseFontIconForImage())
         	btnMoreOptions.setIconSclass("z-icon-ellipsis-v");
@@ -799,7 +799,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         // Save as default
         chkSaveDefault = new Checkbox();
-        chkSaveDefault.setLabel("Set as default");
+        chkSaveDefault.setLabel(Msg.getMsg(Env.getCtx(), "SetDefault"));
         chkSaveDefault.setSclass("modern-checkbox-item");
         chkSaveDefault.addEventListener(Events.ON_CHECK, e -> {
             Checkbox checkbox = (Checkbox) e.getTarget();
@@ -807,7 +807,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
             setAsDefaultQuery(isSelected, (isSuccess) -> {
             	if (isSuccess) {
-                    Clients.showNotification(isSelected ? "Default query saved successfully." : "Default query removed", //TODO: Translatable
+                    Clients.showNotification(isSelected ? Msg.getMsg(Env.getCtx(), "SetSavedQueryDefault") : Msg.getMsg(Env.getCtx(), "RemoveSavedQueryDefault"),
                             Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
                 } else {
                     // Operation failed or user cancelled - revert checkbox state
@@ -819,13 +819,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         // Share with all users
         chkShare = new Checkbox();
         chkShare.setSclass("modern-checkbox-item");
-        chkShare.setLabel("Share with all users");
+        chkShare.setLabel(Msg.getMsg(Env.getCtx(), "ShareFilter"));
         chkShare.addEventListener(Events.ON_CHECK, e -> {
 			Checkbox checkbox = (Checkbox) e.getTarget();
 			boolean isSelected = checkbox.isSelected();
 
 			if (shareSavedQuery(isSelected)) {
-                Clients.showNotification(isSelected ? "Query Shared successfully." : "Default query removed", //TODO: Translatable
+                Clients.showNotification(isSelected ? Msg.getMsg(Env.getCtx(), "SavedQueryShared") : Msg.getMsg(Env.getCtx(), "UnshareSavedQuery"),
                         Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
             } 
         });
@@ -835,12 +835,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         separator.setSclass("modern-separator");
 
         // Row 4: Delete (as a button)
-        Button btnDelete = new Button("Delete");
+        Button btnDelete = new Button(Msg.getMsg(Env.getCtx(), "delete"));
         btnDelete.setSclass("modern-menu-item modern-menu-delete");
         btnDelete.addEventListener(Events.ON_CLICK, e -> {
             deleteSavedQuery((isSuccess) -> {
             	if (isSuccess) {
-                    Clients.showNotification("Query deleted successfully.", //TODO: Translatable
+                    Clients.showNotification(Msg.getMsg(Env.getCtx(), "DeleteSavedQuery"),
                             Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
                 }
             });
@@ -860,14 +860,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	private void enableSavedQueryMoreOptions(MUserQuery userQuery) {
 		if (userQuery == null) {
             btnMoreOptions.setDisabled(true);
-            btnMoreOptions.setTooltiptext("No saved query selected");
+            btnMoreOptions.setTooltiptext(Msg.getMsg(Env.getCtx(), "NoSavedQuerySelected"));
             chkShare.setVisible(false);
             chkSaveDefault.setSelected(false);
             return;
         }
 
 		btnMoreOptions.setDisabled(false);
-		btnMoreOptions.setTooltiptext("Advaned Options");
+		btnMoreOptions.setTooltiptext(Msg.getMsg(Env.getCtx(), "AdvancedOptions"));
 		chkSaveDefault.setSelected(userQuery.isDefault());
 		if (userQuery.userCanShare()) {
 			chkShare.setVisible(true);
@@ -2123,7 +2123,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     * @param callback Callback to handle the result
     */
    private void confirmAndSaveDefaultQuery(MUserQuery userQuery, MUserQuery existingDefault, Callback<Boolean> callback) {
-	   Dialog.ask(m_targetWindowNo, "AlreadyExistsADefaultQuery", result -> {
+	   Dialog.ask("", m_targetWindowNo, "ReplaceDefaultQuery", result -> {
 	        if (Boolean.TRUE.equals(result)) {
 	            try {
 	                if (existingDefault != null) {
@@ -2140,7 +2140,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	        } else {
 	            callback.onCallback(false);
 	        }
-	   });
+	   }, existingDefault.getName());
    }
    
    private boolean shareSavedQuery(boolean isShared) {
@@ -2179,7 +2179,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
            return;
        }
        
-	   Dialog.ask(m_targetWindowNo, "DeleteQuery?", result -> {
+	   Dialog.ask("", m_targetWindowNo, "DeleteSavedQuery?", result -> {
 		   if (Boolean.TRUE.equals(result)) {
 	            try {
 	                userQuery.deleteEx(true);
@@ -2838,13 +2838,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				//
 				if (uq.save())
 				{
-                    Clients.showNotification("Saved",
+                    Clients.showNotification(Msg.getMsg(Env.getCtx(), "Saved"),
                             Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 1000);
 					refreshUserQueries();
 		    		enableSavedQueryMoreOptions(uq);
 				}
 				else
-                    Clients.showNotification("SaveError",
+                    Clients.showNotification(Msg.getMsg(Env.getCtx(), "SaveError"),
                             Clients.NOTIFICATION_TYPE_ERROR, this, "middle_center", 1000);
 			}
 			//
