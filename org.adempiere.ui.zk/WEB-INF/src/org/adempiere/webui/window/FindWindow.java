@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.window;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 import static org.compiere.model.SystemIDs.REFERENCE_YESNO;
 
 import java.math.BigDecimal;
@@ -132,14 +133,13 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
-
-import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 /**
  *  Find/Search Records dialog.
@@ -241,6 +241,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	protected ToolBarButton btnShare;
 	/** Message for user query operations */
 	protected Label msgLabel;
+	/** Elements to show advanced options for saved queries */
+	protected ToolBarButton btnMoreOptions;
+	protected Popup popupOptions;
+	protected Checkbox chkShare;
 
 	//Column index for advance search listbox (advancedPanel)	
 	/** Index ColumnName = 0		*/
@@ -730,6 +734,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		fQueryName.setValue("");
 		fQueryName.addEventListener(Events.ON_SELECT, this);
 		
+		//TODO: Remove the btnShare
+		initSavedQueryMoreOptions();
+		
 		Label label = new Label(Msg.getMsg(Env.getCtx(), "SavedQuery"));
 		if (ClientInfo.maxWidth(639))
 			label.setStyle("vertical-align: middle;display: block; padding-left: 4px; padding-top: 4px;");
@@ -739,6 +746,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		div.appendChild(fQueryName);
         div.appendChild(btnSave);
         div.appendChild(btnShare);
+        div.appendChild(btnMoreOptions);
+        div.appendChild(popupOptions);
         
         //Show share button only for roles with preference level = Client
         if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType())) 
@@ -792,6 +801,62 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         layout.appendChild(statusBar);
     } // initPanel
     
+    private void initSavedQueryMoreOptions() {
+    	//TODO: Enable only when a query is selected
+    	//TODO: chkShare only when user can share queries
+    	btnMoreOptions = new ToolBarButton();
+		btnMoreOptions.setAttribute("name","btnAdvOptions");
+		btnMoreOptions.setTooltiptext("More Options"); //TODO: Translatable
+        if (ThemeManager.isUseFontIconForImage())
+        	btnMoreOptions.setIconSclass("z-icon-ellipsis-v");
+        else
+        	btnMoreOptions.setImage(ThemeManager.getThemeResource("images/Save24.png")); //TODO: Change this
+        btnMoreOptions.addEventListener(Events.ON_CLICK, this);
+        btnMoreOptions.setId("btnAdvOptions");
+        btnMoreOptions.setStyle("margin-left: 3px;");
+        if (ThemeManager.isUseFontIconForImage())
+        	LayoutUtils.addSclass("medium-toolbarbutton", btnMoreOptions);
+        
+        popupOptions = new Popup();
+        popupOptions.setSclass("modern-popup");
+        
+        Vlayout vlayout = new Vlayout();
+        vlayout.setSclass("modern-popup-container");
+
+        // Save as default
+        Checkbox chkSaveDefault = new Checkbox();
+        chkSaveDefault.setLabel("Set as default");
+        chkSaveDefault.setSclass("modern-checkbox-item");
+        chkSaveDefault.addEventListener(Events.ON_CHECK, e -> {
+        });
+
+        // Share with all users
+        chkShare = new Checkbox();
+        chkShare.setSclass("modern-checkbox-item");
+        chkShare.setLabel("Share with all users");
+        chkShare.addEventListener(Events.ON_CHECK, e -> {
+        });
+
+        // Horizontal line
+        Separator separator = new Separator();
+        separator.setSclass("modern-separator");
+
+        // Row 4: Delete (as a button)
+        Button btnDelete = new Button("Delete");
+        btnDelete.setSclass("modern-menu-item modern-menu-delete");
+        btnDelete.addEventListener(Events.ON_CLICK, e -> {
+        });
+
+        vlayout.appendChild(chkSaveDefault);
+        vlayout.appendChild(chkShare);
+        vlayout.appendChild(separator);
+        vlayout.appendChild(btnDelete);
+
+        popupOptions.appendChild(vlayout);
+        btnMoreOptions.addEventListener(Events.ON_CLICK, e -> {
+            popupOptions.open(btnMoreOptions, "after_start"); // Align bottom-left of the button
+        });
+    }    
     
     /**
      * Prepare combo of history scope options
