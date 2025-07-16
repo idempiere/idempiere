@@ -802,15 +802,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     } // initPanel
     
     private void initSavedQueryMoreOptions() {
-    	//TODO: Enable only when a query is selected
-    	//TODO: chkShare only when user can share queries
     	btnMoreOptions = new ToolBarButton();
 		btnMoreOptions.setAttribute("name","btnAdvOptions");
 		btnMoreOptions.setTooltiptext("More Options"); //TODO: Translatable
+		btnMoreOptions.setDisabled(true);
         if (ThemeManager.isUseFontIconForImage())
         	btnMoreOptions.setIconSclass("z-icon-ellipsis-v");
         else
-        	btnMoreOptions.setImage(ThemeManager.getThemeResource("images/Save24.png")); //TODO: Change this
+        	btnMoreOptions.setImage(ThemeManager.getThemeResource("images/ShowMore24.png"));
         btnMoreOptions.addEventListener(Events.ON_CLICK, this);
         btnMoreOptions.setId("btnAdvOptions");
         btnMoreOptions.setStyle("margin-left: 3px;");
@@ -856,7 +855,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         btnMoreOptions.addEventListener(Events.ON_CLICK, e -> {
             popupOptions.open(btnMoreOptions, "after_start"); // Align bottom-left of the button
         });
-    }    
+    }
+    
+	private void enableSavedQueryMoreOptions(boolean enable, boolean canShare) {
+		btnMoreOptions.setDisabled(!enable);
+		if (enable) {
+			btnMoreOptions.setTooltiptext("More Options");
+		} else {
+			btnMoreOptions.setTooltiptext("No saved query selected");
+		}
+		chkShare.setVisible(canShare);
+	}
     
     /**
      * Prepare combo of history scope options
@@ -2084,12 +2093,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
     			rowList.remove(rowIndex);
     		createFields();
+    		enableSavedQueryMoreOptions(false, false);
     	}
 		else {
 			MUserQuery uq = userQueries[index-1];
 			btnSave.setDisabled(!uq.userCanSave());
 			btnShare.setDisabled(!uq.userCanShare());
 			parseUserQuery(userQueries[index-1]);
+			enableSavedQueryMoreOptions(true, uq.userCanShare());
 		}
     }
 
@@ -2697,6 +2708,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				{
 					msgLabel.setText(Msg.getMsg(Env.getCtx(), "Saved"));
 					refreshUserQueries();
+		    		enableSavedQueryMoreOptions(true, uq.userCanShare());
 				}
 				else
 					msgLabel.setText(Msg.getMsg(Env.getCtx(), "SaveError"));
