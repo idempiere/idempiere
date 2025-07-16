@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -245,6 +246,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	protected ToolBarButton btnMoreOptions;
 	protected Popup popupOptions;
 	protected Checkbox chkShare;
+	protected Checkbox chkSaveDefault;
 
 	//Column index for advance search listbox (advancedPanel)	
 	/** Index ColumnName = 0		*/
@@ -804,7 +806,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     private void initSavedQueryMoreOptions() {
     	btnMoreOptions = new ToolBarButton();
 		btnMoreOptions.setAttribute("name","btnAdvOptions");
-		btnMoreOptions.setTooltiptext("More Options"); //TODO: Translatable
+		btnMoreOptions.setTooltiptext("Advanced Options"); //TODO: Translatable
 		btnMoreOptions.setDisabled(true);
         if (ThemeManager.isUseFontIconForImage())
         	btnMoreOptions.setIconSclass("z-icon-ellipsis-v");
@@ -823,10 +825,22 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         vlayout.setSclass("modern-popup-container");
 
         // Save as default
-        Checkbox chkSaveDefault = new Checkbox();
+        chkSaveDefault = new Checkbox();
         chkSaveDefault.setLabel("Set as default");
         chkSaveDefault.setSclass("modern-checkbox-item");
         chkSaveDefault.addEventListener(Events.ON_CHECK, e -> {
+            Checkbox checkbox = (Checkbox) e.getTarget();
+        	boolean isSelected = checkbox.isSelected();
+
+            setAsDefaultQuery(isSelected, (isSuccess) -> {
+            	if (isSuccess) {
+                    Clients.showNotification(isSelected ? "Default query saved successfully." : "Default query removed", //TODO: Translatable
+                            Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
+                } else {
+                    // Operation failed or user cancelled - revert checkbox state
+                    checkbox.setChecked(!isSelected);
+                }
+            });
         });
 
         // Share with all users
@@ -857,14 +871,19 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         });
     }
     
-	private void enableSavedQueryMoreOptions(boolean enable, boolean canShare) {
-		btnMoreOptions.setDisabled(!enable);
-		if (enable) {
-			btnMoreOptions.setTooltiptext("More Options");
-		} else {
-			btnMoreOptions.setTooltiptext("No saved query selected");
-		}
-		chkShare.setVisible(canShare);
+	private void enableSavedQueryMoreOptions(MUserQuery userQuery) {
+		if (userQuery == null) {
+            btnMoreOptions.setDisabled(true);
+            btnMoreOptions.setTooltiptext("No saved query selected");
+            chkShare.setVisible(false);
+            chkSaveDefault.setSelected(false);
+            return;
+        }
+
+		btnMoreOptions.setDisabled(false);
+		btnMoreOptions.setTooltiptext("Advaned Options");
+		chkShare.setVisible(userQuery.userCanShare());
+		chkSaveDefault.setSelected(userQuery.isDefault());
 	}
     
     /**
@@ -2054,6 +2073,91 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             }
         }
     }   //  onEvent
+    
+    /**
+     * Sets the query as default (asynchronous version).
+     *
+     * @param isDefault Whether to set as default
+     * @param callback Callback to handle the result
+     */
+    private void setAsDefaultQuery(boolean isDefault,  Callback<Boolean> callback) {
+        MUserQuery userQuery = getActiveUserQuery();
+
+        if (!isValidUserQuery(userQuery)) {
+            callback.onCallback(false);
+            return;
+        }
+
+        if (isDefault) {
+            handleDefaultQuery(userQuery, callback);
+        } else {
+            userQuery.setIsDefault(false);
+            userQuery.saveEx();
+            callback.onCallback(true);
+        }
+    }
+    
+    /**
+     * Validates the user query.
+     *
+     * @param userQuery The user query to validate.
+     * @return `true` if the user query is valid, `false` otherwise.
+     */
+    private boolean isValidUserQuery(MUserQuery userQuery) {
+        return userQuery != null && userQuery.getAD_UserQuery_ID() == m_AD_UserQuery_ID;
+    }
+
+    /**
+    * Handles the logic for saving a query as the default
+    *
+    * @param userQuery The user query to save as default.
+    * @param callback Callback to handle the result
+    */
+   private void handleDefaultQuery(MUserQuery userQuery, Callback<Boolean> callback) {
+       MUserQuery existingDefault = userQuery.getDefaultQueryForUserAndTab();
+
+       if (existingDefault == null) {
+           userQuery.setIsDefault(true);
+           userQuery.saveEx();
+           callback.onCallback(true);
+       } else {
+           confirmAndSaveDefaultQuery(userQuery, existingDefault, callback);
+       }
+   }
+
+
+   /**
+    * Confirms and saves the query as default if the user agrees.
+    *
+    * @param userQuery The user query to save.
+    * @param callback Callback to handle the result
+    */
+   private void confirmAndSaveDefaultQuery(MUserQuery userQuery, MUserQuery existingDefault, Callback<Boolean> callback) {
+	   Dialog.ask(m_targetWindowNo, "AlreadyExistsADefaultQuery", new Callback<Boolean>() {
+		   @Override
+		   public void onCallback(Boolean result) {
+			   if (result != null && result) {
+				   try {
+					   // User confirmed, proceed with saving
+					   if (existingDefault != null) {
+						   existingDefault.setIsDefault(false);
+						   existingDefault.saveEx();
+					   }
+
+					   userQuery.setIsDefault(true);
+					   userQuery.saveEx();
+					   callback.onCallback(true);
+				   } catch (Exception e) {
+					   log.severe("Error while saving default query: " + e.getMessage());
+					   callback.onCallback(false);
+				   }
+			   } else {
+				   // User cancelled or error occurred
+				   callback.onCallback(false);
+			   }
+		   }
+	   });
+   }
 
     /**
      * user cancellation, close dialog
@@ -2093,14 +2197,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
     			rowList.remove(rowIndex);
     		createFields();
-    		enableSavedQueryMoreOptions(false, false);
+    		enableSavedQueryMoreOptions(null);
     	}
 		else {
 			MUserQuery uq = userQueries[index-1];
 			btnSave.setDisabled(!uq.userCanSave());
 			btnShare.setDisabled(!uq.userCanShare());
 			parseUserQuery(userQueries[index-1]);
-			enableSavedQueryMoreOptions(true, uq.userCanShare());
+			enableSavedQueryMoreOptions(uq);
 		}
     }
 
@@ -2708,7 +2812,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				{
 					msgLabel.setText(Msg.getMsg(Env.getCtx(), "Saved"));
 					refreshUserQueries();
-		    		enableSavedQueryMoreOptions(true, uq.userCanShare());
+		    		enableSavedQueryMoreOptions(uq);
 				}
 				else
 					msgLabel.setText(Msg.getMsg(Env.getCtx(), "SaveError"));
@@ -3683,6 +3787,22 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		advancedPanelToolBar.setVisible(true);
 		advancedPanel.setVisible(true);
 		winAdvanced.invalidate();
+	}
+	
+	/**
+	 * Retrieves the currently active user query based on the selected item in the `fQueryName` combobox.
+	 *
+	 * <p>This method checks if a valid user query is selected in the `fQueryName` combobox and returns
+	 * the corresponding `MUserQuery` object. If no valid selection is made or the user queries list is empty,
+	 * it returns `null`.</p>
+	 *
+	 * @return The active `MUserQuery` object corresponding to the selected item in the `fQueryName` combobox,
+	 *         or `null` if no valid selection exists.
+	 */
+	private MUserQuery getActiveUserQuery() {
+		if (getAD_UserQuery_ID() <= 0 || userQueries == null || userQueries.length == 0)
+			return null;
+		return userQueries[fQueryName.getSelectedIndex()-1];
 	}
 	
 	/**
