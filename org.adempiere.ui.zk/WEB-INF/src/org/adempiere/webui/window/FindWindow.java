@@ -238,8 +238,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	protected String m_title;
 	/** Button to save current user query */
 	protected ToolBarButton btnSave;
-	/** Message for user query operations */
-	protected Label msgLabel;
 	/** Elements to show advanced options for saved queries */
 	protected ToolBarButton btnMoreOptions;
 	protected Popup popupOptions;
@@ -736,10 +734,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
        	
         fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative; vertical-align: middle;");
         
-        msgLabel = new Label("");
-        msgLabel.setStyle("margin-left: 10px; margin-right: 20px; vertical-align: middle;");
-        div.appendChild(msgLabel);
-
         // adding history combo
         prepareHistoryCombo();
         Label labelHistory = new Label(Msg.getMsg(Env.getCtx(), HISTORY_LABEL));
@@ -1836,7 +1830,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             		historyCombo.setSelectedItem(null);
             		fQueryName.setReadonly(false); 
             	}
-            	msgLabel.setText("");
             	onSelectedQueryChanged();
     		}
         	else if (event.getTarget() instanceof Combobox)
@@ -2230,7 +2223,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		historyCombo.setSelectedItem(null);
     		fQueryName.setReadonly(false); 
     	}
-    	msgLabel.setText("");
 
     	if(index == 0) 
     	{ // no query - wipe and start over.
@@ -2846,12 +2838,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				//
 				if (uq.save())
 				{
-					msgLabel.setText(Msg.getMsg(Env.getCtx(), "Saved"));
+                    Clients.showNotification("Saved",
+                            Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 1000);
 					refreshUserQueries();
 		    		enableSavedQueryMoreOptions(uq);
 				}
 				else
-					msgLabel.setText(Msg.getMsg(Env.getCtx(), "SaveError"));
+                    Clients.showNotification("SaveError",
+                            Clients.NOTIFICATION_TYPE_ERROR, this, "middle_center", 1000);
 			}
 			//
 
