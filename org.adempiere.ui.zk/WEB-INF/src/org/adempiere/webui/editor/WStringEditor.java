@@ -44,7 +44,9 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.sys.ComponentCtrl;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Default editor for text display type (String, PrinterName, Text, TextLong and Memo).<br/>
@@ -206,6 +208,37 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	@Override
 	public void onEvent(Event event)
     {
+		if (Events.ON_OK.equals(event.getName())) {
+		    if (event instanceof KeyEvent) {
+		        KeyEvent keyEvent = (KeyEvent) event;
+		        if (keyEvent.isShiftKey() && getComponent().isMultiline() && tableEditor) {
+		            Component target = event.getTarget();
+		            if (target instanceof Textbox) {
+		                String uuid = target.getUuid();
+
+		                String script = String.format(
+		                	    "(function() {" +
+		                	    "  var cmp = zk.Widget.$('#%s');" +
+		                	    "  if (!cmp) return;" +
+		                	    "  var elem = cmp.$n();" +
+		                	    "  if (!elem || typeof elem.selectionStart === 'undefined') return;" +
+		                	    "  var start = elem.selectionStart;" +
+		                	    "  var end = elem.selectionEnd;" +
+		                	    "  var value = elem.value;" +
+		                	    "  elem.value = value.substring(0, start) + '\\n' + value.substring(end);" +
+		                	    "  elem.selectionStart = elem.selectionEnd = start + 1;" +
+		                	    "  cmp.fire('onChanging', {value: elem.value});" +
+		                	    "})();",
+		                	    uuid
+		                	);
+
+		                Clients.evalJavaScript(script);
+		                return; // prevent regular ON_OK handling
+		            }
+		        }
+		    }
+		}
+	    
 		boolean isStartEdit = INIT_EDIT_EVENT.equalsIgnoreCase (event.getName());
     	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()) || isStartEdit)
     	{
