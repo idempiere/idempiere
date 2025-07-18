@@ -218,17 +218,18 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 
 		                String script = String.format(
 		                	    "(function() {" +
-		                	    "  var elem = jq('#%s')[0];" +
-		                	    "  if (!elem) return;" +
+		                	    "  var cmp = zk.Widget.$('#%s');" +
+		                	    "  if (!cmp) return;" +
+		                	    "  var elem = cmp.$n();" +
+		                	    "  if (!elem || typeof elem.selectionStart === 'undefined') return;" +
 		                	    "  var start = elem.selectionStart;" +
 		                	    "  var end = elem.selectionEnd;" +
 		                	    "  var value = elem.value;" +
 		                	    "  elem.value = value.substring(0, start) + '\\n' + value.substring(end);" +
 		                	    "  elem.selectionStart = elem.selectionEnd = start + 1;" +
-		                	    "  var cmp = zk.Widget.$('$%s');" +
-		                	    "  if (cmp) cmp.fire('onChanging', {value: elem.value});" +
+		                	    "  cmp.fire('onChanging', {value: elem.value});" +
 		                	    "})();",
-		                	    uuid, uuid
+		                	    uuid
 		                	);
 
 		                Clients.evalJavaScript(script);
