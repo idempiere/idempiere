@@ -124,6 +124,16 @@ public class MigrateStorageProvider extends SvrProcess {
 		}
 
 		MStorageProvider newProvider = MStorageProvider.get(getCtx(), p_AD_StorageProvider_ID);
+		//make sure the provider is valid
+		if (p_IsMigrateAttachment) {
+			newProvider.getAttachmentStore(); // this will throw an exception if the provider is not valid
+		}
+		if (p_IsMigrateArchive) {
+			newProvider.getArchiveStore(); // this will throw an exception if the provider is not valid
+		}
+		if (p_IsMigrateImage) {
+			newProvider.getImageStore(); // this will throw an exception if the provider is not valid
+		}
 
 		// Create list of clients to process:
 		//   - single AD_Client
