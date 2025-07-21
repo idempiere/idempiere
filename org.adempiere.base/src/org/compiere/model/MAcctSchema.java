@@ -809,7 +809,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	 */
 	public static boolean isBackDateTrxAllowed(Properties ctx, int tableID, int recordID, String trxName)
 	{
-		Timestamp dateAcct = MCostDetail.getDateAcct(tableID, recordID, trxName);;
+		Timestamp dateAcct = MCostDetail.getDateAcct(tableID, recordID, trxName);
 		if (dateAcct == null)
 			return true;
 		return isBackDateTrxAllowed(ctx, dateAcct, trxName);

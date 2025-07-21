@@ -308,7 +308,7 @@ public class WTableAttribute extends Window implements EventListener<Event>
 			MTableAttribute tableAtt = MTableAttribute.get(p_AD_Table_ID, p_Record_ID, att.getM_Attribute_ID());
 			if (tableAtt == null)
 			{
-				if (value == null)
+				if (value == null || Util.isEmpty(value.toString(), true))
 					continue;
 
 				tableAtt = (MTableAttribute) MTable.get(Env.getCtx(), MTableAttribute.Table_ID).getPO(0, null);
@@ -317,7 +317,7 @@ public class WTableAttribute extends Window implements EventListener<Event>
 				tableAtt.setM_Attribute_ID(att.getM_Attribute_ID());
 			}
 
-			if (value == null)
+			if (tableAtt != null && (value == null || Util.isEmpty(value.toString(), true)))
 			{
 				tableAtt.delete(true);
 				continue;

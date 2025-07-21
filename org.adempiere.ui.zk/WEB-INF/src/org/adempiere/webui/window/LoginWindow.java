@@ -140,7 +140,11 @@ public class LoginWindow extends Window implements EventListener<Event>
 		String errorMessage = null;
 		try
 		{
-			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
+			String provider = (String) getDesktop().getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService(provider);
+			if (ssoPrincipal == null)
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "SSOServiceNotFound"));
+			
 			String username = ssoPrincipal.getUserName(token);
 			Language language = ssoPrincipal.getLanguage(token);
 			boolean isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);

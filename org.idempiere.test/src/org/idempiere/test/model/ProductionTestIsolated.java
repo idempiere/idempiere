@@ -406,7 +406,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			ServerProcessCtl.process(info, getTrx(), false);
 			assertFalse(info.isError(), info.getSummary());
 			
-			BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);;
+			BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			assertEquals(componentCost, endProductCost, "BOM Cost not roll up.");
 		}
 	}

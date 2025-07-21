@@ -323,7 +323,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				setWFState(WFSTATE_Terminated); 
 				m_process.setWFState(MWFProcess.WFSTATE_Terminated);
 				 m_docStatus = DocAction.STATUS_Invalid;
-				 m_process.setProcessMsg(e.getLocalizedMessage());;
+				 m_process.setProcessMsg(e.getLocalizedMessage());
 				 log.log(Level.SEVERE, e.getLocalizedMessage());
 			}
 		}
@@ -1185,6 +1185,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			attachment.addEntry(report);
 			attachment.setTextMsg(m_node.getName(true));
 			attachment.saveEx();
+			attachment.close();
 			return true;
 		}
 

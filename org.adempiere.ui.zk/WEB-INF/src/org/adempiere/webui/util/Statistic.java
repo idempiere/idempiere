@@ -44,7 +44,7 @@ public class Statistic implements Monitor {
 	private LongAdder _ndt = new LongAdder();
 	private LongAdder _actdt = new LongAdder();
 	private LongAdder _nupd = new LongAdder();
-	private LongAdder _actupd = new LongAdder();;
+	private LongAdder _actupd = new LongAdder();
 
 	public Statistic() {
 		_startTime = System.currentTimeMillis();

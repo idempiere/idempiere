@@ -273,6 +273,7 @@ public class Scheduler extends AdempiereServer
 						attachment.setTextMsg(schedulerName);
 						attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
 						attachment.saveEx();
+						attachment.close();
 					}
 				}
 			}
