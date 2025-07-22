@@ -648,14 +648,14 @@ public interface I_PP_Order_Node
 	/** Get Qty Reject	  */
 	public BigDecimal getQtyReject();
 
-    /** Column name QtyRequiered */
-    public static final String COLUMNNAME_QtyRequiered = "QtyRequiered";
+    /** Column name QtyRequired */
+    public static final String COLUMNNAME_QtyRequired = "QtyRequired";
 
 	/** Set Qty Required	  */
-	public void setQtyRequiered (BigDecimal QtyRequiered);
+	public void setQtyRequired (BigDecimal QtyRequired);
 
 	/** Get Qty Required	  */
-	public BigDecimal getQtyRequiered();
+	public BigDecimal getQtyRequired();
 
     /** Column name QtyScrap */
     public static final String COLUMNNAME_QtyScrap = "QtyScrap";
