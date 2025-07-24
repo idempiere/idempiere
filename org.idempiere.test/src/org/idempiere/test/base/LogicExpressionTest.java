@@ -44,6 +44,7 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.DefaultEvaluatee;
+import org.compiere.util.DefaultEvaluatee.DataProvider;
 import org.compiere.util.Env;
 import org.compiere.util.LegacyLogicEvaluator;
 import org.compiere.util.TimeUtil;
@@ -713,5 +714,44 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		Env.setContext(Env.getCtx(), 1, "Processed", "Y");
 		Env.setContext(Env.getCtx(), 1, "M_Product_ID", pchair);
 		assertTrue(LogicEvaluator.evaluateLogic(new DefaultEvaluatee((GridTab)null, 1, 0), expr));
-	}	
+	}
+
+	@Test
+	public void testDataProvider() {
+
+		final int DUMMY_WINDOW_NO = 1;
+		final int DUMMY_TAB_NO = 0;
+
+		DefaultEvaluatee.DataProvider dp = new DataProvider() {
+			@Override
+			public Object getValue(String columnName) {
+
+				String value = null;
+
+				if ("MyContext".equals(columnName))
+					value = "MyDataProviderValue";
+
+				return value;
+			}
+
+			@Override
+			public Object getProperty(String propertyName) { return null; }
+
+			@Override
+			public MColumn getColumn(String columnName) { return null; }
+
+			@Override
+			public String getTrxName() { return null; }
+		};
+		DefaultEvaluatee myEvaluatee = new DefaultEvaluatee(dp, DUMMY_WINDOW_NO, DUMMY_TAB_NO);
+		Env.setContext(Env.getCtx(), DUMMY_WINDOW_NO, DUMMY_TAB_NO, "MyContext", "MyContextValue");
+
+		String expression = "@MyContext@ = 'MyDataProviderValue'";
+		assertTrue(LogicEvaluator.evaluateLogic(myEvaluatee, expression));
+
+		Env.setContext(Env.getCtx(), DUMMY_WINDOW_NO, DUMMY_TAB_NO, "MyOtherContext", "MyOtherValue");
+
+		expression = "@MyOtherContext@ = 'MyOtherValue'";
+		assertTrue(LogicEvaluator.evaluateLogic(myEvaluatee, expression));
+	}
 }
