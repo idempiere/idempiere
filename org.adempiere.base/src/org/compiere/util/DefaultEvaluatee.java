@@ -189,13 +189,13 @@ public class DefaultEvaluatee implements Evaluatee {
 
 		// get value from data provider(usually PO or GridTab)
 		Object dataValue = null;
-		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
+		if (m_dataProvider != null && !globalVariable) {
 			dataValue = m_dataProvider.getValue(variableName);
-			value = dataValue != null ? dataValue.toString() : "";
+			value = dataValue != null ? dataValue.toString() : null;
 		}
 
 		// get value from window context or global
-		if (Util.isEmpty(value) && m_windowNo != 0)
+		if (value == null && m_windowNo != 0)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
