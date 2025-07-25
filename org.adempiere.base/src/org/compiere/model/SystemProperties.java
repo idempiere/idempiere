@@ -34,7 +34,7 @@ import org.compiere.util.SecureInterface;
  */
 public class SystemProperties {
 
-	private static final String ADEMPIERE_DB_SYSTEM_USER = "ADEMPIERE_DB_SYSTEM_USER";
+	public static final String ADEMPIERE_DB_SYSTEM_USER = "ADEMPIERE_DB_SYSTEM_USER";
 	private static final String ADEMPIERE_SECURE = SecureInterface.ADEMPIERE_SECURE;
 	private static final String Cache_ExpireMinute = "Cache.ExpireMinute";
 	private static final String Cache_MaxSize = "Cache.MaxSize";
