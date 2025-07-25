@@ -255,6 +255,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        	String regex = gridField.getVFormat().substring(1); // remove the initial ~
 	        	if (!newValue.matches(regex)) {
 	        		String msgregex = Msg.getMsg(Env.getCtx(), regex);
+	        		setValue(oldValue);
 	        		throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
 	        	}
 	        }
