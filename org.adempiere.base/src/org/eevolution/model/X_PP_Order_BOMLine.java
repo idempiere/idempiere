@@ -21,7 +21,13 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.compiere.model.*;
+
+import org.compiere.model.I_M_AttributeSetInstance;
+import org.compiere.model.I_M_Locator;
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
@@ -35,7 +41,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 5097523705235807596L;
 
     /** Standard Constructor */
     public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName)
@@ -57,7 +63,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
-			setQtyRequiered (Env.ZERO);
+			setQtyRequired (Env.ZERO);
 			setQtyReserved (Env.ZERO);
 			setQtyScrap (Env.ZERO);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
@@ -85,7 +91,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
-			setQtyRequiered (Env.ZERO);
+			setQtyRequired (Env.ZERO);
 			setQtyReserved (Env.ZERO);
 			setQtyScrap (Env.ZERO);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
@@ -113,7 +119,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
-			setQtyRequiered (Env.ZERO);
+			setQtyRequired (Env.ZERO);
 			setQtyReserved (Env.ZERO);
 			setQtyScrap (Env.ZERO);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
@@ -141,7 +147,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
-			setQtyRequiered (Env.ZERO);
+			setQtyRequired (Env.ZERO);
 			setQtyReserved (Env.ZERO);
 			setQtyScrap (Env.ZERO);
 			setValidFrom (new Timestamp( System.currentTimeMillis() ));
@@ -868,18 +874,18 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Qty Required.
-		@param QtyRequiered Qty Required
+		@param QtyRequired Qty Required
 	*/
-	public void setQtyRequiered (BigDecimal QtyRequiered)
+	public void setQtyRequired (BigDecimal QtyRequired)
 	{
-		set_Value (COLUMNNAME_QtyRequiered, QtyRequiered);
+		set_Value (COLUMNNAME_QtyRequired, QtyRequired);
 	}
 
 	/** Get Qty Required.
 		@return Qty Required	  */
-	public BigDecimal getQtyRequiered()
+	public BigDecimal getQtyRequired()
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyRequiered);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyRequired);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
