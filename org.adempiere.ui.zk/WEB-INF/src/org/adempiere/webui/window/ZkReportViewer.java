@@ -17,6 +17,8 @@
 package org.adempiere.webui.window;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,7 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.pdf.Document;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
@@ -1307,13 +1308,17 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void cmd_archive ()
 	{
-		boolean success = false;
-		byte[] data = Document.getPDFAsArray(m_reportEngine.getLayout().getPageable(false));	//	No Copy
-		if (data != null)
+		boolean success = false;		
+		AMedia archiveMedia = getMedia(PDF_OUTPUT_TYPE);
+		if (archiveMedia != null)
 		{
 			MArchive archive = new MArchive (Env.getCtx(), m_reportEngine.getPrintInfo(), null);
-			archive.setBinaryData(data);
-			success = archive.save();
+			try (InputStream is = archiveMedia.getStreamData()) {
+				archive.setInputStream(is);
+				success = archive.save();
+			} catch (IOException e) {
+				log.log(Level.SEVERE, "Error reading archive media stream", e);
+			}			
 		}
 		if (success)
 			Dialog.info(m_WindowNo, "Archived");
