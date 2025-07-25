@@ -540,6 +540,82 @@ public class DocManager {
 			return null;
 		
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
+		if (table.getAD_Table_ID() == MInOut.Table_ID || table.getAD_Table_ID() == MMatchPO.Table_ID) {
+			boolean isSOTrx = false;
+			if (table.getAD_Table_ID() == MInOut.Table_ID)
+				isSOTrx = DB.getSQLValueStringEx(trxName, "SELECT IsSOTrx FROM M_InOut WHERE M_InOut_ID=?", Record_ID).equals("Y");
+			if (!isSOTrx) {
+				StringBuilder selectSql = new StringBuilder();
+				selectSql.append("SELECT COUNT(iol.M_InOutLine_ID) ");
+				selectSql.append("FROM M_InOut io ");
+				selectSql.append("JOIN M_InOutLine iol ON (io.M_InOut_ID = iol.M_InOut_ID) ");
+				selectSql.append("LEFT JOIN ( ");
+				selectSql.append(" SELECT M_InOutLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
+				selectSql.append(" FROM M_MatchPO ");
+				selectSql.append(" WHERE Posted='Y' ");
+				selectSql.append(" GROUP BY M_InOutLine_ID ");
+				selectSql.append(") mpo ON (mpo.M_InOutLine_ID = iol.M_InOutLine_ID) ");
+				selectSql.append("LEFT JOIN ( ");
+				selectSql.append(" SELECT M_InOutLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
+				selectSql.append(" FROM M_MatchInv ");
+				selectSql.append(" WHERE Posted='Y' ");
+				selectSql.append(" GROUP BY M_InOutLine_ID ");
+				selectSql.append(") mi ON (mi.M_InOutLine_ID = iol.M_InOutLine_ID) ");
+				selectSql.append("WHERE iol.M_Product_ID IS NOT NULL ");
+				selectSql.append("AND mpo.Qty IS NULL ");
+				selectSql.append("AND mi.Qty IS NULL ");
+				if (table.getAD_Table_ID() == MInOut.Table_ID)
+					selectSql.append("AND io.M_InOut_ID = ? ");
+				else {
+					selectSql.append("AND io.M_InOut_ID IN (");
+					selectSql.append(" SELECT iol.M_InOut_ID ");
+					selectSql.append(" FROM M_MatchPO mpo ");
+				 	selectSql.append(" JOIN M_InOutLine iol ON (mpo.M_InOutLine_ID = iol.M_InOutLine_ID) ");
+					selectSql.append(" WHERE mpo.M_MatchPO_ID = ?) ");
+				}
+				int count = DB.getSQLValueEx(trxName, selectSql.toString(), Record_ID);
+				if (count > 0)
+					return null;
+			}
+		} else if (table.getAD_Table_ID() == MInvoice.Table_ID || table.getAD_Table_ID() == MMatchInv.Table_ID) {
+			boolean isSOTrx = false;
+			if (table.getAD_Table_ID() == MInvoice.Table_ID)
+				isSOTrx = DB.getSQLValueStringEx(trxName, "SELECT IsSOTrx FROM C_Invoice WHERE C_Invoice_ID=?", Record_ID).equals("Y");
+			if (!isSOTrx) {
+				StringBuilder selectSql = new StringBuilder();
+				selectSql.append("SELECT COUNT(il.C_InvoiceLine_ID) ");
+				selectSql.append("FROM C_Invoice i ");
+				selectSql.append("JOIN C_InvoiceLine il ON (i.C_Invoice_ID = il.C_Invoice_ID) ");
+				selectSql.append("LEFT JOIN ( ");
+				selectSql.append(" SELECT C_InvoiceLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
+				selectSql.append(" FROM M_MatchPO ");
+				selectSql.append(" WHERE Posted='Y' ");
+				selectSql.append(" GROUP BY C_InvoiceLine_ID ");
+				selectSql.append(") mpo ON (mpo.C_InvoiceLine_ID = il.C_InvoiceLine_ID) ");
+				selectSql.append("LEFT JOIN ( ");
+				selectSql.append(" SELECT C_InvoiceLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
+				selectSql.append(" FROM M_MatchInv ");
+				selectSql.append(" WHERE Posted='Y' ");
+				selectSql.append(" GROUP BY C_InvoiceLine_ID ");
+				selectSql.append(") mi ON (mi.C_InvoiceLine_ID = il.C_InvoiceLine_ID) ");
+				selectSql.append("WHERE il.M_Product_ID IS NOT NULL ");
+				selectSql.append("AND mpo.Qty IS NULL ");
+				selectSql.append("AND mi.Qty IS NULL ");
+				if (table.getAD_Table_ID() == MInvoice.Table_ID)
+					selectSql.append("AND i.C_Invoice_ID = ? ");
+				else {
+					selectSql.append("AND i.C_Invoice_ID IN (");
+					selectSql.append(" SELECT il.C_Invoice_ID ");
+					selectSql.append(" FROM M_MatchInv mi ");
+					selectSql.append(" JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID = il.C_InvoiceLine_ID) ");
+					selectSql.append(" WHERE mi.M_MatchInv_ID = ?) ");
+				}
+				int count = DB.getSQLValueEx(trxName, selectSql.toString(), Record_ID);
+				if (count > 0)
+					return null;
+			}
+		}
+		
 		StringBuilder conditionClause = new StringBuilder();
 		if (table.getAD_Table_ID() == MMatchPO.Table_ID)
 			conditionClause.append("C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_MatchPO_ID=?)");
@@ -547,9 +623,6 @@ public class DocManager {
 			conditionClause.append("(M_InOutLine_ID IN (SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=?)) OR ");
 			conditionClause.append("(C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
 				.append("SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=").append(Record_ID).append(")))");
-		} else if (table.getAD_Table_ID() == MMatchInv.Table_ID) {
-			conditionClause.append("(M_MatchInv_ID=?) OR ");
-			conditionClause.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
 		} else if (table.getAD_Table_ID() == MMatchInv.Table_ID) {
 			conditionClause.append("(M_MatchInv_ID=?) OR ");
 			conditionClause.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
@@ -745,6 +818,13 @@ public class DocManager {
 				if (repostedRecordIds.contains(repostedRecordId))
 					continue;
 				repostedRecordIds.add(repostedRecordId);
+
+				if (tableID == MMatchInv.Table_ID) {
+					MMatchInv mi = new MMatchInv(Env.getCtx(), recordID, trxName);
+					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + mi.getC_InvoiceLine().getC_Invoice_ID()))
+						continue;
+				}
+				
 				String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
 				if (error != null)
 					return error;
@@ -753,7 +833,7 @@ public class DocManager {
 					MMatchPO mpo = null;
 					if (AD_Table_ID == MMatchPO.Table_ID)
 						mpo = new MMatchPO(Env.getCtx(), Record_ID, trxName);
-					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
+					MMatchInv[] miList = MMatchInv.getInvoiceByDateAcct(Env.getCtx(), recordID, cd.getDateAcct(), trxName);
 					for (MMatchInv mi : miList) {
 						if (AD_Table_ID == MMatchInv.Table_ID) {
 							if (mi.get_ID() != Record_ID && mi.getReversal_ID() != Record_ID)
