@@ -13,6 +13,9 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 /**
  * Store provider interface for storage of archive content
  */
@@ -27,12 +30,44 @@ public interface IArchiveStore {
 	public byte[] loadLOBData(MArchive archive,MStorageProvider prov);
 
 	/**
+	 * Load binary content of archive as InputStream
+	 * @param archive
+	 * @param prov
+	 * @return InputStream content, or null if no data
+	 */
+	default InputStream loadLOBDataAsStream(MArchive archive, MStorageProvider prov) {
+		byte[] data = loadLOBData(archive, prov);
+		if (data == null || data.length == 0) {
+			return null;
+		}
+		return new ByteArrayInputStream(data);
+	}
+	
+	/**
 	 * Save content of archive
 	 * @param archive
 	 * @param prov
 	 * @param inflatedData byte[] content of archive
 	 */
 	public void save(MArchive archive, MStorageProvider prov,byte[] inflatedData);
+	
+	/**
+	 * Save content of archive from InputStream
+	 * @param archive
+	 * @param prov
+	 * @param inputStream InputStream content of archive
+	 */
+	default void save(MArchive archive, MStorageProvider prov, InputStream inputStream) {
+		if (inputStream == null) {
+			throw new IllegalArgumentException("InputStream cannot be null");
+		}
+		try {
+			byte[] data = inputStream.readAllBytes();
+			save(archive, prov, data);
+		} catch (Exception e) {
+			throw new RuntimeException("Error reading InputStream", e);
+		}
+	}
 	
 	/**
 	 * Delete stored archive content

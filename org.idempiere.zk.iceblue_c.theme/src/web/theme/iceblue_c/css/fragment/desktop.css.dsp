@@ -60,6 +60,7 @@
 }
 .desktop-user-panel.mobile .desktop-header-font.desktop-header-username {
 	font-weight: 600;
+    white-space: nowrap;
 }
 .desktop-user-panel.mobile {
     height: auto;

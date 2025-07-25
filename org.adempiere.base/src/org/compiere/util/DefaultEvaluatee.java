@@ -186,8 +186,16 @@ public class DefaultEvaluatee implements Evaluatee {
 		String value = null;
 		boolean globalVariable = Env.isGlobalVariable(variableName);
 		boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
+
+		// get value from data provider(usually PO or GridTab)
+		Object dataValue = null;
+		if (m_dataProvider != null && !globalVariable) {
+			dataValue = m_dataProvider.getValue(variableName);
+			value = dataValue != null ? dataValue.toString() : null;
+		}
+
 		// get value from window context or global
-		if (m_windowNo != 0)
+		if (value == null && m_windowNo != 0)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
@@ -215,7 +223,6 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 
 		// po property operator
-		Object dataValue = null;
 		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
 			if (variableName.startsWith(Evaluator.VARIABLE_PO_PROPERTY_OPERATOR)) {
 				variableName = variableName.substring(1);
@@ -240,12 +247,6 @@ public class DefaultEvaluatee implements Evaluatee {
 		//try window context again after removal of tab no
 		if (!globalVariable && Util.isEmpty(value) && m_windowNo != 0 && withTabNo && !tabOnly) {
 			value = Env.getContext(ctx, m_windowNo, variableName);
-		}
-		
-		// get value from data provider(usually PO or GridTab)
-		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
-			dataValue = m_dataProvider.getValue(variableName);
-			value = dataValue != null ? dataValue.toString() : "";
 		}
 		
 		//try context if no data provider and not only window and not only tab
