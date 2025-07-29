@@ -351,9 +351,11 @@ public class MigrateStorageProvider extends SvrProcess {
 			}
 			MImage image = new MImage(getCtx(), imageId, get_TrxName());
 			int oldProviderId = image.getAD_StorageProvider_ID();
-			byte[] data = image.getBinaryData();
+			InputStream is = image.getInputStream();
+			if (is == null) //nothing to migrate
+				continue;
 			image.setStorageProvider(newProvider);
-			image.setBinaryData(data);
+			image.setInputStream(is); // set the stream to the new provider
 			image.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 			// create file on the new storage provider
 			image.saveEx();
