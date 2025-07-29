@@ -202,7 +202,7 @@ public class ImageFileStorageImpl implements IImageStore {
 			buffer = null;
 			bufferInputStream = inputStream;
 		} else {
-			write(image, prov, null, bufferInputStream);
+			write(image, prov, null, inputStream);
 		}
 	}
 
