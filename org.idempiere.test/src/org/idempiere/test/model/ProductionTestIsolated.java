@@ -336,7 +336,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 		category.saveEx();
 		
 		String whereClause = "M_Product_Category_ID=?";
-		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, null)
+		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, getTrxName())
 									.setParameters(category.get_ID())
 									.list();
 		for (MProductCategoryAcct categoryAcct : categoryAccts) {
