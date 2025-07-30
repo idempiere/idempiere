@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ShipperPackaging
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperPackaging")
 public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_ShipperPackaging (Properties ctx, int M_ShipperPackaging_ID, String trxName)
@@ -145,6 +145,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperPackagingCfg getM_ShipperPackagingCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperPackagingCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackagingCfg.Table_ID)
@@ -208,6 +209,7 @@ public class X_M_ShipperPackaging extends PO implements I_M_ShipperPackaging, I_
 		return (String)get_Value(COLUMNNAME_M_ShipperPackaging_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)

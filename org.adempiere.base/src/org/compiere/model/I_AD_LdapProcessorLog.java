@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LdapProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_LdapProcessorLog 
 {
@@ -84,6 +84,7 @@ public interface I_AD_LdapProcessorLog
 	  */
 	public int getAD_LdapProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException;
 
     /** Column name AD_Org_ID */

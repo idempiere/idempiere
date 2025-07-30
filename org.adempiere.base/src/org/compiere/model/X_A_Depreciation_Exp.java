@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Exp
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Exp")
 public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Exp (Properties ctx, int A_Depreciation_Exp_ID, String trxName)
@@ -168,6 +168,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Account_Number_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -264,6 +265,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Addition getA_Asset_Addition() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Addition)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Addition.Table_ID)
@@ -327,6 +329,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Disposed getA_Asset_Disposed() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Disposed)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Disposed.Table_ID)
@@ -354,6 +357,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -418,6 +422,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Entry getA_Depreciation_Entry() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Depreciation_Entry)MTable.get(getCtx(), org.compiere.model.I_A_Depreciation_Entry.Table_ID)
@@ -537,6 +542,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCR_Account() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -565,6 +571,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -593,6 +600,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getDR_Account() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

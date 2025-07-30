@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Subscription_Delivery
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Subscription_Delivery 
 {
@@ -97,6 +97,7 @@ public interface I_C_Subscription_Delivery
 	  */
 	public int getC_Subscription_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Subscription getC_Subscription() throws RuntimeException;
 
     /** Column name Created */

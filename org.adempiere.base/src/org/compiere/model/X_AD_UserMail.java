@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserMail
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserMail")
 public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_UserMail (Properties ctx, int AD_UserMail_ID, String trxName)
@@ -142,6 +142,7 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_UserMail_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -263,6 +264,7 @@ public class X_AD_UserMail extends PO implements I_AD_UserMail, I_Persistent
 		return (String)get_Value(COLUMNNAME_MessageID);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)

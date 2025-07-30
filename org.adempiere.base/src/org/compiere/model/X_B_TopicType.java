@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_TopicType
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="B_TopicType")
 public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_B_TopicType (Properties ctx, int B_TopicType_ID, String trxName)
@@ -205,6 +205,7 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
@@ -233,6 +234,7 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_ProductMember() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -261,6 +263,7 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

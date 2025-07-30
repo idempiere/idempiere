@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectIssue
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssue")
 public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_ProjectIssue (Properties ctx, int C_ProjectIssue_ID, String trxName)
@@ -209,6 +209,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 		return (String)get_Value(COLUMNNAME_C_ProjectIssue_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -393,6 +394,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -421,6 +423,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -449,6 +452,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -477,6 +481,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -627,6 +632,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getReversal() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_ID)
@@ -655,6 +661,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_TimeExpenseLine getS_TimeExpenseLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_TimeExpenseLine)MTable.get(getCtx(), org.compiere.model.I_S_TimeExpenseLine.Table_ID)

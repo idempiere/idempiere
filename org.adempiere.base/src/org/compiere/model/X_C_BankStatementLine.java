@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatementLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BankStatementLine")
 public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_BankStatementLine (Properties ctx, int C_BankStatementLine_ID, String trxName)
@@ -180,6 +180,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -245,6 +246,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 		return (String)get_Value(COLUMNNAME_C_BankStatementLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankStatement getC_BankStatement() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BankStatement)MTable.get(getCtx(), org.compiere.model.I_C_BankStatement.Table_ID)
@@ -273,6 +275,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -301,6 +304,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -329,6 +333,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_ID)
@@ -356,6 +361,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
@@ -384,6 +390,7 @@ public class X_C_BankStatementLine extends PO implements I_C_BankStatementLine, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)

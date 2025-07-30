@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Reference 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Reference
 	  */
 	public int getAD_Element_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
 
     /** Column name AD_Org_ID */

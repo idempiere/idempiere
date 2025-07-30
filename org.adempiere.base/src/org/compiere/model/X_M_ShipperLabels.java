@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_ShipperLabels
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperLabels")
 public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_ShipperLabels (Properties ctx, int M_ShipperLabels_ID, String trxName)
@@ -167,6 +167,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 		return (String)get_Value(COLUMNNAME_LabelPrintMethod);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperLabelsCfg getM_ShipperLabelsCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperLabelsCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabelsCfg.Table_ID)
@@ -230,6 +231,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 		return (String)get_Value(COLUMNNAME_M_ShipperLabels_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)

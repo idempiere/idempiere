@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_StandardResponse
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_StandardResponse")
 public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName)

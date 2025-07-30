@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Conversion_Rate
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_Conversion_Rate")
 public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_I_Conversion_Rate (Properties ctx, int I_Conversion_Rate_ID, String trxName)
@@ -104,6 +104,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
@@ -132,6 +133,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Conversion_Rate getC_Conversion_Rate() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Conversion_Rate)MTable.get(getCtx(), org.compiere.model.I_C_Conversion_Rate.Table_ID)
@@ -160,6 +162,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -188,6 +191,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency_To() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)

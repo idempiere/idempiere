@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Product
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_Product 
 {
@@ -88,6 +88,7 @@ public interface I_I_Product
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -103,6 +104,7 @@ public interface I_I_Product
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_UOM_ID */
@@ -118,6 +120,7 @@ public interface I_I_Product
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name Classification */
@@ -384,6 +387,7 @@ public interface I_I_Product
 	  */
 	public int getM_AttributeSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name M_Product_Category_ID */
@@ -399,6 +403,7 @@ public interface I_I_Product
 	  */
 	public int getM_Product_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -414,6 +419,7 @@ public interface I_I_Product
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Manufacturer */

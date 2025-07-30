@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_GLJournal
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_GLJournal")
 public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_I_GLJournal (Properties ctx, int I_GLJournal_ID, String trxName)
@@ -168,6 +168,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return (String)get_Value(COLUMNNAME_AccountValue);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -352,6 +353,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return (String)get_Value(COLUMNNAME_BatchDocumentNo);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -380,6 +382,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -408,6 +411,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -436,6 +440,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -464,6 +469,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
@@ -492,6 +498,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -520,6 +527,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -548,6 +556,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
@@ -576,6 +585,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
@@ -604,6 +614,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
@@ -632,6 +643,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -660,6 +672,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
@@ -688,6 +701,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -716,6 +730,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ValidCombination getC_ValidCombination() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ValidCombination)MTable.get(getCtx(), org.compiere.model.I_C_ValidCombination.Table_ID)
@@ -875,6 +890,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocTypeName);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)
@@ -903,6 +919,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
@@ -931,6 +948,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_ID)
@@ -959,6 +977,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalLine getGL_JournalLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_JournalLine)MTable.get(getCtx(), org.compiere.model.I_GL_JournalLine.Table_ID)
@@ -987,6 +1006,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Journal)MTable.get(getCtx(), org.compiere.model.I_GL_Journal.Table_ID)
@@ -1196,6 +1216,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -1429,6 +1450,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return (String)get_Value(COLUMNNAME_UPC);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -1457,6 +1479,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

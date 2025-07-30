@@ -136,6 +136,7 @@ public interface I_C_AcctSchema
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_Period_ID */
@@ -151,6 +152,7 @@ public interface I_C_AcctSchema
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name CommitmentType */
@@ -403,6 +405,7 @@ public interface I_C_AcctSchema
 	  */
 	public int getM_CostType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException;
 
     /** Column name Name */

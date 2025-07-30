@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSKeyLayout
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_POSKeyLayout")
 public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_POSKeyLayout (Properties ctx, int C_POSKeyLayout_ID, String trxName)
@@ -105,6 +105,7 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -133,6 +134,7 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)

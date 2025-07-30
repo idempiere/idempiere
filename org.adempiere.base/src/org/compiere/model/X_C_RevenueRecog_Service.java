@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecog_Service
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecog_Service")
 public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Service, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_RevenueRecog_Service (Properties ctx, int C_RevenueRecog_Service_ID, String trxName)
@@ -143,6 +143,7 @@ public class X_C_RevenueRecog_Service extends PO implements I_C_RevenueRecog_Ser
 		return (String)get_Value(COLUMNNAME_C_RevenueRecog_Service_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)

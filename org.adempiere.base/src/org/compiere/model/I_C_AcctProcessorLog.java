@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_AcctProcessorLog 
 {
@@ -110,6 +110,7 @@ public interface I_C_AcctProcessorLog
 	  */
 	public int getC_AcctProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctProcessor getC_AcctProcessor() throws RuntimeException;
 
     /** Column name Created */

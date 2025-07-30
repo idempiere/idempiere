@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestTypeUpdates
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestTypeUpdates")
 public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_R_RequestTypeUpdates (Properties ctx, int R_RequestTypeUpdates_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -174,6 +175,7 @@ public class X_R_RequestTypeUpdates extends PO implements I_R_RequestTypeUpdates
 		return (String)get_Value(COLUMNNAME_R_RequestTypeUpdates_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_ID)

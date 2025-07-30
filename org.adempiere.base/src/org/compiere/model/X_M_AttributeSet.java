@@ -31,7 +31,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250301L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -124,7 +124,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -473,6 +473,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		return (String)get_Value(COLUMNNAME_M_AttributeSet_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_LotCtl getM_LotCtl() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_LotCtl)MTable.get(getCtx(), org.compiere.model.I_M_LotCtl.Table_ID)
@@ -501,6 +502,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_SerNoCtl getM_SerNoCtl() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_SerNoCtl)MTable.get(getCtx(), org.compiere.model.I_M_SerNoCtl.Table_ID)

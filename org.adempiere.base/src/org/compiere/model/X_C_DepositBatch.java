@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatch
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatch")
 public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_DepositBatch (Properties ctx, int C_DepositBatch_ID, String trxName)
@@ -152,6 +152,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
@@ -180,6 +181,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -244,6 +246,7 @@ public class X_C_DepositBatch extends PO implements I_C_DepositBatch, I_Persiste
 		return (String)get_Value(COLUMNNAME_C_DepositBatch_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)

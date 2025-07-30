@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionPlan
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionPlan")
 public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_ProductionPlan (Properties ctx, int M_ProductionPlan_ID, String trxName)
@@ -182,6 +182,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -210,6 +211,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -275,6 +277,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 		return (String)get_Value(COLUMNNAME_M_ProductionPlan_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_ID)

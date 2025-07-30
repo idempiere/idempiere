@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Find
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Find")
 public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
@@ -131,6 +131,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)

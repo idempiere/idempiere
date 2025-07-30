@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for EXP_Processor
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_EXP_Processor 
 {
@@ -118,6 +118,7 @@ public interface I_EXP_Processor
 	/** Get Export Processor Type	  */
 	public int getEXP_Processor_Type_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_EXP_Processor_Type getEXP_Processor_Type() throws RuntimeException;
 
     /** Column name EXP_Processor_UU */

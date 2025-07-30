@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_CostDetail
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_CostDetail")
 public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -178,6 +178,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_BackDateProcessedOn);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -206,6 +207,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -234,6 +236,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
@@ -262,6 +265,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_ID)
@@ -481,6 +485,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -546,6 +551,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_CostDetail_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
@@ -574,6 +580,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -602,6 +609,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
@@ -630,6 +638,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchInv getM_MatchInv() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_ID)
@@ -658,6 +667,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)
@@ -686,6 +696,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -714,6 +725,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)
@@ -742,6 +754,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Cost_Collector)MTable.get(getCtx(), org.eevolution.model.I_PP_Cost_Collector.Table_ID)

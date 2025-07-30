@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceType
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceType")
 public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_WS_WebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName)
@@ -118,6 +118,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -233,6 +234,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebServiceMethod getWS_WebServiceMethod() throws RuntimeException
 	{
 		return (I_WS_WebServiceMethod)MTable.get(getCtx(), I_WS_WebServiceMethod.Table_ID)
@@ -296,6 +298,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 		return (String)get_Value(COLUMNNAME_WS_WebServiceType_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebService getWS_WebService() throws RuntimeException
 	{
 		return (I_WS_WebService)MTable.get(getCtx(), I_WS_WebService.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Package
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_Package 
 {
@@ -80,6 +80,7 @@ public interface I_M_Package
 	/** Get Business Partner Shipping Account	  */
 	public int getC_BP_ShippingAcct_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -95,6 +96,7 @@ public interface I_M_Package
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -110,6 +112,7 @@ public interface I_M_Package
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_UOM_Length_ID */
@@ -125,6 +128,7 @@ public interface I_M_Package
 	  */
 	public int getC_UOM_Length_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException;
 
     /** Column name C_UOM_Weight_ID */
@@ -140,6 +144,7 @@ public interface I_M_Package
 	  */
 	public int getC_UOM_Weight_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
 
     /** Column name CashOnDelivery */
@@ -309,6 +314,7 @@ public interface I_M_Package
 	/** Get Hold Address	  */
 	public int getHoldAddress_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException;
 
     /** Column name HomeDeliveryPremiumDate */
@@ -535,6 +541,7 @@ public interface I_M_Package
 	  */
 	public int getM_InOut_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException;
 
     /** Column name M_Package_ID */
@@ -568,6 +575,7 @@ public interface I_M_Package
 	/** Get Shipper Labels	  */
 	public int getM_ShipperLabels_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException;
 
     /** Column name M_ShipperPackaging_ID */
@@ -579,6 +587,7 @@ public interface I_M_Package
 	/** Get Shipper Packaging	  */
 	public int getM_ShipperPackaging_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException;
 
     /** Column name M_ShipperPickupTypes_ID */
@@ -590,6 +599,7 @@ public interface I_M_Package
 	/** Get Shipper Pickup Types	  */
 	public int getM_ShipperPickupTypes_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException;
 
     /** Column name M_Shipper_ID */
@@ -605,6 +615,7 @@ public interface I_M_Package
 	  */
 	public int getM_Shipper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name M_ShippingProcessor_ID */
@@ -616,6 +627,7 @@ public interface I_M_Package
 	/** Get Shipping Processor	  */
 	public int getM_ShippingProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException;
 
     /** Column name NotificationMessage */

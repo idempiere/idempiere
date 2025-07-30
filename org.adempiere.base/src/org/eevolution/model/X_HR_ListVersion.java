@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListVersion
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_ListVersion")
 public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_HR_ListVersion (Properties ctx, int HR_ListVersion_ID, String trxName)
@@ -135,6 +135,7 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_List getHR_ListBase() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_List)MTable.get(getCtx(), org.eevolution.model.I_HR_List.Table_ID)
@@ -198,6 +199,7 @@ public class X_HR_ListVersion extends PO implements I_HR_ListVersion, I_Persiste
 		return (String)get_Value(COLUMNNAME_HR_ListVersion_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_List getHR_List() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_List)MTable.get(getCtx(), org.eevolution.model.I_HR_List.Table_ID)

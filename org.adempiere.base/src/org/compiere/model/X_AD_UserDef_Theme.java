@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Theme
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Theme")
 public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Theme (Properties ctx, int AD_UserDef_Theme_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -176,6 +177,7 @@ public class X_AD_UserDef_Theme extends PO implements I_AD_UserDef_Theme, I_Pers
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Theme_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaymentProcessor
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_PaymentProcessor 
 {
@@ -75,6 +75,7 @@ public interface I_C_PaymentProcessor
 	  */
 	public int getAD_Sequence_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException;
 
     /** Column name AcceptAMEX */
@@ -222,6 +223,7 @@ s Club
 	  */
 	public int getC_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -237,6 +239,7 @@ s Club
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_PaymentProcessor_ID */

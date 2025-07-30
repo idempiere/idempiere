@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatementLoader
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BankStatementLoader")
 public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoader, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_BankStatementLoader (Properties ctx, int C_BankStatementLoader_ID, String trxName)
@@ -142,6 +142,7 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 		return (String)get_Value(COLUMNNAME_BranchID);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)

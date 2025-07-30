@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_BPartner 
 {
@@ -140,6 +140,7 @@ public interface I_C_BPartner
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -177,6 +178,7 @@ public interface I_C_BPartner
 	  */
 	public int getC_Dunning_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
 
     /** Column name C_Greeting_ID */
@@ -192,6 +194,7 @@ public interface I_C_BPartner
 	  */
 	public int getC_Greeting_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException;
 
     /** Column name C_InvoiceSchedule_ID */
@@ -207,6 +210,7 @@ public interface I_C_BPartner
 	  */
 	public int getC_InvoiceSchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceSchedule getC_InvoiceSchedule() throws RuntimeException;
 
     /** Column name C_PaymentTerm_ID */
@@ -222,6 +226,7 @@ public interface I_C_BPartner
 	  */
 	public int getC_PaymentTerm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
 
     /** Column name C_TaxGroup_ID */
@@ -233,6 +238,7 @@ public interface I_C_BPartner
 	/** Get Tax Group	  */
 	public int getC_TaxGroup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxGroup getC_TaxGroup() throws RuntimeException;
 
     /** Column name Created */
@@ -284,6 +290,7 @@ public interface I_C_BPartner
 	/** Get Default 1099 Box	  */
 	public int getDefault1099Box_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_1099Box getDefault1099Box() throws RuntimeException;
 
     /** Column name DeliveryRule */
@@ -412,6 +419,7 @@ public interface I_C_BPartner
 	  */
 	public int getInvoice_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException;
 
     /** Column name Is1099Vendor */
@@ -597,6 +605,7 @@ public interface I_C_BPartner
 	  */
 	public int getM_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_PriceList_ID */
@@ -612,6 +621,7 @@ public interface I_C_BPartner
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name NAICS */
@@ -692,6 +702,7 @@ public interface I_C_BPartner
 	  */
 	public int getPO_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException;
 
     /** Column name PO_PaymentTerm_ID */
@@ -707,6 +718,7 @@ public interface I_C_BPartner
 	  */
 	public int getPO_PaymentTerm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getPO_PaymentTerm() throws RuntimeException;
 
     /** Column name PO_PriceList_ID */
@@ -722,6 +734,7 @@ public interface I_C_BPartner
 	  */
 	public int getPO_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException;
 
     /** Column name PaymentRule */
@@ -856,6 +869,7 @@ s site
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name SalesVolume */

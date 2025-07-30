@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxGroup
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxGroup")
 public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_TaxGroup (Properties ctx, int C_TaxGroup_ID, String trxName)

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BOMLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_BOMLine")
 public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_T_BOMLine (Properties ctx, int T_BOMLine_ID, String trxName)
@@ -107,6 +107,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -135,6 +136,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -391,6 +393,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_Levels);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
@@ -419,6 +422,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostType)MTable.get(getCtx(), org.compiere.model.I_M_CostType.Table_ID)
@@ -447,6 +451,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -475,6 +480,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOMLine getPP_Product_BOMLine() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Product_BOMLine)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOMLine.Table_ID)
@@ -503,6 +509,7 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankTransfer
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_BankTransfer 
 {
@@ -97,6 +97,7 @@ public interface I_C_BankTransfer
 	  */
 	public int getC_ConversionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name Created */
@@ -211,6 +212,7 @@ public interface I_C_BankTransfer
 	  */
 	public int getFrom_C_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getFrom_C_BPartner() throws RuntimeException;
 
     /** Column name From_C_BankAccount_ID */
@@ -222,6 +224,7 @@ public interface I_C_BankTransfer
 	/** Get From Bank Account	  */
 	public int getFrom_C_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getFrom_C_BankAccount() throws RuntimeException;
 
     /** Column name From_C_Charge_ID */
@@ -233,6 +236,7 @@ public interface I_C_BankTransfer
 	/** Get From Charge	  */
 	public int getFrom_C_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getFrom_C_Charge() throws RuntimeException;
 
     /** Column name From_C_Currency_ID */
@@ -244,6 +248,7 @@ public interface I_C_BankTransfer
 	/** Get From Bank Currency	  */
 	public int getFrom_C_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getFrom_C_Currency() throws RuntimeException;
 
     /** Column name From_TenderType */
@@ -360,6 +365,7 @@ public interface I_C_BankTransfer
 	  */
 	public int getTo_C_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getTo_C_BPartner() throws RuntimeException;
 
     /** Column name To_C_BankAccount_ID */
@@ -371,6 +377,7 @@ public interface I_C_BankTransfer
 	/** Get To Bank Account	  */
 	public int getTo_C_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getTo_C_BankAccount() throws RuntimeException;
 
     /** Column name To_C_Charge_ID */
@@ -382,6 +389,7 @@ public interface I_C_BankTransfer
 	/** Get To Charge	  */
 	public int getTo_C_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getTo_C_Charge() throws RuntimeException;
 
     /** Column name To_C_Currency_ID */
@@ -393,6 +401,7 @@ public interface I_C_BankTransfer
 	/** Get To Bank Currency	  */
 	public int getTo_C_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getTo_C_Currency() throws RuntimeException;
 
     /** Column name To_TenderType */

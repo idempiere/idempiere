@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for AD_Table_Access
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table_Access")
 public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_Table_Access (Properties ctx, int AD_Table_Access_ID, String trxName)
@@ -125,6 +125,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -168,6 +169,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 		return (String)get_Value(COLUMNNAME_AD_Table_Access_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

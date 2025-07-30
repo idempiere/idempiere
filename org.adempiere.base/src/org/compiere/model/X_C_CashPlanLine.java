@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashPlanLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CashPlanLine")
 public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_CashPlanLine (Properties ctx, int C_CashPlanLine_ID, String trxName)
@@ -154,6 +154,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -182,6 +183,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -210,6 +212,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -274,6 +277,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return (String)get_Value(COLUMNNAME_C_CashPlanLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashPlan getC_CashPlan() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CashPlan)MTable.get(getCtx(), org.compiere.model.I_C_CashPlan.Table_ID)
@@ -309,6 +313,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
         return new KeyNamePair(get_ID(), String.valueOf(getC_CashPlan_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -337,6 +342,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
@@ -365,6 +371,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
@@ -393,6 +400,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -491,6 +499,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -595,6 +604,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -623,6 +633,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

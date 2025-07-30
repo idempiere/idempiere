@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueKnown
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueKnown")
 public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_R_IssueKnown (Properties ctx, int R_IssueKnown_ID, String trxName)
@@ -251,6 +251,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return (String)get_Value(COLUMNNAME_R_IssueKnown_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueRecommendation getR_IssueRecommendation() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueRecommendation)MTable.get(getCtx(), org.compiere.model.I_R_IssueRecommendation.Table_ID)
@@ -279,6 +280,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueStatus getR_IssueStatus() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueStatus)MTable.get(getCtx(), org.compiere.model.I_R_IssueStatus.Table_ID)
@@ -307,6 +309,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)

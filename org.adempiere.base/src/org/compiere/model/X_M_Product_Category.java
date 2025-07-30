@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_Category
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_Category")
 public class X_M_Product_Category extends PO implements I_M_Product_Category, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_Product_Category (Properties ctx, int M_Product_Category_ID, String trxName)
@@ -135,6 +135,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -163,6 +164,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Group)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Group.Table_ID)
@@ -298,6 +300,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category_Parent() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)

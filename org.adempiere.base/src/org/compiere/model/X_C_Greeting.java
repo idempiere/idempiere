@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Greeting
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Greeting")
 public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_Greeting extends PO implements I_C_Greeting, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_Greeting (Properties ctx, int C_Greeting_ID, String trxName)

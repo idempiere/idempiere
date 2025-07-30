@@ -93,6 +93,7 @@ public interface I_AD_TableAttribute
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
@@ -137,6 +138,7 @@ public interface I_AD_TableAttribute
 	  */
 	public int getM_AttributeValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException;
 
     /** Column name M_Attribute_ID */
@@ -152,6 +154,7 @@ public interface I_AD_TableAttribute
 	  */
 	public int getM_Attribute_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
     /** Column name Record_ID */

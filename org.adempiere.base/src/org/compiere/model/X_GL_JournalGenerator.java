@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalGenerator
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGenerator")
 public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_GL_JournalGenerator (Properties ctx, int GL_JournalGenerator_ID, String trxName)
@@ -105,6 +105,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -133,6 +134,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -161,6 +163,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValueAdjustCR() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -188,6 +191,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValueAdjustDR() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -231,6 +235,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCost
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_LandedCost")
 public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_LandedCost (Properties ctx, int C_LandedCost_ID, String trxName)
@@ -117,6 +117,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -235,6 +236,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 		return (String)get_Value(COLUMNNAME_LandedCostDistribution);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
@@ -263,6 +265,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -291,6 +294,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
@@ -319,6 +323,7 @@ public class X_C_LandedCost extends PO implements I_C_LandedCost, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

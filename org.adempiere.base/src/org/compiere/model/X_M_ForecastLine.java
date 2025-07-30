@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ForecastLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ForecastLine")
 public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_ForecastLine (Properties ctx, int M_ForecastLine_ID, String trxName)
@@ -136,6 +136,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
@@ -225,6 +226,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 		return (String)get_Value(COLUMNNAME_M_ForecastLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_ID)
@@ -253,6 +255,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -281,6 +284,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -347,6 +351,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

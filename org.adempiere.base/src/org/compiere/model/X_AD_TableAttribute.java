@@ -33,7 +33,7 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250301L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_TableAttribute (Properties ctx, int AD_TableAttribute_ID, String trxName)
@@ -41,6 +41,9 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
       super (ctx, AD_TableAttribute_ID, trxName);
       /** if (AD_TableAttribute_ID == 0)
         {
+			setAD_Table_ID (0);
+			setM_Attribute_ID (0);
+			setRecord_ID (0);
         } */
     }
 
@@ -50,6 +53,9 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
       super (ctx, AD_TableAttribute_ID, trxName, virtualColumns);
       /** if (AD_TableAttribute_ID == 0)
         {
+			setAD_Table_ID (0);
+			setM_Attribute_ID (0);
+			setRecord_ID (0);
         } */
     }
 
@@ -59,6 +65,9 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
       super (ctx, AD_TableAttribute_UU, trxName);
       /** if (AD_TableAttribute_UU == null)
         {
+			setAD_Table_ID (0);
+			setM_Attribute_ID (0);
+			setRecord_ID (0);
         } */
     }
 
@@ -68,6 +77,9 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
       super (ctx, AD_TableAttribute_UU, trxName, virtualColumns);
       /** if (AD_TableAttribute_UU == null)
         {
+			setAD_Table_ID (0);
+			setM_Attribute_ID (0);
+			setRecord_ID (0);
         } */
     }
 
@@ -135,6 +147,7 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_TableAttribute_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -147,9 +160,9 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
 		if (AD_Table_ID < 1)
-			set_Value (COLUMNNAME_AD_Table_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
 		else
-			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
@@ -163,6 +176,7 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_AttributeValue)MTable.get(getCtx(), org.compiere.model.I_M_AttributeValue.Table_ID)
@@ -175,9 +189,9 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	public void setM_AttributeValue_ID (int M_AttributeValue_ID)
 	{
 		if (M_AttributeValue_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_AttributeValue_ID, null);
+			set_Value (COLUMNNAME_M_AttributeValue_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_M_AttributeValue_ID, Integer.valueOf(M_AttributeValue_ID));
+			set_Value (COLUMNNAME_M_AttributeValue_ID, Integer.valueOf(M_AttributeValue_ID));
 	}
 
 	/** Get Attribute Value.
@@ -191,6 +205,7 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)

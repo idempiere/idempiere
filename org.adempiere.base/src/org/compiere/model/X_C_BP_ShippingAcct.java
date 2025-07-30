@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_BP_ShippingAcct
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_ShippingAcct")
 public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_BP_ShippingAcct (Properties ctx, int C_BP_ShippingAcct_ID, String trxName)
@@ -140,6 +140,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 		return (String)get_Value(COLUMNNAME_C_BP_ShippingAcct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -168,6 +169,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -211,6 +213,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 		return (String)get_Value(COLUMNNAME_DutiesShipperAccount);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)

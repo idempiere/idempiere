@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema_GL
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_AcctSchema_GL 
 {
@@ -84,6 +84,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name CommitmentOffsetSales_Acct */
@@ -99,6 +100,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getCommitmentOffsetSales_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCommitmentOffsetSales_A() throws RuntimeException;
 
     /** Column name CommitmentOffset_Acct */
@@ -114,6 +116,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getCommitmentOffset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCommitmentOffset_A() throws RuntimeException;
 
     /** Column name Created */
@@ -145,6 +148,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getCurrencyBalancing_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCurrencyBalancing_A() throws RuntimeException;
 
     /** Column name IntercompanyDueFrom_Acct */
@@ -160,6 +164,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getIntercompanyDueFrom_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueFrom_A() throws RuntimeException;
 
     /** Column name IntercompanyDueTo_Acct */
@@ -175,6 +180,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getIntercompanyDueTo_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueTo_A() throws RuntimeException;
 
     /** Column name IsActive */
@@ -203,6 +209,7 @@ public interface I_C_AcctSchema_GL
 	  */
 	public int getPPVOffset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPPVOffset_A() throws RuntimeException;
 
     /** Column name SuspenseBalancing_Acct */
@@ -214,6 +221,7 @@ public interface I_C_AcctSchema_GL
 	/** Get Suspense Balancing Acct	  */
 	public int getSuspenseBalancing_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getSuspenseBalancing_A() throws RuntimeException;
 
     /** Column name Updated */

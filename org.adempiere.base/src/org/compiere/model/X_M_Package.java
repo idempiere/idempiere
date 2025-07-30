@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Package
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Package")
 public class X_M_Package extends PO implements I_M_Package, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_Package (Properties ctx, int M_Package_ID, String trxName)
@@ -269,6 +269,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_ID)
@@ -296,6 +297,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -324,6 +326,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -352,6 +355,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -380,6 +384,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -743,6 +748,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -1219,6 +1225,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
@@ -1284,6 +1291,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Package_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_ID)
@@ -1311,6 +1319,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackaging.Table_ID)
@@ -1338,6 +1347,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypes.Table_ID)
@@ -1365,6 +1375,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
@@ -1393,6 +1404,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)

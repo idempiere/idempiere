@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_BuyerFunds
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="B_BuyerFunds")
 public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_B_BuyerFunds (Properties ctx, int B_BuyerFunds_ID, String trxName)
@@ -115,6 +115,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -188,6 +189,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 		return (String)get_Value(COLUMNNAME_B_BuyerFunds_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -216,6 +218,7 @@ public class X_B_BuyerFunds extends PO implements I_B_BuyerFunds, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)

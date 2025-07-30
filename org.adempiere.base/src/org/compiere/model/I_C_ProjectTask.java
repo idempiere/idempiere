@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectTask
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_ProjectTask 
 {
@@ -75,6 +75,7 @@ public interface I_C_ProjectTask
 	  */
 	public int getC_ProjectPhase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException;
 
     /** Column name C_ProjectTask_ID */
@@ -112,6 +113,7 @@ public interface I_C_ProjectTask
 	  */
 	public int getC_Task_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Task getC_Task() throws RuntimeException;
 
     /** Column name CommittedAmt */
@@ -195,6 +197,7 @@ public interface I_C_ProjectTask
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */

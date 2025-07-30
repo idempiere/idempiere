@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Locator
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Locator")
 public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_Locator (Properties ctx, int M_Locator_ID, String trxName)
@@ -156,6 +156,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_LocatorType getM_LocatorType() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_LocatorType)MTable.get(getCtx(), org.compiere.model.I_M_LocatorType.Table_ID)
@@ -220,6 +221,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Locator_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)

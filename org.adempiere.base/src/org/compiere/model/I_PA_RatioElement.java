@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_RatioElement
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_PA_RatioElement 
 {
@@ -75,6 +75,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name ConstantValue */
@@ -158,6 +159,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getPA_MeasureCalc_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_MeasureCalc getPA_MeasureCalc() throws RuntimeException;
 
     /** Column name PA_RatioElement_ID */
@@ -195,6 +197,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getPA_RatioUsed_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Ratio getPA_RatioUsed() throws RuntimeException;
 
     /** Column name PA_Ratio_ID */
@@ -210,6 +213,7 @@ public interface I_PA_RatioElement
 	  */
 	public int getPA_Ratio_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Ratio getPA_Ratio() throws RuntimeException;
 
     /** Column name PostingType */

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressTransaction
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AddressTransaction")
 public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_AddressTransaction (Properties ctx, int C_AddressTransaction_ID, String trxName)
@@ -237,6 +237,7 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 		return (String)get_Value(COLUMNNAME_C_AddressTransaction_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AddressValidation)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidation.Table_ID)
@@ -264,6 +265,7 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)

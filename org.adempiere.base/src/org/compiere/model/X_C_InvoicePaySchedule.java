@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoicePaySchedule
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoicePaySchedule")
 public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_InvoicePaySchedule (Properties ctx, int C_InvoicePaySchedule_ID, String trxName)
@@ -169,6 +169,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 		return (String)get_Value(COLUMNNAME_C_InvoicePaySchedule_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
@@ -197,6 +198,7 @@ public class X_C_InvoicePaySchedule extends PO implements I_C_InvoicePaySchedule
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaySchedule getC_PaySchedule() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_PaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_PaySchedule.Table_ID)

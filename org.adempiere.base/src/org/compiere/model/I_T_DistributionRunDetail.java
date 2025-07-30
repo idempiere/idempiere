@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_DistributionRunDetail
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_T_DistributionRunDetail 
 {
@@ -75,6 +75,7 @@ public interface I_T_DistributionRunDetail
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -90,6 +91,7 @@ public interface I_T_DistributionRunDetail
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name Created */
@@ -134,6 +136,7 @@ public interface I_T_DistributionRunDetail
 	  */
 	public int getM_DistributionListLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionListLine getM_DistributionListLine() throws RuntimeException;
 
     /** Column name M_DistributionList_ID */
@@ -149,6 +152,7 @@ public interface I_T_DistributionRunDetail
 	  */
 	public int getM_DistributionList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionList getM_DistributionList() throws RuntimeException;
 
     /** Column name M_DistributionRunLine_ID */
@@ -164,6 +168,7 @@ public interface I_T_DistributionRunDetail
 	  */
 	public int getM_DistributionRunLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionRunLine getM_DistributionRunLine() throws RuntimeException;
 
     /** Column name M_DistributionRun_ID */
@@ -179,6 +184,7 @@ public interface I_T_DistributionRunDetail
 	  */
 	public int getM_DistributionRun_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -194,6 +200,7 @@ public interface I_T_DistributionRunDetail
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name MinQty */

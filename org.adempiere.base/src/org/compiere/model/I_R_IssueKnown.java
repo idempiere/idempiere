@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_IssueKnown
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_R_IssueKnown 
 {
@@ -200,6 +200,7 @@ public interface I_R_IssueKnown
 	  */
 	public int getR_IssueRecommendation_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueRecommendation getR_IssueRecommendation() throws RuntimeException;
 
     /** Column name R_IssueStatus_ID */
@@ -215,6 +216,7 @@ public interface I_R_IssueKnown
 	  */
 	public int getR_IssueStatus_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueStatus getR_IssueStatus() throws RuntimeException;
 
     /** Column name R_Request_ID */
@@ -230,6 +232,7 @@ public interface I_R_IssueKnown
 	  */
 	public int getR_Request_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
 
     /** Column name ReleaseNo */
