@@ -251,13 +251,15 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 
 	        // Validate VFormat with regular expression
-	        if (!Util.isEmpty(vFormat) && vFormat.startsWith("~")) {
-	        	String regex = gridField.getVFormat().substring(1); // remove the initial ~
-	        	if (!newValue.matches(regex)) {
-	        		String msgregex = Msg.getMsg(Env.getCtx(), regex);
-	        		throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
-	        	}
-	        }
+			if (!Util.isEmpty(vFormat)) {
+				String regex = vFormatToRegex(vFormat);
+				if (!newValue.matches(regex)) {
+					String msgregex = Msg.getMsg(Env.getCtx(), regex);
+					newValue = oldValue;
+					getComponent().setValue(newValue);
+					throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
+				}
+			}
 
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 	        
@@ -412,6 +414,62 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 			parent = parent.getParent();
 		}
 		return null;
+	}
+	
+	/**
+	 * Convert vFormat to regular expression, see jquery.maskedinput.js
+	 * @param vFormat
+	 * @return
+	 */
+	private String vFormatToRegex(String vFormat) {
+		if (vFormat.startsWith("~"))
+			return gridField.getVFormat().substring(1); // remove the initial ~
+		StringBuilder regex = new StringBuilder();
+		for (char c : vFormat.toCharArray()) {
+			switch (c) {
+			case '0':
+				regex.append("[0-9]");
+				break;
+			case '9':
+				regex.append("[ 0-9]");
+				break;
+			case 'a':
+				regex.append("[A-Za-z0-9]");
+				break;
+			case 'A':
+				regex.append("[A-Z0-9]");
+				break;
+			case 'c':
+				regex.append("[ A-Za-z0-9]");
+				break;
+			case 'C':
+				regex.append("[ A-Z0-9]");
+				break;
+			case 'l':
+				regex.append("[A-Za-z]");
+				break;
+			case 'L':
+				regex.append("[A-Z]");
+				break;
+			case 'o':
+				regex.append("[ A-Za-z]");
+				break;
+			case 'O':
+				regex.append("[ A-Z]");
+				break;
+			case 'U':
+				regex.append("[^a-z]");
+				break;
+			default:
+				if ("()[]{}.+*?^$|\\".indexOf(c) != -1) {
+					regex.append("\\").append(c);
+				} else {
+					regex.append(c);
+				}
+				break;
+			}
+		}
+		return regex.toString();
 	}
 
 }
