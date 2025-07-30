@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_RfQLine 
 {
@@ -97,6 +97,7 @@ public interface I_C_RfQLine
 	  */
 	public int getC_RfQ_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException;
 
     /** Column name Created */
@@ -219,6 +220,7 @@ public interface I_C_RfQLine
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -234,6 +236,7 @@ public interface I_C_RfQLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectIssueMA
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_ProjectIssueMA 
 {
@@ -84,6 +84,7 @@ public interface I_C_ProjectIssueMA
 	  */
 	public int getC_ProjectIssue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
 
     /** Column name Created */
@@ -128,6 +129,7 @@ public interface I_C_ProjectIssueMA
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name MovementQty */

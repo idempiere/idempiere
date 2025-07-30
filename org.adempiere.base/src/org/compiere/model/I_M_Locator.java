@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Locator
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_Locator 
 {
@@ -113,6 +113,7 @@ public interface I_M_Locator
 	/** Get Locator Type	  */
 	public int getM_LocatorType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_LocatorType getM_LocatorType() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -150,6 +151,7 @@ public interface I_M_Locator
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name PriorityNo */

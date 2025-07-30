@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for PP_WF_Node_Asset
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_WF_Node_Asset")
 public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Asset (Properties ctx, int PP_WF_Node_Asset_ID, String trxName)
@@ -113,6 +113,7 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
@@ -141,6 +142,7 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_POSPayment
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_POSPayment 
 {
@@ -101,6 +101,7 @@ public interface I_C_POSPayment
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name C_POSPayment_ID */
@@ -130,6 +131,7 @@ public interface I_C_POSPayment
 	/** Get POS Tender Type	  */
 	public int getC_POSTenderType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -145,6 +147,7 @@ public interface I_C_POSPayment
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name CheckNo */

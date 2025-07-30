@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Retirement
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset_Retirement 
 {
@@ -75,6 +75,7 @@ public interface I_A_Asset_Retirement
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Retirement_ID */
@@ -138,6 +139,7 @@ public interface I_A_Asset_Retirement
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name Created */

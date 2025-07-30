@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionRun
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionRun")
 public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName)
@@ -161,6 +161,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 		return (String)get_Value(COLUMNNAME_C_CommissionRun_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Commission getC_Commission() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Commission)MTable.get(getCtx(), org.compiere.model.I_C_Commission.Table_ID)
@@ -189,6 +190,7 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ShipperPickupTypes
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_ShipperPickupTypes 
 {
@@ -113,6 +113,7 @@ public interface I_M_ShipperPickupTypes
 	/** Get Shipper Pickup Types Configuration	  */
 	public int getM_ShipperPickupTypesCfg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperPickupTypesCfg getM_ShipperPickupTypesCfg() throws RuntimeException;
 
     /** Column name M_ShipperPickupTypes_ID */
@@ -146,6 +147,7 @@ public interface I_M_ShipperPickupTypes
 	  */
 	public int getM_Shipper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name Name */

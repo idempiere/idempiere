@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxDeclarationLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_TaxDeclarationLine 
 {
@@ -75,6 +75,7 @@ public interface I_C_TaxDeclarationLine
 	  */
 	public int getC_AllocationLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AllocationLine getC_AllocationLine() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -90,6 +91,7 @@ public interface I_C_TaxDeclarationLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -105,6 +107,7 @@ public interface I_C_TaxDeclarationLine
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
@@ -120,6 +123,7 @@ public interface I_C_TaxDeclarationLine
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -135,6 +139,7 @@ public interface I_C_TaxDeclarationLine
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_TaxDeclarationLine_ID */
@@ -172,6 +177,7 @@ public interface I_C_TaxDeclarationLine
 	  */
 	public int getC_TaxDeclaration_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxDeclaration getC_TaxDeclaration() throws RuntimeException;
 
     /** Column name C_Tax_ID */
@@ -187,6 +193,7 @@ public interface I_C_TaxDeclarationLine
 	  */
 	public int getC_Tax_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name Created */

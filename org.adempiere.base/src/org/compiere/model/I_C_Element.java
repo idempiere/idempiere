@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Element
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Element 
 {
@@ -75,6 +75,7 @@ public interface I_C_Element
 	  */
 	public int getAD_Tree_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException;
 
     /** Column name C_Element_ID */

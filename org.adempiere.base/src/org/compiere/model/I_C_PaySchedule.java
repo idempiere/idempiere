@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaySchedule
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_PaySchedule 
 {
@@ -97,6 +97,7 @@ public interface I_C_PaySchedule
 	  */
 	public int getC_PaymentTerm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
 
     /** Column name Created */

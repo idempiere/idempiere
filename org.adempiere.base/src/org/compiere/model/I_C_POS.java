@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_POS
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_POS 
 {
@@ -88,6 +88,7 @@ public interface I_C_POS
 	  */
 	public int getC_BPartnerCashTrx_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException;
 
     /** Column name C_BankAccount_ID */
@@ -103,6 +104,7 @@ public interface I_C_POS
 	  */
 	public int getC_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name C_CashBook_ID */
@@ -118,6 +120,7 @@ public interface I_C_POS
 	  */
 	public int getC_CashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -133,6 +136,7 @@ public interface I_C_POS
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_POSKeyLayout_ID */
@@ -148,6 +152,7 @@ public interface I_C_POS
 	  */
 	public int getC_POSKeyLayout_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException;
 
     /** Column name C_POS_ID */
@@ -262,6 +267,7 @@ public interface I_C_POS
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -277,6 +283,7 @@ public interface I_C_POS
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
@@ -305,6 +312,7 @@ public interface I_C_POS
 	  */
 	public int getOSK_KeyLayout_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getOSK_KeyLayout() throws RuntimeException;
 
     /** Column name OSNP_KeyLayout_ID */
@@ -320,6 +328,7 @@ public interface I_C_POS
 	  */
 	public int getOSNP_KeyLayout_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getOSNP_KeyLayout() throws RuntimeException;
 
     /** Column name PrinterName */
@@ -348,6 +357,7 @@ public interface I_C_POS
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name Updated */

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Issue
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Issue")
 public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_Issue (Properties ctx, int AD_Issue_ID, String trxName)
@@ -153,6 +153,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
@@ -218,6 +219,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Issue_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -246,6 +248,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -274,6 +277,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -633,6 +637,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return (String)get_Value(COLUMNNAME_ProfileInfo);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueKnown getR_IssueKnown() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueKnown)MTable.get(getCtx(), org.compiere.model.I_R_IssueKnown.Table_ID)
@@ -661,6 +666,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueProject getR_IssueProject() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueProject)MTable.get(getCtx(), org.compiere.model.I_R_IssueProject.Table_ID)
@@ -689,6 +695,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueSystem getR_IssueSystem() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueSystem)MTable.get(getCtx(), org.compiere.model.I_R_IssueSystem.Table_ID)
@@ -717,6 +724,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueUser getR_IssueUser() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueUser)MTable.get(getCtx(), org.compiere.model.I_R_IssueUser.Table_ID)
@@ -745,6 +753,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)

@@ -30,7 +30,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250612L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_Sequence_No (Properties ctx, int AD_Sequence_No_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)

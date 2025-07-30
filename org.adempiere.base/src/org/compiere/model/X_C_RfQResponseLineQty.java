@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQResponseLineQty
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponseLineQty")
 public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLineQty (Properties ctx, int C_RfQResponseLineQty_ID, String trxName)
@@ -115,6 +115,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQLineQty getC_RfQLineQty() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RfQLineQty)MTable.get(getCtx(), org.compiere.model.I_C_RfQLineQty.Table_ID)
@@ -180,6 +181,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 		return (String)get_Value(COLUMNNAME_C_RfQResponseLineQty_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQResponseLine getC_RfQResponseLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RfQResponseLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQResponseLine.Table_ID)

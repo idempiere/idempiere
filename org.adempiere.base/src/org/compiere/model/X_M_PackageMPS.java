@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PackageMPS
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_PackageMPS")
 public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_PackageMPS (Properties ctx, int M_PackageMPS_ID, String trxName)
@@ -115,6 +115,7 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -143,6 +144,7 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -292,6 +294,7 @@ public class X_M_PackageMPS extends PO implements I_M_PackageMPS, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_PackageMPS_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Package)MTable.get(getCtx(), org.compiere.model.I_M_Package.Table_ID)

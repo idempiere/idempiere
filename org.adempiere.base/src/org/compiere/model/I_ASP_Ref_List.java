@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Ref_List
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_ASP_Ref_List 
 {
@@ -75,6 +75,7 @@ public interface I_ASP_Ref_List
 	  */
 	public int getAD_Ref_List_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException;
 
     /** Column name AD_Reference_ID */
@@ -90,6 +91,7 @@ public interface I_ASP_Ref_List
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name ASP_Level_ID */
@@ -101,6 +103,7 @@ public interface I_ASP_Ref_List
 	/** Get ASP Level	  */
 	public int getASP_Level_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException;
 
     /** Column name ASP_Ref_List_ID */

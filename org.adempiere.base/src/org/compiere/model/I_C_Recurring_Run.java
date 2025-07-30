@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Recurring_Run
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Recurring_Run 
 {
@@ -75,6 +75,7 @@ public interface I_C_Recurring_Run
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Order_ID */
@@ -90,6 +91,7 @@ public interface I_C_Recurring_Run
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -105,6 +107,7 @@ public interface I_C_Recurring_Run
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -120,6 +123,7 @@ public interface I_C_Recurring_Run
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name C_Recurring_ID */
@@ -135,6 +139,7 @@ public interface I_C_Recurring_Run
 	  */
 	public int getC_Recurring_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Recurring getC_Recurring() throws RuntimeException;
 
     /** Column name C_Recurring_Run_ID */
@@ -201,6 +206,7 @@ public interface I_C_Recurring_Run
 	  */
 	public int getGL_JournalBatch_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException;
 
     /** Column name IsActive */

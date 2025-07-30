@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Change
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset_Change 
 {
@@ -75,6 +75,7 @@ public interface I_A_Asset_Change
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name A_Accumdepreciation_Acct */
@@ -86,6 +87,7 @@ public interface I_A_Asset_Change
 	/** Get Accumulated Depreciation Account	  */
 	public int getA_Accumdepreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Accumdepreciation_A() throws RuntimeException;
 
     /** Column name A_Asset_Acct */
@@ -97,6 +99,7 @@ public interface I_A_Asset_Change
 	/** Get Asset Acct	  */
 	public int getA_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Asset_A() throws RuntimeException;
 
     /** Column name A_Asset_Acct_ID */
@@ -157,6 +160,7 @@ public interface I_A_Asset_Change
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Retirement_ID */
@@ -190,6 +194,7 @@ public interface I_A_Asset_Change
 	/** Get Depreciation Account	  */
 	public int getA_Depreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Depreciation_A() throws RuntimeException;
 
     /** Column name A_Depreciation_Manual_Amount */
@@ -219,6 +224,7 @@ public interface I_A_Asset_Change
 	/** Get A_Depreciation_Table_Header_ID	  */
 	public int getA_Depreciation_Table_Header_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Table_Header getA_Depreciation_Table_Header() throws RuntimeException;
 
     /** Column name A_Depreciation_Variable_Perc */
@@ -239,6 +245,7 @@ public interface I_A_Asset_Change
 	/** Get Disposal Loss Acct	  */
 	public int getA_Disposal_Loss_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Loss_A() throws RuntimeException;
 
     /** Column name A_Disposal_Revenue_Acct */
@@ -250,6 +257,7 @@ public interface I_A_Asset_Change
 	/** Get Disposal Revenue Acct	  */
 	public int getA_Disposal_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Revenue_A() throws RuntimeException;
 
     /** Column name A_Parent_Asset_ID */
@@ -261,6 +269,7 @@ public interface I_A_Asset_Change
 	/** Get Parent Asset	  */
 	public int getA_Parent_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Parent_Asset() throws RuntimeException;
 
     /** Column name A_Period_End */
@@ -512,6 +521,7 @@ public interface I_A_Asset_Change
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -527,6 +537,7 @@ public interface I_A_Asset_Change
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -542,6 +553,7 @@ public interface I_A_Asset_Change
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -557,6 +569,7 @@ public interface I_A_Asset_Change
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name C_ValidCombination_ID */
@@ -572,6 +585,7 @@ public interface I_A_Asset_Change
 	  */
 	public int getC_ValidCombination_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_ValidCombination() throws RuntimeException;
 
     /** Column name ChangeAmt */

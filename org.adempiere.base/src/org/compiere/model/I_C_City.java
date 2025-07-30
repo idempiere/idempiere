@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_City
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_City 
 {
@@ -110,6 +110,7 @@ public interface I_C_City
 	  */
 	public int getC_Country_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name C_Region_ID */
@@ -125,6 +126,7 @@ public interface I_C_City
 	  */
 	public int getC_Region_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
 
     /** Column name Coordinates */

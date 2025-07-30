@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TaskInstance
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_TaskInstance")
 public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_TaskInstance (Properties ctx, int AD_TaskInstance_ID, String trxName)

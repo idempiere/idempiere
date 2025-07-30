@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AlertRecipient
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_AlertRecipient 
 {
@@ -76,6 +76,7 @@ public interface I_AD_AlertRecipient
 	  */
 	public int getAD_Alert_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -112,6 +113,7 @@ public interface I_AD_AlertRecipient
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -127,6 +129,7 @@ public interface I_AD_AlertRecipient
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Group_Acct
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset_Group_Acct 
 {
@@ -71,6 +71,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Accumulated Depreciation Account	  */
 	public int getA_Accumdepreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Accumdepreciation_A() throws RuntimeException;
 
     /** Column name A_Asset_Acct */
@@ -82,6 +83,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Asset Acct	  */
 	public int getA_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Asset_A() throws RuntimeException;
 
     /** Column name A_Asset_Group_Acct_ID */
@@ -115,6 +117,7 @@ public interface I_A_Asset_Group_Acct
 	  */
 	public int getA_Asset_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
 
     /** Column name A_Depreciation_Acct */
@@ -126,6 +129,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Depreciation Account	  */
 	public int getA_Depreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Depreciation_A() throws RuntimeException;
 
     /** Column name A_Depreciation_Conv_F_ID */
@@ -137,6 +141,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Depreciation Convention (fiscal)	  */
 	public int getA_Depreciation_Conv_F_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Convention getA_Depreciation_Conv_F() throws RuntimeException;
 
     /** Column name A_Depreciation_Conv_ID */
@@ -148,6 +153,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Convention Type	  */
 	public int getA_Depreciation_Conv_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Convention getA_Depreciation_Conv() throws RuntimeException;
 
     /** Column name A_Depreciation_F_ID */
@@ -159,6 +165,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Depreciation (fiscal)	  */
 	public int getA_Depreciation_F_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation getA_Depreciation_F() throws RuntimeException;
 
     /** Column name A_Depreciation_ID */
@@ -170,6 +177,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Depreciation	  */
 	public int getA_Depreciation_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation getA_Depreciation() throws RuntimeException;
 
     /** Column name A_Depreciation_Manual_Amount */
@@ -199,6 +207,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Depreciation Method (fiscal)	  */
 	public int getA_Depreciation_Method_F_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Method getA_Depreciation_Method_F() throws RuntimeException;
 
     /** Column name A_Depreciation_Method_ID */
@@ -210,6 +219,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Depreciation Method	  */
 	public int getA_Depreciation_Method_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Method getA_Depreciation_Method() throws RuntimeException;
 
     /** Column name A_Depreciation_Table_Header_ID */
@@ -221,6 +231,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get A_Depreciation_Table_Header_ID	  */
 	public int getA_Depreciation_Table_Header_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Table_Header getA_Depreciation_Table_Header() throws RuntimeException;
 
     /** Column name A_Depreciation_Variable_Perc */
@@ -250,6 +261,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Disposal Gain Acct	  */
 	public int getA_Disposal_Gain_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Gain_A() throws RuntimeException;
 
     /** Column name A_Disposal_Loss_Acct */
@@ -261,6 +273,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Disposal Loss Acct	  */
 	public int getA_Disposal_Loss_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Loss_A() throws RuntimeException;
 
     /** Column name A_Disposal_Revenue_Acct */
@@ -272,6 +285,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Disposal Revenue Acct	  */
 	public int getA_Disposal_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Revenue_A() throws RuntimeException;
 
     /** Column name A_Reval_Adep_Offset_Cur_Acct */
@@ -283,6 +297,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get A_Reval_Accumdep_Offset_Cur	  */
 	public int getA_Reval_Adep_Offset_Cur_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Reval_Adep_Offset_Cur_A() throws RuntimeException;
 
     /** Column name A_Reval_Adep_Offset_Prior_Acct */
@@ -294,6 +309,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get A_Reval_Accumdep_Offset_Prior	  */
 	public int getA_Reval_Adep_Offset_Prior_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Reval_Adep_Offset_Prior_A() throws RuntimeException;
 
     /** Column name A_Reval_Cal_Method */
@@ -314,6 +330,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Reval Cost Offset Acct	  */
 	public int getA_Reval_Cost_Offset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Reval_Cost_Offset_A() throws RuntimeException;
 
     /** Column name A_Reval_Cost_Offset_Prior_Acct */
@@ -325,6 +342,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Reval Cost Offset Prior Acct	  */
 	public int getA_Reval_Cost_Offset_Prior_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Reval_Cost_Offset_Prior_A() throws RuntimeException;
 
     /** Column name A_Reval_Depexp_Offset_Acct */
@@ -336,6 +354,7 @@ public interface I_A_Asset_Group_Acct
 	/** Get Reval Depexp Offset Acct	  */
 	public int getA_Reval_Depexp_Offset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Reval_Depexp_Offset_A() throws RuntimeException;
 
     /** Column name A_Split_Percent */
@@ -360,6 +379,7 @@ public interface I_A_Asset_Group_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */

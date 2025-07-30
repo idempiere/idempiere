@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product_Category
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_Product_Category 
 {
@@ -75,6 +75,7 @@ public interface I_M_Product_Category
 	  */
 	public int getAD_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
 
     /** Column name A_Asset_Group_ID */
@@ -90,6 +91,7 @@ public interface I_M_Product_Category
 	  */
 	public int getA_Asset_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
 
     /** Column name Created */
@@ -195,6 +197,7 @@ public interface I_M_Product_Category
 	/** Get Parent Product Category	  */
 	public int getM_Product_Category_Parent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category_Parent() throws RuntimeException;
 
     /** Column name M_Product_Category_UU */

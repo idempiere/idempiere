@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Field")
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -183,6 +183,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
@@ -210,6 +211,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -238,6 +240,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
@@ -266,6 +269,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
@@ -331,6 +335,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Field_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
@@ -359,6 +364,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -387,6 +393,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -415,6 +422,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -443,6 +451,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
@@ -471,6 +480,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
@@ -652,6 +662,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getIncluded_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)

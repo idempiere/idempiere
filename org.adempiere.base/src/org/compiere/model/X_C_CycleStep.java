@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CycleStep
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CycleStep")
 public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_CycleStep (Properties ctx, int C_CycleStep_ID, String trxName)
@@ -164,6 +164,7 @@ public class X_C_CycleStep extends PO implements I_C_CycleStep, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_CycleStep_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Cycle getC_Cycle() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Cycle)MTable.get(getCtx(), org.compiere.model.I_C_Cycle.Table_ID)

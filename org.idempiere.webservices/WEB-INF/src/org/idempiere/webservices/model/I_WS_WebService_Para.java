@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebService_Para
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_WS_WebService_Para 
@@ -149,6 +149,7 @@ public interface I_WS_WebService_Para
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 
     /** Column name WS_WebService_Para_ID */

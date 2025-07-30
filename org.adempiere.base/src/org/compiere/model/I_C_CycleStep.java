@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CycleStep
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_CycleStep 
 {
@@ -97,6 +97,7 @@ public interface I_C_CycleStep
 	  */
 	public int getC_Cycle_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Cycle getC_Cycle() throws RuntimeException;
 
     /** Column name Created */

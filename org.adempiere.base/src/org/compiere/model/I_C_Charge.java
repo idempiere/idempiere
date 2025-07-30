@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Charge
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Charge 
 {
@@ -75,6 +75,7 @@ public interface I_C_Charge
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_ChargeType_ID */
@@ -86,6 +87,7 @@ public interface I_C_Charge
 	/** Get Charge Type	  */
 	public int getC_ChargeType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -123,6 +125,7 @@ public interface I_C_Charge
 	  */
 	public int getC_TaxCategory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
 
     /** Column name ChargeAmt */

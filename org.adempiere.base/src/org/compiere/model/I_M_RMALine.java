@@ -88,6 +88,7 @@ public interface I_M_RMALine
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_CostCenter_ID */
@@ -99,6 +100,7 @@ public interface I_M_RMALine
 	/** Get Cost Center	  */
 	public int getC_CostCenter_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
 
     /** Column name C_Department_ID */
@@ -110,6 +112,7 @@ public interface I_M_RMALine
 	/** Get Department	  */
 	public int getC_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_Tax_ID */
@@ -125,6 +128,7 @@ public interface I_M_RMALine
 	  */
 	public int getC_Tax_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name Created */
@@ -208,6 +212,7 @@ public interface I_M_RMALine
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -223,6 +228,7 @@ public interface I_M_RMALine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_RMALine_ID */
@@ -260,6 +266,7 @@ public interface I_M_RMALine
 	  */
 	public int getM_RMA_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
 
     /** Column name Processed */
@@ -323,6 +330,7 @@ public interface I_M_RMALine
 	/** Get Referenced RMA Line	  */
 	public int getRef_RMALine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMALine getRef_RMALine() throws RuntimeException;
 
     /** Column name Updated */

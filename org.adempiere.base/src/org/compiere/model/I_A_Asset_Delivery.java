@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Delivery
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset_Delivery 
 {
@@ -75,6 +75,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name A_Asset_Delivery_ID */
@@ -112,6 +113,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name Created */
@@ -208,6 +210,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_ProductDownload_ID */
@@ -223,6 +226,7 @@ public interface I_A_Asset_Delivery
 	  */
 	public int getM_ProductDownload_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductDownload getM_ProductDownload() throws RuntimeException;
 
     /** Column name MessageID */

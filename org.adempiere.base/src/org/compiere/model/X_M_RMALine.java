@@ -33,7 +33,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250307L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_RMALine (Properties ctx, int M_RMALine_ID, String trxName)
@@ -138,6 +138,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -166,6 +167,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
@@ -193,6 +195,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
@@ -220,6 +223,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
@@ -302,6 +306,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -330,6 +335,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -395,6 +401,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_RMALine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_RMA)MTable.get(getCtx(), org.compiere.model.I_M_RMA.Table_ID)
@@ -511,6 +518,7 @@ public class X_M_RMALine extends PO implements I_M_RMALine, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMALine getRef_RMALine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_RMALine)MTable.get(getCtx(), org.compiere.model.I_M_RMALine.Table_ID)

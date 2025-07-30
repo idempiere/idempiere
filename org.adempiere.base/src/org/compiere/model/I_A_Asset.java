@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset 
 {
@@ -75,6 +75,7 @@ public interface I_A_Asset
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name A_AssetType */
@@ -104,6 +105,7 @@ public interface I_A_Asset
 	/** Get Asset class	  */
 	public int getA_Asset_Class_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException;
 
     /** Column name A_Asset_CreateDate */
@@ -128,6 +130,7 @@ public interface I_A_Asset
 	  */
 	public int getA_Asset_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
 
     /** Column name A_Asset_ID */
@@ -170,6 +173,7 @@ public interface I_A_Asset
 	/** Get Asset Type	  */
 	public int getA_Asset_Type_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException;
 
     /** Column name A_Asset_UU */
@@ -190,6 +194,7 @@ public interface I_A_Asset
 	/** Get Parent Asset	  */
 	public int getA_Parent_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Parent_Asset() throws RuntimeException;
 
     /** Column name A_QTY_Current */
@@ -271,6 +276,7 @@ public interface I_A_Asset
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartnerSR_ID */
@@ -286,6 +292,7 @@ public interface I_A_Asset
 	  */
 	public int getC_BPartnerSR_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -301,6 +308,7 @@ public interface I_A_Asset
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -316,6 +324,7 @@ public interface I_A_Asset
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -331,6 +340,7 @@ public interface I_A_Asset
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -346,6 +356,7 @@ public interface I_A_Asset
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
@@ -555,6 +566,7 @@ public interface I_A_Asset
 	  */
 	public int getLease_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getLease_BPartner() throws RuntimeException;
 
     /** Column name LifeUseUnits */
@@ -609,6 +621,7 @@ public interface I_A_Asset
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
@@ -624,6 +637,7 @@ public interface I_A_Asset
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -639,6 +653,7 @@ public interface I_A_Asset
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -654,6 +669,7 @@ public interface I_A_Asset
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name ManufacturedYear */

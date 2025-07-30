@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxGroup
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_C_TaxGroup 

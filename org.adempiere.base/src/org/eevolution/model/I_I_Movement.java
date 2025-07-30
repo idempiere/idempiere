@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Movement
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_I_Movement 
@@ -90,6 +90,7 @@ public interface I_I_Movement
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name BPartnerValue */
@@ -118,6 +119,7 @@ public interface I_I_Movement
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -133,6 +135,7 @@ public interface I_I_Movement
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -148,6 +151,7 @@ public interface I_I_Movement
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -163,6 +167,7 @@ public interface I_I_Movement
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name CampaignValue */
@@ -351,6 +356,7 @@ public interface I_I_Movement
 	  */
 	public int getM_LocatorTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_LocatorTo() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -366,6 +372,7 @@ public interface I_I_Movement
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
@@ -381,6 +388,7 @@ public interface I_I_Movement
 	  */
 	public int getM_MovementLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException;
 
     /** Column name M_Movement_ID */
@@ -396,6 +404,7 @@ public interface I_I_Movement
 	  */
 	public int getM_Movement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -411,6 +420,7 @@ public interface I_I_Movement
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Shipper_ID */
@@ -426,6 +436,7 @@ public interface I_I_Movement
 	  */
 	public int getM_Shipper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name MovementDate */

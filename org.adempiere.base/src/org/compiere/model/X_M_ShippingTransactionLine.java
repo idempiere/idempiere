@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShippingTransactionLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingTransactionLine")
 public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTransactionLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_ShippingTransactionLine (Properties ctx, int M_ShippingTransactionLine_ID, String trxName)
@@ -115,6 +115,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -143,6 +144,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -223,6 +225,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PackageMPS)MTable.get(getCtx(), org.compiere.model.I_M_PackageMPS.Table_ID)
@@ -286,6 +289,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 		return (String)get_Value(COLUMNNAME_M_ShippingTransactionLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingTransaction getM_ShippingTransaction() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShippingTransaction)MTable.get(getCtx(), org.compiere.model.I_M_ShippingTransaction.Table_ID)

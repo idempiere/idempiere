@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxDefinition
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDefinition")
 public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_TaxDefinition (Properties ctx, int C_TaxDefinition_ID, String trxName)
@@ -111,6 +111,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_OrgType getAD_OrgType() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_OrgType)MTable.get(getCtx(), org.compiere.model.I_AD_OrgType.Table_ID)
@@ -139,6 +140,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
@@ -167,6 +169,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -195,6 +198,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxBase getC_TaxBase() throws RuntimeException
 	{
 		return (org.eevolution.model.I_C_TaxBase)MTable.get(getCtx(), org.eevolution.model.I_C_TaxBase.Table_ID)
@@ -222,6 +226,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
@@ -286,6 +291,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return (String)get_Value(COLUMNNAME_C_TaxDefinition_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxGroup getC_TaxGroup() throws RuntimeException
 	{
 		return (org.eevolution.model.I_C_TaxGroup)MTable.get(getCtx(), org.eevolution.model.I_C_TaxGroup.Table_ID)
@@ -313,6 +319,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxType getC_TaxType() throws RuntimeException
 	{
 		return (org.eevolution.model.I_C_TaxType)MTable.get(getCtx(), org.eevolution.model.I_C_TaxType.Table_ID)
@@ -340,6 +347,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
@@ -423,6 +431,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
@@ -451,6 +460,7 @@ public class X_C_TaxDefinition extends PO implements I_C_TaxDefinition, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_GroupUpdates
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_R_GroupUpdates 
 {
@@ -75,6 +75,7 @@ public interface I_R_GroupUpdates
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
@@ -141,6 +142,7 @@ public interface I_R_GroupUpdates
 	  */
 	public int getR_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Group getR_Group() throws RuntimeException;
 
     /** Column name Updated */

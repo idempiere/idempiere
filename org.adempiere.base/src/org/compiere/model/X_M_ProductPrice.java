@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ProductPrice
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductPrice")
 public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
@@ -118,6 +118,7 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
@@ -183,6 +184,7 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 		return (String)get_Value(COLUMNNAME_M_ProductPrice_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

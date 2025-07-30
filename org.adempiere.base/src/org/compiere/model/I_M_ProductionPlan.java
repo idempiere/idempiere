@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ProductionPlan
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_ProductionPlan 
 {
@@ -130,6 +130,7 @@ public interface I_M_ProductionPlan
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -145,6 +146,7 @@ public interface I_M_ProductionPlan
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_ProductionPlan_ID */
@@ -182,6 +184,7 @@ public interface I_M_ProductionPlan
 	  */
 	public int getM_Production_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException;
 
     /** Column name Processed */

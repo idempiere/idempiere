@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_IssueProject
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_R_IssueProject 
 {
@@ -75,6 +75,7 @@ public interface I_R_IssueProject
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -90,6 +91,7 @@ public interface I_R_IssueProject
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Fact_Reconciliation
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_Fact_Reconciliation 
 {
@@ -75,6 +75,7 @@ public interface I_Fact_Reconciliation
 	  */
 	public int getAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AmtAcct */
@@ -103,6 +104,7 @@ public interface I_Fact_Reconciliation
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */
@@ -143,6 +145,7 @@ public interface I_Fact_Reconciliation
 	/** Get Accounting Fact	  */
 	public int getFact_Acct_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException;
 
     /** Column name Fact_Reconciliation_ID */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Theme_Detail
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_UserDef_Theme_Detail 
 {
@@ -89,6 +89,7 @@ public interface I_AD_UserDef_Theme_Detail
 	/** Get Theme Customization	  */
 	public int getAD_UserDef_Theme_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Theme getAD_UserDef_Theme() throws RuntimeException;
 
     /** Column name Created */

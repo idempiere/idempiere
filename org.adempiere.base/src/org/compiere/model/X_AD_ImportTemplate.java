@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImportTemplate
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ImportTemplate")
 public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplate (Properties ctx, int AD_ImportTemplate_ID, String trxName)
@@ -181,6 +181,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_ImportTemplate_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -209,6 +210,7 @@ public class X_AD_ImportTemplate extends PO implements I_AD_ImportTemplate, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

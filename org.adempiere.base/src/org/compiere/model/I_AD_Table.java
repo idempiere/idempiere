@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Table 
 {
@@ -97,6 +97,7 @@ public interface I_AD_Table
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -112,6 +113,7 @@ public interface I_AD_Table
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name AccessLevel */
@@ -398,6 +400,7 @@ public interface I_AD_Table
 	  */
 	public int getPO_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException;
 
     /** Column name Processing */

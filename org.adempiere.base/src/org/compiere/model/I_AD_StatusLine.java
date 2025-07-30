@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_StatusLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_StatusLine 
 {
@@ -62,6 +62,7 @@ public interface I_AD_StatusLine
 	  */
 	public int getAD_Message_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -108,6 +109,7 @@ public interface I_AD_StatusLine
 	  */
 	public int getAD_Style_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_Style() throws RuntimeException;
 
     /** Column name Created */

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ToolBarButton
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ToolBarButton")
 public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -149,6 +149,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -177,6 +178,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)

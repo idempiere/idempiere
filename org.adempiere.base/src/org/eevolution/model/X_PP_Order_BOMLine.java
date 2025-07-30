@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_BOMLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_BOMLine")
 public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName)
@@ -177,6 +177,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -240,6 +241,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return (String)get_Value(COLUMNNAME_BackflushGroup);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -516,6 +518,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -544,6 +547,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
@@ -572,6 +576,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -600,6 +605,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -636,6 +642,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -700,6 +707,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return (String)get_Value(COLUMNNAME_PP_Order_BOMLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_BOM getPP_Order_BOM() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_BOM.Table_ID)
@@ -727,6 +735,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)

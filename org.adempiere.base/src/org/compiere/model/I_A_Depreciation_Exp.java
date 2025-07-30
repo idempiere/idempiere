@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Depreciation_Exp
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Depreciation_Exp 
 {
@@ -71,6 +71,7 @@ public interface I_A_Depreciation_Exp
 	/** Get A_Account_Number_Acct	  */
 	public int getA_Account_Number_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Account_Number_A() throws RuntimeException;
 
     /** Column name A_Accumulated_Depr */
@@ -118,6 +119,7 @@ public interface I_A_Depreciation_Exp
 	/** Get Asset Addition	  */
 	public int getA_Asset_Addition_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Addition getA_Asset_Addition() throws RuntimeException;
 
     /** Column name A_Asset_Cost */
@@ -147,6 +149,7 @@ public interface I_A_Depreciation_Exp
 	/** Get Asset Disposed	  */
 	public int getA_Asset_Disposed_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Disposed getA_Asset_Disposed() throws RuntimeException;
 
     /** Column name A_Asset_ID */
@@ -162,6 +165,7 @@ public interface I_A_Depreciation_Exp
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Remaining */
@@ -191,6 +195,7 @@ public interface I_A_Depreciation_Exp
 	/** Get Depreciation Entry	  */
 	public int getA_Depreciation_Entry_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Entry getA_Depreciation_Entry() throws RuntimeException;
 
     /** Column name A_Depreciation_Exp_ID */
@@ -242,6 +247,7 @@ public interface I_A_Depreciation_Exp
 	  */
 	public int getCR_Account_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCR_Account() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -257,6 +263,7 @@ public interface I_A_Depreciation_Exp
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
@@ -288,6 +295,7 @@ public interface I_A_Depreciation_Exp
 	  */
 	public int getDR_Account_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getDR_Account() throws RuntimeException;
 
     /** Column name DateAcct */

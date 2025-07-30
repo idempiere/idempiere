@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_BOMLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_Product_BOMLine")
 public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_PP_Product_BOMLine (Properties ctx, int PP_Product_BOMLine_ID, String trxName)
@@ -160,6 +160,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		return (String)get_Value(COLUMNNAME_BackflushGroup);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -420,6 +421,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -448,6 +450,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
@@ -476,6 +479,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -549,6 +553,7 @@ public class X_PP_Product_BOMLine extends PO implements I_PP_Product_BOMLine, I_
 		return (String)get_Value(COLUMNNAME_PP_Product_BOMLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)

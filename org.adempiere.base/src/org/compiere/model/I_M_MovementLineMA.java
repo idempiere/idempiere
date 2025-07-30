@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_MovementLineMA
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_MovementLineMA 
 {
@@ -126,6 +126,7 @@ public interface I_M_MovementLineMA
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_MovementLineMA_UU */
@@ -150,6 +151,7 @@ public interface I_M_MovementLineMA
 	  */
 	public int getM_MovementLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException;
 
     /** Column name MovementQty */

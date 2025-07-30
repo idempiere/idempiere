@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AuthorizationAccount
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_AuthorizationAccount 
 {
@@ -68,6 +68,7 @@ public interface I_AD_AuthorizationAccount
 	/** Get Authorization Credential	  */
 	public int getAD_AuthorizationCredential_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AuthorizationCredential getAD_AuthorizationCredential() throws RuntimeException;
 
     /** Column name AD_AuthorizationScopes */
@@ -113,6 +114,7 @@ public interface I_AD_AuthorizationAccount
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AccessToken */

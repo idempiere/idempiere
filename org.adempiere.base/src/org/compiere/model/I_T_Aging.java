@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Aging
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_T_Aging 
 {
@@ -75,6 +75,7 @@ public interface I_T_Aging
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -90,6 +91,7 @@ public interface I_T_Aging
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
@@ -105,6 +107,7 @@ public interface I_T_Aging
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -120,6 +123,7 @@ public interface I_T_Aging
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -135,6 +139,7 @@ public interface I_T_Aging
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -150,6 +155,7 @@ public interface I_T_Aging
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_InvoicePaySchedule_ID */
@@ -165,6 +171,7 @@ public interface I_T_Aging
 	  */
 	public int getC_InvoicePaySchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoicePaySchedule getC_InvoicePaySchedule() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -180,6 +187,7 @@ public interface I_T_Aging
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -195,6 +203,7 @@ public interface I_T_Aging
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name ConvertAmountsInCurrency_ID */
@@ -206,6 +215,7 @@ public interface I_T_Aging
 	/** Get Convert Amounts in Currency	  */
 	public int getConvertAmountsInCurrency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getConvertAmountsInCurrency() throws RuntimeException;
 
     /** Column name Created */

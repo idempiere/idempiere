@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Shipper
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_Shipper 
 {
@@ -75,6 +75,7 @@ public interface I_M_Shipper
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name CreateFrom */
@@ -128,6 +129,7 @@ public interface I_M_Shipper
 	/** Get Shipper Configuration	  */
 	public int getM_ShipperCfg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException;
 
     /** Column name M_Shipper_ID */
@@ -161,6 +163,7 @@ public interface I_M_Shipper
 	/** Get Shipping Processor	  */
 	public int getM_ShippingProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException;
 
     /** Column name Name */

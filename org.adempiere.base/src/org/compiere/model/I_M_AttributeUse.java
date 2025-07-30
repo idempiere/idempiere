@@ -35,9 +35,9 @@ public interface I_M_AttributeUse
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client 
+    /** AccessLevel = 7 - System - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(6);
+    BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
 
@@ -134,6 +134,7 @@ public interface I_M_AttributeUse
 	  */
 	public int getM_AttributeSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name M_AttributeUse_UU */
@@ -158,6 +159,7 @@ public interface I_M_AttributeUse
 	  */
 	public int getM_Attribute_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
     /** Column name SeqNo */

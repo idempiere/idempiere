@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_OrgInfo
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_OrgInfo 
 {
@@ -71,6 +71,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getAD_OrgType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_OrgType getAD_OrgType() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -99,6 +100,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getC_Calendar_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -114,6 +116,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name Created */
@@ -160,6 +163,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getDropShip_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getDropShip_Warehouse() throws RuntimeException;
 
     /** Column name EMail */
@@ -223,6 +227,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Parent_Org_ID */
@@ -290,6 +295,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name TaxID */
@@ -331,6 +337,7 @@ public interface I_AD_OrgInfo
 	  */
 	public int getTransferBank_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Bank getTransferBank() throws RuntimeException;
 
     /** Column name TransferCashBook_ID */
@@ -342,6 +349,7 @@ public interface I_AD_OrgInfo
 	/** Get CashBook for transfers	  */
 	public int getTransferCashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getTransferCashBook() throws RuntimeException;
 
     /** Column name Updated */

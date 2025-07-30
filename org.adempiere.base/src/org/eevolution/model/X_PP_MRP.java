@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_MRP
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_MRP")
 public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_PP_MRP (Properties ctx, int PP_MRP_ID, String trxName)
@@ -121,6 +121,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -149,6 +150,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
@@ -177,6 +179,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -205,6 +208,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_OrderLine getDD_OrderLine() throws RuntimeException
 	{
 		return (org.eevolution.model.I_DD_OrderLine)MTable.get(getCtx(), org.eevolution.model.I_DD_OrderLine.Table_ID)
@@ -232,6 +236,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_Order getDD_Order() throws RuntimeException
 	{
 		return (org.eevolution.model.I_DD_Order)MTable.get(getCtx(), org.eevolution.model.I_DD_Order.Table_ID)
@@ -453,6 +458,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_ID)
@@ -481,6 +487,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_ID)
@@ -509,6 +516,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -537,6 +545,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RequisitionLine getM_RequisitionLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_RequisitionLine)MTable.get(getCtx(), org.compiere.model.I_M_RequisitionLine.Table_ID)
@@ -565,6 +574,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Requisition getM_Requisition() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Requisition)MTable.get(getCtx(), org.compiere.model.I_M_Requisition.Table_ID)
@@ -593,6 +603,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -715,6 +726,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return (String)get_Value(COLUMNNAME_PP_MRP_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_BOMLine getPP_Order_BOMLine() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order_BOMLine)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_BOMLine.Table_ID)
@@ -742,6 +754,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
@@ -770,6 +783,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -832,6 +846,7 @@ public class X_PP_MRP extends PO implements I_PP_MRP, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)

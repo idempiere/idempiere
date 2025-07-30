@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250520L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -221,6 +221,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -249,6 +250,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeDifference() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -277,6 +279,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -305,6 +308,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeProforma() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -333,6 +337,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeShipment() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -398,6 +403,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_DocType_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getDefiniteSequence() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
@@ -524,6 +530,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocBaseType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
@@ -647,6 +654,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocumentNote);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
@@ -722,7 +730,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Set Always Posted.
-		@param IsAlwaysPosted Posts the document if &quot;AlwaysPosted&quot; is checked, even without a valid accounting schema.
+		@param IsAlwaysPosted Posts the document if &quot;AlwaysPosted&quot; is checked, regardless of accounting schema.
 	*/
 	public void setIsAlwaysPosted (boolean IsAlwaysPosted)
 	{
@@ -730,7 +738,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	}
 
 	/** Get Always Posted.
-		@return Posts the document if &quot;AlwaysPosted&quot; is checked, even without a valid accounting schema.
+		@return Posts the document if &quot;AlwaysPosted&quot; is checked, regardless of accounting schema.
 	  */
 	public boolean isAlwaysPosted()
 	{

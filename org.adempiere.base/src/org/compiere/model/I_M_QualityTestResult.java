@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_QualityTestResult
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_QualityTestResult 
 {
@@ -135,6 +135,7 @@ public interface I_M_QualityTestResult
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_QualityTestResult_ID */
@@ -164,6 +165,7 @@ public interface I_M_QualityTestResult
 	/** Get Quality Test	  */
 	public int getM_QualityTest_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException;
 
     /** Column name Processed */

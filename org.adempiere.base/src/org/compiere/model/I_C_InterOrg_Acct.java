@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_InterOrg_Acct
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_InterOrg_Acct 
 {
@@ -88,6 +88,7 @@ public interface I_C_InterOrg_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_InterOrg_Acct_UU */
@@ -128,6 +129,7 @@ public interface I_C_InterOrg_Acct
 	  */
 	public int getIntercompanyDueFrom_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueFrom_A() throws RuntimeException;
 
     /** Column name IntercompanyDueTo_Acct */
@@ -143,6 +145,7 @@ public interface I_C_InterOrg_Acct
 	  */
 	public int getIntercompanyDueTo_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueTo_A() throws RuntimeException;
 
     /** Column name IsActive */

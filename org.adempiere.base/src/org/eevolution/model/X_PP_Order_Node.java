@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Node
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Node")
 public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
@@ -193,6 +193,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -221,6 +222,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
@@ -249,6 +251,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
@@ -277,6 +280,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -305,6 +309,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
@@ -333,6 +338,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Block getAD_WF_Block() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Block)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Block.Table_ID)
@@ -361,6 +367,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
@@ -389,6 +396,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
@@ -417,6 +425,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -445,6 +454,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
@@ -550,6 +560,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return (String)get_Value(COLUMNNAME_AttributeValue);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -1050,6 +1061,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
@@ -1115,6 +1127,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return (String)get_Value(COLUMNNAME_PP_Order_Node_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order_Workflow)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Workflow.Table_ID)
@@ -1254,6 +1267,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
@@ -1492,6 +1506,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getWorkflow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)

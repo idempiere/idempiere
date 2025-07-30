@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaySelectionCheck
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_PaySelectionCheck 
 {
@@ -75,6 +75,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_BP_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -90,6 +91,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_PaySelectionCheck_ID */
@@ -127,6 +129,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_PaySelection_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -142,6 +145,7 @@ public interface I_C_PaySelectionCheck
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name Created */

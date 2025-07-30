@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_Chat
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_CM_Chat 
 {
@@ -75,6 +75,7 @@ public interface I_CM_Chat
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name CM_ChatType_ID */
@@ -90,6 +91,7 @@ public interface I_CM_Chat
 	  */
 	public int getCM_ChatType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_CM_ChatType getCM_ChatType() throws RuntimeException;
 
     /** Column name CM_Chat_ID */

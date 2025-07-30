@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance_Para
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_PInstance_Para 
 {
@@ -75,6 +75,7 @@ public interface I_AD_PInstance_Para
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name AD_PInstance_Para_UU */

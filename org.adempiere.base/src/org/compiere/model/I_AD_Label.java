@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Label
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Label 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Label
 	  */
 	public int getAD_LabelCategory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_LabelCategory getAD_LabelCategory() throws RuntimeException;
 
     /** Column name AD_LabelStyle_ID */
@@ -77,6 +78,7 @@ public interface I_AD_Label
 	  */
 	public int getAD_LabelStyle_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException;
 
     /** Column name AD_Label_ID */

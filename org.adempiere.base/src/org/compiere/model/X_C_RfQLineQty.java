@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQLineQty
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQLineQty")
 public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_RfQLineQty (Properties ctx, int C_RfQLineQty_ID, String trxName)
@@ -214,6 +214,7 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_RfQLineQty_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RfQLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQLine.Table_ID)
@@ -242,6 +243,7 @@ public class X_C_RfQLineQty extends PO implements I_C_RfQLineQty, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)

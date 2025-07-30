@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintTableFormat
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintTableFormat")
 public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_PrintTableFormat (Properties ctx, int AD_PrintTableFormat_ID, String trxName)
@@ -143,6 +143,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
@@ -272,6 +273,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return (String)get_Value(COLUMNNAME_FooterRight);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getFunctBG_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -300,6 +302,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getFunctFG_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -328,6 +331,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getFunct_PrintFont() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)
@@ -356,6 +360,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrLine_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -430,6 +435,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return (String)get_Value(COLUMNNAME_HdrStrokeType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrTextBG_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -458,6 +464,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrTextFG_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -486,6 +493,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getHdr_PrintFont() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)
@@ -808,6 +816,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 		return (String)get_Value(COLUMNNAME_LineStrokeType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getLine_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)

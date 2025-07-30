@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DiscountSchemaLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_DiscountSchemaLine 
 {
@@ -75,6 +75,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
@@ -90,6 +91,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getC_ConversionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name Classification */
@@ -412,6 +414,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_Product_Category_ID */
@@ -427,6 +430,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_Product_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -442,6 +446,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name SeqNo */

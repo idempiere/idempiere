@@ -120,13 +120,13 @@ public interface I_SSO_PrincipalConfig
     /** Column name SSO_ApplicationClientID */
     public static final String COLUMNNAME_SSO_ApplicationClientID = "SSO_ApplicationClientID";
 
-	/** Set Application Tenant ID.
-	  * SSO Application Tenant ID
+	/** Set Application Client ID.
+	  * SSO Application Client ID
 	  */
 	public void setSSO_ApplicationClientID (String SSO_ApplicationClientID);
 
-	/** Get Application Tenant ID.
-	  * SSO Application Tenant ID
+	/** Get Application Client ID.
+	  * SSO Application Client ID
 	  */
 	public String getSSO_ApplicationClientID();
 
@@ -221,6 +221,7 @@ public interface I_SSO_PrincipalConfig
 	  */
 	public int getSSO_LoginButtonImage_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getSSO_LoginButtonImage() throws RuntimeException;
 
     /** Column name SSO_OSGIRedirectURIs */

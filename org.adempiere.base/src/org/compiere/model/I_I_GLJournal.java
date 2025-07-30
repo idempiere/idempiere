@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_GLJournal
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_GLJournal 
 {
@@ -114,6 +114,7 @@ public interface I_I_GLJournal
 	  */
 	public int getAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AcctSchemaName */
@@ -246,6 +247,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -261,6 +263,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -276,6 +279,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -291,6 +295,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
@@ -306,6 +311,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_ConversionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -321,6 +327,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -336,6 +343,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_LocFrom_ID */
@@ -351,6 +359,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_LocFrom_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException;
 
     /** Column name C_LocTo_ID */
@@ -366,6 +375,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_LocTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException;
 
     /** Column name C_Period_ID */
@@ -381,6 +391,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -396,6 +407,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name C_SalesRegion_ID */
@@ -411,6 +423,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_SalesRegion_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name C_UOM_ID */
@@ -426,6 +439,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name C_ValidCombination_ID */
@@ -441,6 +455,7 @@ public interface I_I_GLJournal
 	  */
 	public int getC_ValidCombination_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ValidCombination getC_ValidCombination() throws RuntimeException;
 
     /** Column name CampaignValue */
@@ -576,6 +591,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_Budget_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException;
 
     /** Column name GL_Category_ID */
@@ -591,6 +607,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException;
 
     /** Column name GL_JournalBatch_ID */
@@ -606,6 +623,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_JournalBatch_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException;
 
     /** Column name GL_JournalLine_ID */
@@ -621,6 +639,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_JournalLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalLine getGL_JournalLine() throws RuntimeException;
 
     /** Column name GL_Journal_ID */
@@ -636,6 +655,7 @@ public interface I_I_GLJournal
 	  */
 	public int getGL_Journal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException;
 
     /** Column name ISO_Code */
@@ -777,6 +797,7 @@ public interface I_I_GLJournal
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name OrgTrxValue */
@@ -947,6 +968,7 @@ public interface I_I_GLJournal
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -962,5 +984,6 @@ public interface I_I_GLJournal
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

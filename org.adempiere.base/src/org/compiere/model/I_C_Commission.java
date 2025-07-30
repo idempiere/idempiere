@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Commission
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Commission 
 {
@@ -75,6 +75,7 @@ public interface I_C_Commission
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -90,6 +91,7 @@ public interface I_C_Commission
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_Commission_ID */
@@ -127,6 +129,7 @@ public interface I_C_Commission
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name CreateFrom */
@@ -249,6 +252,7 @@ public interface I_C_Commission
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Menu
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Menu 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Menu
 	  */
 	public int getAD_Form_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_InfoWindow_ID */
@@ -77,6 +78,7 @@ public interface I_AD_Menu
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Menu_ID */
@@ -127,6 +129,7 @@ public interface I_AD_Menu
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Task_ID */
@@ -142,6 +145,7 @@ public interface I_AD_Menu
 	  */
 	public int getAD_Task_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -157,6 +161,7 @@ public interface I_AD_Menu
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
@@ -172,6 +177,7 @@ public interface I_AD_Menu
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Action */

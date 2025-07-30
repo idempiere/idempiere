@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ShipperLabels
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_ShipperLabels 
 {
@@ -122,6 +122,7 @@ public interface I_M_ShipperLabels
 	/** Get Shipper Labels Configuration	  */
 	public int getM_ShipperLabelsCfg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperLabelsCfg getM_ShipperLabelsCfg() throws RuntimeException;
 
     /** Column name M_ShipperLabels_ID */
@@ -155,6 +156,7 @@ public interface I_M_ShipperLabels
 	  */
 	public int getM_Shipper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name Name */

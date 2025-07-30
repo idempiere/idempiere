@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_JournalGeneratorLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_GL_JournalGeneratorLine 
 {
@@ -106,6 +106,7 @@ public interface I_GL_JournalGeneratorLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_ElementValueCR_ID */
@@ -117,6 +118,7 @@ public interface I_GL_JournalGeneratorLine
 	/** Get Account CR	  */
 	public int getC_ElementValueCR_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValueCR() throws RuntimeException;
 
     /** Column name C_ElementValueDR_ID */
@@ -128,6 +130,7 @@ public interface I_GL_JournalGeneratorLine
 	/** Get Account DR	  */
 	public int getC_ElementValueDR_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValueDR() throws RuntimeException;
 
     /** Column name Created */
@@ -186,6 +189,7 @@ public interface I_GL_JournalGeneratorLine
 	/** Get GL Journal Generator	  */
 	public int getGL_JournalGenerator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalGenerator getGL_JournalGenerator() throws RuntimeException;
 
     /** Column name Help */

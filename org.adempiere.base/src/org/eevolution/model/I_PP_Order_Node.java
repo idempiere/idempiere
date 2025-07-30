@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Node
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_Order_Node 
@@ -64,6 +64,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Form_ID */
@@ -79,6 +80,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_Form_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_Image_ID */
@@ -94,6 +96,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_Image_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -122,6 +125,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Task_ID */
@@ -137,6 +141,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_Task_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException;
 
     /** Column name AD_WF_Block_ID */
@@ -152,6 +157,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_WF_Block_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Block getAD_WF_Block() throws RuntimeException;
 
     /** Column name AD_WF_Node_ID */
@@ -167,6 +173,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_WF_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name AD_WF_Responsible_ID */
@@ -182,6 +189,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_WF_Responsible_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -197,6 +205,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
@@ -212,6 +221,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Action */
@@ -266,6 +276,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Cost */
@@ -578,6 +589,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getPP_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException;
 
     /** Column name PP_Order_Node_ID */
@@ -611,6 +623,7 @@ public interface I_PP_Order_Node
 	/** Get Manufacturing Order Workflow	  */
 	public int getPP_Order_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException;
 
     /** Column name Priority */
@@ -696,6 +709,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getS_Resource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name SetupTime */
@@ -862,6 +876,7 @@ public interface I_PP_Order_Node
 	  */
 	public int getWorkflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getWorkflow() throws RuntimeException;
 
     /** Column name WorkingTime */

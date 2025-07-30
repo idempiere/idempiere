@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_ResourceUnAvailable
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_S_ResourceUnAvailable 
 {
@@ -161,6 +161,7 @@ public interface I_S_ResourceUnAvailable
 	  */
 	public int getS_Resource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name Updated */
