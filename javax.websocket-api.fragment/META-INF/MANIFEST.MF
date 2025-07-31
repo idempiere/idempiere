@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Fragment
+Bundle-SymbolicName: javax.websocket-api.fragment
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: iDempiere.org
+Fragment-Host: javax.websocket-api;bundle-version="1.1.0"
+Automatic-Module-Name: javax.websocket.api.fragment
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.servicelo
+ ader.processor)",osgi.serviceloader;filter:="(osgi.serviceloader=javax.
+ websocket.server.ServerEndpointConfig$Configurator)"
+
