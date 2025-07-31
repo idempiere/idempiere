@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_FundRestriction
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_GL_FundRestriction 
 {
@@ -75,6 +75,7 @@ public interface I_GL_FundRestriction
 	  */
 	public int getC_ElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name Created */
@@ -141,6 +142,7 @@ public interface I_GL_FundRestriction
 	  */
 	public int getGL_Fund_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException;
 
     /** Column name IsActive */

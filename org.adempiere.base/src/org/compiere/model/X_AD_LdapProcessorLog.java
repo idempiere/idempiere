@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_LdapProcessorLog
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_LdapProcessorLog")
 public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_LdapProcessorLog (Properties ctx, int AD_LdapProcessorLog_ID, String trxName)
@@ -145,6 +145,7 @@ public class X_AD_LdapProcessorLog extends PO implements I_AD_LdapProcessorLog, 
 		return (String)get_Value(COLUMNNAME_AD_LdapProcessorLog_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_LdapProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_LdapProcessor.Table_ID)

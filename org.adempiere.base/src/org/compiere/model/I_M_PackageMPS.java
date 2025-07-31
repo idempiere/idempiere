@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PackageMPS
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_PackageMPS 
 {
@@ -75,6 +75,7 @@ public interface I_M_PackageMPS
 	  */
 	public int getC_UOM_Length_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException;
 
     /** Column name C_UOM_Weight_ID */
@@ -90,6 +91,7 @@ public interface I_M_PackageMPS
 	  */
 	public int getC_UOM_Weight_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
 
     /** Column name CreateFrom */
@@ -205,6 +207,7 @@ public interface I_M_PackageMPS
 	  */
 	public int getM_Package_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Package getM_Package() throws RuntimeException;
 
     /** Column name MasterTrackingNo */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CommissionAmt
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_CommissionAmt 
 {
@@ -110,6 +110,7 @@ public interface I_C_CommissionAmt
 	  */
 	public int getC_CommissionLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CommissionLine getC_CommissionLine() throws RuntimeException;
 
     /** Column name C_CommissionRun_ID */
@@ -125,6 +126,7 @@ public interface I_C_CommissionAmt
 	  */
 	public int getC_CommissionRun_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CommissionRun getC_CommissionRun() throws RuntimeException;
 
     /** Column name CommissionAmt */

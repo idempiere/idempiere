@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Replenish
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_T_Replenish 
 {
@@ -75,6 +75,7 @@ public interface I_T_Replenish
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -90,6 +91,7 @@ public interface I_T_Replenish
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -105,6 +107,7 @@ public interface I_T_Replenish
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Level_Max */
@@ -146,6 +149,7 @@ public interface I_T_Replenish
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_WarehouseSource_ID */
@@ -161,6 +165,7 @@ public interface I_T_Replenish
 	  */
 	public int getM_WarehouseSource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -176,6 +181,7 @@ public interface I_T_Replenish
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Order_Min */

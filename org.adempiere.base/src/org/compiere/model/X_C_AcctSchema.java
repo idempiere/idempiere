@@ -32,7 +32,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250520L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_AcctSchema (Properties ctx, int C_AcctSchema_ID, String trxName)
@@ -303,6 +303,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_AcctSchema_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -331,6 +332,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
@@ -743,6 +745,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostType)MTable.get(getCtx(), org.compiere.model.I_M_CostType.Table_ID)

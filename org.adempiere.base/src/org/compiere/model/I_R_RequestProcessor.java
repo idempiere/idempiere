@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestProcessor
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_R_RequestProcessor 
 {
@@ -71,6 +71,7 @@ public interface I_R_RequestProcessor
 	/** Get Schedule	  */
 	public int getAD_Schedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
 
     /** Column name Created */
@@ -250,6 +251,7 @@ public interface I_R_RequestProcessor
 	  */
 	public int getR_RequestType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException;
 
     /** Column name RemindDays */
@@ -278,6 +280,7 @@ public interface I_R_RequestProcessor
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */

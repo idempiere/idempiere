@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRun
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DunningRun")
 public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_DunningRun (Properties ctx, int C_DunningRun_ID, String trxName)
@@ -118,6 +118,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DunningLevel getC_DunningLevel() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DunningLevel)MTable.get(getCtx(), org.compiere.model.I_C_DunningLevel.Table_ID)
@@ -182,6 +183,7 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_DunningRun_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)

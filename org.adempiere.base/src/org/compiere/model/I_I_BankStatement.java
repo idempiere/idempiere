@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_BankStatement
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_BankStatement 
 {
@@ -101,6 +101,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BankAccount_ID */
@@ -116,6 +117,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name C_BankStatementLine_ID */
@@ -131,6 +133,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_BankStatementLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankStatementLine getC_BankStatementLine() throws RuntimeException;
 
     /** Column name C_BankStatement_ID */
@@ -146,6 +149,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_BankStatement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankStatement getC_BankStatement() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -161,6 +165,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -176,6 +181,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -191,6 +197,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -206,6 +213,7 @@ public interface I_I_BankStatement
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name ChargeAmt */

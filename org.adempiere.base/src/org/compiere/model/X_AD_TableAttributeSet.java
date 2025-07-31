@@ -30,7 +30,7 @@ public class X_AD_TableAttributeSet extends PO implements I_AD_TableAttributeSet
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250301L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_TableAttributeSet (Properties ctx, int AD_TableAttributeSet_ID, String trxName)
@@ -144,6 +144,7 @@ public class X_AD_TableAttributeSet extends PO implements I_AD_TableAttributeSet
 		return (String)get_Value(COLUMNNAME_AD_TableAttributeSet_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -156,9 +157,9 @@ public class X_AD_TableAttributeSet extends PO implements I_AD_TableAttributeSet
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
 		if (AD_Table_ID < 1)
-			set_Value (COLUMNNAME_AD_Table_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
 		else
-			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
@@ -172,6 +173,7 @@ public class X_AD_TableAttributeSet extends PO implements I_AD_TableAttributeSet
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)

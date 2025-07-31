@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQLineQty
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_RfQLineQty 
 {
@@ -123,6 +123,7 @@ public interface I_C_RfQLineQty
 	  */
 	public int getC_RfQLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException;
 
     /** Column name C_UOM_ID */
@@ -138,6 +139,7 @@ public interface I_C_RfQLineQty
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name Created */

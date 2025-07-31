@@ -34,7 +34,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250307L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName)
@@ -226,6 +226,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -316,6 +317,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
@@ -343,6 +345,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)

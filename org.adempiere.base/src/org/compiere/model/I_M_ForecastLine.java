@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ForecastLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_ForecastLine 
 {
@@ -75,6 +75,7 @@ public interface I_M_ForecastLine
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */
@@ -154,6 +155,7 @@ public interface I_M_ForecastLine
 	  */
 	public int getM_Forecast_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -169,6 +171,7 @@ public interface I_M_ForecastLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -184,6 +187,7 @@ public interface I_M_ForecastLine
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Qty */
@@ -225,6 +229,7 @@ public interface I_M_ForecastLine
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name Updated */

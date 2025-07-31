@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AlertProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_AlertProcessorLog 
 {
@@ -76,6 +76,7 @@ public interface I_AD_AlertProcessorLog
 	  */
 	public int getAD_AlertProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException;
 
     /** Column name AD_Client_ID */

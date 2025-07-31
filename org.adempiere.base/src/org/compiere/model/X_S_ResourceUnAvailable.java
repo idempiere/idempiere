@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceUnAvailable
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceUnAvailable")
 public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailable, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_S_ResourceUnAvailable (Properties ctx, int S_ResourceUnAvailable_ID, String trxName)
@@ -194,6 +194,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 		return (String)get_Value(COLUMNNAME_S_ResourceUnAvailable_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)

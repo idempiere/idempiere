@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQ_TopicSubscriber
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_RfQ_TopicSubscriber 
 {
@@ -75,6 +75,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -90,6 +91,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -105,6 +107,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_RfQ_TopicSubscriber_ID */
@@ -142,6 +145,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_RfQ_Topic_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQ_Topic getC_RfQ_Topic() throws RuntimeException;
 
     /** Column name Created */

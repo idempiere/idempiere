@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_MRP
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_MRP 
@@ -77,6 +77,7 @@ public interface I_PP_MRP
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_OrderLine_ID */
@@ -92,6 +93,7 @@ public interface I_PP_MRP
 	  */
 	public int getC_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name C_Order_ID */
@@ -107,6 +109,7 @@ public interface I_PP_MRP
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name Created */
@@ -134,6 +137,7 @@ public interface I_PP_MRP
 	/** Get Distribution Order Line	  */
 	public int getDD_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_OrderLine getDD_OrderLine() throws RuntimeException;
 
     /** Column name DD_Order_ID */
@@ -145,6 +149,7 @@ public interface I_PP_MRP
 	/** Get Distribution Order	  */
 	public int getDD_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_Order getDD_Order() throws RuntimeException;
 
     /** Column name DateConfirm */
@@ -303,6 +308,7 @@ public interface I_PP_MRP
 	  */
 	public int getM_ForecastLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException;
 
     /** Column name M_Forecast_ID */
@@ -318,6 +324,7 @@ public interface I_PP_MRP
 	  */
 	public int getM_Forecast_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -333,6 +340,7 @@ public interface I_PP_MRP
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_RequisitionLine_ID */
@@ -348,6 +356,7 @@ public interface I_PP_MRP
 	  */
 	public int getM_RequisitionLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RequisitionLine getM_RequisitionLine() throws RuntimeException;
 
     /** Column name M_Requisition_ID */
@@ -363,6 +372,7 @@ public interface I_PP_MRP
 	  */
 	public int getM_Requisition_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Requisition getM_Requisition() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -378,6 +388,7 @@ public interface I_PP_MRP
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
@@ -437,6 +448,7 @@ public interface I_PP_MRP
 	/** Get Manufacturing Order BOM Line	  */
 	public int getPP_Order_BOMLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_BOMLine getPP_Order_BOMLine() throws RuntimeException;
 
     /** Column name PP_Order_ID */
@@ -452,6 +464,7 @@ public interface I_PP_MRP
 	  */
 	public int getPP_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException;
 
     /** Column name Planner_ID */
@@ -463,6 +476,7 @@ public interface I_PP_MRP
 	/** Get Planner	  */
 	public int getPlanner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException;
 
     /** Column name Priority */
@@ -504,6 +518,7 @@ public interface I_PP_MRP
 	  */
 	public int getS_Resource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name TypeMRP */

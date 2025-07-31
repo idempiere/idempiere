@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectIssue
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_ProjectIssue 
 {
@@ -97,6 +97,7 @@ public interface I_C_ProjectIssue
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
@@ -206,6 +207,7 @@ public interface I_C_ProjectIssue
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
@@ -221,6 +223,7 @@ public interface I_C_ProjectIssue
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -236,6 +239,7 @@ public interface I_C_ProjectIssue
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -251,6 +255,7 @@ public interface I_C_ProjectIssue
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name MovementDate */
@@ -340,6 +345,7 @@ public interface I_C_ProjectIssue
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getReversal() throws RuntimeException;
 
     /** Column name S_TimeExpenseLine_ID */
@@ -355,6 +361,7 @@ public interface I_C_ProjectIssue
 	  */
 	public int getS_TimeExpenseLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_TimeExpenseLine getS_TimeExpenseLine() throws RuntimeException;
 
     /** Column name Updated */

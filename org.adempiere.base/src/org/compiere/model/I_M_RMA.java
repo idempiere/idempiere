@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_RMA
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_RMA 
 {
@@ -88,6 +88,7 @@ public interface I_M_RMA
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -103,6 +104,7 @@ public interface I_M_RMA
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -118,6 +120,7 @@ public interface I_M_RMA
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Order_ID */
@@ -133,6 +136,7 @@ public interface I_M_RMA
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name CreateFrom */
@@ -268,6 +272,7 @@ public interface I_M_RMA
 	  */
 	public int getInOut_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getInOut() throws RuntimeException;
 
     /** Column name IsActive */
@@ -322,6 +327,7 @@ public interface I_M_RMA
 	  */
 	public int getM_RMAType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMAType getM_RMAType() throws RuntimeException;
 
     /** Column name M_RMA_ID */
@@ -390,6 +396,7 @@ public interface I_M_RMA
 	/** Get Referenced RMA	  */
 	public int getRef_RMA_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMA getRef_RMA() throws RuntimeException;
 
     /** Column name SalesRep_ID */
@@ -405,6 +412,7 @@ public interface I_M_RMA
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name Updated */

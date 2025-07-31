@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_InvoiceGL
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_T_InvoiceGL 
 {
@@ -75,6 +75,7 @@ public interface I_T_InvoiceGL
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name APAR */
@@ -181,6 +182,7 @@ public interface I_T_InvoiceGL
 	  */
 	public int getC_ConversionTypeReval_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionTypeReval() throws RuntimeException;
 
     /** Column name C_DocTypeReval_ID */
@@ -196,6 +198,7 @@ public interface I_T_InvoiceGL
 	  */
 	public int getC_DocTypeReval_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeReval() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -211,6 +214,7 @@ public interface I_T_InvoiceGL
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name Created */

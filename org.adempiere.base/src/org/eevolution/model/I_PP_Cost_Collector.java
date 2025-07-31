@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Cost_Collector
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_Cost_Collector 
@@ -90,6 +90,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -105,6 +106,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -120,6 +122,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_DocTypeTarget_ID */
@@ -135,6 +138,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_DocTypeTarget_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -150,6 +154,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -165,6 +170,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name C_UOM_ID */
@@ -180,6 +186,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name CostCollectorType */
@@ -329,6 +336,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -344,6 +352,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -359,6 +368,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -374,6 +384,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name MovementDate */
@@ -429,6 +440,7 @@ public interface I_PP_Cost_Collector
 	/** Get Manufacturing Order BOM Line	  */
 	public int getPP_Order_BOMLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_BOMLine getPP_Order_BOMLine() throws RuntimeException;
 
     /** Column name PP_Order_ID */
@@ -444,6 +456,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getPP_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException;
 
     /** Column name PP_Order_Node_ID */
@@ -459,6 +472,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getPP_Order_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException;
 
     /** Column name PP_Order_Workflow_ID */
@@ -470,6 +484,7 @@ public interface I_PP_Cost_Collector
 	/** Get Manufacturing Order Workflow	  */
 	public int getPP_Order_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException;
 
     /** Column name Posted */
@@ -542,6 +557,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getReversal() throws RuntimeException;
 
     /** Column name S_Resource_ID */
@@ -557,6 +573,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getS_Resource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name ScrappedQty */
@@ -610,6 +627,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -625,5 +643,6 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getUser2() throws RuntimeException;
 }

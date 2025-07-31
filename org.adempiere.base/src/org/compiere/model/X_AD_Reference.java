@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Reference
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Reference")
 public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName)
@@ -125,6 +125,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)

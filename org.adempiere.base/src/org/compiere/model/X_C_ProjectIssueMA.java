@@ -25,7 +25,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for C_ProjectIssueMA
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssueMA")
 public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_ProjectIssueMA (Properties ctx, int C_ProjectIssueMA_ID, String trxName)
@@ -126,6 +126,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 		return (String)get_Value(COLUMNNAME_C_ProjectIssueMA_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_ID)
@@ -162,6 +163,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
         return new ValueNamePair(get_UUID(), String.valueOf(getC_ProjectIssue_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)

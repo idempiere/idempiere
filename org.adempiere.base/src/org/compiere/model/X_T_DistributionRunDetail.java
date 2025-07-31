@@ -25,7 +25,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for T_DistributionRunDetail
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_DistributionRunDetail")
 public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRunDetail, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_T_DistributionRunDetail (Properties ctx, int T_DistributionRunDetail_ID, String trxName)
@@ -139,6 +139,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -167,6 +168,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -195,6 +197,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionListLine getM_DistributionListLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_DistributionListLine)MTable.get(getCtx(), org.compiere.model.I_M_DistributionListLine.Table_ID)
@@ -223,6 +226,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionList getM_DistributionList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_DistributionList)MTable.get(getCtx(), org.compiere.model.I_M_DistributionList.Table_ID)
@@ -251,6 +255,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionRunLine getM_DistributionRunLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_DistributionRunLine)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRunLine.Table_ID)
@@ -279,6 +284,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_ID)
@@ -315,6 +321,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
         return new ValueNamePair(get_UUID(), String.valueOf(getM_DistributionRun_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

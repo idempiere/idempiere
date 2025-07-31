@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for A_RegistrationValue
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationValue")
 public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_A_RegistrationValue (Properties ctx, int A_RegistrationValue_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_RegistrationAttribute)MTable.get(getCtx(), org.compiere.model.I_A_RegistrationAttribute.Table_ID)
@@ -160,6 +161,7 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 		return (String)get_Value(COLUMNNAME_A_RegistrationValue_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Registration getA_Registration() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Registration)MTable.get(getCtx(), org.compiere.model.I_A_Registration.Table_ID)

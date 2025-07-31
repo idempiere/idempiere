@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_WF_Node_Asset
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_WF_Node_Asset 
@@ -77,6 +77,7 @@ public interface I_PP_WF_Node_Asset
 	  */
 	public int getAD_WF_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name A_Asset_ID */
@@ -92,6 +93,7 @@ public interface I_PP_WF_Node_Asset
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name Created */

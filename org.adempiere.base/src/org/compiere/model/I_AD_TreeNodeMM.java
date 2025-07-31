@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_TreeNodeMM
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_TreeNodeMM 
 {
@@ -84,6 +84,7 @@ public interface I_AD_TreeNodeMM
 	  */
 	public int getAD_Tree_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException;
 
     /** Column name Created */

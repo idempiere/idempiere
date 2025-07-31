@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ToolBarButtonRestrict
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ToolBarButtonRestrict")
 public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButtonRestrict, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -140,6 +141,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -168,6 +170,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -232,6 +235,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return (String)get_Value(COLUMNNAME_AD_ToolBarButtonRestrict_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ToolBarButton getAD_ToolBarButton() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_ToolBarButton)MTable.get(getCtx(), org.compiere.model.I_AD_ToolBarButton.Table_ID)
@@ -259,6 +263,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

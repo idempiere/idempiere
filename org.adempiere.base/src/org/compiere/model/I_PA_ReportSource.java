@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportSource
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_PA_ReportSource 
 {
@@ -88,6 +88,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -103,6 +104,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -118,6 +120,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_ElementValue_ID */
@@ -133,6 +136,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getC_ElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -148,6 +152,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -163,6 +168,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name C_SalesRegion_ID */
@@ -178,6 +184,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getC_SalesRegion_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name Created */
@@ -404,6 +411,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Org_ID */
@@ -428,6 +436,7 @@ public interface I_PA_ReportSource
 	/** Get Report Line	  */
 	public int getPA_ReportLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
 
     /** Column name PA_ReportSource_ID */

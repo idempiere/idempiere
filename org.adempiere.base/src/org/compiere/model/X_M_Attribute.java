@@ -31,7 +31,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250301L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
@@ -121,6 +121,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -149,6 +150,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -177,6 +179,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
@@ -349,6 +352,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSearch getM_AttributeSearch() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_AttributeSearch)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSearch.Table_ID)

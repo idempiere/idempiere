@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BankRegister
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_BankRegister")
 public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_T_BankRegister (Properties ctx, String T_BankRegister_UU, String trxName)
@@ -83,6 +83,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -212,6 +213,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 		return (String)get_Value(COLUMNNAME_BankName);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -240,6 +242,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_ID)

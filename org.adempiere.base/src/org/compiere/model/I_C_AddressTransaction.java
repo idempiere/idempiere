@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AddressTransaction
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_AddressTransaction 
 {
@@ -154,6 +154,7 @@ public interface I_C_AddressTransaction
 	/** Get Address Validation	  */
 	public int getC_AddressValidation_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -169,6 +170,7 @@ public interface I_C_AddressTransaction
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name City */

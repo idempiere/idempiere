@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Split
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset_Split 
 {
@@ -111,6 +111,7 @@ public interface I_A_Asset_Split
 	/** Get To Asset ID	  */
 	public int getA_Asset_ID_To();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset_To() throws RuntimeException;
 
     /** Column name A_Asset_Split_ID */
@@ -207,6 +208,7 @@ public interface I_A_Asset_Split
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */

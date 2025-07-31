@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CashBook_Acct
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_CashBook_Acct 
 {
@@ -75,6 +75,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException;
 
     /** Column name CB_CashTransfer_Acct */
@@ -90,6 +91,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_CashTransfer_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException;
 
     /** Column name CB_Differences_Acct */
@@ -105,6 +107,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Differences_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException;
 
     /** Column name CB_Expense_Acct */
@@ -120,6 +123,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException;
 
     /** Column name CB_Receipt_Acct */
@@ -135,6 +139,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Receipt_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -150,6 +155,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_CashBook_Acct_UU */
@@ -174,6 +180,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getC_CashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException;
 
     /** Column name Created */

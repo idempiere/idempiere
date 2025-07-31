@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ActivityResult
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_ActivityResult")
 public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityResult (Properties ctx, int AD_WF_ActivityResult_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 		return (String)get_Value(COLUMNNAME_AD_WF_ActivityResult_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Activity getAD_WF_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Activity)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Activity.Table_ID)

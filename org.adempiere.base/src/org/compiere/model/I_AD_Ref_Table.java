@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Ref_Table
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Ref_Table 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Ref_Table
 	  */
 	public int getAD_Display();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Disp() throws RuntimeException;
 
     /** Column name AD_InfoWindow_ID */
@@ -77,6 +78,7 @@ public interface I_AD_Ref_Table
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Key */
@@ -92,6 +94,7 @@ public interface I_AD_Ref_Table
 	  */
 	public int getAD_Key();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -129,6 +132,7 @@ public interface I_AD_Ref_Table
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -144,6 +148,7 @@ public interface I_AD_Ref_Table
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -159,6 +164,7 @@ public interface I_AD_Ref_Table
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Created */

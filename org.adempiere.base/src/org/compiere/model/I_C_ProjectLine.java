@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ProjectLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_ProjectLine 
 {
@@ -75,6 +75,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getC_OrderPO_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_OrderPO() throws RuntimeException;
 
     /** Column name C_Order_ID */
@@ -90,6 +91,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name C_ProjectIssue_ID */
@@ -105,6 +107,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getC_ProjectIssue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
 
     /** Column name C_ProjectLine_ID */
@@ -142,6 +145,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getC_ProjectPhase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException;
 
     /** Column name C_ProjectTask_ID */
@@ -157,6 +161,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getC_ProjectTask_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -172,6 +177,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name CommittedAmt */
@@ -316,6 +322,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getM_Product_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -331,6 +338,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Production_ID */
@@ -346,6 +354,7 @@ public interface I_C_ProjectLine
 	  */
 	public int getM_Production_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException;
 
     /** Column name PlannedAmt */

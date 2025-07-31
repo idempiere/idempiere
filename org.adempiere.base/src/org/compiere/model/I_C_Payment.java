@@ -218,6 +218,7 @@ public interface I_C_Payment
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BP_BankAccount_ID */
@@ -233,6 +234,7 @@ public interface I_C_Payment
 	  */
 	public int getC_BP_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -248,6 +250,7 @@ public interface I_C_Payment
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BankAccount_ID */
@@ -263,6 +266,7 @@ public interface I_C_Payment
 	  */
 	public int getC_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name C_BankTransfer_ID */
@@ -278,6 +282,7 @@ public interface I_C_Payment
 	  */
 	public int getC_BankTransfer_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -293,6 +298,7 @@ public interface I_C_Payment
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_CashBook_ID */
@@ -308,6 +314,7 @@ public interface I_C_Payment
 	  */
 	public int getC_CashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -323,6 +330,7 @@ public interface I_C_Payment
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
@@ -338,6 +346,7 @@ public interface I_C_Payment
 	  */
 	public int getC_ConversionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name C_CostCenter_ID */
@@ -349,6 +358,7 @@ public interface I_C_Payment
 	/** Get Cost Center	  */
 	public int getC_CostCenter_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -364,6 +374,7 @@ public interface I_C_Payment
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_Department_ID */
@@ -375,6 +386,7 @@ public interface I_C_Payment
 	/** Get Department	  */
 	public int getC_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_DepositBatch_ID */
@@ -386,6 +398,7 @@ public interface I_C_Payment
 	/** Get Deposit Batch	  */
 	public int getC_DepositBatch_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -401,7 +414,24 @@ public interface I_C_Payment
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
+
+    /** Column name C_Employee_ID */
+    public static final String COLUMNNAME_C_Employee_ID = "C_Employee_ID";
+
+	/** Set Employee.
+	  * Identifies a Business Partner
+	  */
+	public void setC_Employee_ID (int C_Employee_ID);
+
+	/** Get Employee.
+	  * Identifies a Business Partner
+	  */
+	public int getC_Employee_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
@@ -416,6 +446,7 @@ public interface I_C_Payment
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Order_ID */
@@ -431,6 +462,7 @@ public interface I_C_Payment
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name C_POSTenderType_ID */
@@ -442,6 +474,7 @@ public interface I_C_Payment
 	/** Get POS Tender Type	  */
 	public int getC_POSTenderType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException;
 
     /** Column name C_PaymentBatch_ID */
@@ -457,6 +490,7 @@ public interface I_C_Payment
 	  */
 	public int getC_PaymentBatch_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentBatch getC_PaymentBatch() throws RuntimeException;
 
     /** Column name C_PaymentProcessor_ID */
@@ -472,6 +506,7 @@ public interface I_C_Payment
 	  */
 	public int getC_PaymentProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -509,6 +544,7 @@ public interface I_C_Payment
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name ChargeAmt */
@@ -1201,6 +1237,7 @@ public interface I_C_Payment
 	/** Get Referenced Payment	  */
 	public int getRef_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getRef_Payment() throws RuntimeException;
 
     /** Column name Reversal_ID */
@@ -1216,6 +1253,7 @@ public interface I_C_Payment
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getReversal() throws RuntimeException;
 
     /** Column name RoutingNo */
@@ -1325,6 +1363,7 @@ public interface I_C_Payment
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -1340,6 +1379,7 @@ public interface I_C_Payment
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 
     /** Column name VoiceAuthCode */

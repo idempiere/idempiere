@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_BOMLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_T_BOMLine 
@@ -77,6 +77,7 @@ public interface I_T_BOMLine
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -92,6 +93,7 @@ public interface I_T_BOMLine
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Cost */
@@ -267,6 +269,7 @@ s in which a component is used.
 	  */
 	public int getM_CostElement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_CostType_ID */
@@ -282,6 +285,7 @@ s in which a component is used.
 	  */
 	public int getM_CostType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -297,6 +301,7 @@ s in which a component is used.
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name PP_Product_BOMLine_ID */
@@ -312,6 +317,7 @@ s in which a component is used.
 	  */
 	public int getPP_Product_BOMLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOMLine getPP_Product_BOMLine() throws RuntimeException;
 
     /** Column name PP_Product_BOM_ID */
@@ -331,6 +337,7 @@ s in which a component is used.
 	  */
 	public int getPP_Product_BOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException;
 
     /** Column name QtyBOM */

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Theme_Detail
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Theme_Detail")
 public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_Detail, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Theme_Detail (Properties ctx, int AD_UserDef_Theme_Detail_ID, String trxName)
@@ -148,6 +148,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Theme_Detail_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Theme getAD_UserDef_Theme() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_UserDef_Theme)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Theme.Table_ID)

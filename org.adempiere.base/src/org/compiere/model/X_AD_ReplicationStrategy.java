@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReplicationStrategy
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReplicationStrategy")
 public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStrategy, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_ReplicationStrategy (Properties ctx, int AD_ReplicationStrategy_ID, String trxName)
@@ -166,6 +166,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_EXP_Processor getEXP_Processor() throws RuntimeException
 	{
 		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_ID)

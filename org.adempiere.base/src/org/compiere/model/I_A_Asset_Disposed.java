@@ -129,6 +129,7 @@ public interface I_A_Asset_Disposed
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Status */
@@ -149,6 +150,7 @@ public interface I_A_Asset_Disposed
 	/** Get Asset Trade	  */
 	public int getA_Asset_Trade_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset_Trade() throws RuntimeException;
 
     /** Column name A_Disposal_Amt */
@@ -205,6 +207,7 @@ public interface I_A_Asset_Disposed
 	/** Get Cost Center	  */
 	public int getC_CostCenter_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
 
     /** Column name C_Department_ID */
@@ -216,6 +219,7 @@ public interface I_A_Asset_Disposed
 	/** Get Department	  */
 	public int getC_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -231,6 +235,7 @@ public interface I_A_Asset_Disposed
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
@@ -246,6 +251,7 @@ public interface I_A_Asset_Disposed
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -261,6 +267,7 @@ public interface I_A_Asset_Disposed
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Period_ID */
@@ -276,6 +283,7 @@ public interface I_A_Asset_Disposed
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */

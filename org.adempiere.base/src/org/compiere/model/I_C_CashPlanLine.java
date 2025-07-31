@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CashPlanLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_CashPlanLine 
 {
@@ -88,6 +88,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -103,6 +104,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -118,6 +120,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_CashPlanLine_ID */
@@ -147,6 +150,7 @@ public interface I_C_CashPlanLine
 	/** Get Cash Plan	  */
 	public int getC_CashPlan_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashPlan getC_CashPlan() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -162,6 +166,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_ProjectPhase_ID */
@@ -177,6 +182,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getC_ProjectPhase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException;
 
     /** Column name C_ProjectTask_ID */
@@ -192,6 +198,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getC_ProjectTask_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -207,6 +214,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
@@ -303,6 +311,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
@@ -382,6 +391,7 @@ public interface I_C_CashPlanLine
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -397,5 +407,6 @@ public interface I_C_CashPlanLine
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

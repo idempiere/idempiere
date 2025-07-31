@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpSuggestion
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_CtxHelpSuggestion")
 public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)
@@ -152,6 +152,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelpMsg getAD_CtxHelpMsg() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_CtxHelpMsg)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelpMsg.Table_ID)
@@ -215,6 +216,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return (String)get_Value(COLUMNNAME_AD_CtxHelpSuggestion_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
@@ -261,6 +263,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllClients_V getAD_UserClient() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AllClients_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllClients_V.Table_ID)
@@ -288,6 +291,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_ID)

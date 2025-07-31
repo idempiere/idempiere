@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_OrderPaySchedule
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderPaySchedule")
 public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_OrderPaySchedule (Properties ctx, int C_OrderPaySchedule_ID, String trxName)
@@ -168,6 +168,7 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 		return (String)get_Value(COLUMNNAME_C_OrderPaySchedule_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -196,6 +197,7 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaySchedule getC_PaySchedule() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_PaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_PaySchedule.Table_ID)

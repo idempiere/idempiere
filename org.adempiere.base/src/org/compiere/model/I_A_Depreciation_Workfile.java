@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Depreciation_Workfile
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Depreciation_Workfile 
 {
@@ -102,6 +102,7 @@ public interface I_A_Depreciation_Workfile
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Life_Current_Year */
@@ -230,6 +231,7 @@ public interface I_A_Depreciation_Workfile
 	/** Get Asset Funding Mode	  */
 	public int getA_FundingMode_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_FundingMode getA_FundingMode() throws RuntimeException;
 
     /** Column name A_Life_Period */
@@ -370,6 +372,7 @@ public interface I_A_Depreciation_Workfile
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_CashBook_Acct
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CashBook_Acct")
 public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_C_CashBook_Acct (Properties ctx, int C_CashBook_Acct_ID, String trxName)
@@ -104,6 +104,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -129,6 +130,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -154,6 +156,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -179,6 +182,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -204,6 +208,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -229,6 +234,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -272,6 +278,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return (String)get_Value(COLUMNNAME_C_CashBook_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOMProduct
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_BOMProduct")
 public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_M_BOMProduct (Properties ctx, int M_BOMProduct_ID, String trxName)
@@ -288,6 +288,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -316,6 +317,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_BOMAlternative getM_BOMAlternative() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_BOMAlternative)MTable.get(getCtx(), org.compiere.model.I_M_BOMAlternative.Table_ID)
@@ -381,6 +383,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_BOMProduct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_BOM)MTable.get(getCtx(), org.compiere.model.I_M_BOM.Table_ID)
@@ -409,6 +412,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
@@ -437,6 +441,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_ProductBOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -465,6 +470,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductOperation)MTable.get(getCtx(), org.compiere.model.I_M_ProductOperation.Table_ID)

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Movement
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Movement 
@@ -86,6 +86,7 @@ public interface I_HR_Movement
 	/** Get Rule	  */
 	public int getAD_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException;
 
     /** Column name AccountSign */
@@ -127,6 +128,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BP_BankAccount_ID */
@@ -142,6 +144,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_BP_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
@@ -157,6 +160,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -172,6 +176,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -187,6 +192,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_ProjectPhase_ID */
@@ -202,6 +208,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_ProjectPhase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException;
 
     /** Column name C_ProjectTask_ID */
@@ -217,6 +224,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_ProjectTask_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -232,6 +240,7 @@ public interface I_HR_Movement
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name ColumnType */
@@ -281,6 +290,7 @@ public interface I_HR_Movement
 	/** Get Payroll Concept Category	  */
 	public int getHR_Concept_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept_Category getHR_Concept_Category() throws RuntimeException;
 
     /** Column name HR_Concept_ID */
@@ -292,6 +302,7 @@ public interface I_HR_Movement
 	/** Get Payroll Concept	  */
 	public int getHR_Concept_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException;
 
     /** Column name HR_Department_ID */
@@ -303,6 +314,7 @@ public interface I_HR_Movement
 	/** Get Payroll Department	  */
 	public int getHR_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException;
 
     /** Column name HR_Job_ID */
@@ -314,6 +326,7 @@ public interface I_HR_Movement
 	/** Get Payroll Job	  */
 	public int getHR_Job_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException;
 
     /** Column name HR_Movement_ID */
@@ -343,6 +356,7 @@ public interface I_HR_Movement
 	/** Get Payroll Process	  */
 	public int getHR_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Process getHR_Process() throws RuntimeException;
 
     /** Column name IsActive */
@@ -393,6 +407,7 @@ public interface I_HR_Movement
 	/** Get Manufacturing Cost Collector	  */
 	public int getPP_Cost_Collector_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException;
 
     /** Column name Processed */
@@ -476,6 +491,7 @@ public interface I_HR_Movement
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -491,6 +507,7 @@ public interface I_HR_Movement
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 
     /** Column name ValidFrom */

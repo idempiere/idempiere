@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Period
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Period 
@@ -77,6 +77,7 @@ public interface I_HR_Period
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name C_Year_ID */
@@ -92,6 +93,7 @@ public interface I_HR_Period
 	  */
 	public int getC_Year_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException;
 
     /** Column name Created */
@@ -158,6 +160,7 @@ public interface I_HR_Period
 	/** Get Payroll	  */
 	public int getHR_Payroll_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException;
 
     /** Column name HR_Period_ID */
@@ -187,6 +190,7 @@ public interface I_HR_Period
 	/** Get Payroll Year	  */
 	public int getHR_Year_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Year getHR_Year() throws RuntimeException;
 
     /** Column name IsActive */

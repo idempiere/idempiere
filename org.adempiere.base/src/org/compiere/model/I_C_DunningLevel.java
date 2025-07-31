@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DunningLevel
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_DunningLevel 
 {
@@ -93,6 +93,7 @@ public interface I_C_DunningLevel
 	  */
 	public int getC_Dunning_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
 
     /** Column name C_PaymentTerm_ID */
@@ -108,6 +109,7 @@ public interface I_C_DunningLevel
 	  */
 	public int getC_PaymentTerm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
 
     /** Column name ChargeFee */
@@ -204,6 +206,7 @@ public interface I_C_DunningLevel
 	  */
 	public int getDunning_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getDunning_PrintFormat() throws RuntimeException;
 
     /** Column name FeeAmt */

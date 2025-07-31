@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_TimeExpenseLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_S_TimeExpenseLine 
 {
@@ -75,6 +75,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -90,6 +91,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -105,6 +107,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -120,6 +123,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
@@ -135,6 +139,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_OrderLine_ID */
@@ -150,6 +155,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name C_ProjectPhase_ID */
@@ -165,6 +171,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_ProjectPhase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException;
 
     /** Column name C_ProjectTask_ID */
@@ -180,6 +187,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_ProjectTask_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -195,6 +203,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name C_UOM_ID */
@@ -210,6 +219,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name ConvertedAmt */
@@ -371,6 +381,7 @@ public interface I_S_TimeExpenseLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Note */
@@ -516,6 +527,7 @@ s AP price list)
 	  */
 	public int getS_TimeExpense_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_TimeExpense getS_TimeExpense() throws RuntimeException;
 
     /** Column name S_TimeType_ID */
@@ -531,6 +543,7 @@ s AP price list)
 	  */
 	public int getS_TimeType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_TimeType getS_TimeType() throws RuntimeException;
 
     /** Column name Updated */

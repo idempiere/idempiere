@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_RegistrationValue
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_RegistrationValue 
 {
@@ -75,6 +75,7 @@ public interface I_A_RegistrationValue
 	  */
 	public int getA_RegistrationAttribute_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException;
 
     /** Column name A_RegistrationValue_UU */
@@ -99,6 +100,7 @@ public interface I_A_RegistrationValue
 	  */
 	public int getA_Registration_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Registration getA_Registration() throws RuntimeException;
 
     /** Column name Created */

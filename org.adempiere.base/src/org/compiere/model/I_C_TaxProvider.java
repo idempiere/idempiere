@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxProvider
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_TaxProvider 
 {
@@ -80,6 +80,7 @@ public interface I_C_TaxProvider
 	/** Get Tax Provider Configuration	  */
 	public int getC_TaxProviderCfg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException;
 
     /** Column name C_TaxProvider_ID */

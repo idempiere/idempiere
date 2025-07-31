@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_InvoicePaySchedule
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_InvoicePaySchedule 
 {
@@ -97,6 +97,7 @@ public interface I_C_InvoicePaySchedule
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_PaySchedule_ID */
@@ -112,6 +113,7 @@ public interface I_C_InvoicePaySchedule
 	  */
 	public int getC_PaySchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaySchedule getC_PaySchedule() throws RuntimeException;
 
     /** Column name Created */

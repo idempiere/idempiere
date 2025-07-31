@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_RMATax
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_RMATax 
 {
@@ -71,6 +71,7 @@ public interface I_M_RMATax
 	/** Get Tax Provider	  */
 	public int getC_TaxProvider_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException;
 
     /** Column name C_Tax_ID */
@@ -86,6 +87,7 @@ public interface I_M_RMATax
 	  */
 	public int getC_Tax_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name Created */
@@ -152,6 +154,7 @@ public interface I_M_RMATax
 	  */
 	public int getM_RMA_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
 
     /** Column name Processed */

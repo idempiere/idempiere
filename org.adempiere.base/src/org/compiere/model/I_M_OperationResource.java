@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_OperationResource
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_OperationResource 
 {
@@ -75,6 +75,7 @@ public interface I_M_OperationResource
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name C_Job_ID */
@@ -90,6 +91,7 @@ public interface I_M_OperationResource
 	  */
 	public int getC_Job_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException;
 
     /** Column name Created */
@@ -182,6 +184,7 @@ public interface I_M_OperationResource
 	  */
 	public int getM_ProductOperation_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException;
 
     /** Column name Name */

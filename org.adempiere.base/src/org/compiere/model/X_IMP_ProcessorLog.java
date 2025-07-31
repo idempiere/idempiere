@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorLog
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="IMP_ProcessorLog")
 public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250730L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)
@@ -196,6 +196,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 		return (String)get_Value(COLUMNNAME_IMP_ProcessorLog_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException
 	{
 		return (org.compiere.model.I_IMP_Processor)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor.Table_ID)
