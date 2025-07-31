@@ -262,7 +262,8 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 		}
 		finally
 		{
-			closeBufferedReader();
+			if (!result)
+				closeBufferedReader();
 		}
 
 		return result;
@@ -344,6 +345,7 @@ public abstract class OFXBankStatementHandler extends DefaultHandler
 		if (m_reader != null)
 			try {
 				m_reader.close();
+				m_reader = null;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -266,7 +266,8 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 			throw new AdempiereException("Could not find scope " + scopes + " for provider " + getAD_AuthorizationProvider_ID());
 		MAuthorizationProvider provider = new MAuthorizationProvider(getCtx(), getAD_AuthorizationProvider_ID(), get_TrxName());
 		String authEndPoint = provider.getAuthorizationEndpoint();
-		StringBuilder url = new StringBuilder(authEndPoint).append("?");
+		String parameterSeparator = authEndPoint.contains("?") ? "&" : "?";
+		StringBuilder url = new StringBuilder(authEndPoint).append(parameterSeparator);
 		List<NameValuePair> nameValuePairs = new ArrayList<>();
 		nameValuePairs.add(new BasicNameValuePair("scope", scopeUrl));
 		nameValuePairs.add(new BasicNameValuePair("redirect_uri", getAuthorizationRedirectURL()));

@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -56,6 +57,8 @@ public class ImageFileStorageImpl implements IImageStore {
 	//temporary buffer when AD_Image_ID=0
 	private byte[] buffer = null;
 
+	private InputStream bufferInputStream;
+
 	@Override
 	public byte[] load(MImage image, MStorageProvider prov) {
 		String imagePathRoot = getImagePathRoot(prov);
@@ -63,11 +66,54 @@ public class ImageFileStorageImpl implements IImageStore {
 			throw new IllegalArgumentException("no path defined");
 		}
 		buffer = null;
+		bufferInputStream = null;
 		byte[] data = image.getByteData();
 		if (data == null) {
 			return null;
 		}
 
+		File file = parseXML(imagePathRoot, data);
+		if (file != null && file.exists()) {
+			// read files into byte[]
+			final byte[] dataEntry = new byte[(int) file.length()];
+			try (FileInputStream fileInputStream = new FileInputStream(file)){
+				fileInputStream.read(dataEntry);
+			} catch (FileNotFoundException e) {
+				log.log(Level.SEVERE, "File Not Found.", e);
+			} catch (IOException e1) {
+				log.log(Level.SEVERE, "Error Reading The File.", e1);
+			}
+			return dataEntry;
+		} else {
+			log.severe("Image file not found or invalid XML entry");
+		}
+		
+		return null;
+	}
+
+	
+	@Override
+	public InputStream loadAsStream(MImage image, MStorageProvider prov) {
+		String imagePathRoot = getImagePathRoot(prov);
+		if ("".equals(imagePathRoot)) {
+			throw new IllegalArgumentException("no path defined");
+		}
+		buffer = null;
+		bufferInputStream = null;
+		byte[] data = image.getByteData();
+		if (data == null) {
+			return null;
+		}
+		File file = parseXML(imagePathRoot, data);
+		try {
+			return file != null ? new FileInputStream(file) : null;
+		} catch (FileNotFoundException e) {
+			log.log(Level.SEVERE, "File Not Found.", e);
+		}	
+		return null;
+	}
+
+	private File parseXML(String imagePathRoot, byte[] data) {
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 		try {
@@ -98,19 +144,8 @@ public class ImageFileStorageImpl implements IImageStore {
 			}
 			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
 			final File file = new File(filePath);
-			if (file.exists()) {
-				// read files into byte[]
-				final byte[] dataEntry = new byte[(int) file.length()];
-				try (FileInputStream fileInputStream = new FileInputStream(file)){
-					fileInputStream.read(dataEntry);
-				} catch (FileNotFoundException e) {
-					log.severe("File Not Found.");
-					e.printStackTrace();
-				} catch (IOException e1) {
-					log.severe("Error Reading The File.");
-					e1.printStackTrace();
-				}
-				return dataEntry;
+			if (file.exists()) {				
+				return file;
 			} else {
 				log.severe("file not found: " + file.getAbsolutePath());
 				return null;
@@ -121,23 +156,19 @@ public class ImageFileStorageImpl implements IImageStore {
 			Exception x = sxe;
 			if (sxe.getException() != null)
 				x = sxe.getException();
-			x.printStackTrace();
-			log.severe(x.getMessage());
+			log.log(Level.SEVERE, x.getMessage(), x);
 
 		} catch (ParserConfigurationException pce) {
 			// Parser with specified options can't be built
-			pce.printStackTrace();
-			log.severe(pce.getMessage());
+			log.log(Level.SEVERE, pce.getMessage(), pce);
 
 		} catch (IOException ioe) {
 			// I/O error
-			ioe.printStackTrace();
-			log.severe(ioe.getMessage());
+			log.log(Level.SEVERE, ioe.getMessage(), ioe);
 		}
-		
 		return null;
 	}
-
+	
 	@Override
 	public void  save(MImage image, MStorageProvider prov,byte[] inflatedData) {
 		if (inflatedData == null || inflatedData.length == 0) {
@@ -150,11 +181,31 @@ public class ImageFileStorageImpl implements IImageStore {
 			//set binary data otherwise save will fail
 			image.setByteData(new byte[]{'0'});
 			buffer = inflatedData;
+			bufferInputStream = null;
 		} else {
-			write(image, prov, inflatedData);
+			write(image, prov, inflatedData, null);
 		}
 
 	}
+
+	
+	@Override
+	public void save(MImage image, MStorageProvider prov, InputStream inputStream) {
+		if (inputStream == null) {
+			image.setByteData(null);
+			delete(image, prov);
+			return;
+		}
+		if(image.get_ID()==0){
+			//set binary data otherwise save will fail
+			image.setByteData(new byte[]{'0'});
+			buffer = null;
+			bufferInputStream = inputStream;
+		} else {
+			write(image, prov, null, inputStream);
+		}
+	}
+
 
 	/**
 	 * Write image data to file
@@ -162,7 +213,7 @@ public class ImageFileStorageImpl implements IImageStore {
 	 * @param prov
 	 * @param inflatedData
 	 */
-	private void write(MImage image, MStorageProvider prov, byte[] inflatedData) {
+	private void write(MImage image, MStorageProvider prov, byte[] inflatedData, InputStream inputStream) {
 		BufferedOutputStream out = null;
 		try {
 			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();			
@@ -187,7 +238,15 @@ public class ImageFileStorageImpl implements IImageStore {
 			final File destFile = new File(msgfile.toString());
 
 			out = new BufferedOutputStream(new FileOutputStream(destFile));
-			out.write(inflatedData);
+			if (inflatedData != null) {
+				out.write(inflatedData);
+			} else if (inputStream != null) {
+				byte[] buffer = new byte[8192];
+				int length = -1;
+				while((length = inputStream.read(buffer)) != -1) {
+					out.write(buffer, 0, length);
+				}
+			}
 			out.flush();
 
 			//create xml entry
@@ -261,14 +320,15 @@ public class ImageFileStorageImpl implements IImageStore {
 
 	@Override
 	public boolean isPendingFlush() {
-		return buffer != null && buffer.length > 0;
+		return (buffer != null && buffer.length > 0) || (bufferInputStream != null);
 	}
 
 	@Override
 	public void flush(MImage image, MStorageProvider prov) {
-		if (buffer != null && buffer.length > 0) {
-			write(image, prov, buffer);
+		if ((buffer != null && buffer.length > 0) || (bufferInputStream != null)) {
+			write(image, prov, buffer, bufferInputStream);
 			buffer = null;
+			bufferInputStream = null;
 		}		
 	}
 
