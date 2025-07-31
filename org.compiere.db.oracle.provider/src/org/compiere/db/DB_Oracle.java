@@ -72,6 +72,7 @@ import oracle.jdbc.OracleDriver;
  *  connection pooling framework for better and more efficient connection handling
  *
  *  @author Ashley Ramdass (Posterita)
+ *  @author Rade Pobulić (VDEL) Made DB Host and Port optional, expecing TNS name or full connection string in DB Name
  */
 public class DB_Oracle implements AdempiereDatabase
 {
@@ -233,10 +234,10 @@ public class DB_Oracle implements AdempiereDatabase
             {
                 //  old: jdbc:oracle:thin:@dev2:1521:sid
                 //  new: jdbc:oracle:thin:@//dev2:1521/serviceName
-                sb.append("//")
-                    .append(connection.getDbHost())
-                    .append(":").append(connection.getDbPort())
-                    .append("/").append(connection.getDbName());
+				//  best: jdbc:oracle:thin:@tnsName
+				sb.append(connection.getDbName().startsWith("@")
+					? connection.getDbName().substring(1) // tns alias
+					: "//" + connection.getDbHost() + ":" + connection.getDbPort() + "/" + connection.getDbName());
             }
         }
         m_connectionURL = sb.toString();
@@ -259,8 +260,10 @@ public class DB_Oracle implements AdempiereDatabase
         String userName)
     {
         m_userName = userName;
-        m_connectionURL = "jdbc:oracle:thin:@//"
-            + dbHost + ":" + dbPort + "/" + dbName;
+		m_connectionURL = "jdbc:oracle:thin:@"
+			+ (dbName.startsWith("@")
+				? dbName.substring(1) //tns alias
+				: "//" + dbHost + ":" + dbPort + "/" + dbName);
         return m_connectionURL;
     }   //  getConnectionURL
 
@@ -422,6 +425,8 @@ public class DB_Oracle implements AdempiereDatabase
     public String getSystemUser()
     {
     	String systemUser = SystemProperties.getAdempiereDBSystemUser();
+    	if (systemUser == null)
+    		systemUser = System.getenv(SystemProperties.ADEMPIERE_DB_SYSTEM_USER);
     	if (systemUser == null)
     		systemUser = "system";
         return systemUser;

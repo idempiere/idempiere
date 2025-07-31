@@ -40,12 +40,15 @@ tnsping "$ADEMPIERE_DB_NAME"
 
 echo .
 echo Database Connection Test \(2\)... System
-echo Running sqlplus system/"$ADEMPIERE_DB_SYS"@"$ADEMPIERE_DB_NAME" @"$ADEMPIERE_DB_PATH"/Test.sql
-sqlplus system/"$ADEMPIERE_DB_SYSTEM"@"$ADEMPIERE_DB_NAME" @"$ADEMPIERE_DB_HOME"/Test.sql
+if [ -z "$ADEMPIERE_DB_SYSTEM_USER" ]; then
+    ADEMPIERE_DB_SYSTEM_USER=SYSTEM
+fi
+echo Running sqlplus "$ADEMPIERE_DB_SYSTEM_USER"/"$ADEMPIERE_DB_SYS"@"$ADEMPIERE_DB_NAME" @"$ADEMPIERE_DB_PATH"/Test.sql
+sqlplus "$ADEMPIERE_DB_SYSTEM_USER"/"$ADEMPIERE_DB_SYSTEM"@"$ADEMPIERE_DB_NAME" @"$ADEMPIERE_DB_HOME"/Test.sql
 
 echo .
 echo Checking Database Size \(3\)
-sqlplus system/"$ADEMPIERE_DB_SYSTEM"@"$ADEMPIERE_DB_NAME" @"$ADEMPIERE_DB_HOME"/CheckDB.sql "$ADEMPIERE_DB_USER"
+sqlplus "$ADEMPIERE_DB_SYSTEM_USER"/"$ADEMPIERE_DB_SYSTEM"@"$ADEMPIERE_DB_NAME" @"$ADEMPIERE_DB_HOME"/CheckDB.sql "$ADEMPIERE_DB_USER"
 
 echo .
 echo "== It is ok for the next to fail before the iDempiere Database Import Step =="

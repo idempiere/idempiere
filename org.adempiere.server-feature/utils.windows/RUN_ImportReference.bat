@@ -10,6 +10,7 @@
 @pause
 
 @Rem Parameter: <systemAccount> <AdempiereID> <AdempierePwd>
-@call %ADEMPIERE_DB_PATH%\ImportIdempiere system/%ADEMPIERE_DB_SYSTEM% reference reference
+@if "%ADEMPIERE_DB_SYSTEM_USER%" == "" (set "ADEMPIERE_DB_SYSTEM_USER=SYSTEM")
+@call %ADEMPIERE_DB_PATH%\ImportIdempiere %ADEMPIERE_DB_SYSTEM_USER%/%ADEMPIERE_DB_SYSTEM% reference reference
 
 @pause
