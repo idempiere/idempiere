@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import org.compiere.model.MIssue;
+import org.compiere.model.PO;
 
 /**
  *	Handler that publish log record to the system error output stream
@@ -226,6 +227,7 @@ public class CLogErrorBuffer extends Handler
 					&& loggerName.indexOf("Issue") == -1
 					&& loggerName.indexOf("CConnection") == -1
 					&& !loggerName.startsWith("com.zaxxer.hikari")
+					&& !PO.checkSupressMIssue()
 					&& DB.isConnected()
 					)
 				{

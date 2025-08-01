@@ -2487,6 +2487,7 @@ public abstract class PO
 
 		try
 		{
+			setSupressMIssue(); 
 			// Call ModelValidators TYPE_NEW/TYPE_CHANGE
 			String errorMsg = ModelValidationEngine.get().fireModelChange
 				(this, newRecord ? ModelValidator.TYPE_NEW : ModelValidator.TYPE_CHANGE);
@@ -2596,6 +2597,7 @@ public abstract class PO
 		}
 		finally
 		{
+			isSupressMIssue.remove();
 			if (localTrx != null)
 			{
 				localTrx.close();
@@ -6085,6 +6087,30 @@ public abstract class PO
 				throw new CrossTenantException(writing, get_TableName(), get_ID());
 			}
 		}
+	}
+	
+	private static ThreadLocal<Boolean> isSupressMIssue = new ThreadLocal<Boolean>() {
+		@Override protected Boolean initialValue() {
+			return Boolean.FALSE;
+		};
+	};
+	
+	/**
+	 * Turn on supress MIssue safe thread local flag
+	 */
+	public static void setSupressMIssue() {
+		isSupressMIssue.set(Boolean.TRUE);
+	}
+	
+	/**
+	 * Clear supress MIssue safe thread local flag
+	 */
+	public static void clearSupressMIssue() {
+		isSupressMIssue.set(Boolean.FALSE);
+	}
+	
+	public static boolean checkSupressMIssue() {
+		return isSupressMIssue.get();
 	}
 	
 	/**
