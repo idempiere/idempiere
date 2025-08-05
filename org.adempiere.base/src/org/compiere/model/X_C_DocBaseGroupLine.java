@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_DocBaseGroupLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DocBaseGroupLine")
 public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_DocBaseGroupLine (Properties ctx, int C_DocBaseGroupLine_ID, String trxName)
@@ -145,6 +145,7 @@ public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_
 		return (String)get_Value(COLUMNNAME_C_DocBaseGroupLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocBaseGroup)MTable.get(getCtx(), org.compiere.model.I_C_DocBaseGroup.Table_ID)

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceMethod
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceMethod")
 public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName)
@@ -210,6 +210,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 		return (String)get_Value(COLUMNNAME_WS_WebServiceMethod_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebService getWS_WebService() throws RuntimeException
 	{
 		return (I_WS_WebService)MTable.get(getCtx(), I_WS_WebService.Table_ID)

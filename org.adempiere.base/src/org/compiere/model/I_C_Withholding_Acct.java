@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Withholding_Acct
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Withholding_Acct 
 {
@@ -75,6 +75,7 @@ public interface I_C_Withholding_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Withholding_Acct_UU */
@@ -99,6 +100,7 @@ public interface I_C_Withholding_Acct
 	  */
 	public int getC_Withholding_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Withholding getC_Withholding() throws RuntimeException;
 
     /** Column name Created */
@@ -159,5 +161,6 @@ public interface I_C_Withholding_Acct
 	  */
 	public int getWithholding_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getWithholding_A() throws RuntimeException;
 }

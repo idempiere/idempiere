@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_FixedAsset
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_FixedAsset 
 {
@@ -89,6 +89,7 @@ public interface I_I_FixedAsset
 	/** Get Asset class	  */
 	public int getA_Asset_Class_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException;
 
     /** Column name A_Asset_Class_Value */
@@ -122,6 +123,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getA_Asset_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
 
     /** Column name A_Asset_Group_Value */
@@ -146,6 +148,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Type_ID */
@@ -157,6 +160,7 @@ public interface I_I_FixedAsset
 	/** Get Asset Type	  */
 	public int getA_Asset_Type_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException;
 
     /** Column name A_Asset_Type_Value */
@@ -291,6 +295,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BPartnerSR_ID */
@@ -306,6 +311,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_BPartnerSR_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException;
 
     /** Column name C_City_ID */
@@ -321,6 +327,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_City_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
 
     /** Column name C_City_Value */
@@ -345,6 +352,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_UOM_ID */
@@ -360,6 +368,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name Created */
@@ -522,6 +531,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -537,6 +547,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */

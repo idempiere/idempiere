@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema_Default
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_AcctSchema_Default 
 {
@@ -75,6 +75,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException;
 
     /** Column name B_InTransit_Acct */
@@ -90,6 +91,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_InTransit_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException;
 
     /** Column name B_InterestExp_Acct */
@@ -105,6 +107,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_InterestExp_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException;
 
     /** Column name B_InterestRev_Acct */
@@ -120,6 +123,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_InterestRev_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException;
 
     /** Column name B_PaymentSelect_Acct */
@@ -135,6 +139,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_PaymentSelect_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException;
 
     /** Column name B_UnallocatedCash_Acct */
@@ -150,6 +155,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_UnallocatedCash_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
 
     /** Column name CB_Asset_Acct */
@@ -165,6 +171,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getCB_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException;
 
     /** Column name CB_CashTransfer_Acct */
@@ -180,6 +187,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getCB_CashTransfer_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException;
 
     /** Column name CB_Differences_Acct */
@@ -195,6 +203,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getCB_Differences_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException;
 
     /** Column name CB_Expense_Acct */
@@ -210,6 +219,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getCB_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException;
 
     /** Column name CB_Receipt_Acct */
@@ -225,6 +235,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getCB_Receipt_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException;
 
     /** Column name C_AcctSchema_Default_UU */
@@ -249,6 +260,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Prepayment_Acct */
@@ -264,6 +276,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getC_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException;
 
     /** Column name C_Receivable_Acct */
@@ -279,6 +292,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getC_Receivable_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException;
 
     /** Column name C_Receivable_Services_Acct */
@@ -294,6 +308,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getC_Receivable_Services_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
 
     /** Column name Ch_Expense_Acct */
@@ -309,6 +324,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getCh_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
 
     /** Column name Created */
@@ -353,6 +369,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getNotInvoicedReceipts_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getNotInvoicedReceipts_A() throws RuntimeException;
 
     /** Column name PJ_Asset_Acct */
@@ -368,6 +385,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getPJ_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException;
 
     /** Column name PJ_WIP_Acct */
@@ -383,6 +401,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getPJ_WIP_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException;
 
     /** Column name P_Asset_Acct */
@@ -398,6 +417,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Asset_A() throws RuntimeException;
 
     /** Column name P_AverageCostVariance_Acct */
@@ -413,6 +433,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_AverageCostVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException;
 
     /** Column name P_COGS_Acct */
@@ -428,6 +449,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_COGS_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_COGS_A() throws RuntimeException;
 
     /** Column name P_CostAdjustment_Acct */
@@ -443,6 +465,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_CostAdjustment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException;
 
     /** Column name P_Expense_Acct */
@@ -458,6 +481,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Expense_A() throws RuntimeException;
 
     /** Column name P_InventoryClearing_Acct */
@@ -473,6 +497,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_InventoryClearing_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException;
 
     /** Column name P_InvoicePriceVariance_Acct */
@@ -488,6 +513,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_InvoicePriceVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException;
 
     /** Column name P_LandedCostClearing_Acct */
@@ -503,6 +529,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_LandedCostClearing_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException;
 
     /** Column name P_PurchasePriceVariance_Acct */
@@ -518,6 +545,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_PurchasePriceVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_PurchasePriceVariance_A() throws RuntimeException;
 
     /** Column name P_RateVariance_Acct */
@@ -533,6 +561,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_RateVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_RateVariance_A() throws RuntimeException;
 
     /** Column name P_Revenue_Acct */
@@ -548,6 +577,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException;
 
     /** Column name P_TradeDiscountGrant_Acct */
@@ -563,6 +593,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_TradeDiscountGrant_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException;
 
     /** Column name P_TradeDiscountRec_Acct */
@@ -578,6 +609,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_TradeDiscountRec_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException;
 
     /** Column name PayDiscount_Exp_Acct */
@@ -593,6 +625,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getPayDiscount_Exp_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException;
 
     /** Column name PayDiscount_Rev_Acct */
@@ -608,6 +641,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getPayDiscount_Rev_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException;
 
     /** Column name Processing */
@@ -632,6 +666,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getRealizedGain_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getRealizedGain_A() throws RuntimeException;
 
     /** Column name RealizedLoss_Acct */
@@ -647,6 +682,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getRealizedLoss_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getRealizedLoss_A() throws RuntimeException;
 
     /** Column name T_Credit_Acct */
@@ -662,6 +698,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getT_Credit_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Credit_A() throws RuntimeException;
 
     /** Column name T_Due_Acct */
@@ -677,6 +714,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getT_Due_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Due_A() throws RuntimeException;
 
     /** Column name T_Expense_Acct */
@@ -692,6 +730,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getT_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Expense_A() throws RuntimeException;
 
     /** Column name UnEarnedRevenue_Acct */
@@ -707,6 +746,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getUnEarnedRevenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException;
 
     /** Column name UnrealizedGain_Acct */
@@ -722,6 +762,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getUnrealizedGain_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnrealizedGain_A() throws RuntimeException;
 
     /** Column name UnrealizedLoss_Acct */
@@ -737,6 +778,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getUnrealizedLoss_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnrealizedLoss_A() throws RuntimeException;
 
     /** Column name Updated */
@@ -768,6 +810,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getV_Liability_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_A() throws RuntimeException;
 
     /** Column name V_Liability_Services_Acct */
@@ -783,6 +826,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getV_Liability_Services_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_Services_A() throws RuntimeException;
 
     /** Column name V_Prepayment_Acct */
@@ -798,6 +842,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getV_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Prepayment_A() throws RuntimeException;
 
     /** Column name W_Differences_Acct */
@@ -813,6 +858,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getW_Differences_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getW_Differences_A() throws RuntimeException;
 
     /** Column name WriteOff_Acct */
@@ -828,5 +874,6 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getWriteOff_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getWriteOff_A() throws RuntimeException;
 }

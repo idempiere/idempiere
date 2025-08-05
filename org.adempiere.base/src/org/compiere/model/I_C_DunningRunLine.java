@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DunningRunLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_DunningRunLine 
 {
@@ -88,6 +88,7 @@ public interface I_C_DunningRunLine
 	  */
 	public int getC_DunningRunEntry_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DunningRunEntry getC_DunningRunEntry() throws RuntimeException;
 
     /** Column name C_DunningRunLine_ID */
@@ -125,6 +126,7 @@ public interface I_C_DunningRunLine
 	  */
 	public int getC_InvoicePaySchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoicePaySchedule getC_InvoicePaySchedule() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -140,6 +142,7 @@ public interface I_C_DunningRunLine
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -155,6 +158,7 @@ public interface I_C_DunningRunLine
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name ConvertedAmt */

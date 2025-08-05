@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Period
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Period 
 {
@@ -97,6 +97,7 @@ public interface I_C_Period
 	  */
 	public int getC_Year_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException;
 
     /** Column name Created */

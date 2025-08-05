@@ -75,6 +75,7 @@ public interface I_AD_Sequence_No
 	  */
 	public int getAD_Sequence_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException;
 
     /** Column name AD_Sequence_No_UU */

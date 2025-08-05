@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for MFA_Method
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_MFA_Method 
 {
@@ -184,6 +184,7 @@ public interface I_MFA_Method
 	/** Get Parameter Element	  */
 	public int getMFA_ElementPrm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Element getMFA_ElementPrm() throws RuntimeException;
 
     /** Column name MFA_Method_ID */
@@ -243,6 +244,7 @@ public interface I_MFA_Method
 	  */
 	public int getR_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
 
     /** Column name Updated */

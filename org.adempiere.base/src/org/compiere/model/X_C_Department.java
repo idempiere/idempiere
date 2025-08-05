@@ -30,7 +30,7 @@ public class X_C_Department extends PO implements I_C_Department, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250307L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Department (Properties ctx, int C_Department_ID, String trxName)

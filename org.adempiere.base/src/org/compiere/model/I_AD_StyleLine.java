@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_StyleLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_StyleLine 
 {
@@ -101,6 +101,7 @@ public interface I_AD_StyleLine
 	  */
 	public int getAD_Style_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_Style() throws RuntimeException;
 
     /** Column name Created */
