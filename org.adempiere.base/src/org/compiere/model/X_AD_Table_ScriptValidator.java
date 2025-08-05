@@ -31,7 +31,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Table_ScriptValidator (Properties ctx, int AD_Table_ScriptValidator_ID, String trxName)

@@ -33,7 +33,7 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_CostHistory (Properties ctx, int M_CostHistory_ID, String trxName)

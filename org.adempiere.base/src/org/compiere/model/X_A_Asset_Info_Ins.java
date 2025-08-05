@@ -34,7 +34,7 @@ public class X_A_Asset_Info_Ins extends PO implements I_A_Asset_Info_Ins, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Ins (Properties ctx, int A_Asset_Info_Ins_ID, String trxName)

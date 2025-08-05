@@ -35,7 +35,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
@@ -49,7 +49,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 // Z
 			setCost (Env.ZERO);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCentrallyMaintained (false);
 			setJoinElement (null);
 // X
@@ -81,7 +81,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 // Z
 			setCost (Env.ZERO);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCentrallyMaintained (false);
 			setJoinElement (null);
 // X
@@ -113,7 +113,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 // Z
 			setCost (Env.ZERO);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCentrallyMaintained (false);
 			setJoinElement (null);
 // X
@@ -145,7 +145,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 // Z
 			setCost (Env.ZERO);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCentrallyMaintained (false);
 			setJoinElement (null);
 // X

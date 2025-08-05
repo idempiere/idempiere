@@ -30,7 +30,7 @@ public class X_AD_Form_Access extends PO implements I_AD_Form_Access, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Form_Access (Properties ctx, int AD_Form_Access_ID, String trxName)

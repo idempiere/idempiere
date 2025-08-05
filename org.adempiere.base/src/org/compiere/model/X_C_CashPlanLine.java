@@ -34,7 +34,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CashPlanLine (Properties ctx, int C_CashPlanLine_ID, String trxName)

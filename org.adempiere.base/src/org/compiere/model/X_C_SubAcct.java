@@ -31,7 +31,7 @@ public class X_C_SubAcct extends PO implements I_C_SubAcct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_SubAcct (Properties ctx, int C_SubAcct_ID, String trxName)

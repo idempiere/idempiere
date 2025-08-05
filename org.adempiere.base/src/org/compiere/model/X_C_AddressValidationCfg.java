@@ -31,7 +31,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AddressValidationCfg (Properties ctx, int C_AddressValidationCfg_ID, String trxName)

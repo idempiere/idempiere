@@ -31,7 +31,7 @@ public class X_T_Spool extends PO implements I_T_Spool, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_Spool (Properties ctx, int T_Spool_ID, String trxName)

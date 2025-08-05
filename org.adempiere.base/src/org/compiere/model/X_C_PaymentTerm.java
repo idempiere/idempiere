@@ -33,7 +33,7 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_PaymentTerm (Properties ctx, int C_PaymentTerm_ID, String trxName)

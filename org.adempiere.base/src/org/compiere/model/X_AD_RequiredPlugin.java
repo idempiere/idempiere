@@ -31,7 +31,7 @@ public class X_AD_RequiredPlugin extends PO implements I_AD_RequiredPlugin, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_RequiredPlugin (Properties ctx, String AD_RequiredPlugin_UU, String trxName)

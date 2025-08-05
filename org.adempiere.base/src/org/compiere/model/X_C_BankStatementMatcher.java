@@ -31,7 +31,7 @@ public class X_C_BankStatementMatcher extends PO implements I_C_BankStatementMat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BankStatementMatcher (Properties ctx, int C_BankStatementMatcher_ID, String trxName)

@@ -31,7 +31,7 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_IssueRecommendation (Properties ctx, int R_IssueRecommendation_ID, String trxName)

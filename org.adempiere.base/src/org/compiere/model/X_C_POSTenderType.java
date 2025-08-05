@@ -31,7 +31,7 @@ public class X_C_POSTenderType extends PO implements I_C_POSTenderType, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_POSTenderType (Properties ctx, int C_POSTenderType_ID, String trxName)

@@ -31,7 +31,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName)

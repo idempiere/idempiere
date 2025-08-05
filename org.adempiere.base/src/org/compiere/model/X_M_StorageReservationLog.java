@@ -32,7 +32,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_StorageReservationLog (Properties ctx, int M_StorageReservationLog_ID, String trxName)

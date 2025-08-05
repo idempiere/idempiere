@@ -30,7 +30,7 @@ public class X_C_CostCenter extends PO implements I_C_CostCenter, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CostCenter (Properties ctx, int C_CostCenter_ID, String trxName)

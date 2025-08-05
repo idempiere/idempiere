@@ -31,7 +31,7 @@ public class X_GL_JournalGenerator extends PO implements I_GL_JournalGenerator, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_GL_JournalGenerator (Properties ctx, int GL_JournalGenerator_ID, String trxName)

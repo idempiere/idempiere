@@ -33,7 +33,7 @@ public class X_T_Fact_Acct_History extends PO implements I_T_Fact_Acct_History, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_Fact_Acct_History (Properties ctx, String T_Fact_Acct_History_UU, String trxName)

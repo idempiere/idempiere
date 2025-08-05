@@ -31,7 +31,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_AllUsers_V (Properties ctx, int AD_AllUsers_V_ID, String trxName)

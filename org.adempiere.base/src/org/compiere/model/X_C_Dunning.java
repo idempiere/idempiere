@@ -31,7 +31,7 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Dunning (Properties ctx, int C_Dunning_ID, String trxName)

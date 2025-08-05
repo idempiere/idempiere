@@ -30,7 +30,7 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Currency_Acct (Properties ctx, int C_Currency_Acct_ID, String trxName)

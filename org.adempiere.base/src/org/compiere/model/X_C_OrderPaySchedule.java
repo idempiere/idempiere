@@ -34,7 +34,7 @@ public class X_C_OrderPaySchedule extends PO implements I_C_OrderPaySchedule, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_OrderPaySchedule (Properties ctx, int C_OrderPaySchedule_ID, String trxName)

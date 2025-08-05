@@ -30,7 +30,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)

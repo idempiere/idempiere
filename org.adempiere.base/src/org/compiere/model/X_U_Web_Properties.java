@@ -30,7 +30,7 @@ public class X_U_Web_Properties extends PO implements I_U_Web_Properties, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_U_Web_Properties (Properties ctx, int U_Web_Properties_ID, String trxName)

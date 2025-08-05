@@ -31,7 +31,7 @@ public class X_AD_Column_Access extends PO implements I_AD_Column_Access, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Column_Access (Properties ctx, int AD_Column_Access_ID, String trxName)

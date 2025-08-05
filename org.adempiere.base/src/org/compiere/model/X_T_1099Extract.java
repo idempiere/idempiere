@@ -33,7 +33,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_1099Extract (Properties ctx, String T_1099Extract_UU, String trxName)

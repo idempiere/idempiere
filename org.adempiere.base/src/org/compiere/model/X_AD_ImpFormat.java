@@ -31,7 +31,7 @@ public class X_AD_ImpFormat extends PO implements I_AD_ImpFormat, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat (Properties ctx, int AD_ImpFormat_ID, String trxName)

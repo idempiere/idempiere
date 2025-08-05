@@ -34,7 +34,7 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PP_Product_Planning (Properties ctx, int PP_Product_Planning_ID, String trxName)

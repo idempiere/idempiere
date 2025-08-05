@@ -34,7 +34,7 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BankStatement (Properties ctx, int C_BankStatement_ID, String trxName)

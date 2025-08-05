@@ -33,7 +33,7 @@ public class X_C_Phase extends PO implements I_C_Phase, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Phase (Properties ctx, int C_Phase_ID, String trxName)

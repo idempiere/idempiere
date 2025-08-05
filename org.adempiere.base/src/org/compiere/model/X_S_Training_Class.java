@@ -32,7 +32,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName)

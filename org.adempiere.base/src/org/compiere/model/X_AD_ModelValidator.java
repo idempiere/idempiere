@@ -31,7 +31,7 @@ public class X_AD_ModelValidator extends PO implements I_AD_ModelValidator, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ModelValidator (Properties ctx, int AD_ModelValidator_ID, String trxName)

@@ -31,7 +31,7 @@ public class X_A_RegistrationValue extends PO implements I_A_RegistrationValue, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_RegistrationValue (Properties ctx, int A_RegistrationValue_ID, String trxName)

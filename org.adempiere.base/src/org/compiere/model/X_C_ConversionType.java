@@ -31,7 +31,7 @@ public class X_C_ConversionType extends PO implements I_C_ConversionType, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_ConversionType (Properties ctx, int C_ConversionType_ID, String trxName)

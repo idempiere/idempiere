@@ -33,7 +33,7 @@ public class X_AD_TableAttribute extends PO implements I_AD_TableAttribute, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_TableAttribute (Properties ctx, int AD_TableAttribute_ID, String trxName)

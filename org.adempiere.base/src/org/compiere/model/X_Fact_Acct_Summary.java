@@ -33,7 +33,7 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_Fact_Acct_Summary (Properties ctx, String Fact_Acct_Summary_UU, String trxName)

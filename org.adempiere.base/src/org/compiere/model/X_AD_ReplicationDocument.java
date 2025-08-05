@@ -30,7 +30,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName)

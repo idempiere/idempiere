@@ -33,7 +33,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ProductionPlan (Properties ctx, int M_ProductionPlan_ID, String trxName)

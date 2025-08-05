@@ -31,7 +31,7 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Product_QualityTest (Properties ctx, int M_Product_QualityTest_ID, String trxName)

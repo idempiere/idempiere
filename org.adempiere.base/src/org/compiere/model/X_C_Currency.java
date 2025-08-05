@@ -34,7 +34,7 @@ public class X_C_Currency extends PO implements I_C_Currency, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Currency (Properties ctx, int C_Currency_ID, String trxName)

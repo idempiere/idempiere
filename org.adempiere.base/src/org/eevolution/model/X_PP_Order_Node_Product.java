@@ -33,7 +33,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Product (Properties ctx, int PP_Order_Node_Product_ID, String trxName)

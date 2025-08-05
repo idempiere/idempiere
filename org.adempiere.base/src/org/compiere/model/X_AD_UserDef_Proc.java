@@ -31,7 +31,7 @@ public class X_AD_UserDef_Proc extends PO implements I_AD_UserDef_Proc, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Proc (Properties ctx, int AD_UserDef_Proc_ID, String trxName)

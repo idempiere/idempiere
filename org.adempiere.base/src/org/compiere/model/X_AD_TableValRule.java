@@ -30,7 +30,7 @@ public class X_AD_TableValRule extends PO implements I_AD_TableValRule, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_TableValRule (Properties ctx, String AD_TableValRule_UU, String trxName)

@@ -31,7 +31,7 @@ public class X_M_ShipperCfg extends PO implements I_M_ShipperCfg, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ShipperCfg (Properties ctx, int M_ShipperCfg_ID, String trxName)

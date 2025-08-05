@@ -31,7 +31,7 @@ public class X_M_SerNoCtl extends PO implements I_M_SerNoCtl, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_SerNoCtl (Properties ctx, int M_SerNoCtl_ID, String trxName)

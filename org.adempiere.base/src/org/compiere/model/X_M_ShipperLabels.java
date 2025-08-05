@@ -30,7 +30,7 @@ public class X_M_ShipperLabels extends PO implements I_M_ShipperLabels, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ShipperLabels (Properties ctx, int M_ShipperLabels_ID, String trxName)

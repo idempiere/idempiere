@@ -32,7 +32,7 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Build (Properties ctx, int A_Depreciation_Build_ID, String trxName)

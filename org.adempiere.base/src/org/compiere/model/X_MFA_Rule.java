@@ -30,7 +30,7 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_MFA_Rule (Properties ctx, int MFA_Rule_ID, String trxName)

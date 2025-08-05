@@ -32,7 +32,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName)

@@ -31,7 +31,7 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_B_TopicCategory (Properties ctx, int B_TopicCategory_ID, String trxName)

@@ -31,7 +31,7 @@ public class X_M_ShipperPickupTypesCfg extends PO implements I_M_ShipperPickupTy
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypesCfg (Properties ctx, int M_ShipperPickupTypesCfg_ID, String trxName)

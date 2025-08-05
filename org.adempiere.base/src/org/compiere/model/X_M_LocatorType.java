@@ -31,7 +31,7 @@ public class X_M_LocatorType extends PO implements I_M_LocatorType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_LocatorType (Properties ctx, int M_LocatorType_ID, String trxName)

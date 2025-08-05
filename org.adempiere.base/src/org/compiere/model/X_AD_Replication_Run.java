@@ -31,7 +31,7 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Replication_Run (Properties ctx, int AD_Replication_Run_ID, String trxName)

@@ -31,7 +31,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ReplicationStrategy (Properties ctx, int AD_ReplicationStrategy_ID, String trxName)

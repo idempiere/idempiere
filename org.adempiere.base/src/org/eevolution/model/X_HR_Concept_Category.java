@@ -32,7 +32,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName)

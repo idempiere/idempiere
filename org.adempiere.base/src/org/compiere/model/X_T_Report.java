@@ -33,7 +33,7 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_Report (Properties ctx, int T_Report_ID, String trxName)

@@ -30,7 +30,7 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Wlistbox_Customization (Properties ctx, int AD_Wlistbox_Customization_ID, String trxName)

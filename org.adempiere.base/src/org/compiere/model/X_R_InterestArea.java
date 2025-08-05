@@ -31,7 +31,7 @@ public class X_R_InterestArea extends PO implements I_R_InterestArea, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_InterestArea (Properties ctx, int R_InterestArea_ID, String trxName)

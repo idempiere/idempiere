@@ -31,7 +31,7 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Demand (Properties ctx, int M_Demand_ID, String trxName)

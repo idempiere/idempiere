@@ -32,7 +32,7 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor (Properties ctx, int R_RequestProcessor_ID, String trxName)

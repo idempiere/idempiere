@@ -33,7 +33,7 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistribution (Properties ctx, int DD_NetworkDistribution_ID, String trxName)

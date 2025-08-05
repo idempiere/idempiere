@@ -30,7 +30,7 @@ public class X_TestUU extends PO implements I_TestUU, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_TestUU (Properties ctx, String TestUU_UU, String trxName)

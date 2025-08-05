@@ -30,7 +30,7 @@ public class X_AD_Task_Access extends PO implements I_AD_Task_Access, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Task_Access (Properties ctx, int AD_Task_Access_ID, String trxName)

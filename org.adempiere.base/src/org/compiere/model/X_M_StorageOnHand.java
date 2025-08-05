@@ -33,7 +33,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_StorageOnHand (Properties ctx, int M_StorageOnHand_ID, String trxName)

@@ -30,7 +30,7 @@ public class X_AD_UserDef_Theme_Detail extends PO implements I_AD_UserDef_Theme_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Theme_Detail (Properties ctx, int AD_UserDef_Theme_Detail_ID, String trxName)

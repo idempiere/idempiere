@@ -31,7 +31,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessorCfg (Properties ctx, int M_ShippingProcessorCfg_ID, String trxName)

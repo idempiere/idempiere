@@ -30,7 +30,7 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_SchedulerLog (Properties ctx, int AD_SchedulerLog_ID, String trxName)

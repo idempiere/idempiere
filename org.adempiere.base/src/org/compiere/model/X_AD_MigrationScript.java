@@ -31,7 +31,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_MigrationScript (Properties ctx, int AD_MigrationScript_ID, String trxName)

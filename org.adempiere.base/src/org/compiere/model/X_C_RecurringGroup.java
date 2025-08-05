@@ -31,7 +31,7 @@ public class X_C_RecurringGroup extends PO implements I_C_RecurringGroup, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_RecurringGroup (Properties ctx, int C_RecurringGroup_ID, String trxName)

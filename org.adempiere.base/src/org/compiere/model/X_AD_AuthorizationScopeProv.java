@@ -30,7 +30,7 @@ public class X_AD_AuthorizationScopeProv extends PO implements I_AD_Authorizatio
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250730L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationScopeProv (Properties ctx, int AD_AuthorizationScopeProv_ID, String trxName)
