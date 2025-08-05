@@ -27,11 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.util.Properties;
 
-import org.compiere.model.MColumn;
+import org.compiere.model.MColumnAccess;
 import org.compiere.model.MRole;
 import org.compiere.model.MTableAccess;
 import org.compiere.model.X_AD_Alert;
@@ -41,28 +40,20 @@ import org.compiere.model.X_A_Asset;
 import org.compiere.model.X_A_Asset_Change;
 import org.compiere.model.X_C_BankTransfer;
 import org.compiere.model.X_C_Order;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.DictionaryIDs.AD_Org;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+
 
 public class MRoleTest extends AbstractTestCase {
-
-	@Mock
-	private Properties ctx;
 
 	private MRole defaultRole;
 
 	@BeforeEach
 	public void setup() {
-		MockitoAnnotations.openMocks(this);
 		defaultRole = MRole.getDefault(); //GardenAdmin role
 	}
 
@@ -76,25 +67,14 @@ public class MRoleTest extends AbstractTestCase {
 
 	@Test
 	void testGetDefault_withContext() {
-		// Null with  invalid mocked context 
-		assertNull(MRole.getDefault(ctx, false));
+		// Null with  invalid context 
+		assertNull(MRole.getDefault(new Properties(), false));
 
 		// Null with null context 
 		Exception ex = assertThrows(IllegalArgumentException.class, () -> {
 			MRole.getDefault(null, false);
 		});
 		assertTrue(ex.getMessage().contains("Require Context"));
-
-		// Mock the System Configurator to return false
-		/*try (MockedStatic<MSysConfig> mockedSysConfig = mockStatic(MSysConfig.class)) {
-			// Define the behavior of the mocked method
-			mockedSysConfig.when(() -> MSysConfig.getBooleanValue(MSysConfig.MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT, true))
-			.thenReturn(false);
-
-			// Call the method with the mocked context and false SysConfig
-			defaultRole = MRole.getDefault(ctx, false);
-
-		}*/
 	}
 
 	@Test
@@ -140,9 +120,6 @@ public class MRoleTest extends AbstractTestCase {
 			assertTrue(role.isOrgAccess(org.id, false));
 		}
 
-		// Access to a non-existing organization should return false
-		//assertFalse(role.isOrgAccess(1234, true));
-
 		role = MRole.get(Env.getCtx(), DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
 		// GardenUser - Access All Orgs = N - only access to 4 Orgs
 		assertTrue(role.isOrgAccess(DictionaryIDs.AD_Org.HQ.id, true));
@@ -161,90 +138,90 @@ public class MRoleTest extends AbstractTestCase {
 	public void testIsTableAccess_SystemOnly() {
 		defaultRole.setUserLevel(MRole.USERLEVEL_System);
 
-		// Client level tables must NOT work with system only
-		assertFalse(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false), 
+				"Client level tables must NOT work with client only");
 
-		// Organization level tables must NOT work with system only
-		assertFalse(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false),
+				"Organization level tables must NOT work with system only");
 
-		// Client+Organization level tables must NOT work with system only
-		assertFalse(defaultRole.isTableAccess(X_A_Asset.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_A_Asset.Table_ID, false), 
+				"Client+Organization level tables must NOT work with system only");
 
-		// All level tables must work with system only
-		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false),
+				"All level tables must work with system only");
 
-		// System+Client level tables must work with system only
-		assertTrue(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false), 
+				"System+Client level tables must work with system only");
 
-		// System level tables must work with system only
-		assertTrue(defaultRole.isTableAccess(X_AD_Color.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_AD_Color.Table_ID, false), 
+				"System level tables must work with system only");
 	}
 
 	@Test
 	public void testIsTableAccess_ClientOnly() {
 		defaultRole.setUserLevel(MRole.USERLEVEL_Client);
 
-		// Client level tables must work with client only
-		assertTrue(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false), 
+				"Client level tables must work with client only");
 
-		// Organization level tables must NOT work with client only
-		assertFalse(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false), 
+				"Organization level tables must NOT work with client only");
 
-		// Client+Organization level tables must NOT work with client only
-		assertFalse(defaultRole.isTableAccess(X_A_Asset.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_A_Asset.Table_ID, false), 
+				"Client+Organization level tables must NOT work with client only");
 
-		// All level tables must work with client only
-		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false), 
+				"All level tables must work with client only");
 
-		// System+Client level tables must work with client only
-		assertTrue(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false), 
+				"System+Client level tables must work with client only");
 
-		// System level tables must NOT work with client only
-		assertFalse(defaultRole.isTableAccess(X_AD_Color.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_AD_Color.Table_ID, false), 
+				"System level tables must NOT work with client only");
 	}
 
 	@Test
 	public void testIsTableAccess_OrganizationOnly() {
 		defaultRole.setUserLevel(MRole.USERLEVEL_Organization);
 
-		// Client level tables must NOT work with Organization only
-		assertFalse(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false), 
+				"Client level tables must NOT work with Organization only");
 
-		// Organization level tables must work with Organization only
-		assertTrue(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false), 
+				"Organization level tables must work with Organization only");
 
-		// Client+Organization level tables must work with Organization only
-		assertTrue(defaultRole.isTableAccess(X_A_Asset.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_A_Asset.Table_ID, false), 
+				"Client+Organization level tables must work with Organization only");
 
-		// All level tables must work with Organization only
-		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false), 
+				"All level tables must work with Organization only");
 
-		// System+Client level tables must NOT work with Organization only
-		assertFalse(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false), 
+				"System+Client level tables must NOT work with Organization only");
 
-		// System level tables must NOT work with Organization only
-		assertFalse(defaultRole.isTableAccess(X_AD_Color.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_AD_Color.Table_ID, false), 
+				"System level tables must NOT work with Organization only");
 	}
 
 	@Test
 	public void testIsTableAccess_ClientPlusOrganization() {
-		// Client level tables must work with both Client and Organization
-		assertTrue(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_AD_WizardProcess.Table_ID, false),
+				"Client level tables must work with both Client and Organization");
 
-		// Organization level tables must work with both Client and Organization
-		assertTrue(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_C_BankTransfer.Table_ID, false), 
+				"Organization level tables must work with both Client and Organization");
 
-		// Client+Organization level tables must work with both Client and Organization
-		assertTrue(defaultRole.isTableAccess(X_A_Asset.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_A_Asset.Table_ID, false), 
+				"Client+Organization level tables must work with both Client and Organization");
 
-		// All level tables must work with both Client and Organization
-		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_A_Asset_Change.Table_ID, false), 
+				"All level tables must work with both Client and Organization");
 
-		// System+Client level tables must work with both Client and Organization
-		assertTrue(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false));
+		assertTrue(defaultRole.isTableAccess(X_AD_Alert.Table_ID, false), 
+				"System+Client level tables must work with both Client and Organization");
 
-		// System level tables must NOT work with both Client and Organization
-		assertFalse(defaultRole.isTableAccess(X_AD_Color.Table_ID, false));
+		assertFalse(defaultRole.isTableAccess(X_AD_Color.Table_ID, false), 
+				"System level tables must NOT work with both Client and Organization");
 	}
 	
 	@Test
@@ -297,29 +274,36 @@ public class MRoleTest extends AbstractTestCase {
         assertTrue(defaultRole.isColumnAccess(X_C_Order.Table_ID, 6230, true), 
         		"System level columns should always be accessible in read only mode");
     }
-    
+	
 	@Test
-	public void testColumnAccess_ButtonColumn() {
-		int copyFromColumnID = 8765;
-        assertTrue(defaultRole.isColumnAccess(X_C_Order.Table_ID, copyFromColumnID, false),
-        		"Garden Admin should have access to copy From in Order");
+	public void testIsColumnAccess_ExcludeColumnAccess() {
+		
+		int documentNoColumnID = 2169; // DocumentNo column in C_Order table
 
-		// Test case when the column is a button with a process and the role does not have access to the process
-	    MRole mockRole = Mockito.mock(MRole.class);
-	    MColumn mockColumn = Mockito.mock(MColumn.class);
-
-	    // Mock the column as a button with a process
-	    when(mockColumn.getAD_Reference_ID()).thenReturn(DisplayType.Button);
-	    when(mockColumn.getAD_Process_ID()).thenReturn(123); // Some process ID > 0
-
-	    // Mock MRole.getDefault() to return your mocked role
-	    try (MockedStatic<MRole> mockedMRole = Mockito.mockStatic(MRole.class)) {
-	        mockedMRole.when(MRole::getDefault).thenReturn(mockRole);
-		    // Mock no access to the process (returns null)
-		    when(mockRole.getProcessAccess(123)).thenReturn(null);
-	        boolean result = mockRole.isColumnAccess(X_C_Order.Table_ID, mockColumn.getAD_Column_ID(), false);
-	        assertFalse(result, "Should not have access to button column with no process access");
-	    }
+		MColumnAccess columnAccess = new MColumnAccess(Env.getCtx(), 0, getTrxName());
+		columnAccess.setAD_Table_ID(X_C_Order.Table_ID);
+		columnAccess.setAD_Column_ID(documentNoColumnID);
+		columnAccess.setAD_Role_ID(DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
+		columnAccess.setIsExclude(true);
+		columnAccess.setIsReadOnly(false);
+		columnAccess.saveEx();
+		
+		MRole role = new MRole(Env.getCtx(), DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id, getTrxName());
+		role.loadAccess(true);
+		assertFalse(role.isColumnAccess(X_C_Order.Table_ID, documentNoColumnID, false, getTrxName()), 
+				"Column is excluded, should not be accessible");
+		assertTrue(role.isColumnAccess(X_C_Order.Table_ID, 55314, false, getTrxName()), 
+				"Document No Column is excluded, other columns should be accessible");
+		assertFalse(role.isColumnAccess(X_C_Order.Table_ID, documentNoColumnID, true, getTrxName()), 
+				"Column is excluded, should not be accessible");
+		
+		columnAccess.setIsReadOnly(true);
+		columnAccess.saveEx();
+		role.loadAccess(true);
+		assertFalse(role.isColumnAccess(X_C_Order.Table_ID, documentNoColumnID, false, getTrxName()), 
+				"Column is excluded with read only, should be accessible only for read only");
+		assertTrue(role.isColumnAccess(X_C_Order.Table_ID, documentNoColumnID, true, getTrxName()), 
+				"Column is excluded with read only, should be accessible for read only");
 	}
 
 }
