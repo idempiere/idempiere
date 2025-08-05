@@ -343,5 +343,15 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 			return parentId;
 		}
 	}
-		
+
+	/**
+	 * Get Asset Group object from cache, no transaction.  If not found returns a zero object. 
+	 * @return
+	 */
+	public MAssetGroup getMAssetGroup() {
+		if (getA_Asset_Group_ID() <= 0)
+			return new MAssetGroup(getCtx(), 0, get_TrxName());
+		return MAssetGroup.get(getCtx(), getA_Asset_Group_ID());
+	}	//	getMAssetGroup
+
 }	//	MProductCategory
