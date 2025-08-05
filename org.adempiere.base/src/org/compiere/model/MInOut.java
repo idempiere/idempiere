@@ -2014,7 +2014,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				if (product != null
 					&& isSOTrx()
 					&& product.isCreateAsset()
-					&& !product.getM_Product_Category().getA_Asset_Group().isFixedAsset()
+					&& !product.getMProductCategory().getMAssetGroup().isFixedAsset()
 					&& sLine.getMovementQty().signum() > 0
 					&& !isReversal())
 				{

@@ -482,4 +482,12 @@ public class MInventoryLine extends X_M_InventoryLine
 		return getMovementQty().signum() < 0;
 	}
 	
+	/**
+	 * Get Product object from cache, no transaction 
+	 * @return
+	 */
+	public MProduct getMProduct() {
+		return MProduct.get(getCtx(), getM_Product_ID());
+	}	//	getMProduct
+
 }	//	MInventoryLine

@@ -242,7 +242,7 @@ public class MAsset extends X_A_Asset {
 		
 		MProduct product = MProduct.get(getCtx(), invLine.getM_Product_ID());
 		// Defaults from group:
-		MAssetGroup assetGroup = MAssetGroup.get(invLine.getCtx(), invLine.getM_Product().getM_Product_Category().getA_Asset_Group_ID());
+		MAssetGroup assetGroup = MAssetGroup.get(invLine.getCtx(), invLine.getMProduct().getMProductCategory().getA_Asset_Group_ID());
 		if (assetGroup == null)
 			assetGroup = MAssetGroup.get(invLine.getCtx(), product.getA_Asset_Group_ID());
 		setAssetGroup(assetGroup);
