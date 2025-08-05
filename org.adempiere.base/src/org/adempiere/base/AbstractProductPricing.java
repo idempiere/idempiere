@@ -25,6 +25,10 @@ import org.compiere.model.I_C_ProjectLine;
 import org.compiere.model.I_M_RMA;
 import org.compiere.model.I_M_RMALine;
 import org.compiere.model.I_M_RequisitionLine;
+import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MOrderLine;
+import org.compiere.model.MProjectLine;
+import org.compiere.model.MRMALine;
 import org.compiere.util.Env;
 
 /**
@@ -94,7 +98,7 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	public void setOrderLine(I_C_OrderLine orderLine, String trxName) {
 		m_M_Product_ID = orderLine.getM_Product_ID();
 		if (orderLine.getC_Order_ID() > 0) {
-			I_C_Order order = orderLine.getC_Order();
+			I_C_Order order = ((MOrderLine)orderLine).getParent();
 			m_isSOTrx = order.isSOTrx();
 		}
 		m_C_BPartner_ID = orderLine.getC_BPartner_ID();
@@ -109,7 +113,7 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	public void setInvoiceLine(I_C_InvoiceLine invoiceLine, String trxName) {
 		m_M_Product_ID = invoiceLine.getM_Product_ID();
 		if (invoiceLine.getC_Invoice_ID() > 0) {
-			I_C_Invoice invoice = invoiceLine.getC_Invoice();
+			I_C_Invoice invoice = ((MInvoiceLine)invoiceLine).getParent();
 			m_C_BPartner_ID = invoice.getC_BPartner_ID();
 			m_isSOTrx = invoice.isSOTrx();
 			m_PriceDate = invoice.getDateInvoiced();
@@ -125,7 +129,7 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	public void setProjectLine(I_C_ProjectLine projectLine, String trxName) {
 		m_M_Product_ID = projectLine.getM_Product_ID();
 		if (projectLine.getC_Project_ID() > 0) {
-			I_C_Project project = projectLine.getC_Project();
+			I_C_Project project = ((MProjectLine)projectLine).getProject();
 			m_C_BPartner_ID = project.getC_BPartner_ID();
 		}
 		BigDecimal qty = projectLine.getPlannedQty();
@@ -150,7 +154,7 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	public void setRMALine(I_M_RMALine rmaLine, String trxName) {
 		m_M_Product_ID = rmaLine.getM_Product_ID();
 		if (rmaLine.getM_RMA_ID() > 0) {
-			I_M_RMA rma = rmaLine.getM_RMA();
+			I_M_RMA rma = ((MRMALine)rmaLine).getParent();
 			m_C_BPartner_ID = rma.getC_BPartner_ID();
 			m_isSOTrx = rma.isSOTrx();
 		}

@@ -1201,15 +1201,4 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		else
 			return false;
 	}
-
-	/**
-	 * Get Product Category object from cache, no transaction.  If not found returns a zero object. 
-	 * @return
-	 */
-	public MProductCategory getMProductCategory() {
-		if (getM_Product_Category_ID() <= 0)
-			return new MProductCategory(getCtx(), 0, get_TrxName());
-		return MProductCategory.get(getCtx(), getM_Product_Category_ID());
-	}	//	getMProductCategory
-
 }	//	MProduct
