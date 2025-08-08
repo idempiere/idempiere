@@ -2926,6 +2926,16 @@ public class MPayment extends X_C_Payment
 			return false;
 		}
 
+		if (getRef_Payment_ID() > 0) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedCounterDocument");
+			return false;
+		}
+
+		if (isCashbookTrx() && DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_CashLine WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedCashLine");
+			return false;			
+		}
+
 		MFactAcct.deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
 		setPosted(false);
 		setDocAction(DOCACTION_Complete);
@@ -2934,6 +2944,25 @@ public class MPayment extends X_C_Payment
 		ICreditManager creditManager = Core.getCreditManager(this);
 		if (creditManager != null)
 			creditManager.checkCreditStatus(DOCACTION_Re_Activate);
+
+		if (getC_Charge_ID() != 0)
+			setIsAllocated(false);
+
+		if (getC_Invoice_ID() != 0) {
+			MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+			if (inv.getC_Payment_ID() == getC_Payment_ID()) {
+				inv.setC_Payment_ID(0);
+				inv.saveEx();
+			}
+		}
+
+		if (getC_Order_ID() != 0) {
+			MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			if (ord.getC_Payment_ID() == getC_Payment_ID()) {
+				ord.setC_Payment_ID(getC_Payment_ID());
+				ord.saveEx();
+			}
+		}
 
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
