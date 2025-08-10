@@ -15,6 +15,7 @@ location zk "https://idempiere.github.io/binary.file/p2.zk/10.0.1" {
 	zweb-dsp
 }
 
+//location repackaged "http://localhost:8083/p2.repackaged" {
 location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.0" {
 	// 2.3.3.v2021090100, dependency of com.sun.xml.ws.jaxws-rt_2.3.5, org.idempiere.webservices, 
 	// wrapped.org.apache.cxf.cxf-rt-ws-transfer_3.6.3
@@ -36,6 +37,11 @@ location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.
 	org.apache.cxf.cxf-rt-databinding-xmlbeans
 	// 3.6.3, updated with xmlbeans 5.0.3 support
 	org.apache.cxf.cxf-rt-rs-extension-providers
+	// 12.0.24, make import-package compatible with bc-fips
+	org.eclipse.jetty.keystore
+	// make import-package compatible with bc-fips
+	org.eclipse.equinox.p2.artifact.repository
+	org.eclipse.equinox.p2.repository
 }
 
 location eclipse-2023-09 "https://download.eclipse.org/eclipse/updates/4.29" {
@@ -85,7 +91,6 @@ location eclipse-2023-09 "https://download.eclipse.org/eclipse/updates/4.29" {
 	org.eclipse.equinox.frameworkadmin
 	org.eclipse.equinox.frameworkadmin.equinox
 	org.eclipse.equinox.launcher
-	org.eclipse.equinox.p2.artifact.repository
 	org.eclipse.equinox.p2.console
 	org.eclipse.equinox.p2.core
 	org.eclipse.equinox.p2.director
@@ -95,7 +100,6 @@ location eclipse-2023-09 "https://download.eclipse.org/eclipse/updates/4.29" {
 	org.eclipse.equinox.p2.metadata
 	org.eclipse.equinox.p2.metadata.repository
 	org.eclipse.equinox.p2.operations
-	org.eclipse.equinox.p2.repository
 	org.eclipse.equinox.p2.touchpoint.eclipse
 	org.eclipse.equinox.p2.touchpoint.natives
 	org.eclipse.equinox.p2.transport.ecf
