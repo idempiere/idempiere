@@ -1,0 +1,208 @@
+diff --git a/org.adempiere.base-feature/model.generator.launch b/org.adempiere.base-feature/model.generator.launch
+index 50e9c73..8c73790 100644
+--- a/org.adempiere.base-feature/model.generator.launch
++++ b/org.adempiere.base-feature/model.generator.launch
+@@ -33,7 +33,7 @@
+     <stringAttribute key="productFile" value="/org.adempiere.server-feature/server.product"/>
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.base-feature/packinfolder.app.launch b/org.adempiere.base-feature/packinfolder.app.launch
+index eca4e7b..62dcf90 100644
+--- a/org.adempiere.base-feature/packinfolder.app.launch
++++ b/org.adempiere.base-feature/packinfolder.app.launch
+@@ -33,7 +33,7 @@
+     <stringAttribute key="productFile" value="/org.adempiere.server-feature/server.product"/>
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.base-feature/sign.database.build.launch b/org.adempiere.base-feature/sign.database.build.launch
+index e73e5b3..d0e6977 100644
+--- a/org.adempiere.base-feature/sign.database.build.launch
++++ b/org.adempiere.base-feature/sign.database.build.launch
+@@ -34,7 +34,7 @@
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpg@default:default"/>
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.base-feature/synchronize-terminology.app.launch b/org.adempiere.base-feature/synchronize-terminology.app.launch
+index 4bfcb2c..c32e1a0 100644
+--- a/org.adempiere.base-feature/synchronize-terminology.app.launch
++++ b/org.adempiere.base-feature/synchronize-terminology.app.launch
+@@ -34,7 +34,7 @@
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpg@default:default"/>
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.base-feature/translation.app.launch b/org.adempiere.base-feature/translation.app.launch
+index 2e67586..263d72f 100644
+--- a/org.adempiere.base-feature/translation.app.launch
++++ b/org.adempiere.base-feature/translation.app.launch
+@@ -34,7 +34,7 @@
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpg@default:default"/>
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.base/META-INF/MANIFEST.MF b/org.adempiere.base/META-INF/MANIFEST.MF
+index 82d3a33..116d892 100644
+--- a/org.adempiere.base/META-INF/MANIFEST.MF
++++ b/org.adempiere.base/META-INF/MANIFEST.MF
+@@ -166,7 +166,7 @@
+ Require-Bundle: org.eclipse.equinox.app;bundle-version="1.6.300",
+  org.passay;bundle-version="1.6.1",
+  net.sf.supercsv.super-csv;bundle-version="2.4.0",
+- bcprov;bundle-version="1.81",
++ bcfips;bundle-version="2.1.0",
+  org.krysalis.barcode4j;bundle-version="2.1.0",
+  groovy;bundle-version="3.0.8",
+  com.sun.activation.jakarta.activation;bundle-version="1.2.2",
+diff --git a/org.adempiere.install/install.app.launch b/org.adempiere.install/install.app.launch
+index d6b4ab5..340e4e0 100644
+--- a/org.adempiere.install/install.app.launch
++++ b/org.adempiere.install/install.app.launch
+@@ -30,7 +30,7 @@
+     <stringAttribute key="product" value="org.adempiere.server.product"/>
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.install/install.console.app.launch b/org.adempiere.install/install.console.app.launch
+index a662bd0..50583d7 100644
+--- a/org.adempiere.install/install.console.app.launch
++++ b/org.adempiere.install/install.console.app.launch
+@@ -30,7 +30,7 @@
+     <stringAttribute key="product" value="org.adempiere.server.product"/>
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.install/install.silent.app.launch b/org.adempiere.install/install.silent.app.launch
+index cc77612..5b2fb10 100644
+--- a/org.adempiere.install/install.silent.app.launch
++++ b/org.adempiere.install/install.silent.app.launch
+@@ -30,7 +30,7 @@
+     <stringAttribute key="product" value="org.adempiere.server.product"/>
+     <setAttribute key="selected_target_bundles">
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
+diff --git a/org.adempiere.server-feature/server.product.functionaltest.launch b/org.adempiere.server-feature/server.product.functionaltest.launch
+index e7fed69..0fc404c 100644
+--- a/org.adempiere.server-feature/server.product.functionaltest.launch
++++ b/org.adempiere.server-feature/server.product.functionaltest.launch
+@@ -82,7 +82,7 @@
+         <setEntry value="bcmail@default:default"/>
+         <setEntry value="bcpg@default:default"/>
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
+diff --git a/org.adempiere.server-feature/server.product.launch b/org.adempiere.server-feature/server.product.launch
+index 86fef18..c1a53f3 100644
+--- a/org.adempiere.server-feature/server.product.launch
++++ b/org.adempiere.server-feature/server.product.launch
+@@ -82,7 +82,7 @@
+         <setEntry value="bcmail@default:default"/>
+         <setEntry value="bcpg@default:default"/>
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
+diff --git a/org.adempiere.server-feature/setup/configuration/config.ini b/org.adempiere.server-feature/setup/configuration/config.ini
+index fb93d23..08fca00 100644
+--- a/org.adempiere.server-feature/setup/configuration/config.ini
++++ b/org.adempiere.server-feature/setup/configuration/config.ini
+@@ -56,7 +56,7 @@
+  org.krysalis.barcode4j,\
+  org.apache.logging.log4j.api,\
+  org.apache.logging.log4j.to.slf4j@3:start,\
+- bcprov,\
++ bcfips,\
+  bcpkix,\
+  bcutil,\
+  org.eclipse.equinox.common,\
+diff --git a/org.idempiere.equinox.p2.director-feature/director/configuration/config.ini b/org.idempiere.equinox.p2.director-feature/director/configuration/config.ini
+index d0e74b7..35fa28f 100644
+--- a/org.idempiere.equinox.p2.director-feature/director/configuration/config.ini
++++ b/org.idempiere.equinox.p2.director-feature/director/configuration/config.ini
+@@ -61,7 +61,7 @@
+  slf4j.jdk14@3:start,\
+  bcpg,\
+  bcutil,\
+- bcprov,\
++ bcfips,\
+  org.osgi.service.cm,\
+  org.osgi.service.component,\
+  org.osgi.service.component.annotations,\
+diff --git a/org.idempiere.p2.targetplatform/org.idempiere.p2.targetplatform.target b/org.idempiere.p2.targetplatform/org.idempiere.p2.targetplatform.target
+index 4ec51ac..98be8e5 100644
+--- a/org.idempiere.p2.targetplatform/org.idempiere.p2.targetplatform.target
++++ b/org.idempiere.p2.targetplatform/org.idempiere.p2.targetplatform.target
+@@ -4,6 +4,6 @@
+   <locations>
+ 	  <location type="Target" uri="file:${project_loc:/org.idempiere.p2.targetplatform}/base.target"/>
+ 	  <location type="Target" uri="file:${project_loc:/org.idempiere.p2.targetplatform}/maven.locations.target"/>
+-	  <location type="Target" uri="file:${project_loc:/org.idempiere.p2.targetplatform}/bouncy.castle.target"/>
++	  <location type="Target" uri="file:${project_loc:/org.idempiere.p2.targetplatform}/bouncy.castle.fips.target"/>
+   </locations>
+ </target>
+\ No newline at end of file
+diff --git a/org.idempiere.test/idempiere.unit.test.launch b/org.idempiere.test/idempiere.unit.test.launch
+index 438dccb..c579c5e 100644
+--- a/org.idempiere.test/idempiere.unit.test.launch
++++ b/org.idempiere.test/idempiere.unit.test.launch
+@@ -72,7 +72,7 @@
+         <setEntry value="bcmail@default:default"/>
+         <setEntry value="bcpg@default:default"/>
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
+diff --git a/org.idempiere.test/idempiere.unit.test.parallel.launch b/org.idempiere.test/idempiere.unit.test.parallel.launch
+index 765d7c8..61c8ea9 100644
+--- a/org.idempiere.test/idempiere.unit.test.parallel.launch
++++ b/org.idempiere.test/idempiere.unit.test.parallel.launch
+@@ -72,7 +72,7 @@
+         <setEntry value="bcmail@default:default"/>
+         <setEntry value="bcpg@default:default"/>
+         <setEntry value="bcpkix@default:default"/>
+-        <setEntry value="bcprov@default:default"/>
++        <setEntry value="bcfips@default:default"/>
+         <setEntry value="bcutil@default:default"/>
+         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>

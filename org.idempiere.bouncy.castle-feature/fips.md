@@ -8,6 +8,7 @@
 | bcutil  | 1.81  | bcutil-fips  | 2.1.4  | ASN.1 extension and utility APIs  |
 
 * Check latest version available at https://mvnrepository.com/
-* When using the FIPS version of bouncy castle, replace bcprov in feature.xml with bcfips
-* bcfips doesn't include JCE provider, only JCAJCE Provider
+* bc-fips doesn't include JCE provider, only JCAJCE Provider
+* Apply fips.diff to switch from normal bouncy castle bundles to FIPS 140-3 Level 1 compliance bundles
+
 
