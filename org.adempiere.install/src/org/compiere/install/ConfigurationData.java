@@ -890,6 +890,14 @@ public class ConfigurationData
 					p_properties.remove(secretVar);
 				}
 			}
+
+			// store ADEMPIERE_DB_SYSTEM_USER
+			if (SystemProperties.getAdempiereDBSystemUser() != null) {
+				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, SystemProperties.getAdempiereDBSystemUser() != null);
+			} else {
+				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, "");
+			}
+
 			// obfuscate keystore pass
 			String keystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
 			String obfKeystorePass = Password.obfuscate(keystorePass);
