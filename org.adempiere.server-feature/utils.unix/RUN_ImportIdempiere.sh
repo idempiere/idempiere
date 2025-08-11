@@ -31,9 +31,8 @@ ls -lsa "$IDEMPIERE_HOME"/data/seed/Adempiere${SUFFIX}.dmp
 echo Press enter to continue ...
 read -r _
 
-# Parameter: <systemAccount> <AdempiereID> <AdempierePwd>
-# globalqss - cruiz - 2007-10-09 - added fourth parameter for postgres(ignored in oracle)
-"$ADEMPIERE_DB_PATH"/ImportIdempiere.sh "$ADEMPIERE_DB_SYSTEM_USER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
+# Parameter: <adempiereID> <adempierePwd> <systemUser> <systemPwd> <dmpSuffix>
+"$ADEMPIERE_DB_PATH"/ImportIdempiere.sh "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM_USER" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
 
 ./RUN_SyncDB.sh
 

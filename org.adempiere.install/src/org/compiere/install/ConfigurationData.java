@@ -893,7 +893,7 @@ public class ConfigurationData
 
 			// store ADEMPIERE_DB_SYSTEM_USER
 			if (SystemProperties.getAdempiereDBSystemUser() != null) {
-				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, SystemProperties.getAdempiereDBSystemUser() != null);
+				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, SystemProperties.getAdempiereDBSystemUser());
 			} else {
 				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, "");
 			}
@@ -911,6 +911,7 @@ public class ConfigurationData
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			log.severe("Cannot save Properties to " + fileName + " - " + e.toString());
 			if (p_panel != null)
 				JOptionPane.showConfirmDialog(p_panel,
@@ -923,6 +924,7 @@ public class ConfigurationData
 		}
 		catch (Throwable t)
 		{
+			t.printStackTrace();
 			log.severe("Cannot save Properties to " + fileName + " - " + t.toString());
 			if (p_panel != null)
 				JOptionPane.showConfirmDialog(p_panel,
