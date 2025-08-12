@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Workflow
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Workflow 
 {
@@ -58,6 +58,7 @@ public interface I_AD_Workflow
 	/** Get Context Help	  */
 	public int getAD_CtxHelp_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -86,6 +87,7 @@ public interface I_AD_Workflow
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_WF_Node_ID */
@@ -101,6 +103,7 @@ public interface I_AD_Workflow
 	  */
 	public int getAD_WF_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name AD_WF_Responsible_ID */
@@ -116,6 +119,7 @@ public interface I_AD_Workflow
 	  */
 	public int getAD_WF_Responsible_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException;
 
     /** Column name AD_WorkflowProcessor_ID */
@@ -131,6 +135,7 @@ public interface I_AD_Workflow
 	  */
 	public int getAD_WorkflowProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
@@ -473,6 +478,7 @@ public interface I_AD_Workflow
 	  */
 	public int getS_Resource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name SetupTime */

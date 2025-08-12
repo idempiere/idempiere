@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BP_Group_Acct
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_BP_Group_Acct 
 {
@@ -75,6 +75,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BP_Group_Acct_UU */
@@ -99,6 +100,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_Prepayment_Acct */
@@ -114,6 +116,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getC_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException;
 
     /** Column name C_Receivable_Acct */
@@ -129,6 +132,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getC_Receivable_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException;
 
     /** Column name C_Receivable_Services_Acct */
@@ -144,6 +148,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getC_Receivable_Services_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
 
     /** Column name Created */
@@ -188,6 +193,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getNotInvoicedReceipts_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getNotInvoicedReceipts_A() throws RuntimeException;
 
     /** Column name PayDiscount_Exp_Acct */
@@ -203,6 +209,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getPayDiscount_Exp_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException;
 
     /** Column name PayDiscount_Rev_Acct */
@@ -218,6 +225,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getPayDiscount_Rev_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException;
 
     /** Column name Processing */
@@ -242,6 +250,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getUnEarnedRevenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException;
 
     /** Column name Updated */
@@ -273,6 +282,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getV_Liability_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_A() throws RuntimeException;
 
     /** Column name V_Liability_Services_Acct */
@@ -288,6 +298,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getV_Liability_Services_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_Services_A() throws RuntimeException;
 
     /** Column name V_Prepayment_Acct */
@@ -303,6 +314,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getV_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Prepayment_A() throws RuntimeException;
 
     /** Column name WriteOff_Acct */
@@ -318,5 +330,6 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getWriteOff_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getWriteOff_A() throws RuntimeException;
 }

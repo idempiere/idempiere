@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for U_POSTerminal
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_U_POSTerminal 
 {
@@ -88,6 +88,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getC_CashBPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_CashBPartner() throws RuntimeException;
 
     /** Column name C_CashBook_ID */
@@ -103,6 +104,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getC_CashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException;
 
     /** Column name C_TemplateBPartner_ID */
@@ -118,6 +120,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getC_TemplateBPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_TemplateBPartner() throws RuntimeException;
 
     /** Column name CardTransferBankAccount_ID */
@@ -133,6 +136,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCardTransferBankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getCardTransferBankAccount() throws RuntimeException;
 
     /** Column name CardTransferCashBook_ID */
@@ -148,6 +152,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCardTransferCashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getCardTransferCashBook() throws RuntimeException;
 
     /** Column name CardTransferType */
@@ -172,6 +177,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCard_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getCard_BankAccount() throws RuntimeException;
 
     /** Column name CashBookTransferType */
@@ -200,6 +206,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCashTransferBankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getCashTransferBankAccount() throws RuntimeException;
 
     /** Column name CashTransferCashBook_ID */
@@ -215,6 +222,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCashTransferCashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getCashTransferCashBook() throws RuntimeException;
 
     /** Column name CheckTransferBankAccount_ID */
@@ -230,6 +238,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCheckTransferBankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getCheckTransferBankAccount() throws RuntimeException;
 
     /** Column name CheckTransferCashBook_ID */
@@ -245,6 +254,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCheckTransferCashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getCheckTransferCashBook() throws RuntimeException;
 
     /** Column name CheckTransferType */
@@ -269,6 +279,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getCheck_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getCheck_BankAccount() throws RuntimeException;
 
     /** Column name Created */
@@ -378,6 +389,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
@@ -406,6 +418,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getPO_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException;
 
     /** Column name PrinterName */
@@ -430,6 +443,7 @@ public interface I_U_POSTerminal
 	/** Get Sales Price List	  */
 	public int getSO_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getSO_PriceList() throws RuntimeException;
 
     /** Column name SalesRep_ID */
@@ -445,6 +459,7 @@ public interface I_U_POSTerminal
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name U_POSTerminal_ID */

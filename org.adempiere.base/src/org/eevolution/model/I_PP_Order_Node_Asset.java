@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Node_Asset
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_Order_Node_Asset 
@@ -77,6 +77,7 @@ public interface I_PP_Order_Node_Asset
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name Created */
@@ -121,6 +122,7 @@ public interface I_PP_Order_Node_Asset
 	  */
 	public int getPP_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException;
 
     /** Column name PP_Order_Node_Asset_ID */
@@ -154,6 +156,7 @@ public interface I_PP_Order_Node_Asset
 	  */
 	public int getPP_Order_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException;
 
     /** Column name PP_Order_Workflow_ID */
@@ -165,6 +168,7 @@ public interface I_PP_Order_Node_Asset
 	/** Get Manufacturing Order Workflow	  */
 	public int getPP_Order_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException;
 
     /** Column name Updated */

@@ -31,7 +31,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250301L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName)
@@ -92,7 +92,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -148,6 +148,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)
@@ -199,6 +200,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 		return (String)get_Value(COLUMNNAME_M_AttributeUse_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)

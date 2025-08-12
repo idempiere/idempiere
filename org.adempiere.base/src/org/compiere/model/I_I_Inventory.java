@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Inventory
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_Inventory 
 {
@@ -75,6 +75,7 @@ public interface I_I_Inventory
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -90,6 +91,7 @@ public interface I_I_Inventory
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name ChargeName */
@@ -260,6 +262,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_CostingLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_CostingLine() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
@@ -275,6 +278,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_InventoryLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
 
     /** Column name M_Inventory_ID */
@@ -290,6 +294,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Inventory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -305,6 +310,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -320,6 +326,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -335,6 +342,7 @@ public interface I_I_Inventory
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name MovementDate */

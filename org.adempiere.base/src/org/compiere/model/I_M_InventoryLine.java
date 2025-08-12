@@ -75,6 +75,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_CostCenter_ID */
@@ -86,6 +87,7 @@ public interface I_M_InventoryLine
 	/** Get Cost Center	  */
 	public int getC_CostCenter_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
 
     /** Column name C_Department_ID */
@@ -97,6 +99,7 @@ public interface I_M_InventoryLine
 	/** Get Department	  */
 	public int getC_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name Created */
@@ -193,6 +196,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
@@ -230,6 +234,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getM_Inventory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -245,6 +250,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -260,6 +266,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name NewCostPrice */
@@ -349,6 +356,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getReversalLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getReversalLine() throws RuntimeException;
 
     /** Column name UPC */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_PA_DashboardContent 
 {
@@ -50,6 +50,7 @@ public interface I_PA_DashboardContent
 	/** Get Chart	  */
 	public int getAD_Chart_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -86,6 +87,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
@@ -101,6 +103,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Role_ID */
@@ -116,6 +119,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_StatusLine_ID */
@@ -127,6 +131,7 @@ public interface I_PA_DashboardContent
 	/** Get Status Line	  */
 	public int getAD_StatusLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -142,6 +147,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -157,6 +163,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name ColumnNo */
@@ -385,6 +392,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getPA_Goal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Goal getPA_Goal() throws RuntimeException;
 
     /** Column name ProcessParameters */

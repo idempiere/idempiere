@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_CostHistory
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_CostHistory 
 {
@@ -139,6 +139,7 @@ public interface I_M_CostHistory
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_CostDetail_ID */
@@ -154,6 +155,7 @@ public interface I_M_CostHistory
 	  */
 	public int getM_CostDetail_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostDetail getM_CostDetail() throws RuntimeException;
 
     /** Column name M_CostElement_ID */
@@ -169,6 +171,7 @@ public interface I_M_CostHistory
 	  */
 	public int getM_CostElement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_CostHistory_ID */
@@ -206,6 +209,7 @@ public interface I_M_CostHistory
 	  */
 	public int getM_CostType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -221,6 +225,7 @@ public interface I_M_CostHistory
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name NewCAmt */

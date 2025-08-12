@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CountryGroup
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CountryGroup")
 public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CountryGroup (Properties ctx, int C_CountryGroup_ID, String trxName)

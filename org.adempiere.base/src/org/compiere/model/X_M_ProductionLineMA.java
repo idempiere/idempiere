@@ -26,7 +26,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_ProductionLineMA
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionLineMA")
 public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ProductionLineMA (Properties ctx, int M_ProductionLineMA_ID, String trxName)
@@ -128,6 +128,7 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
 		return (Timestamp)get_Value(COLUMNNAME_DateMaterialPolicy);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -171,6 +172,7 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
 		return (String)get_Value(COLUMNNAME_M_ProductionLineMA_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)

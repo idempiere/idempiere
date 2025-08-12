@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Tab
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_ASP_Tab 
 {
@@ -75,6 +75,7 @@ public interface I_ASP_Tab
 	  */
 	public int getAD_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name ASP_Status */
@@ -113,6 +114,7 @@ public interface I_ASP_Tab
 	/** Get ASP Window	  */
 	public int getASP_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Window getASP_Window() throws RuntimeException;
 
     /** Column name AllFields */

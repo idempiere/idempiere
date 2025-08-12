@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertRecipient
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_AlertRecipient")
 public class X_AD_AlertRecipient extends PO implements I_AD_AlertRecipient, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_AlertRecipient extends PO implements I_AD_AlertRecipient, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_AlertRecipient (Properties ctx, int AD_AlertRecipient_ID, String trxName)
@@ -142,6 +142,7 @@ public class X_AD_AlertRecipient extends PO implements I_AD_AlertRecipient, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_AlertRecipient_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Alert)MTable.get(getCtx(), org.compiere.model.I_AD_Alert.Table_ID)
@@ -170,6 +171,7 @@ public class X_AD_AlertRecipient extends PO implements I_AD_AlertRecipient, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -198,6 +200,7 @@ public class X_AD_AlertRecipient extends PO implements I_AD_AlertRecipient, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

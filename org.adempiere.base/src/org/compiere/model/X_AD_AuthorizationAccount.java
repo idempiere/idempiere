@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for AD_AuthorizationAccount
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationAccount")
 public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationAccount, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
@@ -155,6 +155,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationAccount_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AuthorizationCredential getAD_AuthorizationCredential() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AuthorizationCredential)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationCredential.Table_ID)
@@ -210,6 +211,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationScopes);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

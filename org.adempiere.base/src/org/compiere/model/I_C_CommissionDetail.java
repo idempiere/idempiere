@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CommissionDetail
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_CommissionDetail 
 {
@@ -101,6 +101,7 @@ public interface I_C_CommissionDetail
 	  */
 	public int getC_CommissionAmt_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CommissionAmt getC_CommissionAmt() throws RuntimeException;
 
     /** Column name C_CommissionDetail_ID */
@@ -138,6 +139,7 @@ public interface I_C_CommissionDetail
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
@@ -153,6 +155,7 @@ public interface I_C_CommissionDetail
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_OrderLine_ID */
@@ -168,6 +171,7 @@ public interface I_C_CommissionDetail
 	  */
 	public int getC_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name ConvertedAmt */

@@ -31,5 +31,5 @@ ls -lsa "$IDEMPIERE_HOME"/data/seed/Adempiere${SUFFIX}.dmp
 echo Press enter to continue ...
 read -r _
 
-# Parameter: <systemAccount> <AdempiereID> <AdempierePwd>
-sh "$ADEMPIERE_DB_PATH"/ImportIdempiere.sh $ADEMPIERE_DB_SYSTEM_USER/"$ADEMPIERE_DB_SYSTEM" reference reference "$ADEMPIERE_DB_SYSTEM"
+# Parameter: <adempiereID> <adempierePwd> <systemUser> <systemPwd>
+sh "$ADEMPIERE_DB_PATH"/ImportIdempiere.sh reference reference "$ADEMPIERE_DB_SYSTEM_USER" "$ADEMPIERE_DB_SYSTEM"

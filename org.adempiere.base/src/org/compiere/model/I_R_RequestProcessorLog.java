@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_R_RequestProcessorLog 
 {
@@ -165,6 +165,7 @@ public interface I_R_RequestProcessorLog
 	  */
 	public int getR_RequestProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException;
 
     /** Column name Reference */

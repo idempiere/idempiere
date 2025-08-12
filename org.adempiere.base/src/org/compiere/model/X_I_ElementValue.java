@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ElementValue
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_ElementValue")
 public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName)
@@ -105,6 +105,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -189,6 +190,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 		return (String)get_Value(COLUMNNAME_AccountType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -217,6 +219,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
@@ -431,6 +434,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getParentElementValue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

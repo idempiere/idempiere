@@ -53,7 +53,7 @@ fi
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-$DOCKER_EXEC sqlplus -S "$3"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATA_ENDPOINT" "$DATAPUMP_HOME"/data
+$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATA_ENDPOINT" "$DATAPUMP_HOME"/data
 
 if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
   chgrp dba "$IDEMPIERE_HOME"/data

@@ -21,9 +21,8 @@ cd %IDEMPIERE_HOME%\utils
 @echo == The import will show warnings. This is OK ==
 @pause
 
-@Rem Parameter: <systemAccount> <AdempiereID> <AdempierePwd>
-@Rem globalqss - cruiz - 2007-10-09 - added fourth parameter for postgres (ignored in oracle)
-@call %ADEMPIERE_DB_PATH%\ImportIdempiere %ADEMPIERE_DB_SYSTEM_USER%/%ADEMPIERE_DB_SYSTEM% %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD% %ADEMPIERE_DB_SYSTEM% %SUFFIX%
+@Rem Parameter: <AdempiereID> <AdempierePwd> <systemUser> <systemPwd>
+@call %ADEMPIERE_DB_PATH%\ImportIdempiere %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD% %ADEMPIERE_DB_SYSTEM_USER% %ADEMPIERE_DB_SYSTEM% %SUFFIX%
 
 @call RUN_SyncDB
 

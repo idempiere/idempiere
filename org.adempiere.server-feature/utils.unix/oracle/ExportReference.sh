@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo    iDempiere Database Export       "$Revision": 1.5 $
 
@@ -40,7 +40,7 @@ if [ "${ADEMPIERE_DB_NAME:0:1}" = "@" ]
   else
     DB_CONNECTION="$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME"
 fi
-$DOCKER_EXEC sqlplus -S "$3"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATA_ENDPOINT" "$DATAPUMP_HOME"/data
+$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATA_ENDPOINT" "$DATAPUMP_HOME"/data
 
 if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
   chgrp dba "$IDEMPIERE_HOME"/data
@@ -49,7 +49,7 @@ fi
 
 $DOCKER_EXEC rm -f "$DATAPUMP_HOME"/data/Adempiere.dmp "$DATAPUMP_HOME"/data/Adempiere.log
 # Export
-if [ "x${1,,}" != "xreference" ]; then
+if [ "$1" != "reference" ]; then
   $DOCKER_EXEC expdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$DATA_ENDPOINT"Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS="$1" CREDENTIAL=NULL
 else
   $DOCKER_EXEC expdp REFERENCE/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$DATA_ENDPOINT"Adempiere.dmp LOGFILE=Adempiere.log EXCLUDE=STATISTICS SCHEMAS=REFERENCE CREDENTIAL=NULL

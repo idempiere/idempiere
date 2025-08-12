@@ -34,7 +34,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250307L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Entry (Properties ctx, int A_Depreciation_Entry_ID, String trxName)
@@ -266,6 +266,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 		return (String)get_Value(COLUMNNAME_A_Entry_Type);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -294,6 +295,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
@@ -321,6 +323,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -349,6 +352,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
@@ -376,6 +380,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -404,6 +409,7 @@ public class X_A_Depreciation_Entry extends PO implements I_A_Depreciation_Entry
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)

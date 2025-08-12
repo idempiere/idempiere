@@ -21,7 +21,7 @@ sqlplus -S %1/%2@%DB_CONNECTION% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\Dai
 @echo -------------------------------------
 @echo Re-Create DataPump Directory
 @echo -------------------------------------
-sqlplus -S %3@%DB_CONNECTION% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %DATA_ENDPOINT% %IDEMPIERE_HOME%\data
+sqlplus -S %3/%4@%DB_CONNECTION% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %DATA_ENDPOINT% %IDEMPIERE_HOME%\data
 
 @Rem The Export
 expdp %1/%2@%DB_CONNECTION% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=%DATA_ENDPOINT%ExpDat_%Date%.dmp LOGFILE=%DATA_ENDPOINT%ExpDat_%Date%.log EXCLUDE=STATISTICS SCHEMAS=%1 CREDENTIAL=NULL

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_BPartner 
 {
@@ -75,6 +75,7 @@ public interface I_I_BPartner
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Address1 */
@@ -142,6 +143,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -157,6 +159,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -172,6 +175,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Country_ID */
@@ -187,6 +191,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_Country_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name C_Greeting_ID */
@@ -202,6 +207,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_Greeting_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException;
 
     /** Column name C_Region_ID */
@@ -217,6 +223,7 @@ public interface I_I_BPartner
 	  */
 	public int getC_Region_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
 
     /** Column name City */
@@ -275,12 +282,12 @@ public interface I_I_BPartner
     public static final String COLUMNNAME_CountryCode = "CountryCode";
 
 	/** Set ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public void setCountryCode (String CountryCode);
 
 	/** Get ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode();
 
@@ -615,6 +622,7 @@ public interface I_I_BPartner
 	  */
 	public int getR_InterestArea_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException;
 
     /** Column name RegionName */
