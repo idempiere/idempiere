@@ -1480,14 +1480,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (column.getAD_Process_ID() > 0)
 			{
 				// Verify access to process for buttons
-				Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
+				Boolean access = getProcessAccess(column.getAD_Process_ID());
 				if (access == null)
 					return false;
 			}
 			else if (column.getAD_InfoWindow_ID() > 0)
 			{
 				// Verify access to info window for buttons
-				Boolean access = MRole.getDefault().getInfoAccess(column.getAD_InfoWindow_ID());
+				Boolean access = getInfoAccess(column.getAD_InfoWindow_ID());
 				if (access == null)
 					return false;
 			}
