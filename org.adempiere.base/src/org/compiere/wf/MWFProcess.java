@@ -270,6 +270,31 @@ public class MWFProcess extends X_AD_WF_Process
 	 */
 	public void checkActivities(String trxName, PO lastPO)
 	{
+		checkActivities(trxName, lastPO, false, null);
+	}
+
+	/**************************************************************************
+	 * 	Check Status of Activities.
+	 * 	- start new activity
+	 * 	@param trxName transaction
+	 * 	@param lastPO PO
+	 * 	@param isDisallowStartNextNode - CLDE
+	 */
+	public void checkActivities(String trxName, PO lastPO, boolean isDisallowStartNextNode)
+	{
+		checkActivities(trxName, lastPO, isDisallowStartNextNode, null);
+	}
+
+	/**************************************************************************
+	 * 	Check Status of Activities.
+	 * 	- start new activity
+	 * 	@param trxName transaction
+	 * 	@param lastPO PO
+	 * 	@param isDisallowStartNextNode - CLDE
+	 * 	@param lastActivity - CLDE
+	 */
+	public void checkActivities(String trxName, PO lastPO, boolean isDisallowStartNextNode, MWFActivity lastActivity)
+	{
 		this.set_TrxName(trxName); // ensure process is working on the same transaction
 		if (log.isLoggable(Level.INFO)) log.info("(" + getAD_Workflow_ID() + ") - " + getWFState() 
 			+ (trxName == null ? "" : "[" + trxName + "]"));
@@ -280,7 +305,7 @@ public class MWFProcess extends X_AD_WF_Process
 			m_po = lastPO;
 		
 		//
-		MWFActivity[] activities = getActivities (true, true, trxName);	//	requery active
+		MWFActivity[] activities = lastActivity != null ? new MWFActivity[] { lastActivity } : getActivities (true, true, trxName);	//	requery active
 		String closedState = null;
 		for (int i = 0; i < activities.length; i++)
 		{
@@ -290,7 +315,7 @@ public class MWFProcess extends X_AD_WF_Process
 			//	Completed - Start Next
 			if (activityState.isCompleted())
 			{
-				if (startNext (activity, activities, lastPO, trxName))
+				if (!isDisallowStartNextNode && startNext(activity, activities, lastPO, trxName))
 					continue;		
 			}
 			//
@@ -354,7 +379,15 @@ public class MWFProcess extends X_AD_WF_Process
 			{
 				//
 				if (closedState == null)
-					closedState = activityWFState;
+				{
+					if (m_wf.isDisallowAutoStartNextNode() && !isFinalNodeCompleted()) {
+
+						closedState = WFSTATE_Suspended;
+
+					} else {
+						closedState = activityWFState;
+					}
+				}
 				else if (!closedState.equals(activityState.getState()))
 				{
 					//	Overwrite if terminated
@@ -754,5 +787,31 @@ public class MWFProcess extends X_AD_WF_Process
 	{
 		return m_processMsg;
 	}	//	getProcessMsg
-	
+
+	/**
+	 * Get last Workflow Activity
+	 * @return
+	 */
+	public MWFActivity getLastActivity() { 
+		MWFActivity lastActivity = null;
+		MWFActivity[] activities = getActivities(true, false, get_TrxName());
+		if (activities != null & activities.length > 0) 
+			lastActivity = activities[activities.length-1];
+		return lastActivity;
+	} // getLastActivity
+
+	/**
+	 * Check if the final node of the workflow is completed
+	 * @return true if the final node is completed, false otherwise
+	 */
+	public boolean isFinalNodeCompleted() {
+		MWFActivity lastActivity = getLastActivity();
+		MWFNodeNext[] nextNodes = m_wf.getNodeNexts(lastActivity.getAD_WF_Node_ID(), lastActivity.getPO_AD_Client_ID()); // FIXME: replace m_wf with getWorkflow()
+		if (MWFActivity.WFSTATE_Completed.equals(lastActivity.getWFState()) && (nextNodes != null && nextNodes.length > 0)) {
+			return false;
+		} else {
+			return true;
+		}
+	} // isFinalNodeCompleted
+
 }	//	MWFProcess

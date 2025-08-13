@@ -318,7 +318,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				m_process = new MWFProcess (getCtx(), getAD_WF_Process_ID(),
 					this.get_TrxName());
 			try{
-				m_process.checkActivities(this.get_TrxName(), m_po);
+				m_process.checkActivities(this.get_TrxName(), m_po, m_process.getWorkflow().isDisallowAutoStartNextNode());
 			}catch (Exception e) {
 				setWFState(WFSTATE_Terminated); 
 				m_process.setWFState(MWFProcess.WFSTATE_Terminated);

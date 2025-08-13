@@ -1004,4 +1004,21 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		ServerProcessCtl.process(processInfo, !Util.isEmpty(processInfo.getTransactionName(), true) ? Trx.get(processInfo.getTransactionName(), false) : null);
 		return processInfo;
 	}
+
+	/** Do not allow to start next workflow node automatically */
+	private boolean disallowAutoStartNextNode = false;
+
+	/**
+	 * @return the disallowAutoStartNextNode
+	 */
+	public boolean isDisallowAutoStartNextNode() {
+		return disallowAutoStartNextNode;
+	}
+
+	/**
+	 * @param disallowAutoStartNextNode the disallowAutoStartNextNode to set
+	 */
+	public void setDisallowAutoStartNextNode(boolean disallowAutoStartNextNode) {
+		this.disallowAutoStartNextNode = disallowAutoStartNextNode;
+	}
 }	//	MWorkflow_ID
