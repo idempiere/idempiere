@@ -131,7 +131,7 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 			p_db.getSystemDatabase(databaseName), p_db.getSystemUser());
 		pass = testJDBC(urlSystem, p_db.getSystemUser(), systemPassword);
 		error = "Error connecting: " + urlSystem
-			+ " - " + p_db.getSystemUser() + "/" + systemPassword;
+			+ " - " + p_db.getSystemUser() + "/********";
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
 				pass, true, error));
@@ -159,7 +159,7 @@ public class ConfigPostgreSQL implements IDatabaseConfig
 			databaseName, databaseUser);
 		//	Ignore result as it might not be imported
 		pass = testJDBC(url, databaseUser, databasePassword);
-		error = "Database imported? Cannot connect to User: " + databaseUser + "/" + databasePassword;
+		error = "Database imported? Cannot connect to User: " + databaseUser + "/********";
 		if (monitor != null) {
 			boolean critical = true;
 			if (!isDBExists) {
