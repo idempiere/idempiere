@@ -255,6 +255,7 @@ public class MWFProcess extends X_AD_WF_Process
 						activities[i].setProcessed(true);
 					activities[i].saveEx();
 				}
+				getPO().removeActiveWorkflow(getWorkflow().getAD_Workflow_ID());
 			}	//	closed
 		}
 		else	
@@ -358,6 +359,15 @@ public class MWFProcess extends X_AD_WF_Process
 	 * 	@param trxName transaction
 	 */
 	public void checkCloseActivities(String trxName) {
+		checkCloseActivities(isDisallowAutoStartNextNode(), trxName);
+	}
+
+	/**************************************************************************
+	 * 	Update process status based on status of activities.
+	 * 	@param isDisallowStartNextNode - CLDE
+	 * 	@param trxName transaction
+	 */
+	public void checkCloseActivities(boolean isDisallowStartNextNode, String trxName) {
 		this.set_TrxName(trxName); // ensure process is working on the same transaction
 		if (log.isLoggable(Level.INFO)) log.info("(" + getAD_Workflow_ID() + ") - " + getWFState() 
 			+ (trxName == null ? "" : "[" + trxName + "]"));
@@ -380,10 +390,8 @@ public class MWFProcess extends X_AD_WF_Process
 				//
 				if (closedState == null)
 				{
-					if (m_wf.isDisallowAutoStartNextNode() && !isFinalNodeCompleted()) {
-
-						closedState = WFSTATE_Suspended;
-
+					if (isDisallowStartNextNode && !isFinalNodeCompleted()) {
+						suspended = true;
 					} else {
 						closedState = activityWFState;
 					}
@@ -806,12 +814,29 @@ public class MWFProcess extends X_AD_WF_Process
 	 */
 	public boolean isFinalNodeCompleted() {
 		MWFActivity lastActivity = getLastActivity();
-		MWFNodeNext[] nextNodes = m_wf.getNodeNexts(lastActivity.getAD_WF_Node_ID(), lastActivity.getPO_AD_Client_ID()); // FIXME: replace m_wf with getWorkflow()
-		if (MWFActivity.WFSTATE_Completed.equals(lastActivity.getWFState()) && (nextNodes != null && nextNodes.length > 0)) {
+		MWFNodeNext[] nextNodes = getWorkflow().getNodeNexts(lastActivity.getAD_WF_Node_ID(), lastActivity.getPO_AD_Client_ID());
+		if (nextNodes != null && nextNodes.length > 0) { // not final node
 			return false;
 		} else {
-			return true;
+			return MWFActivity.WFSTATE_Completed.equals(lastActivity.getWFState());
 		}
 	} // isFinalNodeCompleted
+
+	/** Do not allow to start next workflow node automatically */
+	private boolean disallowAutoStartNextNode = false;
+
+	/**
+	 * @return the disallowAutoStartNextNode
+	 */
+	public boolean isDisallowAutoStartNextNode() {
+		return disallowAutoStartNextNode;
+	}
+
+	/**
+	 * @param disallowAutoStartNextNode the disallowAutoStartNextNode to set
+	 */
+	public void setDisallowAutoStartNextNode(boolean disallowAutoStartNextNode) {
+		this.disallowAutoStartNextNode = disallowAutoStartNextNode;
+	}
 
 }	//	MWFProcess
