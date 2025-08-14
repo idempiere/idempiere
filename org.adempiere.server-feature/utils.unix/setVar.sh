@@ -26,7 +26,7 @@ else
     then
         echo "$VARIABLE=" >> "$VARFILE"
     else
-        VALB=$( echo "$VALUE" | base64 )
+        VALB=$( echo "$VALUE" | base64 -w0 )
         echo "$VARIABLE=\"$VALB\"" >> "$VARFILE"
     fi
 fi
