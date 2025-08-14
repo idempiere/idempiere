@@ -27,8 +27,8 @@ public class StateMachineWorkflowCtl {
      * @param trxName Transaction name
      * @return The workflow process that was started, or null if no workflow was found/started
      */
-    public static MWFProcess startStateMachineWorkflow(Properties ctx, PO record, int workflowId, int tableId, int recordId, String trxName) {
-        if (record == null || workflowId <= 0 || tableId <= 0 || recordId <= 0)
+    public static MWFProcess startWorkflow(Properties ctx, PO record, int workflowId, String trxName) {
+        if (record == null || workflowId <= 0 || record.get_Table_ID() <= 0 || record.get_ID() <= 0)
             return null;
         
         if (record.getActiveWorkflows().contains(workflowId))
@@ -37,7 +37,7 @@ public class StateMachineWorkflowCtl {
         try {
             MWorkflow workflow = MWorkflow.get(ctx, workflowId);
             if (workflow == null || workflow.get_ID() == 0) {
-                s_log.warning("Workflow not found: " + workflowId);
+                s_log.severe("Workflow not found: " + workflowId);
                 return null;
             }
             
@@ -48,12 +48,13 @@ public class StateMachineWorkflowCtl {
             }
             
             // Start workflow
-            ProcessInfo pi = new ProcessInfo("State machine Workflow", 0, tableId, recordId);
+            ProcessInfo pi = new ProcessInfo("State machine Workflow", 0, record.get_Table_ID(), record.get_ID());
             pi.setTransactionName(trxName);
             workflow.start(pi, true, trxName);
             
         } catch (Exception e) {
             s_log.log(Level.SEVERE, "Error starting workflow: " + e.getMessage(), e);
+			throw new org.adempiere.exceptions.AdempiereException("Failed to start workflow: " + e.getMessage(), e);
         }
         
         return null;
@@ -69,9 +70,9 @@ public class StateMachineWorkflowCtl {
      * @param trxName Transaction name
      * @return true if the workflow was continued successfully
      */
-    public static boolean continueStateMachineWorkflow(Properties ctx, PO record, int tableId, int recordId, String trxName) {
+    public static boolean resumeWorkflow(Properties ctx, PO record, String trxName) {
         try {
-        	MWFProcess process = findSuspendedStateMachineWorkflowProcess(ctx, tableId, recordId, trxName);
+        	MWFProcess process = findSuspendedWorkflowProcess(ctx, record.get_Table_ID(), record.get_ID(), trxName);
         	if (process == null) {
         		return false;
         	}			
@@ -98,7 +99,7 @@ public class StateMachineWorkflowCtl {
      * @param trxName Transaction name
      * @return Active workflow process or null if not found
      */
-    public static MWFProcess findSuspendedStateMachineWorkflowProcess(Properties ctx, int tableId, int recordId, String trxName) {
+    public static MWFProcess findSuspendedWorkflowProcess(Properties ctx, int tableId, int recordId, String trxName) {
         return new Query(ctx, MWFProcess.Table_Name,
                 "AD_Table_ID=? AND Record_ID=? AND Processed=? AND WFState=?", trxName)
             .setParameters(tableId, recordId, false, StateEngine.STATE_Suspended)

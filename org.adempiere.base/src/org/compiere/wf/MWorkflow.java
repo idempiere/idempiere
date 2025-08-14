@@ -766,7 +766,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	/**************************************************************************
 	 * 	Start Workflow.
 	 * 	@param pi Process Info (Record_ID)
-	 * 	@param disallowAutoStartNextNode - CLDE
+	 * 	@param disallowAutoStartNextNode
 	 *	@return process
 	 */
 	public MWFProcess start (ProcessInfo pi, boolean disallowAutoStartNextNode, String trxName)

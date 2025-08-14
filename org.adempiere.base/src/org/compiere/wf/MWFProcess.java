@@ -279,7 +279,7 @@ public class MWFProcess extends X_AD_WF_Process
 	 * 	- start new activity
 	 * 	@param trxName transaction
 	 * 	@param lastPO PO
-	 * 	@param isDisallowStartNextNode - CLDE
+	 * 	@param isDisallowStartNextNode
 	 */
 	public void checkActivities(String trxName, PO lastPO, boolean isDisallowStartNextNode)
 	{
@@ -291,8 +291,8 @@ public class MWFProcess extends X_AD_WF_Process
 	 * 	- start new activity
 	 * 	@param trxName transaction
 	 * 	@param lastPO PO
-	 * 	@param isDisallowStartNextNode - CLDE
-	 * 	@param lastActivity - CLDE
+	 * 	@param isDisallowStartNextNode
+	 * 	@param lastActivity
 	 */
 	public void checkActivities(String trxName, PO lastPO, boolean isDisallowStartNextNode, MWFActivity lastActivity)
 	{
@@ -364,7 +364,7 @@ public class MWFProcess extends X_AD_WF_Process
 
 	/**************************************************************************
 	 * 	Update process status based on status of activities.
-	 * 	@param isDisallowStartNextNode - CLDE
+	 * 	@param isDisallowStartNextNode
 	 * 	@param trxName transaction
 	 */
 	public void checkCloseActivities(boolean isDisallowStartNextNode, String trxName) {
