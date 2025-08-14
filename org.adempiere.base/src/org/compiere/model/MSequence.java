@@ -26,9 +26,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -38,6 +40,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Trx;
@@ -59,6 +62,14 @@ public class MSequence extends X_AD_Sequence
 	private static final int QUERY_TIME_OUT = 30;
 	
 	private static final String NoYearNorMonth = "-";
+	
+	/** 
+	 * Define a key by adding "/K" after a context variable in the Prefix or Suffix
+	 *  E.g. &#64;Updated&lt;yyyymm&#62;/K&#64; 
+	 */
+	private static final String KEY_CONTEXT_VARIABLE = "/K";
+	/** Separator for SequenceNo Key Parts */
+	private static final String SEQUENCE_NO_KEY_SEPARATOR = "-";
 
 	/**
 	 * @param AD_Client_ID
@@ -340,50 +351,63 @@ public class MSequence extends X_AD_Sequence
 		String orgColumn = seq.getOrgColumn();
 		int startNo = seq.getStartNo();
 		int incrementNo = seq.getIncrementNo();
-		String prefix = seq.getPrefix();
-		String suffix = seq.getSuffix();
 		String decimalPattern = seq.getDecimalPattern();
+		SequenceNoKeyParts keyParts = new SequenceNoKeyParts(seq, po, trxName);
+		
+		// Parse prefix and suffix
+		String prefixValue = null;
+		String suffixValue = null;
+		if (seq.getPrefix() != null && seq.getPrefix().length() > 0) {
+			prefixValue = Env.parseVariable(seq.getPrefix().replaceAll(KEY_CONTEXT_VARIABLE+"@", "@"), po, trxName, false);
+			keyParts.parsePrefix(seq.getPrefix());
+		}
+		if (seq.getSuffix() != null && seq.getSuffix().length() > 0) {
+			suffixValue = Env.parseVariable(seq.getSuffix().replaceAll(KEY_CONTEXT_VARIABLE+"@", "@"), po, trxName, false);
+			keyParts.parseSuffix(seq.getSuffix());
+		}
 
-		String selectSQL = null;
-		if (isStartNewYear || isUseOrgLevel) {
-			selectSQL = "SELECT y.CurrentNext, s.CurrentNextSys "
-					+ "FROM AD_Sequence_No y, AD_Sequence s "
-					+ "WHERE y.AD_Sequence_ID = s.AD_Sequence_ID "
-					+ "AND s.AD_Sequence_ID = ? "
-					+ "AND y.CalendarYearMonth = ? "
-					+ "AND y.AD_Org_ID = ? "
-					+ "AND s.IsActive='Y' AND s.IsTableID='N' AND s.IsAutoSequence='Y' "
-					+ "ORDER BY s.AD_Client_ID DESC";
+		StringBuilder selectSQL = new StringBuilder();
+		if (seq.isSequenceNoLevel()) {
+			selectSQL.append("SELECT y.CurrentNext, s.CurrentNextSys ")
+					.append("FROM AD_Sequence_No y, AD_Sequence s ")
+					.append("WHERE y.AD_Sequence_ID = s.AD_Sequence_ID ")
+					.append("AND s.AD_Sequence_ID = ? ");
+			if (seq.isOrgLevelSequence())
+				selectSQL.append("AND y.AD_Org_ID = ? ");
+			if (seq.isStartNewYear() || seq.isUsePrefixAsKey() || seq.isUseSuffixAsKey())
+				selectSQL.append("AND y.SequenceKey = ? ");
+			selectSQL.append("AND s.IsActive='Y' AND s.IsTableID='N' AND s.IsAutoSequence='Y' ")
+					.append("ORDER BY s.AD_Client_ID DESC");
 		} else {
-			selectSQL = "SELECT s.CurrentNext, s.CurrentNextSys "
-					+ "FROM AD_Sequence s "
-					+ "WHERE s.AD_Sequence_ID = ? "
-					+ "AND s.IsActive='Y' AND s.IsTableID='N' AND s.IsAutoSequence='Y' "
-					+ "ORDER BY s.AD_Client_ID DESC";
+			selectSQL.append("SELECT s.CurrentNext, s.CurrentNextSys ")
+					.append("FROM AD_Sequence s ")
+					.append("WHERE s.AD_Sequence_ID = ? ")
+					.append("AND s.IsActive='Y' AND s.IsTableID='N' AND s.IsAutoSequence='Y' ")
+					.append("ORDER BY s.AD_Client_ID DESC");
 		}
 		if (DB.isOracle() == false)
 		{
-			if ( isStartNewYear || isUseOrgLevel  ) {
-				selectSQL = selectSQL + " FOR UPDATE OF y";
+			if (seq.isSequenceNoLevel()) {
+				selectSQL.append(" FOR UPDATE OF y");
 			} else {
-				selectSQL = selectSQL + " FOR UPDATE OF s";
+				selectSQL.append(" FOR UPDATE OF s");
 			}
 		}
 		else
 		{
-			if (isStartNewYear || isUseOrgLevel) {
-				selectSQL = selectSQL + " FOR UPDATE OF y.";
+			if (seq.isSequenceNoLevel()) {
+				selectSQL.append(" FOR UPDATE OF y.");
 			} else {
-				selectSQL = selectSQL + " FOR UPDATE OF s.";
+				selectSQL.append(" FOR UPDATE OF s.");
 			}
 			
 			if(adempiereSys)
-				selectSQL = selectSQL + "CurrentNextSys";
+				selectSQL.append("CurrentNextSys");
 			else
-				selectSQL = selectSQL + "CurrentNext";
+				selectSQL.append("CurrentNext");
 		}		
 		if (!DB.isOracle() && !DB.isPostgreSQL())
-			selectSQL = DB.getDatabase().convertStatement(selectSQL);
+			selectSQL = new StringBuilder(DB.getDatabase().convertStatement(selectSQL.toString()));
 		Connection conn = null;
 		Trx trx = trxName == null ? null : Trx.get(trxName, true);
 		//
@@ -421,6 +445,7 @@ public class MSequence extends X_AD_Sequence
 				{
 					calendarYearMonth = sdf.format(new Date());
 				}
+				keyParts.setCalendarYearMonth(calendarYearMonth);
 			}
 			
 			if (isUseOrgLevel)
@@ -428,16 +453,19 @@ public class MSequence extends X_AD_Sequence
 				if (po != null && orgColumn != null && orgColumn.length() > 0)
 				{
 					docOrg_ID = po.get_ValueAsInt(orgColumn);
+					keyParts.setAD_Org_ID(docOrg_ID);
 				}
 			}
 
-			pstmt = conn.prepareStatement(selectSQL,
+			pstmt = conn.prepareStatement(selectSQL.toString(),
 				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 			int index = 1;
 			pstmt.setInt(index++, AD_Sequence_ID);
-			if (isUseOrgLevel || isStartNewYear) {
-				pstmt.setString(index++, calendarYearMonth);
-				pstmt.setInt(index++, docOrg_ID);
+			if (seq.isSequenceNoLevel()) {
+				if (seq.isOrgLevelSequence())
+					pstmt.setInt(index++, docOrg_ID);
+				if (seq.isStartNewYear() || seq.isUsePrefixAsKey() || seq.isUseSuffixAsKey())
+					pstmt.setString(index++, keyParts.getKey());
 			}
 
 			//
@@ -462,22 +490,26 @@ public class MSequence extends X_AD_Sequence
 						updateSQL = conn.prepareStatement(updateCmd);
 						next = rs.getInt(2);
 					} else {
-						String sql;
-						if (isStartNewYear || isUseOrgLevel)
-							sql = "UPDATE AD_Sequence_No SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=? AND CalendarYearMonth=? AND AD_Org_ID=?";
-						else
-							sql = "UPDATE AD_Sequence SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=?";
+						StringBuilder sql = new StringBuilder("UPDATE");
+						sql.append(seq.isSequenceNoLevel() ? " AD_Sequence_No " : " AD_Sequence ")
+							.append("SET CurrentNext = CurrentNext + ? WHERE AD_Sequence_ID=?");
+						if (seq.isOrgLevelSequence())
+							sql.append(" AND AD_Org_ID=?");
+						if (seq.isStartNewYear() || seq.isUsePrefixAsKey() || seq.isUseSuffixAsKey())
+							sql.append(" AND SequenceKey=?");
+						
 						if (!DB.isOracle() && !DB.isPostgreSQL())
-							sql = DB.getDatabase().convertStatement(sql);
-						updateSQL = conn.prepareStatement(sql);
+							sql = new StringBuilder(DB.getDatabase().convertStatement(sql.toString()));
+						updateSQL = conn.prepareStatement(sql.toString());
 						next = rs.getInt(1);
 					}
-					updateSQL.setInt(1, incrementNo);
-					updateSQL.setInt(2, AD_Sequence_ID);
-					if (isStartNewYear || isUseOrgLevel) {
-						updateSQL.setString(3, calendarYearMonth);
-						updateSQL.setInt(4, docOrg_ID);
-					}
+					int idx = 1;
+					updateSQL.setInt(idx++, incrementNo);
+					updateSQL.setInt(idx++, AD_Sequence_ID);
+					if (seq.isOrgLevelSequence())
+						updateSQL.setInt(idx++, docOrg_ID);
+					if (seq.isStartNewYear() || seq.isUsePrefixAsKey() || seq.isUseSuffixAsKey())
+						updateSQL.setString(idx++, keyParts.getKey());
 					updateSQL.executeUpdate();
 				}
 				finally
@@ -488,14 +520,14 @@ public class MSequence extends X_AD_Sequence
 			}
 			else
 			{ // did not find sequence no
-				if (isUseOrgLevel || isStartNewYear) 
+				if (seq.isSequenceNoLevel()) 
 				{	// create sequence (CurrentNo = StartNo + IncrementNo) for this year/month/org and return first number (=StartNo)
 					next = startNo;
 
 					X_AD_Sequence_No seqno = new X_AD_Sequence_No(Env.getCtx(), 0, trxName);
 					seqno.setAD_Sequence_ID(AD_Sequence_ID);
 					seqno.setAD_Org_ID(docOrg_ID);
-					seqno.setCalendarYearMonth(calendarYearMonth);
+					seqno.setSequenceKey(keyParts.getKey());
 					seqno.setCurrentNext(startNo + incrementNo);
 					seqno.saveEx();
 				}
@@ -542,27 +574,68 @@ public class MSequence extends X_AD_Sequence
 
 		//	create DocumentNo
 		StringBuilder doc = new StringBuilder();
-		if (prefix != null && prefix.length() > 0) {
-			String prefixValue = Env.parseVariable(prefix, po, trxName, false);
-			if (!Util.isEmpty(prefixValue))
-				doc.append(prefixValue);
-		}
+		if (!Util.isEmpty(prefixValue, true))
+			doc.append(prefixValue);
 
 		if (decimalPattern != null && decimalPattern.length() > 0)
 			doc.append(new DecimalFormat(decimalPattern).format(next));
 		else
 			doc.append(next);
 
-		if (suffix != null && suffix.length() > 0) {
-			String suffixValue = Env.parseVariable(suffix, po, trxName, false);
-			if (!Util.isEmpty(suffixValue))
-				doc.append(suffixValue);
-		}
-
+		if (!Util.isEmpty(suffixValue, true))
+			doc.append(suffixValue);
+		
 		String documentNo = doc.toString();
 		if (s_log.isLoggable(Level.FINER)) s_log.finer (documentNo + " (" + incrementNo + ")"
 				+ " - Sequence=" + AD_Sequence_ID + " [" + trx + "]");
 		return documentNo;
+	}
+	
+	private AtomicReference<Boolean> isSequenceNoLevel = new AtomicReference<>();
+	private AtomicReference<Boolean> isUsePrefixAsKey = new AtomicReference<>();
+	private AtomicReference<Boolean> isUseSuffixAsKey = new AtomicReference<>();
+	
+	/**
+	 * Is the sequence a sequence no level sequence
+	 * @param seq sequence
+	 * @return true if the sequence is a sequence no level sequence
+	 */
+	public boolean isSequenceNoLevel() {
+		Boolean value = isSequenceNoLevel.get();
+		if (value == null) {
+			value = isUsePrefixAsKey() 
+					|| isUseSuffixAsKey()
+					|| isStartNewYear() 
+					|| isOrgLevelSequence();
+			isSequenceNoLevel.set(value);
+		}
+		return value;
+	}
+	
+	/**
+	 * Is the prefix used as key for the sequence no
+	 * @return true if the prefix starts with prefix key
+	 */
+	public boolean isUsePrefixAsKey() {
+		Boolean value = isUsePrefixAsKey.get();
+		if (value == null) {
+			value = !Util.isEmpty(getPrefix()) && getPrefix().contains(KEY_CONTEXT_VARIABLE+"@");
+			isUsePrefixAsKey.set(value);
+		}
+		return value;
+	}
+	
+	/**
+	 * Is the suffix used as key for the sequence no
+	 * @return true if the suffix starts with prefix key
+	 */
+	public boolean isUseSuffixAsKey() {
+		Boolean value = isUseSuffixAsKey.get();
+		if (value == null) {
+			value = !Util.isEmpty(getSuffix()) && getSuffix().contains(KEY_CONTEXT_VARIABLE+"@");
+			isUseSuffixAsKey.set(value);
+		}
+		return value;
 	}
 
 	/**
@@ -1226,32 +1299,48 @@ public class MSequence extends X_AD_Sequence
 		String prelim = null;
 		if (AD_Sequence_ID > 0) {
 			MSequence seq = new MSequence(Env.getCtx(), AD_Sequence_ID, null);
-			boolean startNewYear = seq.isStartNewYear();
-			boolean startNewMonth = seq.isStartNewMonth();
-			boolean orgLevelSeq = seq.isOrgLevelSequence();
 			int currentNext = seq.getCurrentNext();
-			if (startNewYear || orgLevelSeq) {
-				String cym = NoYearNorMonth;
-				int org = 0;
-				if (startNewYear || startNewMonth) {
+			DefaultEvaluatee evaluatee = new DefaultEvaluatee(tab, tab.getWindowNo(), tab.getTabNo());
+			SequenceNoKeyParts keyParts = new SequenceNoKeyParts(seq, evaluatee, null);
+
+			if (seq.getPrefix() != null && seq.getPrefix().length() > 0) {
+				keyParts.parsePrefix(seq.getPrefix());
+			}
+			if (seq.getSuffix() != null && seq.getSuffix().length() > 0) {
+				keyParts.parseSuffix(seq.getSuffix());
+			}
+
+			if (seq.isSequenceNoLevel()) {
+				if (seq.isStartNewYear() || seq.isStartNewMonth()) {
 					Date d = (Date)tab.getValue(seq.getDateColumn());
 					if (d == null)
 						d = new Date();
 					SimpleDateFormat sdf = null;
-					if (startNewMonth)
-					    sdf = new SimpleDateFormat("yyyyMM");
+					if (seq.isStartNewMonth())
+						sdf = new SimpleDateFormat("yyyyMM");
 					else
-					    sdf = new SimpleDateFormat("yyyy");
-					cym = sdf.format(d);
+						sdf = new SimpleDateFormat("yyyy");
+					keyParts.setCalendarYearMonth(sdf.format(d));
 				}
-				if (orgLevelSeq) {
+				if (seq.isOrgLevelSequence()) {
 					String orgColumn = seq.getOrgColumn();
 					Object orgObj = tab.getValue(orgColumn);
+					int docOrg_ID = 0;
 					if (orgObj != null)
-						org = (Integer)orgObj;
+						docOrg_ID = (Integer)orgObj;
+					keyParts.setAD_Org_ID(docOrg_ID);
 				}
-				String sql = "SELECT CurrentNext FROM AD_Sequence_No WHERE AD_Sequence_ID=? AND CalendarYearMonth=? AND AD_Org_ID=?";
-				currentNext = DB.getSQLValue(null, sql, AD_Sequence_ID, cym, org);
+				String sql = "SELECT CurrentNext FROM AD_Sequence_No WHERE AD_Sequence_ID=? AND SequenceKey=?";
+				if (seq.isOrgLevelSequence())
+					sql += " AND AD_Org_ID=?";
+				Object[] params;
+				if (seq.isOrgLevelSequence())
+					params = new Object[]{AD_Sequence_ID, keyParts.getKey(), keyParts.getAD_Org_ID()};
+				else
+					params = new Object[]{AD_Sequence_ID, keyParts.getKey()};
+				currentNext = DB.getSQLValueEx(null, sql, params);
+				if (currentNext <= 0)
+					currentNext = seq.getStartNo();
 			}
 			String decimalPattern = seq.getDecimalPattern();
 			if (decimalPattern != null && decimalPattern.length() > 0)
@@ -1270,6 +1359,167 @@ public class MSequence extends X_AD_Sequence
 			return COLUMNNAME_AD_Org_ID;
 		else
 			return super.getOrgColumn();
+	}
+	
+	/**
+	 * Parts of the sequence key for SequenceNo level sequences
+	 */
+	private static class SequenceNoKeyParts {
+
+		private MSequence seq = null;
+		private PO po = null;
+		private DefaultEvaluatee evaluatee = null;
+		private String trxName = null;
+		private String calendarYearMonth = null;
+		private int orgId = 0;
+		private List<String> prefixValues = null;
+		private List<String> suffixValues = null;
+		private String key = null;
+
+		public SequenceNoKeyParts(MSequence seq, PO po, String trxName) {
+			this.seq = seq;
+			this.po = po;
+			this.trxName = trxName;
+		}
+		
+		public SequenceNoKeyParts(MSequence seq, DefaultEvaluatee evaluatee, String trxName) {
+			this.seq = seq;
+			this.evaluatee = evaluatee;
+			this.trxName = trxName;
+		}
+		
+		/**
+		 * Parse prefix from the input string
+		 * @param prefix the input string containing prefix
+		 */
+		public void parsePrefix(String prefix) {
+			if (prefix == null || prefix.isEmpty())
+				return;
+			prefixValues = parseKeys(prefix);
+		}
+
+		/**
+		 * Parse suffix from the input string
+		 * @param suffix the input string containing suffix
+		 */
+		public void parseSuffix(String suffix) {
+			if (suffix == null || suffix.isEmpty())
+				return;
+			suffixValues = parseKeys(suffix);
+		}
+
+		/**
+		 * Parse keys from the input string
+		 * @param input the input string containing keys
+		 * @return a list of parsed keys
+		 */
+		private List<String> parseKeys(String input) {
+			if (input == null || input.isEmpty())
+				return null;
+			
+			DefaultEvaluatee evaluatee;
+			if (this.evaluatee != null) {
+				evaluatee = this.evaluatee;
+			} else {
+				evaluatee = new DefaultEvaluatee(po);
+				evaluatee.setTrxName(trxName);
+			}
+
+			List<String> results = new ArrayList<>();
+			int startIndex = 0;
+			while (true) {
+				int start = input.indexOf("@", startIndex);
+				if (start == -1) break;
+
+				int end = input.indexOf("@", start + 1);
+				if (end == -1) break;
+
+				String var = input.substring(start, end + 1);
+				boolean isKey = false;
+				
+				// Check for "KEY_CONTEXT_VARIABLE" suffix
+				if (var.substring(0, var.length()-1).endsWith(KEY_CONTEXT_VARIABLE)) {
+					isKey = true;
+					int kIndex = var.lastIndexOf(KEY_CONTEXT_VARIABLE);
+					var = var.substring(0, kIndex) + var.substring(kIndex + KEY_CONTEXT_VARIABLE.length());
+				}
+
+				// Parse the variable
+				if (isKey) {
+					String value = Env.parseVariable(var, evaluatee, false, false);;
+					if (!Util.isEmpty(value, true)) {
+						results.add(value);
+					}
+				}
+
+				startIndex = end + 1;
+			}
+			return results;
+		}
+
+		/**
+		 * Set the calendar year/month for the SequenceNo key
+		 * @param calendarYearMonth the calendar year/month as a string
+		 */
+		public void setCalendarYearMonth(String calendarYearMonth) {
+			this.calendarYearMonth = calendarYearMonth;
+		}
+
+		/**
+		 * Set AD_Org_ID for the SequenceNo key
+		 * @param orgId AD_Org_ID
+		 */
+		public void setAD_Org_ID(int orgId) {
+			this.orgId = orgId;
+		}
+
+		/**
+		 * Get the AD_Org_ID for the SequenceNo key
+		 * @return AD_Org_ID
+		 */
+		public int getAD_Org_ID() {
+			return orgId;
+		}
+		
+		/**
+		 * Get the parsed SequenceNo key
+		 * @return the SequenceNo key as a string
+		 */
+		public String getKey() {
+			if (Util.isEmpty(key))
+				key = parseSequenceNoKey();
+			return key;
+		}
+		
+		/**
+		 * Parse the SequenceNo key based on prefix, suffix and calendar year/month
+		 * @return the SequenceNo key as a string
+		 */
+		public String parseSequenceNoKey() {
+			StringBuilder key = new StringBuilder();
+			if (seq.isUsePrefixAsKey() && prefixValues != null) {
+				for (String value : prefixValues) {
+					key.append(value).append(SEQUENCE_NO_KEY_SEPARATOR);
+				}
+				if (key.length() > 0) // remove last separator
+					key.setLength(key.length() - SEQUENCE_NO_KEY_SEPARATOR.length());
+			}
+			if (seq.isStartNewYear()) {
+				if (key.length() > 0)
+					key.append(SEQUENCE_NO_KEY_SEPARATOR);
+				key.append(calendarYearMonth);
+			}
+			if (seq.isUseSuffixAsKey() && suffixValues != null) {
+				if (key.length() > 0)
+					key.append(SEQUENCE_NO_KEY_SEPARATOR);
+				for (String value : suffixValues) {
+					key.append(value).append(SEQUENCE_NO_KEY_SEPARATOR);
+				}
+				if (key.length() > 0) // remove last separator
+					key.setLength(key.length() - SEQUENCE_NO_KEY_SEPARATOR.length());
+			}
+			return key.toString();
+		}
 	}
 
 }	//	MSequence

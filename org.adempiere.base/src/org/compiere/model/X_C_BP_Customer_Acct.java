@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_BP_Customer_Acct
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_Customer_Acct")
 public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BP_Customer_Acct (Properties ctx, int C_BP_Customer_Acct_ID, String trxName)
@@ -116,6 +116,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -159,6 +160,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 		return (String)get_Value(COLUMNNAME_C_BP_Customer_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -187,6 +189,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -212,6 +215,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -237,6 +241,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

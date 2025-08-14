@@ -10,7 +10,7 @@
     var caretTimeoutId, ua = navigator.userAgent, iPhone = /iphone/i.test(ua), chrome = /chrome/i.test(ua), android = /android/i.test(ua);
     $.mask = {
         definitions: {
-	/* iDempiere VFormat */
+	/* iDempiere VFormat - see also org.adempiere.webui.editor.WStringEditor.vFormatToRegex */
          "0":"[0-9]",
          "9":"[ 0-9]",
          a:"[A-Za-z0-9]",

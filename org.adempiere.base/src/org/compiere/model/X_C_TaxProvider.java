@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_TaxProvider
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxProvider")
 public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_TaxProvider (Properties ctx, int C_TaxProvider_ID, String trxName)
@@ -131,6 +131,7 @@ public class X_C_TaxProvider extends PO implements I_C_TaxProvider, I_Persistent
 		return (String)get_Value(COLUMNNAME_Account);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxProviderCfg)MTable.get(getCtx(), org.compiere.model.I_C_TaxProviderCfg.Table_ID)

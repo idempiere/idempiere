@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for CM_ChatEntry
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_CM_ChatEntry 
 {
@@ -75,6 +75,7 @@ public interface I_CM_ChatEntry
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name CM_ChatEntryGrandParent_ID */
@@ -90,6 +91,7 @@ public interface I_CM_ChatEntry
 	  */
 	public int getCM_ChatEntryGrandParent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryGrandParent() throws RuntimeException;
 
     /** Column name CM_ChatEntryParent_ID */
@@ -105,6 +107,7 @@ public interface I_CM_ChatEntry
 	  */
 	public int getCM_ChatEntryParent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_CM_ChatEntry getCM_ChatEntryParent() throws RuntimeException;
 
     /** Column name CM_ChatEntry_ID */
@@ -142,6 +145,7 @@ public interface I_CM_ChatEntry
 	  */
 	public int getCM_Chat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_CM_Chat getCM_Chat() throws RuntimeException;
 
     /** Column name CharacterData */

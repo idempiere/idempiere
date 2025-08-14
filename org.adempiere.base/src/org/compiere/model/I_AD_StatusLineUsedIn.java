@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_StatusLineUsedIn
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_StatusLineUsedIn 
 {
@@ -62,6 +62,7 @@ public interface I_AD_StatusLineUsedIn
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -104,6 +105,7 @@ public interface I_AD_StatusLineUsedIn
 	/** Get Status Line	  */
 	public int getAD_StatusLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException;
 
     /** Column name AD_Tab_ID */
@@ -119,6 +121,7 @@ public interface I_AD_StatusLineUsedIn
 	  */
 	public int getAD_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -134,6 +137,7 @@ public interface I_AD_StatusLineUsedIn
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -149,6 +153,7 @@ public interface I_AD_StatusLineUsedIn
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Created */

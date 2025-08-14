@@ -45,26 +45,6 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 	
 	private static final ImmutableIntPOCache<Integer, MAccount> s_cache = new ImmutableIntPOCache<Integer, MAccount>(Table_Name, 100);
 
-	/*
-	 * Deprecated - use the same method with trxName instead
-	 */
-	@Deprecated
-	public static MAccount get(Properties ctx, int ad_Client_ID, int ad_Org_ID,
-			int c_AcctSchema_ID, int new_account_id, int c_SubAcct_ID,
-			int m_Product_ID, int c_BPartner_ID, int ad_OrgTrx_ID,
-			int c_LocFrom_ID, int c_LocTo_ID, int c_SalesRegion_ID,
-			int c_Project_ID, int c_Campaign_ID, int c_Activity_ID,
-			int user1_ID, int user2_ID, int userElement1_ID,
-			int userElement2_ID) {
-		return get(ctx, ad_Client_ID, ad_Org_ID,
-				c_AcctSchema_ID, new_account_id, c_SubAcct_ID,
-				m_Product_ID, c_BPartner_ID, ad_OrgTrx_ID,
-				c_LocFrom_ID, c_LocTo_ID, c_SalesRegion_ID,
-				c_Project_ID, c_Campaign_ID, c_Activity_ID,
-				user1_ID, user2_ID, userElement1_ID,
-				userElement2_ID, null);
-	}
-	
 	/**
 	 * 	Get existing account combination or create a new one (if not exists)
 	 *	@param ctx context

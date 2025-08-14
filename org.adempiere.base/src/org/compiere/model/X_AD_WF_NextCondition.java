@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NextCondition
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_NextCondition")
 public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName)
@@ -141,6 +141,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -206,6 +207,7 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 		return (String)get_Value(COLUMNNAME_AD_WF_NextCondition_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_NodeNext getAD_WF_NodeNext() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_NodeNext)MTable.get(getCtx(), org.compiere.model.I_AD_WF_NodeNext.Table_ID)

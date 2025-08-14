@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_SchedulerLog
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_SchedulerLog")
 public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_SchedulerLog (Properties ctx, int AD_SchedulerLog_ID, String trxName)
@@ -145,6 +145,7 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 		return (String)get_Value(COLUMNNAME_AD_SchedulerLog_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_ID)

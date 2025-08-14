@@ -437,7 +437,6 @@ public class ModelClassGenerator
 
 		StringBuilder sb = new StringBuilder();
 
-		// TODO - New functionality
 		// 1) Must understand which class to reference
 		if (DisplayType.isID(displayType) && !IsKey)
 		{
@@ -447,6 +446,7 @@ public class ModelClassGenerator
 			if (fieldName != null && referenceClassName != null)
 			{
 				sb.append(NL)
+				.append("\t@Deprecated(since=\"13\") // use better methods with cache").append(NL)
 				.append("\tpublic ").append(referenceClassName).append(" get").append(fieldName).append("() throws RuntimeException").append(NL)
 				.append("\t{").append(NL)
 				.append("\t\treturn (").append(referenceClassName).append(")MTable.get(getCtx(), ").append(referenceClassName).append(".Table_ID)").append(NL)

@@ -23,7 +23,6 @@ package org.adempiere.webui.window;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -626,13 +625,14 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		{
 			File file = jasperRenderer.getPDF();
 			if (file == null)
-				file = createPDF();
-			byte[] data = getFileByteData(file);
-			if (data != null && m_printInfo != null)
+				file = createPDF();		
+			if (file != null && m_printInfo != null)
 			{
-				MArchive archive = new MArchive(Env.getCtx(), m_printInfo, null);
-				archive.setBinaryData(data);
-				success = archive.save();
+				try (FileInputStream fis = new FileInputStream(file)) {
+					MArchive archive = new MArchive(Env.getCtx(), m_printInfo, null);
+					archive.setInputStream(fis);
+					success = archive.save();
+				}
 			}
 
 			if (success)
@@ -672,30 +672,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		else
 			Dialog.error(m_WindowNo, "AttachError");
 	} // cmd_archive
-
-	/** 
-	 * convert File data into byte[]
-	 * @param tempFile
-	 * @return content of file in byte[]
-	 */
-	private byte[] getFileByteData(File tempFile)
-	{
-		byte fileContent[] = new byte[(int) tempFile.length()];
-
-		try (FileInputStream fis = new FileInputStream(tempFile))
-		{
-			fis.read(fileContent);
-		}
-		catch (FileNotFoundException e)
-		{
-			log.log(Level.SEVERE, "File not found  " + e);
-		}
-		catch (IOException ioe)
-		{
-			log.log(Level.SEVERE, "Exception while reading file " + ioe);
-		}
-		return fileContent;
-	} // getFileByteData
 
 	/**
 	 * 	Export

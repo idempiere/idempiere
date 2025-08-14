@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_NodeNext
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_WF_NodeNext 
 {
@@ -75,6 +75,7 @@ public interface I_AD_WF_NodeNext
 	  */
 	public int getAD_WF_Next_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Next() throws RuntimeException;
 
     /** Column name AD_WF_NodeNext_ID */
@@ -112,6 +113,7 @@ public interface I_AD_WF_NodeNext
 	  */
 	public int getAD_WF_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name Created */

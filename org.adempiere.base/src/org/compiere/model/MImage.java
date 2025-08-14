@@ -337,6 +337,29 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	}
 
 	/**
+	 * Save image from InputStream.
+	 * @param inputStream InputStream of an image
+	 */
+	public void setInputStream(InputStream inputStream) {
+		m_image = null;
+		m_icon = null;
+		IImageStore prov = provider.getImageStore();
+		if (prov != null)
+			prov.save(this,provider,inputStream);
+	}
+	
+	/**
+	 * Get InputStream of an image.
+	 * @return input stream of an image or null if not available
+	 */
+	public InputStream getInputStream() {
+		IImageStore prov = provider.getImageStore();
+		if (prov != null)
+			return prov.loadAsStream(this,provider);
+		return null;
+	}
+	
+	/**
 	 * 	Get Data 
 	 *	@return binary data of an image
 	 */

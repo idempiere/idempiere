@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_AttributeInstanceLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeInstanceLine")
 public class X_M_AttributeInstanceLine extends PO implements I_M_AttributeInstanceLine, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_AttributeInstanceLine extends PO implements I_M_AttributeInstan
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_AttributeInstanceLine (Properties ctx, int M_AttributeInstanceLine_ID, String trxName)
@@ -187,6 +187,7 @@ public class X_M_AttributeInstanceLine extends PO implements I_M_AttributeInstan
 		return (String)get_Value(COLUMNNAME_M_AttributeInstance_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_AttributeValue)MTable.get(getCtx(), org.compiere.model.I_M_AttributeValue.Table_ID)

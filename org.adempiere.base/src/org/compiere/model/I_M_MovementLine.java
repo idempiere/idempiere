@@ -62,6 +62,30 @@ public interface I_M_MovementLine
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
+
     /** Column name C_UOM_ID */
     public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
 
@@ -75,6 +99,7 @@ public interface I_M_MovementLine
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name ConfirmedQty */
@@ -115,6 +140,7 @@ public interface I_M_MovementLine
 	/** Get Distribution Order Line	  */
 	public int getDD_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_OrderLine getDD_OrderLine() throws RuntimeException;
 
     /** Column name Description */
@@ -169,6 +195,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_AttributeSetInstanceTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstanceTo() throws RuntimeException;
 
     /** Column name M_AttributeSetInstance_ID */
@@ -184,6 +211,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_LocatorTo_ID */
@@ -199,6 +227,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_LocatorTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_LocatorTo() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -214,6 +243,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
@@ -251,6 +281,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_Movement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -266,6 +297,7 @@ public interface I_M_MovementLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name MovementQty */
@@ -320,6 +352,7 @@ public interface I_M_MovementLine
 	  */
 	public int getReversalLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getReversalLine() throws RuntimeException;
 
     /** Column name ScrappedQty */

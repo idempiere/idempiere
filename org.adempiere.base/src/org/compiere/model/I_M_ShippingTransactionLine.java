@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ShippingTransactionLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_ShippingTransactionLine 
 {
@@ -75,6 +75,7 @@ public interface I_M_ShippingTransactionLine
 	  */
 	public int getC_UOM_Length_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException;
 
     /** Column name C_UOM_Weight_ID */
@@ -90,6 +91,7 @@ public interface I_M_ShippingTransactionLine
 	  */
 	public int getC_UOM_Weight_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
 
     /** Column name Created */
@@ -161,6 +163,7 @@ public interface I_M_ShippingTransactionLine
 	/** Get Package MPS	  */
 	public int getM_PackageMPS_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PackageMPS getM_PackageMPS() throws RuntimeException;
 
     /** Column name M_ShippingTransactionLine_ID */
@@ -190,6 +193,7 @@ public interface I_M_ShippingTransactionLine
 	/** Get Shipping Transaction	  */
 	public int getM_ShippingTransaction_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingTransaction getM_ShippingTransaction() throws RuntimeException;
 
     /** Column name MasterTrackingNo */

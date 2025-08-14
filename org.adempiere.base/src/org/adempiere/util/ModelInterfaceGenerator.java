@@ -374,7 +374,8 @@ public class ModelInterfaceGenerator
 			//
 			if (fieldName != null && referenceClassName != null)
 			{
-				sb.append("\n")
+				sb.append(NL)
+				  .append("\t@Deprecated(since=\"13\") // use better methods with cache").append(NL)
 				  .append("\tpublic "+referenceClassName+" get").append(fieldName).append("() throws RuntimeException;");
 			}
 		}

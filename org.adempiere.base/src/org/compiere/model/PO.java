@@ -1727,7 +1727,12 @@ public abstract class PO
 			if (p_info.isVirtualColumn(index)) {
 				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
 			} else {
-				log.log(Level.SEVERE, "(rs) - " + String.valueOf(index)
+				Level logLevel;
+				if (DBException.isColumnNotFound(e))
+					logLevel = Level.WARNING;
+				else
+					logLevel = Level.SEVERE;
+				log.log(logLevel, "(rs) - " + String.valueOf(index)
 					+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)
 					+ " (" + p_info.getColumnClass(index) + ") - " + e);
 				success = false;
@@ -3536,7 +3541,9 @@ public abstract class PO
 			}
 		}
 		// ticket 1007459 - exclude M_AttributeInstance from filling Value column
-		if (! MAttributeInstance.Table_Name.equals(get_TableName())) {
+		// IDEMPIERE-4224 - exclude AD_TableAttribute from filling Value column
+		if (!MAttributeInstance.Table_Name.equals(get_TableName())
+			&& !MTableAttribute.Table_Name.equals(get_TableName())) {
 			//	Set empty Value
 			columnName = "Value";
 			index = p_info.getColumnIndex(columnName);
@@ -3626,7 +3633,7 @@ public abstract class PO
 					log.log(Level.SEVERE, "reloading");
 				else
 					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
-				ok = false;;
+				ok = false;
 			}
 		}
 		else
@@ -6379,8 +6386,6 @@ public abstract class PO
 	 * TODO can write different method to get directly cast value like get_TableAttributeAsString, get_TableAttributeAsDate etc..
 	 * 
 	 * @param  attributeName
-	 * @param  table_ID
-	 * @param  record_ID
 	 * @return
 	 */
 	public Object get_TableAttribute(String attributeName)

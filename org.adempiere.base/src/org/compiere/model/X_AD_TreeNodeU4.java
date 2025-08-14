@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_TreeNodeU4
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_TreeNodeU4")
 public class X_AD_TreeNodeU4 extends PO implements I_AD_TreeNodeU4, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_TreeNodeU4 extends PO implements I_AD_TreeNodeU4, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_TreeNodeU4 (Properties ctx, int AD_TreeNodeU4_ID, String trxName)
@@ -127,6 +127,7 @@ public class X_AD_TreeNodeU4 extends PO implements I_AD_TreeNodeU4, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_TreeNodeU4_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tree)MTable.get(getCtx(), org.compiere.model.I_AD_Tree.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PriceList
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_PriceList 
 {
@@ -75,6 +75,7 @@ public interface I_M_PriceList
 	  */
 	public int getBasePriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getBasePriceList() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -90,6 +91,7 @@ public interface I_M_PriceList
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name Created */

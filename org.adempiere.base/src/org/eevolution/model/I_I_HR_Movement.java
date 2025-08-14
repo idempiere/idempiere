@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_HR_Movement
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_I_HR_Movement 
@@ -103,6 +103,7 @@ public interface I_I_HR_Movement
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name ConceptValue */
@@ -156,6 +157,7 @@ public interface I_I_HR_Movement
 	/** Get Payroll Concept	  */
 	public int getHR_Concept_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException;
 
     /** Column name HR_Movement_ID */
@@ -167,6 +169,7 @@ public interface I_I_HR_Movement
 	/** Get Payroll Movement	  */
 	public int getHR_Movement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Movement getHR_Movement() throws RuntimeException;
 
     /** Column name HR_Process_ID */
@@ -178,6 +181,7 @@ public interface I_I_HR_Movement
 	/** Get Payroll Process	  */
 	public int getHR_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Process getHR_Process() throws RuntimeException;
 
     /** Column name I_ErrorMsg */

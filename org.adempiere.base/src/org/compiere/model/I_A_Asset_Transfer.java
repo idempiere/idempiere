@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Transfer
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset_Transfer 
 {
@@ -71,6 +71,7 @@ public interface I_A_Asset_Transfer
 	/** Get Accumulated Depreciation Account	  */
 	public int getA_Accumdepreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Accumdepreciation_A() throws RuntimeException;
 
     /** Column name A_Accumdepreciation_Acct_Str */
@@ -91,6 +92,7 @@ public interface I_A_Asset_Transfer
 	/** Get Accumulated Depreciation Account (new)	  */
 	public int getA_Accumdepreciation_New_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Accumdepreciation_New_A() throws RuntimeException;
 
     /** Column name A_Accumulated_Depr_F */
@@ -111,6 +113,7 @@ public interface I_A_Asset_Transfer
 	/** Get Asset Acct	  */
 	public int getA_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Asset_A() throws RuntimeException;
 
     /** Column name A_Asset_Acct_ID */
@@ -144,6 +147,7 @@ public interface I_A_Asset_Transfer
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_New_Acct */
@@ -155,6 +159,7 @@ public interface I_A_Asset_Transfer
 	/** Get Asset Acct (new)	  */
 	public int getA_Asset_New_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Asset_New_A() throws RuntimeException;
 
     /** Column name A_Asset_Transfer_ID */
@@ -193,6 +198,7 @@ public interface I_A_Asset_Transfer
 	/** Get Depreciation Account	  */
 	public int getA_Depreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Depreciation_A() throws RuntimeException;
 
     /** Column name A_Depreciation_Acct_Str */
@@ -213,6 +219,7 @@ public interface I_A_Asset_Transfer
 	/** Get Depreciation Acct (new)	  */
 	public int getA_Depreciation_New_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Depreciation_New_A() throws RuntimeException;
 
     /** Column name A_Disposal_Loss */
@@ -233,6 +240,7 @@ public interface I_A_Asset_Transfer
 	/** Get Disposal Loss Acct	  */
 	public int getA_Disposal_Loss_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Loss_A() throws RuntimeException;
 
     /** Column name A_Disposal_Loss_New_Acct */
@@ -244,6 +252,7 @@ public interface I_A_Asset_Transfer
 	/** Get Disposal Loss Acct (new)	  */
 	public int getA_Disposal_Loss_New_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Loss_New_A() throws RuntimeException;
 
     /** Column name A_Disposal_Loss_Str */
@@ -273,6 +282,7 @@ public interface I_A_Asset_Transfer
 	/** Get Disposal Revenue Acct	  */
 	public int getA_Disposal_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Revenue_A() throws RuntimeException;
 
     /** Column name A_Disposal_Revenue_New_Acct */
@@ -284,6 +294,7 @@ public interface I_A_Asset_Transfer
 	/** Get Disposal Revenue Acct (new)	  */
 	public int getA_Disposal_Revenue_New_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Disposal_Revenue_New_A() throws RuntimeException;
 
     /** Column name A_Disposal_Revenue_Str */
@@ -353,7 +364,32 @@ public interface I_A_Asset_Transfer
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_Period_ID */
     public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";
@@ -368,6 +404,7 @@ public interface I_A_Asset_Transfer
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */

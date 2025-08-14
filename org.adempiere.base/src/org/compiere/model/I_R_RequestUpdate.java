@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestUpdate
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_R_RequestUpdate 
 {
@@ -130,6 +130,7 @@ public interface I_R_RequestUpdate
 	  */
 	public int getM_ProductSpent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_ProductSpent() throws RuntimeException;
 
     /** Column name QtyInvoiced */
@@ -193,6 +194,7 @@ public interface I_R_RequestUpdate
 	  */
 	public int getR_Request_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
 
     /** Column name Result */

@@ -31,7 +31,7 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250301L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_AttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName)
@@ -92,7 +92,7 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -185,6 +185,7 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 		return (String)get_Value(COLUMNNAME_M_AttributeValue_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)

@@ -98,7 +98,7 @@ public class ValidateReadonlyComponent implements AuService {
 			boolean editing = (inputComp != null && Events.ON_CHANGE.equals(cmd)) || 
 								(checkbox != null && Events.ON_CHECK.equals(cmd)) ||
 								(comb != null && (Events.ON_CHANGE.equals(cmd) || Events.ON_SELECT.equals(cmd))) ||
-								(button != null && (Events.ON_CLICK.equals(cmd) || Events.ON_OK.equals(cmd) || Events.ON_UPLOAD.equals(cmd)));;
+								(button != null && (Events.ON_CLICK.equals(cmd) || Events.ON_OK.equals(cmd) || Events.ON_UPLOAD.equals(cmd)));
 			
 			// for combobox each change have both event onchange and onselect
 			if (editing){

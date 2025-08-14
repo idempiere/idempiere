@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_Product 
 {
@@ -75,6 +75,7 @@ public interface I_M_Product
 	  */
 	public int getC_RevenueRecognition_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException;
 
     /** Column name C_SubscriptionType_ID */
@@ -90,6 +91,7 @@ public interface I_M_Product
 	  */
 	public int getC_SubscriptionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException;
 
     /** Column name C_TaxCategory_ID */
@@ -105,6 +107,7 @@ public interface I_M_Product
 	  */
 	public int getC_TaxCategory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
 
     /** Column name C_UOM_ID */
@@ -120,6 +123,7 @@ public interface I_M_Product
 	  */
 	public int getC_UOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name Classification */
@@ -568,6 +572,7 @@ public interface I_M_Product
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_AttributeSet_ID */
@@ -583,6 +588,7 @@ public interface I_M_Product
 	  */
 	public int getM_AttributeSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name M_FreightCategory_ID */
@@ -598,6 +604,7 @@ public interface I_M_Product
 	  */
 	public int getM_FreightCategory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_FreightCategory getM_FreightCategory() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -613,6 +620,7 @@ public interface I_M_Product
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_PartType_ID */
@@ -624,6 +632,7 @@ public interface I_M_Product
 	/** Get Part Type	  */
 	public int getM_PartType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PartType getM_PartType() throws RuntimeException;
 
     /** Column name M_Product_Category_ID */
@@ -639,6 +648,7 @@ public interface I_M_Product
 	  */
 	public int getM_Product_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -711,6 +721,7 @@ public interface I_M_Product
 	  */
 	public int getR_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
 
     /** Column name SKU */
@@ -739,6 +750,7 @@ public interface I_M_Product
 	  */
 	public int getS_ExpenseType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_ExpenseType getS_ExpenseType() throws RuntimeException;
 
     /** Column name S_Resource_ID */
@@ -754,6 +766,7 @@ public interface I_M_Product
 	  */
 	public int getS_Resource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name SalesRep_ID */
@@ -769,6 +782,7 @@ public interface I_M_Product
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name ShelfDepth */

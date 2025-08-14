@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_ElementValue
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_ElementValue 
 {
@@ -62,6 +62,7 @@ public interface I_I_ElementValue
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -116,6 +117,7 @@ public interface I_I_ElementValue
 	  */
 	public int getC_ElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name C_Element_ID */
@@ -131,6 +133,7 @@ public interface I_I_ElementValue
 	  */
 	public int getC_Element_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException;
 
     /** Column name Created */
@@ -301,6 +304,7 @@ public interface I_I_ElementValue
 	  */
 	public int getParentElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getParentElementValue() throws RuntimeException;
 
     /** Column name ParentValue */
