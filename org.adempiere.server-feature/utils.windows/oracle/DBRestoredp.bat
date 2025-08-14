@@ -6,8 +6,6 @@
 
 @if (%IDEMPIERE_HOME%) == () goto environment
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
-@if (%ADEMPIERE_DB_SERVER%) == () goto environment
-@if (%ADEMPIERE_DB_PORT%) == () goto environment
 @Rem Must have parameter: adempiereID AdempierePwd systemUser systemPwd
 @if (%1) == () goto usage
 @if (%2) == () goto usage
@@ -17,23 +15,28 @@
 @echo -------------------------------------
 @echo Re-Create DB user
 @echo -------------------------------------
-@sqlplus -S %3/%4@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateUser.sql %1 %2
+@if ("%ADEMPIERE_DB_Name:~0,1%") == "@" (
+    @set DB_CONNECTION="%ADEMPIERE_DB_NAME:~1%"
+) else (
+    @set DB_CONNECTION=%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME%
+)
+sqlplus -S %3/%4@%DB_CONNECTION% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateUser.sql %1 %2
 
 @echo -------------------------------------
 @echo Re-Create DataPump Directory
 @echo -------------------------------------
-@sqlplus -S %3/%4@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data
+sqlplus -S %3/%4@%DB_CONNECTION% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %DATA_ENDPOINT% %IDEMPIERE_HOME%\data
 
 @echo -------------------------------------
 @echo Import ExpDat
 @echo -------------------------------------
-@impdp %3/%4@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp SCHEMAS=%1
+impdp %3/%4@%DB_CONNECTION% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=%DATA_ENDPOINT%ExpDat.dmp SCHEMAS=%1 CREDENTIAL=NULL
 
 @echo -------------------------------------
 @echo Check System
 @echo Import may show some warnings. This is OK as long as the following does not show errors
 @echo -------------------------------------
-@sqlplus -S %1/%2@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\AfterImport.sql
+sqlplus -S %1/%2@%DB_CONNECTION% @%IDEMPIERE_HOME%\utils\%ADEMPIERE_DB_PATH%\AfterImport.sql
 
 @goto end
 
