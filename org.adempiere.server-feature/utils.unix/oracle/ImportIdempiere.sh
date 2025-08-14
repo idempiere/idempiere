@@ -58,7 +58,7 @@ fi
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$SEED_ENDPOINT" "$DATAPUMP_HOME"/data/seed
+$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATAPUMP_HOME"/data/seed
 
 if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
   # Note the user running this script must be member of dba group:  usermod -G dba idempiere
@@ -73,8 +73,8 @@ fi
 echo -------------------------------------
 echo Import Adempiere.dmp
 echo -------------------------------------
-echo impdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$SEED_ENDPOINT"Adempiere.dmp REMAP_SCHEMA=reference:"$1" CREDENTIAL=NULL TRANSFORM=OID:N
-$DOCKER_EXEC impdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$SEED_ENDPOINT"Adempiere.dmp REMAP_SCHEMA=reference:"$1" CREDENTIAL=NULL TRANSFORM=OID:N
+echo impdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$SEED_ENDPOINT"Adempiere.dmp REMAP_SCHEMA=reference:"$1" TRANSFORM=OID:N
+$DOCKER_EXEC impdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$SEED_ENDPOINT"Adempiere.dmp REMAP_SCHEMA=reference:"$1" TRANSFORM=OID:N
 
 echo -------------------------------------
 echo Check System

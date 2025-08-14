@@ -70,7 +70,7 @@ fi
 echo -------------------------------------
 echo Import ExpDat
 echo -------------------------------------
-$DOCKER_EXEC impdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$DATA_ENDPOINT"ExpDat.dmp SCHEMAS="$1" CREDENTIAL=NULL TRANSFORM=OID:N
+$DOCKER_EXEC impdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$DATA_ENDPOINT"ExpDat.dmp SCHEMAS="$1" TRANSFORM=OID:N
 
 echo -------------------------------------
 echo Check System

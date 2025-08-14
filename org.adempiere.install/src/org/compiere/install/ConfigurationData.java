@@ -903,7 +903,7 @@ public class ConfigurationData
 			String obfKeystorePass = Password.obfuscate(keystorePass);
 			p_properties.put(ADEMPIERE_KEYSTOREPASS, obfKeystorePass);
 			p_properties.store(fos, IDEMPIERE_ENV_FILE);
-			p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);			
+			p_properties.put(ADEMPIERE_KEYSTOREPASS, keystorePass);
 			// put back secrets in properties
 			if (MSystem.isSecureProps())
 				p_properties.putAll(secretProperties);

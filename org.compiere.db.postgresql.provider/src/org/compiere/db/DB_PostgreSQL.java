@@ -417,8 +417,6 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	{
     	String systemUser = SystemProperties.getAdempiereDBSystemUser();
     	if (systemUser == null)
-    		systemUser = System.getenv(SystemProperties.ADEMPIERE_DB_SYSTEM_USER);
-    	if (systemUser == null)
     		systemUser = "postgres";
         return systemUser;
 	}	//	getSystemUser
