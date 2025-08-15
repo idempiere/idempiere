@@ -760,6 +760,17 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 */
 	public MWFProcess start (ProcessInfo pi, String trxName)
 	{
+		return start(pi, false, trxName);
+	}
+
+	/**************************************************************************
+	 * 	Start Workflow.
+	 * 	@param pi Process Info (Record_ID)
+	 * 	@param disallowAutoStartNextNode
+	 *	@return process
+	 */
+	public MWFProcess start (ProcessInfo pi, boolean disallowAutoStartNextNode, String trxName)
+	{
 		MWFProcess retValue = null;
 		Trx localTrx = null;
 		if (trxName == null)
@@ -771,6 +782,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		{
 			retValue = new MWFProcess (this, pi, trxName != null ? trxName : localTrx.getTrxName());
 			retValue.saveEx();
+			retValue.setDisallowAutoStartNextNode(disallowAutoStartNextNode);
 			pi.setSummary(Msg.getMsg(getCtx(), "Processing"));
 			retValue.startWork();
 			if (localTrx != null)
