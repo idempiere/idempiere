@@ -206,3 +206,16 @@ index 765d7c8..61c8ea9 100644
          <setEntry value="bcutil@default:default"/>
          <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
          <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
+diff --git a/org.idempiere.bouncy.castle-feature/feature.xml b/org.idempiere.bouncy.castle-feature/feature.xml
+index b7d5163e90..d9d89bd085 100644
+--- a/org.idempiere.bouncy.castle-feature/feature.xml
++++ b/org.idempiere.bouncy.castle-feature/feature.xml
+@@ -30,7 +30,7 @@
+          version="0.0.0"/>
+
+    <plugin
+-         id="bcprov"
++         id="bcfips"
+          version="0.0.0"/>
+
+    <plugin

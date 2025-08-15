@@ -30,7 +30,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="bcfips"
+         id="bcprov"
          version="0.0.0"/>
 
    <plugin
