@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde?>
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
+<target name="idempiere-12" sequenceNumber="1754814154">
+  <locations>
+    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+      <unit id="zcommon" version="10.0.1"/>
+      <unit id="zel" version="10.0.1"/>
+      <unit id="zhtml" version="10.0.1"/>
+      <unit id="zk" version="10.0.1"/>
+      <unit id="zkbind" version="10.0.1"/>
+      <unit id="zkplus" version="10.0.1"/>
+      <unit id="zkwebfragment" version="10.0.1"/>
+      <unit id="zul" version="10.0.1"/>
+      <unit id="zweb" version="10.0.1"/>
+      <unit id="zweb-dsp" version="10.0.1"/>
+      <repository id="zk" location="https://idempiere.github.io/binary.file/p2.zk/10.0.1"/>
+    </location>
+    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+      <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
+      <unit id="org.atmosphere.runtime" version="2.7.2.v202109010034"/>
+      <unit id="com.google.http-client.google-http-client" version="1.44.2"/>
+      <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
+      <unit id="org.apache.felix.webconsole" version="4.6.4.v202109010034"/>
+      <unit id="com.google.oauth-client" version="1.36.0"/>
+      <unit id="org.eclipse.jetty.servlet-api.capability" version="4.0.6.v202407080243"/>
+      <unit id="org.apache.cxf.cxf-rt-databinding-xmlbeans" version="3.6.3"/>
+      <unit id="org.apache.cxf.cxf-rt-rs-extension-providers" version="3.6.3"/>
+      <unit id="org.eclipse.jetty.keystore" version="12.0.24.bcfips"/>
+      <unit id="org.eclipse.equinox.p2.artifact.repository" version="1.5.100.v20230630-1506-bcfips"/>
+      <unit id="org.eclipse.equinox.p2.repository" version="2.7.100.v20230710-0621-bcfips"/>
+      <repository id="repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/12.0.0"/>
+    </location>
+    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+      <unit id="org.eclipse.osgi" version="3.18.500.v20230801-1826"/>
+      <unit id="org.osgi.annotation.bundle" version="2.0.0.202202082230"/>
+      <unit id="org.osgi.annotation.versioning" version="1.1.2.202109301733"/>
+      <unit id="org.osgi.service.cm" version="1.6.1.202109301733"/>
+      <unit id="org.osgi.service.component" version="1.5.1.202212101352"/>
+      <unit id="org.osgi.service.component.annotations" version="1.5.1.202212101352"/>
+      <unit id="org.osgi.service.coordinator" version="1.0.2.201505202024"/>
+      <unit id="org.osgi.service.device" version="1.1.1.202109301733"/>
+      <unit id="org.osgi.service.event" version="1.4.1.202109301733"/>
+      <unit id="org.osgi.service.log.stream" version="1.0.0.202109301733"/>
+      <unit id="org.osgi.service.metatype" version="1.4.1.202109301733"/>
+      <unit id="org.osgi.service.metatype.annotations" version="1.4.1.202109301733"/>
+      <unit id="org.osgi.service.prefs" version="1.1.2.202109301733"/>
+      <unit id="org.osgi.service.provisioning" version="1.2.0.201505202024"/>
+      <unit id="org.osgi.service.upnp" version="1.2.1.202109301733"/>
+      <unit id="org.osgi.service.useradmin" version="1.1.1.202109301733"/>
+      <unit id="org.osgi.service.wireadmin" version="1.0.2.202109301733"/>
+      <unit id="org.osgi.util.function" version="1.2.0.202109301733"/>
+      <unit id="org.osgi.util.measurement" version="1.0.2.201802012109"/>
+      <unit id="org.osgi.util.position" version="1.0.1.201505202026"/>
+      <unit id="org.osgi.util.promise" version="1.3.0.202212101352"/>
+      <unit id="org.osgi.util.pushstream" version="1.1.0.202212101352"/>
+      <unit id="org.osgi.util.xml" version="1.0.2.202109301733"/>
+      <unit id="org.apache.felix.gogo.command" version="1.1.2"/>
+      <unit id="org.apache.felix.gogo.runtime" version="1.1.6"/>
+      <unit id="org.apache.felix.gogo.shell" version="1.1.4"/>
+      <unit id="org.apache.felix.scr" version="2.2.6"/>
+      <unit id="org.apache.httpcomponents.client5.httpclient5" version="5.1.3.v20221013-1742"/>
+      <unit id="org.apache.httpcomponents.core5.httpcore5" version="5.1.4.v20221013-1742"/>
+      <unit id="org.apache.httpcomponents.core5.httpcore5-h2" version="5.1.4.v20221013-1742"/>
+      <unit id="org.eclipse.core.jobs" version="3.15.0.v20230808-1403"/>
+      <unit id="org.eclipse.ecf" version="3.11.0.v20230507-1923"/>
+      <unit id="org.eclipse.ecf.filetransfer" version="5.1.102.v20210409-2301"/>
+      <unit id="org.eclipse.ecf.identity" version="3.10.0.v20230422-0242"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer" version="3.3.0.v20230422-0242"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer.httpclient5" version="1.1.0.v20230423-0417"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer.ssl" version="1.1.0.v20230422-0242"/>
+      <unit id="org.eclipse.equinox.app" version="1.6.300.v20230630-1303"/>
+      <unit id="org.eclipse.equinox.common" version="3.18.100.v20230730-1117"/>
+      <unit id="org.eclipse.equinox.concurrent" version="1.2.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.console" version="1.4.500.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.frameworkadmin" version="2.2.200.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.frameworkadmin.equinox" version="1.2.400.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.launcher" version="1.6.500.v20230717-2134"/>
+      <unit id="org.eclipse.equinox.p2.console" version="1.3.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.core" version="2.10.100.v20230814-2013"/>
+      <unit id="org.eclipse.equinox.p2.director" version="2.6.100.v20230718-0609"/>
+      <unit id="org.eclipse.equinox.p2.engine" version="2.8.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.garbagecollector" version="1.3.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.jarprocessor" version="1.3.200.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.metadata" version="2.7.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.metadata.repository" version="1.5.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.operations" version="2.7.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.touchpoint.eclipse" version="2.4.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.touchpoint.natives" version="1.5.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.p2.transport.ecf" version="1.4.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.preferences" version="3.10.300.v20230630-1303"/>
+      <unit id="org.eclipse.equinox.registry" version="3.11.300.v20230801-1826"/>
+      <unit id="org.eclipse.equinox.security" version="1.4.0.v20230630-1303"/>
+      <unit id="org.eclipse.equinox.simpleconfigurator" version="1.4.300.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.simpleconfigurator.manipulator" version="2.2.200.v20230630-1506"/>
+      <unit id="org.eclipse.osgi.util" version="3.7.200.v20230103-1101"/>
+      <unit id="org.sat4j.core" version="2.3.6.v20201214"/>
+      <unit id="org.sat4j.pb" version="2.3.6.v20201214"/>
+      <unit id="org.tukaani.xz" version="1.9.0"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="3.8.2200.v20230717-2134"/>
+      <unit id="org.eclipse.equinox.http.registry" version="1.3.300.v20230630-1303"/>
+      <unit id="org.eclipse.osgi.compatibility.state" version="1.2.800.v20221116-1440"/>
+      <unit id="org.eclipse.core.runtime" version="3.29.0.v20230726-0617"/>
+      <unit id="org.eclipse.equinox.http.servlet" version="1.7.400.v20221006-1531"/>
+      <unit id="org.eclipse.equinox.servletbridge" version="1.6.300.v20230622-2056"/>
+      <unit id="org.eclipse.equinox.p2.director.app" version="1.3.100.v20230630-1506"/>
+      <unit id="org.eclipse.equinox.cm" version="1.5.200.v20230120-0604"/>
+      <unit id="org.eclipse.equinox.event" version="1.6.200.v20230120-0604"/>
+      <unit id="org.eclipse.equinox.http.servletbridge" version="1.2.200.v20220710-1223"/>
+      <unit id="org.eclipse.equinox.metatype" version="1.6.300.v20230120-0604"/>
+      <unit id="org.eclipse.ant.core" version="3.7.100.v20230731-0828"/>
+      <unit id="org.eclipse.core.commands" version="3.11.100.v20230708-0916"/>
+      <unit id="org.eclipse.core.contenttype" version="3.9.100.v20230630-1232"/>
+      <unit id="org.eclipse.core.expressions" version="3.9.100.v20230726-0617"/>
+      <unit id="org.eclipse.core.filesystem" version="1.10.100.v20230717-1727"/>
+      <unit id="org.eclipse.core.net" version="1.5.100.v20230630-1232"/>
+      <unit id="org.eclipse.core.resources" version="3.19.100.v20230814-1312"/>
+      <unit id="org.eclipse.core.variables" version="3.6.100.v20230726-0617"/>
+      <unit id="org.eclipse.jdt.core" version="3.35.0.v20230814-1356"/>
+      <unit id="org.eclipse.jdt.core.compiler.batch" version="3.35.0.v20230814-2020"/>
+      <unit id="org.eclipse.text" version="3.13.100.v20230801-1334"/>
+      <unit id="org.opentest4j" version="1.3.0"/>
+      <unit id="org.apiguardian.api" version="1.1.2"/>
+      <unit id="org.junit" version="4.13.2.v20230809-1000"/>
+      <unit id="org.eclipse.pde.junit.runtime" version="3.7.100.v20230728-0611"/>
+      <unit id="org.eclipse.jdt.junit.runtime" version="3.7.200.v20230627-0107"/>
+      <unit id="org.eclipse.jdt.junit5.runtime" version="1.1.100.v20220907-0450"/>
+      <repository id="eclipse-2023-09" location="https://download.eclipse.org/eclipse/updates/4.29"/>
+    </location>
+    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+      <unit id="org.apache.ant" version="1.10.12.v20211102-1452"/>
+      <unit id="org.apache.xml.resolver" version="1.2.0.v20220715-1206"/>
+      <unit id="org.hamcrest.core" version="1.3.0.v20230809-1000"/>
+      <unit id="org.apache.xml.serializer" version="2.7.2.v20220406-0601"/>
+      <unit id="org.apache.commons.discovery" version="0.5.0"/>
+      <repository id="orbit-2023-09" location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0"/>
+    </location>
+    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+      <unit id="org.w3c.css.sac" version="1.3.1.v200903091627"/>
+      <unit id="org.w3c.dom.smil" version="1.0.1.v200903091627"/>
+      <unit id="org.w3c.dom.svg" version="1.1.0.v201011041433"/>
+      <unit id="org.w3c.dom.events" version="3.0.0.draft20060413_v201105210656"/>
+      <unit id="javax.xml" version="1.3.4.v201005080400"/>
+      <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository"/>
+    </location>
+    <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
+      <unit id="org.krysalis.barcode4j" version="2.1.0"/>
+      <repository id="jasperstudio" location="https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0"/>
+    </location>
+  </locations>
+</target>

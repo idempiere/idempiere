@@ -1,0 +1,17 @@
+<target name="idempiere-12-bouncy-castle" sequenceNumber="20250807">
+<locations>	
+	<!-- org.bouncycastle -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpg-jdk18on</artifactId>
+      <version>1.81</version>
+      <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcmail-jdk18on</artifactId>
+      <version>1.81</version>
+      <type>jar</type>
+	</location>
+</locations>
+</target>
