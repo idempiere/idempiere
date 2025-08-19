@@ -42,6 +42,8 @@ location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.
 	// make import-package compatible with bc-fips
 	org.eclipse.equinox.p2.artifact.repository
 	org.eclipse.equinox.p2.repository
+	org.apache.pdfbox
+	com.github.librepdf.openpdf
 }
 
 location eclipse-2023-09 "https://download.eclipse.org/eclipse/updates/4.29" {
