@@ -83,7 +83,6 @@
         <setEntry value="bcpg@default:default"/>
         <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
-        <setEntry value="bctsp@default:default"/>
         <setEntry value="bcutil@default:default"/>
         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
@@ -217,7 +216,6 @@
         <setEntry value="org.apache.xml.serializer@default:default"/>
         <setEntry value="org.atmosphere.runtime@default:true"/>
         <setEntry value="org.codehaus.jettison.jettison@default:default"/>
-        <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
         <setEntry value="org.eclipse.core.commands@default:default"/>
         <setEntry value="org.eclipse.core.contenttype@default:default"/>
@@ -400,7 +398,7 @@
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
-        <setEntry value="slf4j.api@3:true"/>
+        <setEntry value="slf4j.api*2.0.17@3:true"/>
         <setEntry value="slf4j.jdk14@3:true"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
