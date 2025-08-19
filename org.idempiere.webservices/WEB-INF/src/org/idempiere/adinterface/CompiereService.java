@@ -260,10 +260,13 @@ public class CompiereService {
 		m_locale = Lang;
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		MUser user = MUser.get(getCtx(), m_AD_User_ID);
-		if (email_login)
+		if (!Util.isEmpty(user.getLDAPUser())) {
+			m_userName = user.getLDAPUser();
+		}else if (email_login) {
 			m_userName = user.getEMail();
-		else
-			m_userName = Util.isEmpty(user.getLDAPUser()) ? user.getName() : user.getLDAPUser();
+		}else {
+			m_userName = user.getName();
+		}
 
 		Env.setContext( getCtx(), Env.LANGUAGE, Lang);
 		m_language = Language.getLanguage(Lang);
