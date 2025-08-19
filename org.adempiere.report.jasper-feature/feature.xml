@@ -26,10 +26,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="bctsp"
-         version="0.0.0"/>
-
-   <plugin
          id="bcmail"
          version="0.0.0"/>
 
