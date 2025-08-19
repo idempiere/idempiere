@@ -80,11 +80,14 @@ public final class ThemeManager {
 		String theme = SystemProperties.getZkTheme();
 		if (Util.isEmpty(theme))
 			theme = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT);
+		if (theme.contains(","))
+			theme = theme.split(",")[0];
 		if (theme.equals(m_brokenTheme)) {
 			theme = ITheme.ZK_THEME_DEFAULT;
 		} else {
 			if (! theme.equals(m_theme)) {
 				if (! ITheme.ZK_THEME_DEFAULT.equals(theme)) {
+					// NOTE: Here we could use also Themes.hasTheme instead, but be careful that default is registered as breeze
 					// Verify the theme.css.dsp exists in the theme folder
 					String themeCSSURL = getStyleSheet(theme);
 					if (ThemeManager.class.getResource(toClassPathResourcePath(themeCSSURL)) == null) {
