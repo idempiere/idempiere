@@ -630,7 +630,16 @@ public final class Adempiere
 		}
 		
 		// start thread pool
-		return new ScheduledThreadPoolExecutor(max);								
+		return new ScheduledThreadPoolExecutor(max) {
+
+			@Override
+			protected void afterExecute(Runnable r, Throwable t) {
+				//clean up thread local variables
+				super.afterExecute(r, t);
+				CLogger.resetLast();
+			}
+			
+		};
 	}
 
 	/**
