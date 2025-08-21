@@ -141,7 +141,8 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setAmt(Amt);
 				cd.setQty(Qty);
 			}
-			if (cd.isDelta())
+			// IDEMPIERE-6659 Estimated Landed Cost Scenarios for Purchase Orders and Incorrect Product Costs
+			if (cd.isDelta() && Amt.compareTo( new BigDecimal(0))>=0)
 			{
 				cd.setProcessed(false);
 				cd.setAmt(Amt);
@@ -1475,6 +1476,9 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				qty = BigDecimal.ZERO;
 				costAdjustment = true;
+				
+			// IDEMPIERE-6659 Estimated Landed Cost Scenarios for Purchase Orders and Incorrect Product Costs
+                amt=getAmt();
 			}
 		}
 		
