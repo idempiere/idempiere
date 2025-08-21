@@ -117,7 +117,9 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT c.* ");
 		sql.append("FROM M_CostHistory c ");
-		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed=?) ");
+		// IDEMPIERE-6659 Estimated Landed Cost Scenarios for Purchase Orders and Incorrect Product Costs
+        //sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed=?) ");
+		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID ) ");
 		sql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
 		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
 		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
@@ -127,15 +129,20 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		sql.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
 		if (M_CostElement_ID > 0)
 			sql.append(" AND c.M_CostElement_ID=? ");
-		sql.append(" AND c.M_CostDetail_ID IN (?,?) ");
+		// IDEMPIERE-6659 Estimated Landed Cost Scenarios for Purchase Orders and Incorrect Product Costs
+		// sql.append(" AND c.M_CostDetail_ID IN (?,?) ");
+        sql.append(" AND c.M_CostDetail_ID IN (?,?,?) ");
 		sql.append(" AND c.DateAcct=? ");
 		sql.append("ORDER BY c.DateAcct DESC, ");
-		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END DESC, ");
-		sql.append("c.M_CostHistory_ID DESC ");
+		// IDEMPIERE-6659 Estimated Landed Cost Scenarios for Purchase Orders and Incorrect Product Costs
+		// sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END DESC, ");
+		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostHistory_ID) END DESC NULLS LAST, ");
+        sql.append("c.M_CostHistory_ID DESC ");
 		String sqlStr = DB.getDatabase().addPagingSQL(sql.toString(), 1, 1);
 		 
 		List<Object> params = new ArrayList<Object>();
-		params.add(cd.isDelta() ? "N" : "Y"); // cost detail is set to processed=N when it is a delta record
+		// IDEMPIERE-6659 Estimated Landed Cost Scenarios for Purchase Orders and Incorrect Product Costs
+		//params.add(cd.isDelta() ? "N" : "Y"); // cost detail is set to processed=N when it is a delta record
 		params.add(cd.getAD_Client_ID());
 		params.add(AD_Org_ID);
 		params.add(cd.getM_Product_ID());
@@ -146,6 +153,8 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (M_CostElement_ID > 0)
 			params.add(M_CostElement_ID);
 		params.add(cd.getM_CostDetail_ID());
+		// IDEMPIERE-6659 Estimated Landed Cost Scenarios for Purchase Orders and Incorrect Product Costs
+        params.add(cd.getM_CostDetail_ID()-1); 
  		params.add(cd.getRef_CostDetail_ID());
  		params.add(cd.getDateAcct());
 		
