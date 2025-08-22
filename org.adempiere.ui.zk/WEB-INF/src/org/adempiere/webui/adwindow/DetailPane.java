@@ -964,6 +964,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				} else if (BTN_TOGGLE_ID.equals(btn.getId())) {
 					btn.setDisabled(adtab.getGridTab().isSortTab());
 				}
+				else if (tabpanel.toolbarCustomButtons.containsKey(btn))
+				{
+					tabpanel.toolbarCustomButtons.get(btn).updateToolbarCustomBtn(adtab, changed, readOnly);
+				}
+
         		if (windowRestrictList.contains(btn.getId())) {
         			btn.setVisible(false);
         		} else if (tabRestrictList.contains(btn.getId())) {
