@@ -28,6 +28,7 @@
 		<module>org.adempiere.server</module>		
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>
+		<module>javax.websocket-api.fragment</module>
 		<module>org.apache.ecs</module>
 		<module>org.compiere.db.oracle.provider</module>
 		<module>org.compiere.db.postgresql.provider</module>
