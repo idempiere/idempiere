@@ -1176,15 +1176,20 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				MLandedCostAllocation lca = new MLandedCostAllocation (this, lc.getM_CostElement_ID());
 				lca.setM_Product_ID(lc.getM_Product_ID());	//	No ASI
 				lca.setAmt(getLineNetAmt());
-				if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
-				{
+				if (lc.getQty().signum() <= 0) {
+					if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
+					{
+						lca.setBase(getLineNetAmt());
+						lca.setQty(getLineNetAmt());
+					}
+					else
+					{
+						lca.setBase(getQtyInvoiced());
+						lca.setQty(getQtyInvoiced());
+					}
+				} else {
 					lca.setBase(getLineNetAmt());
-					lca.setQty(getLineNetAmt());
-				}
-				else
-				{
-					lca.setBase(getQtyInvoiced());
-					lca.setQty(getQtyInvoiced());
+					lca.setQty(lc.getQty());
 				}
 				if (lca.save())
 					return "";

@@ -1985,6 +1985,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	
 	@Test
 	public void testLandedCostWtihNoEstimateForPOAndInvoice() {
+		testLandedCostWtihNoEstimateForPOAndInvoice(true);
+		testLandedCostWtihNoEstimateForPOAndInvoice(false);
+	}
+	public void testLandedCostWtihNoEstimateForPOAndInvoice(boolean forProduct) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
@@ -2133,8 +2137,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MLandedCost landedCost = new MLandedCost(Env.getCtx(), 0, getTrxName());
 			landedCost.setC_InvoiceLine_ID(invoiceLine.get_ID());
 			landedCost.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);
-			landedCost.setM_InOut_ID(receipt1.get_ID());
-			landedCost.setM_InOutLine_ID(receiptLine1.get_ID());
+			if (forProduct) {
+				landedCost.setM_Product_ID(receiptLine1.getM_Product_ID());
+				landedCost.setQty(receiptLine1.getMovementQty());				
+			} else {
+				landedCost.setM_InOut_ID(receipt1.get_ID());
+				landedCost.setM_InOutLine_ID(receiptLine1.get_ID());
+			}
 			landedCost.setLandedCostDistribution(MLandedCost.LANDEDCOSTDISTRIBUTION_Quantity);		
 			landedCost.saveEx();			
 			String error = landedCost.allocateCosts();
@@ -3302,6 +3311,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	
 	@Test
 	public void testUnplannedLandedCostReversalAfterShipment3() {
+		testUnplannedLandedCostReversalAfterShipment3(true);
+		testUnplannedLandedCostReversalAfterShipment3(false);
+	}
+	public void testUnplannedLandedCostReversalAfterShipment3(boolean forProduct) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
@@ -3519,8 +3532,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MLandedCost landedCost = new MLandedCost(Env.getCtx(), 0, getTrxName());
 			landedCost.setC_InvoiceLine_ID(fiLine.get_ID());
 			landedCost.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);
-			landedCost.setM_InOut_ID(receipt1.get_ID());
-			landedCost.setM_InOutLine_ID(receipt1Line1.get_ID());
+			if (forProduct) {
+				landedCost.setM_Product_ID(receipt1Line1.getM_Product_ID());
+				landedCost.setQty(receipt1Line1.getMovementQty());				
+			} else {
+				landedCost.setM_InOut_ID(receipt1.get_ID());
+				landedCost.setM_InOutLine_ID(receipt1Line1.get_ID());
+			}
 			landedCost.setLandedCostDistribution(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs);		
 			landedCost.saveEx();
 			
@@ -4938,7 +4956,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	
 	@Test
 	public void testUnplannedLandedCostReversalWithZeroOnHand() {
-
+		testUnplannedLandedCostReversalWithZeroOnHand(true);
+		testUnplannedLandedCostReversalWithZeroOnHand(false);
+	}
+	public void testUnplannedLandedCostReversalWithZeroOnHand(boolean forProduct) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
@@ -5135,8 +5156,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MLandedCost landedCost = new MLandedCost(Env.getCtx(), 0, getTrxName());
 			landedCost.setC_InvoiceLine_ID(fiLine.get_ID());
 			landedCost.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);
-			landedCost.setM_InOut_ID(receipt1.get_ID());
-			landedCost.setM_InOutLine_ID(receipt1Line1.get_ID());
+			if (forProduct) {
+				landedCost.setM_Product_ID(receipt1Line1.getM_Product_ID());
+				landedCost.setQty(receipt1Line1.getMovementQty());				
+			} else {
+				landedCost.setM_InOut_ID(receipt1.get_ID());
+				landedCost.setM_InOutLine_ID(receipt1Line1.get_ID());
+			}
 			landedCost.setLandedCostDistribution(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs);		
 			landedCost.saveEx();
 			
