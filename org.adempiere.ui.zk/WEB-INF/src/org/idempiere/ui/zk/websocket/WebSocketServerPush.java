@@ -28,18 +28,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.impl.ExecutionCarryOver;
 import org.zkoss.zk.ui.sys.Scheduler;
 import org.zkoss.zk.ui.sys.ServerPush;
@@ -52,12 +54,16 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class WebSocketServerPush implements ServerPush {
 
-    private static final String ATMOSPHERE_SERVER_PUSH_ECHO = "AtmosphereServerPush.Echo";
+    private static final String ON_ECHO = "onEcho";
+
+	private static final String ON_SCHEDULE = "onSchedule";
+
+	private static final String WEBSOCKET_SERVERPUSH_ECHO = "WebSocketServerPush.Echo";
 
 	private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
 
     private final AtomicReference<Desktop> desktop = new AtomicReference<Desktop>();
-
+    
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     
     private ThreadInfo _active;
@@ -69,7 +75,47 @@ public class WebSocketServerPush implements ServerPush {
     private final static ServerPushEndPoint STUB = new ServerPushEndPoint();
     private List<Schedule<Event>> schedules = new ArrayList<>();
 
+    private AbstractComponent dummyTarget;
+    
+    private static class OnScheduleEvent extends Event {
+		private static final long serialVersionUID = 1L;
+		
+		private Schedule<Event>[] schedules;
+		
+		public OnScheduleEvent(Schedule<Event>[] schedules) {
+			super(ON_SCHEDULE);
+			this.schedules = schedules;
+		}
+		
+		public Schedule<Event>[] getSchedules() {
+			return schedules;
+		}
+	}
+    
     public WebSocketServerPush() {
+    	dummyTarget = new AbstractComponent();
+    	dummyTarget.addEventListener(ON_SCHEDULE, (OnScheduleEvent e) -> {
+    		Schedule<Event>[] pendings = e.getSchedules();
+    		if (pendings != null && pendings.length > 0) {
+				for (Schedule<Event> schedule : pendings) {
+					try {
+						schedule.task.onEvent(schedule.event);
+					} catch (Exception ex) {
+						log.error("Failed to execute scheduled task " + schedule.task, ex);
+					}
+				}
+			}
+    	});
+    	dummyTarget.addEventListener(ON_ECHO, e -> {
+    		StringBuilder script = new StringBuilder();
+    		String dtid = e.getData().toString();
+    		script.append("setTimeout(function() {let dt = zk.Desktop.$('").append(dtid).append("');\n");
+    		script.append("if (dt._serverpush && dt._serverpush.socket) {");
+    		script.append("  let evt = new Object(); evt.data = 'echo';\n");
+    		script.append("  dt._serverpush.socket.onmessage(evt);\n");
+    		script.append("}}, 300);");
+    		Clients.response(new AuScript(null, script.toString()));
+    	});
     }
 
     @Override
@@ -170,24 +216,17 @@ public class WebSocketServerPush implements ServerPush {
     @SuppressWarnings("unchecked")
 	@Override
     public void onPiggyback() {
-    	if (Executions.getCurrent() != null && Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) != null) {
-    		//has pending serverpush echo, wait for next execution piggyback trigger by the pending serverpush echo
-    		return;
-    	}
 
     	//Process pending schedule event
     	Schedule<Event>[] pendings = null;
     	synchronized (schedules) {
     		if (!schedules.isEmpty()) {
     			pendings = schedules.toArray(new Schedule[0]);
-    			schedules = new ArrayList<>();
+    			schedules.clear();
     		}
     	}
     	if (pendings != null && pendings.length > 0) {
-    		for(Schedule<Event> p : pendings) {
-    			//schedule and execute in desktop's onPiggyBack listener
-    			p.scheduler.schedule(p.task, p.event);
-    		}
+    		Events.sendEvent(dummyTarget, new OnScheduleEvent(pendings));
     	}
     	
     	//check web socket end point 
@@ -203,22 +242,46 @@ public class WebSocketServerPush implements ServerPush {
     	}    	
     }
 
+    private static class EventListenerWrapper<T extends Event> implements EventListener<T> {
+    	private EventListener<T> wrappedListener;
+    	private AtomicBoolean runOnce;
+
+    	private EventListenerWrapper(EventListener<T> wrappedListener) {
+    		this.wrappedListener=wrappedListener;
+    		this.runOnce = new AtomicBoolean(false);
+    	}
+
+    	@Override
+    	public void onEvent(T event) throws Exception {
+    		//if the wrapped event listener throws exception, the scheduled listener is not clean up
+    		//this atomic boolean help prevent repeated call when that happens
+    		if (!runOnce.compareAndSet(false, true))
+    			return;
+
+    		wrappedListener.onEvent(event);
+    	}
+
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
+    	EventListenerWrapper<T> wrapper = new EventListenerWrapper<T>(task);
     	if (Executions.getCurrent() == null) {
-    		//schedule and execute in desktop's onPiggyBack listener
-    		scheduler.schedule(task, event);
+    		//schedule and execute in onPiggyBack
+    		synchronized (schedules) {
+				schedules.add(new Schedule(wrapper, event));
+			}
 	        echo();
     	} else {
-    		// in event listener thread, use echo to process this asynchronously in onPiggyback
+    		// in event listener thread, process this asynchronously in onPiggyback
     		synchronized (schedules) {
-				schedules.add(new Schedule(task, event, scheduler));
+				schedules.add(new Schedule(wrapper, event));
 			}
-    		if (Executions.getCurrent().getAttribute(ATMOSPHERE_SERVER_PUSH_ECHO) == null) {
-    			Executions.getCurrent().setAttribute(ATMOSPHERE_SERVER_PUSH_ECHO, Boolean.TRUE);
-    			Clients.response(new AuEcho());
+    		if (Executions.getCurrent().getAttribute(WEBSOCKET_SERVERPUSH_ECHO) == null) {
+    			Executions.getCurrent().setAttribute(WEBSOCKET_SERVERPUSH_ECHO, Boolean.TRUE);
+    			Events.postEvent(-9999, ON_ECHO, dummyTarget, Executions.getCurrent().getDesktop().getId());
     		}
     	}
     }
@@ -226,12 +289,10 @@ public class WebSocketServerPush implements ServerPush {
     private class Schedule<T extends Event> {
     	private EventListener<T> task;
 		private T event;
-		private Scheduler<T> scheduler;
 
-		private Schedule(EventListener<T> task, T event, Scheduler<T> scheduler) {
+		private Schedule(EventListener<T> task, T event) {
     		this.task = task;
     		this.event = event;
-    		this.scheduler = scheduler;
     	}
     }
     
