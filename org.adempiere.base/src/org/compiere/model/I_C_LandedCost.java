@@ -215,6 +215,19 @@ public interface I_C_LandedCost
 	/** Get Process Now	  */
 	public boolean isProcessing();
 
+    /** Column name Qty */
+    public static final String COLUMNNAME_Qty = "Qty";
+
+	/** Set Quantity.
+	  * Quantity
+	  */
+	public void setQty (BigDecimal Qty);
+
+	/** Get Quantity.
+	  * Quantity
+	  */
+	public BigDecimal getQty();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
