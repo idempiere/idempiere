@@ -3522,31 +3522,37 @@ public abstract class PO
 
 		//	Set new DocumentNo
 		String columnName = "DocumentNo";
-		int index = p_info.getColumnIndex(columnName);
-		if (index != -1)
-		{
-			String value = (String)get_Value(index);
-			if (value != null && value.startsWith("<") && value.endsWith(">"))
-				value = null;
-			if (value == null || value.length() == 0)
+
+		if (!get_TableName().startsWith("T_")) {
+			int index = p_info.getColumnIndex(columnName);
+			if (index != -1)
 			{
-				int dt = p_info.getColumnIndex("C_DocTypeTarget_ID");
-				if (dt == -1)
-					dt = p_info.getColumnIndex("C_DocType_ID");
-				if (dt != -1)		//	get based on Doc Type (might return null)
-					value = DB.getDocumentNo(get_ValueAsInt(dt), m_trxName, false, this);
-				if (value == null)	//	not overwritten by DocType and not manually entered
-					value = DB.getDocumentNo(getAD_Client_ID(), p_info.getTableName(), m_trxName, this);
-				set_ValueNoCheck(columnName, value);
-			}
+				String value = (String)get_Value(index);
+				if (value != null && value.startsWith("<") && value.endsWith(">"))
+					value = null;
+				if (value == null || value.length() == 0)
+				{
+					int dt = p_info.getColumnIndex("C_DocTypeTarget_ID");
+					if (dt == -1)
+						dt = p_info.getColumnIndex("C_DocType_ID");
+					if (dt != -1)		//	get based on Doc Type (might return null)
+						value = DB.getDocumentNo(get_ValueAsInt(dt), m_trxName, false, this);
+					if (value == null)	//	not overwritten by DocType and not manually entered
+						value = DB.getDocumentNo(getAD_Client_ID(), p_info.getTableName(), m_trxName, this);
+					set_ValueNoCheck(columnName, value);
+				}
+			}	
 		}
+
 		// ticket 1007459 - exclude M_AttributeInstance from filling Value column
 		// IDEMPIERE-4224 - exclude AD_TableAttribute from filling Value column
 		if (!MAttributeInstance.Table_Name.equals(get_TableName())
-			&& !MTableAttribute.Table_Name.equals(get_TableName())) {
+			&& !MTableAttribute.Table_Name.equals(get_TableName())
+			&& !MSysConfig.Table_Name.equals(get_TableName())
+			&& !get_TableName().startsWith("T_")) {
 			//	Set empty Value
 			columnName = "Value";
-			index = p_info.getColumnIndex(columnName);
+			int index = p_info.getColumnIndex(columnName);
 			if (index != -1)
 			{
 				if (!p_info.isVirtualColumn(index))
