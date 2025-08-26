@@ -55,12 +55,14 @@ import org.compiere.model.MSchedulerRecipient;
 import org.compiere.model.MSession;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
@@ -70,6 +72,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.compiere.util.WebUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
@@ -140,11 +143,46 @@ public class Scheduler extends AdempiereServer
 		String errorMessage = new Login(Env.getCtx()).validateLogin(new KeyNamePair(scheduler.getAD_Org_ID(), ""));
 		if (Util.isEmpty(errorMessage)) {
 			//Create new Session and set #AD_Session_ID to context
+			
+			// Examples : @#Date@ / Forever / @AD_Scheduler_ID@
+			String sessionIdFormat = "@AD_Scheduler_ID@"; // TODO add column on AD_Scheduler
+			String parsedSessionId = "";
+			if (!Util.isEmpty(sessionIdFormat)) {
+
+				Env.setContext(getCtx(), "AD_Scheduler_ID", AD_Scheduler_ID); // TODO use ENV.AD_Scheduler_ID ?
+
+				parsedSessionId = Env.parseVariable(sessionIdFormat, new DefaultEvaluatee(), true, false);
+
+				StringBuilder whereClause = new StringBuilder("CreatedBy = ? AND ServerName = ? AND WebSession = ?");
+				ArrayList<Object> params = new ArrayList<Object>();
+				params.add(getAD_User_ID());
+				params.add(WebUtil.getServerName());
+				params.add(parsedSessionId);
+
+				Query query = new Query(Env.getCtx(), MSession.Table_Name, whereClause.toString(), null)
+						.setParameters(params)
+						.setClient_ID();
+
+				int oldSessionID = query.firstId();
+				if (oldSessionID > 0)
+					Env.setContext(getCtx(), Env.AD_SESSION_ID, oldSessionID);
+			}
+
 			MSession session = MSession.get(Env.getCtx());
 			if(session == null) {
 				session = MSession.create(Env.getCtx());
+				if (!Util.isEmpty(parsedSessionId)) {
+					session.setWebSession(parsedSessionId);
+					session.saveEx();
+				}
 			} else {
 				session = new MSession(Env.getCtx(), session.getAD_Session_ID(), null);
+				
+				if (!Util.isEmpty(parsedSessionId)) {
+					session.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
+					session.saveEx();
+				}
+				
 			}
 			MProcess process = new MProcess(getCtx(), scheduler.getAD_Process_ID(), null);
 			try
@@ -166,7 +204,7 @@ public class Scheduler extends AdempiereServer
 				if (m_trx != null)
 					m_trx.close();
 				m_trx = null;
-				session.logout();
+				session.logout(); // TODO only if there is no other schedulers running in parallel ?
 				getCtx().remove(Env.AD_SESSION_ID);
 			}
 		} else {
