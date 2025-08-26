@@ -321,7 +321,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 * @param  as Account Schema
 	 * @return    Unit Labor Cost
 	 */
-	public BigDecimal getLaborCost(MAcctSchema as, int timeExpLineID)
+	public BigDecimal getLaborCost(MAcctSchema as)
 	{
 		// Todor Lulov 30.01.2008
 		BigDecimal retValue = Env.ZERO;
@@ -334,7 +334,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		try
 		{
 			pstmt = DB.prepareStatement (sql, as.get_TrxName());
-			pstmt.setInt(1, timeExpLineID);
+			pstmt.setInt(1, getS_TimeExpenseLine_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
@@ -344,7 +344,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 				if (log.isLoggable(Level.FINE)) log.fine("ExpLineCost = " + retValue);
 			}
 			else
-				log.warning("Not found for S_TimeExpenseLine_ID=" + timeExpLineID);
+				log.warning("Not found for S_TimeExpenseLine_ID=" + getS_TimeExpenseLine_ID());
 		}
 		catch (Exception e)
 		{

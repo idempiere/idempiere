@@ -139,9 +139,15 @@ public class Doc_ProjectIssue extends Doc
 		//  Issue Cost
 		BigDecimal cost = null;
 		if (m_issue.getM_InOutLine_ID() != 0)
-			cost = ((MInOutLine) m_issue.getM_InOutLine()).getPOCost(as, m_issue.getM_InOutLine_ID(), m_line.getQty());
+		{
+			MInOutLine inOutLine = new MInOutLine(getCtx(), m_issue.getM_InOutLine_ID(), getTrxName());
+			cost = inOutLine.getPOCost(as, m_line.getQty());
+		}
 		else if (m_issue.getS_TimeExpenseLine_ID() != 0)
-			cost = ((MTimeExpenseLine) m_issue.getS_TimeExpenseLine()).getLaborCost(as, m_issue.getS_TimeExpenseLine_ID());
+		{
+			MTimeExpenseLine timeExpenseLine = new MTimeExpenseLine(getCtx(), m_issue.getS_TimeExpenseLine_ID(), getTrxName());
+			cost = timeExpenseLine.getLaborCost(as);
+		}
 		if (cost == null)	//	standard Product Costs
 			cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
 

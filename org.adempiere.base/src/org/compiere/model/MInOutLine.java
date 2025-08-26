@@ -990,7 +990,7 @@ public class MInOutLine extends X_M_InOutLine
 	 * @param  as Account Schema
 	 * @return    Unit PO Cost
 	 */
-	public BigDecimal getPOCost(MAcctSchema as, int inOutLineID, BigDecimal lineQty)
+	public BigDecimal getPOCost(MAcctSchema as, BigDecimal lineQty)
 	{
 		BigDecimal retValue = null;
 		//	Uses PO Date
@@ -1007,7 +1007,7 @@ public class MInOutLine extends X_M_InOutLine
 			pstmt.setInt(1, as.getC_Currency_ID());
 			pstmt.setInt(2, as.getAD_Client_ID());
 			pstmt.setInt(3, as.getAD_Org_ID());
-			pstmt.setInt(4, inOutLineID);
+			pstmt.setInt(4, getM_InOutLine_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
@@ -1015,7 +1015,7 @@ public class MInOutLine extends X_M_InOutLine
 				if (log.isLoggable(Level.FINE)) log.fine("POCost = " + retValue);
 			}
 			else
-				log.warning("Not found for M_InOutLine_ID=" + inOutLineID);
+				log.warning("Not found for M_InOutLine_ID=" + getM_InOutLine_ID());
 		}
 		catch (Exception e)
 		{
