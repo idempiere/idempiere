@@ -476,7 +476,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
-        txtUserId.setMaxlength(40);
+        txtUserId.setMaxlength(60);
         txtUserId.setClientAttribute("autocomplete", "username");
 
         txtPassword = new Textbox();
