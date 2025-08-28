@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.crypto.SecretKey;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
@@ -283,10 +284,19 @@ public class Core {
 			if (keystoreService != null)
 				return keystoreService;
 		}
-		IServiceReferenceHolder<IKeyStore> serviceReference = Service.locator().locate(IKeyStore.class).getServiceReference();
-		if (serviceReference != null) {
-			keystoreService = serviceReference.getService();
-			s_keystoreServiceReference = serviceReference;
+		
+		IServicesHolder<IKeyStore> list = Service.locator().list(IKeyStore.class);
+		List<IServiceReferenceHolder<IKeyStore>> references = list.getServiceReferences();
+		for (IServiceReferenceHolder<IKeyStore> ref : references) {
+			IKeyStore service = ref.getService();
+			if (service != null) {
+				SecretKey key = service.getKey(0);
+				if (key != null) {
+					keystoreService = service;
+					s_keystoreServiceReference = ref;
+					break;
+				}
+			}
 		}
 		return keystoreService;
 	}
