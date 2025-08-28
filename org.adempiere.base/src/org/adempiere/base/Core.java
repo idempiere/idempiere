@@ -299,6 +299,9 @@ public class Core {
 					keystoreService = service;
 					s_keystoreServiceReference = ref;
 					break;
+				} else {
+					if (s_log.isLoggable(Level.INFO))
+						s_log.info("Key store service " + service.getClass().getName() + " is not configured");
 				}
 			}
 		}
