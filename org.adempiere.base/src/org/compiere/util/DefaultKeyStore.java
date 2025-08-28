@@ -35,7 +35,7 @@ import org.adempiere.base.IKeyStore;
  */
 public class DefaultKeyStore implements IKeyStore {
 	
-	private static final String LEGACY_ALGORITHM = "DES";
+	public static final String LEGACY_ALGORITHM = "DES";
 
 	private static final String IDEMPIERE_KEYSTORE_PROPERTIES = "idempiere-ks.properties";
 

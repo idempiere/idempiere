@@ -57,6 +57,7 @@ import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DefaultKeyStore;
 import org.compiere.util.Env;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
@@ -293,6 +294,8 @@ public class Core {
 				//test key store service is working
 				SecretKey key = service.getKey(0);
 				if (key != null) {
+					if (key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM))
+						s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
 					keystoreService = service;
 					s_keystoreServiceReference = ref;
 					break;
