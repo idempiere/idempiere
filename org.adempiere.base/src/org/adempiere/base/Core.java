@@ -290,6 +290,7 @@ public class Core {
 		for (IServiceReferenceHolder<IKeyStore> ref : references) {
 			IKeyStore service = ref.getService();
 			if (service != null) {
+				//test key store service is working
 				SecretKey key = service.getKey(0);
 				if (key != null) {
 					keystoreService = service;
