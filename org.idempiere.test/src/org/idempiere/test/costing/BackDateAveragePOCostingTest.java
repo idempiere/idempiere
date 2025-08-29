@@ -110,6 +110,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateLandedCostZeroStock() {
+		testBackDateLandedCostZeroStock(true);
+		testBackDateLandedCostZeroStock(false);
+	}
+	public void testBackDateLandedCostZeroStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 		
@@ -163,7 +167,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, backDate2, new BigDecimal(10), forProduct);
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -214,6 +218,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateLandedCostInsufficientStock() {
+		testBackDateLandedCostInsufficientStock(true);
+		testBackDateLandedCostInsufficientStock(false);
+	}
+	public void testBackDateLandedCostInsufficientStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -267,7 +275,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, backDate2, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
@@ -323,6 +331,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateLandedCostSufficientStock() {
+		testBackDateLandedCostSufficientStock(true);
+		testBackDateLandedCostSufficientStock(false);
+	}
+	public void testBackDateLandedCostSufficientStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -376,7 +388,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, backDate2, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
@@ -441,6 +453,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateLandedCostZeroStockWithPV() {
+		testBackDateLandedCostZeroStockWithPV(true);
+		testBackDateLandedCostZeroStockWithPV(false);
+	}
+	public void testBackDateLandedCostZeroStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 		
@@ -494,7 +510,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("7.00"));
 			
 			// Landed Cost (Back-Date)
-			createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			createLandedCost(receiptLine1, backDate2, new BigDecimal(10), forProduct);
 			
 			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for receipt line");
@@ -526,6 +542,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateLandedCostInsufficientStockWithPV() {
+		testBackDateLandedCostInsufficientStockWithPV(true);
+		testBackDateLandedCostInsufficientStockWithPV(false);
+	}
+	public void testBackDateLandedCostInsufficientStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -579,7 +599,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, backDate2, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
@@ -614,6 +634,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateLandedCostSufficientStockWithPV() {
+		testBackDateLandedCostSufficientStockWithPV(true);
+		testBackDateLandedCostSufficientStockWithPV(false);
+	}
+	public void testBackDateLandedCostSufficientStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -667,7 +691,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine2.getParent().getDateAcct(), false, new BigDecimal("6.50"));
 			
 			// Landed Cost (Back-Date)
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, backDate2, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, backDate2, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
@@ -822,6 +846,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateReceiptBeforeLandedCostZero2InsufficientStock() {
+		testBackDateReceiptBeforeLandedCostZero2InsufficientStock(true);
+		testBackDateReceiptBeforeLandedCostZero2InsufficientStock(false);
+	}
+	public void testBackDateReceiptBeforeLandedCostZero2InsufficientStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -858,7 +886,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(7));
@@ -944,6 +972,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateReceiptBeforeLandedCostZero2InsufficientStock2() {
+		testBackDateReceiptBeforeLandedCostZero2InsufficientStock2(true);
+		testBackDateReceiptBeforeLandedCostZero2InsufficientStock2(false);
+	}
+	public void testBackDateReceiptBeforeLandedCostZero2InsufficientStock2(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -980,7 +1012,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(7));
@@ -1066,6 +1098,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateReceiptBeforeLandedCostZero2SufficientStock() {
+		testBackDateReceiptBeforeLandedCostZero2SufficientStock(true);
+		testBackDateReceiptBeforeLandedCostZero2SufficientStock(false);
+	}
+	public void testBackDateReceiptBeforeLandedCostZero2SufficientStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -1102,7 +1138,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("5.00"));
@@ -1189,6 +1225,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock() {
+		testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock(true);
+		testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock(false);
+	}
+	public void testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -1225,7 +1265,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
@@ -1312,6 +1352,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateReceiptBeforeLandedCostZero2InsufficientStockWithPV() {
+		testBackDateReceiptBeforeLandedCostZero2InsufficientStockWithPV(true);
+		testBackDateReceiptBeforeLandedCostZero2InsufficientStockWithPV(false);
+	}
+	public void testBackDateReceiptBeforeLandedCostZero2InsufficientStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -1348,7 +1392,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			
 			// MR2
 			MInOutLine receiptLine2 = createPOAndMRForProduct(today, product.getM_Product_ID(), new BigDecimal(12), new BigDecimal(5));
@@ -1413,6 +1457,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateReceiptBeforeLandedCostZero2SufficientStockWithPV() {
+		testBackDateReceiptBeforeLandedCostZero2SufficientStockWithPV(true);
+		testBackDateReceiptBeforeLandedCostZero2SufficientStockWithPV(false);
+	}
+	public void testBackDateReceiptBeforeLandedCostZero2SufficientStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -1449,7 +1497,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("5.00"));
@@ -1517,6 +1565,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateReceiptBeforeLandedCostInsufficient2SufficientStockWithPV() {
+		testBackDateReceiptBeforeLandedCostInsufficient2SufficientStockWithPV(true);
+		testBackDateReceiptBeforeLandedCostInsufficient2SufficientStockWithPV(false);
+	}
+	public void testBackDateReceiptBeforeLandedCostInsufficient2SufficientStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -1553,7 +1605,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
@@ -1717,6 +1769,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateShipmentBeforeLandedCostSufficient2ZeroStock() {
+		testBackDateShipmentBeforeLandedCostSufficient2ZeroStock(true);
+		testBackDateShipmentBeforeLandedCostSufficient2ZeroStock(false);
+	}
+	public void testBackDateShipmentBeforeLandedCostSufficient2ZeroStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -1764,7 +1820,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
@@ -1836,6 +1892,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock() {
+		testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock(true);
+		testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock(false);
+	}
+	public void testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -1883,7 +1943,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
@@ -1955,6 +2015,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock() {
+		testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock(true);
+		testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock(false);
+	}
+	public void testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -2002,7 +2066,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
@@ -2075,6 +2139,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateShipmentBeforeLandedCostSufficient2ZeroStockWithPV() {
+		testBackDateShipmentBeforeLandedCostSufficient2ZeroStockWithPV(true);
+		testBackDateShipmentBeforeLandedCostSufficient2ZeroStockWithPV(false);
+	}
+	public void testBackDateShipmentBeforeLandedCostSufficient2ZeroStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -2122,7 +2190,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
@@ -2167,6 +2235,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateShipmentBeforeLandedCostInsufficient2ZeroStockWithPV() {
+		testBackDateShipmentBeforeLandedCostInsufficient2ZeroStockWithPV(true);
+		testBackDateShipmentBeforeLandedCostInsufficient2ZeroStockWithPV(false);
+	}
+	public void testBackDateShipmentBeforeLandedCostInsufficient2ZeroStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -2214,7 +2286,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
@@ -2259,6 +2331,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testBackDateShipmentBeforeLandedCostSufficient2InsufficientStockWithPV() {
+		testBackDateShipmentBeforeLandedCostSufficient2InsufficientStockWithPV(true);
+		testBackDateShipmentBeforeLandedCostSufficient2InsufficientStockWithPV(false);
+	}
+	public void testBackDateShipmentBeforeLandedCostSufficient2InsufficientStockWithPV(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -2306,7 +2382,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("7.00"));
@@ -2495,6 +2571,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectReceiptAfterShipment() {
+		testReverseCorrectReceiptAfterShipment(true);
+		testReverseCorrectReceiptAfterShipment(false);
+	}
+	public void testReverseCorrectReceiptAfterShipment(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -2539,7 +2619,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.71"));
@@ -2604,6 +2684,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectReceiptAfterShipment2() {
+		testReverseCorrectReceiptAfterShipment2(true);
+		testReverseCorrectReceiptAfterShipment2(false);
+	}
+	public void testReverseCorrectReceiptAfterShipment2(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -2648,7 +2732,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.71"));
@@ -2920,6 +3004,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectShipmentAfterAVGCostMoved3() {
+		testReverseCorrectShipmentAfterAVGCostMoved3(true);
+		testReverseCorrectShipmentAfterAVGCostMoved3(false);
+	}
+	public void testReverseCorrectShipmentAfterAVGCostMoved3(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -2954,7 +3042,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			int Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
@@ -2998,6 +3086,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectLandedCost() {
+		testReverseCorrectLandedCost(true);
+		testReverseCorrectLandedCost(false);
+	}
+	public void testReverseCorrectLandedCost(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -3025,7 +3117,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine, backDate, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine, backDate, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), true, new BigDecimal("6.00"));
@@ -3084,6 +3176,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectLandedCost2() {
+		testReverseCorrectLandedCost2(true);
+		testReverseCorrectLandedCost2(false);
+	}
+	public void testReverseCorrectLandedCost2(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -3111,7 +3207,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, invoiceLine1.getParent().getDateAcct(), true, new BigDecimal("5.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
@@ -3312,6 +3408,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectInternalUseAfterAVGCostMoved() {
+		testReverseCorrectInternalUseAfterAVGCostMoved(true);
+		testReverseCorrectInternalUseAfterAVGCostMoved(false);
+	}
+	public void testReverseCorrectInternalUseAfterAVGCostMoved(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -3346,7 +3446,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			int Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
@@ -3390,6 +3490,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectInternalUseAfterAVGCostMoved2() {
+		testReverseCorrectInternalUseAfterAVGCostMoved2(true);
+		testReverseCorrectInternalUseAfterAVGCostMoved2(false);
+	}
+	public void testReverseCorrectInternalUseAfterAVGCostMoved2(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -3424,7 +3528,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			int Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
@@ -3469,6 +3573,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseCorrectReceiptAfterLandedCost() {
+		testReverseCorrectReceiptAfterLandedCost(true);
+		testReverseCorrectReceiptAfterLandedCost(false);
+	}
+	public void testReverseCorrectReceiptAfterLandedCost(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -3513,7 +3621,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, today, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, today, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.71"));
@@ -3578,6 +3686,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseAccrualShipmentAfterShipment() {
+		testReverseAccrualShipmentAfterShipment(true);
+		testReverseAccrualShipmentAfterShipment(false);
+	}
+	public void testReverseAccrualShipmentAfterShipment(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -3626,7 +3738,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			int Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, postDate, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, postDate, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.71"));
@@ -3679,6 +3791,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testReverseAccrualReceiptAfterShipment() {
+		testReverseAccrualReceiptAfterShipment(true);
+		testReverseAccrualReceiptAfterShipment(false);
+	}
+	public void testReverseAccrualReceiptAfterShipment(boolean forProduct) {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
@@ -3727,7 +3843,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
 			// Landed Cost
-			MInvoiceLine landedCostLine = createLandedCostForMR(receiptLine1, postDate, new BigDecimal(10));
+			MInvoiceLine landedCostLine = createLandedCost(receiptLine1, postDate, new BigDecimal(10), forProduct);
 			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", landedCostLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for invoice line");
 			validateCostDetail(cd, landedCostLine.getParent().getDateAcct(), false, new BigDecimal("6.71"));
@@ -5589,7 +5705,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		return shipmentLine;
 	}
 	
-	private MInvoiceLine createLandedCostForMR(MInOutLine receiptLine, Timestamp acctDate, BigDecimal price) {
+	private MInvoiceLine createLandedCost(MInOutLine receiptLine, Timestamp acctDate, BigDecimal price, boolean forProduct) {
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
 		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
@@ -5609,10 +5725,16 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		
 		MLandedCost landedCost = new MLandedCost(Env.getCtx(), 0, getTrxName());
 		landedCost.setC_InvoiceLine_ID(invoiceLine.getC_InvoiceLine_ID());
-		landedCost.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);
-		landedCost.setM_InOut_ID(receiptLine.getM_InOut_ID());
-		landedCost.setM_InOutLine_ID(receiptLine.getM_InOutLine_ID());
-		landedCost.setLandedCostDistribution(MOrderLandedCost.LANDEDCOSTDISTRIBUTION_Line);
+		landedCost.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);		
+		if (forProduct) {
+			landedCost.setM_Product_ID(receiptLine.getM_Product_ID());
+			landedCost.setQty(receiptLine.getMovementQty());
+			landedCost.setLandedCostDistribution(MOrderLandedCost.LANDEDCOSTDISTRIBUTION_Costs);
+		} else {
+			landedCost.setM_InOut_ID(receiptLine.getM_InOut_ID());
+			landedCost.setM_InOutLine_ID(receiptLine.getM_InOutLine_ID());
+			landedCost.setLandedCostDistribution(MOrderLandedCost.LANDEDCOSTDISTRIBUTION_Line);
+		}
 		landedCost.saveEx();
 		
 		String error = landedCost.allocateCosts();
