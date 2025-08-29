@@ -1,0 +1,9 @@
+# To disable a component, add its exact, case-sensitive name on a new line.
+#
+# Examples:
+# MyServiceComponent
+# com.example.MyOtherComponent
+#
+# The system will ignore any lines that start with a '#' and any blank lines.
+# Changes will take effect after server restart.
+
