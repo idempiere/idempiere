@@ -19,7 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -30,7 +29,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.runtime.ServiceComponentRuntime;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
@@ -48,7 +46,6 @@ public class ComponentBlackListService implements ServiceListener {
 	private List<String> blackListComponentNames = null;
 	
 	private ConcurrentLinkedQueue<ComponentDescriptionDTO> disableQueue = new ConcurrentLinkedQueue<>();
-	private ConcurrentLinkedQueue<ComponentDescriptionDTO> disableManagedComponentQueue = new ConcurrentLinkedQueue<>();
 	
 	private static ComponentBlackListService instance = null;
 	
@@ -122,11 +119,6 @@ public class ComponentBlackListService implements ServiceListener {
                 System.out.println("Component " + comp.name + " has been successfully disabled.");
                 if (!disableQueue.contains(comp)) {
 	                disableQueue.add(comp);
-	                if (comp.serviceInterfaces != null && comp.serviceInterfaces.length > 0) {
-						if (Arrays.stream(comp.serviceInterfaces).anyMatch(s -> s.equals(ManagedService.class.getName()))) {
-							disableManagedComponentQueue.add(comp);
-						}
-					}
                 }
                 return null;
             },
@@ -153,9 +145,9 @@ public class ComponentBlackListService implements ServiceListener {
 	            }
 				if (objectClass != null && objectClass.length > 0
 					&& "org.osgi.service.cm.ConfigurationAdmin".equals(objectClass[0])) {
-					//OSGI configuration admin service might re-enable a managed service component
-					if (!disableManagedComponentQueue.isEmpty()) {
-						disableManagedComponentQueue.forEach( e -> disableComponent(e));
+					//OSGI configuration admin service might re-enable disabled service component
+					if (!disableQueue.isEmpty()) {
+						disableQueue.forEach( e -> disableComponent(e));
 					}
 				} else {
 					if (!Util.isEmpty(name)) {
