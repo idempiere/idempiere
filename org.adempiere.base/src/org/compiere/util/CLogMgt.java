@@ -596,7 +596,9 @@ public class CLogMgt
 		sb.append("Free Heap = "+formatMemoryInfo(runtime.freeMemory())).append(NL);
 		//
 		//thread info
-		sb.append("Active Threads = " + Thread.activeCount());
+		sb.append("Active Threads = " + Thread.activeCount()).append(NL);
+		// Key Store info
+		sb.append("Key Store = ").append(Core.getKeyStore().getClass().getName());
 		//
 		//cluster info
 		if (Env.getAD_Client_ID(Env.getCtx()) == 0) {
