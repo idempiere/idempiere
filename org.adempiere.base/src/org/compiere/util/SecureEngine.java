@@ -202,6 +202,7 @@ public class SecureEngine
 				+ "\nCheck start script parameter ADEMPIERE_SECURE"; 
 			log.severe(msg);
 			System.err.println(msg);
+			cause.printStackTrace();
 			System.exit(10);
 		}
 		//	See if it works
