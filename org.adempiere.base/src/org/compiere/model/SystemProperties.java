@@ -79,7 +79,10 @@ public class SystemProperties {
 	 * @return
 	 */
 	public static String getAdempiereSecure() {
-		return System.getProperty(ADEMPIERE_SECURE);
+		String secureClass = System.getProperty(ADEMPIERE_SECURE);
+		if (Util.isEmpty(secureClass, true))
+			secureClass = System.getenv(ADEMPIERE_SECURE);
+		return secureClass;
 	}
 
 	/**
