@@ -21,10 +21,12 @@ import java.math.BigDecimal;
 import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IKeyStore;
@@ -124,7 +126,7 @@ public class Secure implements SecureInterface
 	 */
 	public Secure()
 	{
-		initCipher();
+		createKeyStore();
 	}	//	Secure
 	
 	/** Message Digest				*/
@@ -135,9 +137,9 @@ public class Secure implements SecureInterface
 	private static CLogger	log	= CLogger.getCLogger (Secure.class.getName());
 
 	/**
-	 * 	Initialize Cipher & Key
+	 * 	Create Key Store if not yet done
 	 */
-	private synchronized void initCipher()
+	private synchronized void createKeyStore()
 	{
 		if(m_keyStore==null){
 			m_keyStore = getKeyStore();
@@ -158,11 +160,11 @@ public class Secure implements SecureInterface
 			clearText = "";
 		// Init
 		if (m_keyStore == null)
-			initCipher();
+			createKeyStore();
 
 		// Encrypt
 		try {
-			Cipher cipher = Cipher.getInstance(m_keyStore.getAlgorithm());
+			Cipher cipher = getCipherInstance();
 
 			cipher.init(Cipher.ENCRYPT_MODE, m_keyStore.getKey(AD_Client_ID));
 			byte[] encBytes = cipher.doFinal(clearText.getBytes("UTF8"));
@@ -180,6 +182,29 @@ public class Secure implements SecureInterface
 		return CLEARVALUE_START + value + CLEARVALUE_END;
 	}	//	encrypt
 
+	/**
+	 * Get Cipher Instance
+	 * @return cipher
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws NoSuchProviderException
+	 */
+	protected Cipher getCipherInstance() throws NoSuchAlgorithmException, NoSuchPaddingException, NoSuchProviderException {
+		String provider = getCipherProvider();
+		Cipher cipher = Util.isEmpty(provider, true) 
+							? Cipher.getInstance(m_keyStore.getAlgorithm())
+							: Cipher.getInstance(m_keyStore.getAlgorithm(), provider);
+		return cipher;
+	}
+
+	/**
+	 * Get Cipher Provider 
+	 * @return cipher provider or null if default provider should be used
+	 */
+	protected String getCipherProvider() {
+		return null;
+	}
+	
 	/**
 	 *	Decryption.
 	 * 	The methods must recognize clear text values
@@ -209,14 +234,14 @@ public class Secure implements SecureInterface
 		}
 		//	Init
 		if (m_keyStore == null)
-			initCipher();
+			createKeyStore();
 
 		//	Encrypt
 		if (value != null && value.length() > 0)
 		{
 			try
 			{
-				Cipher cipher = Cipher.getInstance(m_keyStore.getAlgorithm());
+				Cipher cipher = getCipherInstance();
 				AlgorithmParameters ap = cipher.getParameters();
 				cipher.init(Cipher.DECRYPT_MODE, m_keyStore.getKey(AD_Client_ID), ap);
 				byte[] out = cipher.doFinal(data);

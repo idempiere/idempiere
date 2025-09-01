@@ -21,6 +21,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IServiceHolder;
+import org.adempiere.base.Service;
+import org.adempiere.base.ServiceQuery;
+import org.compiere.model.SystemProperties;
+import org.osgi.framework.Constants;
+
 /**
  *  Secure engine for encryption and decryption
  *	
@@ -30,14 +36,14 @@ import java.util.logging.Level;
 public class SecureEngine
 {
 	/**
-	 * 	Initialize Security
-	 *	@param ctx context with ADEMPIERE_SECURE class name
+	 * 	Initialize SecureEngine with ADEPIERE_SECURE class
+	 *	@param ctx ignore
 	 */
 	public static void init (Properties ctx)
 	{
 		if (s_engine == null)
 		{
-			String className = ctx.getProperty(SecureInterface.ADEMPIERE_SECURE);
+			String className = SystemProperties.getAdempiereSecure();
 			s_engine = new SecureEngine(className);
 		}
 	}	//	init
@@ -186,16 +192,34 @@ public class SecureEngine
 		String realClass = className;
 		if (realClass == null || realClass.length() == 0)
 			realClass = SecureInterface.ADEMPIERE_SECURE_DEFAULT;
+		
+		//try OSGi first
+		if (!SecureInterface.ADEMPIERE_SECURE_DEFAULT.equals(realClass)) 
+		{
+			ServiceQuery serviceQuery = new ServiceQuery();
+			serviceQuery.put(Constants.OBJECTCLASS, className);
+			IServiceHolder<SecureInterface> holder = Service.locator().locate(SecureInterface.class, serviceQuery);
+			if (holder != null) 
+			{
+				implementation = holder.getService();
+			}
+		}
+		
 		Exception cause = null;
-		try
-		{
-			Class<?> clazz = Class.forName(realClass);
-			implementation = (SecureInterface)clazz.getDeclaredConstructor().newInstance();
+		if (implementation == null)
+		{			
+			//fallback to Class.forName
+			try
+			{
+				Class<?> clazz = Class.forName(realClass);
+				implementation = (SecureInterface)clazz.getDeclaredConstructor().newInstance();
+			}
+			catch (Exception e)
+			{
+				cause = e;
+			}
 		}
-		catch (Exception e)
-		{
-			cause = e;
-		}
+		
 		if (implementation == null)
 		{
 			String msg = "Could not initialize: " + realClass + " - " + cause.toString()
