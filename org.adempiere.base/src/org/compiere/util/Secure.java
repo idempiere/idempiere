@@ -174,8 +174,7 @@ public class Secure implements SecureInterface
 			// log.log (Level.ALL, value + " => " + encString);
 			return encString;
 		} catch (Exception ex) {
-			// log.log(Level.INFO, value, ex);
-			if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Problem encrypting string", ex);
+			log.log(Level.SEVERE, "Problem encrypting string", ex);
 		}
 
 		// Fallback
@@ -202,7 +201,7 @@ public class Secure implements SecureInterface
 	 * @return cipher provider or null if default provider should be used
 	 */
 	protected String getCipherProvider() {
-		return null;
+		return m_keyStore.getProvider();
 	}
 	
 	/**
@@ -252,8 +251,7 @@ public class Secure implements SecureInterface
 			}
 			catch (Exception ex)
 			{
-				// log.info("Failed: " + value + " - " + ex.toString());
-				if (log.isLoggable(Level.INFO)) log.info("Failed decrypting " + ex.toString());
+				log.log(Level.SEVERE, "Failed decrypting", ex);
 			}
 		}
 		return null;
