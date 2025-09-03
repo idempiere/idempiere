@@ -101,12 +101,25 @@ public class SecureEngine
 	 *  @param value message
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
+	@Deprecated
 	public static String getDigest (String value)
 	{
 		if (s_engine == null)
 			init(System.getProperties());
 		return s_engine.implementation.getDigest(value);
 	}	//	getDigest
+	
+	/**
+	 * Perform SHA-256 Digest of value.
+	 * @param value
+	 * @return HexString of digested message (length = 64 characters)
+	 */
+	public static String getSHA256Digest (String value)
+	{
+		if (s_engine == null)
+			init(System.getProperties());
+		return s_engine.implementation.getSHA256Digest(value);
+	}	//	getSHA256Digest
 	
 	/**
 	 *	Encryption.<br/>

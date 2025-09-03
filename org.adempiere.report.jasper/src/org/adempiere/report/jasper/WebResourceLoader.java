@@ -79,8 +79,32 @@ public class WebResourceLoader {
 
 			reportFile = new File(localFilePath);
 			if (reportFile.exists()) {
-				String remoteMD5Hash = getRemoteMD5(reportFilePath);
-				if (!Util.isEmpty(remoteMD5Hash, true)) {
+				String remoteSHA256Hash = getRemoteSHA256(reportFilePath);
+				String remoteMD5Hash = Util.isEmpty(remoteSHA256Hash, true) ? getRemoteMD5(reportFilePath) : null;
+				if (!Util.isEmpty(remoteSHA256Hash, true)) {
+					String localSHA256hash = DigestOfFile.getSHA256Hash(reportFile);
+					if (log.isLoggable(Level.INFO))
+						log.info("SHA-256 for local file is " + localSHA256hash);
+					if (localSHA256hash.equals(remoteSHA256Hash.trim())) {
+						if (log.isLoggable(Level.INFO))
+							log.info("SHA-256 match: local report file is up-to-date");
+						return reportFile;
+					} else {
+						if (log.isLoggable(Level.INFO))
+							log.info("SHA-256 is different, download and replace");
+						downloadedFile = getRemoteFile(reportFilePath, tmpLocalFilePath);
+						if (downloadedFile != null) {
+							Path to = reportFile.toPath();
+							Path from = downloadedFile.toPath();
+							Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+							Files.delete(from);
+							return to.toFile();
+						} else {
+							return null;
+						}
+					}
+				} else if (!Util.isEmpty(remoteMD5Hash, true)) {
+					@SuppressWarnings("deprecation")
 					String localMD5hash = DigestOfFile.getMD5Hash(reportFile);
 					if (log.isLoggable(Level.INFO))
 						log.info("MD5 for local file is " + localMD5hash);
@@ -108,14 +132,14 @@ public class WebResourceLoader {
 						return null;
 
 					// compare hash of existing and downloaded
-					if (DigestOfFile.md5HashCompare(reportFile, downloadedFile)) {
+					if (DigestOfFile.sha256HashCompare(reportFile, downloadedFile)) {
 						// nothing file are identical
 						if (log.isLoggable(Level.INFO))
-							log.info("MD5 match: local report file is up-to-date");
+							log.info("SHA-256 match: local report file is up-to-date");
 						return reportFile;
 					} else {
 						if (log.isLoggable(Level.INFO))
-							log.info("MD5 is different, replace with downloaded file");
+							log.info("SHA-256 is different, replace with downloaded file");
 						Path to = reportFile.toPath();
 						Path from = downloadedFile.toPath();
 						Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
@@ -197,6 +221,30 @@ public class WebResourceLoader {
 		}
 	}
 
+	private String getRemoteSHA256(String reportLocation) {
+		try {
+			String sha256url = reportLocation + ".sha256";
+			URL reportURL = new URL(sha256url);
+			try (InputStream in = reportURL.openStream()) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				byte buf[] = new byte[1024];
+				int s = 0;
+				while ((s = in.read(buf, 0, 1024)) > 0)
+					baos.write(buf, 0, s);
+
+				String hash = new String(baos.toByteArray());
+				int posSpace = hash.indexOf(" ");
+				if (posSpace > 0)
+					hash = hash.substring(0, posSpace);
+				return hash;
+			}
+		} catch (Exception e) {
+			if (log.isLoggable(Level.CONFIG))
+				log.log(Level.CONFIG, "SHA256 not available for " + reportLocation, e);
+			return null;
+		}
+	}
+	
 	/**
 	 * @author rlemeill
 	 * @param reportLocation http://applicationserver/webApp/standalone.jrxml for
