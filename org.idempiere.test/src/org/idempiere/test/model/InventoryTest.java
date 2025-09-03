@@ -130,6 +130,77 @@ public class InventoryTest extends AbstractTestCase {
 		assertEquals(cost.getCurrentCostPrice(), line.getCurrentCostPrice());
 	}
 	
+	/**
+	 * IDEMPIERE-6600 : Posting Error For No Cost Product On Physical Inventory
+	 * @author ZuhriUtama
+	 */
+	@Test
+	public void testZeroCostProductPosting() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		
+		MClient client = MClient.get(ctx);
+		MAcctSchema as = client.getAcctSchema();
+		
+		// create purchase order
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setM_Product_ID(DictionaryIDs.M_Product.FERTILIZER_50.id);
+		line1.setQty(Env.ONEHUNDRED);
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+		MInOut materialReceipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		materialReceipt.saveEx();
+
+		MInOutLine receiptLine = new MInOutLine(materialReceipt);
+		receiptLine.setOrderLine(line1, 0, Env.ONEHUNDRED);
+		receiptLine.setQty(Env.ONEHUNDRED);
+		receiptLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(materialReceipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		materialReceipt.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, materialReceipt.getDocStatus());
+		assertEquals(true, materialReceipt.isPosted());
+		
+		MInventory inventory = new MInventory(ctx, 0, trxName);
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+		inventory.setCostingMethod(as.getCostingMethod());
+		inventory.saveEx();
+
+		MInventoryLine iline = new MInventoryLine(inventory,
+				DictionaryIDs.M_Locator.HQ.id, 
+				DictionaryIDs.M_Product.FERTILIZER_50.id,
+				0, // M_AttributeSetInstance_ID
+				Env.ONEHUNDRED, // QtyBook
+				Env.ONE);
+		iline.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		inventory.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus());
+		assertEquals(true, inventory.isPosted());
+	}
+	
 	private void createPOAndMRForProduct(int productId) {
 		createPOAndMRForProduct(productId, null);
 	}
