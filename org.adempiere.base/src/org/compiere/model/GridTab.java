@@ -29,6 +29,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -2352,14 +2353,18 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			else
 				setCurrentRow(0, true);
 		}
+		
+		GridField field = m_mTable.getField(e.getChangedColumn());
+		Object fieldValue = field!=null?field.getValue():null;
+		
 		//  set current row
 		dataStatusEvent = e;          //  setCurrentRow clear it, need to save again
 		dataStatusEvent.setCurrentRow(m_currentRow);
-					
+		dataStatusEvent.setValue(fieldValue);
+		
 		//  Same row - update value
 		if (oldCurrentRow == m_currentRow)
 		{
-			GridField field = m_mTable.getField(e.getChangedColumn());
 			if (field != null)
 			{
 				Object value = m_mTable.getValueAt(m_currentRow, e.getChangedColumn());
@@ -2373,7 +2378,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			boolean fire = true;
 			DataStatusEventRecord dseRecord = m_lastDataStatusEventReference.get();
 			DataStatusEvent lastDataStatusEvent = dseRecord != null ? dseRecord.dataStatusEvent : null;
-			if (lastDataStatusEvent != null)
+			
+			// Do not validate event time when different values
+			boolean skipTimeValidation = !Objects.equals(
+				    lastDataStatusEvent != null ? lastDataStatusEvent.getValue() : null,
+				    	    dataStatusEvent != null ? dataStatusEvent.getValue() : null
+				    	);
+			
+			if (lastDataStatusEvent != null && !skipTimeValidation)
 			{
 				if (System.currentTimeMillis() - dseRecord.dataStatusEventTime() < 200)
 				{
