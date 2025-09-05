@@ -689,6 +689,8 @@ public class Doc_MatchPO extends Doc
 		for(Integer elementId : landedCostMap.keySet())
 		{
 			BigDecimal amt = landedCostMap.get(elementId);
+			if (mMatchPO.isReversal())
+				amt = amt.negate();
 			amt = amt.multiply(tQty);
 			if (amt.scale() > as.getCostingPrecision())
 				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
