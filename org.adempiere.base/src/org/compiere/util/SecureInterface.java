@@ -117,6 +117,7 @@ public interface SecureInterface
 	 *  @param value message
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
+	@Deprecated
 	public String getDigest (String value);
 
 	/**
@@ -124,7 +125,26 @@ public interface SecureInterface
 	 *  @param value digest string
 	 *  @return true if valid digest
 	 */
+	@Deprecated
 	public boolean isDigest (String value);
+	
+	/**
+	 * Convert String to SHA-256 digest
+	 * @param value
+	 * @return HexString of digested message (length = 64 characters)
+	 */
+	default String getSHA256Digest(String value) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+	
+	/**
+	 * Check if value is a valid SHA-256 digest
+	 * @param value
+	 * @return true if valid SHA-256 digest
+	 */
+	default boolean isSHA256Digest(String value) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
 	
 	/**
 	 *  Convert String and salt to SHA-512 hash with iterations<br/>

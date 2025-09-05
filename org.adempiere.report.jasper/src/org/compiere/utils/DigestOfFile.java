@@ -129,35 +129,11 @@ public class DigestOfFile
     private MessageDigest digestAgent;
 
     /**
-     * @author rlemeill
-     * @param args file
-     */
-    public static void main(String[] args)
-    {
-        try
-        {
-            DigestOfFile md5DigestAgent = new DigestOfFile("MD5");
-
-            for (int argIndex = 0; argIndex < args.length; argIndex++)
-            {
-                {
-                    String base64Digest = md5DigestAgent.digestAsBase64(new File(args[argIndex]));
-                    System.out.println("Base64 MD5 of " + args[argIndex] + " = [" + base64Digest + "]");
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace(System.out);
-        }
-    }
-
-
-    /**
      * @param file1 first file to compare
      * @param file2 second file to compare
      * @return true if files are identic false otherwise
      */
+    @Deprecated
     public static boolean md5HashCompare(File file1,File file2)
     {
     	//compute Hash of existing and downloaded
@@ -173,11 +149,12 @@ public class DigestOfFile
     		return false;			//if there is an error during comparison return files are difs
 		}
     }
-
+        
     /**
      * @param file
      * @return md5 hash null if file is not found or other error
      */
+    @Deprecated
     public static String getMD5Hash(File file)
     {
     	String hash;
@@ -197,6 +174,7 @@ public class DigestOfFile
      * @param inputStream
      * @return md5 hash
      */
+    @Deprecated
     public static String getMD5Hash(InputStream inputStream)
     {
         String hash;
@@ -217,6 +195,7 @@ public class DigestOfFile
      * @param input
      * @return mdg hash string
      */
+    @Deprecated
     public static String getMD5Hash(byte[] input)
     {
     	String hash;
@@ -229,6 +208,85 @@ public class DigestOfFile
     	catch (Exception e)
 		{
     		return null;			//if there is an error during comparison return files are difs
+		}
+    }
+    
+    /**
+     * @param file
+     * @return sha-256 hash, null if file is not found or other error
+     */
+    public static String getSHA256Hash(File file)
+    {
+    	String hash;
+    	try
+    	{
+    		DigestOfFile sha256DigestAgent = new DigestOfFile("SHA-256");
+    		hash = sha256DigestAgent.digestAsHex(file);
+    		return hash; 
+    	}
+    	catch (Exception e)
+		{
+    		return null;			//if there is an error during comparison return files are difs
+		}
+    }
+
+    /**
+     * @param inputStream
+     * @return sha-256 hash
+     */
+    public static String getSHA256Hash(InputStream inputStream)
+    {
+        String hash;
+        try
+        {
+            DigestOfFile sha256DigestAgent = new DigestOfFile("SHA-256");
+            hash = sha256DigestAgent.digestAsHex(inputStream);
+            return hash;
+        }
+        catch (Exception e)
+        {
+            return null;			//if there is an error during comparison return files are difs
+        }
+    }
+
+    /**
+     * Get sha-256 hash from byte[]
+     * @param input
+     * @return sha-256 hash string
+     */
+    public static String getSHA256Hash(byte[] input)
+    {
+    	String hash;
+    	try
+    	{
+    		DigestOfFile sha256DigestAgent = new DigestOfFile("SHA-256");
+    		hash = sha256DigestAgent.digestAsHex(input);
+    		return hash; 
+    	}
+    	catch (Exception e)
+		{
+    		return null;			//if there is an error during comparison return files are difs
+		}
+    }
+    
+    /**
+     * @param file1 first file to compare
+     * @param file2 second file to compare
+     * @return true if files are identic false otherwise
+     */
+    public static boolean sha256HashCompare(File file1,File file2)
+    {
+    	//compute Hash of existing and downloaded
+    	String hashFile1;
+    	String hashFile2;
+    	try{
+    		DigestOfFile sha256DigestAgent = new DigestOfFile("SHA-256");
+    		hashFile1 = sha256DigestAgent.digestAsHex(file1);
+    		hashFile2 = sha256DigestAgent.digestAsHex(file2);
+    		return hashFile1.equals(hashFile2) ; }
+    	catch (Exception e)
+		{
+    		return false;			//if there is an error during comparison return files are difs
 		}
     }
 }
