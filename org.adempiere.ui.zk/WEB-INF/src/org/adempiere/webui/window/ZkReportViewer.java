@@ -44,6 +44,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
+import org.adempiere.util.ProcessUtil;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
@@ -85,9 +86,12 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstance.PInstanceInfo;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -1930,12 +1934,75 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			try {
 				if (viewer.m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
 					if (viewer.jasperPrintRenderer == null) {
+						
 						MPrintFormat format = viewer.m_reportEngine.getPrintFormat();
 						PrintInfo printInfo = viewer.m_reportEngine.getPrintInfo();
+						
 						ProcessInfo jasperProcessInfo = new ProcessInfo (viewer.getTitle(), format.getJasperProcess_ID());
 						jasperProcessInfo.setRecord_ID (printInfo.getRecord_ID());
 						jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
 						jasperProcessInfo.setSerializableObject(format);
+						
+						MPInstance instance = null;
+						
+						if (jasperProcessInfo.getAD_PInstance_ID() <= 0) {
+							
+							try {
+								
+								instance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
+										jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
+										jasperProcessInfo.getRecord_UU());
+								
+								if (!instance.save())
+								{
+									jasperProcessInfo.setSummary (Msg.getMsg(Env.getCtx(), "ProcessNoInstance"));
+									jasperProcessInfo.setError (true);
+								}
+								jasperProcessInfo.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+								
+							} catch (Exception e) {
+								
+								jasperProcessInfo.setSummary(e.getLocalizedMessage());
+								jasperProcessInfo.setError(true);
+								log.warning(jasperProcessInfo.toString());
+								return;
+								
+							}
+						}
+						
+						PInstanceInfo info = MPInstance.getPInstanceInfo(jasperProcessInfo.getAD_PInstance_ID());
+						
+						if (info != null)
+						{
+							jasperProcessInfo.setTitle (info.name);
+							jasperProcessInfo.setClassName (info.className);
+							jasperProcessInfo.setAD_Process_ID (info.AD_Process_ID);
+							jasperProcessInfo.setAD_Process_UU (info.AD_Process_UU);
+							int estimate = info.estimate;
+							
+							if (estimate != 0)
+							{
+								jasperProcessInfo.setEstSeconds (estimate + 1);   
+							}
+							
+						}
+						
+						if (!Util.isEmpty(jasperProcessInfo.getClassName(), true)
+								&& !ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcessInfo.getClassName())) {
+
+							if (log.isLoggable(Level.FINE))
+								log.fine(jasperProcessInfo.toString());
+							if (jasperProcessInfo.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+								ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
+							} else {
+								ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
+							}
+							
+						}
+						
+						jasperProcessInfo.setReportingProcess(true);
+						jasperProcessInfo.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
+						
 						ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 						ProcessInfoParameter pip = new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_FORMAT, format, null, null, null);
 						jasperPrintParams.add(pip);
