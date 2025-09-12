@@ -117,6 +117,7 @@ public class X_C_BP_Customer_Acct extends PO implements I_C_BP_Customer_Acct, I_
       return sb.toString();
     }
 
+    @Deprecated(since="13") // use better methods with cache
     public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException
     {
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)

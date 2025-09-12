@@ -75,6 +75,7 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getB_UnallocatedCash_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */

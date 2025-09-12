@@ -75,6 +75,7 @@ public interface I_C_BP_Vendor_Acct
 	  */
 	public int getB_PaymentSelect_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */

@@ -75,6 +75,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getB_PaymentSelect_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException;
 
     /** Column name B_UnallocatedCash_Acct */
@@ -90,6 +91,7 @@ public interface I_C_BP_Group_Acct
 	  */
 	public int getB_UnallocatedCash_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
