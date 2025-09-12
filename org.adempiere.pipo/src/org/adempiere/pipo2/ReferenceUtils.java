@@ -122,6 +122,7 @@ public class ReferenceUtils {
 		{
 			//official id
 			atts.addAttribute("", "", "reference", "CDATA", "id");
+			atts.addAttribute("", "", "reference-key", "CDATA", tableName);
 			String value = Integer.toString(id);
 			return value;
 		}

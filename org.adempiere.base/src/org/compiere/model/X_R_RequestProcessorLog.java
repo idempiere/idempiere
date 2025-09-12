@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestProcessorLog
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessorLog")
 public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorLog, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)
@@ -200,6 +200,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 		return (String)get_Value(COLUMNNAME_R_RequestProcessorLog_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_RequestProcessor)MTable.get(getCtx(), org.compiere.model.I_R_RequestProcessor.Table_ID)

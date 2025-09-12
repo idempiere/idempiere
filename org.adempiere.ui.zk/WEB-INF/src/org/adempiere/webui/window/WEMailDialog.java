@@ -54,6 +54,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttachment;
@@ -411,7 +412,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		Button btn = new Button();
 		if (ThemeManager.isUseFontIconForImage())
-			btn.setIconSclass("z-icon-Attachment");
+			btn.setIconSclass(Icon.getIconSclass(Icon.ATTACHMENT));
 		else
 			btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload(AdempiereWebUI.getUploadSetting());
@@ -421,7 +422,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 
 		bAddDefaultMailText = new Button();
 		if(ThemeManager.isUseFontIconForImage())
-			bAddDefaultMailText.setIconSclass("z-icon-GetMail");
+			bAddDefaultMailText.setIconSclass(Icon.getIconSclass(Icon.GET_MAIL));
 		else
 			bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
 		bAddDefaultMailText.addEventListener(Events.ON_CLICK, this);
@@ -955,7 +956,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		MMailText mt = (MMailText) MUser.get(Env.getCtx()).getR_DefaultMailText();
 		if (mt.get_ID() > 0) {
 			mt.setPO(MUser.get(Env.getCtx()));
-			MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID(), null, null);
+			try (MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID(), null, null);) {
 			if (attachment != null) {
 				MAttachmentEntry[] entries = attachment.getEntries();
 				for (MAttachmentEntry entry : entries) {
@@ -972,8 +973,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				}
 			}
 
-			fMessage.setValue(getMessage() + "\n" + embedImgToEmail(mt, attachment));
-			
+			fMessage.setValue(getMessage() + "\n" + embedImgToEmail(mt, attachment));}
 		}
 	}
 

@@ -32,7 +32,7 @@ public class Row extends org.zkoss.zul.Row
 	 */
 	private static final long serialVersionUID = -5813452501151101553L;
 
-	/** Last Cell added to Row */
+	/** Last Cell added to Row through appendCellChild method */
 	private Cell m_lastCell;
 
 	/**

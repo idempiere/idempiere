@@ -25,6 +25,8 @@
 package org.adempiere.report.jasper;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -98,9 +100,14 @@ public class AttachmentResourceLoader {
 		String downloadedLocalFile = destinationFolder + "TMP_" + entry.getName();
 		File reportFile = new File(localFile);
 		if (reportFile.exists()) {
-			String localMD5hash = DigestOfFile.getMD5Hash(reportFile);
-			String entryMD5hash = DigestOfFile.getMD5Hash(entry.getData());
-			if (localMD5hash.equals(entryMD5hash)) {
+			String localSHA256hash = DigestOfFile.getSHA256Hash(reportFile);
+			String entrySHA256hash = null;
+            try (InputStream is = entry.getInputStream()) {
+                entrySHA256hash = DigestOfFile.getSHA256Hash(entry.getInputStream());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (localSHA256hash.equals(entrySHA256hash)) {
 				log.info(" no need to download: local report is up-to-date");
 			} else {
 				log.info(" report on server is different from local copy, download and replace");

@@ -1,0 +1,11 @@
+-- 
+SELECT register_migration_script('202504181652_IDEMPIERE-6500.sql') FROM dual;
+
+-- Apr 18, 2025, 4:52:28 PM CEST
+UPDATE AD_InfoColumn SET AD_Reference_ID=30,Updated=TO_TIMESTAMP('2025-04-18 16:52:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoColumn_ID=200156
+;
+
+-- Apr 18, 2025, 4:52:33 PM CEST
+UPDATE AD_InfoColumn SET AD_Reference_ID=30,Updated=TO_TIMESTAMP('2025-04-18 16:52:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoColumn_ID=200158
+;
+

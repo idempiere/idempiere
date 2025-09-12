@@ -179,6 +179,12 @@ public class MQuery implements Serializable, Cloneable
 					query = reportQuery.getReportProcessQuery();
 				}
 
+				if (table != null && table.getColumn(ParameterName) != null) {
+					MColumn column = table.getColumn(ParameterName);
+					if (column != null && !Util.isEmpty(column.getColumnSQL()))
+						ParameterName = column.getColumnSQL();
+				}
+
 				//-------------------------------------------------------------
 				if (P_String != null)
 				{
@@ -564,6 +570,9 @@ public class MQuery implements Serializable, Cloneable
 	public static final String	MSG_NOT_EQUAL = "OPERATOR_NOT_EQUAL";
 	/** Not Equal - 1		*/
 	public static final int		NOT_EQUAL_INDEX = 1;
+	/** Non Case Sensitive Like*/
+	public static final String	ILIKE = " ILIKE ";
+	public static final String	MSG_ILIKE = "OPERATOR_ILIKE";
 	/** Like			*/
 	public static final String	LIKE = " LIKE ";
 	public static final String	MSG_LIKE = "OPERATOR_LIKE";
@@ -585,8 +594,8 @@ public class MQuery implements Serializable, Cloneable
 	/** Between			*/
 	public static final String	BETWEEN = " BETWEEN ";
 	public static final String	MSG_BETWEEN = "OPERATOR_BETWEEN";
-	/** Between - 8		*/
-	public static final int		BETWEEN_INDEX = 8;
+	/** Between - 9		*/
+	public static final int		BETWEEN_INDEX = 9;
 	/** For IDEMPIERE-377	*/
 	public static final String 	NOT_NULL = " IS NOT NULL ";
 	public static final String 	MSG_NOT_NULL = "OPERATOR_NOT_NULL";
@@ -596,16 +605,18 @@ public class MQuery implements Serializable, Cloneable
 
 	/** NOTE: Value is the SQL operator, and Name is the message that appears in find window and reports */
 	/**	All the Operators			*/
+	/** WARNING: adding operators can change the _INDEX variables */
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),		//	0 - EQUAL_INDEX
 		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),	//  1 - NOT_EQUAL_INDEX
+		new ValueNamePair (ILIKE,			MSG_ILIKE),
 		new ValueNamePair (LIKE,			MSG_LIKE),
 		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
 		new ValueNamePair (GREATER,			MSG_GREATER),
 		new ValueNamePair (GREATER_EQUAL,	MSG_GREATER_EQUAL),
 		new ValueNamePair (LESS,			MSG_LESS),
 		new ValueNamePair (LESS_EQUAL,		MSG_LESS_EQUAL),
-		new ValueNamePair (BETWEEN,			MSG_BETWEEN),	//	8 - BETWEEN_INDEX
+		new ValueNamePair (BETWEEN,			MSG_BETWEEN),	//	9 - BETWEEN_INDEX
 		new ValueNamePair (NULL,			MSG_NULL),
 		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
 	};
@@ -613,6 +624,7 @@ public class MQuery implements Serializable, Cloneable
 	public static final ValueNamePair[]	OPERATORS_STRINGS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),
 		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),
+		new ValueNamePair (ILIKE,			MSG_ILIKE),
 		new ValueNamePair (LIKE,			MSG_LIKE),
 		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
 		new ValueNamePair (GREATER,			MSG_GREATER),
@@ -1687,11 +1699,11 @@ class Restriction  implements Serializable
 			sb.append(ExistsClause);
 
 			if (Code instanceof String)
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", DB.TO_STRING(Code.toString())));
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_STRING(Code.toString())));
 			else if (Code instanceof Timestamp)
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", DB.TO_DATE((Timestamp)Code, false)));
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_DATE((Timestamp)Code, false)));
 			else
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", Code.toString()));
+				sb = new StringBuilder(sb.toString().replace("?", Code.toString()));
 
 			return sb.toString();
 		}
@@ -1740,8 +1752,10 @@ class Restriction  implements Serializable
 		}
 		else
 			sb.append(virtualColumn ? ColumnName : DB.getDatabase().quoteColumnName(ColumnName));
-		
-		sb.append(Operator);
+		if(MQuery.ILIKE.equals(Operator))
+			sb.append(MQuery.LIKE);
+		else
+			sb.append(Operator);
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
 			if (Code instanceof String) {

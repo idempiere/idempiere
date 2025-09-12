@@ -88,9 +88,9 @@ public class DefaultDocumentFactory implements IDocFactory {
 
 		int firstUnderscore = tableName.indexOf("_");
 		if (firstUnderscore == 1)
-			className = packageName + ".Doc_" + tableName.substring(2).replaceAll("_", "");
+			className = packageName + ".Doc_" + tableName.substring(2).replace("_", "");
 		else
-			className = packageName + ".Doc_" + tableName.replaceAll("_", "");
+			className = packageName + ".Doc_" + tableName.replace("_", "");
 
 		try
 		{

@@ -28,6 +28,7 @@ import java.util.logging.Level;
  *  @version $Id: Evaluator.java,v 1.3 2006/07/30 00:54:36 jjanke Exp $
  *  @deprecated
  */
+@Deprecated
 public final class LegacyLogicEvaluator {
 
 	private final static CLogger s_log = CLogger.getCLogger(LegacyLogicEvaluator.class);
@@ -89,9 +90,9 @@ public final class LegacyLogicEvaluator {
 			boolean temp = evaluateLogicTuple(source, exprStrand);
 
 			if (logOp.equals("&"))
-				retValue = retValue & temp;
+				retValue = retValue && temp;
 			else if (logOp.equals("|"))
-				retValue = retValue | temp;
+				retValue = retValue || temp;
 			else
 			{
 				s_log.log(Level.SEVERE, "Logic operand '|' or '&' expected => " + logic);

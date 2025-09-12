@@ -37,7 +37,6 @@ import org.compiere.model.MLookupFactory;
 
 import static org.compiere.model.SystemIDs.*;
 
-import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -80,9 +79,6 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	
 	/** Window No */
 	private int p_WindowNo;
-
-	/**	Logger */
-	private static final CLogger log = CLogger.getCLogger(WCreateFromRMAUI.class);
 		
 	protected Label bPartnerLabel = new Label();
 	/** Business partner parameter field */

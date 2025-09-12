@@ -631,7 +631,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		m_count = -1;
 		
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;;
+		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sqlCount, null);

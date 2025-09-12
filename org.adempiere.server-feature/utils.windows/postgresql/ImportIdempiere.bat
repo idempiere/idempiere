@@ -8,32 +8,33 @@
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
 @if (%ADEMPIERE_DB_SERVER%) == () goto environment
 @if (%ADEMPIERE_DB_PORT%) == () goto environment
-@Rem Must have parameters systemAccount AdempiereID AdempierePwd
+@Rem Must have parameters AdempiereID AdempierePwd systemUser systemPwd
 @if (%1) == () goto usage
 @if (%2) == () goto usage
 @if (%3) == () goto usage
+@if (%4) == () goto usage
 
 @set PGPASSWORD=%4
 @echo -------------------------------------
 @echo Re-Create user and database
 @echo -------------------------------------
-@dropdb -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -U postgres %ADEMPIERE_DB_NAME%
-@dropuser -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -U postgres %2
-@set ADEMPIERE_CREATE_ROLE_SQL=CREATE ROLE %2 SUPERUSER LOGIN PASSWORD '%3'
-@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -U postgres -c "%ADEMPIERE_CREATE_ROLE_SQL%"
+@dropdb -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -U %3 %ADEMPIERE_DB_NAME%
+@dropuser -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -U %3 %1
+@set ADEMPIERE_CREATE_ROLE_SQL=CREATE ROLE %1 SUPERUSER LOGIN PASSWORD '%2'
+@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -U %3 -c "%ADEMPIERE_CREATE_ROLE_SQL%" -d template1
 @set ADEMPIERE_CREATE_ROLE_SQL=
 
-@set PGPASSWORD=%3
-@createdb --template=template0 -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -E UNICODE -O %2 -U %2 %ADEMPIERE_DB_NAME%
+@set PGPASSWORD=%2
+@createdb --template=template0 -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -E UNICODE -O %1 -U %1 %ADEMPIERE_DB_NAME%
 
 @echo -------------------------------------
 @echo Import Adempiere%5.dmp
 @echo -------------------------------------
-@set ADEMPIERE_ALTER_ROLE_SQL=ALTER ROLE %2 SET search_path TO adempiere, pg_catalog
+@set ADEMPIERE_ALTER_ROLE_SQL=ALTER ROLE %1 SET search_path TO adempiere, pg_catalog
 
-@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -c "%ADEMPIERE_ALTER_ROLE_SQL%"
+@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %1 -c "%ADEMPIERE_ALTER_ROLE_SQL%"
 
-@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %2 -f %IDEMPIERE_HOME%/data/seed/Adempiere%5.dmp
+@psql -h %ADEMPIERE_DB_SERVER% -p %ADEMPIERE_DB_PORT% -d %ADEMPIERE_DB_NAME% -U %1 -f %IDEMPIERE_HOME%/data/seed/Adempiere%5.dmp
 @set ADEMPIERE_ALTER_ROLE_SQL=
 
 
@@ -48,7 +49,7 @@
 @Echo		ADEMPIERE_DB_PORT 	e.g. 5432
 
 :usage
-@echo Usage:		%0 <systemAccount> <AdempiereID> <AdempierePwd> <PostgresPwd>
-@echo Example:	%0 postgres idempiere idempiere postgresPwd
+@echo Usage:		%0 <AdempiereID> <AdempierePwd> <postgresUser> <PostgresPwd>
+@echo Example:	%0 idempiere idempiere postgres postgresPwd
 
 :end

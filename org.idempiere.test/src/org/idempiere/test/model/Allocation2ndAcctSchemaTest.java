@@ -27,6 +27,10 @@ package org.idempiere.test.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -62,23 +67,25 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
 
 /**
  * @author Elaine Tan - etantg
  */
+@Isolated
 public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	
 	public Allocation2ndAcctSchemaTest() {
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,587.48, Period 1
@@ -91,7 +98,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_1() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
 		cal.add(Calendar.DAY_OF_MONTH, -2);
@@ -105,18 +112,20 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd1 = new BigDecimal(32.458922422202);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
-		
-		BigDecimal eurToUsd2 = new BigDecimal(33.93972535567);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
-		
-		BigDecimal eurToUsd3 = new BigDecimal(33.27812049435);
-		MConversionRate cr3 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, eurToUsd3, false);
+		BigDecimal usdToEur1 = new BigDecimal(32.458922422202);
+		BigDecimal eurToUsd1 = BigDecimal.valueOf(1d / usdToEur1.doubleValue());
+		BigDecimal usdToEur2 = new BigDecimal(33.93972535567);
+		BigDecimal eurToUsd2 = BigDecimal.valueOf(1d / usdToEur2.doubleValue());
+		BigDecimal usdToEur3 = new BigDecimal(33.27812049435);
+		BigDecimal eurToUsd3 = BigDecimal.valueOf(1d / usdToEur3.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			mockGetRate(conversionRateMock, usd, euro, 0, date3, usdToEur3);
+			
 			MInvoice invoice1 = createInvoice(true, bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(12587.48);
@@ -141,8 +150,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
@@ -166,8 +175,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> currBalList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr3.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd3);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal currBalAmt = new BigDecimal(0.01).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -175,16 +184,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			currBalList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalList);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			deleteConversionRate(cr3);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice Total=12,587.48
@@ -197,19 +200,21 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_2() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd = new BigDecimal(32.458922422202);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		BigDecimal usdToEur = new BigDecimal(32.458922422202);
+		BigDecimal eurToUsd = BigDecimal.valueOf(1d / usdToEur.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date, usdToEur);
+			
 			MInvoice invoice1 = createInvoice(true, bpartner, date, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(12587.48);
@@ -234,8 +239,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
@@ -258,20 +263,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Payment Total=12,000, Period 1
@@ -282,7 +283,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_3() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
 		cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -293,15 +294,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd1 = new BigDecimal(30.212666962751);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = new BigDecimal(30.212666962751);
+		BigDecimal eurToUsd1 = BigDecimal.valueOf(1d / usdToEur1.doubleValue());
 		
-		BigDecimal eurToUsd2 = new BigDecimal(29.905289946739);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = new BigDecimal(29.905289946739);
+		BigDecimal eurToUsd2 = BigDecimal.valueOf(1d / usdToEur2.doubleValue());
 				
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(12000);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date1, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -327,23 +331,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(3.64).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 			gainLossLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Payment Total=12,000
@@ -354,19 +353,21 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_4() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd = new BigDecimal(30.212666962751);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		BigDecimal usdToEur = new BigDecimal(30.212666962751);
+		BigDecimal eurToUsd = BigDecimal.valueOf(1d / usdToEur.doubleValue());
 				
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date, eurToUsd);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(12000);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -391,20 +392,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice1 Total=9,362.50, Period 1
@@ -421,7 +418,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_5() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
 		cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -432,15 +429,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd1 = new BigDecimal(29.905289946739);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = new BigDecimal(29.905289946739);
+		BigDecimal eurToUsd1 = BigDecimal.valueOf(1d / usdToEur1.doubleValue());
 		
-		BigDecimal eurToUsd2 = new BigDecimal(31.526248754713);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = new BigDecimal(31.526248754713);
+		BigDecimal eurToUsd2 = BigDecimal.valueOf(1d / usdToEur2.doubleValue());
 				
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			
 			MInvoice invoice1 = createInvoice(true, bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(9362.50);
@@ -513,32 +513,32 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> currBalLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), cr2.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), cr1.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), eurToUsd2);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), cr2.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), cr1.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), eurToUsd2);
+			accountedCrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), cr2.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), cr1.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), eurToUsd2);
+			accountedCrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), cr2.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), cr1.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), eurToUsd2);
+			accountedCrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), cr2.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), cr1.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), eurToUsd2);
+			accountedCrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedCrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), cr2.getMultiplyRate());
-			accountedDrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), cr1.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), eurToUsd2);
+			accountedDrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
-			accountedCrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), cr2.getMultiplyRate());
-			accountedDrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), cr1.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), eurToUsd2);
+			accountedDrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			BigDecimal currBalAmt = new BigDecimal(0.01).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -546,15 +546,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			currBalLineList.add(new PostingLine(usd, Env.ZERO, currBalAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice1 Total=9,362.50
@@ -571,19 +566,20 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_6() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd = new BigDecimal(29.905289946739);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		BigDecimal usdToEur = new BigDecimal(29.905289946739);
+		BigDecimal eurToUsd = BigDecimal.valueOf(1d / usdToEur.doubleValue());
 						
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date, usdToEur);
 			MInvoice invoice1 = createInvoice(true, bpartner, date, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(9362.50);
@@ -655,44 +651,40 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, invoice1.getGrandTotal(), eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), cr.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), cr.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), eurToUsd);
+			accountedCrAmt = getAccountedAmount(usd, invoice2.getGrandTotal(), eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), cr.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), cr.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), eurToUsd);
+			accountedCrAmt = getAccountedAmount(usd, invoice3.getGrandTotal(), eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), cr.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), cr.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), eurToUsd);
+			accountedCrAmt = getAccountedAmount(usd, invoice4.getGrandTotal(), eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedDrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), cr.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), cr.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), eurToUsd);
+			accountedCrAmt = getAccountedAmount(usd, invoice5.getGrandTotal(), eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
-			accountedCrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), cr.getMultiplyRate());
-			accountedDrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), cr.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), eurToUsd);
+			accountedDrAmt = getAccountedAmount(usd, creditMemo1.getGrandTotal(), eurToUsd);
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
-			accountedCrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), cr.getMultiplyRate());
-			accountedDrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), cr.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), eurToUsd);
+			accountedDrAmt = getAccountedAmount(usd, creditMemo2.getGrandTotal(), eurToUsd);
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Payment Total=12,000, Period 1
@@ -706,7 +698,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id, getTrxName()); 
 		DB.getDatabase().forUpdate(bpartner, 0);
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
 		cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -717,15 +709,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd1 = new BigDecimal(30.212666962751);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = new BigDecimal(30.212666962751);
+		BigDecimal eurToUsd1 = BigDecimal.valueOf(1d / usdToEur1.doubleValue());
 		
-		BigDecimal eurToUsd2 = new BigDecimal(29.905289946739);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = new BigDecimal(29.905289946739);
+		BigDecimal eurToUsd2 = BigDecimal.valueOf(1d / usdToEur2.doubleValue());
 				
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(12000);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date1, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -751,8 +746,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(3.64).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -778,8 +773,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> currBalLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal currBalAmt = new BigDecimal(0.01).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -787,15 +782,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			currBalLineList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Payment Total=12,000
@@ -808,19 +798,20 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_8() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id, getTrxName()); // C&W Construction
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd = new BigDecimal(30.212666962751);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		BigDecimal usdToEur = new BigDecimal(30.212666962751);
+		BigDecimal eurToUsd = BigDecimal.valueOf(1d / usdToEur.doubleValue());
 						
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date, usdToEur);
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(12000);
 			DB.getDatabase().forUpdate(bpartner, 0);
@@ -846,8 +837,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
@@ -871,8 +862,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> currBalLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal currBalAmt = new BigDecimal(0.01).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -880,14 +871,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			currBalLineList.add(new PostingLine(usd, currBalAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,000, Period 1
@@ -902,7 +889,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		DB.getDatabase().forUpdate(bpartner, 0);
 		
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
 		cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -913,15 +900,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd1 = new BigDecimal(30.212666962751);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = new BigDecimal(30.212666962751);
+		BigDecimal eurToUsd1 = BigDecimal.valueOf(1d / usdToEur1.doubleValue());
 		
-		BigDecimal eurToUsd2 = new BigDecimal(29.905289946739);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = new BigDecimal(29.905289946739);
+		BigDecimal eurToUsd2 = BigDecimal.valueOf(1d / usdToEur2.doubleValue());
 				
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			MInvoice invoice = createInvoice(true, bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
@@ -947,8 +937,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(3.64).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -972,8 +962,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> currBalLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal currBalAmt = new BigDecimal(0.01).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -981,15 +971,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			currBalLineList.add(new PostingLine(usd, Env.ZERO, currBalAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice Total=12,000
@@ -1002,19 +987,21 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_10() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd = new BigDecimal(30.212666962751);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		BigDecimal usdToEur = new BigDecimal(30.212666962751);
+		BigDecimal eurToUsd = BigDecimal.valueOf(1d / usdToEur.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date, usdToEur);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			MInvoice invoice = createInvoice(true, bpartner, date, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
@@ -1039,8 +1026,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
@@ -1062,8 +1049,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> currBalLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal currBalAmt = new BigDecimal(0.01).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1071,14 +1058,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			currBalLineList.add(new PostingLine(usd, Env.ZERO, currBalAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Invoice Total=1000, Period 1
@@ -1089,7 +1072,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_11() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1107,22 +1090,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency aud = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // AUD
 		MCurrency eur = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
-		BigDecimal audToEur = new BigDecimal(0.7);
-		MConversionRate cr1a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date1, audToEur, true);
-		BigDecimal audToUsd = new BigDecimal(0.8);
-		MConversionRate cr1b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, audToUsd, true);
+		BigDecimal audToEur1 = new BigDecimal(0.7);
+		BigDecimal audToUsd1 = new BigDecimal(0.8);
 		
-		audToEur = new BigDecimal(0.8);
-		MConversionRate cr2a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date2, audToEur, true);
-		audToUsd = new BigDecimal(0.9);
-		MConversionRate cr2b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, audToUsd, true);
+		BigDecimal audToEur2 = new BigDecimal(0.8);
+		BigDecimal audToUsd2 = new BigDecimal(0.9);
 		
-		audToEur = new BigDecimal(0.8);
-		MConversionRate cr3a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date3, audToEur, true);
-		audToUsd = new BigDecimal(0.9);
-		MConversionRate cr3b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, audToUsd, true);
+		BigDecimal audToEur3 = new BigDecimal(0.8);
+		BigDecimal audToUsd3 = new BigDecimal(0.9);
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Export AUD " + System.currentTimeMillis());
 		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
@@ -1134,7 +1111,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, aud, eur, 0, date1, audToEur1);
+			mockGetRate(conversionRateMock, aud, usd, 0, date1, audToUsd1);
+			mockGetRate(conversionRateMock, aud, eur, 0, date2, audToEur2);
+			mockGetRate(conversionRateMock, aud, usd, 0, date2, audToUsd2);
+			mockGetRate(conversionRateMock, aud, eur, 0, date3, audToEur3);
+			mockGetRate(conversionRateMock, aud, usd, 0, date3, audToUsd3);
+			
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			MInvoice invoice = createInvoice(true, bpartner, date1, priceList.getM_PriceList_ID(), C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
@@ -1160,8 +1148,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2b.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2b.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, audToUsd2);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, audToUsd2);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1173,8 +1161,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			gainLossLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr2a.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr2a.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, audToEur2);
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, audToEur2);
 			paymentLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
 			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1204,8 +1192,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			gainLossLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr3b.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr3b.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, audToUsd3);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, audToUsd3);
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1217,8 +1205,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			gainLossLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr3a.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr3a.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, audToEur3);
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, audToEur3);
 			tradeLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
 			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1226,23 +1214,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			tradeLineList.add(new PostingLine(eur, Env.ZERO, gainLossAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
-		} finally {
-			rollback();
-			
-			deleteConversionRate(cr1a);
-			deleteConversionRate(cr1b);
-			deleteConversionRate(cr2a);
-			deleteConversionRate(cr2b);
-			deleteConversionRate(cr3a);
-			deleteConversionRate(cr3b);
-			
-			plv.deleteEx(true);
-			priceList.deleteEx(true);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1253,7 +1228,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePaymentPosting_12() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1271,22 +1246,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency aud = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // AUD
 		MCurrency eur = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
-		BigDecimal audToEur = new BigDecimal(0.7);
-		MConversionRate cr1a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date1, audToEur, true);
-		BigDecimal audToUsd = new BigDecimal(0.8);
-		MConversionRate cr1b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, audToUsd, true);
+		BigDecimal audToEur1 = new BigDecimal(0.7);
+		BigDecimal audToUsd1 = new BigDecimal(0.8);
 		
-		audToEur = new BigDecimal(0.8);
-		MConversionRate cr2a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date2, audToEur, true);
-		audToUsd = new BigDecimal(0.9);
-		MConversionRate cr2b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, audToUsd, true);
+		BigDecimal audToEur2 = new BigDecimal(0.8);
+		BigDecimal audToUsd2 = new BigDecimal(0.9);
 		
-		audToEur = new BigDecimal(0.8);
-		MConversionRate cr3a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date3, audToEur, true);
-		audToUsd = new BigDecimal(0.9);
-		MConversionRate cr3b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, audToUsd, true);
+		BigDecimal audToEur3 = new BigDecimal(0.8);
+		BigDecimal audToUsd3 = new BigDecimal(0.9);
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Export AUD " + System.currentTimeMillis());
 		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
@@ -1298,7 +1267,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, aud, eur, 0, date1, audToEur1);
+			mockGetRate(conversionRateMock, aud, usd, 0, date1, audToUsd1);
+			mockGetRate(conversionRateMock, aud, eur, 0, date2, audToEur2);
+			mockGetRate(conversionRateMock, aud, usd, 0, date2, audToUsd2);
+			mockGetRate(conversionRateMock, aud, eur, 0, date3, audToEur3);
+			mockGetRate(conversionRateMock, aud, usd, 0, date3, audToUsd3);
+			
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(1000);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date1, payAmt, aud.getC_Currency_ID(), C_ConversionType_ID);
@@ -1324,8 +1304,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, audToUsd1);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, audToUsd1);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1337,8 +1317,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			gainLossLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, audToEur1);
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, audToEur1);
 			paymentLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
 			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1368,8 +1348,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			gainLossLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, audToUsd1);
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, audToUsd1);
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1381,8 +1361,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			paymentLineList = new ArrayList<PostingLine>();
 			tradeLineList = new ArrayList<PostingLine>();
 			gainLossLineList = new ArrayList<PostingLine>();
-			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
-			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, audToEur1);
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, audToEur1);
 			tradeLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
 			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
@@ -1390,23 +1370,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			tradeLineList.add(new PostingLine(eur, gainLossAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
-		} finally {
-			rollback();
-
-			deleteConversionRate(cr1a);
-			deleteConversionRate(cr1b);
-			deleteConversionRate(cr2a);
-			deleteConversionRate(cr2b);
-			deleteConversionRate(cr3a);
-			deleteConversionRate(cr3b);
-			
-			plv.deleteEx(true);
-			priceList.deleteEx(true);			
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Invoice Total=1000, Period 1
@@ -1416,7 +1383,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePosting_1() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1429,14 +1396,15 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1);
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
+			
 			MInvoice invoice = createInvoice(true, bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(1000);
@@ -1454,23 +1422,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			BigDecimal allocAmount = new BigDecimal(1000);
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = BigDecimal.ZERO;
 			gainLossLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + reversal)
 	 * Invoice Total=1000
@@ -1480,7 +1443,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePosting_2() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -1488,11 +1451,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date, eurToUsd);
 			MInvoice invoice = createInvoice(true, bpartner, date, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(1000);
@@ -1509,20 +1472,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			BigDecimal allocAmount = new BigDecimal(1000);
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, null, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + offset)
 	 * Invoice Total=1000, Period 1
@@ -1532,7 +1491,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePosting_3() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1545,14 +1504,15 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1);
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2);
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
+			
 			MInvoice invoice = createInvoice(true, bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(1000);
@@ -1579,23 +1539,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(1000).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 			gainLossLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + offset)
 	 * Invoice Total=1000
@@ -1605,7 +1560,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	public void testAllocateInvoicePosting_4() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -1613,11 +1568,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd);
 	
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date, eurToUsd);
 			MInvoice invoice = createInvoice(true, bpartner, date, M_PriceList_ID, C_ConversionType_ID);
 			BigDecimal qty = BigDecimal.ONE;
 			BigDecimal price = new BigDecimal(1000);
@@ -1643,20 +1598,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, null, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1665,7 +1616,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 */
 	public void testAllocatePaymentPosting_1() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id); 
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1678,12 +1629,12 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1);
-		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(1000);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date1, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -1700,23 +1651,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			BigDecimal allocAmount = payAmt;
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(1000).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 			gainLossLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, gainLossLineList, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1725,7 +1671,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 */
 	public void testAllocatePaymentPosting_2() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -1733,9 +1679,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date, eurToUsd);
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(1000);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -1751,20 +1697,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			BigDecimal allocAmount = payAmt;
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, null, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + offset)
 	 * Payment Total=1000, Period 1
@@ -1773,7 +1715,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 */
 	public void testAllocatePaymentPosting_3() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id);
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1786,12 +1728,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1);
-		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(1000);
 			MPayment payment1 = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date1, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -1814,23 +1755,18 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(1000).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 			gainLossLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, gainLossLineList, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + offset)
 	 * Payment Total=1000
@@ -1839,7 +1775,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 */
 	public void testAllocatePaymentPosting_4() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Timestamp date = currentDate;
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -1847,9 +1783,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30);
-		MConversionRate cr = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date, eurToUsd);
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(1000);
 			MPayment payment1 = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -1871,20 +1807,16 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment1.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, null, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Payment with Charge Total=1000, Period 1
@@ -1893,7 +1825,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 */
 	public void testAllocatePaymentPosting_5() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id); 
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -1906,12 +1838,12 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(4);
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1);
-		
 		BigDecimal eurToUsd2 = new BigDecimal(5);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
+			
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(1000);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date1, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
@@ -1930,35 +1862,17 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			BigDecimal allocAmount = payAmt;
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
-			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1.getMultiplyRate());
-			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2.getMultiplyRate());
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, eurToUsd1);
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, eurToUsd2);
 			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
 			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
 			BigDecimal gainLossAmt = new BigDecimal(1000).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 			gainLossLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, gainLossLineList, null);
-		} finally {
-			rollback();
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
 		}
 	}
 		
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate) {
-		return createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, true);
-	}
-	
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
-	}
-	
-	private void deleteConversionRate(MConversionRate cr) {
-		ConversionRateHelper.deleteConversionRate(cr);
-	}
-	
 	private MInvoice createInvoice(boolean isSOTrx, MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {
 		return createInvoice(isSOTrx, false, bpartner, date, M_PriceList_ID, C_ConversionType_ID);
 	}
@@ -2238,5 +2152,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		public String toString() {
 			return currency.toString() + ", " + amtAcctDr + ", " + amtAcctCr + "\n";
 		}
+	}
+	
+	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
+		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
+				conversionDate, multiplyRate, getAD_Client_ID(), getAD_Org_ID());
+		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
+				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
 	}
 }

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DepositBatchLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DepositBatchLine")
 public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_DepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)
@@ -167,6 +167,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
 		return (String)get_Value(COLUMNNAME_C_DepositBatchLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DepositBatch)MTable.get(getCtx(), org.compiere.model.I_C_DepositBatch.Table_ID)
@@ -202,6 +203,7 @@ public class X_C_DepositBatchLine extends PO implements I_C_DepositBatchLine, I_
         return new KeyNamePair(get_ID(), String.valueOf(getC_DepositBatch_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)

@@ -126,6 +126,7 @@ public final class Fact
 			docLine == null ? 0 : docLine.get_ID(), m_trxName);
 		//  Set Info & Account
 		line.setDocumentInfo(m_doc, docLine);
+		line.setDocumentTextInfo(m_acctSchema);
 		line.setPostingType(m_postingType);
 		line.setAccount(m_acctSchema, account);
 
@@ -305,6 +306,7 @@ public final class Fact
 		FactLine line = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(), 
 			m_doc.get_ID(), 0, m_trxName);
 		line.setDocumentInfo(m_doc, null);
+		line.setDocumentTextInfo(m_acctSchema);
 		line.setAD_Org_ID(m_doc.getAD_Org_ID());
 		line.setPostingType(m_postingType);
 
@@ -457,6 +459,7 @@ public final class Fact
 					FactLine line = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(), 
 						m_doc.get_ID(), 0, m_trxName);
 					line.setDocumentInfo(m_doc, null);
+					line.setDocumentTextInfo(m_acctSchema);
 					line.setPostingType(m_postingType);
 					//  Amount & Account
 					if (difference.getBalance().signum() < 0)
@@ -578,6 +581,7 @@ public final class Fact
 			line = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(), 
 				m_doc.get_ID(), 0, m_trxName);
 			line.setDocumentInfo (m_doc, null);
+			line.setDocumentTextInfo(m_acctSchema);
 			line.setPostingType (m_postingType);
 			line.setAD_Org_ID(m_doc.getAD_Org_ID());
 			line.setAccount (m_acctSchema, m_acctSchema.getCurrencyBalancing_Acct());
@@ -693,24 +697,21 @@ public final class Fact
 		for (int i = 0; i < m_lines.size(); i++)
 		{
 			FactLine dLine = (FactLine)m_lines.get(i);
-			MDistribution[] distributions = MDistribution.get (dLine.getAccount(), 
-				m_postingType, m_doc.getC_DocType_ID(), dLine.getDateAcct());
-			//	No Distribution for this line
-			//AZ Goodwill
-			//The above "get" only work in GL Journal because it's using ValidCombination Account
-			if (distributions == null || distributions.length == 0)
-			{
-				distributions = MDistribution.get (dLine.getCtx(), dLine.getC_AcctSchema_ID(),
+			MDistribution[] distributions = MDistribution.get (dLine.getCtx(), dLine.getC_AcctSchema_ID(),
 					m_postingType, m_doc.getC_DocType_ID(), dLine.getDateAcct(),
 					dLine.getAD_Org_ID(), dLine.getAccount_ID(),
 					dLine.getM_Product_ID(), dLine.getC_BPartner_ID(), dLine.getC_Project_ID(),
 					dLine.getC_Campaign_ID(), dLine.getC_Activity_ID(), dLine.getAD_OrgTrx_ID(),
 					dLine.getC_SalesRegion_ID(), dLine.getC_LocTo_ID(), dLine.getC_LocFrom_ID(),
-					dLine.getUser1_ID(), dLine.getUser2_ID());
-				if (distributions == null || distributions.length == 0)
-					continue;
+					dLine.getUser1_ID(), dLine.getUser2_ID(), dLine.getC_CostCenter_ID(),
+					dLine.getC_Department_ID(), dLine.getC_Employee_ID(), dLine.getC_Charge_ID(),
+					dLine.getA_Asset_ID(), dLine.getM_Warehouse_ID(), dLine.getM_AttributeSetInstance_ID());
+			
+			if (distributions == null || distributions.length == 0)
+			{
+				continue;
 			}
-			//end AZ
+			
 			//	Just the first
 			if (distributions.length > 1)
 				log.warning("More than one Distribution for " + dLine.getAccount());
@@ -740,6 +741,7 @@ public final class Fact
 					m_doc.get_ID(), dLine.getLine_ID(), m_trxName);
 				//  Set Info & Account
 				factLine.setDocumentInfo(m_doc, dLine.getDocLine());
+				factLine.setDocumentTextInfo(m_acctSchema);
 				factLine.setDescription(dLine.getDescription());
 				factLine.setAccount(m_acctSchema, dl.getAccount());
 				factLine.setPostingType(m_postingType);
@@ -796,6 +798,36 @@ public final class Fact
 					factLine.setUser2_ID(dl.getUser2_ID());					
 				else
 					factLine.setUser2_ID(dLine.getUser2_ID());
+				
+				if (dl.isOverwriteAsset())
+					factLine.setA_Asset_ID(dl.getA_Asset_ID());
+				else
+					factLine.setA_Asset_ID(dLine.getA_Asset_ID());
+				
+				if (dl.isOverwriteCharge())
+					factLine.setC_Charge_ID(dl.getC_Charge_ID());
+				else
+					factLine.setC_Charge_ID(dLine.getC_Charge_ID());
+				
+				if (dl.isOverwriteCostCenter())
+					factLine.setC_CostCenter_ID(dl.getC_CostCenter_ID());
+				else
+					factLine.setC_CostCenter_ID(dLine.getC_CostCenter_ID());
+				
+				if (dl.isOverwriteDepartment())
+					factLine.setC_Department_ID(dl.getC_Department_ID());
+				else
+					factLine.setC_Department_ID(dLine.getC_Department_ID());
+
+				if (dl.isOverwriteEmployee())
+					factLine.setC_Employee_ID(dl.getC_Employee_ID());
+				else
+					factLine.setC_Employee_ID(dLine.getC_Employee_ID());
+				
+				if (dl.isOverwriteWarehouse())
+					factLine.setM_Warehouse_ID(dl.getM_Warehouse_ID());
+				else
+					factLine.setM_Warehouse_ID(dLine.getM_Warehouse_ID());
 				factLine.setUserElement1_ID(dLine.getUserElement1_ID());
 				factLine.setUserElement2_ID(dLine.getUserElement2_ID());
 				// F3P end

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -45,9 +45,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -81,9 +85,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -117,9 +125,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -153,9 +165,13 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 // 1
 			setGL_Category_ID (0);
 			setHasCharges (false);
+			setIsAlwaysPosted (false);
+// N
 			setIsAutoGenerateInout (false);
 // N
 			setIsAutoGenerateInvoice (false);
+// N
+			setIsCanBeReactivated (false);
 // N
 			setIsCreateCounter (true);
 // Y
@@ -205,6 +221,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -233,6 +250,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeDifference() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -261,6 +279,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -289,6 +308,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeProforma() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -317,6 +337,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeShipment() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -382,6 +403,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_DocType_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getDefiniteSequence() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
@@ -508,6 +530,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocBaseType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
@@ -631,6 +654,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocumentNote);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
@@ -705,6 +729,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
+	/** Set Always Posted.
+		@param IsAlwaysPosted Posts the document if &quot;AlwaysPosted&quot; is checked, regardless of accounting schema.
+	*/
+	public void setIsAlwaysPosted (boolean IsAlwaysPosted)
+	{
+		set_Value (COLUMNNAME_IsAlwaysPosted, Boolean.valueOf(IsAlwaysPosted));
+	}
+
+	/** Get Always Posted.
+		@return Posts the document if &quot;AlwaysPosted&quot; is checked, regardless of accounting schema.
+	  */
+	public boolean isAlwaysPosted()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAlwaysPosted);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Generate Shipment.
 		@param IsAutoGenerateInout Automatically Generate Shipment after (Sales/Purchase) Order completed
 	*/
@@ -742,6 +789,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public boolean isAutoGenerateInvoice()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoGenerateInvoice);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Can Be Reactivated.
+		@param IsCanBeReactivated This document can be reactivated
+	*/
+	public void setIsCanBeReactivated (boolean IsCanBeReactivated)
+	{
+		set_Value (COLUMNNAME_IsCanBeReactivated, Boolean.valueOf(IsCanBeReactivated));
+	}
+
+	/** Get Can Be Reactivated.
+		@return This document can be reactivated
+	  */
+	public boolean isCanBeReactivated()
+	{
+		Object oo = get_Value(COLUMNNAME_IsCanBeReactivated);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

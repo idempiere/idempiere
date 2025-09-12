@@ -203,7 +203,7 @@ public class AmtInWords_CA implements AmtInWords
 			pos = pos2;
 		String oldamt = amount;
 
-		amount = amount.replaceAll( "\\.","");
+		amount = amount.replace( ".","");
 
 		int newpos = amount.lastIndexOf (',');
 		int pesos = Integer.parseInt (amount.substring (0, newpos));

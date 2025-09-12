@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RevenueRecog_Service
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_RevenueRecog_Service 
 {
@@ -93,6 +93,7 @@ public interface I_C_RevenueRecog_Service
 	  */
 	public int getC_RevenueRecognition_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException;
 
     /** Column name Created */

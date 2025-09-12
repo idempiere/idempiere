@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BP_Customer_Acct
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_BP_Customer_Acct 
 {
@@ -90,6 +90,7 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BP_Customer_Acct_UU */
@@ -114,6 +115,7 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Prepayment_Acct */
@@ -129,6 +131,7 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException;
 
     /** Column name C_Receivable_Acct */
@@ -144,6 +147,7 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_Receivable_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException;
 
     /** Column name C_Receivable_Services_Acct */
@@ -159,6 +163,7 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_Receivable_Services_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
 
     /** Column name Created */

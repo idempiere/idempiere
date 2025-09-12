@@ -9,8 +9,8 @@
 @echo == The import will show warnings. This is OK ==
 @pause
 
-@Rem Parameter: <systemAccount> <adempiereID> <adempierePwd>
-@Rem globalqss - cruiz - 2007-10-09 - added fourth parameter for postgres (ignored in oracle)
-@call %ADEMPIERE_DB_PATH%\DBRestoredp system/%ADEMPIERE_DB_SYSTEM% %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD% %ADEMPIERE_DB_SYSTEM%
+@Rem Parameter: <adempiereID> <adempierePwd> <systemUser> <systemPwd>
+@if "%ADEMPIERE_DB_SYSTEM_USER%" == "" (set "ADEMPIERE_DB_SYSTEM_USER=SYSTEM")
+@call %ADEMPIERE_DB_PATH%\DBRestoredp %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD% %ADEMPIERE_DB_SYSTEM_USER% %ADEMPIERE_DB_SYSTEM%
 
 @pause

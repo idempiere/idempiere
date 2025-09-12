@@ -54,20 +54,16 @@ public class ManageImageCache {
 	 */
 	private final CCache<String, Image> imageCache = new CCache<String, Image>(null, "WindowImageCache", 50, 0, false);
 	
-	private static ManageImageCache instance;
+	private static final ManageImageCache instance = new ManageImageCache();
+
+	private ManageImageCache(){
+	}
 	
 	/**
 	 * Get singleton instance
 	 * @return ManageImageCache instance
 	 */
 	public static ManageImageCache instance(){
-		if (instance == null){
-			synchronized (ManageImageCache.class){
-				if (instance == null)
-					instance = new ManageImageCache();
-			}
-		}
-		
 		return instance;
 	}
 	

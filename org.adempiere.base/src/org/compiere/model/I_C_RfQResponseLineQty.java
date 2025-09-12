@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQResponseLineQty
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_RfQResponseLineQty 
 {
@@ -75,6 +75,7 @@ public interface I_C_RfQResponseLineQty
 	  */
 	public int getC_RfQLineQty_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQLineQty getC_RfQLineQty() throws RuntimeException;
 
     /** Column name C_RfQResponseLineQty_ID */
@@ -112,6 +113,7 @@ public interface I_C_RfQResponseLineQty
 	  */
 	public int getC_RfQResponseLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQResponseLine getC_RfQResponseLine() throws RuntimeException;
 
     /** Column name Created */

@@ -35,7 +35,9 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.compiere.model.MAcctSchema;
 import org.compiere.model.MDocType;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProjectIssue;
@@ -139,6 +141,7 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		}
 		if (doctype >= 0) {
 			MPeriod.testPeriodOpen(getCtx(), date, doctype, getAD_Org_ID());
+			MAcctSchema.testBackDateTrxAllowed(getCtx(), date, get_TrxName());
 		}
 
 		Callable<String> callable = actionCallables.get(DocAction.ACTION_Prepare);
@@ -281,6 +284,11 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 				try {
 					MPeriod.testPeriodOpen(getCtx(), date, doctype, getAD_Org_ID());
 				} catch (PeriodClosedException e) {
+					accrual = true;
+				}
+				try {
+					MAcctSchema.testBackDateTrxAllowed(getCtx(), date, get_TrxName());
+				} catch (BackDateTrxNotAllowedException e) {
 					accrual = true;
 				}
 			}
@@ -615,6 +623,7 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		}
 		if (doctype >= 0) {
 			MPeriod.testPeriodOpen(getCtx(), (dateacct != null ? dateacct : datetrx), doctype, getAD_Org_ID());
+			MAcctSchema.testBackDateTrxAllowed(getCtx(), (dateacct != null ? dateacct : datetrx), get_TrxName());
 			MDocType dt = MDocType.get(doctype);
 			if (dt.isOverwriteDateOnComplete()) {
 				if (po.columnExists(DOC_COLUMNNAME_DateTrx)) {
@@ -623,6 +632,7 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 				if (dateacct != null && dateacct.before(datetrx)) {
 					po.set_ValueOfColumn(DOC_COLUMNNAME_DateAcct, datetrx);
 					MPeriod.testPeriodOpen(getCtx(), datetrx, doctype, getAD_Org_ID());
+					MAcctSchema.testBackDateTrxAllowed(getCtx(), datetrx, get_TrxName());
 				}
 			}
 			if (dt.isOverwriteSeqOnComplete()) {

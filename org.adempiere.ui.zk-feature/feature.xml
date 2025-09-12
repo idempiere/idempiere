@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.ui.zk.feature"
       label="iDempiere Web Client"
-      version="12.0.0.qualifier"
+      version="13.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -55,6 +55,10 @@
 
    <plugin
          id="org.idempiere.zk.pivot"
+         version="0.0.0"/>
+
+   <plugin
+         id="javax.websocket-api.fragment"
          version="0.0.0"/>
 
 </feature>

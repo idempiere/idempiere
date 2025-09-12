@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Product_Planning
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_Product_Planning 
@@ -77,6 +77,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Created */
@@ -104,6 +105,7 @@ public interface I_PP_Product_Planning
 	/** Get Network Distribution	  */
 	public int getDD_NetworkDistribution_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException;
 
     /** Column name DeliveryTime_Promised */
@@ -198,6 +200,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -213,6 +216,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Order_Max */
@@ -298,6 +302,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getPP_Product_BOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException;
 
     /** Column name PP_Product_Planning_ID */
@@ -327,6 +332,7 @@ public interface I_PP_Product_Planning
 	/** Get Planner	  */
 	public int getPlanner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException;
 
     /** Column name S_Resource_ID */
@@ -342,6 +348,7 @@ public interface I_PP_Product_Planning
 	  */
 	public int getS_Resource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name SafetyStock */

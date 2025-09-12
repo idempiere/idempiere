@@ -23,7 +23,6 @@ package org.adempiere.webui.window;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +46,7 @@ import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
@@ -224,7 +224,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		toolbar.appendChild(new Separator("vertical"));
 		bSendMail.setName("SendMail");  // ?? Msg
 		if (ThemeManager.isUseFontIconForImage())
-			bSendMail.setIconSclass("z-icon-SendMail");
+			bSendMail.setIconSclass(Icon.getIconSclass(Icon.SEND_MAIL));
 		else
 			bSendMail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bSendMail.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SendMail")));
@@ -234,7 +234,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		toolbar.appendChild(new Separator("vertical"));
 		bArchive.setName("Archive");
 		if (ThemeManager.isUseFontIconForImage())
-			bArchive.setIconSclass("z-icon-Archive");
+			bArchive.setIconSclass(Icon.getIconSclass(Icon.ARCHIVE));
 		else
 			bArchive.setImage(ThemeManager.getThemeResource("images/Archive24.png"));
 		bArchive.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Archive")));
@@ -247,7 +247,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			toolbar.appendChild(new Separator("vertical"));
 			bAttachment.setName("Attachment");
 			if (ThemeManager.isUseFontIconForImage())
-				bAttachment.setIconSclass("z-icon-Attachment");
+				bAttachment.setIconSclass(Icon.getIconSclass(Icon.ATTACHMENT));
 			else
 				bAttachment.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 			bAttachment.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Attachment")));
@@ -259,7 +259,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		{
 			bExport.setName("Export");
 			if (ThemeManager.isUseFontIconForImage())
-				bExport.setIconSclass("z-icon-Export");
+				bExport.setIconSclass(Icon.getIconSclass(Icon.EXPORT));
 			else
 				bExport.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 			bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
@@ -272,7 +272,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			if (uploadServicesMap.size() > 0) {
 				bCloudUpload.setName("CloudUpload");
 				if (ThemeManager.isUseFontIconForImage())
-					bCloudUpload.setIconSclass("z-icon-FileImport");
+					bCloudUpload.setIconSclass(Icon.getIconSclass(Icon.FILE_IMPORT));
 				else
 					bCloudUpload.setImage(ThemeManager.getThemeResource("images/FileImport24.png"));
 				bCloudUpload.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "CloudUpload")));
@@ -625,13 +625,14 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		{
 			File file = jasperRenderer.getPDF();
 			if (file == null)
-				file = createPDF();
-			byte[] data = getFileByteData(file);
-			if (data != null && m_printInfo != null)
+				file = createPDF();		
+			if (file != null && m_printInfo != null)
 			{
-				MArchive archive = new MArchive(Env.getCtx(), m_printInfo, null);
-				archive.setBinaryData(data);
-				success = archive.save();
+				try (FileInputStream fis = new FileInputStream(file)) {
+					MArchive archive = new MArchive(Env.getCtx(), m_printInfo, null);
+					archive.setInputStream(fis);
+					success = archive.save();
+				}
 			}
 
 			if (success)
@@ -671,32 +672,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		else
 			Dialog.error(m_WindowNo, "AttachError");
 	} // cmd_archive
-
-	/** 
-	 * convert File data into byte[]
-	 * @param tempFile
-	 * @return content of file in byte[]
-	 */
-	private byte[] getFileByteData(File tempFile)
-	{
-		byte fileContent[] = new byte[(int) tempFile.length()];
-
-		try
-		{
-			FileInputStream fis = new FileInputStream(tempFile);
-			fis.read(fileContent);
-			fis.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			log.log(Level.SEVERE, "File not found  " + e);
-		}
-		catch (IOException ioe)
-		{
-			log.log(Level.SEVERE, "Exception while reading file " + ioe);
-		}
-		return fileContent;
-	} // getFileByteData
 
 	/**
 	 * 	Export

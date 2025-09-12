@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RevenueRecognition_Run
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_RevenueRecognition_Run 
 {
@@ -71,6 +71,7 @@ public interface I_C_RevenueRecognition_Run
 	/** Get Revenue Recognition Service	  */
 	public int getC_RevenueRecog_Service_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecog_Service getC_RevenueRecog_Service() throws RuntimeException;
 
     /** Column name C_RevenueRecognition_Plan_ID */
@@ -86,6 +87,7 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getC_RevenueRecognition_Plan_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException;
 
     /** Column name C_RevenueRecognition_Run_ID */
@@ -148,6 +150,7 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getGL_Journal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException;
 
     /** Column name IsActive */

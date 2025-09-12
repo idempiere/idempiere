@@ -120,7 +120,7 @@ public class TimeUtilTest extends AbstractTestCase {
 			Timestamp monthFirstDayTarget = Timestamp.from(sdf.parse("2022-10-01 00:00:00.000").toInstant());
 			assertEquals(monthFirstDayTarget, TimeUtil.getMonthFirstDay(source), "getMonthFirstDay not working as expected");
 			
-			Timestamp from = Timestamp.from(sdf.parse("2022-10-01 00:00:00.000").toInstant());;
+			Timestamp from = Timestamp.from(sdf.parse("2022-10-01 00:00:00.000").toInstant());
 			Timestamp to = source;
 			assertEquals(27, TimeUtil.getDaysBetween(from, to), "getDaysBetween not working as expected for positive difference");
 			assertEquals(-27, TimeUtil.getDaysBetween(to, from), "getDaysBetween not working as expected for negative difference");

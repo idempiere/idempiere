@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Warehouse
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_Warehouse 
 {
@@ -75,6 +75,7 @@ public interface I_M_Warehouse
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name Created */
@@ -119,6 +120,15 @@ public interface I_M_Warehouse
 	  */
 	public boolean isActive();
 
+    /** Column name IsDisableInventoryPopup */
+    public static final String COLUMNNAME_IsDisableInventoryPopup = "IsDisableInventoryPopup";
+
+	/** Set Disable Insufficient Inventory Popup	  */
+	public void setIsDisableInventoryPopup (boolean IsDisableInventoryPopup);
+
+	/** Get Disable Insufficient Inventory Popup	  */
+	public boolean isDisableInventoryPopup();
+
     /** Column name IsDisallowNegativeInv */
     public static final String COLUMNNAME_IsDisallowNegativeInv = "IsDisallowNegativeInv";
 
@@ -158,6 +168,7 @@ public interface I_M_Warehouse
 	  */
 	public int getM_ReserveLocator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Locator getM_ReserveLocator() throws RuntimeException;
 
     /** Column name M_WarehouseSource_ID */
@@ -173,6 +184,7 @@ public interface I_M_Warehouse
 	  */
 	public int getM_WarehouseSource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */

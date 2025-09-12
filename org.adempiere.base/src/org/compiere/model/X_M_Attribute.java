@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Attribute
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Attribute")
 public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
@@ -100,7 +100,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -121,6 +121,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -149,6 +150,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -177,6 +179,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
@@ -252,6 +255,22 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return (String)get_Value(COLUMNNAME_DateFormat);
 	}
 
+	/** Set Default Logic.
+		@param DefaultValue Default value hierarchy, separated by ;
+	*/
+	public void setDefaultValue (String DefaultValue)
+	{
+		set_Value (COLUMNNAME_DefaultValue, DefaultValue);
+	}
+
+	/** Get Default Logic.
+		@return Default value hierarchy, separated by ;
+	  */
+	public String getDefaultValue()
+	{
+		return (String)get_Value(COLUMNNAME_DefaultValue);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -266,6 +285,25 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** EntityType AD_Reference_ID=389 */
+	public static final int ENTITYTYPE_AD_Reference_ID=389;
+	/** Set Entity Type.
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
+	public void setEntityType (String EntityType)
+	{
+
+		set_Value (COLUMNNAME_EntityType, EntityType);
+	}
+
+	/** Get Entity Type.
+		@return Dictionary Entity Type; Determines ownership and synchronization
+	  */
+	public String getEntityType()
+	{
+		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Instance Attribute.
@@ -314,6 +352,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSearch getM_AttributeSearch() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_AttributeSearch)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSearch.Table_ID)

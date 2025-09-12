@@ -26,6 +26,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.AboutWindow;
 import org.compiere.model.MQuery;
@@ -93,7 +94,12 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	createSearchPanel();
 
     	btnMenu = (LabelImageElement) getFellow("menuButton");
-    	btnMenu.setIconSclass("z-icon-sitemap");
+
+    	if (ThemeManager.isUseFontIconForImage())
+    		btnMenu.setIconSclass(Icon.getIconSclass(Icon.SITEMAP));
+    	else
+    		btnMenu.setImage(ThemeManager.getThemeResource("images/MenuTree16.png"));
+
     	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")) + " Alt+M");
     	btnMenu.addEventListener(Events.ON_CLICK, this);
     	if (ClientInfo.isMobile()) {

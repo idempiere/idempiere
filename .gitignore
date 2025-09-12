@@ -2,6 +2,9 @@
 **/bin/
 **/lib/*.jar
 **/seed/*.jar
+org.adempiere.server-feature/data/seed/Adempiere.dmp
+org.adempiere.server-feature/data/seed/Adempiere_pg.dmp
+org.adempiere.server-feature/data/seed/Adempiere.log
 /org.adempiere.ui.zk/labelapplet.jar
 /org.adempiere.extend/test.properties
 
@@ -31,3 +34,9 @@ External Plug-in Libraries
 /runtime-*.app/
 org.idempiere.maven.to.p2/org.idempiere.webservice.client/.settings/
 **/org.eclipse.jdt.core.prefs
+.idea/**/Partial_*.xml
+out/
+.idea/*
+*/.maven.run/**
+**/.idea/*
+partial-runtime/

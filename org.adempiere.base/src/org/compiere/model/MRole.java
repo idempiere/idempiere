@@ -67,7 +67,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 7266911648463503849L;
+	private static final long serialVersionUID = -8473945674135719367L;
 
 	/**
 	 * 	Get role for current session/context
@@ -517,9 +517,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (isManual())
 			return "-";
 		
+		int userID = Env.getAD_User_ID(getCtx());
+		
 		String roleClientOrgUser = getAD_Role_ID() + ","
 			+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y', getDate()," 
-			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
+			+ userID + ", getDate()," + userID 
 			+ ",'Y' ";	//	IsReadWrite
 		
 		String sqlWindow = "INSERT INTO AD_Window_Access "
@@ -568,7 +570,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ "C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) " 
 			+ "(SELECT "
 			+ getAD_Client_ID() + ",0,'Y', getDate()," 
-			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
+			+ userID + ", getDate()," + userID
 			+ ", doctype.C_DocType_ID, action.AD_Ref_List_ID, rol.AD_Role_ID " 
 			+ "FROM AD_Client client " 
 			+ "INNER JOIN C_DocType doctype ON (doctype.AD_Client_ID=client.AD_Client_ID) "
@@ -585,7 +587,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy) "
 				+ "SELECT i.AD_InfoWindow_ID," + getAD_Role_ID() + ","
 				+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y',getDate()," 
-				+ getUpdatedBy() + ", getDate()," + getUpdatedBy()
+				+ userID + ", getDate()," + userID
 				+ " FROM AD_InfoWindow i LEFT JOIN AD_InfoWindow_Access ia ON "
 				+ "(ia.AD_Role_ID=" + getAD_Role_ID()
 				+ " AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) "
@@ -1478,14 +1480,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (column.getAD_Process_ID() > 0)
 			{
 				// Verify access to process for buttons
-				Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
+				Boolean access = getProcessAccess(column.getAD_Process_ID());
 				if (access == null)
 					return false;
 			}
 			else if (column.getAD_InfoWindow_ID() > 0)
 			{
 				// Verify access to info window for buttons
-				Boolean access = MRole.getDefault().getInfoAccess(column.getAD_InfoWindow_ID());
+				Boolean access = getInfoAccess(column.getAD_InfoWindow_ID());
 				if (access == null)
 					return false;
 			}
@@ -1723,7 +1725,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 					+ "             AND ce.AD_Process_ID IS NOT NULL "
 					+ "             AND ce.AD_Process_Para_ID IS NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter;
+			String noReportsFilter = "";
+			if (! MRole.getDefault().isCanReport())
+				noReportsFilter = " AND AD_Process_ID NOT IN (SELECT p.AD_Process_ID FROM AD_Process p WHERE IsReport='Y')";
+			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter + noReportsFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
@@ -1922,7 +1927,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 							m_formAccess.remove(formId);
 						}
 					} else {
-						directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
+						if ( ! (formId == SystemIDs.FORM_ARCHIVEVIEWER && !MRole.getDefault().isCanReport()) )
+							directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -2108,7 +2114,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retSQL.append(" AND ");
 				String orgWhere = getOrgWhere(rw);
 				if (fullyQualified)
-					orgWhere = orgWhere.replaceAll("AD_Org_ID", tableName + ".AD_Org_ID");
+					orgWhere = orgWhere.replace("AD_Org_ID", tableName + ".AD_Org_ID");
 				retSQL.append(orgWhere);
 			}
 		} else {
@@ -3401,6 +3407,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_Client:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_ClientOnly:
@@ -3409,6 +3416,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_Organization:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_Organization:
@@ -3416,6 +3424,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_ClientPlusOrganization:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_Organization:
@@ -3425,6 +3434,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		}
 		return access;
 	}
@@ -3484,4 +3494,25 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), recordId) == 1;
 		}
 	}
+
+	/** Get Predefined Context Variables from this role and included roles
+	 * @return Predefined context variables to inject when opening a menu entry or a window
+	 */
+	public String getPredefinedContextVariables() {
+		StringBuilder predefinedContextVariables = new StringBuilder();
+		for (MRole role : getIncludedRoles(false)) {
+			if (role.get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+				if (predefinedContextVariables.length() > 0)
+					predefinedContextVariables.append("\n");
+				predefinedContextVariables.append(role.get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+			}
+		}
+		if (get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+			if (predefinedContextVariables.length() > 0)
+				predefinedContextVariables.append("\n");
+			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+		}
+		return predefinedContextVariables.toString();
+	}
+
 }	//	MRole

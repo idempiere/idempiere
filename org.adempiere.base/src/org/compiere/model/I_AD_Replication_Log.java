@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Replication_Log
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Replication_Log 
 {
@@ -75,6 +75,7 @@ public interface I_AD_Replication_Log
 	  */
 	public int getAD_ReplicationTable_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReplicationTable getAD_ReplicationTable() throws RuntimeException;
 
     /** Column name AD_Replication_Log_ID */
@@ -112,6 +113,7 @@ public interface I_AD_Replication_Log
 	  */
 	public int getAD_Replication_Run_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Replication_Run getAD_Replication_Run() throws RuntimeException;
 
     /** Column name Created */

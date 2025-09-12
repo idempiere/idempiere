@@ -327,13 +327,16 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 		ArrayList<ValueNamePair> list = new ArrayList<ValueNamePair>();
         if (optional)
             list.add (ValueNamePair.EMPTY);
-        for (List<Object> row : DB.getSQLArrayObjectsEx(null, sql.toString())) {
-        	String value = row.get(0).toString();
-        	StringBuilder name = new StringBuilder(row.get(1).toString());
-        	String isActive = row.get(2).toString();
-        	if (! "Y".equals(isActive))
-        		name.insert(0, MLookup.INACTIVE_S).append(MLookup.INACTIVE_E);
-        	list.add(new ValueNamePair(value, name.toString()));
+        List<List<Object>> rows = DB.getSQLArrayObjectsEx(null, sql.toString());
+        if (rows != null) {
+            for (List<Object> row : rows) {
+            	String value = row.get(0).toString();
+            	StringBuilder name = new StringBuilder(row.get(1).toString());
+            	String isActive = row.get(2).toString();
+            	if (! "Y".equals(isActive))
+            		name.insert(0, MLookup.INACTIVE_S).append(MLookup.INACTIVE_E);
+            	list.add(new ValueNamePair(value, name.toString()));
+            }
         }
 
 		return list.toArray(new ValueNamePair[list.size()]);

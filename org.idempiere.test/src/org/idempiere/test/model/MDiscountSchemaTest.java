@@ -26,6 +26,7 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,13 +42,13 @@ import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.process.DocAction;
-import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 /**
  * 
@@ -99,8 +100,8 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 		MDiscountSchema schema = new MDiscountSchema(Env.getCtx(), DictionaryIDs.M_DiscountSchema.FIVE_PERCENT_DISCOUNT.id, getTrxName());
 		MDiscountSchemaBreak discountBreak = null;
 		
-		try {
-			discountBreak = new MDiscountSchemaBreak(Env.getCtx(), 0, null);
+		try (MockedStatic<MDiscountSchema> mocked = mockStatic(MDiscountSchema.class)) {
+			discountBreak = new MDiscountSchemaBreak(Env.getCtx(), 0, getTrxName());
 			discountBreak.setM_DiscountSchema_ID(schema.getM_DiscountSchema_ID());
 			discountBreak.setBreakDiscount(new BigDecimal("0.00"));
 			discountBreak.setBreakValue(new BigDecimal("10"));
@@ -111,7 +112,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 			discountBreak.setSeqNo(20);
 			discountBreak.saveEx();
 			
-			CacheMgt.get().reset(MDiscountSchema.Table_Name, schema.get_ID());
+			mocked.when(() -> MDiscountSchema.get(schema.getM_DiscountSchema_ID())).thenReturn(schema);
 			
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			//Joe Block
@@ -133,10 +134,6 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 			line1.saveEx();
 				
 			assertEquals(fixedPrice, line1.getPriceActual().setScale(2, RoundingMode.HALF_UP), "Unexpected Order Line price");
-		} finally {
-			rollback();
-			if (discountBreak != null && discountBreak.get_ID() > 0)
-				discountBreak.deleteEx(true);
 		}
 	}
 }

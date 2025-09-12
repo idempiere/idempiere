@@ -2,9 +2,9 @@
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
     <setAttribute key="additional_plugins">
         <setEntry value="com.fasterxml.woodstox.woodstox-core:6.7.0:default:true:default:true"/>
-        <setEntry value="org.adempiere.eclipse.equinox.http.servlet:12.0.0.qualifier:default:true:default:true"/>
-        <setEntry value="org.adempiere.server:12.0.0.qualifier:default:true:default:true"/>
-        <setEntry value="org.adempiere.ui.zk:12.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.eclipse.equinox.http.servlet:13.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.server:13.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.ui.zk:13.0.0.qualifier:default:true:default:true"/>
         <setEntry value="org.apache.aries.spifly.dynamic.bundle:1.3.7:default:true:2:true"/>
         <setEntry value="org.apache.felix.scr:2.2.6:default:true:2:true"/>
         <setEntry value="org.apache.felix.webconsole:4.6.4.v202109010034:default:true:default:true"/>
@@ -37,7 +37,7 @@
         <setEntry value="org.eclipse.jetty.server:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.websocket.core.common:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.osgi:3.18.500.v20230801-1826:default:true:1:true"/>
-        <setEntry value="org.idempiere.felix.webconsole:12.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.idempiere.felix.webconsole:13.0.0.qualifier:default:true:default:true"/>
         <setEntry value="slf4j.api:2.0.12:default:true:3:true"/>
         <setEntry value="slf4j.jdk14:2.0.12:default:true:3:true"/>
     </setAttribute>
@@ -72,7 +72,7 @@
     <stringAttribute key="productFile" value="/org.adempiere.server.feature/server.product"/>
     <stringAttribute key="productId" value="org.adempiere.server.product"/>
     <stringAttribute key="productName" value="iDempiere Server"/>
-    <stringAttribute key="productVersion" value="12.0.0.qualifier"/>
+    <stringAttribute key="productVersion" value="13.0.0.qualifier"/>
     <setAttribute key="root_features"/>
     <setAttribute key="selected_features">
         <setEntry value="org.adempiere.server.feature:default"/>
@@ -83,7 +83,6 @@
         <setEntry value="bcpg@default:default"/>
         <setEntry value="bcpkix@default:default"/>
         <setEntry value="bcprov@default:default"/>
-        <setEntry value="bctsp@default:default"/>
         <setEntry value="bcutil@default:default"/>
         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
@@ -217,7 +216,6 @@
         <setEntry value="org.apache.xml.serializer@default:default"/>
         <setEntry value="org.atmosphere.runtime@default:true"/>
         <setEntry value="org.codehaus.jettison.jettison@default:default"/>
-        <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
         <setEntry value="org.eclipse.core.commands@default:default"/>
         <setEntry value="org.eclipse.core.contenttype@default:default"/>
@@ -400,7 +398,7 @@
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
-        <setEntry value="slf4j.api@3:true"/>
+        <setEntry value="slf4j.api*2.0.17@3:true"/>
         <setEntry value="slf4j.jdk14@3:true"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
@@ -452,6 +450,7 @@
         <setEntry value="zweb@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="javax.websocket-api.fragment@default:default"/>
         <setEntry value="org.adempiere.base.callout@default:default"/>
         <setEntry value="org.adempiere.base.process@default:default"/>
         <setEntry value="org.adempiere.base@default:default"/>

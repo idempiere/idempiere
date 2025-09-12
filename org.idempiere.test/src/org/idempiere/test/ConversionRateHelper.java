@@ -24,12 +24,21 @@
  **********************************************************************/
 package org.idempiere.test;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Properties;
 
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCurrency;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * 
@@ -53,7 +62,22 @@ public final class ConversionRateHelper {
 	 */
 	public static MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
 			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, null);
+		return createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate, null);
+	}
+	
+	/**
+	 * 
+	 * @param C_Currency_ID
+	 * @param C_Currency_ID_To
+	 * @param C_ConversionType_ID
+	 * @param date
+	 * @param rate
+	 * @param isMultiplyRate
+	 * @return {@link MConversionRate}
+	 */
+	public static MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
+			Timestamp date, BigDecimal rate, boolean isMultiplyRate, String trxName) {
+		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, trxName);
 		cr.setC_Currency_ID(C_Currency_ID);
 		cr.setC_Currency_ID_To(C_Currency_ID_To);
 		cr.setC_ConversionType_ID(C_ConversionType_ID);
@@ -85,5 +109,54 @@ public final class ConversionRateHelper {
 		if (reciprocal != null)
 			reciprocal.deleteEx(true);
 		cr.deleteEx(true);
+	}
+	
+	/**
+	 * Create new static mock of MConversionRate
+	 * @return static mock of MConversionRate
+	 */
+	public static MockedStatic<MConversionRate> mockStatic() {
+		MockedStatic<MConversionRate> conversionRateMock = Mockito.mockStatic(MConversionRate.class);
+		conversionRateMock.when(() -> MConversionRate.convert(any(Properties.class), any(BigDecimal.class), anyInt(), anyInt(), 
+		    any(Timestamp.class), anyInt(), anyInt(), anyInt())).thenCallRealMethod();
+		conversionRateMock.when(() -> MConversionRate.convert(any(Properties.class), any(BigDecimal.class), anyInt(), anyInt(), 
+		    any(Timestamp.class), anyInt(), anyInt(), anyInt(), anyBoolean())).thenCallRealMethod();
+		conversionRateMock.when(() -> MConversionRate.convertBase(any(Properties.class), any(BigDecimal.class), anyInt(),  
+		    any(Timestamp.class), anyInt(), anyInt(), anyInt())).thenCallRealMethod();
+		return conversionRateMock;
+	}
+	
+	/**
+	 * Use static mocking of getRate to return the desire conversion rate
+	 * @param conversionRateMock
+	 * @param fromCurrency
+	 * @param toCurrency
+	 * @param C_ConversionType_ID
+	 * @param conversionDate
+	 * @param multiplyRate
+	 * @param AD_Client_ID
+	 * @param AD_Org_ID
+	 */
+	public static void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate,
+			int AD_Client_ID, int AD_Org_ID) {
+		if (C_ConversionType_ID > 0)
+			if (conversionDate != null)
+				conversionRateMock.when(() -> MConversionRate.getRate(eq(fromCurrency.getC_Currency_ID()), eq(toCurrency.getC_Currency_ID()), 
+						eq(conversionDate), eq(C_ConversionType_ID), eq(AD_Client_ID), eq(AD_Org_ID)))
+						.thenReturn(multiplyRate);
+			else
+				conversionRateMock.when(() -> MConversionRate.getRate(eq(fromCurrency.getC_Currency_ID()), eq(toCurrency.getC_Currency_ID()), 
+						any(Timestamp.class), eq(C_ConversionType_ID), eq(AD_Client_ID), eq(AD_Org_ID)))
+						.thenReturn(multiplyRate);
+		else
+			if (conversionDate != null)
+				conversionRateMock.when(() -> MConversionRate.getRate(eq(fromCurrency.getC_Currency_ID()), eq(toCurrency.getC_Currency_ID()), 
+						eq(conversionDate), anyInt(), eq(AD_Client_ID), eq(AD_Org_ID)))
+						.thenReturn(multiplyRate);
+			else
+				conversionRateMock.when(() -> MConversionRate.getRate(eq(fromCurrency.getC_Currency_ID()), eq(toCurrency.getC_Currency_ID()), 
+						any(Timestamp.class), anyInt(), eq(AD_Client_ID), eq(AD_Org_ID)))
+						.thenReturn(multiplyRate);
 	}
 }

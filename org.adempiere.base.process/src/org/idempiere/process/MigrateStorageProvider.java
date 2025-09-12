@@ -26,6 +26,8 @@
  **********************************************************************/
 package org.idempiere.process;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
@@ -122,6 +124,16 @@ public class MigrateStorageProvider extends SvrProcess {
 		}
 
 		MStorageProvider newProvider = MStorageProvider.get(getCtx(), p_AD_StorageProvider_ID);
+		//make sure the provider is valid
+		if (p_IsMigrateAttachment) {
+			newProvider.getAttachmentStore(); // this will throw an exception if the provider is not valid
+		}
+		if (p_IsMigrateArchive) {
+			newProvider.getArchiveStore(); // this will throw an exception if the provider is not valid
+		}
+		if (p_IsMigrateImage) {
+			newProvider.getImageStore(); // this will throw an exception if the provider is not valid
+		}
 
 		// Create list of clients to process:
 		//   - single AD_Client
@@ -249,7 +261,7 @@ public class MigrateStorageProvider extends SvrProcess {
 			MAttachment attachment = new MAttachment(getCtx(), attachId, get_TrxName());
 			int oldProviderId = attachment.getAD_StorageProvider_ID();
 			for (MAttachmentEntry entry : attachment.getEntries()) {
-				entry.getData(); // force load in case old provider is delayed 
+				entry.getFile(); // force load in case old provider is delayed
 			}
 			attachment.setStorageProvider(newProvider);
 			attachment.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
@@ -292,12 +304,16 @@ public class MigrateStorageProvider extends SvrProcess {
 			}
 			MArchive archive = new MArchive(getCtx(), archiveId, get_TrxName());
 			int oldProviderId = archive.getAD_StorageProvider_ID();
-			byte[] data = archive.getBinaryData();
+			InputStream stream = archive.getInputStream();
 			archive.setStorageProvider(newProvider);
-			archive.setBinaryData(data);
+			archive.setInputStream(stream); // set the stream to the new provider
 			archive.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 			// create file on the new storage provider
 			archive.saveEx();
+			try {
+				stream.close();
+			} catch (IOException e) {
+			} // close the stream after save
 			cntArchive++;
 			// commit on every record migrated
 			commitEx();
@@ -335,9 +351,11 @@ public class MigrateStorageProvider extends SvrProcess {
 			}
 			MImage image = new MImage(getCtx(), imageId, get_TrxName());
 			int oldProviderId = image.getAD_StorageProvider_ID();
-			byte[] data = image.getBinaryData();
+			InputStream is = image.getInputStream();
+			if (is == null) //nothing to migrate
+				continue;
 			image.setStorageProvider(newProvider);
-			image.setBinaryData(data);
+			image.setInputStream(is); // set the stream to the new provider
 			image.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 			// create file on the new storage provider
 			image.saveEx();

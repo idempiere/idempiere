@@ -66,6 +66,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
 import org.compiere.apps.form.FactReconcile;
@@ -199,7 +200,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		bZoomDoc.setLabel(Msg.translate(Env.getCtx(), "ZoomDocument"));
 		bSelect.setMode("toggle");
 		if (ThemeManager.isUseFontIconForImage())
-			bSelect.setIconSclass("z-icon-SelectAll");
+			bSelect.setIconSclass(Icon.getIconSclass(Icon.SELECT_ALL));
 		else
 			bSelect.setImage(ThemeManager.getThemeResource("images/SelectAll24.png"));
 		bSelect.setTooltiptext(Msg.getCleanMsg(Env.getCtx(), "SelectAll"));

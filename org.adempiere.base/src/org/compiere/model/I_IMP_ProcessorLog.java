@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for IMP_ProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_IMP_ProcessorLog 
 {
@@ -144,6 +144,7 @@ public interface I_IMP_ProcessorLog
 	/** Get Import Processor	  */
 	public int getIMP_Processor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException;
 
     /** Column name IsActive */

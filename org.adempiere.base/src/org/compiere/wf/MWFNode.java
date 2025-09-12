@@ -602,6 +602,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	 * @return workflow
 	 * @deprecated please use {@link #getAD_Workflow()}
 	 */
+	@Deprecated
 	public MWorkflow getWorkflow()
 	{
 		return getAD_Workflow();
@@ -791,4 +792,5 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		list.toArray (retValue);
 		return retValue;
 	}	//	getWFNodes
+	
 }

@@ -29,6 +29,7 @@ import org.compiere.util.KeyNamePair;
  *  @deprecated
  *  @version Development 9.0 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_BOM")
+@Deprecated
 public class X_M_Product_BOM extends PO implements I_M_Product_BOM, I_Persistent 
 {
 

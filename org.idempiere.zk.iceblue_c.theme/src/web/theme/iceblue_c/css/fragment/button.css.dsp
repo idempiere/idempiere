@@ -17,7 +17,7 @@
 }
 
 .z-button:focus {
-    border-color: transparent;
+    border-color: black;
 }
 
 .z-button.btn-small {

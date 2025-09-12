@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebServiceMethod
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_WS_WebServiceMethod 
@@ -188,5 +188,6 @@ public interface I_WS_WebServiceMethod
 	/** Get Web Service	  */
 	public int getWS_WebService_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebService getWS_WebService() throws RuntimeException;
 }

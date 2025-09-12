@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Depreciation_Forecast
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Depreciation_Forecast 
 {
@@ -89,6 +89,7 @@ public interface I_A_Depreciation_Forecast
 	/** Get To Asset	  */
 	public int getA_End_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_End_Asset() throws RuntimeException;
 
     /** Column name A_Start_Asset_ID */
@@ -100,6 +101,7 @@ public interface I_A_Depreciation_Forecast
 	/** Get From Asset	  */
 	public int getA_Start_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Start_Asset() throws RuntimeException;
 
     /** Column name Created */

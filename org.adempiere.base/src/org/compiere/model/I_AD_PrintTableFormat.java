@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintTableFormat
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_PrintTableFormat 
 {
@@ -62,6 +62,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getAD_Image_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -180,6 +181,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunctBG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getFunctBG_PrintColor() throws RuntimeException;
 
     /** Column name FunctFG_PrintColor_ID */
@@ -195,6 +197,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunctFG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getFunctFG_PrintColor() throws RuntimeException;
 
     /** Column name Funct_PrintFont_ID */
@@ -210,6 +213,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunct_PrintFont_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getFunct_PrintFont() throws RuntimeException;
 
     /** Column name HdrLine_PrintColor_ID */
@@ -225,6 +229,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrLine_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrLine_PrintColor() throws RuntimeException;
 
     /** Column name HdrStroke */
@@ -266,6 +271,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrTextBG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrTextBG_PrintColor() throws RuntimeException;
 
     /** Column name HdrTextFG_PrintColor_ID */
@@ -281,6 +287,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrTextFG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrTextFG_PrintColor() throws RuntimeException;
 
     /** Column name Hdr_PrintFont_ID */
@@ -296,6 +303,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdr_PrintFont_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getHdr_PrintFont() throws RuntimeException;
 
     /** Column name HeaderCenter */
@@ -506,6 +514,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getLine_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getLine_PrintColor() throws RuntimeException;
 
     /** Column name Name */

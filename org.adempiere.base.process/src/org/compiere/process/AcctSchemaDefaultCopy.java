@@ -186,12 +186,14 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_BP_Group_Acct a ")
-				.append("SET C_Receivable_Acct=").append(acct.getC_Receivable_Acct())
-				.append(", C_Receivable_Services_Acct=").append(acct.getC_Receivable_Services_Acct())
-				.append(", C_Prepayment_Acct=").append(acct.getC_Prepayment_Acct())
-				.append(", V_Liability_Acct=").append(acct.getV_Liability_Acct())
-				.append(", V_Liability_Services_Acct=").append(acct.getV_Liability_Services_Acct())
-				.append(", V_Prepayment_Acct=").append(acct.getV_Prepayment_Acct())
+				.append("SET C_Receivable_Acct=").append(acct.getC_Receivable_Acct());
+			if (acct.getC_Receivable_Services_Acct() > 0)
+				sql.append(", C_Receivable_Services_Acct=").append(acct.getC_Receivable_Services_Acct());
+			sql.append(", C_Prepayment_Acct=").append(acct.getC_Prepayment_Acct())
+				.append(", V_Liability_Acct=").append(acct.getV_Liability_Acct());
+			if (acct.getV_Liability_Services_Acct() > 0)
+				sql.append(", V_Liability_Services_Acct=").append(acct.getV_Liability_Services_Acct());
+			sql.append(", V_Prepayment_Acct=").append(acct.getV_Prepayment_Acct())
 				.append(", PayDiscount_Exp_Acct=").append(acct.getPayDiscount_Exp_Acct())
 				.append(", PayDiscount_Rev_Acct=").append(acct.getPayDiscount_Rev_Acct())
 				.append(", WriteOff_Acct=").append(acct.getWriteOff_Acct())

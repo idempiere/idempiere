@@ -161,5 +161,21 @@ public class MLandedCostAllocation extends X_C_LandedCostAllocation
 	{
 		super.setQty (Qty);
 	}	//	setQty
-		
+
+	/**
+	 * 	String Representation
+	 * 	@return info
+	 */
+	@Override
+	public String toString ()
+	{
+		StringBuilder sb = new StringBuilder ("MLandedCostAllocation[")
+			.append(get_ID())
+			.append(", Qty=").append(getQty())
+			.append(", Amt=").append(getAmt())
+			.append(", M_Product_ID=").append(getM_Product_ID())
+			.append(", M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())
+			.append ("]");
+		return sb.toString ();
+	}
 }	//	MLandedCostAllocation

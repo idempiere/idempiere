@@ -119,6 +119,7 @@ public class CleanOrphanCascade extends SvrProcess
 			String tableName = table.getTableName();
 			if (tableName.startsWith("T_")) // ignore T_ temporary tables
 				continue;
+			statusUpdate("Processing " + tableName);
 
 			MColumn colRecordID = MColumn.get(getCtx(), tableName, "Record_ID", get_TrxName());
 			MColumn colRecordUU = MColumn.get(getCtx(), tableName, "Record_UU", get_TrxName());
@@ -128,7 +129,7 @@ public class CleanOrphanCascade extends SvrProcess
 			sqlRef.append("SELECT DISTINCT t.AD_Table_ID, ");
 			sqlRef.append("                t.TableName ");
 			sqlRef.append("FROM   ").append(tableName).append(" r ");
-			sqlRef.append("       JOIN AD_Table t ON ( r.AD_Table_ID = t.AD_Table_ID ) ");
+			sqlRef.append("       JOIN AD_Table t ON ( r.AD_Table_ID = t.AD_Table_ID AND t.IsView = 'N' ) ");
 			sqlRef.append("ORDER  BY t.Tablename");
 			List<List<Object>> rowTables = DB.getSQLArrayObjectsEx(get_TrxName(), sqlRef.toString());
 			if (rowTables != null) {
@@ -136,10 +137,9 @@ public class CleanOrphanCascade extends SvrProcess
 					int refTableID = ((BigDecimal) row.get(0)).intValue();
 					String refTableName = row.get(1).toString();
 					MTable refTable = MTable.get(getCtx(), refTableID);
-					String colRef = refTable.getKeyColumns()[0];
-					String colRefUU = PO.getUUIDColumnName(refTableName);
 
 					if (colRecordID != null && refTable.isIDKeyTable()) {
+						String colRef = refTable.getKeyColumns()[0];
 						StringBuilder whereClause = new StringBuilder("AD_Table_ID=").append(refTableID)
 								.append(" AND Record_ID>0")
 								.append(" AND NOT EXISTS (SELECT ").append(colRef)
@@ -170,6 +170,7 @@ public class CleanOrphanCascade extends SvrProcess
 					}
 
 					if (colRecordUU != null) {
+						String colRefUU = PO.getUUIDColumnName(refTableName);
 						StringBuilder whereClause = new StringBuilder("AD_Table_ID=").append(refTableID)
 								.append(" AND Record_UU IS NOT NULL")
 								.append(" AND NOT EXISTS (SELECT ").append(colRefUU)

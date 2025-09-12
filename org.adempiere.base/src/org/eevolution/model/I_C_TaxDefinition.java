@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxDefinition
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_C_TaxDefinition 
@@ -64,6 +64,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getAD_OrgType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_OrgType getAD_OrgType() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -92,6 +93,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -107,6 +109,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_TaxBase_ID */
@@ -118,6 +121,7 @@ public interface I_C_TaxDefinition
 	/** Get Tax Base	  */
 	public int getC_TaxBase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxBase getC_TaxBase() throws RuntimeException;
 
     /** Column name C_TaxCategory_ID */
@@ -133,6 +137,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getC_TaxCategory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
 
     /** Column name C_TaxDefinition_ID */
@@ -162,6 +167,7 @@ public interface I_C_TaxDefinition
 	/** Get Tax Group	  */
 	public int getC_TaxGroup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxGroup getC_TaxGroup() throws RuntimeException;
 
     /** Column name C_TaxType_ID */
@@ -173,6 +179,7 @@ public interface I_C_TaxDefinition
 	/** Get Tax Type	  */
 	public int getC_TaxType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxType getC_TaxType() throws RuntimeException;
 
     /** Column name C_Tax_ID */
@@ -188,6 +195,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getC_Tax_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
     /** Column name Created */
@@ -271,6 +279,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getM_Product_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -286,6 +295,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name MaxTaxable */

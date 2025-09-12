@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="org.idempiere.test" type="cn.varsa.idea.pde.partial.plugin.run.PDETargetRunConfigurationType" factoryName="cn.varsa.idea.pde.partial.plugin.run.PDETargetRunConfigurationFactory">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="org.eclipse.equinox.launcher.Main" />
+    <option name="PROGRAM_PARAMETERS" value="-testpluginname org.idempiere.test -packageNameFile org.idempiere.test/packageNames.txt" />
+    <option name="VM_PARAMETERS" value="--add-modules=ALL-SYSTEM -XX:+ShowCodeDetailsInExceptionMessages" />
+    <partial product="" application="org.eclipse.pde.junit.runtime.coretestapplication" dataDirectory="$PROJECT_DIR$/partial-runtime/test" cleanRuntimeDir="true" additionalClasspath="" targetModules="org.adempiere.report.jasper,org.adempiere.base.callout,org.adempiere.ui,org.idempiere.webservices.resources,org.adempiere.pipo.handlers,org.idempiere.zk.billboard,org.idempiere.tablepartition,org.adempiere.pipo,org.idempiere.hazelcast.service,org.adempiere.replication,org.adempiere.eclipse.equinox.http.servlet,org.adempiere.ui.zk,org.compiere.db.oracle.provider,org.adempiere.payment.processor,org.compiere.db.postgresql.provider,org.adempiere.server,org.adempiere.base,org.idempiere.webservices,org.idempiere.zk.extra,org.idempiere.test,org.adempiere.report.jasper.library,org.apache.ecs,org.adempiere.install,org.adempiere.base.process,org.adempiere.plugin.utils,org.idempiere.ui.sso.oidc" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_InvoiceTax
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoiceTax")
 public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_InvoiceTax (Properties ctx, int C_InvoiceTax_ID, String trxName)
@@ -137,6 +137,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_InvoiceTax_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
@@ -165,6 +166,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_ID)
@@ -192,6 +194,7 @@ public class X_C_InvoiceTax extends PO implements I_C_InvoiceTax, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)

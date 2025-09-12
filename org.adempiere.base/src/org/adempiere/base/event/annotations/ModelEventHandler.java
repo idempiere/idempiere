@@ -26,11 +26,13 @@ package org.adempiere.base.event.annotations;
 
 import java.lang.reflect.Field;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
 
 import org.adempiere.base.Model;
 import org.adempiere.base.event.EventHelper;
 import org.adempiere.base.event.EventManager;
 import org.compiere.model.PO;
+import org.compiere.util.CLogger;
 import org.osgi.service.event.Event;
 
 /**
@@ -44,6 +46,7 @@ public final class ModelEventHandler<T extends PO> extends BaseEventHandler {
 	private Class<T> modelClassType;
 	private String tableName;
 	private BiFunction<T, Event, ? extends ModelEventDelegate<T>> supplier;
+	private static CLogger log = CLogger.getCLogger(ModelEventHandler.class);
 	
 	/**
 	 * @param modelClassType
@@ -85,9 +88,14 @@ public final class ModelEventHandler<T extends PO> extends BaseEventHandler {
 		if (po == null || modelClassType == null)
 			return;
 		
-		if (!modelClassType.isAssignableFrom(po.getClass()))
-			return;
+		if (!modelClassType.isAssignableFrom(po.getClass())) {
+			if (log.isLoggable(Level.INFO))
+		        log.info(String.format("ModelEventHandler %s was skipped: the po class %s is not assignable to the expected type %s",
+		            delegateClass.getName(), po.getClass().getName(), modelClassType.getName()));
+		    return;
+		}
 		
+			
 		super.handleEvent(event);
 	}
 

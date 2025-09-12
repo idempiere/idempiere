@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_ListVersion
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_ListVersion 
@@ -102,6 +102,7 @@ public interface I_HR_ListVersion
 	/** Get Payroll List Base	  */
 	public int getHR_ListBase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_List getHR_ListBase() throws RuntimeException;
 
     /** Column name HR_ListVersion_ID */
@@ -131,6 +132,7 @@ public interface I_HR_ListVersion
 	/** Get Payroll List	  */
 	public int getHR_List_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_List getHR_List() throws RuntimeException;
 
     /** Column name IsActive */

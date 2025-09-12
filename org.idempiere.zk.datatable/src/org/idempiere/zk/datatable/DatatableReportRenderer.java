@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
@@ -352,7 +353,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				cssInfo = new HTMLReportRenderer.CSSInfo(newFont, null);
 				styleBuild.append(".tr-level-2 td").append(cssInfo.getCssRule());
 				
-				styleBuild = new StringBuilder(styleBuild.toString().replaceAll(";", "!important;"));
+				styleBuild = new StringBuilder(styleBuild.toString().replace(";", "!important;"));
 				HTMLReportRenderer.appendInlineCss (doc, styleBuild);
 				
 				w.print(doc.toString());
@@ -425,41 +426,131 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 			int printColIndex = -1;
 			HashMap<Integer, th> suppressMap = new HashMap<>();
 			
-			//search input at header
+			//headerColumnSet is map that sorted header column by display order.
+			tr tr = new tr();
+			TreeSet<Integer> headerColumnSet = new TreeSet<>();
+			for (int col = 0; col < columns.size(); col++)
 			{
-				tr tr = new tr();
-				for (int col = 0; col < printFormat.getItemCount(); col++)
+				Object colObj = columns.get(col);
+				MPrintFormatItem item = null;
+				InstanceAttributeColumn instanceAttributeColumn = null;
+				if (colObj instanceof MPrintFormatItem)
 				{
-					MPrintFormatItem item = printFormat.getItem(col);
-					if (item.isPrinted())
+					item = (MPrintFormatItem) colObj;
+				}
+				else if (colObj instanceof InstanceAttributeColumn)
+				{
+					instanceAttributeColumn = (InstanceAttributeColumn) colObj;
+					item = instanceAttributeColumn.getPrintFormatItem();
+				}
+				
+				if (item != null)
+				{
+					if (item.isNextLine() && item.getBelowColumn() >= 1)
 					{
-						if (item.isNextLine() && item.getBelowColumn() >= 1)
-							continue;
-						var printName = item.getPrintName(language);
-						
-						th th = new th();
-						th.addAttribute("data-dt-order", "disable");
-						tr.addElement(th);
-						input searchInput = new input();
-						
-						if (!Util.isEmpty(printName))
-							searchInput.addAttribute("placeholder", "Search "+printName);
-
-						th.addElement(searchInput);
-						
+						//Column that is set BelowColumn, must be added to header column.
+						headerColumnSet.add(item.getBelowColumn()-1);
+					}else {
+						headerColumnSet.add(col);
 					}
 				}
-				thead.addElement(tr);
+			}
+			
+			//search input at header
+			for(Integer col: headerColumnSet)
+			{
+				Object colObj = columns.get(col);
+				MPrintFormatItem item = null;
+				InstanceAttributeColumn instanceAttributeColumn = null;
+				if (colObj instanceof MPrintFormatItem)
+				{
+					item = (MPrintFormatItem) colObj;
+				}
+				else if (colObj instanceof InstanceAttributeColumn)
+				{
+					instanceAttributeColumn = (InstanceAttributeColumn) colObj;
+					item = instanceAttributeColumn.getPrintFormatItem();
+				}
+				
+				if (item != null)
+				{
+					var printName = item.getPrintName(language);
+					th th = new th();
+					th.addAttribute("data-dt-order", "disable");
+					tr.addElement(th);
+					input searchInput = new input();
+					
+					if (!Util.isEmpty(printName))
+						searchInput.addAttribute("placeholder", "Search "+printName);
+
+					th.addElement(searchInput);
+				}
+			}
+			thead.addElement(tr);
+			
+			//belowColumnMap is List of next line.
+			//This list include map <display order of header column : next line item(col)>.
+			List<Map<Integer, Integer>> belowColumnMap = new ArrayList<>();
+			for (int col = 0; col < columns.size(); col++)
+			{
+				Object colObj = columns.get(col);
+				MPrintFormatItem item = null;
+				InstanceAttributeColumn instanceAttributeColumn = null;
+				if (colObj instanceof MPrintFormatItem)
+				{
+					item = (MPrintFormatItem) colObj;
+				}
+				else if (colObj instanceof InstanceAttributeColumn)
+				{
+					instanceAttributeColumn = (InstanceAttributeColumn) colObj;
+					item = instanceAttributeColumn.getPrintFormatItem();
+				}
+				
+				if (item != null)
+				{
+					if (item.isNextLine() && item.getBelowColumn() >= 1)
+					{
+						//Get display order of header column from value of BelowColumn.
+						int belowColumn = item.getBelowColumn()-1;
+						int i = 0;
+						for(Integer headerCol : headerColumnSet)
+						{
+							if(headerCol.intValue() == belowColumn)
+							{
+								belowColumn = i;
+								break;
+							}
+							i++;
+						}
+						
+						if (belowColumnMap.isEmpty())
+							belowColumnMap.add(new HashMap<>());
+						boolean added = false;
+						for(Map<Integer, Integer> map : belowColumnMap)
+						{
+							if (!map.containsKey(belowColumn))
+							{
+								map.put(belowColumn, col);
+								added = true;
+								break;
+							}
+						}
+						if (!added)
+						{
+							Map<Integer, Integer> map = new HashMap<>();
+							map.put(belowColumn, col);
+							belowColumnMap.add(map);
+						}
+					}
+				}
 			}
 			
 			//	for all rows (-1 = header row)
 			for (int row = -1; row < printData.getRowCount(); row++)
 			{
-				//list of next line + below column items List<below column:column>
-				List<Map<Integer, Integer>> belowColumnMap = new ArrayList<>();
 				//print column index:td
 				Map<Integer, td> tdMap = new HashMap<>();
-				tr tr = new tr();				
+				tr = new tr();				
 				if (row != -1)
 				{
 					printData.setRowIndex(row);
@@ -495,33 +586,9 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 					}
 					if (item != null)
 					{
-						if (item.isNextLine() && item.getBelowColumn() >= 1)
-						{
-							if (row != -1)
-							{
-								//adjust to zero base
-								int belowColumn = item.getBelowColumn()-1;
-								if (belowColumnMap.isEmpty())
-									belowColumnMap.add(new HashMap<>());
-								boolean added = false;
-								for(Map<Integer, Integer> map : belowColumnMap)
-								{
-									if (!map.containsKey(belowColumn))
-									{
-										map.put(belowColumn, col);
-										added = true;
-										break;
-									}
-								}
-								if (!added)
-								{
-									Map<Integer, Integer> map = new HashMap<>();
-									map.put(belowColumn, col);
-									belowColumnMap.add(map);
-								}
-							}
+						if (item.isNextLine() && item.getBelowColumn() >= 1 && !headerColumnSet.contains(col))
 							continue;
-						}
+						
 						printColIndex++;
 						//	header row
 						if (row == -1)
@@ -562,8 +629,13 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 							td td = new td();
 							tr.addElement(td);
 							tdMap.put(printColIndex, td);
-							printColumn(reportEngine, language, extension, isExport, td, item, instanceAttributeColumn, row, printData,
-									colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix, printFormat, mapCssInfo, contextPath);
+							if (item.isNextLine() && item.getBelowColumn() >= 1 && headerColumnSet.contains(col))
+							{
+								;//This case need not to print here, will print with belowColumnMap.
+							}else {
+								printColumn(reportEngine, language, extension, isExport, td, item, instanceAttributeColumn, row, printData,
+										colSuppressRepeats, printColIndex, preValues, suppressMap, cssPrefix, printFormat, mapCssInfo, contextPath);
+							}
 						}
 					}	//	printed
 				}	//	for all columns
@@ -578,7 +650,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				}
 
 				//render next line+below column items
-				if (!belowColumnMap.isEmpty())
+				if (!belowColumnMap.isEmpty() && row != -1)
 				{
 					for(Map<Integer, Integer> map : belowColumnMap)
 					{
@@ -887,7 +959,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 		}
 		else if (item.isImageIsAttached())
 		{
-			MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, item.get_ID(), null, null);
+			try (MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, item.get_ID(), null, null);) {
 			if (attachment != null)
 			{
 				if (attachment.getEntryCount() != 1)
@@ -897,7 +969,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 				}
 				byte[] imageData = attachment.getEntryData(0);
 				createDataURLImageElement(td, imageData, item);
-			}
+			}}
 		}
 		else if (!Util.isEmpty(item.getImageURL(), true))
 		{
@@ -1078,12 +1150,11 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 	private StringBuilder readResource(URL url) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		InputStream is = url.openStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 		String line;
 		while ((line = reader.readLine()) != null) {
 		    builder.append(line);
-		}
-		reader.close();
+		}}
 		return builder;
 	}
 

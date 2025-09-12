@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Replication
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Replication 
 {
@@ -75,6 +75,7 @@ public interface I_AD_Replication
 	  */
 	public int getAD_ReplicationStrategy_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException;
 
     /** Column name AD_Replication_ID */

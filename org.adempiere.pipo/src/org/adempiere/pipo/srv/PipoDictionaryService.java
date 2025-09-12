@@ -135,6 +135,7 @@ public class PipoDictionaryService implements IDictionaryService {
 					MAttachment attachment = new MAttachment (adPackageImp.getCtx(), X_AD_Package_Imp_Proc.Table_ID, adPackageImp.getAD_Package_Imp_Proc_ID(), adPackageImp.getAD_Package_Imp_Proc_UU(), null);
 					attachment.addEntry(packageFile);
 					attachment.save(); // ignoring exceptions
+					attachment.close();
 				}
 			}
 			packIn.getNotifier().notifyRecipient();

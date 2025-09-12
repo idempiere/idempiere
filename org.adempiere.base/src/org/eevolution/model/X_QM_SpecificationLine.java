@@ -24,7 +24,7 @@ import org.compiere.model.*;
 
 /** Generated Model for QM_SpecificationLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="QM_SpecificationLine")
 public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_QM_SpecificationLine (Properties ctx, int QM_SpecificationLine_ID, String trxName)
@@ -137,6 +137,7 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 		return (String)get_Value(COLUMNNAME_AndOr);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
@@ -238,6 +239,7 @@ public class X_QM_SpecificationLine extends PO implements I_QM_SpecificationLine
 		return (String)get_Value(COLUMNNAME_QM_SpecificationLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_QM_Specification getQM_Specification() throws RuntimeException
 	{
 		return (org.eevolution.model.I_QM_Specification)MTable.get(getCtx(), org.eevolution.model.I_QM_Specification.Table_ID)
