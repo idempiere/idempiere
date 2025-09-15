@@ -26,12 +26,10 @@ package org.idempiere.printformat.editor.action;
 
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.adwindow.ADWindow;
-import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.util.Icon;
 import org.compiere.util.Env;
 import org.idempiere.printformat.editor.ui.WPrintFormatEditor;
 import org.osgi.service.component.annotations.Component;
-import org.zkoss.zul.Toolbarbutton;
 
 /**
  * @author hengsin
@@ -63,12 +61,6 @@ public class EditorAction implements IAction {
 	@Override
 	public String getIconSclass() {
 		return Icon.getIconSclass(Icon.TH_LIST);
-	}
-
-	@Override
-	public void updateToolbarCustomBtn(Toolbarbutton toolbarButton, IADTabpanel tabPanel, boolean changed, boolean readOnly)
-	{
-
 	}
 
 }

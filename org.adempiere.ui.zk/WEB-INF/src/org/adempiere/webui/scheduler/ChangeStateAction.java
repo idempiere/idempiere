@@ -31,7 +31,6 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
-import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.util.Icon;
@@ -216,11 +215,5 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 				});				
 			}
 		}
-	}
-
-	@Override
-	public void updateToolbarCustomBtn(Toolbarbutton toolbarButton, IADTabpanel tabPanel, boolean changed, boolean readOnly)
-	{
-
 	}		
 }
