@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
@@ -2848,9 +2850,16 @@ public class GridField
 		if (dependentField.getLookup() instanceof MLookup mLookup)
 		{
 			//  if the lookup is dynamic (i.e. contains this columnName as variable)
-			if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
-					|| (tabNo >= 0 && mLookup.getValidation().matches(".*[@]"+tabNo+"[|]"+columnName+"([:].+)?[@].*"))
-					|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
+			String validation = mLookup.getValidation();
+
+			// Regex
+			String regex = ".*@(?:~|"+tabNo+"\\|)?"+columnName+"(:.+)?@.*";
+
+			// Pattern with DOTALL to match multiple lines
+			Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+			Matcher matcher = pattern.matcher(validation);
+			
+			if (matcher.find())
 			{
 				if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 					+ dependentField.getColumnName() + " set to null");
