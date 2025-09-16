@@ -46,6 +46,7 @@ import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -492,10 +493,19 @@ public class ReportCtl
 							jasperInstance.saveEx();
 							jasperProcessInfo.setAD_PInstance_ID (jasperInstance.getAD_PInstance_ID());
 						
+							boolean runOk = false;
 							if (jasperProcess.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
-								ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
+								runOk = ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
 							} else {
-								ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
+								runOk = ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
+							}
+							if (!runOk || jasperProcessInfo.isError()) {
+								String msg = jasperProcessInfo.getSummary();
+								if (Util.isEmpty(msg, true)) {
+									msg = Msg.getMsg(Env.getCtx(), "ProcessRunError");
+								}
+								msg = msg + " (" + jasperProcessInfo.getTitle() + ")";
+								throw new AdempiereException(msg);
 							}
 						}							
 					}
