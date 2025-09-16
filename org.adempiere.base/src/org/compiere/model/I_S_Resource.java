@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for S_Resource
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_S_Resource 
 {
@@ -75,6 +75,7 @@ public interface I_S_Resource
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name ChargeableQty */
@@ -172,6 +173,7 @@ public interface I_S_Resource
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name ManufacturingResourceType */
@@ -240,6 +242,7 @@ public interface I_S_Resource
 	/** Get Resource Type	  */
 	public int getS_ResourceType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_ResourceType getS_ResourceType() throws RuntimeException;
 
     /** Column name S_Resource_ID */

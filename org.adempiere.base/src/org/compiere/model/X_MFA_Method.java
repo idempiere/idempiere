@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Method
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Method")
 public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName)
@@ -256,6 +256,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 		return (String)get_Value(COLUMNNAME_MFAType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Element getMFA_ElementPrm() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
@@ -366,6 +367,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)

@@ -145,7 +145,7 @@ public class AmtInWords_PL implements AmtInWords {
 		if (pos2 > pos)
 			pos = pos2;
 		String oldamt = amount;
-		amount = amount.replaceAll(",", "");
+		amount = amount.replace(",", "");
 		int newpos = amount.lastIndexOf('.');
 		long dollars = Long.parseLong(amount.substring(0, newpos));
 		sb.append(convert(dollars));

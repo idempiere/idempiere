@@ -237,15 +237,18 @@ public class AmtInWords_ES implements AmtInWords
 		String oldamt = amount;
 
 		if(lang.isDecimalPoint())
-			amount = amount.replaceAll (",", "");   // Old
+			amount = amount.replace(",", "");   // Old
 		else
-			amount = amount.replaceAll( "\\.","");
+			amount = amount.replace( ".","");
 
 		int newpos = 0;
 		if(lang.isDecimalPoint())
 			newpos = amount.lastIndexOf ('.');  // Old
 		else
 			newpos = amount.lastIndexOf (',');
+
+		if (newpos < 0)
+			newpos = amount.length();
 
 		long pesos = Long.parseLong(amount.substring (0, newpos));
 		sb.append (convert (pesos));
@@ -263,10 +266,5 @@ public class AmtInWords_ES implements AmtInWords
 		}
 		return sb.toString ();
 	}	//	getAmtInWords
-
-	public static void main(String[] args) throws Exception {
-		AmtInWords_ES aiw = new AmtInWords_ES();
-		System.out.println(aiw.getAmtInWords("9223372036854775807.99"));
-	}
 
 }	//	AmtInWords_ES

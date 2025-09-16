@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeSetInstance
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_AttributeSetInstance 
 {
@@ -165,6 +165,7 @@ public interface I_M_AttributeSetInstance
 	  */
 	public int getM_AttributeSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name M_Lot_ID */
@@ -180,6 +181,7 @@ public interface I_M_AttributeSetInstance
 	  */
 	public int getM_Lot_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Lot getM_Lot() throws RuntimeException;
 
     /** Column name SerNo */

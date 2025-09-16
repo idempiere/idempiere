@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocBaseGroupLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_DocBaseGroupLine 
 {
@@ -97,6 +97,7 @@ public interface I_C_DocBaseGroupLine
 	  */
 	public int getC_DocBaseGroup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException;
 
     /** Column name Created */

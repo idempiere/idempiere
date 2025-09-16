@@ -236,7 +236,7 @@ public class AmtInWords_PT implements AmtInWords
 		}
 		while (number.compareTo(Env.ZERO) == 1);
 		return (prefix + soFar)
-					.replaceAll(" e Mil", " Mil")
+					.replace(" e Mil", " Mil")
 					.trim ();	
 	}	//	convert
 	
@@ -250,7 +250,7 @@ public class AmtInWords_PT implements AmtInWords
 		amount = amount.setScale(2, RoundingMode.HALF_UP);
 		
 		String samount = amount.toString();
-		samount = samount.replaceAll("\\.", ",");
+		samount = samount.replace(".", ",");
 		
 		return getAmtInWords(samount);
 	}
@@ -274,8 +274,8 @@ public class AmtInWords_PT implements AmtInWords
 			pos = pos2;
 		String oldamt = amount;
 
-		amount = amount.replaceAll ("\\.", "").replaceAll (",", ".");   // Old
-		String vlr = amount.replaceAll (",", ".");
+		amount = amount.replace(".", "").replace(",", ".");   // Old
+		String vlr = amount.replace(",", ".");
 
 		int newpos = amount.lastIndexOf ('.');  // Old
 		if (newpos == -1) newpos = amount.length();
@@ -394,30 +394,30 @@ public class AmtInWords_PT implements AmtInWords
 		/**	Corre\u00e7\u00f5es	*/
 		String result;
 		result = sb.toString ()
-				.replaceAll(" e Quinquilh", " Quinquilh")
-				.replaceAll(" e Quatrilh", " Quatrilh")
-				.replaceAll(" e Trilh", " Trilh")
-				.replaceAll(" e Bilh", " Bilh")
-				.replaceAll(" e Milh", " Milh")
-				.replaceAll("\u00f5es Reais", "\u00f5es de Reais")
-				.replaceAll("\u00e3o Reais", "\u00e3o de Reais")
-				.replaceAll(" e Reais", " Reais")
-				.replaceAll(", de", " de");
+				.replace(" e Quinquilh", " Quinquilh")
+				.replace(" e Quatrilh", " Quatrilh")
+				.replace(" e Trilh", " Trilh")
+				.replace(" e Bilh", " Bilh")
+				.replace(" e Milh", " Milh")
+				.replace("\u00f5es Reais", "\u00f5es de Reais")
+				.replace("\u00e3o Reais", "\u00e3o de Reais")
+				.replace(" e Reais", " Reais")
+				.replace(", de", " de");
 		
 		if (result.indexOf("Quinquilh") > 0 && result.indexOf("Quatrilh") > 0 && result.indexOf("Quatrilh\u00f5es de Rea") == -1 && result.indexOf("Quatrilh\u00e3o de Rea") == -1)
-			result = result.replaceAll("Quinquilh\u00f5es e", "Quinquilh\u00f5es,").replaceAll("Quinquilh\u00e3o e", "Quinquilh\u00e3o,");
+			result = result.replace("Quinquilh\u00f5es e", "Quinquilh\u00f5es,").replace("Quinquilh\u00e3o e", "Quinquilh\u00e3o,");
 		
 		if (result.indexOf("Quatrilh") > 0 && result.indexOf("Trilh") > 0 && result.indexOf("Trilh\u00f5es de Rea") == -1 && result.indexOf("Trilh\u00e3o de Rea") == -1)
-			result = result.replaceAll("Quatrilh\u00f5es e", "Quatrilh\u00f5es,").replaceAll("Quatrilh\u00e3o e", "Quatrilh\u00e3o,");
+			result = result.replace("Quatrilh\u00f5es e", "Quatrilh\u00f5es,").replace("Quatrilh\u00e3o e", "Quatrilh\u00e3o,");
 		
 		if (result.indexOf("Trilh") > 0 && result.indexOf("Bilh") > 0 && result.indexOf("Bilh\u00f5es de Rea") == -1 && result.indexOf("Bilh\u00e3o de Rea") == -1)
-			result = result.replaceAll("Trilh\u00f5es e", "Trilh\u00f5es,").replaceAll("Trilh\u00e3o e", "Trilh\u00e3o,");
+			result = result.replace("Trilh\u00f5es e", "Trilh\u00f5es,").replace("Trilh\u00e3o e", "Trilh\u00e3o,");
 		
 		if (result.indexOf("Bilh") > 0 && result.indexOf("Milh") > 0 && result.indexOf("Milh\u00f5es de Rea") == -1 && result.indexOf("Milh\u00e3o de Rea") == -1)
-			result = result.replaceAll("Bilh\u00f5es e", "Bilh\u00f5es,").replaceAll("Bilh\u00e3o e", "Bilh\u00e3o,");
+			result = result.replace("Bilh\u00f5es e", "Bilh\u00f5es,").replace("Bilh\u00e3o e", "Bilh\u00e3o,");
 		
 		if (result.indexOf("Milh") > 0 && result.indexOf(" de Rea") == -1 && result.indexOf("Mil e") > 0)
-			result = result.replaceAll("Milh\u00f5es e", "Milh\u00f5es,").replaceAll("Milh\u00e3o e", "Milh\u00e3o,");
+			result = result.replace("Milh\u00f5es e", "Milh\u00f5es,").replace("Milh\u00e3o e", "Milh\u00e3o,");
 
 		return result ; 
 	}	//	getAmtInWords

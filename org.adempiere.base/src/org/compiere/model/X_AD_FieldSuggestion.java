@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_FieldSuggestion
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_FieldSuggestion")
 public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName)
@@ -188,6 +188,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 		return (String)get_Value(COLUMNNAME_AD_FieldSuggestion_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
@@ -235,6 +236,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -259,6 +261,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllClients_V getAD_UserClient() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AllClients_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllClients_V.Table_ID)
@@ -286,6 +289,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_ID)
@@ -314,6 +318,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

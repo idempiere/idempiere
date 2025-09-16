@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQ_TopicSubscriberOnly
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_RfQ_TopicSubscriberOnly 
 {
@@ -97,6 +97,7 @@ public interface I_C_RfQ_TopicSubscriberOnly
 	  */
 	public int getC_RfQ_TopicSubscriber_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQ_TopicSubscriber getC_RfQ_TopicSubscriber() throws RuntimeException;
 
     /** Column name Created */
@@ -154,6 +155,7 @@ public interface I_C_RfQ_TopicSubscriberOnly
 	  */
 	public int getM_Product_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -169,6 +171,7 @@ public interface I_C_RfQ_TopicSubscriberOnly
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */

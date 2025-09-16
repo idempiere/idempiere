@@ -44,50 +44,50 @@ Author URI: http://www.bmlaurus.com
 						<li id="main-requestBtns-btnLogin">
 							<a href="<%=Prop.getProperty(Prop.WEBUI_LINK)%>" target="_self">
 								<img name="img_webui" src="<%=Prop.getImage("img_webui.png")%>" border="0" />
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WEBUI_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WEBUI_TEXT)%></div>
 						</li>
 						<li id ="main-requestBtns-btnLocSupp">
 							<a href="<%=Prop.getProperty(Prop.SUPPORT_LINK)%>" target="_blank">
 								<img name="img_locsupport" src="<%=Prop.getImage("img_locsupport.png")%>" border="0" />
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.LOCAL_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.LOCAL_TEXT)%></div>
 						</li>
 						<li id ="main-requestBtns-btnResoc">
 							<a href="<%=Prop.getProperty(Prop.RESOURCE_LINK)%>" target="_blank">
 								<img name="img_resource" src="<%=Prop.getImage("img_resource.png")%>" border="0" />
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.RESOURCE_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.RESOURCE_TEXT)%></div>
 						</li>																		
 						<li id ="main-docuBtns-btnWiki">
 							<a href="<%=Prop.getProperty(Prop.WIKI_LINK)%>" target="_blank">
 								<img name="img_wiki" src="<%=Prop.getImage("img_wiki.png")%>" border="0" />
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WIKI_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WIKI_TEXT)%></div>
 						</li>
 						<li id ="main-docuBtns-btnForum">
 							<a href="<%=Prop.getProperty(Prop.FORUMS_LINK)%>" target="_blank">
 								<img name="img_forum" src="<%=Prop.getImage("img_forum.png")%>" border="0"/>
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.FORUMS_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.FORUMS_TEXT)%></div>
 						</li>
 						<li id ="main-docuBtns-btnSuppReq">
 							<a href="<%=Prop.getProperty(Prop.SUPPORTREQ_LINK)%>" target="_blank">
 								<img name="img_supreq" src="<%=Prop.getImage("img_supreq.png")%>" border="0"/>
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></div>
 						</li>
 						<li id ="main-requestBtns-btnReq">
 							<a href="<%=Prop.getProperty(Prop.WEBSTORE_LINK)%>" target="_blank">
 								<img name="img_webstore" src="<%=Prop.getImage("img_webstore.png")%>" border="0" />
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WEBSTORE_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.WEBSTORE_TEXT)%></div>
 						</li>
 						<li id ="main-requestBtns-btnSendReq">
 							<a href="<%=Prop.getProperty(Prop.SENDREQUEST_LINK)%>" target="_blank">
 								<img name="img_sendreq" src="<%=Prop.getImage("img_sendreq.png")%>" border="0" />
+								<span class="main-txt-btn"><%=Prop.getProperty(Prop.SENDREQUEST_TEXT)%></span>
 							</a>
-							<div class="main-txt-btn"><%=Prop.getProperty(Prop.SENDREQUEST_TEXT)%></div>
 						</li>
 					</ul>
 				</div>

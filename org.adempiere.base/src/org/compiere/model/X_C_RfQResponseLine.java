@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_RfQResponseLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponseLine")
 public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
@@ -117,6 +117,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQLine getC_RfQLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RfQLine)MTable.get(getCtx(), org.compiere.model.I_C_RfQLine.Table_ID)
@@ -182,6 +183,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 		return (String)get_Value(COLUMNNAME_C_RfQResponseLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQResponse getC_RfQResponse() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RfQResponse)MTable.get(getCtx(), org.compiere.model.I_C_RfQResponse.Table_ID)

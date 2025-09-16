@@ -187,7 +187,7 @@ public class AmtInWords_ZH implements AmtInWords
 				zeroSize = 0;
 			} else {											//	Character = 0, insert (scale + 0 )
 				++zeroSize;										
-				if (!(getZero) & numIndex != 2) {				//	separated zero and option of "YUAN" suffix
+				if (!(getZero) && numIndex != 2) {				//	separated zero and option of "YUAN" suffix
 					sb.insert(0, numNames[numUnit]);			//	first insert 0 to Chinese
 				}												//	
 				if (numIndex == 2) {							//	option1: "YUAN"=0
@@ -230,7 +230,7 @@ public class AmtInWords_ZH implements AmtInWords
 
 		//TODO: Check string illegal character
 		
-		amount = amount.replaceAll (",", "");					//	fire period ","
+		amount = amount.replace(",", "");					//	fire period ","
 		//TODO: 1.234,56 as comma replace period 
 		
 		StringBuilder sb = new StringBuilder ();

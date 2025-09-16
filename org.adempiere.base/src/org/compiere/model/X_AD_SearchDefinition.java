@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_SearchDefinition
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_SearchDefinition")
 public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName)
@@ -132,6 +132,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -160,6 +161,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
@@ -224,6 +226,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 		return (String)get_Value(COLUMNNAME_AD_SearchDefinition_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_Style() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
@@ -252,6 +255,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -280,6 +284,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -398,6 +403,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

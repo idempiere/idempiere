@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 <%-- header --%>
 .desktop-north {
 	background-color: #C7E8FF;
@@ -13,14 +14,18 @@
 }
 
 .desktop-header {
-	background-color: #C7E8FF;
+	background-color: ${u:sysConfig("ZK_DESKTOP_HEADER_BACKGROUND_COLOR", "#C7E8FF")}; <%-- SysConfig with default to #C7E8FF --%>
 	width: 100%;
 	height: 46px;
 	padding-left: 4px;
 }
+
 .desktop-header.mobile {
 	height: 36px;
 	padding: 4px 4px;
+}
+.desktop-header.mobile .systemStatus {
+	display:none;
 }
 
 <%-- user name and links --%>
@@ -55,6 +60,7 @@
 }
 .desktop-user-panel.mobile .desktop-header-font.desktop-header-username {
 	font-weight: 600;
+    white-space: nowrap;
 }
 .desktop-user-panel.mobile {
     height: auto;

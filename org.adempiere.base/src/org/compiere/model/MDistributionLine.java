@@ -293,7 +293,21 @@ public class MDistributionLine extends X_GL_DistributionLine
 			setUser1_ID(0);
 		if (!isOverwriteUser2() && getUser2_ID() != 0)
 			setUser2_ID(0);
-		
+		if (!isOverwriteAsset() && getA_Asset_ID() != 0)
+			setA_Asset_ID(0);
+		if (!isOverwriteWarehouse() && getM_Warehouse_ID() != 0)
+			setM_Warehouse_ID(0);
+		if (!isOverwriteEmployee() && getC_Employee_ID() != 0)
+			setC_Employee_ID(0);
+		if (!isOverwriteCharge() && getC_Charge_ID() != 0)
+			setC_Charge_ID(0);
+		if (!isOverwriteCostCenter() && getC_CostCenter_ID() != 0)
+			setC_CostCenter_ID(0);
+		if (!isOverwriteDepartment() && getC_Department_ID() != 0)
+			setC_Department_ID(0);
+		if (!isOverwriteAttributeSetInstance() && getM_AttributeSetInstance_ID() != 0)
+			setM_AttributeSetInstance_ID(0);
+
 		//	Account_ID is mandatory if IsOverWriteAcct=Y
 		if (isOverwriteAcct() && getAccount_ID() == 0)
 		{

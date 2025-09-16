@@ -482,11 +482,11 @@ public class MConversionRate extends X_C_Conversion_Rate
 		return true;
 	}	//	beforeSave
 
-	private volatile static boolean recursiveCall = false;
+	private static final ThreadLocal<Boolean> recursiveCallThreadLocal = new ThreadLocal<Boolean>();
 	
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
-		if (success && !recursiveCall) {
+		if (success && !Boolean.TRUE.equals(recursiveCallThreadLocal.get())) {
 			// Find reverse/reciprocal conversion rate record with reverse from and to currency
 			String whereClause = "ValidFrom=? AND ValidTo=? "
 					+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
@@ -513,11 +513,11 @@ public class MConversionRate extends X_C_Conversion_Rate
 			// avoid recalculation
 			reciprocal.set_Value(COLUMNNAME_DivideRate, getMultiplyRate());
 			reciprocal.set_Value(COLUMNNAME_MultiplyRate, getDivideRate());
-			recursiveCall = true;
+			recursiveCallThreadLocal.set(Boolean.TRUE);
 			try {
 				reciprocal.saveEx();
 			} finally {
-				recursiveCall = false;
+				recursiveCallThreadLocal.remove();
 			}
 		}
 		return success;

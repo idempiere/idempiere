@@ -41,6 +41,7 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
@@ -86,11 +87,11 @@ import org.zkoss.zul.impl.LabelImageElement;
  * 				<li>FR [ 2076330 ] Add new methods in CWindowToolbar class
  */
 public class ADWindowToolbar extends ToolBar implements EventListener<Event>
-{	
-	/**
-	 * generated serial id
+{
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -2174135931334134570L;
+	private static final long serialVersionUID = 8811591650029510064L;
 
 	/**
 	 * Attribute for {@link #overflowPopup} to store the last close timestamp in ms.
@@ -144,6 +145,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
     private ToolBarButton btnProcess;
     
     private ToolBarButton btnQuickForm;
+    private ToolBarButton btnAttributeForm;
     /** button to open overflow popup for toolbar buttons with IsShowMore=Y (for non-mobile client) **/
     private ToolBarButton btnShowMore;
     /** Button Name:ToolBarButton. Map for all buttons **/
@@ -268,10 +270,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         if (MRole.getDefault().isCanReport()) {
             btnReport = createButton("Report", "Report", "Report");
             btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+            btnArchive = createButton("Archive", "Archive", "Archive");
+            btnPrint = createButton("Print", "Print", "Print");
+            btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
         }
-        btnArchive = createButton("Archive", "Archive", "Archive");
-        btnPrint = createButton("Print", "Print", "Print");
-        btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
         if (isPersonalLock) {
             btnLock = createButton("Lock", "Lock", "Lock"); // Elaine 2008/12/04
             btnLock.setDisabled(!isPersonalLock); // Elaine 2008/12/04
@@ -296,6 +298,9 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         btnQuickForm = createButton("QuickForm", "QuickForm", "QuickForm");
         btnQuickForm.setDisabled(false);
 
+        btnAttributeForm = createButton("AttributeForm", "AttributeForm", "AttributeForm");
+        btnAttributeForm.setDisabled(false);
+
         // Help and Exit should always be enabled
         btnHelp.setDisabled(false);
         btnGridToggle.setDisabled(false);
@@ -303,7 +308,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
         btnActiveWorkflows.setDisabled(false); // Elaine 2008/07/17
         btnRequests.setDisabled(false); // Elaine 2008/07/22
-        btnArchive.setDisabled(false); // Elaine 2008/07/28
+		if (btnArchive != null)
+			btnArchive.setDisabled(false); // Elaine 2008/07/28
 
         if (MRole.getDefault().isCanExport())
         {
@@ -418,7 +424,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         {
         	if (ThemeManager.isUseFontIconForImage()) 
         	{
-        		String iconSclass = "z-icon-" + image;
+        		String iconSclass = Icon.getIconSclass(image);
         		btn.setIconSclass(iconSclass);
         		LayoutUtils.addSclass("font-icon-toolbar-button", btn);
         	}
@@ -517,7 +523,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		altKeyMap.put(VK_Z, btnIgnore);
 		if (btnReport != null)
 			altKeyMap.put(VK_R, btnReport);		
-		altKeyMap.put(VK_P, btnPrint);
+		if (btnPrint != null)
+			altKeyMap.put(VK_P, btnPrint);
 		altKeyMap.put(VK_O, btnProcess);
 		altKeyMap.put(VK_L, btnCustomize);
 	}
@@ -774,7 +781,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
      */
     public void enablePrint(boolean enabled)
     {
-    	this.btnPrint.setDisabled(!enabled);
+		if (btnPrint != null)
+			this.btnPrint.setDisabled(!enabled);
     }
 
     /**
@@ -820,7 +828,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
      */
     public void enableArchive(boolean enabled)
     {
-    	btnArchive.setDisabled(!enabled);
+		if (btnArchive != null)
+			btnArchive.setDisabled(!enabled);
     }
     
     /**
@@ -859,6 +868,16 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		btnQuickForm.setDisabled(!enabled);
 	}
 
+    /**
+     * Enable/disable Attribute Form button
+     * @param enabled
+     */
+	public void enableAttributeForm(boolean enabled)
+	{
+		btnAttributeForm.setDisabled(!enabled);
+		btnAttributeForm.setVisible(enabled);
+	}
+
 	/**
      * Turn on/off Lock button (Pressed=On, Not Pressed=Off)
      * @param locked
@@ -869,8 +888,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 
       	if (ThemeManager.isUseFontIconForImage())
       	{
-      		String iconSclass = "z-icon-" + (this.btnLock.isPressed() ? "lock" : "unlock") ;
-      		this.btnLock.setIconSclass(iconSclass);
+      		this.btnLock.setIconSclass(Icon.getIconSclass(this.btnLock.isPressed() ? Icon.LOCK : Icon.UNLOCK));
       		LayoutUtils.addSclass("font-icon-toolbar-button", this.btnLock);
       	}
       	else
@@ -1128,8 +1146,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
-			if (overflows != null)
-				toolbarCustomBtn.dynamicDisplay(overflows.contains(toolbarCustomBtn.getToolbarbutton()));
+			toolbarCustomBtn.dynamicDisplay(overflows == null || overflows.contains(toolbarCustomBtn.getToolbarbutton()));
 			customButtons.add(toolbarCustomBtn.getToolbarbutton());
 		}
 		
@@ -1414,7 +1431,7 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	private void createOverflowButtonForMobile() {
 		mobileOverflowButton = new A();
 		mobileOverflowButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowMore"));
-		mobileOverflowButton.setIconSclass("z-icon-ShowMore");
+		mobileOverflowButton.setIconSclass(Icon.getIconSclass(Icon.SHOW_MORE));
 		mobileOverflowButton.setSclass("font-icon-toolbar-button toolbar-button mobile-overflow-link");
 		appendChild(mobileOverflowButton);
 		newOverflowPopup();

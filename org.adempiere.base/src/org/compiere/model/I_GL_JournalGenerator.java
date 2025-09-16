@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_JournalGenerator
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_GL_JournalGenerator 
 {
@@ -75,6 +75,7 @@ public interface I_GL_JournalGenerator
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -90,6 +91,7 @@ public interface I_GL_JournalGenerator
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_ElementValueAdjustCR_ID */
@@ -101,6 +103,7 @@ public interface I_GL_JournalGenerator
 	/** Get Account Adjust CR	  */
 	public int getC_ElementValueAdjustCR_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValueAdjustCR() throws RuntimeException;
 
     /** Column name C_ElementValueAdjustDR_ID */
@@ -112,6 +115,7 @@ public interface I_GL_JournalGenerator
 	/** Get Account Adjust DR	  */
 	public int getC_ElementValueAdjustDR_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValueAdjustDR() throws RuntimeException;
 
     /** Column name Created */
@@ -156,6 +160,7 @@ public interface I_GL_JournalGenerator
 	  */
 	public int getGL_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException;
 
     /** Column name GL_JournalGenerator_ID */

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Registration
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Registration")
 public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_MFA_Registration (Properties ctx, int MFA_Registration_ID, String trxName)
@@ -126,6 +126,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -348,6 +349,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 		return (Timestamp)get_Value(COLUMNNAME_MFAValidatedAt);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
 	{
 		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_ID)

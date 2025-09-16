@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for MFA_Registration
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_MFA_Registration 
 {
@@ -75,6 +75,7 @@ public interface I_MFA_Registration
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
@@ -234,6 +235,7 @@ public interface I_MFA_Registration
 	  */
 	public int getMFA_Method_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException;
 
     /** Column name MFA_Registration_ID */

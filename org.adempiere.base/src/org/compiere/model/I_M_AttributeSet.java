@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_AttributeSet 
 {
@@ -35,9 +35,9 @@ public interface I_M_AttributeSet
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 7 - System - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
 
@@ -90,6 +90,21 @@ public interface I_M_AttributeSet
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name EntityType */
+    public static final String COLUMNNAME_EntityType = "EntityType";
+
+	/** Set Entity Type.
+	  * Dictionary Entity Type;
+ Determines ownership and synchronization
+	  */
+	public void setEntityType (String EntityType);
+
+	/** Get Entity Type.
+	  * Dictionary Entity Type;
+ Determines ownership and synchronization
+	  */
+	public String getEntityType();
 
     /** Column name GuaranteeDays */
     public static final String COLUMNNAME_GuaranteeDays = "GuaranteeDays";
@@ -287,6 +302,7 @@ public interface I_M_AttributeSet
 	  */
 	public int getM_LotCtl_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_LotCtl getM_LotCtl() throws RuntimeException;
 
     /** Column name M_SerNoCtl_ID */
@@ -302,6 +318,7 @@ public interface I_M_AttributeSet
 	  */
 	public int getM_SerNoCtl_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_SerNoCtl getM_SerNoCtl() throws RuntimeException;
 
     /** Column name MandatoryType */

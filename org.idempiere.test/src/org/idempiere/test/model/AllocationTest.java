@@ -69,7 +69,7 @@ import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
-import org.junit.jupiter.api.parallel.ResourceLock;
+import org.mockito.MockedStatic;
 
 /**
  * @author Carlos Ruiz - globalqss
@@ -402,13 +402,12 @@ public class AllocationTest extends AbstractTestCase {
 	}
 
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testPaymentReversePosting() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.COLOR_INC.id); 
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -421,12 +420,15 @@ public class AllocationTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = BigDecimal.valueOf(1d / eurToUsd1.doubleValue());
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = BigDecimal.valueOf(1d / eurToUsd2.doubleValue());
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			
 			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
 			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
 					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
@@ -476,18 +478,11 @@ public class AllocationTest extends AbstractTestCase {
 					else if (acctLoss.getAccount_ID() == fa.getAccount_ID())
 						assertTrue(fa.getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
 				}
-			}
-			
-		} finally {
-			rollback();
-
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);			
+			}			
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5757
 	 */
@@ -541,25 +536,26 @@ public class AllocationTest extends AbstractTestCase {
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5591
 	 */
 	public void testInvoiceReversePostingWithDiffCurrency() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
-		Timestamp date = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp date = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(0.000063836578);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		BigDecimal usdToEur = BigDecimal.valueOf(1d / eurToUsd.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		BigDecimal totalLines = new BigDecimal(33300);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date, usdToEur);
+			
 			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 			invoice.setBPartner(bpartner);
 			invoice.setIsSOTrx(false);
@@ -603,7 +599,7 @@ public class AllocationTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(invoice.getC_BPartner_ID());
 				
 				MAccount acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);;
+				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 				
 				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> factAccts = query.list();
@@ -618,18 +614,13 @@ public class AllocationTest extends AbstractTestCase {
 					}				
 				}
 			}
-			
-		} finally {
-			rollback();
-			deleteConversionRate(cr);		
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	public void testAllocatePaymentPosting() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHROME_INC.id); 
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -642,12 +633,15 @@ public class AllocationTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = BigDecimal.valueOf(1d / eurToUsd1.doubleValue());
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = BigDecimal.valueOf(1d / eurToUsd2.doubleValue());
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			
 			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
 			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
 					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
@@ -718,22 +712,7 @@ public class AllocationTest extends AbstractTestCase {
 						assertTrue(fa.getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
 				}
 			}
-			
-		} finally {
-			rollback();
-
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);			
 		}
-	}
-	
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
-	}
-	
-	private void deleteConversionRate(MConversionRate cr) {
-		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MPayment createReceiptPayment(int C_BPartner_ID, int C_BankAccount_ID, Timestamp date, int C_Currency_ID, int C_ConversionType_ID, BigDecimal payAmt) {
@@ -1838,7 +1817,6 @@ public class AllocationTest extends AbstractTestCase {
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,587.48, Period 1
@@ -1849,7 +1827,7 @@ public class AllocationTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5053
 	 */
 	public void testAllocatePaymentPostingWithCurrencyBalancing() {
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
 		cal.add(Calendar.DAY_OF_MONTH, -2);
@@ -1863,22 +1841,25 @@ public class AllocationTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd1 = new BigDecimal(32.458922422202);
+		BigDecimal usdToEur1 = new BigDecimal(32.458922422202);
+		BigDecimal eurToUsd1 = BigDecimal.valueOf(1d / usdToEur1.doubleValue());
 		
 		MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
 		DB.getDatabase().forUpdate(bp, 0);
 		
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur2 = new BigDecimal(33.93972535567);
+		BigDecimal eurToUsd2 = BigDecimal.valueOf(1d / usdToEur2.doubleValue());
 		
-		BigDecimal eurToUsd2 = new BigDecimal(33.93972535567);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
-		
-		BigDecimal eurToUsd3 = new BigDecimal(33.27812049435);
-		MConversionRate cr3 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, eurToUsd3, false);
+		BigDecimal usdToEur3 = new BigDecimal(33.27812049435);
+		BigDecimal eurToUsd3 = BigDecimal.valueOf(1d / usdToEur3.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
+			mockGetRate(conversionRateMock, euro, usd, 0, date3, eurToUsd3);
+			
 			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
 			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
 					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
@@ -2023,12 +2004,6 @@ public class AllocationTest extends AbstractTestCase {
 					}
 				}
 			}
-		} finally {
-			rollback();
-			
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			deleteConversionRate(cr3);			
 		}
 	}
 
@@ -2080,5 +2055,13 @@ public class AllocationTest extends AbstractTestCase {
 		postDocument(invoice);
 
 		return invoice;
-	}	
+	}
+	
+	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
+		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
+				conversionDate, multiplyRate, getAD_Client_ID(), getAD_Org_ID());
+		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
+				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
+	}
 }

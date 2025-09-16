@@ -155,11 +155,11 @@ public class MChart extends X_AD_Chart {
 		}
 		if (ds instanceof CategoryDataset) {
 			json.addProperty("name", get_Translation(COLUMNNAME_Name));
-			json.addProperty("domain-label", get_Translation(COLUMNNAME_DomainLabel));
-			json.addProperty("range-label", get_Translation(COLUMNNAME_RangeLabel));
-			json.addProperty("display-legend", isDisplayLegend());
-			json.addProperty("orientation", getChartOrientation());
-			json.addProperty("chart-type", getChartType());
+			json.addProperty("domainLabel", get_Translation(COLUMNNAME_DomainLabel));
+			json.addProperty("rangeLabel", get_Translation(COLUMNNAME_RangeLabel));
+			json.addProperty("displayLegend", isDisplayLegend());
+			json.addProperty("chartOrientation", getChartOrientation());
+			json.addProperty("chartType", getChartType());
 			CategoryDataset cds = (CategoryDataset) ds;
 			int rowCount = cds.getRowCount();
 			int columnCount = cds.getColumnCount();
@@ -177,11 +177,11 @@ public class MChart extends X_AD_Chart {
 			}
 		} else if (ds instanceof XYDataset) {
 			json.addProperty("name", get_Translation(COLUMNNAME_Name));
-			json.addProperty("domain-label", get_Translation(COLUMNNAME_DomainLabel));
-			json.addProperty("range-label", get_Translation(COLUMNNAME_RangeLabel));
-			json.addProperty("display-legend", isDisplayLegend());
-			json.addProperty("orientation", getChartOrientation());
-			json.addProperty("chart-type", getChartType());
+			json.addProperty("domainLabel", get_Translation(COLUMNNAME_DomainLabel));
+			json.addProperty("rangeLabel", get_Translation(COLUMNNAME_RangeLabel));
+			json.addProperty("displayLegend", isDisplayLegend());
+			json.addProperty("chartOrientation", getChartOrientation());
+			json.addProperty("chartType", getChartType());
 			XYDataset xyds = (XYDataset) ds;
 			int seriesCount = xyds.getSeriesCount();
 			for (int series = 0; series < seriesCount; series++) {
@@ -201,8 +201,8 @@ public class MChart extends X_AD_Chart {
 			}
 		} else if (ds instanceof PieDataset) {
 			json.addProperty("name", get_Translation(COLUMNNAME_Name));
-			json.addProperty("display-legend", isDisplayLegend());
-			json.addProperty("chart-type", getChartType());
+			json.addProperty("displayLegend", isDisplayLegend());
+			json.addProperty("chartType", getChartType());
 			PieDataset pds = (PieDataset) ds;
 			for (int i = 0; i < pds.getKeys().size(); i++) {
 				Comparable<?> key = pds.getKey(i);

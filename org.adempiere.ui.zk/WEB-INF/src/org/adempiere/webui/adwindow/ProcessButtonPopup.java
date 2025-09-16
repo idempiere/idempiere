@@ -111,6 +111,8 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 				if (this.getChildren().size() > 0)
 					appendChild(new Menuseparator());
 				Menu menu = new Menu(Msg.getElement(Env.getCtx(), "DocAction"));
+				if (docActionBtn.isDisabled())
+					menu.setDisabled(true);
 				appendChild(menu);
 				Menupopup popup = new Menupopup();
 				popup.setAttribute(BUTTON_ATTRIBUTE, docActionBtn);

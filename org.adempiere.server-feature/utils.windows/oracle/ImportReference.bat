@@ -8,18 +8,19 @@
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
 @if (%ADEMPIERE_DB_SERVER%) == () goto environment
 @if (%ADEMPIERE_DB_PORT%) == () goto environment
-@Rem Must have parameter: systemAccount
-@if (%1) == () goto usage
+@Rem Must have parameter: systemAccount systemPwd
+@if (%3) == () goto usage
+@if (%4) == () goto usage
 
 @echo -------------------------------------
 @echo Re-Create new user
 @echo -------------------------------------
-@sqlplus -S %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateUser.sql Reference Adempiere
+@sqlplus -S %3/%4@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateUser.sql Reference Adempiere
 
 @echo -------------------------------------
 @echo Import Reference
 @echo -------------------------------------
-imp %1@%ADEMPIERE_DB_NAME% FILE=%IDEMPIERE_HOME%\data\Reference.dmp FROMUSER=(reference) TOUSER=reference
+imp %3/%4@%ADEMPIERE_DB_NAME% FILE=%IDEMPIERE_HOME%\data\Reference.dmp FROMUSER=(reference) TOUSER=reference
 
 @echo -------------------------------------
 @echo Check System

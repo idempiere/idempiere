@@ -16,12 +16,13 @@
 
 package org.adempiere.webui.panel;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,6 +48,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
@@ -62,6 +64,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.Medias;
+import org.zkoss.io.RepeatableInputStream;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
@@ -250,7 +253,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 		}
 
-		if (m_attachment.isReadOnly()) {
+		if (m_attachment.isReadOnly(false)) {
 			toolBar.removeChild(bLoad);
 			toolBar.removeChild(bDelete);
 			confirmPanel.removeChild(bDeleteAll);
@@ -334,7 +337,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bSave.setEnabled(false);
 		bSave.setSclass("img-btn");
 		if (ThemeManager.isUseFontIconForImage())
-			bSave.setIconSclass("z-icon-Export");
+			bSave.setIconSclass(Icon.getIconSclass(Icon.EXPORT));
 		else
 			bSave.setImage(ThemeManager.getThemeResource("images/Export24.png"));
 		bSave.setTooltiptext(Msg.getMsg(Env.getCtx(), "AttachmentSave"));
@@ -343,14 +346,14 @@ public class WAttachment extends Window implements EventListener<Event>
 		bSaveAllAsZip.setEnabled(false);
 		bSaveAllAsZip.setSclass("img-btn");
 		if (ThemeManager.isUseFontIconForImage())
-			bSaveAllAsZip.setIconSclass("z-icon-file-zip-o");
+			bSaveAllAsZip.setIconSclass(Icon.getIconSclass(Icon.FILE_ZIP));
 		else
 			bSaveAllAsZip.setImage(ThemeManager.getThemeResource("images/SaveAsZip24.png"));
 		bSaveAllAsZip.setTooltiptext(Msg.getMsg(Env.getCtx(), "ExportZIP"));
 		bSaveAllAsZip.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bLoad.setIconSclass("z-icon-Import");
+			bLoad.setIconSclass(Icon.getIconSclass(Icon.IMPORT));
 		else
 			bLoad.setImage(ThemeManager.getThemeResource("images/Import24.png"));
 		bLoad.setSclass("img-btn");
@@ -363,7 +366,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 		bEmail.setEnabled(false);
 		if (ThemeManager.isUseFontIconForImage())
-			bEmail.setIconSclass("z-icon-SendMail");
+			bEmail.setIconSclass(Icon.getIconSclass(Icon.SEND_MAIL));
 		else
 			bEmail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bLoad.setSclass("img-btn");
@@ -391,7 +394,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bOk.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bDeleteAll.setIconSclass("z-icon-Delete");
+			bDeleteAll.setIconSclass(Icon.getIconSclass(Icon.DELETE));
 		else
 			bDeleteAll.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		bDeleteAll.setSclass("img-btn");
@@ -399,7 +402,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bDeleteAll.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DeleteAll")));
 
 		if (ThemeManager.isUseFontIconForImage())
-			bPreview.setIconSclass("z-icon-Find");
+			bPreview.setIconSclass(Icon.getIconSclass(Icon.FIND));
 		else
 			bPreview.setImage(ThemeManager.getThemeResource("images/Find24.png"));
 		bPreview.setSclass("img-btn");
@@ -451,8 +454,12 @@ public class WAttachment extends Window implements EventListener<Event>
 	public void dispose ()
 	{
 		preview = null;
-		this.detach();
-	} // dispose
+		if (m_attachment != null) {
+            m_attachment.close();
+            m_attachment = null;
+        }
+        this.detach();
+    } // dispose
 
 	/**
 	 * Load Attachment items
@@ -497,9 +504,9 @@ public class WAttachment extends Window implements EventListener<Event>
 		if (entry != null)
 		{
 			String mimeType = entry.getContentType();
-			byte[] data = entry.getData();
+			long entrySize = entry.getSize();
 			String unit = " KB";
-			BigDecimal size = new BigDecimal(data != null ? data.length : 0);
+			BigDecimal size = new BigDecimal(entrySize);
 			size = size.divide(new BigDecimal("1024"));
 			if (size.compareTo(new BigDecimal("1024")) >= 0)
 			{
@@ -516,7 +523,7 @@ public class WAttachment extends Window implements EventListener<Event>
 
 			if (autoPreviewList.contains(mimeType))
 			{
-				if (data.length <= maxPreviewSize) {
+				if (entrySize <= maxPreviewSize) {
 					displayData(index, immediate);
 				} else {
 					clearPreview();
@@ -535,8 +542,8 @@ public class WAttachment extends Window implements EventListener<Event>
 				IMediaView view = Extensions.getMediaView(mimeType, getExtension(entry.getName()), ClientInfo.isMobile());
 				if (view != null) 
 				{
-					if (data.length <= maxPreviewSize) {
-						media = new AMedia(entry.getName(), null, mimeType, entry.getData());
+					if (entrySize <= maxPreviewSize) {
+						media = new AMedia(entry.getName(), null, mimeType, RepeatableInputStream.getInstance(entry.getInputStream()));
 						try {
 							customPreviewComponent = view.renderMediaView(previewPanel, media, true);
 						} catch (Exception e) {
@@ -622,14 +629,14 @@ public class WAttachment extends Window implements EventListener<Event>
 	public void displaySelected() {
 		MAttachmentEntry entry = m_attachment.getEntry(displayIndex);
 		if (log.isLoggable(Level.CONFIG)) log.config("Index=" + displayIndex + " - " + entry);
-		if (entry != null && entry.getData() != null && autoPreviewList.contains(entry.getContentType()))
+		if (entry != null && entry.getSize() > 0 && autoPreviewList.contains(entry.getContentType()))
 		{
 			if (log.isLoggable(Level.CONFIG)) log.config(entry.toStringX());
 
 			try
 			{
 				String contentType = entry.getContentType();
-				media = new AMedia(entry.getName(), null, contentType, entry.getData());
+				media = new AMedia(entry.getName(), null, contentType, RepeatableInputStream.getInstance(entry.getInputStream()));
 				if (   MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
 					&& Medias.PDF_MIME_TYPE.equals(contentType)) {
 					mediaVersion++;
@@ -758,7 +765,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 * @param media
 	 */
 	private void processUploadMedia(Media media) {
-		if (media != null && ((media.isBinary() && media.getByteData().length>0) || (!media.isBinary() && media.getStringData().length() > 0)))
+		if (media != null)
 		{
 			;
 		}
@@ -770,7 +777,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 
 		String fileName = media.getName();
-		log.config(fileName);
+		if (log.isLoggable(Level.CONFIG)) log.config(fileName);
 		int cnt = m_attachment.getEntryCount();
 
 		//update
@@ -778,7 +785,27 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 			if (m_attachment.getEntryName(i).equals(fileName))
 			{
-				m_attachment.updateEntry(i, getMediaData(media));
+                if (media.inMemory()) {
+                    byte[] data = getMediaData(media);
+                    if (data.length == 0)
+                    {
+                        preview.setVisible(true);
+                        preview.invalidate();
+                        return;
+                    }
+                    m_attachment.updateEntry(i, data);
+                }
+                else
+                {
+                    File file = toTempFile(media, fileName);
+                    if (file.length() == 0)
+                    {
+                        preview.setVisible(true);
+                        preview.invalidate();
+                        return;
+                    }
+                    m_attachment.updateEntry(i, file);
+                }
 				cbContent.setSelectedIndex(i);
 				m_change = true;
 				return;
@@ -786,7 +813,30 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 
 		//new
-		if (m_attachment.addEntry(fileName, getMediaData(media)))
+        boolean added = false;
+        if (media.inMemory())
+        {
+            byte[] data = getMediaData(media);
+            if (data.length == 0)
+            {
+                preview.setVisible(true);
+                preview.invalidate();
+                return;
+            }
+            added = m_attachment.addEntry(fileName, data);
+        }
+        else
+        {
+            File file = toTempFile(media, fileName);
+            if (file.length() == 0)
+            {
+                preview.setVisible(true);
+                preview.invalidate();
+                return;
+            }
+            added = m_attachment.addEntry(fileName, file);
+        }
+		if (added)
 		{
 			cbContent.appendItem(media.getName(), media.getName());
 			cbContent.setSelectedIndex(cbContent.getItemCount()-1);
@@ -794,7 +844,23 @@ public class WAttachment extends Window implements EventListener<Event>
 		}
 	}
 
-	/**
+    private File toTempFile(Media media, String fileName) {
+        Path tempDir = null;
+        try {
+            tempDir = Files.createTempDirectory("attachment_");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try (InputStream inputStream = media.getStreamData()) {
+            Path tempFile = tempDir.resolve(fileName);
+            Files.copy(inputStream, tempFile);
+            return tempFile.toFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
 	 * Get byte[] data from media
 	 * @param media
 	 * @return byte[] data
@@ -803,25 +869,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		byte[] bytes = null;
 		
 		try {
-
-			if (media.inMemory())
-				bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
-			else {
-				InputStream is = null;
-				try {
-					is = media.getStreamData();
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					byte[] buf = new byte[1000];
-					int byteread = 0;
-
-					while ((byteread = is.read(buf)) != -1)
-						baos.write(buf, 0, byteread);
-					bytes = baos.toByteArray();
-				} finally {
-					if (is != null)
-						is.close();
-				}
-			}
+            bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
 		} catch (IOException e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			throw new IllegalStateException(e.getLocalizedMessage());
@@ -902,11 +950,11 @@ public class WAttachment extends Window implements EventListener<Event>
 			return;
 
 		MAttachmentEntry entry = m_attachment.getEntry(index);
-		if (entry != null && entry.getData() != null)
+		if (entry != null && entry.getSize() > 0)
 		{
 			try
 			{
-				media = new AMedia(entry.getName(), null, entry.getContentType(), entry.getData());
+				media = new AMedia(entry.getName(), null, entry.getContentType(), RepeatableInputStream.getInstance(entry.getInputStream()));
 				Filedownload.save(media);
 			}
 			catch (Exception e)

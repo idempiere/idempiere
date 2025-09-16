@@ -32,7 +32,7 @@ CMD="sqlplus -S $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$ADEMPIERE_DB_SERVER:$
 SILENTCMD="sqlplus -S $ADEMPIERE_DB_USER/$ADEMPIERE_DB_PASSWORD@$ADEMPIERE_DB_SERVER:$ADEMPIERE_DB_PORT/$ADEMPIERE_DB_NAME"
 ERROR_STRINGS="\b(ORA-[0-9]+:|TNS-|PLS-|SP2-)"
 DIR_POST=$IDEMPIERE_HOME/migration
-if [ "x$4" = "x" ]
+if [ "$4" = "" ]
 then
     DIR_SCRIPTS=$IDEMPIERE_HOME/migration
 else
@@ -45,6 +45,11 @@ else
 fi
 
 cd "$DIR_SCRIPTS" || (echo "ERROR: Cannot change to folder $DIR_SCRIPTS"; exit 1)
+
+if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
+  CMD="docker exec -i $ORACLE_DOCKER_CONTAINER $CMD"
+  SILENTCMD="docker exec -i $ORACLE_DOCKER_CONTAINER $SILENTCMD"
+fi
 
 # Create list of files already applied - registered in AD_MigrationScript table
 echo "set heading off
@@ -91,7 +96,7 @@ else
         echo "No scripts were found to apply"
     fi
 fi
-if [ x$APPLIED = xY ]
+if [ $APPLIED = Y ]
 then
     cd "$DIR_POST" || (echo "ERROR: Cannot change to folder $DIR_POST"; exit 1)
     for FILE in processes_post_migration/"$ADEMPIERE_DB_PATH"/*.sql

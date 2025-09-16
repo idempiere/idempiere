@@ -47,7 +47,6 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 	 */
 	private static final long serialVersionUID = 6731366890875525147L;
 	private static CLogger s_log = CLogger.getCLogger(MDepreciationExp.class);
-	private CLogger log = CLogger.getCLogger(this.getClass());
 	
     /**
      * UUID based Constructor
@@ -229,8 +228,9 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 			}
 			//
 			assetwk.adjustAccumulatedDepr(getExpense(), getExpense_F(), false);
-			// Update workfile - Remaining asset cost
+			// set period and dateacct from latest depreciation expense (do nothing in case of first depreciation)
 			assetwk.setA_Current_Period();
+			// Update workfile - Remaining asset cost
 			assetwk.saveEx();
 			//adjust to the last day of the month in before save assetwk.
 			setDateAcct(assetwk.getDateAcct());
@@ -243,6 +243,10 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		setProcessed(true);
 		updateFrom(assetwk);
 		saveEx();
+
+		// Increment the current period (A_Current_Period) 1, and a month DateAcct.
+		assetwk.setA_Current_Period();
+		assetwk.saveEx();
 	}
 	
 	@Override

@@ -202,7 +202,7 @@ public class AmtInWords_IN implements AmtInWords
 		
 		int pos = amount.lastIndexOf ('.');
 		String oldamt = amount;
-		amount = amount.replaceAll (",", "");
+		amount = amount.replace(",", "");
 		String cents = pos > 0 ? oldamt.substring (pos + 1):null;
 		double numDouble = Double.parseDouble(amount);
 		sayNumber(result, numDouble);

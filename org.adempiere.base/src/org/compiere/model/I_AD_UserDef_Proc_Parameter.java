@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Proc_Parameter
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_UserDef_Proc_Parameter 
 {
@@ -62,6 +62,7 @@ public interface I_AD_UserDef_Proc_Parameter
 	  */
 	public int getAD_FieldGroup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -86,6 +87,7 @@ public interface I_AD_UserDef_Proc_Parameter
 	/** Get Process Parameter	  */
 	public int getAD_Process_Para_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
 
     /** Column name AD_Reference_ID */
@@ -101,6 +103,7 @@ public interface I_AD_UserDef_Proc_Parameter
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -116,6 +119,7 @@ public interface I_AD_UserDef_Proc_Parameter
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name AD_UserDef_Proc_ID */
@@ -131,6 +135,7 @@ public interface I_AD_UserDef_Proc_Parameter
 	  */
 	public int getAD_UserDef_Proc_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Proc getAD_UserDef_Proc() throws RuntimeException;
 
     /** Column name AD_UserDef_Proc_Parameter_ID */
@@ -168,6 +173,7 @@ public interface I_AD_UserDef_Proc_Parameter
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name Created */

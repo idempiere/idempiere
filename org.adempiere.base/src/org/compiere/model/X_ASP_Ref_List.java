@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Ref_List
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Ref_List")
 public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_ASP_Ref_List (Properties ctx, int ASP_Ref_List_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Ref_List)MTable.get(getCtx(), org.compiere.model.I_AD_Ref_List.Table_ID)
@@ -140,6 +141,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -168,6 +170,7 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
 	{
 		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)

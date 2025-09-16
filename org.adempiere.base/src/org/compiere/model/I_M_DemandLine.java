@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DemandLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_DemandLine 
 {
@@ -75,6 +75,7 @@ public interface I_M_DemandLine
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */
@@ -141,6 +142,7 @@ public interface I_M_DemandLine
 	  */
 	public int getM_Demand_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Demand getM_Demand() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -156,6 +158,7 @@ public interface I_M_DemandLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Qty */

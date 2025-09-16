@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Tab
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Tab")
 public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_ASP_Tab (Properties ctx, int ASP_Tab_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -197,6 +198,7 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 		return (String)get_Value(COLUMNNAME_ASP_Tab_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Window getASP_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_ASP_Window)MTable.get(getCtx(), org.compiere.model.I_ASP_Window.Table_ID)

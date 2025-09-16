@@ -93,7 +93,8 @@
 	content: "\f050";
 }
 .z-icon-FieldSuggestion:before {
-	content: "\f0e5";
+	content: "\e2ca";
+	font-weight: 900;
 }
 .z-icon-FileImport:before {
 	content: "\f0ee";
@@ -280,7 +281,7 @@
 .z-icon-Previous:before {
 	content: "\f0d9";
 }
-.z-icon-PreviousRecord:before, z-icon-angle-left:before {
+.z-icon-PreviousRecord:before, .z-icon-angle-left:before {
 	content: "\f060";
 }
 .z-icon-Print:before {
@@ -414,5 +415,9 @@
 }
 .z-icon-ZoomAcross:before {	
 	content: "\f00e";
+	font-weight: 900;
+}
+.z-icon-AttributeForm:before {
+	content: "\f29e";
 	font-weight: 900;
 }

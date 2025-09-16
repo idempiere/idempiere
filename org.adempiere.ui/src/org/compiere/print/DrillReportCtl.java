@@ -498,7 +498,7 @@ public class DrillReportCtl {
 			MProcessDrillRulePara keyPara = new MProcessDrillRulePara(Env.getCtx(), 0, null);
 			keyPara.setAD_Process_DrillRule_ID(processDrillRule.getAD_Process_DrillRule_ID());
 			keyPara.setAD_Process_Para_ID(processDrillRule.getAD_Process_Para_ID());
-			MProcessDrillRulePara[] sParamsTmp = Arrays.stream(sParams).toArray(MProcessDrillRulePara[]::new);;
+			MProcessDrillRulePara[] sParamsTmp = Arrays.stream(sParams).toArray(MProcessDrillRulePara[]::new);
 			sParams = new MProcessDrillRulePara[sParamsTmp.length+1];
 			int idx = 0;
 			for(idx = 0; idx < sParamsTmp.length; idx++) {

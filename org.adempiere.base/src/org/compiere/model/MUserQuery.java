@@ -354,5 +354,28 @@ public class MUserQuery extends X_AD_UserQuery
 
 		return !getCode().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}
+	
+	/**
+	 * Retrieves the default user query for the specified window, tab, and user.
+	 *
+	 * <p>This method constructs a query to fetch the default user query for the current user
+	 * based on the `AD_Window_ID`, `AD_Tab_ID`, and `AD_User_ID`. It ensures that only active records
+	 * are considered and filters the results by the current client.</p>
+	 *
+	 * @return The default `MUserQuery` object for the specified window, tab, and user, or `null` if no match is found.
+	 */
+	public MUserQuery getDefaultQueryForUserAndTab() {
+		String whereClause = "AD_Window_ID=? AND AD_Tab_ID=? AND AD_User_ID=? "
+				+ "AND AD_UserQuery_ID !=? AND IsDefault=?";		
+		return new Query(Env.getCtx(), Table_Name, whereClause,null)
+				.setParameters(getAD_Window_ID(), getAD_Tab_ID(), Env.getAD_User_ID(Env.getCtx()), getAD_UserQuery_ID(), true)
+				.setClient_ID()
+				.setOnlyActiveRecords(true)
+				.first();
+	}	//	getDefaultQueriesForUserAndTab
+	
+	public boolean isShared() {
+		return getAD_User_ID() <= 0;
+	} // isShared
 
 }	//	MUserQuery

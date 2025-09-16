@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_CtxHelpSuggestion
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_CtxHelpSuggestion 
 {
@@ -58,6 +58,7 @@ public interface I_AD_CtxHelpSuggestion
 	/** Get Context Help Message	  */
 	public int getAD_CtxHelpMsg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelpMsg getAD_CtxHelpMsg() throws RuntimeException;
 
     /** Column name AD_CtxHelpSuggestion_ID */
@@ -87,6 +88,7 @@ public interface I_AD_CtxHelpSuggestion
 	/** Get Context Help	  */
 	public int getAD_CtxHelp_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
 
     /** Column name AD_Language */
@@ -124,6 +126,7 @@ public interface I_AD_CtxHelpSuggestion
 	/** Get Tenant of User	  */
 	public int getAD_UserClient_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllClients_V getAD_UserClient() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -139,6 +142,7 @@ public interface I_AD_CtxHelpSuggestion
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException;
 
     /** Column name AcceptSuggestion */

@@ -33,7 +33,7 @@ td.menu-tree-cell-disd * {
 
 td.menu-tree-cell-disd a:visited, td.menu-tree-cell-disd a:hover {
 	text-decoration: none !important;
-	cursor: default !important;;
+	cursor: default !important;
 	border-color: #D0DEF0 !important;
 }
 

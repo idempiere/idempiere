@@ -22,6 +22,7 @@ import java.net.URL;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.apache.ecs.ConcreteElement;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.body;
@@ -29,8 +30,10 @@ import org.compiere.model.MSysConfig;
 import org.compiere.print.IHTMLExtension;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataElement;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Executions;
 
 /**
@@ -39,6 +42,9 @@ import org.zkoss.zk.ui.Executions;
  */
 public class HTMLExtension implements IHTMLExtension {
 
+	/**	Logger				*/
+	private static CLogger log = CLogger.getCLogger(HTMLExtension.class);
+			
 	private String classPrefix;
 	private String componentId;
 	private String scriptURL;
@@ -135,7 +141,7 @@ public class HTMLExtension implements IHTMLExtension {
 		// set attribute value for create menu context
 		StringBuilder windowIconAttr = new StringBuilder();
 		if(ThemeManager.isUseFontIconForImage()) {
-			windowIconAttr.append("z-icon-Window");
+			windowIconAttr.append(Icon.getIconSclass(Icon.WINDOW));
 		}
 		else {
 			String windowIco = ThemeManager.getThemeResource("images/mWindow.png");
@@ -152,7 +158,7 @@ public class HTMLExtension implements IHTMLExtension {
 		}
 		StringBuilder reportIconAttr = new StringBuilder();
 		if(ThemeManager.isUseFontIconForImage()) {
-			reportIconAttr.append("z-icon-Report");
+			reportIconAttr.append(Icon.getIconSclass(Icon.REPORT));
 		}
 		else {
 			String reportIco = ThemeManager.getThemeResource("images/mReport.png");
@@ -169,7 +175,7 @@ public class HTMLExtension implements IHTMLExtension {
 		}
 		StringBuilder drillAssistantIconAttr = new StringBuilder();
 		if(ThemeManager.isUseFontIconForImage()) {
-			drillAssistantIconAttr.append("z-icon-Zoom");
+			drillAssistantIconAttr.append(Icon.getIconSclass(Icon.ZOOM));
 		}
 		else {
 			String drillAssistantIco = ThemeManager.getThemeResource("images/Zoom16.png");
@@ -202,6 +208,17 @@ public class HTMLExtension implements IHTMLExtension {
 		if (!theme.endsWith("/"))
 			theme = theme + "/";
 		String resFile = theme + "css/report.css";
+		
+		// Support to Parse Context Variable
+		if (resFile.contains("@"))
+		{
+			resFile = Env.parseContext(Env.getCtx(), 0, resFile, false);
+			if (Util.isEmpty(resFile))
+			{
+				log.warning("Report theme URL '"+ theme +"' failed to parse, Defaulting to default report.css url");
+				resFile = "/css/report.css"; // default
+			}
+		}
 		
 		// translate ~./ url to classpath url
 		if (theme.startsWith(ThemeManager.ZK_URL_PREFIX_FOR_CLASSPATH_RESOURCE))

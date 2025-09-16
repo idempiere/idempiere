@@ -315,6 +315,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(oLine.getAD_OrgTrx_ID());
 		setUser1_ID(oLine.getUser1_ID());
 		setUser2_ID(oLine.getUser2_ID());
+		setC_CostCenter_ID(oLine.getC_CostCenter_ID());
+		setC_Department_ID(oLine.getC_Department_ID());
 		//
 		setRRAmt(oLine.getRRAmt());
 		setRRStartDate(oLine.getRRStartDate());
@@ -391,6 +393,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(sLine.getAD_OrgTrx_ID());
 		setUser1_ID(sLine.getUser1_ID());
 		setUser2_ID(sLine.getUser2_ID());
+		setC_CostCenter_ID(sLine.getC_CostCenter_ID());
+		setC_Department_ID(sLine.getC_Department_ID());
 	}	//	setShipLine
 
 	/**
@@ -1108,8 +1112,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					total = total.add(iol.getBase(lc.getLandedCostDistribution()));
 				}
 				if (total.signum() == 0){
-					msgreturn = new StringBuilder("Total of Base values is 0 - ").append(lc.getLandedCostDistribution());
-					return msgreturn.toString();
+					return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {lc.getLandedCostDistribution()});
 				}	
 				//	Create Allocations
 				for (int i = 0; i < list.size(); i++)
@@ -1155,7 +1158,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				lca.setM_InOutLine_ID(iol.getM_InOutLine_ID());
 				BigDecimal base = iol.getBase(lc.getLandedCostDistribution()); 
 				if (base.signum() == 0)
-					return "Base value is 0 - " + lc.getLandedCostDistribution();
+					return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {lc.getLandedCostDistribution()});
 				lca.setBase(base);
 				lca.setAmt(getLineNetAmt());
 				// MZ Goodwill
@@ -1173,15 +1176,20 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				MLandedCostAllocation lca = new MLandedCostAllocation (this, lc.getM_CostElement_ID());
 				lca.setM_Product_ID(lc.getM_Product_ID());	//	No ASI
 				lca.setAmt(getLineNetAmt());
-				if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
-				{
+				if (lc.getQty().signum() <= 0) {
+					if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
+					{
+						lca.setBase(getLineNetAmt());
+						lca.setQty(getLineNetAmt());
+					}
+					else
+					{
+						lca.setBase(getQtyInvoiced());
+						lca.setQty(getQtyInvoiced());
+					}
+				} else {
 					lca.setBase(getLineNetAmt());
-					lca.setQty(getLineNetAmt());
-				}
-				else
-				{
-					lca.setBase(getQtyInvoiced());
-					lca.setQty(getQtyInvoiced());
+					lca.setQty(lc.getQty());
 				}
 				if (lca.save())
 					return "";
@@ -1243,8 +1251,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			total = total.add(iol.getBase(LandedCostDistribution));
 		}
 		if (total.signum() == 0){
-			msgreturn = new StringBuilder("Total of Base values is 0 - ").append(LandedCostDistribution);
-			return msgreturn.toString();
+			return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {LandedCostDistribution});
 		}	
 		//	Create Allocations
 		for (int i = 0; i < list.size(); i++)

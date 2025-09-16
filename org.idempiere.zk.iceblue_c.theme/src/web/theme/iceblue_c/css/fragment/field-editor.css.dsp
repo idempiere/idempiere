@@ -206,7 +206,7 @@ span.grid-combobox-editor {
 	float: right;
 }
 .mandatory-decorator-text {
-	text-decoration: none; font-size: xx-small; vertical-align: top; color:red;
+	text-decoration: none; font-size: xx-small; vertical-align: top;
 }
 
 .idempiere-mandatory, .idempiere-mandatory input, .idempiere-mandatory a {

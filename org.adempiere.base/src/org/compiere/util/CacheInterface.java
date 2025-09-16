@@ -38,6 +38,15 @@ public interface CacheInterface
 	public int reset(int recordId);
 
 	/**
+	 * Reset Cache by String key
+	 * @param key
+	 * @return number of items reset
+	 */
+	default int resetByStringKey(String key) {
+		return 0;
+	}
+	
+	/**
 	 * 	Get Size of Cache
 	 *	@return number of items
 	 */

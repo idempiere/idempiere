@@ -34,6 +34,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
@@ -203,9 +204,7 @@ public class TranslationImpExp extends SvrProcess {
 		// create temp folder
 		File tmpFolder;
 		try {
-			tmpFolder = File.createTempFile(language, ".trl");
-			tmpFolder.delete();
-			tmpFolder.mkdir();
+			tmpFolder = Files.createTempDirectory(language).toFile();			
 		} catch (IOException e1) {
 			throw new AdempiereException("Problem creating temp folder", e1);
 		}

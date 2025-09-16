@@ -73,7 +73,7 @@ public abstract class AbstractDocumentSearch {
 
 		// Check if / how many transaction-codes are used
 		if (! Util.isEmpty(searchString)) {
-			String[] codes = searchString.trim().replaceAll("  ", " ").split(" ");
+			String[] codes = searchString.trim().replace("  ", " ").split(" ");
 
 			List<String> codeList = new ArrayList<String>();
 			boolean codeSearch = true;

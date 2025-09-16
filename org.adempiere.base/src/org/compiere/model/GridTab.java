@@ -29,11 +29,13 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
@@ -114,7 +116,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4560773843887883525L;
+	private static final long serialVersionUID = -3682316929715061899L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -165,6 +167,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private GridTable          	m_mTable = null;
 
 	private String 				m_keyColumnName = "";
+	private String 				m_uuidColumnName = "";
 	private String 				m_linkColumnName = "";
 
 	private String m_parentColumnName = "";
@@ -181,8 +184,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String  PROPERTY = "CurrentRow";
     /** A list of event listeners for this component.	*/
     protected EventListenerList m_listenerList = new EventListenerList();
-    /** Current Data Status Event						*/
-	private volatile DataStatusEvent 	m_DataStatusEvent = null;
 	/**	Query							*/
 	private MQuery 				m_query = new MQuery();
 	private String 				m_oldQuery = "0=9";
@@ -210,16 +211,17 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private boolean m_parentNeedSave = false;
 
-	private long m_lastDataStatusEventTime;
-
-	private DataStatusEvent m_lastDataStatusEvent;
-
+	private record DataStatusEventRecord(DataStatusEvent dataStatusEvent, long dataStatusEventTime) {};
+	
+	private AtomicReference<DataStatusEventRecord> m_lastDataStatusEventReference = new AtomicReference<>();
+	
 	//Contains currently selected rows
 	private ArrayList<Integer> selection = null;
 	public boolean isQuickForm = false;
 	
 	// Context property names for Tab Info:
 	public static final String CTX_KeyColumnName = "_TabInfo_KeyColumnName";
+	public static final String CTX_UUIDColumnName = "_TabInfo_UUIDColumnName";
 	public static final String CTX_LinkColumnName = "_TabInfo_LinkColumnName";
 	public static final String CTX_TabLevel = "_TabInfo_TabLevel";
 	public static final String CTX_AccessLevel = "_TabInfo_AccessLevel";
@@ -374,7 +376,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return false;
 
 		String uuidExpectedCol = PO.getUUIDColumnName(getTableName());
-		String uuidColumnName = null;
 		//  Add Fields
 		for (int f = 0; f < m_vo.getFields().size(); f++)
 		{
@@ -386,11 +387,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				field.setGridTab(this);
 				String columnName = field.getColumnName();
 				//	Record Info
-				if (field.isKey()) {
+				if (field.isKey())
 					setKeyColumnName(columnName);
-				}
 				if (uuidExpectedCol.equals(columnName))
-					uuidColumnName = columnName;
+					setUUIDColumnName(columnName);
 				//	Parent Column(s)
 				if (field.isParentColumn())
 					m_parents.add(columnName);
@@ -431,9 +431,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 		}   //  for all fields
 
-		if (Util.isEmpty(getKeyColumnName()) && getParentColumnNames().size() == 0 && uuidColumnName != null) {
-			setKeyColumnName(uuidColumnName);
-		}
+		if (Util.isEmpty(getKeyColumnName()) && getParentColumnNames().size() == 0 && getUUIDColumnName() != null)
+			setKeyColumnName(getUUIDColumnName());
 
 		if (! m_mTable.getTableName().equals(X_AD_PInstance_Log.Table_Name)) { // globalqss, bug 1662433
 			//  Add Standard Fields
@@ -989,11 +988,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (manualCmd)
 			{
 				setCurrentRow(m_currentRow, false);
-				if (m_lastDataStatusEvent != null && m_lastDataStatusEvent.getCurrentRow() == m_currentRow
-					&& ((m_lastDataStatusEvent.Record_ID != null && m_lastDataStatusEvent.Record_ID instanceof Integer
-					&& (Integer) m_lastDataStatusEvent.Record_ID == 0) || m_lastDataStatusEvent.Record_ID == null))
+				DataStatusEventRecord dseRecord = m_lastDataStatusEventReference.get();
+				DataStatusEvent lastDataStatusEvent = dseRecord != null ? dseRecord.dataStatusEvent() : null;
+				if (lastDataStatusEvent != null && lastDataStatusEvent.getCurrentRow() == m_currentRow
+					&& ((lastDataStatusEvent.Record_ID != null && lastDataStatusEvent.Record_ID instanceof Integer
+					&& (Integer) lastDataStatusEvent.Record_ID == 0) || lastDataStatusEvent.Record_ID == null))
 				{
-					updateDataStatusEventProperties(m_lastDataStatusEvent);
+					updateDataStatusEventProperties(lastDataStatusEvent);
 				}
 			}
 			fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_SAVE));
@@ -1269,6 +1270,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	getKeyColumnName
 	
 	/**
+	 *	Return the name of the UUID column - may be ""
+	 *  @return UUID column name
+	 */
+	public String getUUIDColumnName()
+	{
+		return m_uuidColumnName;
+	}	//	getUUIDColumnName
+	
+	/**
 	 * @return key column index
 	 */
 	public int getKeyColumnIndex()
@@ -1283,6 +1293,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private void setKeyColumnName(String keyColumnName) {
 		this.m_keyColumnName = keyColumnName;
 		Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, CTX_KeyColumnName, m_keyColumnName);
+	}
+
+	/**
+	 * Set Name of the UUID Column
+	 * @param uuidColumnName
+	 */
+	private void setUUIDColumnName(String uuidColumnName) {
+		this.m_uuidColumnName = uuidColumnName;
+		Env.setContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, CTX_UUIDColumnName, m_uuidColumnName);
 	}
 
 	/**
@@ -2138,7 +2157,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean canHaveAttachment()
 	{
-		if (getKeyColumnName().endsWith("_ID") || getKeyColumnName().endsWith("_UU"))
+		if (getKeyColumnName().endsWith("_ID") || getKeyColumnName().endsWith("_UU") || !Util.isEmpty(getUUIDColumnName()))
 			return true;
 		return false;
 	}   //	canHaveAttachment
@@ -2323,9 +2342,9 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{		
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + e.toString());
 		int oldCurrentRow = e.getCurrentRow();
-		m_DataStatusEvent = e;          //  save it
+		DataStatusEvent dataStatusEvent = e;          //  save it
 		//  when sorted set current row to 0
-		String msg = m_DataStatusEvent.getAD_Message();
+		String msg = dataStatusEvent.getAD_Message();
 		if (msg != null && msg.equals(GridTable.SORTED_DSE_EVENT))
 		{
 			oldCurrentRow = m_currentRow;
@@ -2334,14 +2353,18 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			else
 				setCurrentRow(0, true);
 		}
+		
+		GridField field = m_mTable.getField(e.getChangedColumn());
+		Object fieldValue = field!=null?field.getValue():null;
+		
 		//  set current row
-		m_DataStatusEvent = e;          //  setCurrentRow clear it, need to save again
-		m_DataStatusEvent.setCurrentRow(m_currentRow);
-					
+		dataStatusEvent = e;          //  setCurrentRow clear it, need to save again
+		dataStatusEvent.setCurrentRow(m_currentRow);
+		dataStatusEvent.setValue(fieldValue);
+		
 		//  Same row - update value
 		if (oldCurrentRow == m_currentRow)
 		{
-			GridField field = m_mTable.getField(e.getChangedColumn());
 			if (field != null)
 			{
 				Object value = m_mTable.getValueAt(m_currentRow, e.getChangedColumn());
@@ -2353,11 +2376,20 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			//  Redistribute Info with current row info
 			//  Avoid firing of duplicate event
 			boolean fire = true;
-			if (m_lastDataStatusEvent != null)
+			DataStatusEventRecord dseRecord = m_lastDataStatusEventReference.get();
+			DataStatusEvent lastDataStatusEvent = dseRecord != null ? dseRecord.dataStatusEvent : null;
+			
+			// Do not validate event time when different values
+			boolean skipTimeValidation = !Objects.equals(
+				    lastDataStatusEvent != null ? lastDataStatusEvent.getValue() : null,
+				    	    dataStatusEvent != null ? dataStatusEvent.getValue() : null
+				    	);
+			
+			if (lastDataStatusEvent != null && !skipTimeValidation)
 			{
-				if (System.currentTimeMillis() - m_lastDataStatusEventTime < 200)
+				if (System.currentTimeMillis() - dseRecord.dataStatusEventTime() < 200)
 				{
-					if (m_lastDataStatusEvent.isEqual(m_DataStatusEvent))
+					if (lastDataStatusEvent.isEqual(dataStatusEvent))
 					{
 						fire = false;
 					}
@@ -2365,13 +2397,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			}
 			
 			if (fire)
-				fireDataStatusChanged(m_DataStatusEvent);
+				fireDataStatusChanged(dataStatusEvent);
 		}
 
 		//reset
-		m_lastDataStatusEventTime = System.currentTimeMillis();
-		m_lastDataStatusEvent = m_DataStatusEvent;
-		m_DataStatusEvent = null;
+		m_lastDataStatusEventReference.set(new DataStatusEventRecord(dataStatusEvent, System.currentTimeMillis()));
 	}	//	dataStatusChanged
 
 	/**
@@ -2659,29 +2689,30 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//  inform VTable/..    -> rowChanged
 		m_propertyChangeSupport.firePropertyChange(PROPERTY, oldCurrentRow, m_currentRow);
 
+		DataStatusEvent dataStatusEvent = null;
 		//check last data status event
-		long since = System.currentTimeMillis() - m_lastDataStatusEventTime;
-		if (since <= 500 && m_lastDataStatusEvent != null)
-		{
-			m_DataStatusEvent = m_lastDataStatusEvent;
+		DataStatusEventRecord dse = m_lastDataStatusEventReference.get();
+		if (dse != null) {
+			long since = System.currentTimeMillis() - dse.dataStatusEventTime;
+			if (since <= 500)
+			{
+				dataStatusEvent = dse.dataStatusEvent();
+			}
 		}
 
 		//  inform APanel/..    -> dataStatus with row updated
-		if (m_DataStatusEvent == null) {
-			m_DataStatusEvent = new DataStatusEvent(this, getRowCount(),
+		if (dataStatusEvent == null) {
+			dataStatusEvent = new DataStatusEvent(this, getRowCount(),
 				m_mTable.isInserting(),		//	changed
 				Env.isAutoCommit(Env.getCtx(), m_vo.WindowNo), m_mTable.isInserting());
-			m_DataStatusEvent.AD_Table_ID = m_vo.AD_Table_ID;
+			dataStatusEvent.AD_Table_ID = m_vo.AD_Table_ID;
 		}
 		//
-		m_DataStatusEvent.setCurrentRow(m_currentRow);
-		String status = m_DataStatusEvent.getAD_Message();
+		dataStatusEvent.setCurrentRow(m_currentRow);
+		String status = dataStatusEvent.getAD_Message();
 		if (status == null || status.length() == 0)
-			 m_DataStatusEvent.setInfo(DEFAULT_STATUS_MESSAGE, null, false,false);
-		fireDataStatusChanged(m_DataStatusEvent);
-
-		//reset
-		m_DataStatusEvent = null;
+			 dataStatusEvent.setInfo(DEFAULT_STATUS_MESSAGE, null, false,false);
+		fireDataStatusChanged(dataStatusEvent);
 
 		m_mTable.setCurrentRow(m_currentRow);
 		
@@ -2892,31 +2923,17 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (dependentField == null || dependentField.isLookupEditorSettingValue())
 				continue;
 
-			//  if the field has a lookup
-			if (dependentField.getLookup() instanceof MLookup)
-			{
-				MLookup mLookup = (MLookup)dependentField.getLookup();
-				//  if the lookup is dynamic (i.e. contains this columnName as variable)
-				if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
-						|| mLookup.getValidation().matches(".*[@]"+getTabNo()+"[|]"+columnName+"([:].+)?[@].*")
-						|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
-				{
-					if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
-						+ dependentField.getColumnName() + " set to null");
-					mLookup.refresh();
-					Object currentValue = dependentField.getValue();
-					
-					//  invalidate current selection
-					setValue(dependentField, null);
-					
+			GridField.updateDependentField(dependentField, columnName, getTabNo(), () -> {
+				Object currentValue = dependentField.getValue();
+				
+				//  invalidate current selection
+				setValue(dependentField, null);
+				
+				if (dependentField.getLookup() instanceof MLookup mLookup) {
 					if (currentValue != null && mLookup.containsKeyNoDirect(currentValue))
 						setValue(dependentField, currentValue);
 				}
-			}
-			//  if the field is a Virtual UI Column
-			if (dependentField.isVirtualUIColumn()) {
-				dependentField.processUIVirtualColumn();
-			}
+			});			
 		}   //  for all dependent fields
 	}   //  processDependencies
 

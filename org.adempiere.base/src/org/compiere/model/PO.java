@@ -55,6 +55,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.CrossTenantException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
@@ -117,7 +118,7 @@ public abstract class PO
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1335945052825334098L;
+	private static final long serialVersionUID = -2193260381693906628L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -126,6 +127,16 @@ public abstract class PO
 
 	/** default query/statement timeout, 300 seconds **/
 	private static final int QUERY_TIME_OUT = 300;
+
+	/** Get value of the attribute for Table ID and Record ID **/
+	private static final String TABLE_ATTRIBUTE_VALUE_SQL = """
+			SELECT a.Name, a.AttributeValueType, a.AD_Reference_ID, ta.Value, ta.ValueDate, ta.ValueNumber, ta.M_AttributeValue_ID
+				FROM AD_TableAttribute ta
+				INNER JOIN M_Attribute a ON (a.M_Attribute_ID = ta.M_Attribute_ID)
+				WHERE ta.AD_Table_ID = ? AND Record_ID = ? AND a.IsActive = 'Y' """;
+
+	/** Record Attribute and Value Map */
+	private Map<String, Object> m_tableAttributeMap = new HashMap<String, Object>();
 
 	/**
 	 * 	Set Document Value Workflow Manager
@@ -327,6 +338,7 @@ public abstract class PO
 	{
 		this.m_attachment = copy.m_attachment != null ? new MAttachment(copy.m_attachment) : null;
 		this.m_attributes = copy.m_attributes != null ? new HashMap<String, Object>(copy.m_attributes) : null;
+		this.m_tableAttributeMap = copy.m_tableAttributeMap != null ? new HashMap<String, Object>(copy.m_tableAttributeMap) : null;
 		this.m_createNew = copy.m_createNew;
 		this.m_custom = copy.m_custom != null ? new HashMap<String, String>(copy.m_custom) : null;
 		this.m_IDs = copy.m_IDs != null ? Arrays.copyOf(copy.m_IDs, copy.m_IDs.length) : null;
@@ -1715,7 +1727,12 @@ public abstract class PO
 			if (p_info.isVirtualColumn(index)) {
 				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
 			} else {
-				log.log(Level.SEVERE, "(rs) - " + String.valueOf(index)
+				Level logLevel;
+				if (DBException.isColumnNotFound(e))
+					logLevel = Level.WARNING;
+				else
+					logLevel = Level.SEVERE;
+				log.log(logLevel, "(rs) - " + String.valueOf(index)
 					+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)
 					+ " (" + p_info.getColumnClass(index) + ") - " + e);
 				success = false;
@@ -2208,8 +2225,10 @@ public abstract class PO
 		set_ValueNoCheck ("UpdatedBy", Integer.valueOf(AD_User_ID));
 	}	//	setAD_User_ID
 
+	private static final String TRANSLATION_CACHE_TABLE_NAME = "PO_Trl";
+	
 	/**	Cache						*/
-	private static CCache<String,String> trl_cache	= new CCache<String,String>("PO_Trl", 5);
+	private static CCache<String,String> trl_cache	= new CCache<String,String>(TRANSLATION_CACHE_TABLE_NAME, 5, CCache.DEFAULT_EXPIRE_MINUTE, false);
 	/** Cache for foreign keys */
 	private static CCache<Integer,List<ValueNamePair>> fks_cache	= new CCache<Integer,List<ValueNamePair>>("FKs", 5);
 
@@ -2290,9 +2309,13 @@ public abstract class PO
 	 * @return key used in the translation cache
 	 */
 	private String getTrlCacheKey(String columnName, String AD_Language) {
-		return get_TableName() + "." + columnName + "|" + get_ID() + "|" + AD_Language;
+		return toTrlCacheKey(get_TableName(), columnName, get_ID(), AD_Language);
 	}
 
+	private static String toTrlCacheKey(String tableName, String columnName, int id, String AD_Language) {
+		return tableName + "." + columnName + "|" + id + "|" + AD_Language;
+	}
+	
 	/**
 	 * Get Translation of column
 	 * @param columnName
@@ -2732,6 +2755,9 @@ public abstract class PO
 				success = false;
 			}
 		}
+		
+		//collect changed columns for translation cache reset below
+		List<String> updatedColumns = new ArrayList<>();
 		//	OK
 		if (success)
 		{
@@ -2757,6 +2783,8 @@ public abstract class PO
 			int size = p_info.getColumnCount();
 			for (int i = 0; i < size; i++)
 			{
+				if (is_ValueChanged(i))
+					updatedColumns.add(p_info.getColumnName(i));
 				if (m_newValues[i] != null)
 				{
 					if (m_newValues[i] == Null.NULL)
@@ -2768,9 +2796,9 @@ public abstract class PO
 			m_newValues = new Object[size];
 			m_createNew = false;
 		}
-		if (!newRecord)
+		if (!newRecord && success)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID(), get_UUID());
-		if (CacheMgt.get().hasCache(p_info.getTableName())) {
+		if (success && CacheMgt.get().hasCache(p_info.getTableName())) {
 			boolean cacheResetScheduled = false;
 			if (get_TrxName() != null) {
 				Trx trx = Trx.get(get_TrxName(), false);
@@ -2801,6 +2829,56 @@ public abstract class PO
 					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
 				else if (get_ID() > 0)
 					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+			}
+		} else if (success && p_info.getTableName().endsWith("_Trl") && CacheMgt.get().hasCache(TRANSLATION_CACHE_TABLE_NAME) && !newRecord) {
+			MTable table = MTable.get(getCtx(), p_info.getTableName().substring(0, p_info.getTableName().length() - 4));
+			POInfo parentInfo = POInfo.getPOInfo(getCtx(), table.getAD_Table_ID());
+			List<String> translatedColumns = new ArrayList<>();
+			for (int i = 0; i < parentInfo.getColumnCount(); i++)
+			{
+				String columnName = parentInfo.getColumnName(i);
+				if (parentInfo.isColumnTranslated(i) && updatedColumns.contains(columnName))
+				{
+					translatedColumns.add(columnName);
+				}
+			}
+			if (translatedColumns.size() > 0) {
+				int id = get_ValueAsInt(table.getKeyColumns()[0]);
+				boolean cacheResetScheduled = false;
+				if (get_TrxName() != null) {
+					Trx trx = Trx.get(get_TrxName(), false);
+					if (trx != null) {
+						trx.addTrxEventListener(new TrxEventListener() {
+							@Override
+							public void afterRollback(Trx trx, boolean success) {
+								trx.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterCommit(Trx sav, boolean success) {
+								if (success)
+									Adempiere.getThreadPoolExecutor().submit(() -> { 
+										for (String column : translatedColumns) {
+											CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
+												toTrlCacheKey(table.getTableName(), column, id, get_ValueAsString("AD_Language")));
+										}
+									});
+								trx.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterClose(Trx trx) {
+							}
+						});
+						cacheResetScheduled = true;
+					}
+				}
+				if (!cacheResetScheduled) {
+					Adempiere.getThreadPoolExecutor().submit(() -> {
+						for (String column : translatedColumns) {
+							CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
+								toTrlCacheKey(table.getTableName(), column, id, get_ValueAsString("AD_Language")));
+						}
+					});
+				}
 			}
 		}
 		
@@ -3444,29 +3522,37 @@ public abstract class PO
 
 		//	Set new DocumentNo
 		String columnName = "DocumentNo";
-		int index = p_info.getColumnIndex(columnName);
-		if (index != -1)
-		{
-			String value = (String)get_Value(index);
-			if (value != null && value.startsWith("<") && value.endsWith(">"))
-				value = null;
-			if (value == null || value.length() == 0)
+
+		if (!get_TableName().startsWith("T_")) {
+			int index = p_info.getColumnIndex(columnName);
+			if (index != -1)
 			{
-				int dt = p_info.getColumnIndex("C_DocTypeTarget_ID");
-				if (dt == -1)
-					dt = p_info.getColumnIndex("C_DocType_ID");
-				if (dt != -1)		//	get based on Doc Type (might return null)
-					value = DB.getDocumentNo(get_ValueAsInt(dt), m_trxName, false, this);
-				if (value == null)	//	not overwritten by DocType and not manually entered
-					value = DB.getDocumentNo(getAD_Client_ID(), p_info.getTableName(), m_trxName, this);
-				set_ValueNoCheck(columnName, value);
-			}
+				String value = (String)get_Value(index);
+				if (value != null && value.startsWith("<") && value.endsWith(">"))
+					value = null;
+				if (value == null || value.length() == 0)
+				{
+					int dt = p_info.getColumnIndex("C_DocTypeTarget_ID");
+					if (dt == -1)
+						dt = p_info.getColumnIndex("C_DocType_ID");
+					if (dt != -1)		//	get based on Doc Type (might return null)
+						value = DB.getDocumentNo(get_ValueAsInt(dt), m_trxName, false, this);
+					if (value == null)	//	not overwritten by DocType and not manually entered
+						value = DB.getDocumentNo(getAD_Client_ID(), p_info.getTableName(), m_trxName, this);
+					set_ValueNoCheck(columnName, value);
+				}
+			}	
 		}
+
 		// ticket 1007459 - exclude M_AttributeInstance from filling Value column
-		if (! MAttributeInstance.Table_Name.equals(get_TableName())) {
+		// IDEMPIERE-4224 - exclude AD_TableAttribute from filling Value column
+		if (!MAttributeInstance.Table_Name.equals(get_TableName())
+			&& !MTableAttribute.Table_Name.equals(get_TableName())
+			&& !MSysConfig.Table_Name.equals(get_TableName())
+			&& !get_TableName().startsWith("T_")) {
 			//	Set empty Value
 			columnName = "Value";
-			index = p_info.getColumnIndex(columnName);
+			int index = p_info.getColumnIndex(columnName);
 			if (index != -1)
 			{
 				if (!p_info.isVirtualColumn(index))
@@ -3553,7 +3639,7 @@ public abstract class PO
 					log.log(Level.SEVERE, "reloading");
 				else
 					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
-				ok = false;;
+				ok = false;
 			}
 		}
 		else
@@ -4686,7 +4772,7 @@ public abstract class PO
 		        for (String langName : availableLanguages) {
 		    		Language language = Language.getLanguage(langName);
 					String key = getTrlCacheKey(columnName, language.getAD_Language());
-					trl_cache.remove(key);
+					CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, key);
 				}
 			}
 		}
@@ -6002,30 +6088,31 @@ public abstract class PO
 					+" PO.AD_Client_ID="+poClientID
 					+" writing="+writing
 					+" Session="+Env.getContext(getCtx(), Env.AD_SESSION_ID));
-				String message = "Cross tenant PO " + (writing ? "writing" : "reading") + " request detected from session " 
-						+ Env.getContext(getCtx(), Env.AD_SESSION_ID) + " for table " + get_TableName()
-						+ " Record_ID=" + get_ID();
-				throw new AdempiereException(message);
+				throw new CrossTenantException(writing, get_TableName(), get_ID());
 			}
 		}
 	}
-
+	
 	/**
-	 * Validate Foreign keys for cross tenant.</br>
+	 * Validates foreign key constraints for the current record.<br/>
 	 * To be called programmatically before saving in programs that can receive arbitrary values in IDs.<br/>
 	 * This is an expensive operation in terms of database, use it wisely.
-	 * <pre>
-	 * TODO: there is huge room for performance improvement, for example:
-	 * - caching the valid values found on foreign tables
-	 * - caching the column ID of the foreign column
-	 * - caching the systemAccess
-	 * </pre>
-	 * @return true if all the foreign keys are valid
+	 * <p>
+	 * This method ensures that:
+	 * <ul>
+	 *   <li>Foreign key values exist in the referenced table.</li>
+	 *   <li>System-level records are only used where allowed.</li>
+	 *   <li>Cross-tenant references are prevented.</li>
+	 * </ul>
+	 * If any validation fails, an appropriate exception is thrown.
+	 *
+	 * @throws AdempiereException   If the foreign key value does not exist in the referenced table.
+	 * @throws CrossTenantException If a cross-tenant reference is detected.
 	 */
-	public boolean validForeignKeys() {
+	public void validForeignKeysEx() {
 		List<ValueNamePair> fks = getForeignColumnIdxs();
 		if (fks == null) {
-			return true;
+			return;
 		}
 		for (ValueNamePair vnp : fks) {
 			String fkcol = vnp.getID();
@@ -6056,20 +6143,47 @@ public abstract class PO
 							.append("=?");
 					int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), fkval);
 					if (pocid < 0) {
-						log.saveError("Error", "Foreign ID " + fkval + " not found in " + fkcol);
-						return false;
+						throw new AdempiereException("Foreign ID " + fkval + " not found in " + fkcol);
 					}
 					if (pocid == 0 && !systemAccess) {
-						log.saveError("Error", "System ID " + fkval + " cannot be used in " + fkcol);
-						return false;
+						throw new CrossTenantException(fkval, fkcol);
 					}
 					int curcid = Env.getAD_Client_ID(getCtx());
 					if (pocid > 0 && pocid != curcid) {
-						log.saveError("Error", "Cross tenant ID " + fkval + " not allowed in " + fkcol);
-						return false;
+						throw new CrossTenantException(fkval, fkcol);
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Validates foreign key constraints for the current record.
+	 * <p>
+	 * This method calls {@link #validForeignKeysEx()} and returns a boolean result instead of throwing exceptions.
+	 * It ensures that:
+	 * <ul>
+	 *   <li>Foreign key values exist in the referenced table.</li>
+	 *   <li>System-level records are only used where allowed.</li>
+	 *   <li>Cross-tenant references are prevented.</li>
+	 * </ul>
+	 * If validation fails, the method returns {@code false} instead of throwing an exception.
+	 * 
+ 	 * <pre>
+	 * TODO: there is huge room for performance improvement, for example:
+	 * - caching the valid values found on foreign tables
+	 * - caching the column ID of the foreign column
+	 * - caching the systemAccess
+	 * </pre>
+	 *
+	 * @return {@code true} if all foreign key constraints are valid, {@code false} otherwise.
+	 */
+	public boolean validForeignKeys() {
+		try {
+			validForeignKeysEx();
+		} catch (Exception e) {
+			log.saveError("Error", e.getMessage());
+			return false;
 		}
 		return true;
 	}
@@ -6121,10 +6235,10 @@ public abstract class PO
 		if (pocid < 0)
 			throw new AdempiereException("Foreign ID " + recordId + " not found in " + ft.getTableName());
 		if (pocid == 0 && !systemAccess)
-			throw new AdempiereException("System ID " + recordId + " cannot be used in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordId);
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
-			throw new AdempiereException("Cross tenant ID " + recordId + " not allowed in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordId);
 	}
 
 	/**
@@ -6174,10 +6288,10 @@ public abstract class PO
 		if (pocid < 0)
 			throw new AdempiereException("Foreign UUID " + recordUU + " not found in " + ft.getTableName());
 		if (pocid == 0 && !systemAccess)
-			throw new AdempiereException("System UUID " + recordUU + " cannot be used in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordUU);
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
-			throw new AdempiereException("Cross tenant UUID " + recordUU + " not allowed in " + ft.getTableName());
+			throw new CrossTenantException(ft.getTableName(), recordUU);
 	}
 
 	/**
@@ -6232,6 +6346,154 @@ public abstract class PO
 	 */
 	public boolean columnExists(String columnName) {
 		return columnExists(columnName, false);
+	}
+
+	/**
+	 * @param attributeName
+	 * @return
+	 */
+	public boolean get_TableAttributeAsBoolean(String attributeName)
+	{
+		Object value = get_TableAttribute(attributeName);
+		if (value != null)
+		{
+			 if (value instanceof Boolean)
+				 return ((Boolean)value).booleanValue();
+			return "Y".equals(value);
+		}
+		return false;
+	} // get_TableAttributeAsBoolean
+
+	/**
+	 * @param attributeName
+	 * @return
+	 */
+	public int get_TableAttributeAsInt(String attributeName)
+	{
+		Object value = get_TableAttribute(attributeName);
+		if (value == null)
+			return 0;
+		if (value instanceof Integer)
+			return ((Integer)value).intValue();
+		try
+		{
+			return Integer.parseInt(value.toString());
+		}
+		catch (NumberFormatException ex)
+		{
+			log.warning("Attribute " + attributeName + " - " + ex.getMessage());
+			return 0;
+		}
+	} // get_TableAttributeAsInt
+
+	/**
+	 * Return attribute value for table and record.
+	 * Load All attribute first time, then only query attribute that are not in map.
+	 * TODO can write different method to get directly cast value like get_TableAttributeAsString, get_TableAttributeAsDate etc..
+	 * 
+	 * @param  attributeName
+	 * @return
+	 */
+	public Object get_TableAttribute(String attributeName)
+	{
+		if (m_tableAttributeMap.isEmpty() || !m_tableAttributeMap.containsKey(attributeName))
+		{
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				String where = m_tableAttributeMap.isEmpty() ? "" : " AND a.Name = ? ";
+				// 4 - String, 5 - data, 6 - number, 7 - attribute value
+				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_VALUE_SQL + where, null);
+				pstmt.setInt(1, get_Table_ID());
+				pstmt.setInt(2, get_ID());
+				if (!m_tableAttributeMap.isEmpty())
+					pstmt.setString(3, attributeName);
+
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					Object value = null;
+					String attName = rs.getString(1);
+					String attType = rs.getString(2);
+					int reference_ID = rs.getInt(3);
+
+					if (MAttribute.ATTRIBUTEVALUETYPE_Number.equalsIgnoreCase(attType))
+					{
+						value = rs.getInt(6);
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_Date.equalsIgnoreCase(attType))
+					{
+						value = rs.getDate(5) != null ? new Timestamp(rs.getDate(5).getTime()) : null;
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_List.equalsIgnoreCase(attType))
+					{
+						value = rs.getInt(7);
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_StringMax40.equalsIgnoreCase(attType))
+					{
+						value = rs.getString(4);
+					}
+					else if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equalsIgnoreCase(attType))
+					{
+						if (reference_ID == DisplayType.YesNo)
+						{
+							value = Util.isEmpty(rs.getString(4)) ? null: rs.getString(4).equalsIgnoreCase("Y");
+						}
+						else if (DisplayType.isText(reference_ID))
+						{
+							value = rs.getString(4);
+						}
+						else if (DisplayType.isDate(reference_ID))
+						{
+							value = rs.getDate(5) != null ? new Timestamp(rs.getDate(5).getTime()) : null;
+						}
+						else if (DisplayType.isNumeric(reference_ID) || DisplayType.isID(reference_ID))
+						{
+							value = rs.getInt(6);
+						}
+						else
+						{
+							value = rs.getString(4);
+						}
+					}
+					else
+					{
+						value = rs.getString(4);
+					}
+
+					if (value != null)
+						m_tableAttributeMap.put(attName, value);
+				}
+			}
+			catch (Exception e)
+			{
+				CLogger.get().log(Level.SEVERE, "Failed: Get Attribute = " + attributeName, e);
+				return null;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+		}
+
+		if (m_tableAttributeMap.containsKey(attributeName))
+			return m_tableAttributeMap.get(attributeName);
+
+		return MTableAttribute.getAttributeDefaultValue(attributeName, get_Table_ID());
+	} // get_TableAttribute
+
+	/**
+	 * Retrieves the table attributes associated with the current record.
+	 * 
+	 * @return a list of {@link PO} objects representing table attributes
+	 *         filtered by the table ID and record ID.
+	 */
+	public List<PO> get_TableAttributes()
+	{
+		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", null).setParameters(get_Table_ID(), get_ID()).list();
 	}
 
 }   //  PO

@@ -794,11 +794,9 @@ public class ConfigurationData
 	protected boolean testServerPort (int port)
 	{
 		System.out.println("testServerPort: " + port);
-		try
-		{
-			ServerSocket ss = new ServerSocket (port);
+		try (ServerSocket ss = new ServerSocket (port))
+		{			
 			if (log.isLoggable(Level.FINE)) log.fine(ss.getInetAddress() + ":" + ss.getLocalPort() + " - created");
-			ss.close();
 		}
 		catch (Exception ex)
 		{
@@ -892,6 +890,14 @@ public class ConfigurationData
 					p_properties.remove(secretVar);
 				}
 			}
+
+			// store ADEMPIERE_DB_SYSTEM_USER
+			if (SystemProperties.getAdempiereDBSystemUser() != null) {
+				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, SystemProperties.getAdempiereDBSystemUser());
+			} else {
+				p_properties.put(SystemProperties.ADEMPIERE_DB_SYSTEM_USER, "");
+			}
+
 			// obfuscate keystore pass
 			String keystorePass = p_properties.getProperty(ADEMPIERE_KEYSTOREPASS);
 			String obfKeystorePass = Password.obfuscate(keystorePass);
@@ -905,6 +911,7 @@ public class ConfigurationData
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			log.severe("Cannot save Properties to " + fileName + " - " + e.toString());
 			if (p_panel != null)
 				JOptionPane.showConfirmDialog(p_panel,
@@ -917,6 +924,7 @@ public class ConfigurationData
 		}
 		catch (Throwable t)
 		{
+			t.printStackTrace();
 			log.severe("Cannot save Properties to " + fileName + " - " + t.toString());
 			if (p_panel != null)
 				JOptionPane.showConfirmDialog(p_panel,

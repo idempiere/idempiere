@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Tab 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Tab
 	  */
 	public int getAD_ColumnSortOrder_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_ColumnSortOrder() throws RuntimeException;
 
     /** Column name AD_ColumnSortYesNo_ID */
@@ -77,6 +78,7 @@ public interface I_AD_Tab
 	  */
 	public int getAD_ColumnSortYesNo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_ColumnSortYesNo() throws RuntimeException;
 
     /** Column name AD_Column_ID */
@@ -92,6 +94,7 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_CtxHelp_ID */
@@ -103,6 +106,7 @@ public interface I_AD_Tab
 	/** Get Context Help	  */
 	public int getAD_CtxHelp_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
 
     /** Column name AD_Image_ID */
@@ -118,6 +122,7 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Image_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -146,6 +151,7 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_TabType */
@@ -196,6 +202,7 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -211,6 +218,7 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name CommitWarning */
@@ -344,6 +352,7 @@ public interface I_AD_Tab
 	  */
 	public int getIncluded_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getIncluded_Tab() throws RuntimeException;
 
     /** Column name IsActive */
@@ -537,6 +546,7 @@ public interface I_AD_Tab
 	  */
 	public int getParent_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getParent_Column() throws RuntimeException;
 
     /** Column name Processing */

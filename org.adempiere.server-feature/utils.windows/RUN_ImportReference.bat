@@ -9,7 +9,8 @@
 @echo == The import will show warnings. This is OK ==
 @pause
 
-@Rem Parameter: <systemAccount> <AdempiereID> <AdempierePwd>
-@call %ADEMPIERE_DB_PATH%\ImportIdempiere system/%ADEMPIERE_DB_SYSTEM% reference reference
+@Rem Parameter: <AdempiereID> <AdempierePwd> <systemUser> <systemPwd>
+@if "%ADEMPIERE_DB_SYSTEM_USER%" == "" (set "ADEMPIERE_DB_SYSTEM_USER=SYSTEM")
+@call %ADEMPIERE_DB_PATH%\ImportIdempiere reference reference %ADEMPIERE_DB_SYSTEM_USER% %ADEMPIERE_DB_SYSTEM%
 
 @pause

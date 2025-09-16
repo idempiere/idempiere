@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DepositBatchLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_DepositBatchLine 
 {
@@ -89,6 +89,7 @@ public interface I_C_DepositBatchLine
 	/** Get Deposit Batch	  */
 	public int getC_DepositBatch_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DepositBatch getC_DepositBatch() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -104,6 +105,7 @@ public interface I_C_DepositBatchLine
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name Created */

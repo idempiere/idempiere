@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ServiceLevelLine
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_ServiceLevelLine")
 public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_ServiceLevelLine (Properties ctx, int C_ServiceLevelLine_ID, String trxName)
@@ -153,6 +153,7 @@ public class X_C_ServiceLevelLine extends PO implements I_C_ServiceLevelLine, I_
 		return (String)get_Value(COLUMNNAME_C_ServiceLevelLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ServiceLevel getC_ServiceLevel() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ServiceLevel)MTable.get(getCtx(), org.compiere.model.I_C_ServiceLevel.Table_ID)

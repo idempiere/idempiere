@@ -17,11 +17,15 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -132,6 +136,49 @@ public class MMatchInv extends X_M_MatchInv
 		.list();
 		return list.toArray (new MMatchInv[list.size()]);
 	}	//	getInvoice
+	
+	/**
+	 * 	Get InOut Matches for Invoice by account date
+	 *	@param ctx context
+	 *	@param C_Invoice_ID invoice
+	 *	@param DateAcct account date
+	 *	@param trxName transaction
+	 *	@return array of matches
+	 */
+	public static MMatchInv[] getInvoiceByDateAcct (Properties ctx, int C_Invoice_ID, Timestamp DateAcct, String trxName)
+	{
+		if (C_Invoice_ID == 0)
+			return new MMatchInv[]{};
+		//
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("SELECT mi.* ");
+		selectSql.append("FROM M_MatchInv mi ");
+		selectSql.append("LEFT JOIN M_MatchInv refmi ON (refmi.M_MatchInv_ID=mi.Reversal_ID) ");
+		selectSql.append("WHERE EXISTS (SELECT 1 FROM C_InvoiceLine il"
+				+" WHERE mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID AND il.C_Invoice_ID=?)");
+		selectSql.append("AND mi.DateAcct >= ? ");
+		selectSql.append("ORDER BY mi.DateAcct, ");
+		selectSql.append("CASE WHEN COALESCE(refmi.DateAcct,mi.DateAcct) = mi.DateAcct THEN COALESCE(mi.Reversal_ID,mi.M_MatchInv_ID) ELSE mi.M_MatchInv_ID END, ");
+		selectSql.append("mi.M_MatchInv_ID");
+		List<MMatchInv> list = new ArrayList<MMatchInv>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement(selectSql.toString(), trxName);
+			pstmt.setInt(1, C_Invoice_ID);
+			pstmt.setTimestamp(2, DateAcct);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+				list.add(new MMatchInv(ctx, rs, trxName));
+		} catch (SQLException e) {
+			throw new DBException(e, selectSql.toString());
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		return list.toArray (new MMatchInv[list.size()]);
+	}
 	
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
@@ -411,4 +458,22 @@ public class MMatchInv extends X_M_MatchInv
 		}
 		return false;
 	}
+	
+	/**
+	 * 	String Representation
+	 *	@return info
+	 */
+	@Override
+	public String toString ()
+	{
+		StringBuilder sb = new StringBuilder ("MMatchInv[");
+		sb.append (get_ID())
+			.append (",Qty=").append (getQty())
+			.append (",M_InOutLine_ID=").append (getM_InOutLine_ID())
+			.append (",C_InvoiceLine_ID=").append (getC_InvoiceLine_ID())
+			.append (",Processed=").append(isProcessed())
+			.append (",Posted=").append(isPosted())
+			.append ("]");
+		return sb.toString ();
+	}	//	toString
 }	//	MMatchInv

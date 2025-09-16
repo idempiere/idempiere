@@ -20,6 +20,8 @@ import org.adempiere.webui.component.Anchorlayout;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.event.ZoomEvent;
+import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WCtxHelpSuggestion;
 import org.compiere.model.GridField;
@@ -834,6 +836,10 @@ public class HelpController
 			} else {
 				item.setLabel(Msg.getElement(Env.getCtx(), "AD_CtxHelpSuggestion_ID"));
 			}
+			if (ThemeManager.isUseFontIconForImage())
+				item.setIconSclass(Icon.getIconSclass(Icon.FIELD_SUGGESTION));
+			else
+				item.setImage(ThemeManager.getThemeResource("images/FieldSuggestion16.png"));
 			appendChild(item);
 			item.addEventListener(Events.ON_CLICK, this);
 		}

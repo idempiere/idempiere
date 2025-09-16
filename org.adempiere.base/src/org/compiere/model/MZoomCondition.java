@@ -407,8 +407,9 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 		builder.append(tableName)
 			.append(" WHERE ")
 			.append(whereClause)
-			.append(" AND ")
-			.append(Env.parseContext(Env.getCtx(), 0, getWhereClause(), false, true));
+			.append(" AND (")
+			.append(Env.parseContext(Env.getCtx(), 0, getWhereClause(), false, true))
+			.append(")");
 		
 		int no = DB.getSQLValue(null, builder.toString());		
 		return no == 1;

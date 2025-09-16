@@ -23,13 +23,13 @@ fi
 echo -------------------------------------
 echo Re-Create new user
 echo -------------------------------------
-sqlplus -S "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateUser.sql Reference Adempiere
+sqlplus -S "$3"/"$4"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateUser.sql Reference Adempiere
 
 echo -------------------------------------
 echo Import Reference
 echo -------------------------------------
-echo imp "$1"@"$ADEMPIERE_DB_NAME" FILE="$IDEMPIERE_HOME"/data/Reference.dmp FROMUSER=\(reference\) TOUSER=reference
-imp "$1"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" FILE="$IDEMPIERE_HOME"/data/Reference.dmp FROMUSER=\(reference\) TOUSER=reference
+echo imp "$3"/"$4"@"$ADEMPIERE_DB_NAME" FILE="$IDEMPIERE_HOME"/data/Reference.dmp FROMUSER=\(reference\) TOUSER=reference
+imp "$3"/"$4"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" FILE="$IDEMPIERE_HOME"/data/Reference.dmp FROMUSER=\(reference\) TOUSER=reference
 
 echo -------------------------------------
 echo Check System

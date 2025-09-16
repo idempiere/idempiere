@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for IMP_Processor
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_IMP_Processor 
 {
@@ -192,6 +192,7 @@ public interface I_IMP_Processor
 	/** Get Import Processor Type	  */
 	public int getIMP_Processor_Type_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_IMP_Processor_Type getIMP_Processor_Type() throws RuntimeException;
 
     /** Column name IMP_Processor_UU */

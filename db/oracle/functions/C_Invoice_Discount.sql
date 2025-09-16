@@ -38,9 +38,15 @@ BEGIN
 	FROM 	AD_ClientInfo ci, C_Invoice i
 	WHERE 	ci.AD_Client_ID=i.AD_Client_ID
 	  AND 	i.C_Invoice_ID=p_C_Invoice_ID;
-	--	What Amount is the Discount Base?
+	  
+	-- What Amount is the Discount Base, excluding charges with isExcludeFromDiscount = 'Y'
  	IF (v_IsDiscountLineAmt = 'Y') THEN
-		v_Amount := v_TotalLines;
+		SELECT COALESCE(SUM(l.LineNetAmt), 0)
+		INTO v_Amount
+		FROM C_InvoiceLine l
+		LEFT JOIN C_Charge c ON l.C_Charge_ID = c.C_Charge_ID
+		WHERE l.C_Invoice_ID = p_C_Invoice_ID
+		  AND COALESCE(c.isexcludedfromdiscount, 'N') = 'N';
 	ELSE
 		v_Amount := v_GrandTotal;
 	END IF;
