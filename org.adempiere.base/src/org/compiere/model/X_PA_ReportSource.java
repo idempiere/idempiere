@@ -31,7 +31,7 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20250722L;
 
     /** Standard Constructor */
     public X_PA_ReportSource (Properties ctx, int PA_ReportSource_ID, String trxName)
@@ -64,7 +64,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 // N
 			setIsIncludeNullsUserElement2 (false);
 // N
-			setPA_ReportLine_ID (0);
+			setIsIncludeNullsUserList1 (false);
+// N
+			setIsIncludeNullsUserList2 (false);
+// N
 			setPA_ReportSource_ID (0);
         } */
     }
@@ -100,7 +103,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 // N
 			setIsIncludeNullsUserElement2 (false);
 // N
-			setPA_ReportLine_ID (0);
+			setIsIncludeNullsUserList1 (false);
+// N
+			setIsIncludeNullsUserList2 (false);
+// N
 			setPA_ReportSource_ID (0);
         } */
     }
@@ -136,7 +142,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 // N
 			setIsIncludeNullsUserElement2 (false);
 // N
-			setPA_ReportLine_ID (0);
+			setIsIncludeNullsUserList1 (false);
+// N
+			setIsIncludeNullsUserList2 (false);
+// N
 			setPA_ReportSource_ID (0);
         } */
     }
@@ -172,7 +181,10 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 // N
 			setIsIncludeNullsUserElement2 (false);
 // N
-			setPA_ReportLine_ID (0);
+			setIsIncludeNullsUserList1 (false);
+// N
+			setIsIncludeNullsUserList2 (false);
+// N
 			setPA_ReportSource_ID (0);
         } */
     }
@@ -783,6 +795,52 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 		return false;
 	}
 
+	/** Set Include Nulls in User List 1.
+		@param IsIncludeNullsUserList1 Include nulls in the selection of the User List 1
+	*/
+	public void setIsIncludeNullsUserList1 (boolean IsIncludeNullsUserList1)
+	{
+		set_Value (COLUMNNAME_IsIncludeNullsUserList1, Boolean.valueOf(IsIncludeNullsUserList1));
+	}
+
+	/** Get Include Nulls in User List 1.
+		@return Include nulls in the selection of the User List 1
+	  */
+	public boolean isIncludeNullsUserList1()
+	{
+		Object oo = get_Value(COLUMNNAME_IsIncludeNullsUserList1);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Include Nulls in User List 2.
+		@param IsIncludeNullsUserList2 Include nulls in the selection of the User List 2
+	*/
+	public void setIsIncludeNullsUserList2 (boolean IsIncludeNullsUserList2)
+	{
+		set_Value (COLUMNNAME_IsIncludeNullsUserList2, Boolean.valueOf(IsIncludeNullsUserList2));
+	}
+
+	/** Get Include Nulls in User List 2.
+		@return Include nulls in the selection of the User List 2
+	  */
+	public boolean isIncludeNullsUserList2()
+	{
+		Object oo = get_Value(COLUMNNAME_IsIncludeNullsUserList2);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+	
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
@@ -829,6 +887,34 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	public int getOrg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Org_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_PA_ReportColumn getPA_ReportColumn() throws RuntimeException
+	{
+		return (org.compiere.model.I_PA_ReportColumn)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumn.Table_ID)
+			.getPO(getPA_ReportColumn_ID(), get_TrxName());
+	}
+
+	/** Set Report Column.
+		@param PA_ReportColumn_ID Column in Report
+	*/
+	public void setPA_ReportColumn_ID (int PA_ReportColumn_ID)
+	{
+		if (PA_ReportColumn_ID < 1)
+			set_Value (COLUMNNAME_PA_ReportColumn_ID, null);
+		else
+			set_Value (COLUMNNAME_PA_ReportColumn_ID, Integer.valueOf(PA_ReportColumn_ID));
+	}
+
+	/** Get Report Column.
+		@return Column in Report
+	  */
+	public int getPA_ReportColumn_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportColumn_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -897,6 +983,62 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	public String getPA_ReportSource_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_ReportSource_UU);
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
+
+	/** Set User Element List 1.
+		@param User1_ID User defined list element #1
+	*/
+	public void setUser1_ID (int User1_ID)
+	{
+		if (User1_ID < 1)
+			set_Value (COLUMNNAME_User1_ID, null);
+		else
+			set_Value (COLUMNNAME_User1_ID, Integer.valueOf(User1_ID));
+	}
+
+	/** Get User Element List 1.
+		@return User defined list element #1
+	  */
+	public int getUser1_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User1_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
+
+	/** Set User Element List 2.
+		@param User2_ID User defined list element #2
+	*/
+	public void setUser2_ID (int User2_ID)
+	{
+		if (User2_ID < 1)
+			set_Value (COLUMNNAME_User2_ID, null);
+		else
+			set_Value (COLUMNNAME_User2_ID, Integer.valueOf(User2_ID));
+	}
+
+	/** Get User Element List 2.
+		@return User defined list element #2
+	  */
+	public int getUser2_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User2_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set User Column 1.

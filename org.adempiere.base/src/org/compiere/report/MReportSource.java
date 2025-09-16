@@ -241,7 +241,29 @@ public class MReportSource extends X_PA_ReportSource
 		} else
 			if (isIncludeNullsUserElement2())
 				whcomb.append(" AND UserElement2_ID IS NULL");
-		
+
+		if (getUser1_ID() > 0)
+		{
+			String whtree = "User1_ID=" + getUser1_ID(); // No Tree
+			if (isIncludeNullsUserList1())
+				whcomb.append(" AND (User1_ID IS NULL OR ").append(whtree).append(")");
+			else
+				whcomb.append(" AND ").append(whtree);
+		}
+		else if (isIncludeNullsUserList1())
+			whcomb.append(" AND User1_ID IS NULL");
+
+		if (getUser2_ID() > 0)
+		{
+			String whtree = "User2_ID=" + getUser2_ID(); // No Tree
+			if (isIncludeNullsUserList2())
+				whcomb.append(" AND (User2_ID IS NULL OR ").append(whtree).append(")");
+			else
+				whcomb.append(" AND ").append(whtree);
+		}
+		else if (isIncludeNullsUserList2())
+			whcomb.append(" AND User2_ID IS NULL");
+
 		// drop the first " AND "
 		if (whcomb.length() > 5 && whcomb.toString().startsWith(" AND "))
 			whcomb.delete(0, 5);
@@ -268,18 +290,85 @@ public class MReportSource extends X_PA_ReportSource
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID parent
 	 * 	@param AD_Org_ID parent
-	 * 	@param PA_ReportLine_ID parent
+	 * 	@param parent_ID parent
 	 * 	@param source source to copy from
 	 * 	@param trxName transaction
+	 *  @param isReportLineSet
 	 * 	@return new Report Source instance
 	 */
-	public static MReportSource copy (Properties ctx, int AD_Client_ID, int AD_Org_ID, 
-		int PA_ReportLine_ID, MReportSource source, String trxName)
+	public static MReportSource copy(Properties ctx, int AD_Client_ID, int AD_Org_ID, int parent_ID,
+			MReportSource source, String trxName, boolean isReportLineSet)
 	{
 		MReportSource retValue = new MReportSource (ctx, 0, trxName);
 		MReportSource.copyValues(source, retValue, AD_Client_ID, AD_Org_ID);
-		retValue.setPA_ReportLine_ID(PA_ReportLine_ID);
+		if (isReportLineSet)
+			retValue.setPA_ReportLine_ID(parent_ID);
+		else
+			retValue.setPA_ReportColumn_ID(parent_ID);
 		return retValue;
 	}	//	copy
+
+	/**
+	 * @param source
+	 * @return
+	 */
+	public String getCombinationKey()
+	{
+		StringBuffer s = new StringBuffer("");
+		if (isIncludeNullsElementValue())
+			s.append("A");
+		if (getOrg_ID() != 0)
+			s.append("B");
+		if (isIncludeNullsOrg())
+			s.append("C");
+		if (getAD_OrgTrx_ID() != 0)
+			s.append("D");
+		if (isIncludeNullsOrgTrx())
+			s.append("E");
+		if (getC_BPartner_ID() != 0)
+			s.append("F");
+		if (isIncludeNullsBPartner())
+			s.append("G");
+		if (getM_Product_ID() != 0)
+			s.append("H");
+		if (isIncludeNullsProduct())
+			s.append("I");
+		if (getC_Location_ID() != 0)
+			s.append("J");
+		if (isIncludeNullsLocation())
+			s.append("K");
+		if (getC_Project_ID() != 0)
+			s.append("L");
+		if (isIncludeNullsProject())
+			s.append("M");
+		if (getC_SalesRegion_ID() != 0)
+			s.append("N");
+		if (isIncludeNullsSalesRegion())
+			s.append("O");
+		if (getC_Activity_ID() != 0)
+			s.append("P");
+		if (isIncludeNullsActivity())
+			s.append("Q");
+		if (getC_Campaign_ID() != 0)
+			s.append("R");
+		if (isIncludeNullsCampaign())
+			s.append("S");
+		if (getUserElement1_ID() != 0)
+			s.append("T");
+		if (isIncludeNullsUserElement1())
+			s.append("U");
+		if (getUser1_ID() != 0)
+			s.append("V");
+		if (isIncludeNullsUserList1())
+			s.append("W");
+		if (getUser2_ID() != 0)
+			s.append("X");
+		if (isIncludeNullsUserList2())
+			s.append("Y");
+		if (getC_ElementValue_ID() != 0)
+			s.append("Z");
+
+		return s.toString();
+	} // getCombinationKey
 
 }	//	MReportSource
