@@ -547,6 +547,21 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				         .ifPresent(levelListBox::setSelectedIndex);
 			}
 		}
+		for(Object key : props.keySet()) {
+			if (key instanceof String) {
+				String s = (String)key;
+				if (s.endsWith("."+Ini.P_TRACELEVEL)) {
+					String level = props.getProperty(s);
+					if (! Util.isEmpty(level)) {
+						level = SecureEngine.decrypt(level, 0);
+						if (! Util.isEmpty(level)) {
+							s = s.substring(0, s.length() - ("."+Ini.P_TRACELEVEL).length());
+							CLogMgt.setLevel(s, level);
+						}
+					}
+				}
+			}
+		}
 		CLogMgt.reInit();
 	}
 
