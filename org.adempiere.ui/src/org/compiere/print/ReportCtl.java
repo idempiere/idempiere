@@ -490,7 +490,7 @@ public class ReportCtl
 									jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
 									jasperProcessInfo.getRecord_UU());
 							jasperInstance.saveEx();
-							jasperProcessInfo.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+							jasperProcessInfo.setAD_PInstance_ID (jasperInstance.getAD_PInstance_ID());
 						
 							if (jasperProcess.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
 								ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
