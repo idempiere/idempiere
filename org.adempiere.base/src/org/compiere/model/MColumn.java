@@ -718,6 +718,18 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 */
 	public String getConstraint(String tableName)
 	{
+		MTable table = MTable.get(getCtx(), tableName);
+		return getConstraint(table);
+	}
+	
+	/**
+	 * 	Get Table Constraint
+	 *	@param table table
+	 *	@return table constraint clause
+	 */
+	public String getConstraint(MTable table)
+	{
+		String tableName = table.getTableName();
 		if (isKey()) {
 			StringBuilder constraintName;
 			if (tableName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 4)
@@ -733,8 +745,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			return "CONSTRAINT " ADTable_ADTableTrl
 				+ " FOREIGN KEY (" + getColumnName() + ") REFERENCES "
 				+ AD_Table(AD_Table_ID) ON DELETE CASCADE
-		**/
-		MTable table = MTable.get(getAD_Table_ID());
+		**/		
 		// IDEMPIERE-965
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
 			String indexName = MTable.getUUIDIndexName(tableName);
