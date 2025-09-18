@@ -537,12 +537,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
-	 * @return true if table has single key column and the key column name ends with _UU.
+	 * @return true if table is not an ID Key Table.
 	 */
 	public boolean isUUIDKeyTable()
 	{
-		String uuColName = PO.getUUIDColumnName(getTableName());
-		return (getKeyColumns() != null && getKeyColumns().length == 1 && getKeyColumns()[0].equals(uuColName));
+		return !isIDKeyTable();
 	}
 	
 	/**
