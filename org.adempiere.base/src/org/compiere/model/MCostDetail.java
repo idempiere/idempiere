@@ -1434,9 +1434,16 @@ public class MCostDetail extends X_M_CostDetail
 		}
 
 		MCost cost = MCost.get(product, M_ASI_ID, as, Org_ID, ce.getM_CostElement_ID(), get_TrxName());
-		
+		MCostDetail cd = null;
+		boolean isOrderLandedCost = getC_OrderLine_ID() > 0 && getM_CostElement_ID() > 0;
+		boolean isReversedOrderLandedCost = isOrderLandedCost 
+				&& isDelta() && getDeltaQty().signum() == -1 && getDeltaAmt().signum() == -1
+				&& (ce.isAveragePO() || ce.isAverageInvoice());
+		if (isOrderLandedCost && !isReversedOrderLandedCost)	// order landed cost, get the cost info from order
+			cd = MCostDetail.getOrder(as, product.getM_Product_ID() , M_ASI_ID, getC_OrderLine_ID(), 0, getDateAcct(), get_TrxName());
 		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
-				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), this, get_TrxName());
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
+					cd != null ? cd : this, get_TrxName());
 		if (costInfo != null)
 		{
 			cost.setCurrentQty(costInfo.getCurrentQty());
@@ -1456,8 +1463,18 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal amt = Env.ZERO;
 		if (isDelta())
 		{
-			qty = getDeltaQty();
-			amt = getDeltaAmt();
+			if (!isOrderLandedCost) {
+				qty = getDeltaQty();
+				amt = getDeltaAmt();
+			} else {
+				if (isReversedOrderLandedCost) {
+					qty = getDeltaQty();
+					amt = getDeltaAmt();
+				} else {
+					qty = getQty();
+					amt = getAmt();
+				}
+			}
 		}
 		else
 		{
@@ -1468,7 +1485,7 @@ public class MCostDetail extends X_M_CostDetail
 
 		//determine whether this is cost only adjustment entry
 		boolean costAdjustment = false;
-		if (this.getM_CostElement_ID() > 0 && this.getM_CostElement_ID() != ce.getM_CostElement_ID())
+		if (this.getM_CostElement_ID() > 0 && this.getM_CostElement_ID() != ce.getM_CostElement_ID() && !isReversedOrderLandedCost)
 		{
 			MCostElement thisCostElement = MCostElement.get(getCtx(), getM_CostElement_ID());
 			if (thisCostElement.getCostingMethod() == null && ce.getCostingMethod() != null)
