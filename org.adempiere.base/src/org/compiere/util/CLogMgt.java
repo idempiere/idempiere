@@ -69,7 +69,7 @@ public class CLogMgt
 	/**
 	 * Re-initialize after log configuration change. 
 	 */
-	private static synchronized void reInit() {
+	public static synchronized void reInit() {
 		CLogMgt.initialize(Ini.isClient());
 		if (!levelMap.isEmpty()) {
 			loggerMap.clear();

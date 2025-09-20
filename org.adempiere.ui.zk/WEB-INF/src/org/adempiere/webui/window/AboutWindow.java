@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
+import java.util.stream.IntStream;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
@@ -528,18 +529,11 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	private void reloadLogProps() {
 		Properties props = new Properties();
 		String propertyFileName = Ini.getFileName(false);
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(propertyFileName);
+		try (FileInputStream fis = new FileInputStream(propertyFileName)){
+			
 			props.load(fis);
 		} catch (Exception e) {
 			throw new AdempiereException("Could not load properties file, cause: " + e.getLocalizedMessage());
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (Exception e) {}
-			}
 		}
 		String globalLevel = props.getProperty(Ini.P_TRACELEVEL);
 		if (! Util.isEmpty(globalLevel)) {
@@ -547,26 +541,22 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			if (! Util.isEmpty(globalLevel)) {
 				CLogMgt.setLevel(globalLevel);
 				Level level = CLogMgt.getLevel();
-				for (int i = 0; i < CLogMgt.LEVELS.length; i++) {
-					if (CLogMgt.LEVELS[i].intValue() == level.intValue()) {
-						levelListBox.setSelectedIndex(i);
-						break;
-					}
-				}
+				IntStream.range(0, CLogMgt.LEVELS.length)
+				         .filter(i -> CLogMgt.LEVELS[i].intValue() == level.intValue())
+				         .findFirst()
+				         .ifPresent(levelListBox::setSelectedIndex);
 			}
 		}
 		for(Object key : props.keySet()) {
 			if (key instanceof String) {
 				String s = (String)key;
+				/* Special properties to set log level for specific packages, not encrypted, for example:
+				 * org.eclipse.jetty.ee8.annotations.AnnotationParser.TraceLevel=SEVERE
+				 */
 				if (s.endsWith("."+Ini.P_TRACELEVEL)) {
 					String level = props.getProperty(s);
-					if (! Util.isEmpty(level)) {
-						level = SecureEngine.decrypt(level, 0);
-						if (! Util.isEmpty(level)) {
-							s = s.substring(0, s.length() - ("."+Ini.P_TRACELEVEL).length());
-							CLogMgt.setLevel(s, level);
-						}
-					}
+					s = s.substring(0, s.length() - ("."+Ini.P_TRACELEVEL).length());
+					CLogMgt.setLevel(s, level);
 				}
 			}
 		}
