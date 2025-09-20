@@ -35,15 +35,19 @@ import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
+import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRule;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Report Controller.
@@ -470,6 +474,42 @@ public class ReportCtl
 				// We have a Jasper Print Format
 				if (!IsDirectPrint)
 				{
+					// if there's process, need to run it before preview
+					MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
+					if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
+						if (!ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())) {
+							ProcessInfo jasperProcessInfo = new ProcessInfo (jasperProcess.getName(), format.getJasperProcess_ID());
+							PrintInfo printInfo = re.getPrintInfo();
+							jasperProcessInfo.setPrintPreview( !IsDirectPrint );
+							jasperProcessInfo.setRecord_ID ( Record_ID );
+							jasperProcessInfo.setRecord_UU ( printInfo.getRecord_UU() );
+							jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
+							jasperProcessInfo.setClassName (jasperProcess.getClassname());
+							jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
+							
+							MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
+									jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
+									jasperProcessInfo.getRecord_UU());
+							jasperInstance.saveEx();
+							jasperProcessInfo.setAD_PInstance_ID (jasperInstance.getAD_PInstance_ID());
+						
+							boolean runOk = false;
+							if (jasperProcess.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+								runOk = ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
+							} else {
+								runOk = ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
+							}
+							if (!runOk || jasperProcessInfo.isError()) {
+								String msg = jasperProcessInfo.getSummary();
+								if (Util.isEmpty(msg, true)) {
+									msg = Msg.getMsg(Env.getCtx(), "ProcessRunError");
+								}
+								msg = msg + " (" + jasperProcessInfo.getTitle() + ")";
+								throw new AdempiereException(msg);
+							}
+						}							
+					}
+					
 					//report viewer can handle preview of print format with jasper report process
 					preview(re);
 				}

@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.action;
 
+import org.adempiere.webui.adwindow.IADTabpanel;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
@@ -40,4 +41,16 @@ public interface IAction {
 	public default String getIconSclass() {
 		return "";
 	}
+
+	/**
+	 * Customize detail toolbar button enable/disable based on current tab data status update
+	 * 
+	 * @param toolbarButton
+	 * @param tabPanel
+	 * @param changed
+	 * @param readOnly
+	 */
+	public default void updateToolbarCustomBtn(Toolbarbutton toolbarButton, IADTabpanel tabPanel, boolean changed, boolean readOnly) {
+	}
+
 }

@@ -143,7 +143,7 @@ public class BundleResourceLoader {
 					empty = true;
 				}
 				if (!empty && tmpOutputFile != reportFile) {
-					if (!DigestOfFile.md5HashCompare(reportFile, tmpOutputFile)) {
+					if (!DigestOfFile.sha256HashCompare(reportFile, tmpOutputFile)) {
 						Path to = reportFile.toPath();
 						Path from = tmpOutputFile.toPath();
 						try {
