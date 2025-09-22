@@ -404,8 +404,6 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
         if (docTypeId != 0)
         {
             MDocType docType = MDocType.get(docTypeId);
-            // FIXME: Should refactor code and remove the hard coded name
-            // Should change document type to allow query the value
             if (!docType.isSOTrx())
             { 
 				//IDEMPIERE-6666-fix-getShipmentReceiptDocType-in-MDocType
@@ -467,4 +465,5 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}
 
 }	//	MDocType
+
 
