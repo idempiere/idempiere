@@ -577,6 +577,9 @@ public final class Adempiere
 			if (key instanceof String)
 			{
 				String s = (String)key;
+				/* Special properties to set log level for specific packages, not encrypted, for example:
+				 * org.eclipse.jetty.ee8.annotations.AnnotationParser.TraceLevel=SEVERE
+				 */
 				if (s.endsWith("."+Ini.P_TRACELEVEL))
 				{
 					String level = properties.getProperty(s);
