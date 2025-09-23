@@ -758,7 +758,7 @@ public class DocManager {
 		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID, cd.M_CostDetail_ID, cd.IsBackDate ");
 		selectSql.append("FROM M_CostDetail cd ");
 		selectSql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID) ");
+		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct) ");
 		selectSql.append("LEFT JOIN C_InvoiceLine il ON (il.C_InvoiceLine_ID = cd.C_InvoiceLine_ID) ");
 		selectSql.append("LEFT JOIN M_InOutLine iol ON (iol.M_InOutLine_ID = cd.M_InOutLine_ID) ");
 		selectSql.append("LEFT JOIN M_MatchInv mi ON (mi.M_MatchInv_ID = cd.M_MatchInv_ID) ");
