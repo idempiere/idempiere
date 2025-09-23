@@ -86,8 +86,15 @@ public class Secure implements SecureInterface
 	{
 		if (hexString == null || hexString.length() == 0)
 			return null;
-		
-		return HexFormat.of().parseHex(hexString);
+		try
+		{
+			return HexFormat.of().parseHex(hexString);
+		}
+		catch (Exception e)
+		{
+			if (log.isLoggable(Level.FINEST)) log.finest(hexString + " - " + e.getLocalizedMessage());
+		}
+		return null;
 	}   //  convertToHexString
 
 	/**
