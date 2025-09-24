@@ -1439,8 +1439,20 @@ public class MCostDetail extends X_M_CostDetail
 		boolean isReversedOrderLandedCost = isOrderLandedCost 
 				&& isDelta() && getDeltaQty().signum() == -1 && getDeltaAmt().signum() == -1
 				&& (ce.isAveragePO() || ce.isAverageInvoice());
-		if (isOrderLandedCost && !isReversedOrderLandedCost)	// order landed cost, get the cost info from order
-			cd = MCostDetail.getOrder(as, product.getM_Product_ID() , M_ASI_ID, getC_OrderLine_ID(), 0, getDateAcct(), get_TrxName());
+		if (isOrderLandedCost && !isReversedOrderLandedCost) {	
+			// order landed cost, get the cost info from previous order or order landed cost
+			StringBuilder whereClause = new StringBuilder();
+			whereClause.append("C_OrderLine_ID = ? ");
+			whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+			whereClause.append(" AND M_AttributeSetInstance_ID = ?");
+			whereClause.append(" AND C_AcctSchema_ID = ?");
+			whereClause.append(" AND M_CostDetail_ID < ?");
+			cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
+					.setParameters(getC_OrderLine_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+					.setOrderBy("M_CostDetail_ID DESC")
+					.first();
+			
+		}
 		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
 					cd != null ? cd : this, get_TrxName());
