@@ -44,8 +44,8 @@ public interface I_AD_Ref_Table
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Tenant.
-	  * Tenant for this installation.
+	/** Get Client.
+	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -101,12 +101,12 @@ public interface I_AD_Ref_Table
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -183,6 +183,19 @@ public interface I_AD_Ref_Table
 	  */
 	public int getCreatedBy();
 
+    /** Column name DisplaySQL */
+    public static final String COLUMNNAME_DisplaySQL = "DisplaySQL";
+
+	/** Set Display SQL.
+	  * SQL for display of lookup value
+	  */
+	public void setDisplaySQL (String DisplaySQL);
+
+	/** Get Display SQL.
+	  * SQL for display of lookup value
+	  */
+	public String getDisplaySQL();
+
     /** Column name EntityType */
     public static final String COLUMNNAME_EntityType = "EntityType";
 
@@ -210,6 +223,19 @@ public interface I_AD_Ref_Table
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsDisplayIdentifier */
+    public static final String COLUMNNAME_IsDisplayIdentifier = "IsDisplayIdentifier";
+
+	/** Set Display Identifier.
+	  * Display the record identifier
+	  */
+	public void setIsDisplayIdentifier (boolean IsDisplayIdentifier);
+
+	/** Get Display Identifier.
+	  * Display the record identifier
+	  */
+	public boolean isDisplayIdentifier();
 
     /** Column name IsValueDisplayed */
     public static final String COLUMNNAME_IsValueDisplayed = "IsValueDisplayed";
