@@ -182,6 +182,11 @@ public final class FactLine extends X_Fact_Acct
 		setAccount_ID (m_acct.getAccount_ID());
 		setC_SubAcct_ID(m_acct.getC_SubAcct_ID());
 
+		if (getUser1_ID() == 0)
+			setUser1_ID(m_acct.getUser1_ID());
+		if (getUser2_ID() == 0)
+			setUser2_ID(m_acct.getUser2_ID());
+
 		//	User Defined References
 		MAcctSchemaElement ud1 = m_acctSchema.getAcctSchemaElement(
 				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn1);
@@ -222,6 +227,19 @@ public final class FactLine extends X_Fact_Acct
 				if (ID2 != 0)
 					setUserElement2_ID(ID2);
 			}
+		}
+
+		// User Defined Account Element References
+		MAcctSchemaElement ul1 = m_acctSchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElementList1);
+		if (ul1 != null && getUser1_ID() == 0 && ul1.isMandatory())
+		{
+			setUser1_ID(ul1.getC_ElementValue_ID());
+		}
+
+		MAcctSchemaElement ul2 = m_acctSchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElementList2);
+		if (ul2 != null && getUser2_ID() == 0 && ul2.isMandatory())
+		{
+			setUser2_ID(ul2.getC_ElementValue_ID());
 		}
 	}   //  setAccount
 
