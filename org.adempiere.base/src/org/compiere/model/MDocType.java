@@ -417,6 +417,15 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 			        relatedDocBaseTypeName = "MMR";
 			    }
 			}
+			else if ("SOO".equals(docBaseType)) 
+			{ 
+				if ("RM".equals(docSubTypeSO")) 
+				{ 
+					relatedDocBaseTypeName = "MMR"; 
+				} else { 
+					relatedDocBaseTypeName = "MMS"; 
+				} 
+			}
                
 			if (relatedDocBaseTypeName != null)
 			{
@@ -425,7 +434,6 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 			    whereClause.append("and AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
 			    whereClause.append(" AND IsActive='Y'");
 			    //IDEMPIERE-6666-fix-getShipmentReceiptDocType-in-MDocType
-			    whereClause.append(" AND issotrx='N'");
 			    whereClause.append(" order by  c_doctype_id  asc ");
 
 			    int relDocTypeIds[] = MDocType.getAllIDs(MDocType.Table_Name, whereClause.toString(), null);
@@ -460,6 +468,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}
 
 }	//	MDocType
+
 
 
 
