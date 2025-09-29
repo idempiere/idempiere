@@ -398,55 +398,56 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
      * @param docTypeId order/rma/vendor return/return material
      * @return shipment/receipt doctype id
      */
-    public static int getShipmentReceiptDocType(int docTypeId)
+   public static int getShipmentReceiptDocType(int docTypeId)
     {
         int relatedDocTypeId = 0;
         if (docTypeId != 0)
         {
             MDocType docType = MDocType.get(docTypeId);
-            // FIXME: Should refactor code and remove the hard coded name
-            // Should change document type to allow query the value
-            if ("Return Material".equals(docType.getName()) ||
-                    "Vendor Return".equals(docType.getName())|| !docType.isSOTrx())
-            {
-                String relatedDocTypeName = null;
-                if (("Purchase Order").equals(docType.getName()))
-                {
-                    relatedDocTypeName = "MM Receipt";
-                }
-                else if ("Return Material".equals(docType.getName()))
-                {
-                    relatedDocTypeName = "MM Returns";
-                }
-                else if ("Vendor Return".equals(docType.getName()))
-                {
-                    relatedDocTypeName = "MM Vendor Returns";
-                }
+			//IDEMPIERE-6666-fix-getShipmentReceiptDocType-in-MDocType
+			relatedDocTypeId = docType.getC_DocTypeShipment_ID();
+			var docBaseType =docType.getDocBaseType();
+			var docSubTypeSO =docType.getDocSubTypeSO();
+			String relatedDocBaseTypeName = null;
+			if (("POO").equals(docBaseType))
+			{
+			    if ("RM".equals(docSubTypeSO)) {
+			        relatedDocBaseTypeName = "MMS";
+			    } else if (docSubTypeSO == null) {
+			        relatedDocBaseTypeName = "MMR";
+			    }
+			}
+			else if ("SOO".equals(docBaseType)) 
+			{ 
+				if ("RM".equals(docSubTypeSO")) 
+				{ 
+					relatedDocBaseTypeName = "MMR"; 
+				} else { 
+					relatedDocBaseTypeName = "MMS"; 
+				} 
+			}
+               
+			if (relatedDocBaseTypeName != null)
+			{
+			    StringBuilder whereClause = new StringBuilder(30);
+			    whereClause.append("docbasetype='").append(relatedDocBaseTypeName).append("' ");
+			    whereClause.append("and AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
+			    whereClause.append(" AND IsActive='Y'");
+			    //IDEMPIERE-6666-fix-getShipmentReceiptDocType-in-MDocType
+			    whereClause.append(" order by  c_doctype_id  asc ");
 
-                if (relatedDocTypeName != null)
-                {
-                    StringBuilder whereClause = new StringBuilder(30);
-                    whereClause.append("Name='").append(relatedDocTypeName).append("' ");
-                    whereClause.append("and AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
-                    whereClause.append(" AND IsActive='Y'");
+			    int relDocTypeIds[] = MDocType.getAllIDs(MDocType.Table_Name, whereClause.toString(), null);
 
-                    int relDocTypeIds[] = MDocType.getAllIDs(MDocType.Table_Name, whereClause.toString(), null);
-
-                    if (relDocTypeIds.length > 0)
-                    {
-                        relatedDocTypeId = relDocTypeIds[0];
-                    }
-                }
-            }
-            else
-            {
-                relatedDocTypeId = docType.getC_DocTypeShipment_ID();
-            }
+			    if (relDocTypeIds.length > 0)
+			    {
+			        relatedDocTypeId = relDocTypeIds[0];
+			    }
+			}
+            
         }
 
         return relatedDocTypeId;
     }
-   
 	/**
 	 * 	Get translated doctype name
 	 *	@return Name if available translated
@@ -467,3 +468,7 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	}
 
 }	//	MDocType
+
+
+
+
