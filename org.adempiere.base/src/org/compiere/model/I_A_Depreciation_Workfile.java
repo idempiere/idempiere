@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Depreciation_Workfile
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_Depreciation_Workfile 
 {
@@ -40,6 +40,27 @@ public interface I_A_Depreciation_Workfile
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name A_Accumulated_Depr */
     public static final String COLUMNNAME_A_Accumulated_Depr = "A_Accumulated_Depr";
@@ -81,6 +102,7 @@ public interface I_A_Depreciation_Workfile
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Life_Current_Year */
@@ -164,14 +186,6 @@ public interface I_A_Depreciation_Workfile
 	/** Get Current Period	  */
 	public int getA_Current_Period();
 
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
     /** Column name A_Depreciation_Workfile_ID */
     public static final String COLUMNNAME_A_Depreciation_Workfile_ID = "A_Depreciation_Workfile_ID";
 
@@ -189,19 +203,6 @@ public interface I_A_Depreciation_Workfile
 
 	/** Get A_Depreciation_Workfile_UU	  */
 	public String getA_Depreciation_Workfile_UU();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
 
     /** Column name A_Expense_SL */
     public static final String COLUMNNAME_A_Expense_SL = "A_Expense_SL";
@@ -230,6 +231,7 @@ public interface I_A_Depreciation_Workfile
 	/** Get Asset Funding Mode	  */
 	public int getA_FundingMode_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_FundingMode getA_FundingMode() throws RuntimeException;
 
     /** Column name A_Life_Period */
@@ -313,19 +315,6 @@ public interface I_A_Depreciation_Workfile
 	/** Get Asset Salvage Value	  */
 	public BigDecimal getA_Salvage_Value();
 
-    /** Column name AssetDepreciationDate */
-    public static final String COLUMNNAME_AssetDepreciationDate = "AssetDepreciationDate";
-
-	/** Set Asset Depreciation Date.
-	  * Date of last depreciation
-	  */
-	public void setAssetDepreciationDate (Timestamp AssetDepreciationDate);
-
-	/** Get Asset Depreciation Date.
-	  * Date of last depreciation
-	  */
-	public Timestamp getAssetDepreciationDate();
-
     /** Column name A_Tip_Finantare */
     public static final String COLUMNNAME_A_Tip_Finantare = "A_Tip_Finantare";
 
@@ -357,6 +346,19 @@ public interface I_A_Depreciation_Workfile
 	/** Get Third contribution	  */
 	public BigDecimal getA_Valoare_Tert();
 
+    /** Column name AssetDepreciationDate */
+    public static final String COLUMNNAME_AssetDepreciationDate = "AssetDepreciationDate";
+
+	/** Set Asset Depreciation Date.
+	  * Date of last depreciation
+	  */
+	public void setAssetDepreciationDate (Timestamp AssetDepreciationDate);
+
+	/** Get Asset Depreciation Date.
+	  * Date of last depreciation
+	  */
+	public Timestamp getAssetDepreciationDate();
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
@@ -370,6 +372,7 @@ public interface I_A_Depreciation_Workfile
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */

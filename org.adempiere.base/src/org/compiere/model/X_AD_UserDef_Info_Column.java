@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Column
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info_Column")
 public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Column, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
@@ -140,6 +141,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getAD_InfoColumn() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
@@ -168,6 +170,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -196,6 +199,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -260,6 +264,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Info_Column_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_UserDef_Info)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Info.Table_ID)
@@ -287,6 +292,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
@@ -594,10 +600,10 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	public static final String QUERYOPERATOR_Gt = ">";
 	/** &gt;= = &gt;= */
 	public static final String QUERYOPERATOR_GtEq = ">=";
-	/** Like = Like */
-	public static final String QUERYOPERATOR_Like = "Like";
 	/** Full Like = LIKE */
 	public static final String QUERYOPERATOR_FullLike = "LIKE";
+	/** Like = Like */
+	public static final String QUERYOPERATOR_Like = "Like";
 	/** Set Query Operator.
 		@param QueryOperator Operator for database query
 	*/

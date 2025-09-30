@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Disposed
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Disposed")
 public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Asset_Disposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
@@ -326,6 +326,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 		return (String)get_Value(COLUMNNAME_A_Asset_Disposed_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -386,6 +387,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 		return (String)get_Value(COLUMNNAME_A_Asset_Status);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset_Trade() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -528,6 +530,63 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -556,34 +615,7 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
-			.getPO(getC_Invoice_ID(), get_TrxName());
-	}
-
-	/** Set Invoice.
-		@param C_Invoice_ID Invoice Identifier
-	*/
-	public void setC_Invoice_ID (int C_Invoice_ID)
-	{
-		if (C_Invoice_ID < 1)
-			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
-	}
-
-	/** Get Invoice.
-		@return Invoice Identifier
-	  */
-	public int getC_Invoice_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -612,6 +644,36 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
+
+	/** Set Invoice.
+		@param C_Invoice_ID Invoice Identifier
+	*/
+	public void setC_Invoice_ID (int C_Invoice_ID)
+	{
+		if (C_Invoice_ID < 1)
+			set_Value (COLUMNNAME_C_Invoice_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
+	}
+
+	/** Get Invoice.
+		@return Invoice Identifier
+	  */
+	public int getC_Invoice_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Field 
 {
@@ -50,6 +50,7 @@ public interface I_AD_Field
 	/** Get Chart	  */
 	public int getAD_Chart_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -73,6 +74,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_FieldGroup_ID */
@@ -88,20 +90,8 @@ public interface I_AD_Field
 	  */
 	public int getAD_FieldGroup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
-
-    /** Column name AD_Field_ID */
-    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
-
-	/** Set Field.
-	  * Field on a database table
-	  */
-	public void setAD_Field_ID (int AD_Field_ID);
-
-	/** Get Field.
-	  * Field on a database table
-	  */
-	public int getAD_Field_ID();
 
     /** Column name AD_FieldStyle_ID */
     public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
@@ -116,7 +106,21 @@ public interface I_AD_Field
 	  */
 	public int getAD_FieldStyle_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
+
+    /** Column name AD_Field_ID */
+    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
+
+	/** Set Field.
+	  * Field on a database table
+	  */
+	public void setAD_Field_ID (int AD_Field_ID);
+
+	/** Get Field.
+	  * Field on a database table
+	  */
+	public int getAD_Field_ID();
 
     /** Column name AD_Field_UU */
     public static final String COLUMNNAME_AD_Field_UU = "AD_Field_UU";
@@ -140,6 +144,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_LabelStyle_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -168,6 +173,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -183,6 +189,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name AD_Tab_ID */
@@ -198,6 +205,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_Val_Rule_ID */
@@ -213,6 +221,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name AD_Val_Rule_Lookup_ID */
@@ -228,6 +237,7 @@ public interface I_AD_Field
 	  */
 	public int getAD_Val_Rule_Lookup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
 
     /** Column name AlwaysUpdatableLogic */
@@ -245,19 +255,6 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  */
 	public String getAlwaysUpdatableLogic();
 
-    /** Column name ColumnSpan */
-    public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";
-
-	/** Set Column Span.
-	  * Number of column for a box of field
-	  */
-	public void setColumnSpan (int ColumnSpan);
-
-	/** Get Column Span.
-	  * Number of column for a box of field
-	  */
-	public int getColumnSpan();
-
     /** Column name ColumnSQL */
     public static final String COLUMNNAME_ColumnSQL = "ColumnSQL";
 
@@ -270,6 +267,19 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  * Virtual Column (r/o)
 	  */
 	public String getColumnSQL();
+
+    /** Column name ColumnSpan */
+    public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";
+
+	/** Set Column Span.
+	  * Number of column for a box of field
+	  */
+	public void setColumnSpan (int ColumnSpan);
+
+	/** Get Column Span.
+	  * Number of column for a box of field
+	  */
+	public int getColumnSpan();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -382,6 +392,7 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  */
 	public int getIncluded_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getIncluded_Tab() throws RuntimeException;
 
     /** Column name IsActive */
@@ -514,6 +525,19 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  * Field without Column - Only label is displayed
 	  */
 	public boolean isHeading();
+
+    /** Column name IsHtml */
+    public static final String COLUMNNAME_IsHtml = "IsHtml";
+
+	/** Set HTML.
+	  * Text has HTML tags
+	  */
+	public void setIsHtml (String IsHtml);
+
+	/** Get HTML.
+	  * Text has HTML tags
+	  */
+	public String getIsHtml();
 
     /** Column name IsMandatory */
     public static final String COLUMNNAME_IsMandatory = "IsMandatory";
@@ -745,7 +769,7 @@ s active status or processed status. This logic Applicable only if Always Updata
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public void setVFormat (String VFormat);
 
@@ -753,7 +777,7 @@ _lLoOaAcCa09&quot;
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public String getVFormat();
 

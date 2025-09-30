@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Package
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Package")
 public class X_M_Package extends PO implements I_M_Package, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Package (Properties ctx, int M_Package_ID, String trxName)
@@ -269,28 +269,35 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set COD.
-		@param CashOnDelivery COD
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_ID)
+			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner Shipping Account.
+		@param C_BP_ShippingAcct_ID Business Partner Shipping Account
 	*/
-	public void setCashOnDelivery (boolean CashOnDelivery)
+	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
 	{
-		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
+		if (C_BP_ShippingAcct_ID < 1)
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
 	}
 
-	/** Get COD.
-		@return COD	  */
-	public boolean isCashOnDelivery()
+	/** Get Business Partner Shipping Account.
+		@return Business Partner Shipping Account	  */
+	public int getC_BP_ShippingAcct_ID()
 	{
-		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -319,33 +326,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BP_ShippingAcct)MTable.get(getCtx(), org.compiere.model.I_C_BP_ShippingAcct.Table_ID)
-			.getPO(getC_BP_ShippingAcct_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner Shipping Account.
-		@param C_BP_ShippingAcct_ID Business Partner Shipping Account
-	*/
-	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID)
-	{
-		if (C_BP_ShippingAcct_ID < 1)
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BP_ShippingAcct_ID, Integer.valueOf(C_BP_ShippingAcct_ID));
-	}
-
-	/** Get Business Partner Shipping Account.
-		@return Business Partner Shipping Account	  */
-	public int getC_BP_ShippingAcct_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_ShippingAcct_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -374,6 +355,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -402,6 +384,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -428,6 +411,28 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set COD.
+		@param CashOnDelivery COD
+	*/
+	public void setCashOnDelivery (boolean CashOnDelivery)
+	{
+		set_Value (COLUMNNAME_CashOnDelivery, Boolean.valueOf(CashOnDelivery));
+	}
+
+	/** Get COD.
+		@return COD	  */
+	public boolean isCashOnDelivery()
+	{
+		Object oo = get_Value(COLUMNNAME_CashOnDelivery);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Date Received.
@@ -743,6 +748,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -1219,6 +1225,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
@@ -1284,6 +1291,91 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Package_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_ID)
+			.getPO(getM_ShipperLabels_ID(), get_TrxName());
+	}
+
+	/** Set Shipper Labels.
+		@param M_ShipperLabels_ID Shipper Labels
+	*/
+	public void setM_ShipperLabels_ID (int M_ShipperLabels_ID)
+	{
+		if (M_ShipperLabels_ID < 1)
+			set_Value (COLUMNNAME_M_ShipperLabels_ID, null);
+		else
+			set_Value (COLUMNNAME_M_ShipperLabels_ID, Integer.valueOf(M_ShipperLabels_ID));
+	}
+
+	/** Get Shipper Labels.
+		@return Shipper Labels	  */
+	public int getM_ShipperLabels_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperLabels_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackaging.Table_ID)
+			.getPO(getM_ShipperPackaging_ID(), get_TrxName());
+	}
+
+	/** Set Shipper Packaging.
+		@param M_ShipperPackaging_ID Shipper Packaging
+	*/
+	public void setM_ShipperPackaging_ID (int M_ShipperPackaging_ID)
+	{
+		if (M_ShipperPackaging_ID < 1)
+			set_Value (COLUMNNAME_M_ShipperPackaging_ID, null);
+		else
+			set_Value (COLUMNNAME_M_ShipperPackaging_ID, Integer.valueOf(M_ShipperPackaging_ID));
+	}
+
+	/** Get Shipper Packaging.
+		@return Shipper Packaging	  */
+	public int getM_ShipperPackaging_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPackaging_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypes.Table_ID)
+			.getPO(getM_ShipperPickupTypes_ID(), get_TrxName());
+	}
+
+	/** Set Shipper Pickup Types.
+		@param M_ShipperPickupTypes_ID Shipper Pickup Types
+	*/
+	public void setM_ShipperPickupTypes_ID (int M_ShipperPickupTypes_ID)
+	{
+		if (M_ShipperPickupTypes_ID < 1)
+			set_Value (COLUMNNAME_M_ShipperPickupTypes_ID, null);
+		else
+			set_Value (COLUMNNAME_M_ShipperPickupTypes_ID, Integer.valueOf(M_ShipperPickupTypes_ID));
+	}
+
+	/** Get Shipper Pickup Types.
+		@return Shipper Pickup Types	  */
+	public int getM_ShipperPickupTypes_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPickupTypes_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
@@ -1312,87 +1404,7 @@ public class X_M_Package extends PO implements I_M_Package, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_ShipperLabels)MTable.get(getCtx(), org.compiere.model.I_M_ShipperLabels.Table_ID)
-			.getPO(getM_ShipperLabels_ID(), get_TrxName());
-	}
-
-	/** Set Shipper Labels.
-		@param M_ShipperLabels_ID Shipper Labels
-	*/
-	public void setM_ShipperLabels_ID (int M_ShipperLabels_ID)
-	{
-		if (M_ShipperLabels_ID < 1)
-			set_Value (COLUMNNAME_M_ShipperLabels_ID, null);
-		else
-			set_Value (COLUMNNAME_M_ShipperLabels_ID, Integer.valueOf(M_ShipperLabels_ID));
-	}
-
-	/** Get Shipper Labels.
-		@return Shipper Labels	  */
-	public int getM_ShipperLabels_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperLabels_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_ShipperPackaging)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPackaging.Table_ID)
-			.getPO(getM_ShipperPackaging_ID(), get_TrxName());
-	}
-
-	/** Set Shipper Packaging.
-		@param M_ShipperPackaging_ID Shipper Packaging
-	*/
-	public void setM_ShipperPackaging_ID (int M_ShipperPackaging_ID)
-	{
-		if (M_ShipperPackaging_ID < 1)
-			set_Value (COLUMNNAME_M_ShipperPackaging_ID, null);
-		else
-			set_Value (COLUMNNAME_M_ShipperPackaging_ID, Integer.valueOf(M_ShipperPackaging_ID));
-	}
-
-	/** Get Shipper Packaging.
-		@return Shipper Packaging	  */
-	public int getM_ShipperPackaging_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPackaging_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_ShipperPickupTypes)MTable.get(getCtx(), org.compiere.model.I_M_ShipperPickupTypes.Table_ID)
-			.getPO(getM_ShipperPickupTypes_ID(), get_TrxName());
-	}
-
-	/** Set Shipper Pickup Types.
-		@param M_ShipperPickupTypes_ID Shipper Pickup Types
-	*/
-	public void setM_ShipperPickupTypes_ID (int M_ShipperPickupTypes_ID)
-	{
-		if (M_ShipperPickupTypes_ID < 1)
-			set_Value (COLUMNNAME_M_ShipperPickupTypes_ID, null);
-		else
-			set_Value (COLUMNNAME_M_ShipperPickupTypes_ID, Integer.valueOf(M_ShipperPickupTypes_ID));
-	}
-
-	/** Get Shipper Pickup Types.
-		@return Shipper Pickup Types	  */
-	public int getM_ShipperPickupTypes_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPickupTypes_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)

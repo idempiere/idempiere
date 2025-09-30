@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Withholding_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_Withholding_Acct 
 {
@@ -75,23 +75,8 @@ public interface I_C_Withholding_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
-
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
 
     /** Column name C_Withholding_Acct_UU */
     public static final String COLUMNNAME_C_Withholding_Acct_UU = "C_Withholding_Acct_UU";
@@ -115,7 +100,24 @@ public interface I_C_Withholding_Acct
 	  */
 	public int getC_Withholding_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Withholding getC_Withholding() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -159,5 +161,6 @@ public interface I_C_Withholding_Acct
 	  */
 	public int getWithholding_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getWithholding_A() throws RuntimeException;
 }

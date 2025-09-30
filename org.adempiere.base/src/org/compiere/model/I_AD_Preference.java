@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Preference
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Preference 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Preference
 	  */
 	public int getAD_Form_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_InfoWindow_ID */
@@ -77,6 +78,7 @@ public interface I_AD_Preference
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -127,6 +129,7 @@ public interface I_AD_Preference
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -142,6 +145,7 @@ public interface I_AD_Preference
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -157,6 +161,7 @@ public interface I_AD_Preference
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Attribute */

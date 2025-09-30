@@ -35,15 +35,19 @@ import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
+import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRule;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Report Controller.
@@ -51,7 +55,7 @@ import org.compiere.util.Env;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ReportCtl.java,v 1.3 2006/10/08 07:05:08 comdivision Exp $
  *
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+ *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>FR [ 1866739 ] ReportCtl: use printformat from the transient/serializable
  */
 public class ReportCtl
@@ -59,14 +63,17 @@ public class ReportCtl
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINTER_NAME}
 	 */
+	@Deprecated	
 	public static final String PARAM_PRINTER_NAME = ServerReportCtl.PARAM_PRINTER_NAME;
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINT_FORMAT}
 	 */
+	@Deprecated
 	public static final String PARAM_PRINT_FORMAT = ServerReportCtl.PARAM_PRINT_FORMAT;
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINT_INFO}
 	 */
+	@Deprecated
 	public static final String PARAM_PRINT_INFO = ServerReportCtl.PARAM_PRINT_INFO;
 
 	/**
@@ -76,14 +83,13 @@ public class ReportCtl
 	{
 	}	//	ReportCtrl
 
-
 	/**	Static Logger	*/
 	private static final CLogger	s_log	= CLogger.getCLogger (ReportCtl.class);
 	private volatile static ProcessInfo m_pi;
 
 	/**
-	 *	Create Report.
-	 *	Called from ProcessCtl.
+	 *	Create Report.<br/>
+	 *	Called from ProcessCtl.<br/>
 	 *	- Check special reports first, if not, create standard Report
 	 *
 	 *  @param pi process info
@@ -96,8 +102,8 @@ public class ReportCtl
 	}
 
 	/**
-	 *	Create Report.
-	 *	Called from ProcessCtl.
+	 *	Create Report.<br/>
+	 *	Called from ProcessCtl.<br/>
 	 *	- Check special reports first, if not, create standard Report
 	 *
 	 *  @param parent The window which invoked the printing
@@ -113,8 +119,8 @@ public class ReportCtl
 	}
 
 	/**
-	 *	Create Report.
-	 *	Called from ProcessCtl.
+	 *	Create Report.<br/>
+	 *	Called from ProcessCtl.<br/>
 	 *	- Check special reports first, if not, create standard Report
 	 *
 	 *  @param parent The window which invoked the printing
@@ -167,17 +173,9 @@ public class ReportCtl
 				return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)		//	Inventory Move
 				return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview(), instance);
-			/**
-	        else if (pi.getAD_Process_ID() == 290)      // Movement Submission by VHARCQ
-	            return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, IsDirectPrint);
-			else if (pi.AD_Process_ID == 9999999)	//	PaySelection
-				return startDocumentPrint(CHECK, pi, IsDirectPrint);
-			else if (pi.AD_Process_ID == 9999999)	//	PaySelection
-				return startDocumentPrint(REMITTANCE, pi, IsDirectPrint);
-			**/
 			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_DUNNING)		//	Dunning
 				return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
+		    else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
 				|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
 			   return startFinReport (pi, WindowNo, instance);
 			/********************
@@ -191,8 +189,8 @@ public class ReportCtl
 		}
 	}	//	create
 
-	/**************************************************************************
-	 *	Start Standard Report.
+	/**
+	 *	Start Standard Report.<br/>
 	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
@@ -203,8 +201,8 @@ public class ReportCtl
 		return startStandardReport(pi, -1, IsDirectPrint);
 	}
 	
-	/**************************************************************************
-	 *	Start Standard Report.
+	/**
+	 *	Start Standard Report.<br/>
 	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param WindowNo The windows number which invoked the printing
@@ -216,8 +214,8 @@ public class ReportCtl
 		return startStandardReport(pi, WindowNo, IsDirectPrint, null);
 	}
 	
-	/**************************************************************************
-	 *	Start Standard Report.
+	/**
+	 *	Start Standard Report.<br/>
 	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param WindowNo The windows number which invoked the printing
@@ -231,9 +229,9 @@ public class ReportCtl
 		return startStandardReport(pi, WindowNo);
 	}
 
-	/**************************************************************************
-	 *	Start Standard Report.
-	 *  - Get Table Info and submit.<br>
+	/**
+	 *	Start Standard Report.<br/>
+	 *  - Get Table Info and submit.<br/>
 	 *  A report can be created from:
 	 *  <ol>
 	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
@@ -247,9 +245,9 @@ public class ReportCtl
 		return startStandardReport(pi, -1);
 	}
 	
-	/**************************************************************************
-	 *	Start Standard Report.
-	 *  - Get Table Info and submit.<br>
+	/**
+	 *	Start Standard Report.<br/>
+	 *  - Get Table Info and submit.<br/>
 	 *  A report can be created from:
 	 *  <ol>
 	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
@@ -264,9 +262,9 @@ public class ReportCtl
 		return startStandardReport(pi, WindowNo, null);
 	}
 	
-	/**************************************************************************
-	 *	Start Standard Report.
-	 *  - Get Table Info and submit.<br>
+	/**
+	 *	Start Standard Report.<br/>
+	 *  - Get Table Info and submit.<br/>
 	 *  A report can be created from:
 	 *  <ol>
 	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
@@ -383,7 +381,6 @@ public class ReportCtl
 
 	/**
 	 * 	Start Document Print for Type.
-	 *  	Called also directly from ProcessDialog, VInOutGen, VInvoiceGen, VPayPrint
 	 * 	@param type document type in ReportEngine
 	 * 	@param Record_ID id
 	 * 	@param IsDirectPrint if true, prints directly - otherwise View
@@ -411,7 +408,6 @@ public class ReportCtl
 
 	/**
 	 * 	Start Document Print for Type.
-	 *  	Called also directly from ProcessDialog, VInOutGen, VInvoiceGen, VPayPrint
 	 * 	@param type document type in ReportEngine
 	 * 	@param Record_ID id
 	 *  @param parent The window which invoked the printing
@@ -427,7 +423,6 @@ public class ReportCtl
 	
 	/**
 	 * 	Start Document Print for Type.
-	 *  	Called also directly from ProcessDialog, VInOutGen, VInvoiceGen, VPayPrint
 	 * 	@param type document type in ReportEngine
 	 * 	@param Record_ID id
 	 *  @param parent The window which invoked the printing
@@ -445,9 +440,11 @@ public class ReportCtl
 	/**
 	 * 	Start Document Print for Type with specified printer.
 	 * 	@param type document type in ReportEngine
+	 *  @param customPrintFormat
 	 * 	@param Record_ID id
 	 *  @param parent The window which invoked the printing
 	 *  @param WindowNo The windows number which invoked the printing
+	 *  @param IsDirectPrint
 	 * 	@param printerName 	Specified printer name
 	 * 	@param instance - AD_PInstance
 	 * 	@return true if success
@@ -472,18 +469,63 @@ public class ReportCtl
 			if(instance != null) {
 				instance.updatePrintFormatAndLanguageIfEmpty(format);
 			}
-			// We have a Jasper Print Format
-			// ==============================
 			if(format.getJasperProcess_ID() > 0)
 			{
-				ServerReportCtl.runJasperProcess(Record_ID, re, IsDirectPrint, printerName);
-				if (IsDirectPrint) {
-					ReportEngine.printConfirm(type, Record_ID);
+				// We have a Jasper Print Format
+				if (!IsDirectPrint)
+				{
+					// if there's process, need to run it before preview
+					MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
+					if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
+						if (!ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())) {
+							ProcessInfo jasperProcessInfo = new ProcessInfo (jasperProcess.getName(), format.getJasperProcess_ID());
+							PrintInfo printInfo = re.getPrintInfo();
+							jasperProcessInfo.setPrintPreview( !IsDirectPrint );
+							jasperProcessInfo.setRecord_ID ( Record_ID );
+							jasperProcessInfo.setRecord_UU ( printInfo.getRecord_UU() );
+							jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
+							jasperProcessInfo.setClassName (jasperProcess.getClassname());
+							jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
+							
+							MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
+									jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
+									jasperProcessInfo.getRecord_UU());
+							jasperInstance.saveEx();
+							jasperProcessInfo.setAD_PInstance_ID (jasperInstance.getAD_PInstance_ID());
+						
+							boolean runOk = false;
+							if (jasperProcess.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+								runOk = ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
+							} else {
+								runOk = ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
+							}
+							if (!runOk || jasperProcessInfo.isError()) {
+								String msg = jasperProcessInfo.getSummary();
+								if (Util.isEmpty(msg, true)) {
+									msg = Msg.getMsg(Env.getCtx(), "ProcessRunError");
+								}
+								msg = msg + " (" + jasperProcessInfo.getTitle() + ")";
+								throw new AdempiereException(msg);
+							}
+						}							
+					}
+					
+					//report viewer can handle preview of print format with jasper report process
+					preview(re);
+				}
+				else
+				{
+					int jasperRecordId = Record_ID;
+					if (re.getPrintInfo() != null && re.getPrintInfo().getRecord_ID() > 0)
+						jasperRecordId = re.getPrintInfo().getRecord_ID();
+					boolean result = ServerReportCtl.runJasperProcess(jasperRecordId, re, IsDirectPrint, printerName);
+					if (result && IsDirectPrint)
+					{
+						ReportEngine.printConfirm(type, Record_ID);
+					}
 				}
 			}
 			else
-			// Standard Print Format (Non-Jasper)
-			// ==================================
 			{
 				createOutput(re, !IsDirectPrint, printerName);
 				if (IsDirectPrint)
@@ -496,8 +538,8 @@ public class ReportCtl
 	}	//	StartDocumentPrint
 
 	/**
-	 * 	Start Check Print.
-	 * 	Find/Create
+	 * 	Start Check Print.<br/>
+	 * 	Find/Create.
 	 *	@param C_Payment_ID Payment
 	 * 	@param IsDirectPrint if true, prints directly - otherwise View
 	 * 	@param instance - AD_PInstance
@@ -552,7 +594,7 @@ public class ReportCtl
 	private static IServiceReferenceHolder<ReportViewerProvider> s_reportViewerProviderReference = null;
 	
 	/**
-	 * 
+	 * Get report viewer provider
 	 * @return {@link ReportViewerProvider}
 	 */
 	public static synchronized ReportViewerProvider getReportViewerProvider() {

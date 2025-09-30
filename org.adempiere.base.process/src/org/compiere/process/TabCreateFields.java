@@ -100,11 +100,11 @@ public class TabCreateFields extends SvrProcess
 			+ " AND IsActive='Y' ";
 
 		if(!Util.isEmpty(p_EntityType))
-			sql += " AND c.entitytype = ?";
+			sql += " AND c.entitytype = ? ";
 		if(p_CreatedSince != null)
 			sql += " AND c.created >= ? ";
 
-		sql += "ORDER  BY CASE "
+		sql += " ORDER  BY CASE "
 			+ "            WHEN c.ColumnName = 'AD_Client_ID' THEN -100 "
 			+ "            WHEN c.ColumnName = 'AD_Org_ID' THEN -90 "
 			+ "            WHEN c.IsParent = 'Y' THEN -85 "
@@ -167,7 +167,7 @@ public class TabCreateFields extends SvrProcess
 				}
 				if (column.getAD_Reference_ID() == DisplayType.Text) {
 					field.setNumLines(3);
-				} else if (column.getAD_Reference_ID() == DisplayType.TextLong) {
+				} else if (column.getAD_Reference_ID() == DisplayType.TextLong || column.getAD_Reference_ID() == DisplayType.JSON) {
 					field.setNumLines(5);
 				} else if (column.getAD_Reference_ID() == DisplayType.Memo) {
 					field.setNumLines(8);
@@ -210,7 +210,11 @@ public class TabCreateFields extends SvrProcess
 					field.setDisplayLogic("@$Element_U1@=Y");
 				} else if (column.getColumnName().equalsIgnoreCase("User2_ID")) {
 					field.setDisplayLogic("@$Element_U2@=Y");
-				}  
+				} else if (column.getColumnName().equalsIgnoreCase("C_CostCenter_ID")) {
+					field.setDisplayLogic("@$Element_CC@=Y");
+				} else if (column.getColumnName().equalsIgnoreCase("C_Department_ID")) {
+					field.setDisplayLogic("@$Element_DP@=Y");
+				}				
 
 				// set read-only for usual known-fields
 				if (   column.getColumnName().equalsIgnoreCase("IsApproved")

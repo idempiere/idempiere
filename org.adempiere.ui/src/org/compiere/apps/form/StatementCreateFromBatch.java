@@ -28,7 +28,6 @@ import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MPayment;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -36,19 +35,14 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Form to create bank statement line ({@link MBankStatementLine}) from transactions (payment, receipt, etc).
  * @author Elaine
- *
  */
 public abstract class StatementCreateFromBatch extends CreateFromForm
 {
-	/**	Logger			*/
-	protected transient CLogger log = CLogger.getCLogger(getClass());
-	
 	@Override
 	protected boolean dynInit() throws Exception
 	{
-		log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "C_BankStatement_ID") + " .. " + Msg.getElement(Env.getCtx(), "X_CreateFromBatch"));
 		
 		return true;
@@ -63,7 +57,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Get where clause
 	 * @param BPartner
 	 * @param DocumentNo
 	 * @param DateFrom
@@ -80,7 +74,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	{
 		StringBuilder sql = new StringBuilder();
 		sql.append("WHERE p.Processed='Y' AND p.IsReconciled='N'");
-		sql.append(" AND p.DocStatus IN ('CO','CL','RE','VO') AND p.PayAmt<>0"); 
+		sql.append(" AND p.DocStatus IN ('CO','CL') AND p.PayAmt<>0"); 
 		sql.append(" AND p.C_BankAccount_ID = ?");
 	    sql.append(" AND NOT EXISTS (SELECT * FROM C_BankStatementLine l WHERE p.C_Payment_ID=l.C_Payment_ID AND l.StmtAmt <> 0)");
 	    	    
@@ -130,7 +124,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Set prepared statement parameters
 	 * @param pstmt
 	 * @param BankAccount
 	 * @param BPartner
@@ -197,6 +191,11 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		}
 	}
 	
+	/**
+	 * Convert to upper case and append %
+	 * @param text
+	 * @return converted text
+	 */
 	private String getSQLText(String text)
 	{
 		String s = text.toUpperCase();
@@ -216,7 +215,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Get not processed deposit batch data
 	 * @param BankAccount
 	 * @param BPartner
 	 * @param DocumentNo
@@ -228,7 +227,8 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	 * @param TenderType
 	 * @param AuthCode
 	 * @param gridTab
-	 * @return list of bank account records
+	 * @return list of deposit batch records
+	 * @see #getOISColumnNames()
 	 */
 	protected Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
 			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode, 
@@ -249,7 +249,8 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		sql.append(getSQLWhere(BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType, TenderType, AuthCode));
 		
 		sql.append(" AND py.C_DepositBatch_ID <> 0");
-		sql.append(" AND db.Processed = 'Y'");
+		sql.append(" AND db.DOCSTATUS IN ('CO','CL') AND db.Processed = 'Y'");
+		sql.append(" AND NOT EXISTS (SELECT 1 FROM C_BankStatementLine l WHERE db.C_DepositBatch_ID=l.C_DepositBatch_ID AND l.StmtAmt <> 0)");
 		
 		sql.append(" GROUP BY py.C_DepositBatch_ID,db.DocumentNo,db.DateDeposit, db.C_BankAccount_ID,ba.AccountNo");
 		
@@ -288,7 +289,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * 
+	 * Set column class type
 	 * @param miniTable
 	 */
 	protected void configureMiniTable (IMiniTable miniTable)
@@ -322,7 +323,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		sql.append(" LEFT OUTER JOIN C_BPartner bp ON (p.C_BPartner_ID=bp.C_BPartner_ID)");
 		sql.append(" WHERE p.Processed='Y' AND p.IsReconciled='N'");
 		sql.append(" AND py.C_DepositBatch_ID = ?");
-		sql.append(" AND p.DocStatus IN ('CO','CL','RE','VO') AND p.PayAmt<>0");
+		sql.append(" AND p.DocStatus IN ('CO','CL') AND p.PayAmt<>0");
 		sql.append(" AND p.C_BankAccount_ID=?");
 		sql.append(" AND NOT EXISTS (SELECT * FROM C_BankStatementLine l WHERE p.C_Payment_ID=l.C_Payment_ID AND l.StmtAmt <> 0)");
 
@@ -383,8 +384,8 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 
 	/**
-	 * 
-	 * @return column names
+	 * Get column names for {@link #getBankAccountData(Integer, Integer, String, Timestamp, Timestamp, BigDecimal, BigDecimal, Integer, String, String, GridTab)}
+	 * @return column names (Select, Date, Deposit Batch, Amount, Converted Amount and Bank Account)
 	 */
 	protected Vector<String> getOISColumnNames()
 	{

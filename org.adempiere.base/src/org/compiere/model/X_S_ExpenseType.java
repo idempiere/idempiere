@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ExpenseType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="S_ExpenseType")
 public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_S_ExpenseType (Properties ctx, int S_ExpenseType_ID, String trxName)
@@ -125,6 +125,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
@@ -153,6 +154,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -220,6 +222,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)

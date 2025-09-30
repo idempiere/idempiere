@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language-addon>
+    <addon-name>pivot</addon-name>
+    <language-name>xul/html</language-name>
+	<javascript-module name="pivot" version="2.23.0.202401262000"/>
+</language-addon>

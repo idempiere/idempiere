@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_List
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_List")
 public class X_HR_List extends PO implements I_HR_List, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_List (Properties ctx, int HR_List_ID, String trxName)
@@ -123,6 +123,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
@@ -150,6 +151,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Employee getHR_Employee() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Employee)MTable.get(getCtx(), org.eevolution.model.I_HR_Employee.Table_ID)
@@ -177,27 +179,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Payroll List.
-		@param HR_List_ID Payroll List
-	*/
-	public void setHR_List_ID (int HR_List_ID)
-	{
-		if (HR_List_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_HR_List_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_HR_List_ID, Integer.valueOf(HR_List_ID));
-	}
-
-	/** Get Payroll List.
-		@return Payroll List	  */
-	public int getHR_List_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_HR_List_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_ListType getHR_ListType() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_ListType)MTable.get(getCtx(), org.eevolution.model.I_HR_ListType.Table_ID)
@@ -225,6 +207,27 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Payroll List.
+		@param HR_List_ID Payroll List
+	*/
+	public void setHR_List_ID (int HR_List_ID)
+	{
+		if (HR_List_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_HR_List_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_HR_List_ID, Integer.valueOf(HR_List_ID));
+	}
+
+	/** Get Payroll List.
+		@return Payroll List	  */
+	public int getHR_List_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_HR_List_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set HR_List_UU.
 		@param HR_List_UU HR_List_UU
 	*/
@@ -240,6 +243,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 		return (String)get_Value(COLUMNNAME_HR_List_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)

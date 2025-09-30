@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AuthorizationCredential
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationCredential")
 public class X_AD_AuthorizationCredential extends PO implements I_AD_AuthorizationCredential, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationCredential (Properties ctx, int AD_AuthorizationCredential_ID, String trxName)
@@ -161,6 +161,7 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationCredential_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AuthorizationProvider getAD_AuthorizationProvider() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AuthorizationProvider)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationProvider.Table_ID)

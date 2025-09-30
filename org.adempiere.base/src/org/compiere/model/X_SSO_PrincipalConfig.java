@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for SSO_PrincipalConfig
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="SSO_PrincipalConfig")
 public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_SSO_PrincipalConfig (Properties ctx, int SSO_PrincipalConfig_ID, String trxName)
@@ -253,6 +253,35 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 	public String getSSO_IDempMonitorRedirectURIs()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_IDempMonitorRedirectURIs);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Image getSSO_LoginButtonImage() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
+			.getPO(getSSO_LoginButtonImage_ID(), get_TrxName());
+	}
+
+	/** Set Login Button Image.
+		@param SSO_LoginButtonImage_ID Identifier for the image used as the icon for the Single Sign-On (SSO) login button. References the AD_Image table.
+	*/
+	public void setSSO_LoginButtonImage_ID (int SSO_LoginButtonImage_ID)
+	{
+		if (SSO_LoginButtonImage_ID < 1)
+			set_Value (COLUMNNAME_SSO_LoginButtonImage_ID, null);
+		else
+			set_Value (COLUMNNAME_SSO_LoginButtonImage_ID, Integer.valueOf(SSO_LoginButtonImage_ID));
+	}
+
+	/** Get Login Button Image.
+		@return Identifier for the image used as the icon for the Single Sign-On (SSO) login button. References the AD_Image table.
+	  */
+	public int getSSO_LoginButtonImage_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SSO_LoginButtonImage_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Felix Web Console Redirect URIs.

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_BankStatement
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_BankStatement")
 public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_I_BankStatement (Properties ctx, int I_BankStatement_ID, String trxName)
@@ -107,22 +107,6 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
       return sb.toString();
     }
 
-	/** Set Bank Account No.
-		@param BankAccountNo Bank Account Number
-	*/
-	public void setBankAccountNo (String BankAccountNo)
-	{
-		set_Value (COLUMNNAME_BankAccountNo, BankAccountNo);
-	}
-
-	/** Get Bank Account No.
-		@return Bank Account Number
-	  */
-	public String getBankAccountNo()
-	{
-		return (String)get_Value(COLUMNNAME_BankAccountNo);
-	}
-
 	/** Set Business Partner Key.
 		@param BPartnerValue Key of the Business Partner
 	*/
@@ -139,90 +123,23 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 		return (String)get_Value(COLUMNNAME_BPartnerValue);
 	}
 
-	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
-			.getPO(getC_BankAccount_ID(), get_TrxName());
-	}
-
-	/** Set Bank Account.
-		@param C_BankAccount_ID Account at the Bank
+	/** Set Bank Account No.
+		@param BankAccountNo Bank Account Number
 	*/
-	public void setC_BankAccount_ID (int C_BankAccount_ID)
+	public void setBankAccountNo (String BankAccountNo)
 	{
-		if (C_BankAccount_ID < 1)
-			set_Value (COLUMNNAME_C_BankAccount_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
+		set_Value (COLUMNNAME_BankAccountNo, BankAccountNo);
 	}
 
-	/** Get Bank Account.
-		@return Account at the Bank
+	/** Get Bank Account No.
+		@return Bank Account Number
 	  */
-	public int getC_BankAccount_ID()
+	public String getBankAccountNo()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_BankAccountNo);
 	}
 
-	public org.compiere.model.I_C_BankStatement getC_BankStatement() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankStatement)MTable.get(getCtx(), org.compiere.model.I_C_BankStatement.Table_ID)
-			.getPO(getC_BankStatement_ID(), get_TrxName());
-	}
-
-	/** Set Bank Statement.
-		@param C_BankStatement_ID Bank Statement of account
-	*/
-	public void setC_BankStatement_ID (int C_BankStatement_ID)
-	{
-		if (C_BankStatement_ID < 1)
-			set_Value (COLUMNNAME_C_BankStatement_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BankStatement_ID, Integer.valueOf(C_BankStatement_ID));
-	}
-
-	/** Get Bank Statement.
-		@return Bank Statement of account
-	  */
-	public int getC_BankStatement_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankStatement_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BankStatementLine getC_BankStatementLine() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankStatementLine)MTable.get(getCtx(), org.compiere.model.I_C_BankStatementLine.Table_ID)
-			.getPO(getC_BankStatementLine_ID(), get_TrxName());
-	}
-
-	/** Set Bank statement line.
-		@param C_BankStatementLine_ID Line on a statement from this Bank
-	*/
-	public void setC_BankStatementLine_ID (int C_BankStatementLine_ID)
-	{
-		if (C_BankStatementLine_ID < 1)
-			set_Value (COLUMNNAME_C_BankStatementLine_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BankStatementLine_ID, Integer.valueOf(C_BankStatementLine_ID));
-	}
-
-	/** Get Bank statement line.
-		@return Line on a statement from this Bank
-	  */
-	public int getC_BankStatementLine_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankStatementLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -251,6 +168,94 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
+
+	/** Set Bank Account.
+		@param C_BankAccount_ID Account at the Bank
+	*/
+	public void setC_BankAccount_ID (int C_BankAccount_ID)
+	{
+		if (C_BankAccount_ID < 1)
+			set_Value (COLUMNNAME_C_BankAccount_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
+	}
+
+	/** Get Bank Account.
+		@return Account at the Bank
+	  */
+	public int getC_BankAccount_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BankStatementLine getC_BankStatementLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankStatementLine)MTable.get(getCtx(), org.compiere.model.I_C_BankStatementLine.Table_ID)
+			.getPO(getC_BankStatementLine_ID(), get_TrxName());
+	}
+
+	/** Set Bank statement line.
+		@param C_BankStatementLine_ID Line on a statement from this Bank
+	*/
+	public void setC_BankStatementLine_ID (int C_BankStatementLine_ID)
+	{
+		if (C_BankStatementLine_ID < 1)
+			set_Value (COLUMNNAME_C_BankStatementLine_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankStatementLine_ID, Integer.valueOf(C_BankStatementLine_ID));
+	}
+
+	/** Get Bank statement line.
+		@return Line on a statement from this Bank
+	  */
+	public int getC_BankStatementLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankStatementLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BankStatement getC_BankStatement() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankStatement)MTable.get(getCtx(), org.compiere.model.I_C_BankStatement.Table_ID)
+			.getPO(getC_BankStatement_ID(), get_TrxName());
+	}
+
+	/** Set Bank Statement.
+		@param C_BankStatement_ID Bank Statement of account
+	*/
+	public void setC_BankStatement_ID (int C_BankStatement_ID)
+	{
+		if (C_BankStatement_ID < 1)
+			set_Value (COLUMNNAME_C_BankStatement_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankStatement_ID, Integer.valueOf(C_BankStatement_ID));
+	}
+
+	/** Get Bank Statement.
+		@return Bank Statement of account
+	  */
+	public int getC_BankStatement_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankStatement_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -279,6 +284,7 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -302,6 +308,64 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
+
+	/** Set Invoice.
+		@param C_Invoice_ID Invoice Identifier
+	*/
+	public void setC_Invoice_ID (int C_Invoice_ID)
+	{
+		if (C_Invoice_ID < 1)
+			set_Value (COLUMNNAME_C_Invoice_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
+	}
+
+	/** Get Invoice.
+		@return Invoice Identifier
+	  */
+	public int getC_Invoice_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
+
+	/** Set Payment.
+		@param C_Payment_ID Payment identifier
+	*/
+	public void setC_Payment_ID (int C_Payment_ID)
+	{
+		if (C_Payment_ID < 1)
+			set_Value (COLUMNNAME_C_Payment_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
+	}
+
+	/** Get Payment.
+		@return Payment identifier
+	  */
+	public int getC_Payment_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -340,62 +404,6 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public String getChargeName()
 	{
 		return (String)get_Value(COLUMNNAME_ChargeName);
-	}
-
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
-			.getPO(getC_Invoice_ID(), get_TrxName());
-	}
-
-	/** Set Invoice.
-		@param C_Invoice_ID Invoice Identifier
-	*/
-	public void setC_Invoice_ID (int C_Invoice_ID)
-	{
-		if (C_Invoice_ID < 1)
-			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
-	}
-
-	/** Get Invoice.
-		@return Invoice Identifier
-	  */
-	public int getC_Invoice_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
-			.getPO(getC_Payment_ID(), get_TrxName());
-	}
-
-	/** Set Payment.
-		@param C_Payment_ID Payment identifier
-	*/
-	public void setC_Payment_ID (int C_Payment_ID)
-	{
-		if (C_Payment_ID < 1)
-			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
-	}
-
-	/** Get Payment.
-		@return Payment identifier
-	  */
-	public int getC_Payment_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Create Payment.
@@ -672,6 +680,22 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 		return (String)get_Value(COLUMNNAME_IBAN);
 	}
 
+	/** Set ISO Currency Code.
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
+	public void setISO_Code (String ISO_Code)
+	{
+		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
+	}
+
+	/** Get ISO Currency Code.
+		@return Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code()
+	{
+		return (String)get_Value(COLUMNNAME_ISO_Code);
+	}
+
 	/** Set Import Bank Statement.
 		@param I_BankStatement_ID Import of the Bank Statement
 	*/
@@ -781,22 +805,6 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	public String getInvoiceDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_InvoiceDocumentNo);
-	}
-
-	/** Set ISO Currency Code.
-		@param ISO_Code Three letter ISO 4217 Code of the Currency
-	*/
-	public void setISO_Code (String ISO_Code)
-	{
-		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
-	}
-
-	/** Get ISO Currency Code.
-		@return Three letter ISO 4217 Code of the Currency
-	  */
-	public String getISO_Code()
-	{
-		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Reversal.

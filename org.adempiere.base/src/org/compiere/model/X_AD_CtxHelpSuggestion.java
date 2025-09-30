@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelpSuggestion
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_CtxHelpSuggestion")
 public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_CtxHelpSuggestion (Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName)
@@ -38,10 +38,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
       super (ctx, AD_CtxHelpSuggestion_ID, trxName);
       /** if (AD_CtxHelpSuggestion_ID == 0)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
 			setAD_CtxHelpSuggestion_ID (0);
 			setAD_CtxHelpSuggestion_UU (null);
+			setAD_CtxHelp_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -61,10 +61,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
       super (ctx, AD_CtxHelpSuggestion_ID, trxName, virtualColumns);
       /** if (AD_CtxHelpSuggestion_ID == 0)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
 			setAD_CtxHelpSuggestion_ID (0);
 			setAD_CtxHelpSuggestion_UU (null);
+			setAD_CtxHelp_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -84,10 +84,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
       super (ctx, AD_CtxHelpSuggestion_UU, trxName);
       /** if (AD_CtxHelpSuggestion_UU == null)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
 			setAD_CtxHelpSuggestion_ID (0);
 			setAD_CtxHelpSuggestion_UU (null);
+			setAD_CtxHelp_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -107,10 +107,10 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
       super (ctx, AD_CtxHelpSuggestion_UU, trxName, virtualColumns);
       /** if (AD_CtxHelpSuggestion_UU == null)
         {
-			setAD_CtxHelp_ID (0);
 			setAD_CtxHelpMsg_ID (0);
 			setAD_CtxHelpSuggestion_ID (0);
 			setAD_CtxHelpSuggestion_UU (null);
+			setAD_CtxHelp_ID (0);
 			setAD_Language (null);
 			setAD_UserClient_ID (0);
 			setAD_User_ID (0);
@@ -152,49 +152,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
       return sb.toString();
     }
 
-	/** Set Accept.
-		@param AcceptSuggestion Accept suggested changes
-	*/
-	public void setAcceptSuggestion (String AcceptSuggestion)
-	{
-		set_Value (COLUMNNAME_AcceptSuggestion, AcceptSuggestion);
-	}
-
-	/** Get Accept.
-		@return Accept suggested changes
-	  */
-	public String getAcceptSuggestion()
-	{
-		return (String)get_Value(COLUMNNAME_AcceptSuggestion);
-	}
-
-	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());
-	}
-
-	/** Set Context Help.
-		@param AD_CtxHelp_ID Context Help
-	*/
-	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
-	{
-		if (AD_CtxHelp_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
-	}
-
-	/** Get Context Help.
-		@return Context Help	  */
-	public int getAD_CtxHelp_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelpMsg getAD_CtxHelpMsg() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_CtxHelpMsg)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelpMsg.Table_ID)
@@ -258,6 +216,34 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return (String)get_Value(COLUMNNAME_AD_CtxHelpSuggestion_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
+
+	/** Set Context Help.
+		@param AD_CtxHelp_ID Context Help
+	*/
+	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
+	{
+		if (AD_CtxHelp_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
+	}
+
+	/** Get Context Help.
+		@return Context Help	  */
+	public int getAD_CtxHelp_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
 	/** Set Language.
@@ -277,6 +263,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllClients_V getAD_UserClient() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AllClients_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllClients_V.Table_ID)
@@ -304,6 +291,7 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllUsers_V getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AllUsers_V)MTable.get(getCtx(), org.compiere.model.I_AD_AllUsers_V.Table_ID)
@@ -330,6 +318,22 @@ public class X_AD_CtxHelpSuggestion extends PO implements I_AD_CtxHelpSuggestion
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Accept.
+		@param AcceptSuggestion Accept suggested changes
+	*/
+	public void setAcceptSuggestion (String AcceptSuggestion)
+	{
+		set_Value (COLUMNNAME_AcceptSuggestion, AcceptSuggestion);
+	}
+
+	/** Get Accept.
+		@return Accept suggested changes
+	  */
+	public String getAcceptSuggestion()
+	{
+		return (String)get_Value(COLUMNNAME_AcceptSuggestion);
 	}
 
 	/** Set Compare.

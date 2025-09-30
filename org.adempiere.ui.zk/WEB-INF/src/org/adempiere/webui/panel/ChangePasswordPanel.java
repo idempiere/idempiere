@@ -11,8 +11,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-
-
 package org.adempiere.webui.panel;
 
 import java.util.ArrayList;
@@ -37,7 +35,6 @@ import org.compiere.model.MPasswordHistory;
 import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
-import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -375,15 +372,10 @@ public class ChangePasswordPanel extends Window implements EventListener<Event>
 	    		user.setIsExpired(false);
 	    		user.setSecurityQuestion(securityQuestion);
 	    		user.setAnswer(answer);    		
-	    		try {
-	    			PO.setCrossTenantSafe();
-	    			user.saveEx(trx.getTrxName());
-	    			if (tenantsChanged.length() > 0)
-	    				tenantsChanged.append(", ");
-	    			tenantsChanged.append(clientKNPair.getName());
-	    		} finally {
-	    			PO.clearCrossTenantSafe();
-	    		}
+    			user.saveCrossTenantSafeEx(trx.getTrxName());
+    			if (tenantsChanged.length() > 0)
+    				tenantsChanged.append(", ");
+    			tenantsChanged.append(clientKNPair.getName());
 	    	}
 	    	
 	    	trx.commit();	    	

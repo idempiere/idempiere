@@ -39,7 +39,7 @@ public class Timebox extends org.zkoss.zul.Timebox
 	private static final long serialVersionUID = 3904468791491496039L;
 
 	/**
-	 * Default constructor.
+	 * Default constructor.<br/>
 	 * Set initial format (time pattern) from login language.
 	 */
 	public Timebox() {

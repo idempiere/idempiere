@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_SchedulerRecipient
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_SchedulerRecipient 
 {
@@ -50,6 +50,7 @@ public interface I_AD_SchedulerRecipient
 	/** Get Authorization Account	  */
 	public int getAD_AuthorizationAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AuthorizationAccount getAD_AuthorizationAccount() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -86,22 +87,8 @@ public interface I_AD_SchedulerRecipient
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
-
-    /** Column name AD_Scheduler_ID */
-    public static final String COLUMNNAME_AD_Scheduler_ID = "AD_Scheduler_ID";
-
-	/** Set Scheduler.
-	  * Schedule Processes
-	  */
-	public void setAD_Scheduler_ID (int AD_Scheduler_ID);
-
-	/** Get Scheduler.
-	  * Schedule Processes
-	  */
-	public int getAD_Scheduler_ID();
-
-	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException;
 
     /** Column name AD_SchedulerRecipient_ID */
     public static final String COLUMNNAME_AD_SchedulerRecipient_ID = "AD_SchedulerRecipient_ID";
@@ -125,6 +112,22 @@ public interface I_AD_SchedulerRecipient
 	/** Get AD_SchedulerRecipient_UU	  */
 	public String getAD_SchedulerRecipient_UU();
 
+    /** Column name AD_Scheduler_ID */
+    public static final String COLUMNNAME_AD_Scheduler_ID = "AD_Scheduler_ID";
+
+	/** Set Scheduler.
+	  * Schedule Processes
+	  */
+	public void setAD_Scheduler_ID (int AD_Scheduler_ID);
+
+	/** Get Scheduler.
+	  * Schedule Processes
+	  */
+	public int getAD_Scheduler_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException;
+
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
@@ -138,6 +141,7 @@ public interface I_AD_SchedulerRecipient
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */

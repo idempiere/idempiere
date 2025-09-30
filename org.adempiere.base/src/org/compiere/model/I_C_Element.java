@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Element
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_Element 
 {
@@ -75,6 +75,7 @@ public interface I_C_Element
 	  */
 	public int getAD_Tree_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree() throws RuntimeException;
 
     /** Column name C_Element_ID */
@@ -216,7 +217,7 @@ public interface I_C_Element
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public void setVFormat (String VFormat);
 
@@ -224,7 +225,7 @@ _lLoOaAcCa09&quot;
 	  * Format of the value;
  Can contain fixed format elements, Variables: &quot;
 _lLoOaAcCa09&quot;
-
+, or ~regex
 	  */
 	public String getVFormat();
 }

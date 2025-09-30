@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_OrderLandedCostAllocation
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_OrderLandedCostAllocation 
 {
@@ -115,6 +115,7 @@ public interface I_C_OrderLandedCostAllocation
 	/** Get Estimated Landed Cost	  */
 	public int getC_OrderLandedCost_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLandedCost getC_OrderLandedCost() throws RuntimeException;
 
     /** Column name C_OrderLine_ID */
@@ -130,6 +131,7 @@ public interface I_C_OrderLandedCostAllocation
 	  */
 	public int getC_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name Created */

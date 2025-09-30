@@ -51,7 +51,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	private static final long serialVersionUID = -6793583766286122866L;
 
 	/**	Cache						*/
-	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
+	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20, 0, false, 0);
 	
     /**
      * UUID based Constructor
@@ -372,8 +372,14 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return true;
 	}  // validate sql
 
+	/**
+	 * Validate FromClause can be parsed by {@link AccessSqlParser}.<br/>
+	 * Validate only one default per table.<br/>
+	 * Call {@link #validate()}.
+	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Validate FromClause is parseable by AccessSqlParser
 		AccessSqlParser parser = new AccessSqlParser("SELECT * FROM " + getFromClause());
 		TableInfo[] tableInfos = parser.getTableInfo(0);
 		if (tableInfos == null || tableInfos.length == 0) {
@@ -381,7 +387,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 			return false;
 		}
 		
-		//only one default per table
+		// Validate there is only one default info window per table
 		if (newRecord || is_ValueChanged("IsDefault")) {
 			if (isDefault()) {				
 				if (newRecord) {
@@ -409,7 +415,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 								is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_FromClause) || is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_OrderByClause) ||
 								is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_OtherClause) || is_ValueChanged (I_AD_InfoWindow.COLUMNNAME_IsDistinct);
 		
-		// valid config 
+		// Validate info window configuration 
 		if (isNeedValid){
 			validate();
 		}
@@ -421,8 +427,9 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if (!success)
 			return success;
-		if (newRecord)	//	Add to all automatic roles
+		if (newRecord)	
 		{
+			// Create info window access records for all automatic role (IsManual=false)
 			MRole[] roles = MRole.getOf(getCtx(), "IsManual='N'");
 			for (int i = 0; i < roles.length; i++)
 			{
@@ -434,6 +441,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		else if (is_ValueChanged("IsActive") || is_ValueChanged("Name") 
 			|| is_ValueChanged("Description"))
 		{
+			// Update menu
 			MMenu[] menues = MMenu.get(getCtx(), "AD_InfoWindow_ID=" + getAD_InfoWindow_ID(), get_TrxName());
 			for (int i = 0; i < menues.length; i++)
 			{
@@ -448,7 +456,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 	
 	/**
-	 * Validate info window and update IsValid flag
+	 * Validate info window generate good SQL and update IsValid flag accordingly
 	 */
 	public void validate ()
 	{		
@@ -500,7 +508,11 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 			int start = builder.indexOf("@");
 			int end = builder.indexOf("@", start+1);
 			if (start >=0 && end > start) {
-				builder.replace(start, end+1, "0");
+				String variable = builder.substring(start, end+1);
+				String replaced = Env.parseContext(getCtx(), 0, variable, false);
+				if (Util.isEmpty(replaced))
+					replaced = "0";
+				builder.replace(start, end+1, replaced);
 			} else {
 				break;
 			}

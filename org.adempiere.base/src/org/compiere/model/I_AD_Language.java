@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Language
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Language 
 {
@@ -106,18 +106,19 @@ public interface I_AD_Language
 	  */
 	public int getAD_PrintPaper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintPaper getAD_PrintPaper() throws RuntimeException;
 
     /** Column name CountryCode */
     public static final String COLUMNNAME_CountryCode = "CountryCode";
 
 	/** Set ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public void setCountryCode (String CountryCode);
 
 	/** Get ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode();
 

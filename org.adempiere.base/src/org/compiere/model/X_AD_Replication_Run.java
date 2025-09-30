@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication_Run
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Replication_Run")
 public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Replication_Run (Properties ctx, int AD_Replication_Run_ID, String trxName)
@@ -117,6 +117,7 @@ public class X_AD_Replication_Run extends PO implements I_AD_Replication_Run, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Replication getAD_Replication() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Replication)MTable.get(getCtx(), org.compiere.model.I_AD_Replication.Table_ID)

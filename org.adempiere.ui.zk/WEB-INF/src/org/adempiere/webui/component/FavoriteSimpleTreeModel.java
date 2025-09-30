@@ -15,19 +15,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.adwindow.ADTabpanel;
-import org.adempiere.webui.adwindow.ADWindow;
-import org.adempiere.webui.desktop.AbstractDesktop;
 import org.adempiere.webui.desktop.FavouriteController;
-import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.MMenu;
-import org.compiere.model.MQuery;
-import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CLogger;
@@ -222,7 +216,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 
 					if (ThemeManager.isUseFontIconForImage())
 					{
-						newBtn.setIconSclass("z-icon-New");
+						newBtn.setIconSclass(Icon.getIconSclass(Icon.NEW));
 						newBtn.setSclass("new-toolbarbutton");
 					}
 					else
@@ -237,7 +231,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 			{
 				Toolbarbutton btnContextMenu = new Toolbarbutton();
 				btnContextMenu.setClass("fav-mobile-ctx-menu");
-				btnContextMenu.setIconSclass("z-icon-More");
+				btnContextMenu.setIconSclass(Icon.getIconSclass(Icon.MORE));
 				btnContextMenu.setAttribute(MOBILE_TOOLBAR_CTX_MENU, true);
 				btnContextMenu.addEventListener(Events.ON_CLICK, this);
 				tc.appendChild(btnContextMenu);
@@ -331,27 +325,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 	{
 		try
 		{
-			MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(menuID, null);
-			IDesktop desktop = SessionManager.getAppDesktop();
-			if (desktop instanceof AbstractDesktop)
-				((AbstractDesktop)desktop).setPredefinedContextVariables(menu.getPredefinedContextVariables());
-
-			MQuery query = new MQuery("");
-			query.addRestriction("1=2");
-			query.setRecordCount(0);
-
-			SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {
-				@Override
-				public void onCallback(ADWindow result)
-				{
-					if (result == null)
-						return;
-
-					result.getADWindowContent().onNew();
-					ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
-					adtabpanel.focusToFirstEditor(false);
-				}
-			});
+			SessionManager.getAppDesktop().onNewRecord(menuID);
 		}
 		catch (Exception e)
 		{
@@ -415,22 +389,22 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 	private static String getIconSclass(MTreeNode mt)
 	{
 		if (mt.isSummary())
-			return "z-icon-Folder";
+			return Icon.getIconSclass(Icon.FOLDER);
 		if (mt.isWindow())
-			return "z-icon-Window";
+			return Icon.getIconSclass(Icon.WINDOW);
 		if (mt.isReport())
-			return "z-icon-Report";
+			return Icon.getIconSclass(Icon.REPORT);
 		if (mt.isProcess())
-			return "z-icon-Process";
+			return Icon.getIconSclass(Icon.PROCESS);
 		if (mt.isTask())
-			return "z-icon-Task";
+			return Icon.getIconSclass(Icon.TASK);
 		if (mt.isWorkFlow())
-			return "z-icon-WorkFlow";
+			return Icon.getIconSclass(Icon.WORKFLOW);
 		if (mt.isForm())
-			return "z-icon-Form";
+			return Icon.getIconSclass(Icon.FORM);
 		if (mt.isInfo())
-			return "z-icon-Info";
-		return "z-icon-Window";
+			return Icon.getIconSclass(Icon.INFO);
+		return Icon.getIconSclass(Icon.WINDOW);
 	} // getIconSclass
 
 }

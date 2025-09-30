@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Imp
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Package_Imp 
 {
@@ -80,6 +80,7 @@ public interface I_AD_Package_Imp
 	/** Get Package Imp. Proc.	  */
 	public int getAD_Package_Imp_Proc_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Package_Imp_Proc getAD_Package_Imp_Proc() throws RuntimeException;
 
     /** Column name AD_Package_Imp_UU */

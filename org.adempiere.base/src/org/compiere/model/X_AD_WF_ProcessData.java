@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ProcessData
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_ProcessData")
 public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_WF_ProcessData (Properties ctx, int AD_WF_ProcessData_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_AD_WF_ProcessData extends PO implements I_AD_WF_ProcessData, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_WF_ProcessData_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_ID)

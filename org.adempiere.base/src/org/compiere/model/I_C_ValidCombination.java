@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ValidCombination
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_ValidCombination 
 {
@@ -41,21 +41,6 @@ public interface I_C_ValidCombination
 
     /** Load Meta Data */
 
-    /** Column name Account_ID */
-    public static final String COLUMNNAME_Account_ID = "Account_ID";
-
-	/** Set Account.
-	  * Account used
-	  */
-	public void setAccount_ID (int Account_ID);
-
-	/** Get Account.
-	  * Account used
-	  */
-	public int getAccount_ID();
-
-	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -63,6 +48,19 @@ public interface I_C_ValidCombination
 	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_OrgTrx_ID */
+    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
+
+	/** Set Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
+
+	/** Get Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public int getAD_OrgTrx_ID();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -77,18 +75,21 @@ public interface I_C_ValidCombination
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_OrgTrx_ID */
-    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
+    /** Column name Account_ID */
+    public static final String COLUMNNAME_Account_ID = "Account_ID";
 
-	/** Set Trx Organization.
-	  * Performing or initiating organization
+	/** Set Account.
+	  * Account used
 	  */
-	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
+	public void setAccount_ID (int Account_ID);
 
-	/** Get Trx Organization.
-	  * Performing or initiating organization
+	/** Get Account.
+	  * Account used
 	  */
-	public int getAD_OrgTrx_ID();
+	public int getAccount_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name Alias */
     public static final String COLUMNNAME_Alias = "Alias";
@@ -116,6 +117,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -131,6 +133,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -146,6 +149,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -161,6 +165,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_LocFrom_ID */
@@ -176,6 +181,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_LocFrom_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException;
 
     /** Column name C_LocTo_ID */
@@ -191,20 +197,8 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_LocTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException;
-
-    /** Column name Combination */
-    public static final String COLUMNNAME_Combination = "Combination";
-
-	/** Set Combination.
-	  * Unique combination of account elements
-	  */
-	public void setCombination (String Combination);
-
-	/** Get Combination.
-	  * Unique combination of account elements
-	  */
-	public String getCombination();
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -219,23 +213,8 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
-
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
 
     /** Column name C_SalesRegion_ID */
     public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
@@ -250,6 +229,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_SalesRegion_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name C_SubAcct_ID */
@@ -265,6 +245,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getC_SubAcct_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SubAcct getC_SubAcct() throws RuntimeException;
 
     /** Column name C_ValidCombination_ID */
@@ -288,6 +269,35 @@ public interface I_C_ValidCombination
 
 	/** Get C_ValidCombination_UU	  */
 	public String getC_ValidCombination_UU();
+
+    /** Column name Combination */
+    public static final String COLUMNNAME_Combination = "Combination";
+
+	/** Set Combination.
+	  * Unique combination of account elements
+	  */
+	public void setCombination (String Combination);
+
+	/** Get Combination.
+	  * Unique combination of account elements
+	  */
+	public String getCombination();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -341,6 +351,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */
@@ -372,6 +383,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -387,6 +399,7 @@ public interface I_C_ValidCombination
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 
     /** Column name UserElement1_ID */

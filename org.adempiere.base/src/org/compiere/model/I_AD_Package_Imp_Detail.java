@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Imp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Package_Imp_Detail 
 {
@@ -40,19 +40,6 @@ public interface I_AD_Package_Imp_Detail
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
-
-    /** Column name Action */
-    public static final String COLUMNNAME_Action = "Action";
-
-	/** Set Action.
-	  * Indicates the Action to be performed
-	  */
-	public void setAction (String Action);
-
-	/** Get Action.
-	  * Indicates the Action to be performed
-	  */
-	public String getAction();
 
     /** Column name AD_Backup_ID */
     public static final String COLUMNNAME_AD_Backup_ID = "AD_Backup_ID";
@@ -111,6 +98,7 @@ public interface I_AD_Package_Imp_Detail
 	/** Get Package Imp.	  */
 	public int getAD_Package_Imp_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Package_Imp getAD_Package_Imp() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -126,7 +114,21 @@ public interface I_AD_Package_Imp_Detail
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name Action */
+    public static final String COLUMNNAME_Action = "Action";
+
+	/** Set Action.
+	  * Indicates the Action to be performed
+	  */
+	public void setAction (String Action);
+
+	/** Get Action.
+	  * Indicates the Action to be performed
+	  */
+	public String getAction();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

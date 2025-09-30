@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_BudgetControl
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="GL_BudgetControl")
 public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_GL_BudgetControl (Properties ctx, int GL_BudgetControl_ID, String trxName)
@@ -154,6 +154,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 		return (String)get_Value(COLUMNNAME_BudgetControlScope);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -266,6 +267,7 @@ public class X_GL_BudgetControl extends PO implements I_GL_BudgetControl, I_Pers
 		return (String)get_Value(COLUMNNAME_GL_BudgetControl_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)

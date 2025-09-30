@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Scheduler_Para
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Scheduler_Para 
 {
@@ -71,6 +71,7 @@ public interface I_AD_Scheduler_Para
 	/** Get Process Parameter	  */
 	public int getAD_Process_Para_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
 
     /** Column name AD_Scheduler_ID */
@@ -86,6 +87,7 @@ public interface I_AD_Scheduler_Para
 	  */
 	public int getAD_Scheduler_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException;
 
     /** Column name AD_Scheduler_Para_UU */

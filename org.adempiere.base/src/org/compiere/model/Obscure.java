@@ -16,10 +16,9 @@
  *****************************************************************************/
 package org.compiere.model;
 
-
 /**
- *	Obscure Strings (e.g. Credit Card Numbers).
- *	Obscure Type defined in AD_Field
+ *	Obscure Strings (e.g. Credit Card Numbers).<br/>
+ *	Obscure Type defined in AD_Field.
  *	
  *  @author Jorg Janke
  *  @version $Id: Obscure.java,v 1.4 2006/10/02 05:19:06 jjanke Exp $
@@ -52,8 +51,7 @@ public class Obscure extends Object
 		return ob.getObscuredValue();
 	}	//	obscure
 
-
-	/**************************************************************************
+	/**
 	 * 	Obscure
 	 */
 	public Obscure ()
@@ -61,8 +59,8 @@ public class Obscure extends Object
 	}	//	Obscure
 
 	/**
-	 * 	Obscure.
-	 * 	Obscure Digits but last 4
+	 * 	Obscure constructor with clear value.
+	 * 	Default to Obscure Digits but last 4.
 	 *	@param clearValue clear value
 	 */
 	public Obscure (String clearValue)
@@ -223,15 +221,5 @@ public class Obscure extends Object
 		m_obscuredValue = sb.toString();
 		return m_obscuredValue;
 	}	//	getObscuredValue
-
-
-	/**************************************************************************
-	 *	test
-	 *	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		System.out.println (Obscure.obscure("1a2b3c4d5e6f7g8h9"));
-	}	//	main
 
 }	//	Obscure

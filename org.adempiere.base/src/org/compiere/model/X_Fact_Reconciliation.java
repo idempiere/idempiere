@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Fact_Reconciliation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="Fact_Reconciliation")
 public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_Fact_Reconciliation (Properties ctx, int Fact_Reconciliation_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -150,6 +151,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -189,6 +191,7 @@ public class X_Fact_Reconciliation extends PO implements I_Fact_Reconciliation, 
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException
 	{
 		return (org.compiere.model.I_Fact_Acct)MTable.get(getCtx(), org.compiere.model.I_Fact_Acct.Table_ID)

@@ -30,7 +30,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
 
 /**
- * Make link to document window
+ * Link to document window
  * @author hieplq
  *
  */

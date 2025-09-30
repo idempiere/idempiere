@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Process 
 {
@@ -41,19 +41,6 @@ public interface I_AD_Process
 
     /** Load Meta Data */
 
-    /** Column name AccessLevel */
-    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
-
-	/** Set Data Access Level.
-	  * Access Level required
-	  */
-	public void setAccessLevel (String AccessLevel);
-
-	/** Get Data Access Level.
-	  * Access Level required
-	  */
-	public String getAccessLevel();
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -71,6 +58,7 @@ public interface I_AD_Process
 	/** Get Context Help	  */
 	public int getAD_CtxHelp_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException;
 
     /** Column name AD_Form_ID */
@@ -86,6 +74,7 @@ public interface I_AD_Process
 	  */
 	public int getAD_Form_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -114,6 +103,7 @@ public interface I_AD_Process
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
@@ -151,6 +141,7 @@ public interface I_AD_Process
 	  */
 	public int getAD_ReportView_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
@@ -166,7 +157,21 @@ public interface I_AD_Process
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
+
+    /** Column name AccessLevel */
+    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
+
+	/** Set Data Access Level.
+	  * Access Level required
+	  */
+	public void setAccessLevel (String AccessLevel);
+
+	/** Get Data Access Level.
+	  * Access Level required
+	  */
+	public String getAccessLevel();
 
     /** Column name AllowMultipleExecution */
     public static final String COLUMNNAME_AllowMultipleExecution = "AllowMultipleExecution";

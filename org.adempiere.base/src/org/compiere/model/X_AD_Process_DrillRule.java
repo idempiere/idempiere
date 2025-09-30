@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Process_DrillRule
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_DrillRule")
 public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule (Properties ctx, int AD_Process_DrillRule_ID, String trxName)
@@ -120,6 +120,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -184,6 +185,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 		return (String)get_Value(COLUMNNAME_AD_Process_DrillRule_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -212,6 +214,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
@@ -239,6 +242,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_ReportView)MTable.get(getCtx(), org.compiere.model.I_AD_ReportView.Table_ID)
@@ -267,6 +271,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

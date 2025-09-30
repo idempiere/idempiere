@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for B_Offer
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_B_Offer 
 {
@@ -75,6 +75,7 @@ public interface I_B_Offer
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name B_Offer_ID */
@@ -112,6 +113,7 @@ public interface I_B_Offer
 	  */
 	public int getB_SellerFunds_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_B_SellerFunds getB_SellerFunds() throws RuntimeException;
 
     /** Column name B_Topic_ID */
@@ -127,6 +129,7 @@ public interface I_B_Offer
 	  */
 	public int getB_Topic_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_B_Topic getB_Topic() throws RuntimeException;
 
     /** Column name Created */

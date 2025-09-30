@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxDefinition
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_C_TaxDefinition 
@@ -51,19 +51,6 @@ public interface I_C_TaxDefinition
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgType_ID */
     public static final String COLUMNNAME_AD_OrgType_ID = "AD_OrgType_ID";
 
@@ -77,22 +64,21 @@ public interface I_C_TaxDefinition
 	  */
 	public int getAD_OrgType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_OrgType getAD_OrgType() throws RuntimeException;
 
-    /** Column name C_BPartner_ID */
-    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
-	/** Set Business Partner.
-	  * Identifies a Business Partner
+	/** Set Organization.
+	  * Organizational entity within tenant
 	  */
-	public void setC_BPartner_ID (int C_BPartner_ID);
+	public void setAD_Org_ID (int AD_Org_ID);
 
-	/** Get Business Partner.
-	  * Identifies a Business Partner
+	/** Get Organization.
+	  * Organizational entity within tenant
 	  */
-	public int getC_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+	public int getAD_Org_ID();
 
     /** Column name C_BP_Group_ID */
     public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
@@ -107,23 +93,24 @@ public interface I_C_TaxDefinition
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Get Created.
-	  * Date this record was created
+	/** Set Business Partner.
+	  * Identifies a Business Partner
 	  */
-	public Timestamp getCreated();
+	public void setC_BPartner_ID (int C_BPartner_ID);
 
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
+	/** Get Business Partner.
+	  * Identifies a Business Partner
 	  */
-	public int getCreatedBy();
+	public int getC_BPartner_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_TaxBase_ID */
     public static final String COLUMNNAME_C_TaxBase_ID = "C_TaxBase_ID";
@@ -134,6 +121,7 @@ public interface I_C_TaxDefinition
 	/** Get Tax Base	  */
 	public int getC_TaxBase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxBase getC_TaxBase() throws RuntimeException;
 
     /** Column name C_TaxCategory_ID */
@@ -149,6 +137,7 @@ public interface I_C_TaxDefinition
 	  */
 	public int getC_TaxCategory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
 
     /** Column name C_TaxDefinition_ID */
@@ -178,7 +167,20 @@ public interface I_C_TaxDefinition
 	/** Get Tax Group	  */
 	public int getC_TaxGroup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxGroup getC_TaxGroup() throws RuntimeException;
+
+    /** Column name C_TaxType_ID */
+    public static final String COLUMNNAME_C_TaxType_ID = "C_TaxType_ID";
+
+	/** Set Tax Type	  */
+	public void setC_TaxType_ID (int C_TaxType_ID);
+
+	/** Get Tax Type	  */
+	public int getC_TaxType_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.eevolution.model.I_C_TaxType getC_TaxType() throws RuntimeException;
 
     /** Column name C_Tax_ID */
     public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
@@ -193,18 +195,24 @@ public interface I_C_TaxDefinition
 	  */
 	public int getC_Tax_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
 
-    /** Column name C_TaxType_ID */
-    public static final String COLUMNNAME_C_TaxType_ID = "C_TaxType_ID";
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
 
-	/** Set Tax Type	  */
-	public void setC_TaxType_ID (int C_TaxType_ID);
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
 
-	/** Get Tax Type	  */
-	public int getC_TaxType_ID();
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
 
-	public org.eevolution.model.I_C_TaxType getC_TaxType() throws RuntimeException;
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -258,6 +266,38 @@ public interface I_C_TaxDefinition
 	  */
 	public boolean isInvoiced();
 
+    /** Column name M_Product_Category_ID */
+    public static final String COLUMNNAME_M_Product_Category_ID = "M_Product_Category_ID";
+
+	/** Set Product Category.
+	  * Category of a Product
+	  */
+	public void setM_Product_Category_ID (int M_Product_Category_ID);
+
+	/** Get Product Category.
+	  * Category of a Product
+	  */
+	public int getM_Product_Category_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
     /** Column name MaxTaxable */
     public static final String COLUMNNAME_MaxTaxable = "MaxTaxable";
 
@@ -275,36 +315,6 @@ public interface I_C_TaxDefinition
 
 	/** Get Min Taxable	  */
 	public int getMinTaxable();
-
-    /** Column name M_Product_Category_ID */
-    public static final String COLUMNNAME_M_Product_Category_ID = "M_Product_Category_ID";
-
-	/** Set Product Category.
-	  * Category of a Product
-	  */
-	public void setM_Product_Category_ID (int M_Product_Category_ID);
-
-	/** Get Product Category.
-	  * Category of a Product
-	  */
-	public int getM_Product_Category_ID();
-
-	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
-
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

@@ -76,8 +76,9 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 	 * @param Table_ID
 	 * @param Record_ID
 	 * @return true if record has any label assigned
- 	 * @deprecated Use {@link MLabelAssignment#hasAnyAssignment(int, String)} instead
+ 	 * @deprecated Use {@link MLabelAssignment#hasAnyAssignment(int, int, String)} instead
 	 */
+	@Deprecated
 	public static boolean hasAnyAssignment(int Table_ID, int Record_ID) {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_ID=?";
 		int counter = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
@@ -107,6 +108,7 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 	 * @return true if label is assigned
  	 * @deprecated Use {@link MLabelAssignment#hasLabelAssignment(int, int, String)} instead
 	 */
+	@Deprecated
 	public static boolean hasLabelAssignment(int AD_Label_ID, int Table_ID, int Record_ID) {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Label_ID = ? AND AD_Table_ID=? AND Record_ID=?";
 		int counter = DB.getSQLValueEx(null, sql, AD_Label_ID, Table_ID, Record_ID);
@@ -126,13 +128,9 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 		return counter > 0;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Set record UUID from record id
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());

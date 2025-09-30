@@ -194,8 +194,12 @@ public class PoExporter {
 	}
 
 	public void addTableReference(String columnName, String tableName, int id, AttributesImpl atts) {
-		String value = ReferenceUtils.getTableReference(tableName, id, atts, po.get_TrxName());
-		addString(columnName, value, atts);
+		if (id == 0 && ("Node_ID".equals(columnName) || "Parent_ID".equals(columnName))) {
+			addString(columnName, "0", atts);
+		} else {
+			String value = ReferenceUtils.getTableReference(tableName, id, atts, po.get_TrxName());
+			addString(columnName, value, atts);
+		}
 	}
 
 	public void addTableReferenceUUID(String columnName, String tableName, String uuid, AttributesImpl atts) {
@@ -284,11 +288,11 @@ public class PoExporter {
 					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
 					if (AD_Table_ID > 0)
 						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
-				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Parent_ID")) {
+				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Parent_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
 					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
 					tableName = tree.getSourceTableName(true);
-				} else if (po.get_TableName().equals("AD_TreeNode") && columnName.equals("Node_ID")) {
+				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Node_ID")) {
 					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
 					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
 					tableName = tree.getSourceTableName(true);
@@ -309,6 +313,8 @@ public class PoExporter {
 					String lookupColumn = info.getColumnLookup(i).getColumnName();
 					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
 				}
+				if (tableName == null)
+					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
 				if (   info.getColumnDisplayType(i) == DisplayType.ChosenMultipleSelectionList
 					|| DisplayType.isMultiID(info.getColumnDisplayType(i))) {
 					addTableReferenceMulti(columnName, tableName, new AttributesImpl());
@@ -348,9 +354,8 @@ public class PoExporter {
 			if (po.get_Table_ID() == MAttachment.Table_ID && ci.getAD_StorageProvider_ID() > 0) {
 				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getAD_StorageProvider_ID());
 				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
-					MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName());
-					File tmpfile = att.saveAsZip();
-					try {
+					try (MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName())) {
+						File tmpfile = att.saveAsZip();					
 						value = Files.readAllBytes(tmpfile.toPath());
 					} catch (IOException e) {
 						throw new AdempiereException(e);

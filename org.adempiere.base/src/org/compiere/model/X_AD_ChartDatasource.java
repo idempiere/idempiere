@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ChartDatasource
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ChartDatasource")
 public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
@@ -161,6 +161,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 		return (String)get_Value(COLUMNNAME_AD_ChartDatasource_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
@@ -188,6 +189,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

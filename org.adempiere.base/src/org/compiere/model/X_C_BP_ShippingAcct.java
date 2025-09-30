@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_BP_ShippingAcct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_ShippingAcct")
 public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BP_ShippingAcct (Properties ctx, int C_BP_ShippingAcct_ID, String trxName)
@@ -38,8 +38,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_ID, trxName);
       /** if (C_BP_ShippingAcct_ID == 0)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -49,8 +49,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_ID, trxName, virtualColumns);
       /** if (C_BP_ShippingAcct_ID == 0)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -60,8 +60,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_UU, trxName);
       /** if (C_BP_ShippingAcct_UU == null)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -71,8 +71,8 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
       super (ctx, C_BP_ShippingAcct_UU, trxName, virtualColumns);
       /** if (C_BP_ShippingAcct_UU == null)
         {
-			setC_BPartner_ID (0);
 			setC_BP_ShippingAcct_ID (0);
+			setC_BPartner_ID (0);
         } */
     }
 
@@ -103,62 +103,6 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());
-	}
-
-	/** Set Partner Location.
-		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
-	*/
-	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
-	{
-		if (C_BPartner_Location_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
-	}
-
-	/** Get Partner Location.
-		@return Identifies the (ship to) address for this Business Partner
-	  */
-	public int getC_BPartner_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Business Partner Shipping Account.
 		@param C_BP_ShippingAcct_ID Business Partner Shipping Account
@@ -196,6 +140,64 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 		return (String)get_Value(COLUMNNAME_C_BP_ShippingAcct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
+
+	/** Set Partner Location.
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
+	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
+	{
+		if (C_BPartner_Location_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
+	}
+
+	/** Get Partner Location.
+		@return Identifies the (ship to) address for this Business Partner
+	  */
+	public int getC_BPartner_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Duties Shipper Account.
 		@param DutiesShipperAccount Duties Shipper Account
 	*/
@@ -211,6 +213,7 @@ public class X_C_BP_ShippingAcct extends PO implements I_C_BP_ShippingAcct, I_Pe
 		return (String)get_Value(COLUMNNAME_DutiesShipperAccount);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)

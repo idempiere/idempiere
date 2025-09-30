@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_Product_Category_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_Category_Acct")
 public class X_M_Product_Category_Acct extends PO implements I_M_Product_Category_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Product_Category_Acct (Properties ctx, int M_Product_Category_Acct_ID, String trxName)
@@ -148,6 +148,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -207,18 +208,18 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 	public static final String COSTINGMETHOD_AveragePO = "A";
 	/** Fifo = F */
 	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last Invoice = i */
-	public static final String COSTINGMETHOD_LastInvoice = "i";
 	/** Average Invoice = I */
 	public static final String COSTINGMETHOD_AverageInvoice = "I";
 	/** Lifo = L */
 	public static final String COSTINGMETHOD_Lifo = "L";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** Standard Costing = S */
 	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** User Defined = U */
 	public static final String COSTINGMETHOD_UserDefined = "U";
+	/** Last Invoice = i */
+	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** _ = x */
 	public static final String COSTINGMETHOD__ = "x";
 	/** Set Costing Method.
@@ -253,6 +254,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return (String)get_Value(COLUMNNAME_M_Product_Category_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
@@ -281,6 +283,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Asset_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -306,6 +309,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -331,6 +335,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_COGS_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -356,6 +361,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -381,6 +387,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Expense_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -406,6 +413,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -431,6 +439,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -456,6 +465,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -481,6 +491,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_PurchasePriceVariance_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -506,6 +517,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_RateVariance_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -531,6 +543,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -556,28 +569,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
-	/** Set Process Now.
-		@param Processing Process Now
-	*/
-	public void setProcessing (boolean Processing)
-	{
-		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
-	}
-
-	/** Get Process Now.
-		@return Process Now	  */
-	public boolean isProcessing()
-	{
-		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -603,6 +595,7 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -626,5 +619,27 @@ public class X_M_Product_Category_Acct extends PO implements I_M_Product_Categor
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Process Now.
+		@param Processing Process Now
+	*/
+	public void setProcessing (boolean Processing)
+	{
+		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
+	}
+
+	/** Get Process Now.
+		@return Process Now	  */
+	public boolean isProcessing()
+	{
+		Object oo = get_Value(COLUMNNAME_Processing);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for PA_DashboardPreference
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardPreference")
 public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPreference, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_DashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -174,6 +175,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -305,6 +307,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_ID)

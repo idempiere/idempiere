@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_CostDetail
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_CostDetail 
 {
@@ -75,6 +75,19 @@ public interface I_M_CostDetail
 	  */
 	public BigDecimal getAmt();
 
+    /** Column name BackDateProcessedOn */
+    public static final String COLUMNNAME_BackDateProcessedOn = "BackDateProcessedOn";
+
+	/** Set Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn);
+
+	/** Get Back-Date Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn();
+
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
 
@@ -88,6 +101,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
@@ -103,6 +117,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_OrderLine_ID */
@@ -118,6 +133,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name C_ProjectIssue_ID */
@@ -133,6 +149,7 @@ public interface I_M_CostDetail
 	  */
 	public int getC_ProjectIssue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
 
     /** Column name Created */
@@ -203,6 +220,19 @@ public interface I_M_CostDetail
 	  */
 	public BigDecimal getCurrentQty();
 
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
+
+	/** Set Account Date.
+	  * Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct);
+
+	/** Get Account Date.
+	  * Accounting Date
+	  */
+	public Timestamp getDateAcct();
+
     /** Column name DeltaAmt */
     public static final String COLUMNNAME_DeltaAmt = "DeltaAmt";
 
@@ -255,6 +285,15 @@ public interface I_M_CostDetail
 	  */
 	public boolean isActive();
 
+    /** Column name IsBackDate */
+    public static final String COLUMNNAME_IsBackDate = "IsBackDate";
+
+	/** Set Back-Date	  */
+	public void setIsBackDate (boolean IsBackDate);
+
+	/** Get Back-Date	  */
+	public boolean isBackDate();
+
     /** Column name IsSOTrx */
     public static final String COLUMNNAME_IsSOTrx = "IsSOTrx";
 
@@ -281,6 +320,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_CostDetail_ID */
@@ -318,6 +358,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_CostElement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
@@ -333,6 +374,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
@@ -348,6 +390,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_InventoryLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
 
     /** Column name M_MatchInv_ID */
@@ -363,6 +406,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_MatchInv_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchInv getM_MatchInv() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
@@ -378,6 +422,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_MovementLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -393,6 +438,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_ProductionLine_ID */
@@ -408,6 +454,7 @@ public interface I_M_CostDetail
 	  */
 	public int getM_ProductionLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
 
     /** Column name PP_Cost_Collector_ID */
@@ -419,6 +466,7 @@ public interface I_M_CostDetail
 	/** Get Manufacturing Cost Collector	  */
 	public int getPP_Cost_Collector_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException;
 
     /** Column name Price */
@@ -459,6 +507,15 @@ public interface I_M_CostDetail
 	  * Quantity
 	  */
 	public BigDecimal getQty();
+
+    /** Column name Ref_CostDetail_ID */
+    public static final String COLUMNNAME_Ref_CostDetail_ID = "Ref_CostDetail_ID";
+
+	/** Set Referenced Cost Detail	  */
+	public void setRef_CostDetail_ID (int Ref_CostDetail_ID);
+
+	/** Get Referenced Cost Detail	  */
+	public int getRef_CostDetail_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Task
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_ASP_Task 
 {
@@ -75,6 +75,7 @@ public interface I_ASP_Task
 	  */
 	public int getAD_Task_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException;
 
     /** Column name ASP_Level_ID */
@@ -86,6 +87,7 @@ public interface I_ASP_Task
 	/** Get ASP Level	  */
 	public int getASP_Level_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException;
 
     /** Column name ASP_Status */

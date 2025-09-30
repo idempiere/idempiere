@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoProcess
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_InfoProcess 
 {
@@ -62,6 +62,7 @@ public interface I_AD_InfoProcess
 	  */
 	public int getAD_InfoColumn_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getAD_InfoColumn() throws RuntimeException;
 
     /** Column name AD_InfoProcess_ID */
@@ -95,6 +96,7 @@ public interface I_AD_InfoProcess
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -123,6 +125,7 @@ public interface I_AD_InfoProcess
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name Created */

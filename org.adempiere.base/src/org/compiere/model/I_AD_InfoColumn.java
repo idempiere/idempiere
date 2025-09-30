@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoColumn
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_InfoColumn 
 {
@@ -62,6 +62,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_Element_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
 
     /** Column name AD_FieldStyle_ID */
@@ -77,6 +78,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_FieldStyle_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
 
     /** Column name AD_InfoColumn_ID */
@@ -114,6 +116,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -142,6 +145,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -157,6 +161,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name AD_Val_Rule_ID */
@@ -172,6 +177,7 @@ public interface I_AD_InfoColumn
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name ColumnName */

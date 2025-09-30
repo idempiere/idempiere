@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_1099Extract
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_1099Extract")
 public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_1099Extract (Properties ctx, String T_1099Extract_UU, String trxName)
@@ -89,6 +89,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -405,6 +406,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -433,6 +435,7 @@ public class X_T_1099Extract extends PO implements I_T_1099Extract, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)

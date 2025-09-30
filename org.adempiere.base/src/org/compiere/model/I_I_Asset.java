@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Asset
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_I_Asset 
 {
@@ -41,6 +41,40 @@ public interface I_I_Asset
 
     /** Load Meta Data */
 
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
     /** Column name A_Accumdepreciation_Acct */
     public static final String COLUMNNAME_A_Accumdepreciation_Acct = "A_Accumdepreciation_Acct";
 
@@ -50,6 +84,7 @@ public interface I_I_Asset
 	/** Get Accumulated Depreciation Account	  */
 	public int getA_Accumdepreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Accumdepreciation_A() throws RuntimeException;
 
     /** Column name A_Accumulated_Depr */
@@ -70,6 +105,7 @@ public interface I_I_Asset
 	/** Get Asset Acct	  */
 	public int getA_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Asset_A() throws RuntimeException;
 
     /** Column name A_Asset_Cost */
@@ -94,6 +130,7 @@ public interface I_I_Asset
 	  */
 	public int getA_Asset_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
 
     /** Column name A_Asset_ID */
@@ -163,14 +200,6 @@ public interface I_I_Asset
 	/** Get Current Period	  */
 	public int getA_Current_Period();
 
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
     /** Column name A_Depreciation_Acct */
     public static final String COLUMNNAME_A_Depreciation_Acct = "A_Depreciation_Acct";
 
@@ -180,6 +209,7 @@ public interface I_I_Asset
 	/** Get Depreciation Account	  */
 	public int getA_Depreciation_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Depreciation_A() throws RuntimeException;
 
     /** Column name A_Depreciation_Manual_Amount */
@@ -209,6 +239,7 @@ public interface I_I_Asset
 	/** Get A_Depreciation_Table_Header_ID	  */
 	public int getA_Depreciation_Table_Header_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Table_Header getA_Depreciation_Table_Header() throws RuntimeException;
 
     /** Column name A_Depreciation_Variable_Perc */
@@ -219,32 +250,6 @@ public interface I_I_Asset
 
 	/** Get Variable Percent	  */
 	public BigDecimal getA_Depreciation_Variable_Perc();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
-
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public void setAD_User_ID (int AD_User_ID);
-
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID();
 
     /** Column name A_Life_Period */
     public static final String COLUMNNAME_A_Life_Period = "A_Life_Period";
@@ -410,6 +415,7 @@ public interface I_I_Asset
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -425,6 +431,7 @@ public interface I_I_Asset
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -440,6 +447,7 @@ public interface I_I_Asset
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -455,6 +463,7 @@ public interface I_I_Asset
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name Created */
@@ -686,6 +695,7 @@ public interface I_I_Asset
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -701,6 +711,7 @@ public interface I_I_Asset
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -716,6 +727,7 @@ public interface I_I_Asset
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */

@@ -91,7 +91,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere 12 Development Build Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere 13 Development Build Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	
@@ -115,12 +115,9 @@ public final class Prop implements Serializable {
 	{
 		boolean loadOK = true;
 		s_prop = new Properties();
-		InputStream fis = null;
-		try
+		try (InputStream fis = new FileInputStream(filename))
 		{
-			fis = new FileInputStream(filename);
 			s_prop.load(fis);
-			fis.close();
 		}
 		catch (FileNotFoundException e)
 		{
@@ -129,10 +126,8 @@ public final class Prop implements Serializable {
 				log.info("!!WARNING:Please locate your custom home.properties on IDEMPIERE_HOME.");
 			}
 			loadOK = false;
-			try {
-				fis = Prop.class.getResourceAsStream(HOME_PROPERTY_FILE);
+			try (InputStream fis = Prop.class.getResourceAsStream(HOME_PROPERTY_FILE)){
 				s_prop.load(fis);	
-				fis.close();
 				loadOK = true;
 			} catch (IOException e1) {
 				e1.printStackTrace();

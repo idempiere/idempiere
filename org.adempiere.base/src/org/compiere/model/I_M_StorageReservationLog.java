@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_StorageReservationLog
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_StorageReservationLog 
 {
@@ -75,6 +75,7 @@ public interface I_M_StorageReservationLog
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -90,6 +91,7 @@ public interface I_M_StorageReservationLog
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Created */
@@ -186,6 +188,7 @@ public interface I_M_StorageReservationLog
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -201,6 +204,7 @@ public interface I_M_StorageReservationLog
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_StorageReservationLog_ID */
@@ -238,6 +242,7 @@ public interface I_M_StorageReservationLog
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name NewQty */

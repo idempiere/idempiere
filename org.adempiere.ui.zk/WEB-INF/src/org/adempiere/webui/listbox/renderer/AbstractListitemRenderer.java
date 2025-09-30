@@ -31,6 +31,10 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 
+/**
+ * Abstract renderer base class for list box
+ * @param <T>
+ */
 public abstract class AbstractListitemRenderer<T> implements ListitemRenderer<T>, ListitemRendererExt {
 	
 	public AbstractListitemRenderer() {

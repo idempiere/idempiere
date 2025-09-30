@@ -88,6 +88,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
 import org.compiere.model.MStatusLine;
+import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
@@ -96,6 +97,7 @@ import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -126,9 +128,10 @@ import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.ext.Sortable;
 
 /**
- * Search dialog that works in two mode. <br/>
- * Lookup mode: Search and return selection to lookup field. <br/>
- * Window mode: Search and view search results. Optional support for execution of process.
+ * Abstract base class for info panel and info window.<br/>
+ * Info window that works in two mode. <br/>
+ * Lookup mode: Popup dialog for a field. Search and return selection to lookup field. <br/>
+ * Viewing mode: Independent popup or embedded window. Search and view search results. Optional support for execution of process.
  *
  * @author Sendy Yagambrum
  * @author Elaine
@@ -145,7 +148,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
 	protected static final String COLUMN_VISIBLE_ORIGINAL = "column.visible.original";
 	protected static final String ROW_CTX_VARIABLE_PREFIX = "_IWInfo_";
-	protected static final String ROW_ID_CTX_VARIABLE_NAME = "_IWInfoIDs_Selected";
+	public static final String ROW_ID_CTX_VARIABLE_NAME = "_IWInfoIDs_Selected";
 	
 	private final static int DEFAULT_PAGE_SIZE = 100;
 	private final static int DEFAULT_PAGE_PRELOAD = 4;
@@ -348,7 +351,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		});
 		
-		setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
+		setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infopanel");
 		
 		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		addEventListener(ON_RUN_PROCESS, this);
@@ -475,7 +478,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         if (isLookup())
         	addEventListener(Events.ON_CANCEL, this);
         contentPanel.setOddRowSclass(null);
-        contentPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
+        contentPanel.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "infoListbox");
         contentPanel.addEventListener("onAfterRender", this);
         contentPanel.setSclass("z-word-nowrap");
         
@@ -1093,7 +1096,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @return true if info window should auto hide empty columns
 	 */
 	protected boolean isAutoHideEmptyColumns() {
-		return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		if (ClientInfo.isMobile())
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_MOBILE_AUTO_HIDE_EMPTY_COLUMNS, true, Env.getAD_Client_ID(Env.getCtx()));
+		else
+			return MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	/**
@@ -1420,7 +1426,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		String colsql = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
 		
 		colsql = getSelectForOrderBy(colsql);
-		if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(orderColumnInfo.getAD_Reference_ID()))) {
+		if (   !Util.isEmpty(displayColumn)
+			&& (   (DisplayType.isID(orderColumnInfo.getAD_Reference_ID()) && orderColumnInfo.getAD_Reference_ID() != DisplayType.ID)
+			    || DisplayType.isLookup(orderColumnInfo.getAD_Reference_ID()))) {
 			String from = getFromForOrderBy(orderColumnInfo, displayColumn);
 			String where = getWhereForOrderBy(orderColumnInfo);
 			
@@ -1738,6 +1746,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  @deprecated use getSaveKeys
 	 *  @return selected keys (Integers)
 	 */
+    @Deprecated
 	public Collection<Object> getSelectedKeysCollection()
 	{
 		m_ok = true;
@@ -2273,7 +2282,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         	if (event.getClass().equals(MouseEvent.class)){
         		return;
         	}
-        	if (contentPanel.isMultiple() && m_lastSelectedIndex >= 0) {
+        	if (contentPanel.isMultiple() && m_lastSelectedIndex >= 0 && isLookup()) {
 				
         		contentPanel.setSelectedIndex(m_lastSelectedIndex);
 				
@@ -2298,9 +2307,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}
 				}
         	}
-        	onDoubleClick();
-        	contentPanel.repaint();
-        	m_lastSelectedIndex = -1;
+        	
+        	if (isLookup() || hasZoom()) 
+        	{
+	        	onDoubleClick();
+	        	contentPanel.repaint();
+	        	m_lastSelectedIndex = -1;
+        	}
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
         {
@@ -2599,27 +2612,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	            form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 	            form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 
+	            form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        updateListSelected();
+                        recordSelectedData.clear();
+                        Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
+                        onUserQuery();
+                    }
+                });
+
 	            if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
-	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-	                    @Override
-	                    public void onEvent(Event event) throws Exception {
-	                        ;
-	                    }
-	                });
 	                form.doHighlighted();
 	                form.focus();
 	            }
 	            else {
-	                form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-	                    @Override
-	                    public void onEvent(Event event) throws Exception {
-	                        updateListSelected();
-	                        recordSelectedData.clear();
-	                        Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
-	                        onUserQuery();
-	                    }
-	                });
-
 	                SessionManager.getAppDesktop().showWindow(form);
 	            }
 	            return;
@@ -2781,8 +2788,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					else if (data instanceof UUIDColumn)
 					{
 						UUIDColumn id = (UUIDColumn) data;
-						parameters.add(null);
 						parameters.add(id.getRecord_UU());
+						parameters.add(null);
 						parameters.add(null);
 					}					
 					else if (data instanceof String)
@@ -3395,7 +3402,25 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			for (MStatusLine wl : wls) {
 				String line = wl.parseLine(getWindowNo());
 				if (line != null) {
-					lines.append(line).append("<br>");
+					if (wl.getAD_Style_ID() > 0) {
+			    		MStyle style = MStyle.get(wl.getAD_Style_ID());
+						String css = style.buildStyle(Env.getContext(Env.getCtx(), Env.THEME), new DefaultEvaluatee(), false);				
+						if (!Util.isEmpty(css, true)) {
+							lines.append("<div>\n")
+								.append("<style>\n")
+								.append("@scope {\n")
+								.append(css)
+								.append("\n}\n")
+								.append("</style>\n")
+								.append(line)
+								.append("\n")
+								.append("</div>\n");
+						} else {
+							lines.append(line).append("<br>");
+						}
+		    		} else {
+		    			lines.append(line).append("<br>");
+		    		}
 				}
 			}
 			if (lines.length() > 0)

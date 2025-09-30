@@ -137,6 +137,8 @@ public class PoFiller{
 
 		if (value!=null && value.trim().length() == 0)
 			value = null;
+		if ("AD_Org_ID".equals(qName) && value != null && value.equals("@AD_Org_ID@"))
+			value = String.valueOf(Env.getAD_Org_ID(ctx.ctx));
 		Integer i = value != null ? Integer.valueOf(value) : null;
 
 		Object oldValue = po.get_Value(qName);
@@ -227,9 +229,17 @@ public class PoFiller{
 							foreignTable = MTable.get(Env.getCtx(), tableID, po.get_TrxName());
 							refTableName = foreignTable.getTableName();
 						}
+					} else if (   po.get_TableName().startsWith("AD_TreeNode")
+							   && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName))) {
+						refTableName = e.attributes.getValue("reference-key");
 					}
 				}
-				if (id != null && refTableName != null) {
+				if (id instanceof Number && ((Number)id).intValue() == 0) {
+					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
+						po.set_ValueNoCheck(columnName, id);
+						return id;
+					}
+				} else if (id != null && refTableName != null) {
 					if (foreignTable != null) {
 						if (isMulti) {
 							for (String idstring : id.toString().split(",")) {
@@ -252,11 +262,6 @@ public class PoFiller{
     					}
     				}
 					return id;
-				} else if (id instanceof Number && ((Number)id).intValue() == 0) {
-					if (refTableName != null && MTable.isZeroIDTable(refTableName)) {
-						po.set_ValueNoCheck(columnName, id);
-						return id;
-					}
 				}				
 				return -1;
 			} else {
@@ -295,7 +300,7 @@ public class PoFiller{
 					subPo.getAD_Client_ID() != 0)
 				return false;
 		}
-		if (subPo.is_new())
+		if (subPo != null && subPo.is_new())
 			return false;
 		return true;
 	}
@@ -397,7 +402,8 @@ public class PoFiller{
 					setInteger(qName);
 				} else if (info.getColumnClass(index) == Timestamp.class) {
 					setTimestamp(qName);
-				}else if(DisplayType.TextLong == info.getColumnDisplayType(index)) {// export column from system have type is normal string, but import to system have this column but type is textlong (mean blob)
+				} else if(DisplayType.TextLong == info.getColumnDisplayType(index) || DisplayType.JSON == info.getColumnDisplayType(index)) {
+					// export column from system have type is normal string, but import to system have this column but type is text long (mean blob)
 					if (getStringValue (qName) != null && !isBlobOnPackinFile(qName)) {
 						setString(qName);
 					}else {

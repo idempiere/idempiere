@@ -20,19 +20,18 @@ import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 import org.adempiere.base.Core;
 import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 
 /**
- *  Cache for table.
+ *  Default cache implementation, usually use for caching of table data.
  *	@param <K> Key 
  *	@param <V> Value
  *
@@ -110,6 +109,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 */
@@ -119,6 +119,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -129,6 +130,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -140,6 +142,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param name
 	 * @param initialCapacity
 	 * @param expireMinutes
@@ -152,6 +155,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 *  Create new cache instance and register with {@link CacheMgt}
 	 *  @param tableName
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity // ignored
@@ -162,6 +166,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	CCache
 
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -173,6 +178,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}		
 	
 	/**
+	 * Create new cache instance and register with {@link CacheMgt}
 	 * @param tableName
 	 * @param name
 	 * @param initialCapacity
@@ -185,12 +191,15 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 	
 	/**
+	 *  Create new cache instance and register with {@link CacheMgt}
 	 *  @param tableName
 	 * 	@param name (table) name of the cache
 	 * 	@param initialCapacity initial capacity // ignored
 	 * 	@param expireMinutes expire after minutes (0=no expire)
-	 *  @param distributed
-	 *  @param maxSize ignore if distributed=true
+	 *  @param distributed true if cache should be distributed across server nodes
+	 *  @param maxSize ignore if distributed=true (0=no max size)
+	 *  @see {@link CacheMgt#register(CCache, boolean)}
+	 *  @see {@link CacheMgt#unregister(CacheInterface)}
 	 */
 	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed, int maxSize)
 	{
@@ -212,7 +221,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		} 
 		
 		if (nullList == null) {
-			nullList = Collections.synchronizedSet(new HashSet<K>());
+			nullList = ConcurrentHashMap.newKeySet();
 		}
 	}	//	CCache
 
@@ -230,8 +239,8 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/** Vetoable Change Support	Name	*/
 	private static String		PROPERTYNAME = "cache"; 
 	
-	private final AtomicLong m_hit = new AtomicLong();
-	private final AtomicLong m_miss = new AtomicLong();
+	private final LongAdder m_hit = new LongAdder();
+	private final LongAdder m_miss = new LongAdder();
 	
 	/**
 	 * 	Get (table) Name
@@ -301,6 +310,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	@return number of items cleared
 	 *	@see org.compiere.util.CacheInterface#reset()
 	 */
+	@Override
 	public int reset()
 	{
 		int no = cache.size()+nullList.size();
@@ -309,21 +319,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	reset
 
 	/**
-	 * 	Expire Cache if enabled
-	 */	
-	private void expire()
-	{
-		if (m_expire != 0 && m_timeExp < System.currentTimeMillis())
-		{
-		//	System.out.println ("------------ Expired: " + getName() + " --------------------");
-			reset();
-		}
-	}	//	expire
-
-	/**
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		return "CCache[" + m_name 
@@ -335,9 +334,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}	//	toString
 
 	/**
-	 * 	Clear cache and calculate new expiry time
+	 * 	Clear cache and calculate new expire time
 	 *	@see java.util.Map#clear()
 	 */
+	@Override
 	public void clear()
 	{
 		if (m_changeSupport != null)
@@ -366,18 +366,22 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#containsKey(java.lang.Object)
 	 */
+	@Override
 	public boolean containsKey(Object key)
 	{
-		expire();
+		if (key == null)
+			return false;
 		return cache.containsKey(key) || nullList.contains(key);
 	}	//	containsKey
 
 	/**
 	 *	@see java.util.Map#containsValue(java.lang.Object)
 	 */
+	@Override
 	public boolean containsValue(Object value)
 	{
-		expire();
+		if (value == null)
+			return false;
 		return cache.containsValue(value);
 	}	//	containsValue
 
@@ -385,9 +389,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *  The return entry set exclude entries that contains null value
 	 *	@see java.util.Map#entrySet()
 	 */
+	@Override
 	public Set<Map.Entry<K,V>> entrySet()
 	{
-		expire();
 		return cache.entrySet();
 	}	//	entrySet
 
@@ -397,15 +401,16 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	@Override
 	public V get(Object key)
 	{
-		expire();
+		if (key == null)
+			return null;
 		V v = cache.get(key);
 		if (v == null)
 			if (nullList.contains(key))
-				m_hit.getAndAdd(1);
+				m_hit.add(1);
 			else
-				m_miss.getAndAdd(1);
+				m_miss.add(1);
 		else
-			m_hit.getAndAdd(1);
+			m_hit.add(1);
 		return v;
 	}	//	get
 
@@ -415,9 +420,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *	@param value value
 	 *	@return previous value
 	 */
+	@Override
 	public V put (K key, V value)
 	{
-		expire();
 		m_justReset = false;
 		if (value == null) {
 			cache.remove(key);
@@ -433,9 +438,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * 	Put All
 	 *	@param m map
 	 */
+	@Override
 	public void putAll (Map<? extends K, ? extends V> m)
 	{
-		expire();
 		m_justReset = false;
 		cache.putAll (m);
 	}	//	putAll
@@ -443,9 +448,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#isEmpty()
 	 */
+	@Override
 	public boolean isEmpty()
 	{
-		expire();
 		return cache.isEmpty() && nullList.isEmpty();
 	}	// isEmpty
 
@@ -453,18 +458,18 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * The return key set excludes key that map to null value
 	 *	@see java.util.Map#keySet()
 	 */
+	@Override
 	public Set<K> keySet()
 	{
-		expire();
 		return cache.keySet();
 	}	//	keySet
 
 	/**
 	 *	@see java.util.Map#size()
 	 */
+	@Override
 	public int size()
 	{
-		expire();
 		return cache.size()+nullList.size();
 	}	//	size
 
@@ -482,9 +487,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 *  The return values collection exclude null value entries
 	 *	@see java.util.Map#values()
 	 */
+	@Override
 	public Collection<V> values()
 	{
-		expire();
 		return cache.values();
 	}	//	values
 
@@ -510,7 +515,6 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		if (m_changeSupport != null && listener != null)
 			m_changeSupport.removeVetoableChangeListener(listener);
     }	//	removeVetoableChangeListener
-
 
 	@Override
 	public V remove(Object key) {
@@ -547,11 +551,37 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	}
 
 	@Override
+	public int resetByStringKey(String key) {
+		if (Util.isEmpty(key, true))
+			return reset();
+		
+		if (cache.isEmpty() && nullList.isEmpty())
+			return 0;
+
+		K firstKey = null;
+		try {
+			if (!cache.isEmpty())
+				firstKey = cache.keySet().iterator().next();
+			else if (!nullList.isEmpty())
+				firstKey = nullList.iterator().next();
+		} catch (ConcurrentModificationException e) {}
+		if (firstKey != null && firstKey instanceof String) {
+			if (!nullList.isEmpty()) {
+				if (nullList.remove(key)) return 1;
+			}
+			V removed = cache.remove(key);
+			return removed != null ? 1 : 0;
+		} else {
+			return reset();
+		}
+	}
+	
+	@Override
 	public void newRecord(int record_ID) {
 	}
 
 	/**
-	 * 
+	 * Get maximum size of cache
 	 * @return max size of cache
 	 */
 	public int getMaxSize() {
@@ -571,7 +601,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * @return cache hit count
 	 */
 	public long getHit() {
-		return m_hit.get();
+		return m_hit.longValue();
 	}
 	
 	/**
@@ -579,7 +609,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 * @return cache miss count
 	 */
 	public long getMiss() {
-		return m_miss.get();
+		return m_miss.longValue();
 	}	
 	
 	/**

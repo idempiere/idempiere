@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Department
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_Department")
 public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Department (Properties ctx, int HR_Department_ID, String trxName)
@@ -106,6 +106,7 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueKnown
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueKnown")
 public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_IssueKnown (Properties ctx, int R_IssueKnown_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
       /** if (R_IssueKnown_ID == 0)
         {
 			setIssueSummary (null);
-			setReleaseNo (null);
 			setR_IssueKnown_ID (0);
+			setReleaseNo (null);
         } */
     }
 
@@ -52,8 +52,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
       /** if (R_IssueKnown_ID == 0)
         {
 			setIssueSummary (null);
-			setReleaseNo (null);
 			setR_IssueKnown_ID (0);
+			setReleaseNo (null);
         } */
     }
 
@@ -64,8 +64,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
       /** if (R_IssueKnown_UU == null)
         {
 			setIssueSummary (null);
-			setReleaseNo (null);
 			setR_IssueKnown_ID (0);
+			setReleaseNo (null);
         } */
     }
 
@@ -76,8 +76,8 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
       /** if (R_IssueKnown_UU == null)
         {
 			setIssueSummary (null);
-			setReleaseNo (null);
 			setR_IssueKnown_ID (0);
+			setReleaseNo (null);
         } */
     }
 
@@ -214,30 +214,6 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return false;
 	}
 
-	/** Set Release No.
-		@param ReleaseNo Internal Release Number
-	*/
-	public void setReleaseNo (String ReleaseNo)
-	{
-		set_Value (COLUMNNAME_ReleaseNo, ReleaseNo);
-	}
-
-	/** Get Release No.
-		@return Internal Release Number
-	  */
-	public String getReleaseNo()
-	{
-		return (String)get_Value(COLUMNNAME_ReleaseNo);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), getReleaseNo());
-    }
-
 	/** Set Known Issue.
 		@param R_IssueKnown_ID Known Issue
 	*/
@@ -275,6 +251,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return (String)get_Value(COLUMNNAME_R_IssueKnown_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueRecommendation getR_IssueRecommendation() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueRecommendation)MTable.get(getCtx(), org.compiere.model.I_R_IssueRecommendation.Table_ID)
@@ -303,6 +280,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueStatus getR_IssueStatus() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_IssueStatus)MTable.get(getCtx(), org.compiere.model.I_R_IssueStatus.Table_ID)
@@ -331,6 +309,7 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)
@@ -358,6 +337,30 @@ public class X_R_IssueKnown extends PO implements I_R_IssueKnown, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
+
+	/** Set Release No.
+		@param ReleaseNo Internal Release Number
+	*/
+	public void setReleaseNo (String ReleaseNo)
+	{
+		set_Value (COLUMNNAME_ReleaseNo, ReleaseNo);
+	}
+
+	/** Get Release No.
+		@return Internal Release Number
+	  */
+	public String getReleaseNo()
+	{
+		return (String)get_Value(COLUMNNAME_ReleaseNo);
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), getReleaseNo());
+    }
 
 	/** Set Source Class.
 		@param SourceClassName Source Class Name

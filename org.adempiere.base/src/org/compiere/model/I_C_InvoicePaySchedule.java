@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_InvoicePaySchedule
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_InvoicePaySchedule 
 {
@@ -62,21 +62,6 @@ public interface I_C_InvoicePaySchedule
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_Invoice_ID */
-    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
-
-	/** Set Invoice.
-	  * Invoice Identifier
-	  */
-	public void setC_Invoice_ID (int C_Invoice_ID);
-
-	/** Get Invoice.
-	  * Invoice Identifier
-	  */
-	public int getC_Invoice_ID();
-
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
-
     /** Column name C_InvoicePaySchedule_ID */
     public static final String COLUMNNAME_C_InvoicePaySchedule_ID = "C_InvoicePaySchedule_ID";
 
@@ -99,6 +84,22 @@ public interface I_C_InvoicePaySchedule
 	/** Get C_InvoicePaySchedule_UU	  */
 	public String getC_InvoicePaySchedule_UU();
 
+    /** Column name C_Invoice_ID */
+    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
+
+	/** Set Invoice.
+	  * Invoice Identifier
+	  */
+	public void setC_Invoice_ID (int C_Invoice_ID);
+
+	/** Get Invoice.
+	  * Invoice Identifier
+	  */
+	public int getC_Invoice_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
+
     /** Column name C_PaySchedule_ID */
     public static final String COLUMNNAME_C_PaySchedule_ID = "C_PaySchedule_ID";
 
@@ -112,6 +113,7 @@ public interface I_C_InvoicePaySchedule
 	  */
 	public int getC_PaySchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaySchedule getC_PaySchedule() throws RuntimeException;
 
     /** Column name Created */

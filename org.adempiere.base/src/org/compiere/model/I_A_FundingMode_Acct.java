@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_FundingMode_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_FundingMode_Acct 
 {
@@ -71,6 +71,7 @@ public interface I_A_FundingMode_Acct
 	/** Get Funding Mode Account	  */
 	public int getA_FundingMode_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_FundingMode_A() throws RuntimeException;
 
     /** Column name A_FundingMode_Acct_UU */
@@ -91,6 +92,7 @@ public interface I_A_FundingMode_Acct
 	/** Get Asset Funding Mode	  */
 	public int getA_FundingMode_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_FundingMode getA_FundingMode() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -106,6 +108,7 @@ public interface I_A_FundingMode_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */

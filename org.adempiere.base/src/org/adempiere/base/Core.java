@@ -25,12 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.crypto.SecretKey;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import org.adempiere.base.event.IEventManager;
+import org.adempiere.base.markdown.IMarkdownRenderer;
 import org.adempiere.base.upload.IUploadService;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -55,6 +58,7 @@ import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DefaultKeyStore;
 import org.compiere.util.Env;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
@@ -67,7 +71,10 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.print.IPrintHeaderFooter;
+import org.idempiere.print.renderer.IReportRenderer;
+import org.idempiere.print.renderer.IReportRendererConfiguration;
 import org.idempiere.process.IMappedProcessFactory;
+import org.osgi.framework.ServiceReference;
 
 /**
  * This is a facade class for the Service Locator.
@@ -280,10 +287,29 @@ public class Core {
 			if (keystoreService != null)
 				return keystoreService;
 		}
-		IServiceReferenceHolder<IKeyStore> serviceReference = Service.locator().locate(IKeyStore.class).getServiceReference();
-		if (serviceReference != null) {
-			keystoreService = serviceReference.getService();
-			s_keystoreServiceReference = serviceReference;
+		
+		IServicesHolder<IKeyStore> list = Service.locator().list(IKeyStore.class);
+		List<IServiceReferenceHolder<IKeyStore>> references = list.getServiceReferences();
+		for (IServiceReferenceHolder<IKeyStore> refHolder : references) {
+			ServiceReference<IKeyStore> ref = refHolder.getServiceReference();
+			IKeyStore service = ref != null ? BaseActivator.getBundleContext().getService(ref) : null;
+			if (service != null) {
+				//test key store service is working
+				SecretKey key = service.getKey(0);
+				if (key != null) {
+					if (key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM))
+						s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
+					keystoreService = service;
+					s_keystoreServiceReference = refHolder;
+					break;
+				} else {
+					String componentName = (String)ref.getProperty(org.osgi.service.component.ComponentConstants.COMPONENT_NAME);
+					throw new AdempiereException("Key store service [class=" + service.getClass().getName()
+							+ ", component=" + componentName 
+							+ ", bundle=" + ref.getBundle().getSymbolicName() 
+							+ "] is not configured properly");
+				}
+			}
 		}
 		return keystoreService;
 	}
@@ -1126,4 +1152,27 @@ public class Core {
 
 		return myCreditManager;
 	} // getCreditManager
+	
+	@SuppressWarnings("unchecked")
+	public static IReportRenderer<IReportRendererConfiguration> getReportRenderer(String id) {
+		IReportRenderer<IReportRendererConfiguration> renderer = null;
+		@SuppressWarnings("rawtypes")
+		List<IServiceReferenceHolder<IReportRenderer>> rendererReferences = Service.locator().list(IReportRenderer.class).getServiceReferences();
+		for(var holder : rendererReferences) {
+			renderer = holder.getService();
+			if (renderer.getId().equals(id)) {
+				return renderer;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Get markdown renderer service
+	 * @return markdown renderer service
+	 */
+	public static IMarkdownRenderer getMarkdownRenderer() {
+		IServiceReferenceHolder<IMarkdownRenderer> holder = Service.locator().locate(IMarkdownRenderer.class).getServiceReference();
+		return holder != null ? holder.getService() : null; 
+	}
 }

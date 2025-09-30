@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LdapAccess
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_LdapAccess 
 {
@@ -84,6 +84,7 @@ public interface I_AD_LdapAccess
 	  */
 	public int getAD_LdapProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -112,6 +113,7 @@ public interface I_AD_LdapAccess
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
@@ -182,6 +184,7 @@ public interface I_AD_LdapAccess
 	  */
 	public int getR_InterestArea_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException;
 
     /** Column name Summary */

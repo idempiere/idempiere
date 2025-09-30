@@ -32,6 +32,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -81,8 +82,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -8699990804131725782L;
-
+	private static final long serialVersionUID = 327740106819501242L;
+	
 	/** Matching SQL Template for M_InOut */
 	private static final String BASE_MATCHING_SQL = 
 			"""
@@ -668,6 +669,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		setAD_OrgTrx_ID(order.getAD_OrgTrx_ID());
 		setUser1_ID(order.getUser1_ID());
 		setUser2_ID(order.getUser2_ID());
+		setC_CostCenter_ID(order.getC_CostCenter_ID());
+		setC_Department_ID(order.getC_Department_ID());
 		setPriorityRule(order.getPriorityRule());
 		// Drop shipment
 		setIsDropShip(order.isDropShip());
@@ -727,6 +730,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		setAD_OrgTrx_ID(invoice.getAD_OrgTrx_ID());
 		setUser1_ID(invoice.getUser1_ID());
 		setUser2_ID(invoice.getUser2_ID());
+		setC_CostCenter_ID(invoice.getC_CostCenter_ID());
+		setC_Department_ID(invoice.getC_Department_ID());
 
 		if (order != null)
 		{
@@ -793,6 +798,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		setAD_OrgTrx_ID(original.getAD_OrgTrx_ID());
 		setUser1_ID(original.getUser1_ID());
 		setUser2_ID(original.getUser2_ID());
+		setC_CostCenter_ID(original.getC_CostCenter_ID());
+		setC_Department_ID(original.getC_Department_ID());
 
 		// DropShipment
 		setIsDropShip(original.isDropShip());
@@ -1293,20 +1300,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
         setMovementType(movementType); 
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true or false
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if(newRecord || is_ValueChanged("C_DocType_ID")) {
 			setMovementType();
 		}
-		
+		// Validate warehouse and document belongs to the same organization
 		MWarehouse wh = MWarehouse.get(getCtx(), getM_Warehouse_ID());
-		//	Warehouse Org
 		if (newRecord)
 		{
 			if (wh.getAD_Org_ID() != getAD_Org_ID())
@@ -1315,23 +1316,22 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				return false;
 			}
 		}
-
+		// Change DELIVERYRULE_Force to DELIVERYRULE_Availability if warehouse disallow negative inventory
 		boolean disallowNegInv = wh.isDisallowNegativeInv();
 		String DeliveryRule = getDeliveryRule();
 		if((disallowNegInv && DELIVERYRULE_Force.equals(DeliveryRule)) ||
 				(DeliveryRule == null || DeliveryRule.length()==0))
 			setDeliveryRule(DELIVERYRULE_Availability);
 
-        // Shipment/Receipt can have either Order/RMA (For Movement type)
+        // Shipment/Receipt must fill one of Order or RMA field, not both
         if (getC_Order_ID() != 0 && getM_RMA_ID() != 0)
         {
             log.saveError("OrderOrRMA", "");
             return false;
         }
-
+        // Set document type to C_DocTypeShipment_ID of RMA document type (sales transaction only)
         if (isSOTrx() && getM_RMA_ID() != 0)
         {
-            // Set Document and Movement type for this Receipt
             MRMA rma = new MRMA(getCtx(), getM_RMA_ID(), get_TrxName());
             MDocType docType = MDocType.get(getCtx(), rma.getC_DocType_ID());
             setC_DocType_ID(docType.getC_DocTypeShipment_ID());
@@ -1339,6 +1339,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
                 
         if (newRecord && isSOTrx())
         {
+        	// Set ShipperAccount and FreightCharges 
         	if (MInOut.FREIGHTCOSTRULE_CustomerAccount.equals(getFreightCostRule()))
     		{
         		if (Util.isEmpty(getShipperAccount()))
@@ -1351,7 +1352,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
         			setFreightCharges(MInOut.FREIGHTCHARGES_Collect);
     		}
         }
-
+        // Set SalesRep_ID from order or RMA (original MInOut)
         if (getSalesRep_ID() == 0) {
         	if (getC_Order_ID() > 0) {
         		MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
@@ -1366,18 +1367,13 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success || newRecord)
 			return success;
 
+		// Propagate AD_Org_ID change to lines
 		if (is_ValueChanged("AD_Org_ID"))
 		{
 			final String sql = "UPDATE M_InOutLine ol"
@@ -1457,6 +1453,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (!MPeriod.isOpen(getCtx(), getDateAcct(), dt.getDocBaseType(), getAD_Org_ID()))
 		{
 			m_processMsg = "@PeriodClosed@";
+			return DocAction.STATUS_Invalid;
+		}
+		
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName()))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
 			return DocAction.STATUS_Invalid;
 		}
 
@@ -1652,6 +1654,24 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (!isApproved())
 			approveIt();
 		if (log.isLoggable(Level.INFO)) log.info(toString());
+		
+		if (!isReversal())
+		{
+			try {
+				periodClosedCheckForBackDateTrx(null);
+			} catch (PeriodClosedException e) {
+				m_processMsg = e.getLocalizedMessage();
+				return DocAction.STATUS_Invalid;
+			}
+		}
+		
+		//	Stock Coverage Check
+		if (!isReversal() && !stockCoverageCheckForBackDateTrx(null))
+		{
+			m_processMsg = "@InsufficientStockCoverage@";
+			return DocAction.STATUS_Invalid;
+		}
+			
 		StringBuilder info = new StringBuilder();
 
 		StringBuilder errors = new StringBuilder();
@@ -2314,6 +2334,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			if (getDateAcct().before(getMovementDate())) {
 				setDateAcct(getMovementDate());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -2636,6 +2657,15 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				accrual = true;
 			}
 			
+			try
+			{
+				MAcctSchema.testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
+			}
+			catch (BackDateTrxNotAllowedException e)
+			{
+				accrual = true;
+			}
+			
 			if (accrual)
 				return reverseAccrualIt();
 			else
@@ -2719,6 +2749,25 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		if (!MPeriod.isOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID()))
 		{
 			m_processMsg = "@PeriodClosed@";
+			return null;
+		}
+		if (!MAcctSchema.isBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName()))
+		{
+			m_processMsg = "@BackDateTrxNotAllowed@";
+			return null;
+		}
+		
+		try {
+			periodClosedCheckForBackDateTrx(reversalDate);
+		} catch (PeriodClosedException e) {
+			m_processMsg = e.getLocalizedMessage();
+			return null;
+		}
+		
+		//	Stock Coverage Check
+		if (!stockCoverageCheckForBackDateTrx(reversalDate))
+		{
+			m_processMsg = "@InsufficientStockCoverageForReversal@";
 			return null;
 		}
 
@@ -3188,6 +3237,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			iol.setAD_OrgTrx_ID(ol.getAD_OrgTrx_ID());
 			iol.setUser1_ID(ol.getUser1_ID());
 			iol.setUser2_ID(ol.getUser2_ID());
+			iol.setC_CostCenter_ID(ol.getC_CostCenter_ID());
+			iol.setC_Department_ID(ol.getC_Department_ID());
 		}
 		else if (il != null)
 		{
@@ -3209,6 +3260,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			iol.setAD_OrgTrx_ID(il.getAD_OrgTrx_ID());
 			iol.setUser1_ID(il.getUser1_ID());
 			iol.setUser2_ID(il.getUser2_ID());
+			iol.setC_CostCenter_ID(il.getC_CostCenter_ID());
+			iol.setC_Department_ID(il.getC_Department_ID());
 		}
 		else if (M_RMALine_ID != 0)
 		{
@@ -3224,6 +3277,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			iol.setAD_OrgTrx_ID(rmal.getAD_OrgTrx_ID());
 			iol.setUser1_ID(rmal.getUser1_ID());
 			iol.setUser2_ID(rmal.getUser2_ID());
+			iol.setC_CostCenter_ID(rmal.getC_CostCenter_ID());
+			iol.setC_Department_ID(rmal.getC_Department_ID());
 		}
 
 		//	Charge
@@ -3269,7 +3324,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setSalesRep_ID (order.getSalesRep_ID());
 			setUser1_ID(order.getUser1_ID());
 			setUser2_ID(order.getUser2_ID());
-
+			setC_CostCenter_ID(order.getC_CostCenter_ID());
+			setC_Department_ID(order.getC_Department_ID());
 			if ( order.isDropShip() )
 			{
 				setM_Warehouse_ID( order.getM_Warehouse_ID() );
@@ -3295,6 +3351,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setC_Activity_ID(invoice.getC_Activity_ID());
 			setUser1_ID(invoice.getUser1_ID());
 			setUser2_ID(invoice.getUser2_ID());
+			setC_CostCenter_ID(invoice.getC_CostCenter_ID());
+			setC_Department_ID(invoice.getC_Department_ID());
 		}
 		if (rma != null && rma.getM_RMA_ID() != 0)
 		{
@@ -3309,7 +3367,247 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setC_Activity_ID(originalIO.getC_Activity_ID());
 			setUser1_ID(originalIO.getUser1_ID());
 			setUser2_ID(originalIO.getUser2_ID());
+			setC_CostCenter_ID(originalIO.getC_CostCenter_ID());
+			setC_Department_ID(originalIO.getC_Department_ID());
 		}
 		saveEx();
+	}
+	
+	/**
+	 * Stock Coverage Check for Back-Date Transaction
+	 * - A reversal should not be possible if there is insufficient stock coverage
+	 * - A shipment should not be allowed if there is insufficient stock coverage
+	 * @param reversalDate reversal date - null when it is not a reversal
+	 * @return false when there is insufficient stock coverage
+	 */
+	private boolean stockCoverageCheckForBackDateTrx(Timestamp reversalDate)
+	{
+		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+		MAcctSchema as = info.getMAcctSchema1();
+		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
+				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+			return true;
+		as.load(get_TrxName());
+		if (as.getBackDateDay() == 0)
+			return true;
+		
+		String MovementType = getMovementType();
+		if (reversalDate != null && MovementType.equals(MOVEMENTTYPE_VendorReceipts)) {
+			final StringBuilder selectSql = new StringBuilder();
+			selectSql.append("WITH base_cd AS (");
+			selectSql.append("  SELECT ");
+			selectSql.append("    cd.DateAcct, ");
+			selectSql.append("    cd.M_CostDetail_ID, ");
+			selectSql.append("    CASE ");
+			selectSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
+			selectSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
+			selectSql.append("      ELSE cd.M_CostDetail_ID ");
+			selectSql.append("    END AS Ref_CostDetail_ID ");
+			selectSql.append("  FROM M_CostDetail cd ");
+			selectSql.append("  LEFT JOIN M_CostDetail refcd ON refcd.M_CostDetail_ID = cd.Ref_CostDetail_ID ");
+			selectSql.append("  WHERE cd.M_CostDetail_ID = ? ");
+			selectSql.append(") ");
+			selectSql.append("SELECT t.* ");
+			selectSql.append("FROM M_CostDetail t ");
+			selectSql.append("WHERE ");
+			selectSql.append("  t.AD_Client_ID = ? ");
+			selectSql.append("  AND t.C_AcctSchema_ID = ? ");
+			selectSql.append("  AND t.M_Product_ID = ? ");
+			selectSql.append("  AND ( ");
+			selectSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
+			selectSql.append("    OR ( ");
+			selectSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+			selectSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) > (SELECT Ref_CostDetail_ID FROM base_cd) ");
+			selectSql.append("    ) ");
+			selectSql.append("    OR ( ");
+			selectSql.append("      t.DateAcct = (SELECT DateAcct FROM base_cd) ");
+			selectSql.append("      AND COALESCE(t.Ref_CostDetail_ID, t.M_CostDetail_ID) = (SELECT Ref_CostDetail_ID FROM base_cd) ");
+			selectSql.append("      AND t.M_CostDetail_ID > (SELECT M_CostDetail_ID FROM base_cd) ");
+			selectSql.append("    ) ");
+			selectSql.append("  ) ");
+			selectSql.append("  AND t.DateAcct >= ? ");
+			selectSql.append("  AND t.Processed = 'Y' ");
+			selectSql.append("  AND (M_InOutLine_ID <> 0 OR C_ProjectIssue_ID <> 0) ");
+			
+			MMatchPO[] mMatchPOList = MMatchPO.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
+			for (MMatchPO mMatchPO : mMatchPOList)
+			{
+				if (mMatchPO.getReversal_ID() > 0)
+					continue;
+				
+				MCostDetail cd = MCostDetail.getOrder (as, mMatchPO.getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+						mMatchPO.getC_OrderLine_ID(), 0, reversalDate, get_TrxName());
+				if (cd == null)
+					continue;
+				
+				BigDecimal qty = cd.getQty().negate();
+				List<MCostDetail> costDetailList = new ArrayList<MCostDetail>();
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				try {
+					pstmt = DB.prepareStatement(selectSql.toString(), get_TrxName());
+					pstmt.setInt(1, cd.getM_CostDetail_ID());
+					pstmt.setInt(2, getAD_Client_ID());
+					pstmt.setInt(3, as.getC_AcctSchema_ID());
+					pstmt.setInt(4, cd.getM_Product_ID());
+					pstmt.setTimestamp(5, cd.getDateAcct());
+					rs = pstmt.executeQuery();
+					while (rs.next())
+						costDetailList.add(new MCostDetail(getCtx(), rs, get_TrxName()));
+				} catch (SQLException e) {
+					throw new DBException(e, selectSql.toString());
+				} finally {
+					DB.close(rs, pstmt);
+					rs = null; pstmt = null;
+				}
+				
+				for (MCostDetail costDetail : costDetailList) {
+					if (costDetail.getM_InOutLine_ID() > 0) {
+						if (costDetail.getM_InOutLine().getM_InOut().getReversal_ID() > 0)
+							continue;
+					} else if (costDetail.getC_ProjectIssue_ID() > 0) {
+						if (costDetail.getC_ProjectIssue().getReversal_ID() > 0)
+							continue;
+					} else {
+						continue;
+					}
+					if (costDetail.getCurrentQty().add(qty).signum() < 0) {
+						log.log(Level.SEVERE, "Insufficient stock coverage" + costDetail);
+						return false;
+					}
+				}
+			}
+		} else if (reversalDate == null && MovementType.equals(MOVEMENTTYPE_CustomerShipment)) {
+ 			MInOutLine[] sLines = getLines(false);
+			for (MInOutLine sLine : sLines) {
+				int AD_Org_ID = sLine.getAD_Org_ID();
+				int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
+
+				if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+				{
+					AD_Org_ID = 0;
+					M_AttributeSetInstance_ID = 0;
+				}
+				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+					M_AttributeSetInstance_ID = 0;
+				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+					AD_Org_ID = 0;
+				
+				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
+				
+				BigDecimal qty = sLine.getMovementQty();
+				if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
+					qty = qty.negate();
+				
+				ICostInfo costInfo = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(),
+						as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
+						M_AttributeSetInstance_ID, 
+						getDateAcct(), null, get_TrxName());
+				if (costInfo != null && costInfo.getCurrentQty().add(qty).signum() < 0) {
+					log.log(Level.SEVERE, "Insufficient stock coverage" + MProduct.get(getCtx(), sLine.getM_Product_ID(), get_TrxName()));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Period Closed Check for Back-Date Transaction
+	 * @param reversalDate reversal date - null when it is not a reversal
+	 * @return false when failed the period closed check
+	 */
+	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
+	{
+		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+		MAcctSchema as = info.getMAcctSchema1();
+		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
+				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+			return true;
+		
+		if (as.getBackDateDay() == 0)
+			return true;
+		
+		Timestamp dateAcct = reversalDate != null ? reversalDate : getDateAcct();
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT COUNT(*) FROM M_CostDetail ");
+		sql.append("WHERE M_Product_ID IN (SELECT M_Product_ID FROM M_InOutLine WHERE M_InOut_ID=?) ");
+		sql.append("AND Processed='Y' ");
+		sql.append(reversalDate != null ? "AND DateAcct>=? " : "AND DateAcct>? ");
+		int no = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ID(), dateAcct);
+		if (no <= 0)
+			return true;
+		
+		MInOutLine[] sLines = getLines(false);
+		for (MInOutLine sLine : sLines) {
+			int AD_Org_ID = sLine.getAD_Org_ID();
+			int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
+
+			if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+			{
+				AD_Org_ID = 0;
+				M_AttributeSetInstance_ID = 0;
+			}
+			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+				M_AttributeSetInstance_ID = 0;
+			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+				AD_Org_ID = 0;
+			
+			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
+			
+			int M_CostDetail_ID = 0;
+			if (!isSOTrx()) {
+				MMatchPO[] mMatchPOList = MMatchPO.get(getCtx(), sLine.getM_InOutLine_ID(), get_TrxName());
+				for (MMatchPO mMatchPO : mMatchPOList)
+				{
+					int C_OrderLine_ID = mMatchPO.getC_OrderLine_ID();
+					Timestamp dateAcct0 = mMatchPO.getDateAcct();
+					if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID()) {
+						C_OrderLine_ID = mMatchPO.getReversal().getC_OrderLine_ID();
+						dateAcct0 = mMatchPO.getReversal().getDateAcct();
+					}
+					MCostDetail cd = MCostDetail.getOrder(as, mMatchPO.getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+							C_OrderLine_ID, 0, dateAcct0, get_TrxName());
+					if (cd != null)
+						M_CostDetail_ID = cd.getM_CostDetail_ID();
+				}
+				
+				if (M_CostDetail_ID == 0) 
+				{
+					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(), 
+							as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
+					if (history != null)
+						M_CostDetail_ID = history.getM_CostDetail_ID();
+				}
+				
+				if (M_CostDetail_ID > 0) {
+					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+							sLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
+				}
+			} else {
+				int M_InOutLine_ID = sLine.getM_InOutLine_ID();
+				if (sLine.getReversalLine_ID() > 0 && sLine.get_ID() > sLine.getReversalLine_ID())
+					M_InOutLine_ID = sLine.getReversalLine_ID();
+				MCostDetail cd = MCostDetail.getShipment(as, sLine.getM_Product_ID(), M_AttributeSetInstance_ID, 
+						M_InOutLine_ID, 0, get_TrxName());
+				if (cd != null)
+					M_CostDetail_ID = cd.getM_CostDetail_ID();
+				else {
+					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(), 
+							as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
+					if (history != null)
+						M_CostDetail_ID = history.getM_CostDetail_ID();
+				}
+				
+				if (M_CostDetail_ID > 0) {
+					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+							sLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
+				}
+			}
+		}
+		return true;
 	}
 }	//	MInOut

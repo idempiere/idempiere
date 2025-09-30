@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ShipperPickupTypes
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_ShipperPickupTypes 
 {
@@ -104,21 +104,6 @@ public interface I_M_ShipperPickupTypes
 	  */
 	public boolean isDefault();
 
-    /** Column name M_Shipper_ID */
-    public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
-
-	/** Set Shipper.
-	  * Method or manner of product delivery
-	  */
-	public void setM_Shipper_ID (int M_Shipper_ID);
-
-	/** Get Shipper.
-	  * Method or manner of product delivery
-	  */
-	public int getM_Shipper_ID();
-
-	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
-
     /** Column name M_ShipperPickupTypesCfg_ID */
     public static final String COLUMNNAME_M_ShipperPickupTypesCfg_ID = "M_ShipperPickupTypesCfg_ID";
 
@@ -128,6 +113,7 @@ public interface I_M_ShipperPickupTypes
 	/** Get Shipper Pickup Types Configuration	  */
 	public int getM_ShipperPickupTypesCfg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperPickupTypesCfg getM_ShipperPickupTypesCfg() throws RuntimeException;
 
     /** Column name M_ShipperPickupTypes_ID */
@@ -147,6 +133,22 @@ public interface I_M_ShipperPickupTypes
 
 	/** Get M_ShipperPickupTypes_UU	  */
 	public String getM_ShipperPickupTypes_UU();
+
+    /** Column name M_Shipper_ID */
+    public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
+
+	/** Set Shipper.
+	  * Method or manner of product delivery
+	  */
+	public void setM_Shipper_ID (int M_Shipper_ID);
+
+	/** Get Shipper.
+	  * Method or manner of product delivery
+	  */
+	public int getM_Shipper_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

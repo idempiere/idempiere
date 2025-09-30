@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PeriodControl
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_PeriodControl 
 {
@@ -93,6 +93,7 @@ public interface I_C_PeriodControl
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */

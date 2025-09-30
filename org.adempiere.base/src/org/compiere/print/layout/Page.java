@@ -30,7 +30,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
- *	Layout Page
+ *	Report Page
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: Page.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
@@ -38,9 +38,8 @@ import org.compiere.util.Util;
 public class Page
 {
 	/**
-	 *	Layout for Page
-	 *  @param pageNo page
-	 *  @param ctx context
+	 *	@param ctx context
+	 *  @param pageNo page number
 	 */
 	public Page (Properties ctx, int pageNo)
 	{
@@ -52,7 +51,7 @@ public class Page
 
 	/**	Current Page No	(set here)				*/
 	public static final String		CONTEXT_PAGE = "*Page";
-	/** Page Count (set in Layout Emgine		*/
+	/** Page Count (set in Layout Engine)		*/
 	public static final String		CONTEXT_PAGECOUNT = "*PageCount";
 	/** Multi Page Info (set here)				*/
 	public static final String		CONTEXT_MULTIPAGE = "*MultiPageInfo";
@@ -100,7 +99,7 @@ public class Page
 	}	//	getPageInfo
 
 	/**
-	 * 	Set Page Info.
+	 * 	Set Page Info.<br/>
 	 *  Enhanced pagae no, e.g.,  7(2,3)
 	 * 	@param pageInfo page info
 	 */
@@ -112,7 +111,7 @@ public class Page
 	}	//	getPageInfo
 
 	/**
-	 * 	Set Page Info
+	 * 	Set Page Count
 	 * 	@param pageCount page count
 	 */
 	public void setPageCount (int pageCount)
@@ -120,6 +119,10 @@ public class Page
 		m_pageCount = pageCount;
 	}	//	setPageCount
 
+	/**
+	 * Get page count
+	 * @return page count
+	 */
 	public int getPageCount()
 	{
 		return m_pageCount;
@@ -135,8 +138,6 @@ public class Page
 			m_elements.add(element);
 	}	//	addElement
 
-	/*************************************************************************/
-
 	/**
 	 * 	Paint Page on Graphics in Bounds
 	 *
@@ -148,7 +149,6 @@ public class Page
 	public void paint (Graphics2D g2D, Rectangle bounds, boolean isView, boolean isCopy)
 	{
 		m_ctx.put (CONTEXT_PAGE, m_pageInfo);
-	//	log.finest( "PrintContext", CONTEXT_PAGE + "=" + m_pageInfo);
 		//
 		StringBuilder sb = new StringBuilder();
 		if (m_pageCount != 1)		//	set to "Page 1 of 2"
@@ -159,7 +159,6 @@ public class Page
 		else
 			sb.append(" ");
 		m_ctx.put(CONTEXT_MULTIPAGE, sb.toString());
-	//	log.finest( "PrintContext", CONTEXT_MULTIPAGE + "=" + sb.toString());
 		//
 		sb = new StringBuilder();
 		if (isCopy)					//	set to "(Copy)"
@@ -169,7 +168,6 @@ public class Page
 		else
 			sb.append(" ");
 		m_ctx.put(CONTEXT_COPY, sb.toString());
-	//	log.finest( "PrintContext copy=" + isCopy, CONTEXT_COPY + "=" + sb.toString());
 
 		//	Paint Background
 		g2D.setColor(Color.white);
@@ -201,12 +199,10 @@ public class Page
 		}
 	}	//	paint
 
-	/*************************************************************************/
-
 	/**
-	 * 	Get DrillDown value
-	 * 	@param relativePoint relative Point
-	 * 	@return if found NamePait or null
+	 * 	Get DrillDown Query
+	 * 	@param relativePoint point to find print element
+	 * 	@return drill down query for print element or null 
 	 */
 	public MQuery getDrillDown (Point relativePoint)
 	{
@@ -220,9 +216,9 @@ public class Page
 	}	//	getDrillDown
 
 	/**
-	 * 	Get DrillAcross value
-	 * 	@param relativePoint relative Point
-	 * 	@return if found Query or null
+	 * 	Get DrillAcross Query
+	 * 	@param relativePoint point to find print element
+	 * 	@return drill across query for print element or null
 	 */
 	public MQuery getDrillAcross (Point relativePoint)
 	{
@@ -246,7 +242,7 @@ public class Page
 	
 	/**
 	 * get Background Image
-	 * @return
+	 * @return image
 	 */
 	public Image getBackgroundImage()
 	{
@@ -257,6 +253,7 @@ public class Page
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("Page[");

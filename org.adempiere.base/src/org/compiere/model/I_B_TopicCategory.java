@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for B_TopicCategory
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_B_TopicCategory 
 {
@@ -97,6 +97,7 @@ public interface I_B_TopicCategory
 	  */
 	public int getB_TopicType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_B_TopicType getB_TopicType() throws RuntimeException;
 
     /** Column name Created */

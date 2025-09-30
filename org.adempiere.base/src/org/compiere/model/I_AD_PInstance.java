@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_PInstance 
 {
@@ -58,6 +58,7 @@ public interface I_AD_PInstance
 	/** Get Language ID	  */
 	public int getAD_Language_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -108,6 +109,7 @@ public interface I_AD_PInstance
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
@@ -123,6 +125,7 @@ public interface I_AD_PInstance
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Session_ID */
@@ -138,6 +141,7 @@ public interface I_AD_PInstance
 	  */
 	public int getAD_Session_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Session getAD_Session() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -153,6 +157,7 @@ public interface I_AD_PInstance
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -168,6 +173,7 @@ public interface I_AD_PInstance
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
@@ -238,6 +244,19 @@ public interface I_AD_PInstance
 	  * This is a summary entity
 	  */
 	public boolean isSummary();
+
+    /** Column name JsonData */
+    public static final String COLUMNNAME_JsonData = "JsonData";
+
+	/** Set JSON Data.
+	  * The json field stores json data.
+	  */
+	public void setJsonData (String JsonData);
+
+	/** Get JSON Data.
+	  * The json field stores json data.
+	  */
+	public String getJsonData();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

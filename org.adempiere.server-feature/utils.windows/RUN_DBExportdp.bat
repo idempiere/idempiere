@@ -5,7 +5,8 @@
 @Rem 
 @Rem Parameter: <adempiereDBuser>/<adempiereDBpassword>
 
-@call %ADEMPIERE_DB_PATH%\DBExportdp %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD% system/%ADEMPIERE_DB_SYSTEM%
+@if "%ADEMPIERE_DB_SYSTEM_USER%" == "" (set "ADEMPIERE_DB_SYSTEM_USER=SYSTEM")
+@call %ADEMPIERE_DB_PATH%\DBExportdp %ADEMPIERE_DB_USER% %ADEMPIERE_DB_PASSWORD% %ADEMPIERE_DB_SYSTEM_USER% %ADEMPIERE_DB_SYSTEM%
 @Rem call %ADEMPIERE_DB_PATH%\DBExportFulldp system/%ADEMPIERE_DB_SYSTEM%
 
 @Echo If the following statement fails, fix your environment

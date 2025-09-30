@@ -252,11 +252,6 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	  return 42; // any arbitrary constant will do
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{

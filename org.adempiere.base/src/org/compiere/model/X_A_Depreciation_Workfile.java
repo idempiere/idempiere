@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Workfile
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Workfile")
 public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Workfile, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Workfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName)
@@ -294,6 +294,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -562,6 +563,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_FundingMode getA_FundingMode() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_FundingMode)MTable.get(getCtx(), org.compiere.model.I_A_FundingMode.Table_ID)
@@ -749,22 +751,6 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 		return bd;
 	}
 
-	/** Set Asset Depreciation Date.
-		@param AssetDepreciationDate Date of last depreciation
-	*/
-	public void setAssetDepreciationDate (Timestamp AssetDepreciationDate)
-	{
-		set_Value (COLUMNNAME_AssetDepreciationDate, AssetDepreciationDate);
-	}
-
-	/** Get Asset Depreciation Date.
-		@return Date of last depreciation
-	  */
-	public Timestamp getAssetDepreciationDate()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_AssetDepreciationDate);
-	}
-
 	/** A_Tip_Finantare AD_Reference_ID=53361 */
 	public static final int A_TIP_FINANTARE_AD_Reference_ID=53361;
 	/** Cofinantare = C */
@@ -826,6 +812,23 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 		return bd;
 	}
 
+	/** Set Asset Depreciation Date.
+		@param AssetDepreciationDate Date of last depreciation
+	*/
+	public void setAssetDepreciationDate (Timestamp AssetDepreciationDate)
+	{
+		set_Value (COLUMNNAME_AssetDepreciationDate, AssetDepreciationDate);
+	}
+
+	/** Get Asset Depreciation Date.
+		@return Date of last depreciation
+	  */
+	public Timestamp getAssetDepreciationDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_AssetDepreciationDate);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)

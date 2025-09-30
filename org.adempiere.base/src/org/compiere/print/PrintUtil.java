@@ -47,11 +47,6 @@ import javax.print.attribute.standard.JobPriority;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JDialog;
 
-import org.adempiere.process.UUIDGenerator;
-import org.compiere.model.MColumn;
-import org.compiere.model.PO;
-import org.compiere.model.X_AD_PrintForm;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -73,7 +68,7 @@ public class PrintUtil
 	private static PrintRequestAttributeSet     s_prats = new HashPrintRequestAttributeSet();
 
 	/**
-	 *  Return Default Print Request Attributes
+	 *  Get Default Print Request Attributes
 	 *  @return PrintRequestAttributeSet
 	 */
 	public static PrintRequestAttributeSet getDefaultPrintRequestAttributes()
@@ -91,7 +86,7 @@ public class PrintUtil
 	}   //  getDefaultFlavor
 
 	/**
-	 * Get Print Services for all flavor and pratt
+	 * Get Print Services for all flavor and print request attributes
 	 * @return print services
 	 */
 	public static PrintService[] getAllPrintServices() 
@@ -100,7 +95,7 @@ public class PrintUtil
 	}
 	
 	/**
-	 *  Get Print Services for standard flavor and pratt
+	 *  Get Print Services for standard flavor and print request attributes
 	 *  @return print services
 	 */
 	public static PrintService[] getPrintServices ()
@@ -117,9 +112,8 @@ public class PrintUtil
 		return PrintServiceLookup.lookupDefaultPrintService();
 	}   //  getPrintServices
 
-
 	/**
-	 *  Return default PrinterJob
+	 *  Get default PrinterJob
 	 *  @return PrinterJob
 	 */
 	public static PrinterJob getPrinterJob()
@@ -128,8 +122,8 @@ public class PrintUtil
 	}   //  getPrinterJob
 
 	/**
-	 *  Return PrinterJob with selected printer name.
-	 *  @param printerName if null, get default printer (Ini)
+	 *  Get PrinterJob with selected printer name.
+	 *  @param printerName if null, get default printer (Ini.P_PRINTER)
 	 *  @return PrinterJob
 	 */
 	public static PrinterJob getPrinterJob (String printerName)
@@ -184,8 +178,6 @@ public class PrintUtil
 		return pj;
 	}   //  getPrinterJob
 	
-	/*************************************************************************/
-
 	/**
 	 * 	Print (async)
 	 * 	@param printerName optional printer name
@@ -223,7 +215,7 @@ public class PrintUtil
 	/**
 	 * 	Print Async
 	 *  @param pageable pageable
-	 *  @param prats print attribute set
+	 *  @param prats print request attribute set
 	 */
 	static public void print (Pageable pageable, PrintRequestAttributeSet prats)
 	{
@@ -235,7 +227,7 @@ public class PrintUtil
 	/**
 	 * 	Print
 	 * 	@param job printer job
-	 *  @param prats print attribute set
+	 *  @param prats print request attribute set
 	 *  @param withDialog if true shows Dialog
 	 *  @param waitForIt if false print async
 	 */
@@ -295,8 +287,8 @@ public class PrintUtil
 	}	//	printAsync
 
 	/**
-	 * 	Get Job Priority based on pages printed.
-	 *  The more pages, the lower the priority
+	 * 	Get Job Priority based on pages printed.<br/>
+	 *  The more pages, the lower the priority.
 	 * 	@param pages number of pages
 	 *  @param copies number of copies
 	 *  @param withDialog dialog gets lower priority than direct print
@@ -315,8 +307,6 @@ public class PrintUtil
 			priority = 100;
 		return new JobPriority(priority);
 	}	//	getJobPriority
-
-	/*************************************************************************/
 
 	/**
 	 * 	Dump Printer Job info
@@ -431,7 +421,7 @@ public class PrintUtil
 		}
 	}	//	dump
 
-	/**************************************************************************
+	/**
 	 * 	Create Print Form and Print Formats for a new Client.
 	 *  - Order, Invoice, etc.
 	 *  Called from VSetup
@@ -442,10 +432,9 @@ public class PrintUtil
 		setupPrintForm(AD_Client_ID, (String)null);
 	}
 	
-	/**************************************************************************
-	 * 	Create Print Form and Print Formats for a new Client.
-	 *  - Order, Invoice, etc.
-	 *  Called from VSetup
+	/**
+	 * 	Create Print Form and Print Formats for a new Client.<br/>
+	 *  - Order, Invoice, etc.<br/>
 	 *  @param AD_Client_ID new Client
 	 *  @param trxName
 	 */
@@ -453,8 +442,7 @@ public class PrintUtil
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("AD_Client_ID=" + AD_Client_ID);
 		Properties ctx = Env.getCtx();
-		CLogMgt.enable(false);
-		//
+
 		//	Order Template
 		int Order_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_HEADER_TEMPLATE, AD_Client_ID, trxName).get_ID();
 		int OrderLine_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_ORDER_LINETAX_TEMPLATE, AD_Client_ID, trxName).get_ID();
@@ -475,33 +463,24 @@ public class PrintUtil
 		int Remittance_PrintFormat_ID = MPrintFormat.copyToClient(ctx, PRINTFORMAT_PAYSELECTION_REMITTANCE__TEMPLATE, AD_Client_ID, trxName).get_ID();
 		updatePrintFormatHeader(Remittance_PrintFormat_ID, RemittanceLine_PrintFormat_ID, trxName);
 
-	//	TODO: MPrintForm	
-
 		int AD_PrintForm_ID = DB.getNextID (AD_Client_ID, "AD_PrintForm", null);
-		String sql = "INSERT INTO AD_PrintForm(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_PrintForm_ID,"
+		StringBuilder sql = new StringBuilder("INSERT INTO AD_PrintForm(AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_PrintForm_ID,AD_PrintForm_UU,"
 			+ "Name,Order_PrintFormat_ID,Invoice_PrintFormat_ID,Remittance_PrintFormat_ID,Shipment_PrintFormat_ID)"
-			//
-			+ " VALUES (" + AD_Client_ID + ",0,'Y',getDate(),0,getDate(),0," + AD_PrintForm_ID + ","
-			+ "'" + Msg.translate(ctx, "Standard") + "',"
-			+ Order_PrintFormat_ID + "," + Invoice_PrintFormat_ID + ","
-			+ Remittance_PrintFormat_ID + "," + Shipment_PrintFormat_ID + ")";
-		int no = DB.executeUpdate(sql, trxName);
+			+ " VALUES (")
+			.append(AD_Client_ID).append(",0,'Y',getDate(),0,getDate(),0,").append(AD_PrintForm_ID).append(",generate_uuid(),")
+			.append(DB.TO_STRING(Msg.translate(ctx, "Standard"))).append(",")
+			.append(Order_PrintFormat_ID).append(",").append(Invoice_PrintFormat_ID).append(",")
+			.append(Remittance_PrintFormat_ID).append(",").append(Shipment_PrintFormat_ID).append(")");
+		int no = DB.executeUpdateEx(sql.toString(), trxName);
 		if (no != 1)
 			log.log(Level.SEVERE, "PrintForm NOT inserted");
 
-		if (DB.isGenerateUUIDSupported())
-			DB.executeUpdateEx("UPDATE AD_PrintForm SET AD_PrintForm_UU=generate_uuid() WHERE AD_PrintForm_UU IS NULL", trxName);
-		else
-			UUIDGenerator.updateUUID(MColumn.get(ctx, X_AD_PrintForm.Table_Name, PO.getUUIDColumnName(X_AD_PrintForm.Table_Name)), trxName);
-		
-		//
-		CLogMgt.enable(true);
 	}	//	createDocuments
 
 	/**
 	 * 	Update the PrintFormat Header lines with Reference to Child Print Format.
 	 * 	@param Header_ID AD_PrintFormat_ID for Header
-	 * 	@param Line_ID AD_PrintFormat_ID for Line
+	 * 	@param Line_ID AD_PrintFormat_ID for Child Print Format
 	 *  @param trxName
 	 */
 	static private void updatePrintFormatHeader (int Header_ID, int Line_ID, String trxName)

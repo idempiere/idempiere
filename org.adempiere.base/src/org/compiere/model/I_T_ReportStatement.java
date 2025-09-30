@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_ReportStatement
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_T_ReportStatement 
 {
@@ -54,6 +54,7 @@ public interface I_T_ReportStatement
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name AmtAcctCr */
@@ -126,6 +127,7 @@ public interface I_T_ReportStatement
 	/** Get Accounting Fact	  */
 	public int getFact_Acct_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException;
 
     /** Column name LevelNo */

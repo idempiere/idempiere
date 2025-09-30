@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.compiere.util.Ini;
 import org.compiere.util.Util;
@@ -31,6 +32,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.runtime.ServiceComponentRuntime;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
+import org.osgi.util.promise.Promise;
 
 /**
  * Service listener to block the loading of OSGi component. <br/>
@@ -43,6 +45,10 @@ public class ComponentBlackListService implements ServiceListener {
 	private ServiceComponentRuntime scrService = null;
 	private List<String> blackListComponentNames = null;
 	
+	private ConcurrentLinkedQueue<ComponentDescriptionDTO> disableQueue = new ConcurrentLinkedQueue<>();
+	
+	private static ComponentBlackListService instance = null;
+	
 	protected ComponentBlackListService(BundleContext context) {
 		ServiceReference<ServiceComponentRuntime> ref = context.getServiceReference(ServiceComponentRuntime.class);
 		scrService = context.getService(ref);
@@ -52,39 +58,34 @@ public class ComponentBlackListService implements ServiceListener {
 			disableComponents();
 		}
 		context.addServiceListener(this);
+		instance = this;
 	}
 	
 	public void stop(BundleContext context) {
 		scrService = null;
 		blackListComponentNames = null;
-		context.removeServiceListener(this);		
+		context.removeServiceListener(this);
+		instance = null;
 	}
 	
 	private void retrieveBlacklistCandidates() {
 		String path = Ini.getAdempiereHome();
 		File file = new File(path, "components.blacklist");
 		if (file.exists()) {
-			BufferedReader br = null;
-			try {
-				FileReader reader = new FileReader(file);
-				br = new BufferedReader(reader);
+			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 				String s = null;
 				do {
 					s = br.readLine();
-					if (!Util.isEmpty(s)) {
-						blackListComponentNames.add(s.trim());
+					if (s != null)
+						s = s.trim();
+					if (!Util.isEmpty(s) && !s.startsWith("#")) {
+						blackListComponentNames.add(s);
 					}
 				} while (s != null);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-			} finally {
-				if (br != null) {
-					try {
-						br.close();
-					} catch (IOException e) {}
-				}
 			}
 		}
 		
@@ -95,7 +96,7 @@ public class ComponentBlackListService implements ServiceListener {
 		Collection<ComponentDescriptionDTO> comps = scrService.getComponentDescriptionDTOs();
 		for (ComponentDescriptionDTO comp : comps) {
 			if (blackListComponentNames.contains(comp.name)) {
-				scrService.disableComponent(comp);
+				disableComponent(comp);
 			}
 		}
 	}
@@ -105,10 +106,27 @@ public class ComponentBlackListService implements ServiceListener {
 		Collection<ComponentDescriptionDTO> comps = scrService.getComponentDescriptionDTOs();
 		for (ComponentDescriptionDTO comp : comps) {
 			if (comp.name.equals(componentName)) {
-				scrService.disableComponent(comp);
+				disableComponent(comp);
 				break;
 			}
 		}
+	}
+
+	private void disableComponent(ComponentDescriptionDTO comp) {
+		Promise<Void> disablePromise = scrService.disableComponent(comp);
+		disablePromise.then(
+            (resolved) -> {
+                System.out.println("Component " + comp.name + " has been successfully disabled.");
+                if (!disableQueue.contains(comp)) {
+	                disableQueue.add(comp);
+                }
+                return null;
+            },
+            failed -> {
+                System.err.println("Failed to disable component " + comp.name);
+                failed.getFailure().printStackTrace();
+            }
+        );
 	}
 	
 	/* (non-Javadoc)
@@ -120,13 +138,40 @@ public class ComponentBlackListService implements ServiceListener {
 			if (scrService != null && !blackListComponentNames.isEmpty()) {
 				ServiceReference<?> ref = event.getServiceReference();
 				String name = (String) ref.getProperty(ComponentConstants.COMPONENT_NAME);
-				if (!Util.isEmpty(name)) {
-					if (blackListComponentNames.contains(name)) {
-						disableComponent(name);
+				Object objectClassProperty = ref.getProperty("objectClass");
+				String[] objectClass = null;
+	            if (objectClassProperty instanceof String[]) {
+	                objectClass = (String[]) objectClassProperty;
+	            }
+				if (objectClass != null && objectClass.length > 0
+					&& "org.osgi.service.cm.ConfigurationAdmin".equals(objectClass[0])) {
+					//OSGI configuration admin service might re-enable disabled service component
+					if (!disableQueue.isEmpty()) {
+						disableQueue.forEach( e -> disableComponent(e));
+					}
+				} else {
+					if (!Util.isEmpty(name)) {
+						if (blackListComponentNames.contains(name)) {
+							disableComponent(name);
+						}
 					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Get the component names that have been disabled
+	 * @return array of component names that have been disabled
+	 */
+	public static String[] getBlackListComponentNames() {
+		ComponentBlackListService singleton = ComponentBlackListService.instance;
+		if (singleton == null)
+			return new String[0];
+		List<String> names = new ArrayList<String>();
+		if (!singleton.disableQueue.isEmpty()) {
+			singleton.disableQueue.forEach( e -> names.add(e.name));
+		}
+		return names.toArray(new String[names.size()]);
+	}
 }

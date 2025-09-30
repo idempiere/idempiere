@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Window
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Window")
 public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Window (Properties ctx, int AD_Window_ID, String trxName)
@@ -137,6 +137,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Color getAD_Color() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Color)MTable.get(getCtx(), org.compiere.model.I_AD_Color.Table_ID)
@@ -165,6 +166,7 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
@@ -428,33 +430,6 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 		return (String)get_Value(COLUMNNAME_TitleLogic);
 	}
 
-	/** WindowType AD_Reference_ID=108 */
-	public static final int WINDOWTYPE_AD_Reference_ID=108;
-	/** Maintain = M */
-	public static final String WINDOWTYPE_Maintain = "M";
-	/** Query Only = Q */
-	public static final String WINDOWTYPE_QueryOnly = "Q";
-	/** Single Record = S */
-	public static final String WINDOWTYPE_SingleRecord = "S";
-	/** Transaction = T */
-	public static final String WINDOWTYPE_Transaction = "T";
-	/** Set Window Type.
-		@param WindowType Type or classification of a Window
-	*/
-	public void setWindowType (String WindowType)
-	{
-
-		set_Value (COLUMNNAME_WindowType, WindowType);
-	}
-
-	/** Get Window Type.
-		@return Type or classification of a Window
-	  */
-	public String getWindowType()
-	{
-		return (String)get_Value(COLUMNNAME_WindowType);
-	}
-
 	/** Set Window Height.
 		@param WinHeight Window Height
 	*/
@@ -489,5 +464,32 @@ public class X_AD_Window extends PO implements I_AD_Window, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** WindowType AD_Reference_ID=108 */
+	public static final int WINDOWTYPE_AD_Reference_ID=108;
+	/** Maintain = M */
+	public static final String WINDOWTYPE_Maintain = "M";
+	/** Query Only = Q */
+	public static final String WINDOWTYPE_QueryOnly = "Q";
+	/** Single Record = S */
+	public static final String WINDOWTYPE_SingleRecord = "S";
+	/** Transaction = T */
+	public static final String WINDOWTYPE_Transaction = "T";
+	/** Set Window Type.
+		@param WindowType Type or classification of a Window
+	*/
+	public void setWindowType (String WindowType)
+	{
+
+		set_Value (COLUMNNAME_WindowType, WindowType);
+	}
+
+	/** Get Window Type.
+		@return Type or classification of a Window
+	  */
+	public String getWindowType()
+	{
+		return (String)get_Value(COLUMNNAME_WindowType);
 	}
 }

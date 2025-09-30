@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance_Para
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_PInstance_Para 
 {
@@ -75,6 +75,7 @@ public interface I_AD_PInstance_Para
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name AD_PInstance_Para_UU */
@@ -149,15 +150,6 @@ public interface I_AD_PInstance_Para
 	  * Indicates if a chosen multiple component value must be negate
 	  */
 	public boolean isNotClause();
-
-    /** Column name ParameterName */
-    public static final String COLUMNNAME_ParameterName = "ParameterName";
-
-	/** Set Parameter Name	  */
-	public void setParameterName (String ParameterName);
-
-	/** Get Parameter Name	  */
-	public String getParameterName();
 
     /** Column name P_Date */
     public static final String COLUMNNAME_P_Date = "P_Date";
@@ -236,6 +228,15 @@ public interface I_AD_PInstance_Para
 	  * Process Parameter
 	  */
 	public String getP_String_To();
+
+    /** Column name ParameterName */
+    public static final String COLUMNNAME_ParameterName = "ParameterName";
+
+	/** Set Parameter Name	  */
+	public void setParameterName (String ParameterName);
+
+	/** Get Parameter Name	  */
+	public String getParameterName();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

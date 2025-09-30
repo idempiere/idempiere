@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueProject
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueProject")
 public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_IssueProject (Properties ctx, int R_IssueProject_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -137,6 +138,7 @@ public class X_R_IssueProject extends PO implements I_R_IssueProject, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)

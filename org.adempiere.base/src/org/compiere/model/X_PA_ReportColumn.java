@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumn
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportColumn")
 public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
@@ -70,8 +70,8 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 			setIsPrinted (true);
 // Y
 			setName (null);
-			setPA_ReportColumn_ID (0);
 			setPA_ReportColumnSet_ID (0);
+			setPA_ReportColumn_ID (0);
 			setPostingType (null);
 // A
 			setSeqNo (0);
@@ -114,8 +114,8 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 			setIsPrinted (true);
 // Y
 			setName (null);
-			setPA_ReportColumn_ID (0);
 			setPA_ReportColumnSet_ID (0);
+			setPA_ReportColumn_ID (0);
 			setPostingType (null);
 // A
 			setSeqNo (0);
@@ -158,8 +158,8 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 			setIsPrinted (true);
 // Y
 			setName (null);
-			setPA_ReportColumn_ID (0);
 			setPA_ReportColumnSet_ID (0);
+			setPA_ReportColumn_ID (0);
 			setPostingType (null);
 // A
 			setSeqNo (0);
@@ -202,8 +202,8 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 			setIsPrinted (true);
 // Y
 			setName (null);
-			setPA_ReportColumn_ID (0);
 			setPA_ReportColumnSet_ID (0);
+			setPA_ReportColumn_ID (0);
 			setPostingType (null);
 // A
 			setSeqNo (0);
@@ -261,6 +261,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -284,6 +285,209 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
+
+	/** Set Campaign.
+		@param C_Campaign_ID Marketing Campaign
+	*/
+	public void setC_Campaign_ID (int C_Campaign_ID)
+	{
+		if (C_Campaign_ID < 1)
+			set_Value (COLUMNNAME_C_Campaign_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
+	}
+
+	/** Get Campaign.
+		@return Marketing Campaign
+	  */
+	public int getC_Campaign_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
+
+	/** Set Currency.
+		@param C_Currency_ID The Currency for this record
+	*/
+	public void setC_Currency_ID (int C_Currency_ID)
+	{
+		if (C_Currency_ID < 1)
+			set_Value (COLUMNNAME_C_Currency_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
+	}
+
+	/** Get Currency.
+		@return The Currency for this record
+	  */
+	public int getC_Currency_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
+	}
+
+	/** Set Account Element.
+		@param C_ElementValue_ID Account Element
+	*/
+	public void setC_ElementValue_ID (int C_ElementValue_ID)
+	{
+		if (C_ElementValue_ID < 1)
+			set_Value (COLUMNNAME_C_ElementValue_ID, null);
+		else
+			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
+	}
+
+	/** Get Account Element.
+		@return Account Element
+	  */
+	public int getC_ElementValue_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_Location getC_Location() throws RuntimeException
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
+
+	/** Set Address.
+		@param C_Location_ID Location or Address
+	*/
+	public void setC_Location_ID (int C_Location_ID)
+	{
+		if (C_Location_ID < 1)
+			set_Value (COLUMNNAME_C_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
+	}
+
+	/** Get Address.
+		@return Location or Address
+	  */
+	public int getC_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
+
+	/** Set Project.
+		@param C_Project_ID Financial Project
+	*/
+	public void setC_Project_ID (int C_Project_ID)
+	{
+		if (C_Project_ID < 1)
+			set_Value (COLUMNNAME_C_Project_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+	}
+
+	/** Get Project.
+		@return Financial Project
+	  */
+	public int getC_Project_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
+			.getPO(getC_SalesRegion_ID(), get_TrxName());
+	}
+
+	/** Set Sales Region.
+		@param C_SalesRegion_ID Sales coverage region
+	*/
+	public void setC_SalesRegion_ID (int C_SalesRegion_ID)
+	{
+		if (C_SalesRegion_ID < 1)
+			set_Value (COLUMNNAME_C_SalesRegion_ID, null);
+		else
+			set_Value (COLUMNNAME_C_SalesRegion_ID, Integer.valueOf(C_SalesRegion_ID));
+	}
+
+	/** Get Sales Region.
+		@return Sales coverage region
+	  */
+	public int getC_SalesRegion_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesRegion_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -315,146 +519,6 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return (String)get_Value(COLUMNNAME_CalculationType);
 	}
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
-			.getPO(getC_Campaign_ID(), get_TrxName());
-	}
-
-	/** Set Campaign.
-		@param C_Campaign_ID Marketing Campaign
-	*/
-	public void setC_Campaign_ID (int C_Campaign_ID)
-	{
-		if (C_Campaign_ID < 1)
-			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
-	}
-
-	/** Get Campaign.
-		@return Marketing Campaign
-	  */
-	public int getC_Campaign_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
-			.getPO(getC_Currency_ID(), get_TrxName());
-	}
-
-	/** Set Currency.
-		@param C_Currency_ID The Currency for this record
-	*/
-	public void setC_Currency_ID (int C_Currency_ID)
-	{
-		if (C_Currency_ID < 1)
-			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
-	}
-
-	/** Get Currency.
-		@return The Currency for this record
-	  */
-	public int getC_Currency_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
-			.getPO(getC_ElementValue_ID(), get_TrxName());
-	}
-
-	/** Set Account Element.
-		@param C_ElementValue_ID Account Element
-	*/
-	public void setC_ElementValue_ID (int C_ElementValue_ID)
-	{
-		if (C_ElementValue_ID < 1)
-			set_Value (COLUMNNAME_C_ElementValue_ID, null);
-		else
-			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
-	}
-
-	/** Get Account Element.
-		@return Account Element
-	  */
-	public int getC_ElementValue_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_Location getC_Location() throws RuntimeException
-	{
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
-			.getPO(getC_Location_ID(), get_TrxName());
-	}
-
-	/** Set Address.
-		@param C_Location_ID Location or Address
-	*/
-	public void setC_Location_ID (int C_Location_ID)
-	{
-		if (C_Location_ID < 1)
-			set_Value (COLUMNNAME_C_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
-	}
-
-	/** Get Address.
-		@return Location or Address
-	  */
-	public int getC_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** ColumnType AD_Reference_ID=237 */
 	public static final int COLUMNTYPE_AD_Reference_ID=237;
 	/** Calculation = C */
@@ -477,62 +541,6 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public String getColumnType()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnType);
-	}
-
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
-			.getPO(getC_Project_ID(), get_TrxName());
-	}
-
-	/** Set Project.
-		@param C_Project_ID Financial Project
-	*/
-	public void setC_Project_ID (int C_Project_ID)
-	{
-		if (C_Project_ID < 1)
-			set_Value (COLUMNNAME_C_Project_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
-	}
-
-	/** Get Project.
-		@return Financial Project
-	  */
-	public int getC_Project_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
-			.getPO(getC_SalesRegion_ID(), get_TrxName());
-	}
-
-	/** Set Sales Region.
-		@param C_SalesRegion_ID Sales coverage region
-	*/
-	public void setC_SalesRegion_ID (int C_SalesRegion_ID)
-	{
-		if (C_SalesRegion_ID < 1)
-			set_Value (COLUMNNAME_C_SalesRegion_ID, null);
-		else
-			set_Value (COLUMNNAME_C_SalesRegion_ID, Integer.valueOf(C_SalesRegion_ID));
-	}
-
-	/** Get Sales Region.
-		@return Sales coverage region
-	  */
-	public int getC_SalesRegion_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesRegion_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** CurrencyType AD_Reference_ID=238 */
@@ -628,10 +636,10 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 
 	/** Factor AD_Reference_ID=53285 */
 	public static final int FACTOR_AD_Reference_ID=53285;
-	/** Thousand = k */
-	public static final String FACTOR_Thousand = "k";
 	/** Million = M */
 	public static final String FACTOR_Million = "M";
+	/** Thousand = k */
+	public static final String FACTOR_Thousand = "k";
 	/** Set Factor.
 		@param Factor Scaling factor.
 	*/
@@ -665,6 +673,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return (String)get_Value(COLUMNNAME_FormatPattern);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)
@@ -1038,6 +1047,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -1109,6 +1119,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumn getOper_1() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ReportColumn)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumn.Table_ID)
@@ -1137,6 +1148,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumn getOper_2() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ReportColumn)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumn.Table_ID)
@@ -1261,28 +1273,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return (String)get_Value(COLUMNNAME_PAPeriodType);
 	}
 
-	/** Set Report Column.
-		@param PA_ReportColumn_ID Column in Report
-	*/
-	public void setPA_ReportColumn_ID (int PA_ReportColumn_ID)
-	{
-		if (PA_ReportColumn_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PA_ReportColumn_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PA_ReportColumn_ID, Integer.valueOf(PA_ReportColumn_ID));
-	}
-
-	/** Get Report Column.
-		@return Column in Report
-	  */
-	public int getPA_ReportColumn_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportColumn_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_ID)
@@ -1306,6 +1297,28 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public int getPA_ReportColumnSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportColumnSet_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Report Column.
+		@param PA_ReportColumn_ID Column in Report
+	*/
+	public void setPA_ReportColumn_ID (int PA_ReportColumn_ID)
+	{
+		if (PA_ReportColumn_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PA_ReportColumn_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PA_ReportColumn_ID, Integer.valueOf(PA_ReportColumn_ID));
+	}
+
+	/** Get Report Column.
+		@return Column in Report
+	  */
+	public int getPA_ReportColumn_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportColumn_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

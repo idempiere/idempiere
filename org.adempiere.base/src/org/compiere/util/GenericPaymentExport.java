@@ -97,10 +97,8 @@ public class GenericPaymentExport implements PaymentExport
 		char x = '"';      //  ease
 		int noLines = 0;
 		StringBuilder line = null;
-		try
-		{
-			FileWriter fw = new FileWriter(file);
-
+		try (FileWriter fw = new FileWriter(file);)
+		{			
 			//  write header
 			line = new StringBuilder();
 			line.append(x).append("Value").append(x).append(",")
@@ -165,7 +163,6 @@ public class GenericPaymentExport implements PaymentExport
 			}   //  write line
 
 			fw.flush();
-			fw.close();
 		}
 		catch (Exception e)
 		{
@@ -178,7 +175,7 @@ public class GenericPaymentExport implements PaymentExport
 	}   //  exportToFile
 
 	/**
-	 *  Get Customer/Vendor Info.
+	 *  Get Customer/Vendor Info.<br/>
 	 *  Based on BP_ static variables.
 	 *  @param C_BPartner_ID BPartner
 	 *  @return info array

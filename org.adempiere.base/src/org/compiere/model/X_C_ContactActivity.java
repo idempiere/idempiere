@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ContactActivity
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_ContactActivity")
 public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_ContactActivity (Properties ctx, int C_ContactActivity_ID, String trxName)
@@ -118,6 +118,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -183,6 +184,34 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 		return (String)get_Value(COLUMNNAME_C_ContactActivity_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_ID)
+			.getPO(getC_Opportunity_ID(), get_TrxName());
+	}
+
+	/** Set Sales Opportunity.
+		@param C_Opportunity_ID Sales Opportunity
+	*/
+	public void setC_Opportunity_ID (int C_Opportunity_ID)
+	{
+		if (C_Opportunity_ID < 1)
+			set_Value (COLUMNNAME_C_Opportunity_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Opportunity_ID, Integer.valueOf(C_Opportunity_ID));
+	}
+
+	/** Get Sales Opportunity.
+		@return Sales Opportunity	  */
+	public int getC_Opportunity_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Opportunity_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Comments.
 		@param Comments Comments or additional information
 	*/
@@ -224,33 +253,6 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	public String getContactActivityType()
 	{
 		return (String)get_Value(COLUMNNAME_ContactActivityType);
-	}
-
-	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_ID)
-			.getPO(getC_Opportunity_ID(), get_TrxName());
-	}
-
-	/** Set Sales Opportunity.
-		@param C_Opportunity_ID Sales Opportunity
-	*/
-	public void setC_Opportunity_ID (int C_Opportunity_ID)
-	{
-		if (C_Opportunity_ID < 1)
-			set_Value (COLUMNNAME_C_Opportunity_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Opportunity_ID, Integer.valueOf(C_Opportunity_ID));
-	}
-
-	/** Get Sales Opportunity.
-		@return Sales Opportunity	  */
-	public int getC_Opportunity_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Opportunity_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Description.
@@ -316,6 +318,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

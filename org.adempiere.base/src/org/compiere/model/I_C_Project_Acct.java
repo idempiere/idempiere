@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Project_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_Project_Acct 
 {
@@ -75,6 +75,7 @@ public interface I_C_Project_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Project_Acct_UU */
@@ -99,6 +100,7 @@ public interface I_C_Project_Acct
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
@@ -143,6 +145,7 @@ public interface I_C_Project_Acct
 	  */
 	public int getPJ_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException;
 
     /** Column name PJ_WIP_Acct */
@@ -158,6 +161,7 @@ public interface I_C_Project_Acct
 	  */
 	public int getPJ_WIP_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException;
 
     /** Column name Updated */

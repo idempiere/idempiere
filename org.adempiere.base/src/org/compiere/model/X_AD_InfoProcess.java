@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoProcess
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoProcess")
 public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -133,6 +133,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getAD_InfoColumn() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
@@ -197,6 +198,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_InfoProcess_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
@@ -225,6 +227,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)

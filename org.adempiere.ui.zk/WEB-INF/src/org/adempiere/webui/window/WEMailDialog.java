@@ -37,7 +37,6 @@ import org.adempiere.base.event.IEventTopics;
 import org.adempiere.base.event.ReportSendEMailEventData;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.AttachmentItem;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -55,6 +54,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAttachment;
@@ -93,7 +93,6 @@ import org.zkoss.zul.South;
  *	Send EMail Dialog
  *
  *  @author 	Jorg Janke
- *  @version 	$Id: EMailDialog.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *  
  *  globalqss: integrate phib fixing bug reported here
  *     https://sourceforge.net/p/adempiere/bugs/62/
@@ -181,7 +180,6 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			fMessage.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
 		else
 			fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
-		fMessage.setToolbar("MyToolbar");
 		Map<String,Object> lang = new HashMap<String,Object>();
 		lang.put("language", Language.getLoginLanguage().getAD_Language());
 		fMessage.setConfig(lang);
@@ -191,6 +189,12 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		clearEMailContext(m_WindowNo);
 		sendEvent(m_WindowNo, m_AD_Table_ID, m_Record_ID, m_Record_UU, null, "");
 		setValuesFromContext(m_WindowNo);
+		
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH) || ClientInfo.maxHeight(ClientInfo.SMALL_HEIGHT)) {
+			this.setMaximized(true);
+			this.setSizable(false);
+			this.setMaximizable(false);
+		}
 	}
 
 	/**
@@ -304,6 +308,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		lSubject.setValue(Msg.getMsg(Env.getCtx(), "Subject") + ":");
 		lAttachment.setValue(Msg.getMsg(Env.getCtx(), "Attachment") + ":");
 		fFrom.setReadonly(true);
+		
 		isAcknowledgmentReceipt.setLabel(Msg.getMsg(Env.getCtx(), "RequestReadReceipt"));
 		//				
 		Grid grid = new Grid();
@@ -407,19 +412,17 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		
 		Button btn = new Button();
 		if (ThemeManager.isUseFontIconForImage())
-			btn.setIconSclass("z-icon-Attachment");
+			btn.setIconSclass(Icon.getIconSclass(Icon.ATTACHMENT));
 		else
 			btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload(AdempiereWebUI.getUploadSetting());
 		btn.addEventListener(Events.ON_UPLOAD, this);
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
 		confirmPanel.addComponentsLeft(btn);
-		if (ThemeManager.isUseFontIconForImage())
-			LayoutUtils.addSclass("large-toolbarbutton", btn);
 
 		bAddDefaultMailText = new Button();
 		if(ThemeManager.isUseFontIconForImage())
-			bAddDefaultMailText.setIconSclass("z-icon-GetMail");
+			bAddDefaultMailText.setIconSclass(Icon.getIconSclass(Icon.GET_MAIL));
 		else
 			bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
 		bAddDefaultMailText.addEventListener(Events.ON_CLICK, this);
@@ -953,7 +956,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		MMailText mt = (MMailText) MUser.get(Env.getCtx()).getR_DefaultMailText();
 		if (mt.get_ID() > 0) {
 			mt.setPO(MUser.get(Env.getCtx()));
-			MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID(), null, null);
+			try (MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID(), null, null);) {
 			if (attachment != null) {
 				MAttachmentEntry[] entries = attachment.getEntries();
 				for (MAttachmentEntry entry : entries) {
@@ -970,8 +973,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				}
 			}
 
-			fMessage.setValue(getMessage() + "\n" + embedImgToEmail(mt, attachment));
-			
+			fMessage.setValue(getMessage() + "\n" + embedImgToEmail(mt, attachment));}
 		}
 	}
 
@@ -996,8 +998,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 * @param newUserCc
 	 */
 	public void setUserCc(int newUserCc) {
-		ValueChangeEvent vce = new ValueChangeEvent(fCcUser, fCcUser.getColumnName(), fCc.getValue(), newUserCc);
-		fUser.valueChange(vce);
+		ValueChangeEvent vce = new ValueChangeEvent(fCcUser, fCcUser.getColumnName(), fCcUser.getValue(), newUserCc);
+		fCcUser.valueChange(vce);
 	}
 
 	/**

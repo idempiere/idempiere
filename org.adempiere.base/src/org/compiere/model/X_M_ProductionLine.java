@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionLine")
 public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName)
@@ -46,9 +46,9 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
 // @M_Locator_ID@
-			setMovementQty (Env.ZERO);
 			setM_Product_ID (0);
 			setM_ProductionLine_ID (0);
+			setMovementQty (Env.ZERO);
 			setProcessed (false);
         } */
     }
@@ -64,9 +64,9 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
 // @M_Locator_ID@
-			setMovementQty (Env.ZERO);
 			setM_Product_ID (0);
 			setM_ProductionLine_ID (0);
+			setMovementQty (Env.ZERO);
 			setProcessed (false);
         } */
     }
@@ -82,9 +82,9 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
 // @M_Locator_ID@
-			setMovementQty (Env.ZERO);
 			setM_Product_ID (0);
 			setM_ProductionLine_ID (0);
+			setMovementQty (Env.ZERO);
 			setProcessed (false);
         } */
     }
@@ -100,9 +100,9 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 			setM_AttributeSetInstance_ID (0);
 			setM_Locator_ID (0);
 // @M_Locator_ID@
-			setMovementQty (Env.ZERO);
 			setM_Product_ID (0);
 			setM_ProductionLine_ID (0);
+			setMovementQty (Env.ZERO);
 			setProcessed (false);
         } */
     }
@@ -134,6 +134,62 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Description.
 		@param Description Optional short description of the record
@@ -193,6 +249,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -221,6 +278,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -249,25 +307,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 		return ii.intValue();
 	}
 
-	/** Set Movement Quantity.
-		@param MovementQty Quantity of a product moved.
-	*/
-	public void setMovementQty (BigDecimal MovementQty)
-	{
-		set_Value (COLUMNNAME_MovementQty, MovementQty);
-	}
-
-	/** Get Movement Quantity.
-		@return Quantity of a product moved.
-	  */
-	public BigDecimal getMovementQty()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -295,42 +335,6 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 			 return 0;
 		return ii.intValue();
 	}
-
-	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_ID)
-			.getPO(getM_Production_ID(), get_TrxName());
-	}
-
-	/** Set Production.
-		@param M_Production_ID Plan for producing a product
-	*/
-	public void setM_Production_ID (int M_Production_ID)
-	{
-		if (M_Production_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Production_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Production_ID, Integer.valueOf(M_Production_ID));
-	}
-
-	/** Get Production.
-		@return Plan for producing a product
-	  */
-	public int getM_Production_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Production_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getM_Production_ID()));
-    }
 
 	/** Set Production Line.
 		@param M_ProductionLine_ID Document Line representing a production
@@ -369,6 +373,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 		return (String)get_Value(COLUMNNAME_M_ProductionLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionPlan getM_ProductionPlan() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductionPlan)MTable.get(getCtx(), org.compiere.model.I_M_ProductionPlan.Table_ID)
@@ -395,6 +400,62 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_ID)
+			.getPO(getM_Production_ID(), get_TrxName());
+	}
+
+	/** Set Production.
+		@param M_Production_ID Plan for producing a product
+	*/
+	public void setM_Production_ID (int M_Production_ID)
+	{
+		if (M_Production_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Production_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Production_ID, Integer.valueOf(M_Production_ID));
+	}
+
+	/** Get Production.
+		@return Plan for producing a product
+	  */
+	public int getM_Production_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Production_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getM_Production_ID()));
+    }
+
+	/** Set Movement Quantity.
+		@param MovementQty Quantity of a product moved.
+	*/
+	public void setMovementQty (BigDecimal MovementQty)
+	{
+		set_Value (COLUMNNAME_MovementQty, MovementQty);
+	}
+
+	/** Get Movement Quantity.
+		@return Quantity of a product moved.
+	  */
+	public BigDecimal getMovementQty()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Planned Quantity.

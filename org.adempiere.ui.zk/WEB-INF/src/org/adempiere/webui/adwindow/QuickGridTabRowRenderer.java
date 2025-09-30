@@ -130,7 +130,6 @@ public class QuickGridTabRowRenderer
 	private String						sortOrder;
 
 	/**
-	 *
 	 * @param gridTab
 	 * @param windowNo
 	 */
@@ -185,6 +184,7 @@ public class QuickGridTabRowRenderer
 	}
 
 	/**
+	 * Get column index
 	 * @param field
 	 * @return column index for field, -1 if not found
 	 */
@@ -198,6 +198,7 @@ public class QuickGridTabRowRenderer
 	}
 
 	/**
+	 * Set paging component
 	 * @param paging
 	 */
 	public void setPaging(Paging paging) {
@@ -430,10 +431,10 @@ public class QuickGridTabRowRenderer
 	}
 
 	/**
-	 * Disable Read-only components for while pressing tab button focus goes to
-	 * read-only component.
-	 * Enable Read-only component before display Logic update.
-	 * Add/Remove CSS Class from read-only component
+	 * Disable Read-only components while pressing tab button and focus can goes to
+	 * read-only component.<br/>
+	 * Set component to Read-only before display Logic update.<br/>
+	 * Add/Remove CSS Class from read-only component.
 	 * 
 	 * @param component
 	 * @param isDisable
@@ -589,7 +590,7 @@ public class QuickGridTabRowRenderer
 		else
 		{
 			if (zclass.contains(CSS_READ_ONLY_COMPONENT))
-				zclass.replaceAll(CSS_READ_ONLY_COMPONENT, "");
+				zclass.replace(CSS_READ_ONLY_COMPONENT, "");
 		}
 		return zclass;
 	}
@@ -671,18 +672,16 @@ public class QuickGridTabRowRenderer
 		}
 
 		int pgIndex = row >= 0 ? row % paging.getPageSize() : 0;
-		if (row != currentRowIndex || pgIndex != currentRowIndex) {
-			if (currentRow != null)
-				currentRow.setStyle(null);
-			if (grid.getRows().getChildren().size() <= 0) {
-				currentCell = null;
-				return;
-			}
-			gridTab.setCurrentRow(pgIndex + paging.getActivePage() * paging.getPageSize());
-			currentRow = ((Row) grid.getRows().getChildren().get(pgIndex));
-			currentRowIndex = gridTab.getCurrentRow();
-			currentRow.setStyle(CURRENT_ROW_STYLE);
+		if (currentRow != null)
+			LayoutUtils.removeSclass("current-row", currentRow);
+		if (grid.getRows().getChildren().size() <= 0) {
+			currentCell = null;
+			return;
 		}
+		gridTab.setCurrentRow(pgIndex + paging.getActivePage() * paging.getPageSize());
+		currentRow = ((Row) grid.getRows().getChildren().get(pgIndex));
+		currentRowIndex = gridTab.getCurrentRow();
+		LayoutUtils.addSclass("current-row", currentRow);
 		
 		setCurrentRow(currentRow);
 		
@@ -774,7 +773,7 @@ public class QuickGridTabRowRenderer
 	{
 		int pgIndex = row >= 0 ? row % paging.getPageSize() : 0;
 		currentRow = ((Row) grid.getRows().getChildren().get(pgIndex));
-		currentRow.setStyle(QuickGridTabRowRenderer.CURRENT_ROW_STYLE);
+		LayoutUtils.addSclass("current-row", currentRow);
 		setCurrentRow(currentRow);
 	}
 

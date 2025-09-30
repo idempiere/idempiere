@@ -233,14 +233,14 @@ public class CreateTable extends SvrProcess {
 		}
 
 		String uucolName = PO.getUUIDColumnName(p_tableName);
-		M_Element elementUU = M_Element.get(getCtx(), p_tableName + "_UU");
+		M_Element elementUU = M_Element.get(getCtx(), uucolName);
 		if (elementUU == null) { // Create Element <TableName> + _UU
 			elementUU = new M_Element(getCtx(), uucolName, p_entityType, get_TrxName());
 			elementUU.saveEx();
 		}
 		if (createColumn(table, elementUU.getColumnName()) > 0) {
 			// UUID Index and Constraint
-			MTableIndex tiuu = new MTableIndex(table, table.getTableName() + "_uu_idx");
+			MTableIndex tiuu = new MTableIndex(table, MTable.getUUIDIndexName(table.getTableName()));
 			tiuu.setIsCreateConstraint(true);
 			tiuu.setIsUnique(true);
 			tiuu.setIsKey(table.isUUIDKeyTable());
@@ -323,12 +323,24 @@ public class CreateTable extends SvrProcess {
 			else
 				colElementID = createColumn(tableTrl, elementUU.getColumnName()); // <TableName>_UU (UUID of parent table)
 
-			M_Element elementTrlUU = M_Element.get(getCtx(), tableTrl.getTableName() + "_UU");
+			String uuTrlcolName = PO.getUUIDColumnName(tableTrl.getTableName());
+			M_Element elementTrlUU = M_Element.get(getCtx(), uuTrlcolName);
 			if (elementTrlUU == null) {
-				elementTrlUU = new M_Element(getCtx(), tableTrl.getTableName() + "_UU", p_entityType, get_TrxName());
+				elementTrlUU = new M_Element(getCtx(), uuTrlcolName, p_entityType, get_TrxName());
 				elementTrlUU.saveEx();
 			}
-			createColumn(tableTrl, elementTrlUU.getColumnName()); // <TableName>_Trl_UU
+			if (createColumn(tableTrl, elementTrlUU.getColumnName()) > 0) {
+				// UUID Index and Constraint
+				MTableIndex tiuutrl = new MTableIndex(tableTrl, MTable.getUUIDIndexName(tableTrl.getTableName()));
+				tiuutrl.setIsCreateConstraint(true);
+				tiuutrl.setIsUnique(true);
+				tiuutrl.setIsKey(tableTrl.isUUIDKeyTable());
+				tiuutrl.saveEx();
+
+				MColumn uuTrlColumn = getColumn(tableTrl, uuTrlcolName);
+				MIndexColumn icuuTrl = new MIndexColumn(tiuutrl, uuTrlColumn, 10);
+				icuuTrl.saveEx();
+			}
 
 			int colLanguageID = createColumn(tableTrl, "AD_Language"); 
 			createColumn(tableTrl, "IsTranslated"); 
@@ -430,6 +442,7 @@ public class CreateTable extends SvrProcess {
 	 * Create a column if it doesn't exist
 	 * @param table
 	 * @param columnName
+	 * @return AD_Column_ID just column is created, if the column already exists return -1
 	 */
 	private int createColumn(MTable table, String columnName) {
 		MColumn columnThatExists = getColumn(table, columnName);

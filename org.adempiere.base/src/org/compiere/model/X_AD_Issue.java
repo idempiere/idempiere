@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Issue
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Issue")
 public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Issue (Properties ctx, int AD_Issue_ID, String trxName)
@@ -153,34 +153,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
       return sb.toString();
     }
 
-	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-	{
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
-			.getPO(getA_Asset_ID(), get_TrxName());
-	}
-
-	/** Set Asset.
-		@param A_Asset_ID Asset used internally or by customers
-	*/
-	public void setA_Asset_ID (int A_Asset_ID)
-	{
-		if (A_Asset_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
-	}
-
-	/** Get Asset.
-		@return Asset used internally or by customers
-	  */
-	public int getA_Asset_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
@@ -246,6 +219,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Issue_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -274,6 +248,7 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -302,6 +277,35 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
+
+	/** Set Asset.
+		@param A_Asset_ID Asset used internally or by customers
+	*/
+	public void setA_Asset_ID (int A_Asset_ID)
+	{
+		if (A_Asset_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
+	}
+
+	/** Get Asset.
+		@return Asset used internally or by customers
+	  */
+	public int getA_Asset_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Comments.
 		@param Comments Comments or additional information
 	*/
@@ -318,22 +322,6 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
-	/** Set Database.
-		@param DatabaseInfo Database Information
-	*/
-	public void setDatabaseInfo (String DatabaseInfo)
-	{
-		set_ValueNoCheck (COLUMNNAME_DatabaseInfo, DatabaseInfo);
-	}
-
-	/** Get Database.
-		@return Database Information
-	  */
-	public String getDatabaseInfo()
-	{
-		return (String)get_Value(COLUMNNAME_DatabaseInfo);
-	}
-
 	/** Set DB Address.
 		@param DBAddress JDBC URL of the database server
 	*/
@@ -348,6 +336,22 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	public String getDBAddress()
 	{
 		return (String)get_Value(COLUMNNAME_DBAddress);
+	}
+
+	/** Set Database.
+		@param DatabaseInfo Database Information
+	*/
+	public void setDatabaseInfo (String DatabaseInfo)
+	{
+		set_ValueNoCheck (COLUMNNAME_DatabaseInfo, DatabaseInfo);
+	}
+
+	/** Get Database.
+		@return Database Information
+	  */
+	public String getDatabaseInfo()
+	{
+		return (String)get_Value(COLUMNNAME_DatabaseInfo);
 	}
 
 	/** Set Error Trace.
@@ -387,6 +391,29 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	public String getIsReproducible()
 	{
 		return (String)get_Value(COLUMNNAME_IsReproducible);
+	}
+
+	/** IsVanillaSystem AD_Reference_ID=319 */
+	public static final int ISVANILLASYSTEM_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISVANILLASYSTEM_No = "N";
+	/** Yes = Y */
+	public static final String ISVANILLASYSTEM_Yes = "Y";
+	/** Set Vanilla System.
+		@param IsVanillaSystem The system was NOT compiled from Source - i.e. standard distribution
+	*/
+	public void setIsVanillaSystem (String IsVanillaSystem)
+	{
+
+		set_Value (COLUMNNAME_IsVanillaSystem, IsVanillaSystem);
+	}
+
+	/** Get Vanilla System.
+		@return The system was NOT compiled from Source - i.e. standard distribution
+	  */
+	public String getIsVanillaSystem()
+	{
+		return (String)get_Value(COLUMNNAME_IsVanillaSystem);
 	}
 
 	/** IssueSource AD_Reference_ID=104 */
@@ -449,29 +476,6 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
     {
         return new KeyNamePair(get_ID(), getIssueSummary());
     }
-
-	/** IsVanillaSystem AD_Reference_ID=319 */
-	public static final int ISVANILLASYSTEM_AD_Reference_ID=319;
-	/** No = N */
-	public static final String ISVANILLASYSTEM_No = "N";
-	/** Yes = Y */
-	public static final String ISVANILLASYSTEM_Yes = "Y";
-	/** Set Vanilla System.
-		@param IsVanillaSystem The system was NOT compiled from Source - i.e. standard distribution
-	*/
-	public void setIsVanillaSystem (String IsVanillaSystem)
-	{
-
-		set_Value (COLUMNNAME_IsVanillaSystem, IsVanillaSystem);
-	}
-
-	/** Get Vanilla System.
-		@return The system was NOT compiled from Source - i.e. standard distribution
-	  */
-	public String getIsVanillaSystem()
-	{
-		return (String)get_Value(COLUMNNAME_IsVanillaSystem);
-	}
 
 	/** Set Java Info.
 		@param JavaInfo Java Version Info
@@ -633,6 +637,151 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 		return (String)get_Value(COLUMNNAME_ProfileInfo);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_R_IssueKnown getR_IssueKnown() throws RuntimeException
+	{
+		return (org.compiere.model.I_R_IssueKnown)MTable.get(getCtx(), org.compiere.model.I_R_IssueKnown.Table_ID)
+			.getPO(getR_IssueKnown_ID(), get_TrxName());
+	}
+
+	/** Set Known Issue.
+		@param R_IssueKnown_ID Known Issue
+	*/
+	public void setR_IssueKnown_ID (int R_IssueKnown_ID)
+	{
+		if (R_IssueKnown_ID < 1)
+			set_Value (COLUMNNAME_R_IssueKnown_ID, null);
+		else
+			set_Value (COLUMNNAME_R_IssueKnown_ID, Integer.valueOf(R_IssueKnown_ID));
+	}
+
+	/** Get Known Issue.
+		@return Known Issue
+	  */
+	public int getR_IssueKnown_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueKnown_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_R_IssueProject getR_IssueProject() throws RuntimeException
+	{
+		return (org.compiere.model.I_R_IssueProject)MTable.get(getCtx(), org.compiere.model.I_R_IssueProject.Table_ID)
+			.getPO(getR_IssueProject_ID(), get_TrxName());
+	}
+
+	/** Set Issue Project.
+		@param R_IssueProject_ID Implementation Projects
+	*/
+	public void setR_IssueProject_ID (int R_IssueProject_ID)
+	{
+		if (R_IssueProject_ID < 1)
+			set_Value (COLUMNNAME_R_IssueProject_ID, null);
+		else
+			set_Value (COLUMNNAME_R_IssueProject_ID, Integer.valueOf(R_IssueProject_ID));
+	}
+
+	/** Get Issue Project.
+		@return Implementation Projects
+	  */
+	public int getR_IssueProject_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueProject_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_R_IssueSystem getR_IssueSystem() throws RuntimeException
+	{
+		return (org.compiere.model.I_R_IssueSystem)MTable.get(getCtx(), org.compiere.model.I_R_IssueSystem.Table_ID)
+			.getPO(getR_IssueSystem_ID(), get_TrxName());
+	}
+
+	/** Set Issue System.
+		@param R_IssueSystem_ID System creating the issue
+	*/
+	public void setR_IssueSystem_ID (int R_IssueSystem_ID)
+	{
+		if (R_IssueSystem_ID < 1)
+			set_Value (COLUMNNAME_R_IssueSystem_ID, null);
+		else
+			set_Value (COLUMNNAME_R_IssueSystem_ID, Integer.valueOf(R_IssueSystem_ID));
+	}
+
+	/** Get Issue System.
+		@return System creating the issue
+	  */
+	public int getR_IssueSystem_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueSystem_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_R_IssueUser getR_IssueUser() throws RuntimeException
+	{
+		return (org.compiere.model.I_R_IssueUser)MTable.get(getCtx(), org.compiere.model.I_R_IssueUser.Table_ID)
+			.getPO(getR_IssueUser_ID(), get_TrxName());
+	}
+
+	/** Set Issue User.
+		@param R_IssueUser_ID User who reported issues
+	*/
+	public void setR_IssueUser_ID (int R_IssueUser_ID)
+	{
+		if (R_IssueUser_ID < 1)
+			set_Value (COLUMNNAME_R_IssueUser_ID, null);
+		else
+			set_Value (COLUMNNAME_R_IssueUser_ID, Integer.valueOf(R_IssueUser_ID));
+	}
+
+	/** Get Issue User.
+		@return User who reported issues
+	  */
+	public int getR_IssueUser_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueUser_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
+	{
+		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)
+			.getPO(getR_Request_ID(), get_TrxName());
+	}
+
+	/** Set Request.
+		@param R_Request_ID Request from a Business Partner or Prospect
+	*/
+	public void setR_Request_ID (int R_Request_ID)
+	{
+		if (R_Request_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_R_Request_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_R_Request_ID, Integer.valueOf(R_Request_ID));
+	}
+
+	/** Get Request.
+		@return Request from a Business Partner or Prospect
+	  */
+	public int getR_Request_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_R_Request_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Record ID.
 		@param Record_ID Direct internal record ID
 	*/
@@ -749,146 +898,6 @@ public class X_AD_Issue extends PO implements I_AD_Issue, I_Persistent
 	public String getResponseText()
 	{
 		return (String)get_Value(COLUMNNAME_ResponseText);
-	}
-
-	public org.compiere.model.I_R_IssueKnown getR_IssueKnown() throws RuntimeException
-	{
-		return (org.compiere.model.I_R_IssueKnown)MTable.get(getCtx(), org.compiere.model.I_R_IssueKnown.Table_ID)
-			.getPO(getR_IssueKnown_ID(), get_TrxName());
-	}
-
-	/** Set Known Issue.
-		@param R_IssueKnown_ID Known Issue
-	*/
-	public void setR_IssueKnown_ID (int R_IssueKnown_ID)
-	{
-		if (R_IssueKnown_ID < 1)
-			set_Value (COLUMNNAME_R_IssueKnown_ID, null);
-		else
-			set_Value (COLUMNNAME_R_IssueKnown_ID, Integer.valueOf(R_IssueKnown_ID));
-	}
-
-	/** Get Known Issue.
-		@return Known Issue
-	  */
-	public int getR_IssueKnown_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueKnown_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_R_IssueProject getR_IssueProject() throws RuntimeException
-	{
-		return (org.compiere.model.I_R_IssueProject)MTable.get(getCtx(), org.compiere.model.I_R_IssueProject.Table_ID)
-			.getPO(getR_IssueProject_ID(), get_TrxName());
-	}
-
-	/** Set Issue Project.
-		@param R_IssueProject_ID Implementation Projects
-	*/
-	public void setR_IssueProject_ID (int R_IssueProject_ID)
-	{
-		if (R_IssueProject_ID < 1)
-			set_Value (COLUMNNAME_R_IssueProject_ID, null);
-		else
-			set_Value (COLUMNNAME_R_IssueProject_ID, Integer.valueOf(R_IssueProject_ID));
-	}
-
-	/** Get Issue Project.
-		@return Implementation Projects
-	  */
-	public int getR_IssueProject_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueProject_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_R_IssueSystem getR_IssueSystem() throws RuntimeException
-	{
-		return (org.compiere.model.I_R_IssueSystem)MTable.get(getCtx(), org.compiere.model.I_R_IssueSystem.Table_ID)
-			.getPO(getR_IssueSystem_ID(), get_TrxName());
-	}
-
-	/** Set Issue System.
-		@param R_IssueSystem_ID System creating the issue
-	*/
-	public void setR_IssueSystem_ID (int R_IssueSystem_ID)
-	{
-		if (R_IssueSystem_ID < 1)
-			set_Value (COLUMNNAME_R_IssueSystem_ID, null);
-		else
-			set_Value (COLUMNNAME_R_IssueSystem_ID, Integer.valueOf(R_IssueSystem_ID));
-	}
-
-	/** Get Issue System.
-		@return System creating the issue
-	  */
-	public int getR_IssueSystem_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueSystem_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_R_IssueUser getR_IssueUser() throws RuntimeException
-	{
-		return (org.compiere.model.I_R_IssueUser)MTable.get(getCtx(), org.compiere.model.I_R_IssueUser.Table_ID)
-			.getPO(getR_IssueUser_ID(), get_TrxName());
-	}
-
-	/** Set Issue User.
-		@param R_IssueUser_ID User who reported issues
-	*/
-	public void setR_IssueUser_ID (int R_IssueUser_ID)
-	{
-		if (R_IssueUser_ID < 1)
-			set_Value (COLUMNNAME_R_IssueUser_ID, null);
-		else
-			set_Value (COLUMNNAME_R_IssueUser_ID, Integer.valueOf(R_IssueUser_ID));
-	}
-
-	/** Get Issue User.
-		@return User who reported issues
-	  */
-	public int getR_IssueUser_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueUser_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
-	{
-		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)
-			.getPO(getR_Request_ID(), get_TrxName());
-	}
-
-	/** Set Request.
-		@param R_Request_ID Request from a Business Partner or Prospect
-	*/
-	public void setR_Request_ID (int R_Request_ID)
-	{
-		if (R_Request_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_R_Request_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_R_Request_ID, Integer.valueOf(R_Request_ID));
-	}
-
-	/** Get Request.
-		@return Request from a Business Partner or Prospect
-	  */
-	public int getR_Request_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_R_Request_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Source Class.

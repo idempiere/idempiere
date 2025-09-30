@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PeriodControl
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_PeriodControl")
 public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName)
@@ -161,6 +161,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 		return (String)get_Value(COLUMNNAME_C_PeriodControl_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)

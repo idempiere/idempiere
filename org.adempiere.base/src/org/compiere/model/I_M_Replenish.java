@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Replenish
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_Replenish 
 {
@@ -130,6 +130,7 @@ public interface I_M_Replenish
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -145,6 +146,7 @@ public interface I_M_Replenish
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Replenish_UU */
@@ -155,21 +157,6 @@ public interface I_M_Replenish
 
 	/** Get M_Replenish_UU	  */
 	public String getM_Replenish_UU();
-
-    /** Column name M_Warehouse_ID */
-    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
-
-	/** Set Warehouse.
-	  * Storage Warehouse and Service Point
-	  */
-	public void setM_Warehouse_ID (int M_Warehouse_ID);
-
-	/** Get Warehouse.
-	  * Storage Warehouse and Service Point
-	  */
-	public int getM_Warehouse_ID();
-
-	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name M_WarehouseSource_ID */
     public static final String COLUMNNAME_M_WarehouseSource_ID = "M_WarehouseSource_ID";
@@ -184,7 +171,24 @@ public interface I_M_Replenish
 	  */
 	public int getM_WarehouseSource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
+
+    /** Column name M_Warehouse_ID */
+    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
+
+	/** Set Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public void setM_Warehouse_ID (int M_Warehouse_ID);
+
+	/** Get Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name QtyBatchSize */
     public static final String COLUMNNAME_QtyBatchSize = "QtyBatchSize";

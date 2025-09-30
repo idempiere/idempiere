@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Report
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_Report")
 public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName)
@@ -47,8 +47,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 			setListTrx (false);
 			setName (null);
 			setPA_ReportColumnSet_ID (0);
-			setPA_Report_ID (0);
 			setPA_ReportLineSet_ID (0);
+			setPA_Report_ID (0);
 			setProcessing (false);
         } */
     }
@@ -67,8 +67,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 			setListTrx (false);
 			setName (null);
 			setPA_ReportColumnSet_ID (0);
-			setPA_Report_ID (0);
 			setPA_ReportLineSet_ID (0);
+			setPA_Report_ID (0);
 			setProcessing (false);
         } */
     }
@@ -87,8 +87,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 			setListTrx (false);
 			setName (null);
 			setPA_ReportColumnSet_ID (0);
-			setPA_Report_ID (0);
 			setPA_ReportLineSet_ID (0);
+			setPA_Report_ID (0);
 			setProcessing (false);
         } */
     }
@@ -107,8 +107,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 			setListTrx (false);
 			setName (null);
 			setPA_ReportColumnSet_ID (0);
-			setPA_Report_ID (0);
 			setPA_ReportLineSet_ID (0);
+			setPA_Report_ID (0);
 			setProcessing (false);
         } */
     }
@@ -141,6 +141,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -169,6 +170,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -197,6 +199,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
@@ -265,6 +268,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 		return (String)get_Value(COLUMNNAME_ExcludeAdjustmentPeriods);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getJasperProcess() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -401,6 +405,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_ID)
@@ -429,6 +434,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ReportCube)MTable.get(getCtx(), org.compiere.model.I_PA_ReportCube.Table_ID)
@@ -457,28 +463,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Financial Report.
-		@param PA_Report_ID Financial Report
-	*/
-	public void setPA_Report_ID (int PA_Report_ID)
-	{
-		if (PA_Report_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PA_Report_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PA_Report_ID, Integer.valueOf(PA_Report_ID));
-	}
-
-	/** Get Financial Report.
-		@return Financial Report
-	  */
-	public int getPA_Report_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Report_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_ID)
@@ -501,6 +486,28 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	public int getPA_ReportLineSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLineSet_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Financial Report.
+		@param PA_Report_ID Financial Report
+	*/
+	public void setPA_Report_ID (int PA_Report_ID)
+	{
+		if (PA_Report_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PA_Report_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PA_Report_ID, Integer.valueOf(PA_Report_ID));
+	}
+
+	/** Get Financial Report.
+		@return Financial Report
+	  */
+	public int getPA_Report_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Report_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

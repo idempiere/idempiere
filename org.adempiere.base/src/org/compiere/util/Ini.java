@@ -34,12 +34,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.Adempiere;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.SystemProperties;
 
 /**
- *	Load and Save INI Settings from property file (idempiere.properties).<br/>
- *	Initiated in Adempiere.startup.<br/>
+ *	Load and Save Settings from property file (idempiere.properties).<br/>
+ *	Initiated in {@link Adempiere#startup(boolean)}
  *
  *  @author     Jorg Janke
  *  @version    $Id$
@@ -98,12 +99,7 @@ public final class Ini implements Serializable
 	/** UI Theme			*/
 	public static final String	P_UI_THEME =		"UITheme";
 
-	/** Flat Color UI
-	public static final String	P_UI_FLAT =			"UIFlat";
-	private static final boolean DEFAULT_UI_FLAT =	false;
-	*/
-
-	/** Auto Save			*/
+	/** Auto Commit			*/
 	public static final String  P_A_COMMIT =		"AutoCommit";
 	private static final boolean DEFAULT_A_COMMIT =	true;
 	/** Auto Login			*/
@@ -241,17 +237,30 @@ public final class Ini implements Serializable
 			fos = new FileOutputStream(f);
 			s_prop.store(fos, "Adempiere");
 			fos.flush();
-			fos.close();
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
+			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString(), e);
 			return;
 		}
 		catch (Throwable t)
 		{
-			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
+			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString(), t);
 			return;
+		}
+		finally
+		{
+			if (fos != null)
+			{
+				try
+				{
+					fos.close();
+				}
+				catch (Exception e) 
+				{
+					log.log(Level.SEVERE, "Cannot close Properties to " + fileName + " - " + e.toString(), e);
+				}
+			}
 		}
 		if (log.isLoggable(Level.FINER)) log.finer(fileName);
 	}	//	save
@@ -269,7 +278,7 @@ public final class Ini implements Serializable
 	}	//	loadProperties
 
 	/**
-	 *  Load INI parameters from filename.
+	 *  Load INI parameters from filename.<br/>
 	 *  Logger is on default level (INFO)
 	 *	@param filename to load
 	 *	@return true if first time
@@ -393,7 +402,7 @@ public final class Ini implements Serializable
 	 *	Return File Name of INI file
 	 *  <pre>
 	 *  Examples:
-	 *	    C:\WinNT\Profiles\jjanke\idempiere.properties
+	 *      C:\WinNT\Profiles\jjanke\idempiere.properties
 	 *      D:\idempiere\idempiere.properties
 	 *      idempiere.properties
 	 *  </pre>
@@ -435,6 +444,8 @@ public final class Ini implements Serializable
 		if (s_prop == null)
 			s_prop = new Properties();
 		if (key.equals(P_WARNING) || key.equals(P_WARNING_de))
+			s_prop.setProperty(key, value);
+		else if (key.endsWith(".TraceLevel"))
 			s_prop.setProperty(key, value);
 		else if (!isClient())
 			s_prop.setProperty(key, SecureInterface.CLEARVALUE_START + value + SecureInterface.CLEARVALUE_END);
@@ -505,7 +516,9 @@ public final class Ini implements Serializable
 	/**
 	 * 	Cache Windows
 	 *	@return true if windows are cached
+	 *  @deprecated window is always cache for better performance
 	 */
+	@Deprecated
 	public static boolean isCacheWindow()
 	{
 		return getProperty (P_CACHE_WINDOW).equals("Y");

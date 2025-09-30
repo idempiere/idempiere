@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_BPartner
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_BPartner")
 public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_I_BPartner (Properties ctx, int I_BPartner_ID, String trxName)
@@ -110,6 +110,35 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
+
+	/** Set User/Contact.
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID < 1)
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+	}
+
+	/** Get User/Contact.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Address 1.
 		@param Address1 Address line 1 for this location
 	*/
@@ -142,32 +171,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 		return (String)get_Value(COLUMNNAME_Address2);
 	}
 
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
-			.getPO(getAD_User_ID(), get_TrxName());
-	}
-
-	/** Set User/Contact.
-		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	/** Set BP Contact Greeting.
+		@param BPContactGreeting Greeting for Business Partner Contact
 	*/
-	public void setAD_User_ID (int AD_User_ID)
+	public void setBPContactGreeting (String BPContactGreeting)
 	{
-		if (AD_User_ID < 1)
-			set_Value (COLUMNNAME_AD_User_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+		set_Value (COLUMNNAME_BPContactGreeting, BPContactGreeting);
 	}
 
-	/** Get User/Contact.
-		@return User within the system - Internal or Business Partner Contact
+	/** Get BP Contact Greeting.
+		@return Greeting for Business Partner Contact
 	  */
-	public int getAD_User_ID()
+	public String getBPContactGreeting()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_BPContactGreeting);
 	}
 
 	/** Set Birthday.
@@ -186,78 +203,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_Birthday);
 	}
 
-	/** Set BP Contact Greeting.
-		@param BPContactGreeting Greeting for Business Partner Contact
-	*/
-	public void setBPContactGreeting (String BPContactGreeting)
-	{
-		set_Value (COLUMNNAME_BPContactGreeting, BPContactGreeting);
-	}
-
-	/** Get BP Contact Greeting.
-		@return Greeting for Business Partner Contact
-	  */
-	public String getBPContactGreeting()
-	{
-		return (String)get_Value(COLUMNNAME_BPContactGreeting);
-	}
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());
-	}
-
-	/** Set Partner Location.
-		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
-	*/
-	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
-	{
-		if (C_BPartner_Location_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
-	}
-
-	/** Get Partner Location.
-		@return Identifies the (ship to) address for this Business Partner
-	  */
-	public int getC_BPartner_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
@@ -286,6 +232,65 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
+
+	/** Set Partner Location.
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
+	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
+	{
+		if (C_BPartner_Location_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
+	}
+
+	/** Get Partner Location.
+		@return Identifies the (ship to) address for this Business Partner
+	  */
+	public int getC_BPartner_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
@@ -314,6 +319,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_ID)
@@ -337,6 +343,35 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	public int getC_Greeting_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Greeting_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
+			.getPO(getC_Region_ID(), get_TrxName());
+	}
+
+	/** Set Region.
+		@param C_Region_ID Identifies a geographical Region
+	*/
+	public void setC_Region_ID (int C_Region_ID)
+	{
+		if (C_Region_ID < 1)
+			set_Value (COLUMNNAME_C_Region_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Region_ID, Integer.valueOf(C_Region_ID));
+	}
+
+	/** Get Region.
+		@return Identifies a geographical Region
+	  */
+	public int getC_Region_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -407,7 +442,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set ISO Country Code.
-		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	*/
 	public void setCountryCode (String CountryCode)
 	{
@@ -415,55 +450,11 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Get ISO Country Code.
-		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode()
 	{
 		return (String)get_Value(COLUMNNAME_CountryCode);
-	}
-
-	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
-			.getPO(getC_Region_ID(), get_TrxName());
-	}
-
-	/** Set Region.
-		@param C_Region_ID Identifies a geographical Region
-	*/
-	public void setC_Region_ID (int C_Region_ID)
-	{
-		if (C_Region_ID < 1)
-			set_Value (COLUMNNAME_C_Region_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Region_ID, Integer.valueOf(C_Region_ID));
-	}
-
-	/** Get Region.
-		@return Identifies a geographical Region
-	  */
-	public int getC_Region_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Description.
-		@param Description Optional short description of the record
-	*/
-	public void setDescription (String Description)
-	{
-		set_Value (COLUMNNAME_Description, Description);
-	}
-
-	/** Get Description.
-		@return Optional short description of the record
-	  */
-	public String getDescription()
-	{
-		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set D-U-N-S.
@@ -480,6 +471,22 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	public String getDUNS()
 	{
 		return (String)get_Value(COLUMNNAME_DUNS);
+	}
+
+	/** Set Description.
+		@param Description Optional short description of the record
+	*/
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription()
+	{
+		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set EMail Address.
@@ -863,22 +870,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 		return false;
 	}
 
-	/** Set Region.
-		@param RegionName Name of the Region
-	*/
-	public void setRegionName (String RegionName)
-	{
-		set_Value (COLUMNNAME_RegionName, RegionName);
-	}
-
-	/** Get Region.
-		@return Name of the Region
-	  */
-	public String getRegionName()
-	{
-		return (String)get_Value(COLUMNNAME_RegionName);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_InterestArea)MTable.get(getCtx(), org.compiere.model.I_R_InterestArea.Table_ID)
@@ -905,6 +897,22 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Region.
+		@param RegionName Name of the Region
+	*/
+	public void setRegionName (String RegionName)
+	{
+		set_Value (COLUMNNAME_RegionName, RegionName);
+	}
+
+	/** Get Region.
+		@return Name of the Region
+	  */
+	public String getRegionName()
+	{
+		return (String)get_Value(COLUMNNAME_RegionName);
 	}
 
 	/** Set Tax ID.

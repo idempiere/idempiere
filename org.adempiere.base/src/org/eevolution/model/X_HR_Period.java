@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Period
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_Period")
 public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Period (Properties ctx, int HR_Period_ID, String trxName)
@@ -131,6 +131,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
@@ -159,6 +160,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_ID)
@@ -235,6 +237,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
@@ -298,6 +301,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 		return (String)get_Value(COLUMNNAME_HR_Period_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Year getHR_Year() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Year)MTable.get(getCtx(), org.eevolution.model.I_HR_Year.Table_ID)

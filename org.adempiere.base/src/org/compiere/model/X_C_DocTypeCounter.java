@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocTypeCounter
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_DocTypeCounter")
 public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_DocTypeCounter (Properties ctx, int C_DocTypeCounter_ID, String trxName)
@@ -162,6 +162,7 @@ public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Pers
 		return (String)get_Value(COLUMNNAME_C_DocTypeCounter_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -190,6 +191,7 @@ public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getCounter_C_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)

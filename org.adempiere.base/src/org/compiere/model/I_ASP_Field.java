@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Field
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_ASP_Field 
 {
@@ -62,6 +62,7 @@ public interface I_ASP_Field
 	  */
 	public int getAD_Field_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -113,6 +114,7 @@ public interface I_ASP_Field
 	/** Get ASP Tab	  */
 	public int getASP_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Tab getASP_Tab() throws RuntimeException;
 
     /** Column name Created */

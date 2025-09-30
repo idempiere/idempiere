@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Reval
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Reval")
 public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName)
@@ -226,6 +226,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -314,6 +315,62 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Account Date.

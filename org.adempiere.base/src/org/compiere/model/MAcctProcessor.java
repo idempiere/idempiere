@@ -114,15 +114,11 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		setSupervisor_ID (Supervisor_ID);
 	}	//	MAcctProcessor
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
-		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+		// Calculate DateNextRun for new record or if schedule has change
+		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {			
 			String timeZoneId = null;
 			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {
 				MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());

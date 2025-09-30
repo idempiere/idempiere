@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_CommodityShipment
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_CommodityShipment")
 public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_CommodityShipment (Properties ctx, int M_CommodityShipment_ID, String trxName)
@@ -211,6 +211,7 @@ public class X_M_CommodityShipment extends PO implements I_M_CommodityShipment, 
 		return (String)get_Value(COLUMNNAME_M_CommodityShipment_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

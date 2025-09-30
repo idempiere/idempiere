@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservationLog
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservationLog")
 public class X_M_StorageReservationLog extends PO implements I_M_StorageReservationLog, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_StorageReservationLog (Properties ctx, int M_StorageReservationLog_ID, String trxName)
@@ -142,6 +142,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -170,6 +171,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -275,6 +277,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -303,6 +306,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -368,6 +372,7 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 		return (String)get_Value(COLUMNNAME_M_StorageReservationLog_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)

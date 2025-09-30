@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ViewColumn
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ViewColumn")
 public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ViewColumn (Properties ctx, int AD_ViewColumn_ID, String trxName)
@@ -152,6 +152,7 @@ public class X_AD_ViewColumn extends PO implements I_AD_ViewColumn, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_ViewColumn_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ViewComponent getAD_ViewComponent() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_ViewComponent)MTable.get(getCtx(), org.compiere.model.I_AD_ViewComponent.Table_ID)

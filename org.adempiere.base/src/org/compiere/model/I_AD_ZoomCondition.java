@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ZoomCondition
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_ZoomCondition 
 {
@@ -75,6 +75,7 @@ public interface I_AD_ZoomCondition
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -90,6 +91,7 @@ public interface I_AD_ZoomCondition
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name AD_ZoomCondition_ID */

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept_Category
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_Concept_Category")
 public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName)
@@ -122,6 +122,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getHR_Concept_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

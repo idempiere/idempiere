@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info")
 public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
@@ -159,6 +160,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -223,6 +225,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return (String)get_Value(COLUMNNAME_AD_UserDef_Info_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -251,6 +254,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -366,6 +370,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Concept_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Concept_Acct 
@@ -77,6 +77,7 @@ public interface I_HR_Concept_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
@@ -92,6 +93,7 @@ public interface I_HR_Concept_Acct
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name Created */
@@ -137,6 +139,7 @@ public interface I_HR_Concept_Acct
 	/** Get Payroll Concept	  */
 	public int getHR_Concept_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException;
 
     /** Column name HR_Expense_Acct */
@@ -148,6 +151,7 @@ public interface I_HR_Concept_Acct
 	/** Get Payroll Expense Account	  */
 	public int getHR_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getHR_Expense_A() throws RuntimeException;
 
     /** Column name HR_Revenue_Acct */
@@ -159,6 +163,7 @@ public interface I_HR_Concept_Acct
 	/** Get Payroll Revenue Account	  */
 	public int getHR_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getHR_Revenue_A() throws RuntimeException;
 
     /** Column name IsActive */
@@ -216,6 +221,7 @@ public interface I_HR_Concept_Acct
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -231,5 +237,6 @@ public interface I_HR_Concept_Acct
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUser2() throws RuntimeException;
 }

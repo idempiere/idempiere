@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_LandedCost
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_LandedCost 
 {
@@ -75,6 +75,7 @@ public interface I_C_LandedCost
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_LandedCost_ID */
@@ -154,22 +155,8 @@ public interface I_C_LandedCost
 	  */
 	public int getM_CostElement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
-
-    /** Column name M_InOut_ID */
-    public static final String COLUMNNAME_M_InOut_ID = "M_InOut_ID";
-
-	/** Set Shipment/Receipt.
-	  * Material Shipment Document
-	  */
-	public void setM_InOut_ID (int M_InOut_ID);
-
-	/** Get Shipment/Receipt.
-	  * Material Shipment Document
-	  */
-	public int getM_InOut_ID();
-
-	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
     public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
@@ -184,7 +171,24 @@ public interface I_C_LandedCost
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
+
+    /** Column name M_InOut_ID */
+    public static final String COLUMNNAME_M_InOut_ID = "M_InOut_ID";
+
+	/** Set Shipment/Receipt.
+	  * Material Shipment Document
+	  */
+	public void setM_InOut_ID (int M_InOut_ID);
+
+	/** Get Shipment/Receipt.
+	  * Material Shipment Document
+	  */
+	public int getM_InOut_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -199,6 +203,7 @@ public interface I_C_LandedCost
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Processing */
@@ -209,6 +214,19 @@ public interface I_C_LandedCost
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
+
+    /** Column name Qty */
+    public static final String COLUMNNAME_Qty = "Qty";
+
+	/** Set Quantity.
+	  * Quantity
+	  */
+	public void setQty (BigDecimal Qty);
+
+	/** Get Quantity.
+	  * Quantity
+	  */
+	public BigDecimal getQty();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

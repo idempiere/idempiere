@@ -147,7 +147,7 @@ public class CSVImportAction implements EventListener<Event>
 			winImportFile.setClosable(true);
 			winImportFile.setBorder("normal");
 			winImportFile.setStyle("position:absolute");
-			winImportFile.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "importAction");
+			winImportFile.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "importAction");
 			winImportFile.setSclass("popup-dialog");
 
 			Vbox vb = new Vbox();
@@ -352,7 +352,7 @@ public class CSVImportAction implements EventListener<Event>
 
 			String iMode = (String)importItem.getValue();
 			m_file_istream = theTemplate.validateFile(m_file_istream);
-			File outFile = theCSVImporter.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset,iMode);
+			File outFile = theCSVImporter.fileImport(panel.getActiveGridTab(), childs, m_file_istream, charset, iMode, theTemplate.getSeparatorChar(), theTemplate.getQuoteChar(), null);
 			winImportFile.onClose();
 			winImportFile = null;
 

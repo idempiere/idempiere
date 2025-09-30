@@ -14,7 +14,6 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-
 package org.globalqss.process;
 
 import org.compiere.model.MCashPlan;
@@ -24,7 +23,6 @@ import org.compiere.model.PO;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
@@ -35,9 +33,6 @@ public class CopyFromCashPlan  extends SvrProcess {
 
 	private int p_C_CashPlanSource_ID = 0;
 	private int p_C_CashPlanTarget_ID = 0;
-
-	/**	Logger							*/
-	CLogger log = CLogger.getCLogger (getClass());
 
 	@Override
 	protected void prepare()

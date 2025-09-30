@@ -315,6 +315,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(oLine.getAD_OrgTrx_ID());
 		setUser1_ID(oLine.getUser1_ID());
 		setUser2_ID(oLine.getUser2_ID());
+		setC_CostCenter_ID(oLine.getC_CostCenter_ID());
+		setC_Department_ID(oLine.getC_Department_ID());
 		//
 		setRRAmt(oLine.getRRAmt());
 		setRRStartDate(oLine.getRRStartDate());
@@ -391,6 +393,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(sLine.getAD_OrgTrx_ID());
 		setUser1_ID(sLine.getUser1_ID());
 		setUser2_ID(sLine.getUser2_ID());
+		setC_CostCenter_ID(sLine.getC_CostCenter_ID());
+		setC_Department_ID(sLine.getC_Department_ID());
 	}	//	setShipLine
 
 	/**
@@ -489,7 +493,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	}	//	setPriceActual
 
 	/**
-	 *	Set Tax - requires Warehouse
+	 *	Find and set C_Tax_ID
 	 *	@return true if found
 	 */
 	public boolean setTax()
@@ -500,8 +504,11 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		int M_Warehouse_ID = Env.getContextAsInt(getCtx(), Env.M_WAREHOUSE_ID);
 		//
 		String deliveryViaRule = null;
+		int dropShipLocationId = -1;
 		if (getC_OrderLine_ID() > 0) {
-			deliveryViaRule = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName()).getParent().getDeliveryViaRule();
+			MOrder order = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName()).getParent();
+			deliveryViaRule = order.getDeliveryViaRule();
+			dropShipLocationId = order.getDropShip_Location_ID();
 		} else if (getM_InOutLine_ID() > 0) {
 			deliveryViaRule = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName()).getParent().getDeliveryViaRule();
 		} else if (getParent().getC_Order_ID() > 0) {
@@ -510,7 +517,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		int C_Tax_ID = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
 			getAD_Org_ID(), M_Warehouse_ID,
 			m_C_BPartner_Location_ID,		//	should be bill to
-			m_C_BPartner_Location_ID, m_IsSOTrx, deliveryViaRule, get_TrxName());
+			m_C_BPartner_Location_ID, dropShipLocationId, m_IsSOTrx, deliveryViaRule, get_TrxName());
 		if (C_Tax_ID == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -866,11 +873,6 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		return pl.isTaxIncluded();
 	}	//	isTaxIncluded
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true if save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -881,79 +883,77 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Invoice_ID"));
 			return false;
 		}
-		// Re-set invoice header (need to update m_IsSOTrx flag) - phib [ 1686773 ]
+		// Re-set invoice header (need to update m_IsSOTrx flag)
 		setInvoice(getParent());
 
-	  if (!parentComplete && !isReversal) {  // do not change things when parent is complete
-		//	Charge
-		if (getC_Charge_ID() != 0)
-		{
-			if (getM_Product_ID() != 0)
-				setM_Product_ID(0);
-		}
-		else	//	Set Product Price
-		{
-			if (!m_priceSet
-				&&  Env.ZERO.compareTo(getPriceActual()) == 0
-				&&  Env.ZERO.compareTo(getPriceList()) == 0)
-				setPrice();
-				// IDEMPIERE-1574 Sales Order Line lets Price under the Price Limit when updating
-				//	Check PriceLimit
+		// Do not make changes if parent is complete or this is for reversal
+	    if (!parentComplete && !isReversal) {  			
+			if (getC_Charge_ID() != 0)
+			{
+				// Reset M_Product_ID to 0 if Charge is fill
+				if (getM_Product_ID() != 0)
+					setM_Product_ID(0);
+			}
+			else	
+			{
+				// Set Product Price
+				if (!m_priceSet
+					&&  Env.ZERO.compareTo(getPriceActual()) == 0
+					&&  Env.ZERO.compareTo(getPriceList()) == 0)
+					setPrice();
+				// Enforce PriceLimit
 				boolean enforce = m_IsSOTrx && getParent().getM_PriceList().isEnforcePriceLimit();
 				if (enforce && MRole.getDefault().isOverwritePriceLimit())
 					enforce = false;
-				//	Check Price Limit?
 				if (enforce && getPriceLimit() != Env.ZERO
 				  && getPriceActual().compareTo(getPriceLimit()) < 0)
 				{
 					log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
 					return false;
 				}
-				//
-		}
-
-		//	Set Tax
-		if (getC_Tax_ID() == 0)
-			setTax();
-
-		//	Get Line No
-		if (getLine() == 0)
-		{
-			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM C_InvoiceLine WHERE C_Invoice_ID=?";
-			int ii = DB.getSQLValue (get_TrxName(), sql, getC_Invoice_ID());
-			setLine (ii);
-		}
-		//	UOM
-		if (getC_UOM_ID() == 0)
-		{
-			int C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());
-			if (C_UOM_ID > 0)
-				setC_UOM_ID (C_UOM_ID);
-		}
-		//	Qty Precision
-		if (newRecord || is_ValueChanged("QtyEntered"))
-			setQtyEntered(getQtyEntered());
-		if (newRecord || is_ValueChanged("QtyInvoiced"))
-			setQtyInvoiced(getQtyInvoiced());
-
-		//	Calculations & Rounding
-		setLineNetAmt();
-		// TaxAmt recalculations should be done if the TaxAmt is zero
-		// or this is an Invoice(Customer) - teo_sarca, globalqss [ 1686773 ]
-		if (m_IsSOTrx || getTaxAmt().compareTo(Env.ZERO) == 0)
-			setTaxAmt();
-		//
-		
-		/* Carlos Ruiz - globalqss
-		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
-		 */
-		if (getParent().getC_DocTypeTarget().isChargeOrProductMandatory()) {
-			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && (getPriceEntered().signum() != 0 || getQtyEntered().signum() != 0)) {
-				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
-				return false;
 			}
-		}
-	  }
+	
+			//	Set C_Tax_ID
+			if (getC_Tax_ID() == 0)
+				setTax();
+	
+			//	Set Line No
+			if (getLine() == 0)
+			{
+				String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM C_InvoiceLine WHERE C_Invoice_ID=?";
+				int ii = DB.getSQLValue (get_TrxName(), sql, getC_Invoice_ID());
+				setLine (ii);
+			}
+			//	Set default UOM
+			if (getC_UOM_ID() == 0)
+			{
+				int C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());
+				if (C_UOM_ID > 0)
+					setC_UOM_ID (C_UOM_ID);
+			}
+			//	Enforce Qty Precision (rounding)
+			if (newRecord || is_ValueChanged("QtyEntered"))
+				setQtyEntered(getQtyEntered());
+			if (newRecord || is_ValueChanged("QtyInvoiced"))
+				setQtyInvoiced(getQtyInvoiced());
+	
+			//	Calculations & Rounding
+			setLineNetAmt();
+			// TaxAmt recalculations should be done if the TaxAmt is zero
+			// or this is an Invoice(Customer)
+			if (m_IsSOTrx || getTaxAmt().compareTo(Env.ZERO) == 0)
+				setTaxAmt();
+			
+			/* Carlos Ruiz - globalqss
+			 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
+			 */
+			if (getParent().getC_DocTypeTarget().isChargeOrProductMandatory()) {
+				if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && (getPriceEntered().signum() != 0 || getQtyEntered().signum() != 0)) {
+					log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
+					return false;
+				}
+			}
+	    }
 		
 		return true;
 	}	//	beforeSave
@@ -1013,17 +1013,12 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		return true;
 	}
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return saved
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Re-calculate tax of document
 		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
         MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
 		ITaxProvider calculator = Core.getTaxProvider(provider);
@@ -1032,18 +1027,13 @@ public class MInvoiceLine extends X_C_InvoiceLine
     	return calculator.recalculateTax(provider, this, newRecord);
 	}	//	afterSave
 
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return deleted
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
 		if (!success)
 			return success;
 
-		// reset shipment line invoiced flag
+		// Reset shipment line IsInvoiced flag
 		if ( getM_InOutLine_ID() > 0 )
 		{
 			MInOutLine sLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -1122,8 +1112,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					total = total.add(iol.getBase(lc.getLandedCostDistribution()));
 				}
 				if (total.signum() == 0){
-					msgreturn = new StringBuilder("Total of Base values is 0 - ").append(lc.getLandedCostDistribution());
-					return msgreturn.toString();
+					return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {lc.getLandedCostDistribution()});
 				}	
 				//	Create Allocations
 				for (int i = 0; i < list.size(); i++)
@@ -1169,7 +1158,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				lca.setM_InOutLine_ID(iol.getM_InOutLine_ID());
 				BigDecimal base = iol.getBase(lc.getLandedCostDistribution()); 
 				if (base.signum() == 0)
-					return "Base value is 0 - " + lc.getLandedCostDistribution();
+					return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {lc.getLandedCostDistribution()});
 				lca.setBase(base);
 				lca.setAmt(getLineNetAmt());
 				// MZ Goodwill
@@ -1187,15 +1176,20 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				MLandedCostAllocation lca = new MLandedCostAllocation (this, lc.getM_CostElement_ID());
 				lca.setM_Product_ID(lc.getM_Product_ID());	//	No ASI
 				lca.setAmt(getLineNetAmt());
-				if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
-				{
+				if (lc.getQty().signum() <= 0) {
+					if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
+					{
+						lca.setBase(getLineNetAmt());
+						lca.setQty(getLineNetAmt());
+					}
+					else
+					{
+						lca.setBase(getQtyInvoiced());
+						lca.setQty(getQtyInvoiced());
+					}
+				} else {
 					lca.setBase(getLineNetAmt());
-					lca.setQty(getLineNetAmt());
-				}
-				else
-				{
-					lca.setBase(getQtyInvoiced());
-					lca.setQty(getQtyInvoiced());
+					lca.setQty(lc.getQty());
 				}
 				if (lca.save())
 					return "";
@@ -1257,8 +1251,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			total = total.add(iol.getBase(LandedCostDistribution));
 		}
 		if (total.signum() == 0){
-			msgreturn = new StringBuilder("Total of Base values is 0 - ").append(LandedCostDistribution);
-			return msgreturn.toString();
+			return Msg.getMsg(getCtx(), "BaseValuesTotalZero", new Object[] {LandedCostDistribution});
 		}	
 		//	Create Allocations
 		for (int i = 0; i < list.size(); i++)

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Level
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Level")
 public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_ASP_Level (Properties ctx, int ASP_Level_ID, String trxName)
@@ -149,6 +149,7 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 		return (String)get_Value(COLUMNNAME_ASP_Level_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Module getASP_Module() throws RuntimeException
 	{
 		return (org.compiere.model.I_ASP_Module)MTable.get(getCtx(), org.compiere.model.I_ASP_Module.Table_ID)

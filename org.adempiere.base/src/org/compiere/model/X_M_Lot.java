@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Lot
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Lot")
 public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Lot (Properties ctx, int M_Lot_ID, String trxName)
@@ -174,6 +174,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_LotCtl getM_LotCtl() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_LotCtl)MTable.get(getCtx(), org.compiere.model.I_M_LotCtl.Table_ID)
@@ -239,6 +240,7 @@ public class X_M_Lot extends PO implements I_M_Lot, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Lot_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

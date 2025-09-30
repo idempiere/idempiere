@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.adempiere.webui.desktop;
 
 import java.util.ArrayList;
@@ -28,6 +46,7 @@ import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Tree;
 
 /**
+ * Controller for favourite menu nodes
  * @author hengsin
  * @author Logilite Technologies - IDEMPIERE-3340
  */
@@ -76,13 +95,8 @@ public class FavouriteController
 			vTree.setAD_Org_ID(user.getAD_Org_ID());
 			// Support for System user
 			vTree.set_ValueNoCheck(MTreeFavorite.COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
-			try {
-				PO.setCrossTenantSafe();
-				if (!vTree.save())
-					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FavTreeNotCreate"));
-			} finally {
-				PO.clearCrossTenantSafe();
-			}
+			if (!vTree.saveCrossTenantSafe())
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FavTreeNotCreate"));
 
 			m_AD_Tree_Favorite_ID = vTree.getAD_Tree_Favorite_ID();
 		}
@@ -125,7 +139,7 @@ public class FavouriteController
 	} // getInstance
 
 	/**
-	 * 
+	 * Update favorite node record
 	 * @param add true for add, false for delete
 	 * @param Menu_ID
 	 * @return true if add/delete is successful
@@ -171,7 +185,7 @@ public class FavouriteController
 	} // addNode
 
 	/**
-	 * add tree node to favourites
+	 * Add tree node to favourites
 	 * 
 	 * @param  node
 	 * @return true if successfully added
@@ -199,7 +213,7 @@ public class FavouriteController
 	} // addNode
 
 	/**
-	 * remove node (by node id) from favourites
+	 * Remove node (by node id) from favourites
 	 * 
 	 * @param  nodeId
 	 * @return true if found and remove
@@ -249,7 +263,7 @@ public class FavouriteController
 	} // getFavourites
 
 	/**
-	 * add callback for after add node to favourites
+	 * Add callback for after add node to favourites
 	 * 
 	 * @param callback
 	 */
@@ -259,7 +273,7 @@ public class FavouriteController
 	}
 
 	/**
-	 * add callback for after remove node from favourites
+	 * Add callback for after remove node from favourites
 	 * 
 	 * @param callback
 	 */

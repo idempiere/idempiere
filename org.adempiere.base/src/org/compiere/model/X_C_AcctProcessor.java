@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctProcessor
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctProcessor")
 public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AcctProcessor (Properties ctx, int C_AcctProcessor_ID, String trxName)
@@ -122,6 +122,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_ID)
@@ -149,6 +150,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -214,6 +216,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return (String)get_Value(COLUMNNAME_C_AcctProcessor_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -355,6 +358,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

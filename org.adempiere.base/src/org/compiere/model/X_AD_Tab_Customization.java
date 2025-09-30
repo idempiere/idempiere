@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tab_Customization
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tab_Customization")
 public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -140,6 +140,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 		return (String)get_Value(COLUMNNAME_AD_Tab_Customization_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -168,6 +169,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_RegistrationAttribute
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_RegistrationAttribute 
 {
@@ -75,6 +75,7 @@ public interface I_A_RegistrationAttribute
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -90,6 +91,7 @@ public interface I_A_RegistrationAttribute
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name A_RegistrationAttribute_ID */

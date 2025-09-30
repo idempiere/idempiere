@@ -25,7 +25,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for T_Report
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_Report")
 public class X_T_Report extends PO implements I_T_Report, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_Report (Properties ctx, int T_Report_ID, String trxName)
@@ -115,6 +115,7 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -780,6 +781,7 @@ public class X_T_Report extends PO implements I_T_Report, I_Persistent
         return new ValueNamePair(get_UUID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ReportLine)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLine.Table_ID)

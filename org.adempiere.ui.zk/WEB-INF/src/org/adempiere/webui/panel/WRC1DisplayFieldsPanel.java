@@ -36,7 +36,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 
 /**
- * Panel to select printed print format items 
+ * Wizard panel to select printed print format items 
  */
 public class WRC1DisplayFieldsPanel extends WRCTabPanel implements EventListener<Event>
 {

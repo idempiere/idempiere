@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for QM_Specification
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_QM_Specification 
@@ -77,6 +77,7 @@ public interface I_QM_Specification
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Created */
@@ -134,6 +135,7 @@ public interface I_QM_Specification
 	  */
 	public int getM_AttributeSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -149,6 +151,7 @@ public interface I_QM_Specification
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
@@ -181,6 +184,7 @@ public interface I_QM_Specification
 	  */
 	public int getPP_Product_BOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException;
 
     /** Column name QM_Specification_ID */

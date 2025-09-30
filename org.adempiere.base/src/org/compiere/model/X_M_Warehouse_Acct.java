@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_Warehouse_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Warehouse_Acct")
 public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Warehouse_Acct (Properties ctx, int M_Warehouse_Acct_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -151,6 +152,7 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 		return (String)get_Value(COLUMNNAME_M_Warehouse_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -179,6 +181,7 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getW_Differences_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Package
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_Package 
 {
@@ -71,14 +71,17 @@ public interface I_M_Package
 	/** Get Box Count	  */
 	public int getBoxCount();
 
-    /** Column name CashOnDelivery */
-    public static final String COLUMNNAME_CashOnDelivery = "CashOnDelivery";
+    /** Column name C_BP_ShippingAcct_ID */
+    public static final String COLUMNNAME_C_BP_ShippingAcct_ID = "C_BP_ShippingAcct_ID";
 
-	/** Set COD	  */
-	public void setCashOnDelivery (boolean CashOnDelivery);
+	/** Set Business Partner Shipping Account	  */
+	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID);
 
-	/** Get COD	  */
-	public boolean isCashOnDelivery();
+	/** Get Business Partner Shipping Account	  */
+	public int getC_BP_ShippingAcct_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
     public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
@@ -93,18 +96,8 @@ public interface I_M_Package
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
-
-    /** Column name C_BP_ShippingAcct_ID */
-    public static final String COLUMNNAME_C_BP_ShippingAcct_ID = "C_BP_ShippingAcct_ID";
-
-	/** Set Business Partner Shipping Account	  */
-	public void setC_BP_ShippingAcct_ID (int C_BP_ShippingAcct_ID);
-
-	/** Get Business Partner Shipping Account	  */
-	public int getC_BP_ShippingAcct_ID();
-
-	public org.compiere.model.I_C_BP_ShippingAcct getC_BP_ShippingAcct() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -119,7 +112,49 @@ public interface I_M_Package
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
+    /** Column name C_UOM_Length_ID */
+    public static final String COLUMNNAME_C_UOM_Length_ID = "C_UOM_Length_ID";
+
+	/** Set UOM for Length.
+	  * Standard Unit of Measure for Length
+	  */
+	public void setC_UOM_Length_ID (int C_UOM_Length_ID);
+
+	/** Get UOM for Length.
+	  * Standard Unit of Measure for Length
+	  */
+	public int getC_UOM_Length_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException;
+
+    /** Column name C_UOM_Weight_ID */
+    public static final String COLUMNNAME_C_UOM_Weight_ID = "C_UOM_Weight_ID";
+
+	/** Set UOM for Weight.
+	  * Standard Unit of Measure for Weight
+	  */
+	public void setC_UOM_Weight_ID (int C_UOM_Weight_ID);
+
+	/** Get UOM for Weight.
+	  * Standard Unit of Measure for Weight
+	  */
+	public int getC_UOM_Weight_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
+
+    /** Column name CashOnDelivery */
+    public static final String COLUMNNAME_CashOnDelivery = "CashOnDelivery";
+
+	/** Set COD	  */
+	public void setCashOnDelivery (boolean CashOnDelivery);
+
+	/** Get COD	  */
+	public boolean isCashOnDelivery();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -136,36 +171,6 @@ public interface I_M_Package
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_UOM_Length_ID */
-    public static final String COLUMNNAME_C_UOM_Length_ID = "C_UOM_Length_ID";
-
-	/** Set UOM for Length.
-	  * Standard Unit of Measure for Length
-	  */
-	public void setC_UOM_Length_ID (int C_UOM_Length_ID);
-
-	/** Get UOM for Length.
-	  * Standard Unit of Measure for Length
-	  */
-	public int getC_UOM_Length_ID();
-
-	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException;
-
-    /** Column name C_UOM_Weight_ID */
-    public static final String COLUMNNAME_C_UOM_Weight_ID = "C_UOM_Weight_ID";
-
-	/** Set UOM for Weight.
-	  * Standard Unit of Measure for Weight
-	  */
-	public void setC_UOM_Weight_ID (int C_UOM_Weight_ID);
-
-	/** Get UOM for Weight.
-	  * Standard Unit of Measure for Weight
-	  */
-	public int getC_UOM_Weight_ID();
-
-	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
 
     /** Column name DateReceived */
     public static final String COLUMNNAME_DateReceived = "DateReceived";
@@ -309,6 +314,7 @@ public interface I_M_Package
 	/** Get Hold Address	  */
 	public int getHoldAddress_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getHoldAddress() throws RuntimeException;
 
     /** Column name HomeDeliveryPremiumDate */
@@ -535,6 +541,7 @@ public interface I_M_Package
 	  */
 	public int getM_InOut_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException;
 
     /** Column name M_Package_ID */
@@ -559,6 +566,42 @@ public interface I_M_Package
 	/** Get M_Package_UU	  */
 	public String getM_Package_UU();
 
+    /** Column name M_ShipperLabels_ID */
+    public static final String COLUMNNAME_M_ShipperLabels_ID = "M_ShipperLabels_ID";
+
+	/** Set Shipper Labels	  */
+	public void setM_ShipperLabels_ID (int M_ShipperLabels_ID);
+
+	/** Get Shipper Labels	  */
+	public int getM_ShipperLabels_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException;
+
+    /** Column name M_ShipperPackaging_ID */
+    public static final String COLUMNNAME_M_ShipperPackaging_ID = "M_ShipperPackaging_ID";
+
+	/** Set Shipper Packaging	  */
+	public void setM_ShipperPackaging_ID (int M_ShipperPackaging_ID);
+
+	/** Get Shipper Packaging	  */
+	public int getM_ShipperPackaging_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException;
+
+    /** Column name M_ShipperPickupTypes_ID */
+    public static final String COLUMNNAME_M_ShipperPickupTypes_ID = "M_ShipperPickupTypes_ID";
+
+	/** Set Shipper Pickup Types	  */
+	public void setM_ShipperPickupTypes_ID (int M_ShipperPickupTypes_ID);
+
+	/** Get Shipper Pickup Types	  */
+	public int getM_ShipperPickupTypes_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException;
+
     /** Column name M_Shipper_ID */
     public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
 
@@ -572,40 +615,8 @@ public interface I_M_Package
 	  */
 	public int getM_Shipper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
-
-    /** Column name M_ShipperLabels_ID */
-    public static final String COLUMNNAME_M_ShipperLabels_ID = "M_ShipperLabels_ID";
-
-	/** Set Shipper Labels	  */
-	public void setM_ShipperLabels_ID (int M_ShipperLabels_ID);
-
-	/** Get Shipper Labels	  */
-	public int getM_ShipperLabels_ID();
-
-	public org.compiere.model.I_M_ShipperLabels getM_ShipperLabels() throws RuntimeException;
-
-    /** Column name M_ShipperPackaging_ID */
-    public static final String COLUMNNAME_M_ShipperPackaging_ID = "M_ShipperPackaging_ID";
-
-	/** Set Shipper Packaging	  */
-	public void setM_ShipperPackaging_ID (int M_ShipperPackaging_ID);
-
-	/** Get Shipper Packaging	  */
-	public int getM_ShipperPackaging_ID();
-
-	public org.compiere.model.I_M_ShipperPackaging getM_ShipperPackaging() throws RuntimeException;
-
-    /** Column name M_ShipperPickupTypes_ID */
-    public static final String COLUMNNAME_M_ShipperPickupTypes_ID = "M_ShipperPickupTypes_ID";
-
-	/** Set Shipper Pickup Types	  */
-	public void setM_ShipperPickupTypes_ID (int M_ShipperPickupTypes_ID);
-
-	/** Get Shipper Pickup Types	  */
-	public int getM_ShipperPickupTypes_ID();
-
-	public org.compiere.model.I_M_ShipperPickupTypes getM_ShipperPickupTypes() throws RuntimeException;
 
     /** Column name M_ShippingProcessor_ID */
     public static final String COLUMNNAME_M_ShippingProcessor_ID = "M_ShippingProcessor_ID";
@@ -616,6 +627,7 @@ public interface I_M_Package
 	/** Get Shipping Processor	  */
 	public int getM_ShippingProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException;
 
     /** Column name NotificationMessage */

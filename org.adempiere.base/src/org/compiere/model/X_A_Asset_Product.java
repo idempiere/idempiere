@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for A_Asset_Product
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Product")
 public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Asset_Product (Properties ctx, int A_Asset_Product_ID, String trxName)
@@ -122,6 +122,7 @@ public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -220,6 +221,7 @@ public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persis
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -248,6 +250,7 @@ public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -276,6 +279,7 @@ public class X_A_Asset_Product extends PO implements I_A_Asset_Product, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_RecentItem
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_RecentItem 
 {
@@ -93,6 +93,7 @@ public interface I_AD_RecentItem
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_Tab_ID */
@@ -108,6 +109,7 @@ public interface I_AD_RecentItem
 	  */
 	public int getAD_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -123,6 +125,7 @@ public interface I_AD_RecentItem
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -138,6 +141,7 @@ public interface I_AD_RecentItem
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -153,6 +157,7 @@ public interface I_AD_RecentItem
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name Created */

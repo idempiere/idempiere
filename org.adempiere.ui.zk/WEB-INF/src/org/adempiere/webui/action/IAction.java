@@ -13,31 +13,44 @@
  *****************************************************************************/
 package org.adempiere.webui.action;
 
+import org.adempiere.webui.adwindow.IADTabpanel;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
- * Custom UI action provided through OSGi service. Implementation must be thread safe.   
+ * Custom toolbar action provided through OSGi service. Implementation must be thread safe.   
  * @author hengsin
- *
  */
 public interface IAction {
 	/**
-	 * execute action
+	 * Execute action
 	 * @param target
 	 */
 	public void execute(Object target);
 	
 	/**
-	 * you can customize toolbar button like add style, client javascript,...
+	 * Customize toolbar button like add style, client javascript,...
 	 * @param toolbarButton
 	 */
 	public default void decorate(Toolbarbutton toolbarButton) {		
 	}
 	
 	/**
+	 * Get font icon class
 	 * @return font icon class
 	 */
 	public default String getIconSclass() {
 		return "";
 	}
+
+	/**
+	 * Customize detail toolbar button enable/disable based on current tab data status update
+	 * 
+	 * @param toolbarButton
+	 * @param tabPanel
+	 * @param changed
+	 * @param readOnly
+	 */
+	public default void updateToolbarCustomBtn(Toolbarbutton toolbarButton, IADTabpanel tabPanel, boolean changed, boolean readOnly) {
+	}
+
 }

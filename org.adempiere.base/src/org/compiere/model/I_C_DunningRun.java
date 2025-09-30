@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DunningRun
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_DunningRun 
 {
@@ -62,21 +62,6 @@ public interface I_C_DunningRun
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_Dunning_ID */
-    public static final String COLUMNNAME_C_Dunning_ID = "C_Dunning_ID";
-
-	/** Set Dunning.
-	  * Dunning Rules for overdue invoices
-	  */
-	public void setC_Dunning_ID (int C_Dunning_ID);
-
-	/** Get Dunning.
-	  * Dunning Rules for overdue invoices
-	  */
-	public int getC_Dunning_ID();
-
-	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
-
     /** Column name C_DunningLevel_ID */
     public static final String COLUMNNAME_C_DunningLevel_ID = "C_DunningLevel_ID";
 
@@ -86,6 +71,7 @@ public interface I_C_DunningRun
 	/** Get Dunning Level	  */
 	public int getC_DunningLevel_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DunningLevel getC_DunningLevel() throws RuntimeException;
 
     /** Column name C_DunningRun_ID */
@@ -109,6 +95,22 @@ public interface I_C_DunningRun
 
 	/** Get C_DunningRun_UU	  */
 	public String getC_DunningRun_UU();
+
+    /** Column name C_Dunning_ID */
+    public static final String COLUMNNAME_C_Dunning_ID = "C_Dunning_ID";
+
+	/** Set Dunning.
+	  * Dunning Rules for overdue invoices
+	  */
+	public void setC_Dunning_ID (int C_Dunning_ID);
+
+	/** Get Dunning.
+	  * Dunning Rules for overdue invoices
+	  */
+	public int getC_Dunning_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

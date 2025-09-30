@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_Node_Para
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_WF_Node_Para 
 {
@@ -71,6 +71,7 @@ public interface I_AD_WF_Node_Para
 	/** Get Process Parameter	  */
 	public int getAD_Process_Para_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
 
     /** Column name AD_WF_Node_ID */
@@ -86,6 +87,7 @@ public interface I_AD_WF_Node_Para
 	  */
 	public int getAD_WF_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name AD_WF_Node_Para_ID */

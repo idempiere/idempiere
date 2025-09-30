@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintGraph
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintGraph")
 public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_PrintGraph (Properties ctx, int AD_PrintGraph_ID, String trxName)
@@ -125,6 +125,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -190,6 +191,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_PrintGraph_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormatItem getData1_PrintFormatItem() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
@@ -218,6 +220,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormatItem getData2_PrintFormatItem() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
@@ -246,6 +249,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormatItem getData3_PrintFormatItem() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
@@ -274,6 +278,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormatItem getData4_PrintFormatItem() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
@@ -302,6 +307,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormatItem getData_PrintFormatItem() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)
@@ -346,6 +352,7 @@ public class X_AD_PrintGraph extends PO implements I_AD_PrintGraph, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormatItem getDescription_PrintFormatItem() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormatItem)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormatItem.Table_ID)

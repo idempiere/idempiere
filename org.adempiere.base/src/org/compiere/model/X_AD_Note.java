@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Note
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Note")
 public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Note (Properties ctx, int AD_Note_ID, String trxName)
@@ -105,6 +105,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_BroadcastMessage getAD_BroadcastMessage() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_BroadcastMessage)MTable.get(getCtx(), org.compiere.model.I_AD_BroadcastMessage.Table_ID)
@@ -133,6 +134,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
@@ -206,6 +208,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Note_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -234,6 +237,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -262,6 +266,7 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Activity getAD_WF_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Activity)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Activity.Table_ID)

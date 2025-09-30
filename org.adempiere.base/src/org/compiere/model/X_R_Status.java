@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Status
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_Status")
 public class X_R_Status extends PO implements I_R_Status, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_Status (Properties ctx, int R_Status_ID, String trxName)
@@ -308,6 +308,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Status getNext_Status() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_ID)
@@ -336,6 +337,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_StatusCategory getR_StatusCategory() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_StatusCategory)MTable.get(getCtx(), org.compiere.model.I_R_StatusCategory.Table_ID)
@@ -447,6 +449,7 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Status getUpdate_Status() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Status)MTable.get(getCtx(), org.compiere.model.I_R_Status.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankAccount_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_BankAccount_Acct 
 {
@@ -75,7 +75,24 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getB_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException;
+
+    /** Column name B_InTransit_Acct */
+    public static final String COLUMNNAME_B_InTransit_Acct = "B_InTransit_Acct";
+
+	/** Set Bank In Transit.
+	  * Bank In Transit Account
+	  */
+	public void setB_InTransit_Acct (int B_InTransit_Acct);
+
+	/** Get Bank In Transit.
+	  * Bank In Transit Account
+	  */
+	public int getB_InTransit_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException;
 
     /** Column name B_InterestExp_Acct */
     public static final String COLUMNNAME_B_InterestExp_Acct = "B_InterestExp_Acct";
@@ -90,6 +107,7 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getB_InterestExp_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException;
 
     /** Column name B_InterestRev_Acct */
@@ -105,22 +123,8 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getB_InterestRev_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException;
-
-    /** Column name B_InTransit_Acct */
-    public static final String COLUMNNAME_B_InTransit_Acct = "B_InTransit_Acct";
-
-	/** Set Bank In Transit.
-	  * Bank In Transit Account
-	  */
-	public void setB_InTransit_Acct (int B_InTransit_Acct);
-
-	/** Get Bank In Transit.
-	  * Bank In Transit Account
-	  */
-	public int getB_InTransit_Acct();
-
-	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException;
 
     /** Column name B_PaymentSelect_Acct */
     public static final String COLUMNNAME_B_PaymentSelect_Acct = "B_PaymentSelect_Acct";
@@ -135,6 +139,7 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getB_PaymentSelect_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException;
 
     /** Column name B_UnallocatedCash_Acct */
@@ -150,6 +155,7 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getB_UnallocatedCash_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -165,6 +171,7 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BankAccount_Acct_UU */
@@ -189,6 +196,7 @@ public interface I_C_BankAccount_Acct
 	  */
 	public int getC_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name Created */

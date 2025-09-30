@@ -39,6 +39,7 @@ import org.compiere.model.I_M_InOut;
 import org.compiere.model.Lookup;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MTable;
 import org.compiere.util.Env;
 
 /**
@@ -54,13 +55,6 @@ public class DefaultInfoFactory implements IInfoFactory {
 			String whereClause, int AD_InfoWindow_ID, boolean lookup) {
 		return create(WindowNo, tableName, keyColumn,
 				value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, null, null);
-	}
-	
-	@Override
-	public InfoPanel create(int WindowNo, String tableName, String keyColumn, String value, boolean multiSelection,
-			String whereClause, int AD_InfoWindow_ID, Lookup lookup) {
-		return create(WindowNo, tableName, keyColumn,
-				value, multiSelection, whereClause, AD_InfoWindow_ID, (lookup != null), null, null, lookup);
 	}
 	
 	@Override
@@ -83,40 +77,20 @@ public class DefaultInfoFactory implements IInfoFactory {
 	 * @param predefinedContextVariables
 	 * @param field
 	 * @return InfoPanel
-	 */	
+	 */
 	public InfoPanel create(int WindowNo, String tableName, String keyColumn,
 				String value, boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables, GridField field) {
-		return create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, predefinedContextVariables, field, 
-				(field != null ? field.getLookup() : null));
-	}
-	
-	/**
-	 * @param WindowNo
-	 * @param tableName
-	 * @param keyColumn
-	 * @param value
-	 * @param multiSelection
-	 * @param whereClause
-	 * @param AD_InfoWindow_ID
-	 * @param lookup
-	 * @param predefinedContextVariables
-	 * @param field
-	 * @param lookupModel
-	 * @return InfoPanel
-	 */	
-	public InfoPanel create(int WindowNo, String tableName, String keyColumn,
-				String value, boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables, GridField field, Lookup lookupModel) {
 		InfoPanel info = null;
 		setSOTrxBasedOnDocType(WindowNo);
 
         if (tableName.equals("C_BPartner")) {
-        	info = new InfoBPartnerWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoBPartnerWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
         	if (!info.loadedOK()) {
         		info = new InfoBPartnerPanel (value,WindowNo, !Env.getContext(Env.getCtx(), WindowNo, "IsSOTrx").equals("N"),
         				multiSelection, whereClause, lookup);
         	}
         } else if (tableName.equals("M_Product")) {
-        	info = new InfoProductWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoProductWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
     		if (!info.loadedOK()) {
 	            info = new InfoProductPanel ( WindowNo,
 	            		Env.getContextAsInt(Env.getCtx(), WindowNo, "M_Warehouse_ID"),
@@ -124,31 +98,31 @@ public class DefaultInfoFactory implements IInfoFactory {
 	                    multiSelection, value,whereClause, lookup);
     		}
         } else if (tableName.equals("C_Invoice")) {
-        	info = new InfoInvoiceWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoInvoiceWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
     		if (!info.loadedOK()) {
     			info = new InfoInvoicePanel ( WindowNo, value,
                     multiSelection, whereClause, lookup);
     		}
         } else if (tableName.equals("A_Asset")) {
-        	info = new InfoAssetWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoAssetWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
     		if (!info.loadedOK()) {
     			info = new InfoAssetPanel (WindowNo, 0, value,
     					multiSelection, whereClause, lookup);
     		}
         } else if (tableName.equals("C_Order")) {
-        	info = new InfoOrderWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoOrderWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
     		if (!info.loadedOK()) {
 	            info = new InfoOrderPanel ( WindowNo, value,
 	                    multiSelection, whereClause, lookup);
     		}
         } else if (tableName.equals("M_InOut")) {
-        	info = new InfoInOutWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoInOutWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	    	if (!info.loadedOK()) {
 	            info = new InfoInOutPanel (WindowNo, value,
 	                    multiSelection, whereClause, lookup);
 	    	}
         } else if (tableName.equals("C_Payment")) {
-        	info = new InfoPaymentWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoPaymentWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	    	if (!info.loadedOK()) {
 	            info = new InfoPaymentPanel (WindowNo, value, multiSelection, whereClause, lookup);
 	    	}
@@ -156,13 +130,13 @@ public class DefaultInfoFactory implements IInfoFactory {
         	info = new InfoCashLinePanel (WindowNo, value,
                     multiSelection, whereClause, lookup);
         } else if (tableName.equals("S_ResourceAssignment")) {
-        	info = new InfoAssignmentWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoAssignmentWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	    	if (!info.loadedOK()) {
 	            info = new InfoAssignmentPanel (WindowNo, value,
 	                    multiSelection, whereClause, lookup);
 	    	}
         } else {
-        	info = new InfoWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, lookupModel);
+        	info = new InfoWindow(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
         	if (!info.loadedOK()) {
 	            info = new InfoGeneralPanel (value, WindowNo,
 	                tableName, keyColumn,
@@ -191,7 +165,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 						
 		if (col.equals("M_Product_ID"))
 		{
-			InfoWindow infoWindow = new InfoProductWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field, null, lookup);
+			InfoWindow infoWindow = new InfoProductWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field);
 			if (infoWindow.loadedOK())
 				return infoWindow;
 			
@@ -222,7 +196,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 					String tempIsSOTrx = ("Y".equals(originalIsSOTrx) ? "N" : "Y");
 					Env.setContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx", tempIsSOTrx);
 				}
-				InfoWindow infoWindow = new InfoBPartnerWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field, null, lookup);
+				InfoWindow infoWindow = new InfoBPartnerWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field);
 				if (infoWindow.loadedOK())
 					return infoWindow;
 			} finally {
@@ -240,7 +214,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 		}
 		else	//	General Info
 		{
-			info = create(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, (String)null, field, lookup);
+			info = create(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field);
 		}
 		return info;
 	}
@@ -260,7 +234,10 @@ public class DefaultInfoFactory implements IInfoFactory {
 	public InfoWindow create(int windowNo, int AD_InfoWindow_ID, String predefinedContextVariables) {
 		MInfoWindow infoWindow = MInfoWindow.getInfoWindow(AD_InfoWindow_ID);
 		String tableName = infoWindow.getAD_Table().getTableName();
+		MTable table = (MTable)infoWindow.getAD_Table();
 		String keyColumn = tableName + "_ID";
+		if(table.isUUIDKeyTable())
+			keyColumn = tableName + "_UU";
 		InfoPanel info = create(windowNo, tableName, keyColumn, null, false, null, AD_InfoWindow_ID, false, predefinedContextVariables, null);
 		if (info instanceof InfoWindow)
 			return (InfoWindow) info;

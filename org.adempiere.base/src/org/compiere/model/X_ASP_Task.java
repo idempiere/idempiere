@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Task
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Task")
 public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_ASP_Task (Properties ctx, int ASP_Task_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
@@ -140,6 +141,7 @@ public class X_ASP_Task extends PO implements I_ASP_Task, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
 	{
 		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)

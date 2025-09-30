@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Opportunity
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Opportunity")
 public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Opportunity (Properties ctx, int C_Opportunity_ID, String trxName)
@@ -136,6 +136,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -164,6 +165,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -192,6 +194,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -220,6 +223,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -246,38 +250,6 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Close Date.
-		@param CloseDate Close Date
-	*/
-	public void setCloseDate (Timestamp CloseDate)
-	{
-		set_Value (COLUMNNAME_CloseDate, CloseDate);
-	}
-
-	/** Get Close Date.
-		@return Close Date
-	  */
-	public Timestamp getCloseDate()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_CloseDate);
-	}
-
-	/** Set Comments.
-		@param Comments Comments or additional information
-	*/
-	public void setComments (String Comments)
-	{
-		set_Value (COLUMNNAME_Comments, Comments);
-	}
-
-	/** Get Comments.
-		@return Comments or additional information
-	  */
-	public String getComments()
-	{
-		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Sales Opportunity.
@@ -316,6 +288,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_Opportunity_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -344,25 +317,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Cost.
-		@param Cost Cost information
-	*/
-	public void setCost (BigDecimal Cost)
-	{
-		set_Value (COLUMNNAME_Cost, Cost);
-	}
-
-	/** Get Cost.
-		@return Cost information
-	  */
-	public BigDecimal getCost()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Cost);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesStage getC_SalesStage() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_SalesStage)MTable.get(getCtx(), org.compiere.model.I_C_SalesStage.Table_ID)
@@ -389,6 +344,57 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Close Date.
+		@param CloseDate Close Date
+	*/
+	public void setCloseDate (Timestamp CloseDate)
+	{
+		set_Value (COLUMNNAME_CloseDate, CloseDate);
+	}
+
+	/** Get Close Date.
+		@return Close Date
+	  */
+	public Timestamp getCloseDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_CloseDate);
+	}
+
+	/** Set Comments.
+		@param Comments Comments or additional information
+	*/
+	public void setComments (String Comments)
+	{
+		set_Value (COLUMNNAME_Comments, Comments);
+	}
+
+	/** Get Comments.
+		@return Comments or additional information
+	  */
+	public String getComments()
+	{
+		return (String)get_Value(COLUMNNAME_Comments);
+	}
+
+	/** Set Cost.
+		@param Cost Cost information
+	*/
+	public void setCost (BigDecimal Cost)
+	{
+		set_Value (COLUMNNAME_Cost, Cost);
+	}
+
+	/** Get Cost.
+		@return Cost information
+	  */
+	public BigDecimal getCost()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Cost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Description.
@@ -484,6 +490,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

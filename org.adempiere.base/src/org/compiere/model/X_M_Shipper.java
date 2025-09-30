@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_Shipper
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Shipper")
 public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Shipper (Properties ctx, int M_Shipper_ID, String trxName)
@@ -104,6 +104,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -148,6 +149,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_ID)
@@ -212,6 +214,7 @@ public class X_M_Shipper extends PO implements I_M_Shipper, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Shipper_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessor getM_ShippingProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShippingProcessor)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessor.Table_ID)

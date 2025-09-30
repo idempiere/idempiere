@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_DrillRule
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Process_DrillRule 
 {
@@ -75,6 +75,7 @@ public interface I_AD_Process_DrillRule
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_DrillRule_ID */
@@ -108,6 +109,7 @@ public interface I_AD_Process_DrillRule
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Process_Para_ID */
@@ -119,6 +121,7 @@ public interface I_AD_Process_DrillRule
 	/** Get Process Parameter	  */
 	public int getAD_Process_Para_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
 
     /** Column name AD_ReportView_ID */
@@ -134,6 +137,7 @@ public interface I_AD_Process_DrillRule
 	  */
 	public int getAD_ReportView_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -149,6 +153,7 @@ public interface I_AD_Process_DrillRule
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */

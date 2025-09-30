@@ -16,7 +16,7 @@ package org.adempiere.base;
 import javax.crypto.SecretKey;
 
 /**
- * Interface for key store 
+ * Interface for security key store 
  * @author deepak
  */
 public interface IKeyStore {
@@ -31,6 +31,14 @@ public interface IKeyStore {
 	 * @return encryption algorithm id, for e.g AES
 	 */
 	public String getAlgorithm();
+	
+	/**
+	 * Get the provider name
+	 * @return provider name, for e.g BCFKS. If null default provider will be used.
+	 */
+	default String getProvider() {
+		return null;
+	}
 }
 
 

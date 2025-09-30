@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Archive
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Archive 
 {
@@ -97,6 +97,7 @@ public interface I_AD_Archive
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_StorageProvider_ID */
@@ -108,6 +109,7 @@ public interface I_AD_Archive
 	/** Get Storage Provider	  */
 	public int getAD_StorageProvider_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -123,6 +125,7 @@ public interface I_AD_Archive
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name BinaryData */
@@ -151,6 +154,7 @@ public interface I_AD_Archive
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */

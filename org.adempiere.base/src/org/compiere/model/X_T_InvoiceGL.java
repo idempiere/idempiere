@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InvoiceGL
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_InvoiceGL")
 public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_InvoiceGL (Properties ctx, int T_InvoiceGL_ID, String trxName)
@@ -155,6 +155,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -181,6 +182,31 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** APAR AD_Reference_ID=332 */
+	public static final int APAR_AD_Reference_ID=332;
+	/** Receivables &amp; Payables = A */
+	public static final String APAR_ReceivablesPayables = "A";
+	/** Payables only = P */
+	public static final String APAR_PayablesOnly = "P";
+	/** Receivables only = R */
+	public static final String APAR_ReceivablesOnly = "R";
+	/** Set AP - AR.
+		@param APAR Include Receivables and/or Payables transactions
+	*/
+	public void setAPAR (String APAR)
+	{
+
+		set_Value (COLUMNNAME_APAR, APAR);
+	}
+
+	/** Get AP - AR.
+		@return Include Receivables and/or Payables transactions
+	  */
+	public String getAPAR()
+	{
+		return (String)get_Value(COLUMNNAME_APAR);
 	}
 
 	/** Set Accounted Balance.
@@ -297,31 +323,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 		return bd;
 	}
 
-	/** APAR AD_Reference_ID=332 */
-	public static final int APAR_AD_Reference_ID=332;
-	/** Receivables &amp; Payables = A */
-	public static final String APAR_ReceivablesPayables = "A";
-	/** Payables only = P */
-	public static final String APAR_PayablesOnly = "P";
-	/** Receivables only = R */
-	public static final String APAR_ReceivablesOnly = "R";
-	/** Set AP - AR.
-		@param APAR Include Receivables and/or Payables transactions
-	*/
-	public void setAPAR (String APAR)
-	{
-
-		set_Value (COLUMNNAME_APAR, APAR);
-	}
-
-	/** Get AP - AR.
-		@return Include Receivables and/or Payables transactions
-	  */
-	public String getAPAR()
-	{
-		return (String)get_Value(COLUMNNAME_APAR);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionTypeReval() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
@@ -350,6 +352,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeReval() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -378,6 +381,7 @@ public class X_T_InvoiceGL extends PO implements I_T_InvoiceGL, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)

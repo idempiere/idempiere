@@ -30,9 +30,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
-
 /**
- *  Financial Report Engine
+ *  Financial Report using Jasper Report for output
  *
  *  @author Jorg Janke
  *  @version $Id: FinReport.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -40,15 +39,15 @@ import org.compiere.util.Trx;
 @org.adempiere.base.annotation.Process
 public class FinReportJasper extends FinReport
 {
-
 	/**	Report Definition				*/
 	private MReport				m_report = null;
 
-	/**************************************************************************
-	 *  Perform process.
+	/**
+	 *  Insert reporting data to T_Report
 	 *  @return Message to be translated
 	 *  @throws Exception
 	 */
+	@Override
 	protected String doIt() throws Exception
 	{
 		// Call the normal FinReport to fill the T_Report table

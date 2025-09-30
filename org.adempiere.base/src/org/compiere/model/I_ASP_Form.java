@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Form
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_ASP_Form 
 {
@@ -62,6 +62,7 @@ public interface I_ASP_Form
 	  */
 	public int getAD_Form_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -104,6 +105,7 @@ public interface I_ASP_Form
 	/** Get ASP Level	  */
 	public int getASP_Level_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException;
 
     /** Column name ASP_Status */

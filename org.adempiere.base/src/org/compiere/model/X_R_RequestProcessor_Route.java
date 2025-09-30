@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestProcessor_Route
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessor_Route")
 public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcessor_Route, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor_Route (Properties ctx, int R_RequestProcessor_Route_ID, String trxName)
@@ -113,6 +113,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -157,6 +158,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 		return (String)get_Value(COLUMNNAME_Keyword);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestProcessor getR_RequestProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_RequestProcessor)MTable.get(getCtx(), org.compiere.model.I_R_RequestProcessor.Table_ID)
@@ -222,6 +224,7 @@ public class X_R_RequestProcessor_Route extends PO implements I_R_RequestProcess
 		return (String)get_Value(COLUMNNAME_R_RequestProcessor_Route_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_RequestType)MTable.get(getCtx(), org.compiere.model.I_R_RequestType.Table_ID)

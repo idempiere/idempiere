@@ -50,8 +50,8 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MAttribute.class);
 
-	private static CCache<Integer, MAttribute>	s_cache				= new CCache<Integer, MAttribute>(Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);
-	
+	private static CCache<Integer, MAttribute>	s_cache		= new CCache<Integer, MAttribute>(Table_Name, 30, CCache.DEFAULT_EXPIRE_MINUTE);
+
 	/**	Values						*/
 	private MAttributeValue[]		m_values = null;
 
@@ -345,6 +345,24 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 			instance.setValueDate(value);
 		instance.saveEx();
 	}// setAttributeInstance
+	
+	/**
+	 * Update or create new Attribute Instance
+	 * 
+	 * @param M_AttributeSetInstance_ID id
+	 * @param multiSelectionValue
+	 * @param multiSelectionDisplayValue
+	 */
+	public void setMAttributeInstanceMultiSelection(int M_AttributeSetInstance_ID, String multiSelectionValue, String multiSelectionDisplayValue)
+	{
+		MAttributeInstance instance = getMAttributeInstance(M_AttributeSetInstance_ID);
+		if (instance == null)
+			instance = new MAttributeInstance(getCtx(), getM_Attribute_ID(), M_AttributeSetInstance_ID, multiSelectionValue, multiSelectionDisplayValue,
+					get_TrxName());
+		else
+			instance.setMultiSelectValueAndDisplay(multiSelectionValue, multiSelectionDisplayValue);
+		instance.saveEx();
+	}// setMAttributeInstanceMultiSelection
 
 	/**
 	 * 	String Representation
@@ -361,11 +379,6 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		return sb.toString ();
 	}	//	toString
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// not advanced roles cannot add or modify reference types
@@ -374,23 +387,29 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
 			return false;
 		}
+
+		if (!newRecord && is_ValueChanged(COLUMNNAME_Name))
+		{
+			String dupAttribSetName = DB.getSQLValueString(	get_TrxName(), MAttributeUse.SQL_GET_TA_DUPLICATE_ATTRIBUTE + " AND a.M_Attribute_ID <> ? ",
+															getAD_Client_ID(), getName(), getM_Attribute_ID());
+			if (!Util.isEmpty(dupAttribSetName, true))
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "UniqueAttribute", new Object[] { getName(), dupAttribSetName }));
+				return false;
+			}
+		}
 		return true;
 	}
 	
-	/**
-	 * 	AfterSave
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	Changed to Instance Attribute
+		//	Change from Non-Instance to Instance Attribute
 		if (!newRecord && is_ValueChanged("IsInstanceAttribute") && isInstanceAttribute())
 		{
+			// Update IsInstanceAttribute of parent M_AttributeSet (through M_AttributeUse) to Y
 			StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas ")
 				.append("SET IsInstanceAttribute='Y' ")
 				.append("WHERE IsInstanceAttribute='N'")

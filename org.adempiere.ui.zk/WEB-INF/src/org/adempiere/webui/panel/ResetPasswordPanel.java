@@ -11,8 +11,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-
-
 package org.adempiere.webui.panel;
 
 import java.math.BigInteger;
@@ -550,7 +548,7 @@ public class ResetPasswordPanel extends Window implements EventListener<Event>
 		mailText.setLanguage(Env.getContext(m_ctx, Env.LANGUAGE));
 		to.set_ValueOfColumn("Password", newPassword); // will be hashed and validate on saveEx
     	mailText.setUser(to);
-		String message = mailText.getMailText(true);
+		String message = mailText.getMailText(true, true, true);
 		Env.setContext(m_ctx, "#NewPassword", newPassword);
 		message = Env.parseVariable(message, to, to.get_TrxName(), true);
 		Env.setContext(m_ctx, "#NewPassword", "");

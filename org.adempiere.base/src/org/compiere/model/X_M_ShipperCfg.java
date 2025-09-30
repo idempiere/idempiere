@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShipperCfg
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperCfg")
 public class X_M_ShipperCfg extends PO implements I_M_ShipperCfg, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_ShipperCfg extends PO implements I_M_ShipperCfg, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ShipperCfg (Properties ctx, int M_ShipperCfg_ID, String trxName)
@@ -294,6 +294,7 @@ public class X_M_ShipperCfg extends PO implements I_M_ShipperCfg, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_ShipperCfg_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShippingProcessorCfg getM_ShippingProcessorCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShippingProcessorCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShippingProcessorCfg.Table_ID)

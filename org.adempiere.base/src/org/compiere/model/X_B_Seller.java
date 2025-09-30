@@ -24,7 +24,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for B_Seller
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="B_Seller")
 public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_B_Seller (Properties ctx, int B_Seller_ID, String trxName)
@@ -114,6 +114,7 @@ public class X_B_Seller extends PO implements I_B_Seller, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE zk>
 
 	<!--
 		zk.xml Copyright (C) 2006 Potix Corporation. All Rights Reserved.
@@ -138,5 +137,9 @@
     <library-property>
         <name>org.zkoss.zk.ui.uuidRecycle.disabled</name>
         <value>true</value>
+    </library-property>
+    <library-property>
+    	<name>org.zkoss.zul.Filedownload.contentTypeAsIs</name>
+    	<value>true</value>
     </library-property>
 </zk>

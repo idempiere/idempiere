@@ -47,6 +47,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
@@ -76,7 +77,6 @@ import org.zkoss.zul.impl.XulElement;
  * Base class for field editor.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  */
 public abstract class WEditor implements EventListener<Event>, PropertyChangeListener, IInputValidator
 {
@@ -748,8 +748,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		if (applyDictionaryStyle && gridField.getAD_FieldStyle_ID() > 0) 
 		{
 			style = buildStyle(gridField.getAD_FieldStyle_ID());
-		}
-		setFieldStyle(style);
+			setFieldStyle(style);
+		}		
 		setFieldMandatoryStyle(applyDictionaryStyle);
 	}
 	
@@ -874,6 +874,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     /**
      * @deprecated
      */
+    @Deprecated
 	public void updateLabelStyle() {				
 		updateStyle();
 	}
@@ -890,7 +891,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 */
 	public boolean isNullOrEmpty() {
 		Object value = getValue();
-		return value == null || value.toString().trim().length() == 0;
+		return value == null || value.toString().length() == 0;
 	}
 	
 	/**
@@ -941,7 +942,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		editor.setAttribute("EVENT", WEditorPopupMenu.EDITOR_EVENT);
 		editor.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Editor")).intern());
         if (ThemeManager.isUseFontIconForImage())
-        	editor.setIconSclass("z-icon-Edit");
+        	editor.setIconSclass(Icon.getIconSclass(Icon.EDIT));
         else
         	editor.setImage(ThemeManager.getThemeResource("images/Editor16.png"));
         editor.addEventListener(Events.ON_CLICK, popupMenu);

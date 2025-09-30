@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AllUsers_V
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_AllUsers_V 
 {
@@ -50,6 +50,7 @@ public interface I_AD_AllUsers_V
 	/** Get Tenant (All)	  */
 	public int getAD_AllClients_V_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AllClients_V getAD_AllClients_V() throws RuntimeException;
 
     /** Column name AD_AllUsers_V_ID */

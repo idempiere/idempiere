@@ -24,7 +24,7 @@ import org.zkoss.zk.ui.Component;
 public interface IDashboardGadgetFactory {
 	
 	/**
-     * 
+     * Create dashboard gadget from URI
      * @param uri zul url
      * @param parent Component
      * @return new DashboardPanel component instance or null
@@ -32,6 +32,7 @@ public interface IDashboardGadgetFactory {
     public Component getGadget(String uri, Component parent);
 
 	/**
+	 * Create dashboard gadget from URL or MDashboardContent 
 	 * @param url zul url
 	 * @param parent Component
 	 * @param dc MDashboardContent

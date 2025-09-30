@@ -350,14 +350,10 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 		return sb.toString ();
 	}	//	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Mandatory field validation by measure type.
 		if (MEASURETYPE_Calculated.equals(getMeasureType())
 			&& getPA_MeasureCalc_ID() == 0)
 		{
@@ -391,12 +387,6 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return succes
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{

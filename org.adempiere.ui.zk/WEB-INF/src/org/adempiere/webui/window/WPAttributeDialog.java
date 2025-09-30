@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -48,12 +49,14 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Urlbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WPAttributeEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -65,11 +68,10 @@ import org.compiere.model.MAttributeValue;
 import org.compiere.model.MDocType;
 import org.compiere.model.MLot;
 import org.compiere.model.MLotCtl;
-import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
-import org.compiere.model.SystemIDs;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -78,6 +80,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -85,14 +88,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
  *  Product Instance/Non-Instance attribute Dialog.
+ *  @see WPAttributeEditor
  *  @author hengsin
  */
 public class WPAttributeDialog extends Window implements EventListener<Event>
@@ -102,6 +104,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 */
 	private static final long serialVersionUID = -7810825026970615029L;
 
+	private List<WEditor> editors = new ArrayList<WEditor>();
+	
 	/**
 	 *	Product Attribute Instance Dialog
 	 *	@param M_AttributeSetInstance_ID Product Attribute Set Instance id
@@ -193,9 +197,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	protected Textbox fieldLotString = new Textbox();
 	protected Listbox fieldLot = new Listbox();
 	protected Button bLot = new Button(Msg.getMsg (Env.getCtx(), "New"));
-	//	Lot Popup
-	protected Menupopup 		popupMenu = new Menupopup();
-	protected Menuitem 			mZoom;
 	//	Ser No
 	protected Textbox fieldSerNo = new Textbox();
 	protected Button bSerNo = new Button(Msg.getMsg (Env.getCtx(), "New"));
@@ -334,16 +335,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			cell.appendChild(cbNewEdit);
 			row.appendChild(cell);
 						
-			String sql = "SELECT M_AttributeSetInstance_ID, Description"
-				+ " FROM M_AttributeSetInstance"
-				+ " WHERE M_AttributeSet_ID = " + as.getM_AttributeSet_ID()
-				+ " AND EXISTS ("
-				+ " SELECT 1 FROM M_AttributeInstance INNER JOIN M_Attribute"
-				+ " ON (M_AttributeInstance.M_Attribute_ID = M_Attribute.M_Attribute_ID)"
-				+ " WHERE M_AttributeInstance.M_AttributeSetInstance_ID = M_AttributeSetInstance.M_AttributeSetInstance_ID"
-				+ " AND M_Attribute.IsInstanceAttribute = 'N')";
-			existingCombo.setMold("select");
-			KeyNamePair[] keyNamePairs = DB.getKeyNamePairs(sql, true);
+			KeyNamePair[] keyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(as.getM_AttributeSet_ID(), true);
+			existingCombo.setMold("select");			
 			for (KeyNamePair pair : keyNamePairs) {
 				existingCombo.appendItem(pair.getName(), pair.getKey());
 			}
@@ -387,7 +380,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row.appendChild(cbNewEdit);
 			bSelect.setLabel(Msg.getMsg(Env.getCtx(), "SelectExisting"));
 			if (ThemeManager.isUseFontIconForImage())
-				bSelect.setIconSclass("z-icon-PAttribute");
+				bSelect.setIconSclass(Icon.getIconSclass(Icon.PATTRIBUTE));
 			else
 				bSelect.setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 			bSelect.addEventListener(Events.ON_CLICK, this);
@@ -418,10 +411,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				+ "FROM M_Lot l "
 				+ "WHERE EXISTS (SELECT M_Product_ID FROM M_Product p "
 					+ "WHERE p.M_AttributeSet_ID=" + m_masi.getM_AttributeSet_ID()
-					+ " AND p.M_Product_ID=l.M_Product_ID)";
+					+ " AND p.M_Product_ID=l.M_Product_ID) "
+					+ " AND l.M_Product_ID = ? ";
 			fieldLot = new Listbox();
 			fieldLot.setMold("select");
-			KeyNamePair[] keyNamePairs = DB.getKeyNamePairs(sql, true);
+			KeyNamePair[] keyNamePairs = DB.getKeyNamePairsEx(sql, true, m_M_Product_ID);
 			for (KeyNamePair pair : keyNamePairs) {
 				fieldLot.appendItem(pair.getName(), pair.getKey());
 			}
@@ -462,16 +456,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 					LayoutUtils.addSclass("txt-btn", bLot);
 				}
 			}
-			//	Popup 
-			mZoom = new Menuitem(Msg.getMsg(Env.getCtx(), "Zoom"), ThemeManager.getThemeResource("images/Zoom16.png"));
-			if(ThemeManager.isUseFontIconForImage()) {
-				mZoom.setIconSclass("z-icon-Zoom");
-				mZoom.setImage("");
-			}
-
-			mZoom.addEventListener(Events.ON_CLICK, this);
-			popupMenu.appendChild(mZoom);
-			this.appendChild(popupMenu);
 		}	//	Lot
 
 		//	SerNo
@@ -587,6 +571,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			editor = WebEditorFactory.getEditor(getDateGridField(attribute), true);
 		}
+		else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attribute.getAttributeValueType())) {
+			editor = WebEditorFactory.getEditor(getMultiSelectionListTypeGridField(attribute), true);
+		}
 		else // Text Field
 		{
 			editor = WebEditorFactory.getEditor(getStringGridField(attribute), true);
@@ -619,10 +606,21 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 						// IDEMPIERE-2999 - set value in online button as HRef
 						if (sourceEditor.getGridField().getDisplayType() == DisplayType.URL)
 							((Urlbox) sourceEditor.getComponent()).setText((String) evt.getNewValue());
+						// update grid field and context
+						sourceEditor.getGridField().setValue(evt.getNewValue(), false);
+						editors.forEach(e -> {
+							// evaluate context (if needed, for e.g dynamic validation)
+							if (e != sourceEditor)
+							{
+								verifyChangedField(e.getGridField(), sourceEditor.getGridField().getColumnName());
+								e.dynamicDisplay();								
+							}
+						});
 					}
 				}
 			});
-
+			
+			editors.add(editor);			
 			Component fieldEditor = editor.getComponent();
 			row.appendChild(fieldEditor);
 			editor.showMenu();
@@ -630,9 +628,23 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				editor.setReadWrite(false);
 			else
 				m_editors.add(editor);
+			editor.getGridField().addPropertyChangeListener(editor);
 		}
 	}	//	addAttributeLine
 
+	/**
+	 * Reset field value to null if field depends on columnName.
+	 * Duplicated from ProcessParameterPanel.
+	 * @param field
+	 * @param columnName column name of changed field
+	 */
+	private void verifyChangedField(GridField field, String columnName) {
+		ArrayList<String> list = field.getDependentOn();
+		if (list.contains(columnName)) {
+			GridField.updateDependentField(field, columnName, -1, null);
+		}
+	}
+	
 	/**
 	 * Create GridField for attribute
 	 * @param attribute
@@ -695,20 +707,39 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 	/**
 	 * @param attribute
-	 * @return GridField for DisplayType.TableDir
+	 * @param displayType
+	 * @return GridField for given displayType
 	 */
-	public GridField getListTypeGridField(MAttribute attribute)
+	private GridField getGridFieldForDisplayType(MAttribute attribute, int displayType)
 	{
 		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
-				"M_AttributeValue_ID", attribute.getName(), DisplayType.TableDir, 0, false, false, null);
-
+		        "M_AttributeValue_ID", attribute.getName(), displayType, 0, false, false, null);
+		
 		// Validation for List - Attribute Values
 		vo.ValidationCode = "M_AttributeValue.M_Attribute_ID=" + attribute.get_ID();
 		vo.lookupInfo.ValidationCode = vo.ValidationCode;
 		vo.lookupInfo.IsValidated = false;
 
 		return createGridField(attribute, vo);
+	} // getGridFieldForDisplayType
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.TableDir
+	 */
+	private GridField getListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.TableDir);
 	} // getListTypeGridField
+
+	/**
+	 * @param attribute
+	 * @return GridField for DisplayType.ChosenMultipleSelectionTable
+	 */
+	private GridField getMultiSelectionListTypeGridField(MAttribute attribute)
+	{
+	    return getGridFieldForDisplayType(attribute, DisplayType.ChosenMultipleSelectionTable);
+	} // getMultiSelectionListTypeGridField
 
 	/**
 	 * Create GridField
@@ -749,6 +780,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			{
 				if (instance.getM_AttributeValue_ID() > 0)
 					editor.setValue(instance.getM_AttributeValue_ID());
+			}
+			else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attribute.getAttributeValueType())) {
+				if (!Util.isEmpty(instance.getValueMultipleSelection()))
+					editor.setValue(instance.getValueMultipleSelection());
 			}
 			else
 			{
@@ -874,11 +909,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		else if (e.getTarget().getId().equals("Cancel"))
 		{
 			onCancel();
-		}
-		//	Zoom M_Lot
-		else if (e.getTarget() == mZoom)
-		{
-			cmd_zoom();
 		}
 		else
 			log.log(Level.SEVERE, "not found - " + e);
@@ -1045,22 +1075,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	}	//	cmd_newEdit
 
 	/**
-	 * 	Zoom M_Lot
-	 */
-	private void cmd_zoom()
-	{
-		int M_Lot_ID = 0;
-		ListItem pp = fieldLot.getSelectedItem();
-		if (pp != null)
-			M_Lot_ID = (Integer) pp.getValue();
-		MQuery zoomQuery = new MQuery("M_Lot");
-		zoomQuery.addRestriction("M_Lot_ID", MQuery.EQUAL, M_Lot_ID);
-		log.info(zoomQuery.toString());
-		//
-		//TODO: to port
-	}	//	cmd_zoom
-
-	/**
 	 *	Save Selection
 	 *	@return true if saved
 	 */
@@ -1161,6 +1175,16 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				else if(MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(attributes[i].getAttributeValueType()))
 				{
 					setEditorValue(mandatory, attributes[i], m_editors.get(i));
+				}
+				else if (MAttribute.ATTRIBUTEVALUETYPE_ChosenMultipleSelectionList.equals(attributes[i].getAttributeValueType()))
+				{
+					WEditor editor = m_editors.get(i);
+					String value = editor.getValue() != null ? String.valueOf(editor.getValue()) : null;
+					String displayValue = editor.getDisplay() != null ? editor.getDisplay() : value;
+					if (log.isLoggable(Level.FINE)) log.fine(attributes[i].getName() + "=" + value);
+					if (attributes[i].isMandatory() && (value == null || value.length() == 0))
+						mandatory += " - " + attributes[i].getName();
+					attributes[i].setMAttributeInstanceMultiSelection(m_M_AttributeSetInstance_ID, value, displayValue);
 				}
 				else
 				{

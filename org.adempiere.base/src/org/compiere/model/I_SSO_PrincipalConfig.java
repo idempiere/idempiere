@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for SSO_PrincipalConfig
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_SSO_PrincipalConfig 
 {
@@ -207,6 +207,22 @@ public interface I_SSO_PrincipalConfig
 	  * iDempiere Monitor Redirect URIs
 	  */
 	public String getSSO_IDempMonitorRedirectURIs();
+
+    /** Column name SSO_LoginButtonImage_ID */
+    public static final String COLUMNNAME_SSO_LoginButtonImage_ID = "SSO_LoginButtonImage_ID";
+
+	/** Set Login Button Image.
+	  * Identifier for the image used as the icon for the Single Sign-On (SSO) login button. References the AD_Image table.
+	  */
+	public void setSSO_LoginButtonImage_ID (int SSO_LoginButtonImage_ID);
+
+	/** Get Login Button Image.
+	  * Identifier for the image used as the icon for the Single Sign-On (SSO) login button. References the AD_Image table.
+	  */
+	public int getSSO_LoginButtonImage_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Image getSSO_LoginButtonImage() throws RuntimeException;
 
     /** Column name SSO_OSGIRedirectURIs */
     public static final String COLUMNNAME_SSO_OSGIRedirectURIs = "SSO_OSGIRedirectURIs";

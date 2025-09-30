@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_ContactInterest
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_R_ContactInterest 
 {
@@ -75,6 +75,7 @@ public interface I_R_ContactInterest
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
@@ -141,6 +142,7 @@ public interface I_R_ContactInterest
 	  */
 	public int getR_InterestArea_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException;
 
     /** Column name SubscribeDate */

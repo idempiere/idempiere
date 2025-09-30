@@ -25,7 +25,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
-
 /**
  *  ToolBar and Button Restriction
  *  @author Nicolas Micoud
@@ -77,18 +76,18 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 			+ " ORDER BY tbr.AD_Client_ID DESC, tbr.AD_Window_ID, tbr.AD_Tab_ID 																					";
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 751989571891306735L;
 
 	private static CLogger s_log = CLogger.getCLogger(MToolBarButtonRestrict.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_ToolBarButtonRestrict_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_ToolBarButtonRestrict_UU  UUID key
+     * @param trxName Transaction
+     */
     public MToolBarButtonRestrict(Properties ctx, String AD_ToolBarButtonRestrict_UU, String trxName) {
         super(ctx, AD_ToolBarButtonRestrict_UU, trxName);
     }
@@ -116,13 +115,14 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	}	//	MToolBarButtonRestrict
 
 	/** 
-	 * Returns a list of restrictions to be applied according to the role, the window of the form ...
+	 * Get list of button with restrictions to be applied according to role and window
 	 * @param ctx
 	 * @param AD_Role_ID
 	 * @param AD_Window_ID
-	 * @param reportViewer
+	 * @param reportViewer true for report viewer, false for window (i.e Action=R or W)
 	 * @param trxName
-	 **/
+	 * @return array of AD_ToolBarButton_ID
+	 */
 	public static int[] getOfWindow(Properties ctx, int AD_Role_ID, int AD_Window_ID, boolean reportViewer, String trxName)
 	{		
 		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_WINDOW_SQL);
@@ -133,13 +133,14 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	}	//	getOfWindow
 	
 	/** 
-	 * Returns a list of restrictions to be applied according to the role, the tab of the window ...
+	 * Get list of button with restrictions to be applied according to the role, the tab of the window ...
 	 * @param ctx
 	 * @param AD_Role_ID
 	 * @param AD_Window_ID
 	 * @param AD_Tab_ID
 	 * @param trxName
-	 **/
+	 * @return array of AD_ToolBarButton_ID
+	 */
 	public static int[] getOfTab(Properties ctx, int AD_Role_ID, int AD_Window_ID, int AD_Tab_ID, String trxName)
 	{		
 		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_TAB_SQL);
@@ -150,12 +151,13 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	}	//	getOfWindow
 	
 	/** 
-	 * Returns a list of restrictions to be applied according to the role, the report/process ...
+	 * Get list of button with restrictions to be applied according to the role, the report/process ...
 	 * @param ctx
 	 * @param AD_Role_ID
 	 * @param AD_Process_ID
 	 * @param trxName
-	 **/
+	 * @return array of AD_ToolBarButton_ID
+	 */
 	public static int[] getOfReport(Properties ctx, int AD_Role_ID, int AD_Process_ID, String trxName)
 	{		
 		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_OF_REPORT_SQL);
@@ -166,12 +168,13 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	}	//	getOf
 	
 	/** 
-	 * Returns a list of restrictions to be applied according to the role for tab process toolbar buttons
+	 * Get list of process button (with AD_Process_ID) with restrictions to be applied according to role and tab
 	 * @param ctx
 	 * @param AD_Role_ID
 	 * @param AD_Tab_ID
 	 * @param trxName 
-	 **/
+	 * @return array of AD_ToolBarButton_ID
+	 */
 	public static int[] getProcessButtonOfTab(Properties ctx, int AD_Role_ID, int AD_Tab_ID, String trxName)
 	{
 		if (s_log.isLoggable(Level.INFO)) s_log.info("sql="+GET_PROCESS_BUTTON_OF_TAB_SQL);
@@ -185,6 +188,7 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	 * 	String Representation
 	 *	@return	info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MToolBarButtonRestrict[")
@@ -194,10 +198,10 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	}	//	toString
 
 	/**
-	 * Check Window access for ReadWrite and New Toolbar button
+	 * Check access for "New Record" Toolbar button
 	 * 
 	 * @param  windowID - AD_Window_ID
-	 * @return          True if Toolbar button is restricted
+	 * @return True if Toolbar button is restricted
 	 */
 	public static boolean isNewButtonRestricted(int windowID)
 	{
@@ -205,11 +209,11 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	} // isNewButtonRestricted
 
 	/**
-	 * Check Window access for ReadWrite and New Toolbar button
+	 * Check access for "New Record" Toolbar button
 	 * 
 	 * @param  windowID - AD_Window_ID
 	 * @param  tabID    - AD_Tab_ID
-	 * @return          True if Toolbar button is restricted
+	 * @return True if Toolbar button is restricted
 	 */
 	public static boolean isNewButtonRestricted(int windowID, int tabID)
 	{
@@ -225,8 +229,8 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	 * 
 	 * @param  windowID     - AD_Window_ID
 	 * @param  tabID        - AD_Tab_ID
-	 * @param  toolbarBtnID - Toolbar button ID
-	 * @return              True if Toolbar button is restricted
+	 * @param  toolbarBtnID - Toolbar button ID (AD_ToolBarButton_ID)
+	 * @return True if Toolbar button is restricted
 	 */
 	public static boolean isToolbarButtonRestricted(int windowID, int tabID, int toolbarBtnID)
 	{

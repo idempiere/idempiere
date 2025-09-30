@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_POS
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_POS 
 {
@@ -75,14 +75,21 @@ public interface I_C_POS
 	  */
 	public int getAutoLogoutDelay();
 
-    /** Column name CashDrawer */
-    public static final String COLUMNNAME_CashDrawer = "CashDrawer";
+    /** Column name C_BPartnerCashTrx_ID */
+    public static final String COLUMNNAME_C_BPartnerCashTrx_ID = "C_BPartnerCashTrx_ID";
 
-	/** Set Cash Drawer	  */
-	public void setCashDrawer (String CashDrawer);
+	/** Set Template B.Partner.
+	  * Business Partner used for creating new Business Partners on the fly
+	  */
+	public void setC_BPartnerCashTrx_ID (int C_BPartnerCashTrx_ID);
 
-	/** Get Cash Drawer	  */
-	public String getCashDrawer();
+	/** Get Template B.Partner.
+	  * Business Partner used for creating new Business Partners on the fly
+	  */
+	public int getC_BPartnerCashTrx_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException;
 
     /** Column name C_BankAccount_ID */
     public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
@@ -97,22 +104,8 @@ public interface I_C_POS
 	  */
 	public int getC_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
-
-    /** Column name C_BPartnerCashTrx_ID */
-    public static final String COLUMNNAME_C_BPartnerCashTrx_ID = "C_BPartnerCashTrx_ID";
-
-	/** Set Template B.Partner.
-	  * Business Partner used for creating new Business Partners on the fly
-	  */
-	public void setC_BPartnerCashTrx_ID (int C_BPartnerCashTrx_ID);
-
-	/** Get Template B.Partner.
-	  * Business Partner used for creating new Business Partners on the fly
-	  */
-	public int getC_BPartnerCashTrx_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException;
 
     /** Column name C_CashBook_ID */
     public static final String COLUMNNAME_C_CashBook_ID = "C_CashBook_ID";
@@ -127,6 +120,7 @@ public interface I_C_POS
 	  */
 	public int getC_CashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -142,20 +136,8 @@ public interface I_C_POS
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
-
-    /** Column name C_POS_ID */
-    public static final String COLUMNNAME_C_POS_ID = "C_POS_ID";
-
-	/** Set POS Terminal.
-	  * Point of Sales Terminal
-	  */
-	public void setC_POS_ID (int C_POS_ID);
-
-	/** Get POS Terminal.
-	  * Point of Sales Terminal
-	  */
-	public int getC_POS_ID();
 
     /** Column name C_POSKeyLayout_ID */
     public static final String COLUMNNAME_C_POSKeyLayout_ID = "C_POSKeyLayout_ID";
@@ -170,7 +152,21 @@ public interface I_C_POS
 	  */
 	public int getC_POSKeyLayout_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException;
+
+    /** Column name C_POS_ID */
+    public static final String COLUMNNAME_C_POS_ID = "C_POS_ID";
+
+	/** Set POS Terminal.
+	  * Point of Sales Terminal
+	  */
+	public void setC_POS_ID (int C_POS_ID);
+
+	/** Get POS Terminal.
+	  * Point of Sales Terminal
+	  */
+	public int getC_POS_ID();
 
     /** Column name C_POS_UU */
     public static final String COLUMNNAME_C_POS_UU = "C_POS_UU";
@@ -180,6 +176,15 @@ public interface I_C_POS
 
 	/** Get C_POS_UU	  */
 	public String getC_POS_UU();
+
+    /** Column name CashDrawer */
+    public static final String COLUMNNAME_CashDrawer = "CashDrawer";
+
+	/** Set Cash Drawer	  */
+	public void setCashDrawer (String CashDrawer);
+
+	/** Get Cash Drawer	  */
+	public String getCashDrawer();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -262,6 +267,7 @@ public interface I_C_POS
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -277,6 +283,7 @@ public interface I_C_POS
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
@@ -305,6 +312,7 @@ public interface I_C_POS
 	  */
 	public int getOSK_KeyLayout_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getOSK_KeyLayout() throws RuntimeException;
 
     /** Column name OSNP_KeyLayout_ID */
@@ -320,6 +328,7 @@ public interface I_C_POS
 	  */
 	public int getOSNP_KeyLayout_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getOSNP_KeyLayout() throws RuntimeException;
 
     /** Column name PrinterName */
@@ -348,6 +357,7 @@ public interface I_C_POS
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name Updated */

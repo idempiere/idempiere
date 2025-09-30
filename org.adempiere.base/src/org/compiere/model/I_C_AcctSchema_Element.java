@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema_Element
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_AcctSchema_Element 
 {
@@ -49,6 +49,22 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getAD_Client_ID();
 
+    /** Column name AD_Column2_ID */
+    public static final String COLUMNNAME_AD_Column2_ID = "AD_Column2_ID";
+
+	/** Set Column 2.
+	  * Column in the table
+	  */
+	public void setAD_Column2_ID (int AD_Column2_ID);
+
+	/** Get Column 2.
+	  * Column in the table
+	  */
+	public int getAD_Column2_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Column getAD_Column2() throws RuntimeException;
+
     /** Column name AD_Column_ID */
     public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
 
@@ -62,6 +78,7 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -76,6 +93,22 @@ public interface I_C_AcctSchema_Element
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_Asset_ID */
+    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+
+	/** Set Asset.
+	  * Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID);
+
+	/** Get Asset.
+	  * Asset used internally or by customers
+	  */
+	public int getA_Asset_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name C_AcctSchema_Element_ID */
     public static final String COLUMNNAME_C_AcctSchema_Element_ID = "C_AcctSchema_Element_ID";
@@ -108,6 +141,7 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -123,6 +157,7 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -138,6 +173,7 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -153,22 +189,48 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
-    /** Column name C_Element_ID */
-    public static final String COLUMNNAME_C_Element_ID = "C_Element_ID";
+    /** Column name C_Charge_ID */
+    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
 
-	/** Set Element.
-	  * Accounting Element
+	/** Set Charge.
+	  * Additional document charges
 	  */
-	public void setC_Element_ID (int C_Element_ID);
+	public void setC_Charge_ID (int C_Charge_ID);
 
-	/** Get Element.
-	  * Accounting Element
+	/** Get Charge.
+	  * Additional document charges
 	  */
-	public int getC_Element_ID();
+	public int getC_Charge_ID();
 
-	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException;
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
+
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_ElementValue_ID */
     public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
@@ -183,7 +245,40 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getC_ElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
+
+    /** Column name C_Element_ID */
+    public static final String COLUMNNAME_C_Element_ID = "C_Element_ID";
+
+	/** Set Element.
+	  * Accounting Element
+	  */
+	public void setC_Element_ID (int C_Element_ID);
+
+	/** Get Element.
+	  * Accounting Element
+	  */
+	public int getC_Element_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException;
+
+    /** Column name C_Employee_ID */
+    public static final String COLUMNNAME_C_Employee_ID = "C_Employee_ID";
+
+	/** Set Employee.
+	  * Identifies a Business Partner
+	  */
+	public void setC_Employee_ID (int C_Employee_ID);
+
+	/** Get Employee.
+	  * Identifies a Business Partner
+	  */
+	public int getC_Employee_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException;
 
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
@@ -198,6 +293,7 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -213,7 +309,24 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name C_SalesRegion_ID */
+    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
+
+	/** Set Sales Region.
+	  * Sales coverage region
+	  */
+	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
+
+	/** Get Sales Region.
+	  * Sales coverage region
+	  */
+	public int getC_SalesRegion_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -230,21 +343,6 @@ public interface I_C_AcctSchema_Element
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_SalesRegion_ID */
-    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
-
-	/** Set Sales Region.
-	  * Sales coverage region
-	  */
-	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
-
-	/** Get Sales Region.
-	  * Sales coverage region
-	  */
-	public int getC_SalesRegion_ID();
-
-	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name ElementType */
     public static final String COLUMNNAME_ElementType = "ElementType";
@@ -294,6 +392,22 @@ public interface I_C_AcctSchema_Element
 	  */
 	public boolean isMandatory();
 
+    /** Column name M_AttributeSetInstance_ID */
+    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+
+	/** Set Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
+
+	/** Get Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
+
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
 
@@ -307,7 +421,24 @@ public interface I_C_AcctSchema_Element
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Warehouse_ID */
+    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
+
+	/** Set Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public void setM_Warehouse_ID (int M_Warehouse_ID);
+
+	/** Get Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

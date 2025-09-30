@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2009 Low Heng Sin
+Copyright (C) 2009 Idalica Corporation
+-->
+<zk>
+<zscript>
+    import org.compiere.Adempiere;
+	var isLoginInfoShown = Adempiere.isLoginInfoShown();
+</zscript>
+<style>
+	.loginLinksBox {
+		padding: 0;
+		margin: 0;
+		padding-left: 3px;
+		font-size: 8pt;
+		background-color: transparent;
+	}
+</style>
+
+<div class="loginLinksBox" if="${isLoginInfoShown == true}"
+	style="position: absolute; bottom: 30px;">
+
+	<toolbarbutton href="http://www.zkoss.org" image="~./theme/default/images/zkpowered_s.png"
+		tooltiptext="Powered by Zk" target="_blank"
+		/>
+</div>
+
+</zk>

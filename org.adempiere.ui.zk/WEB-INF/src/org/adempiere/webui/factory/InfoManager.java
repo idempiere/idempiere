@@ -14,7 +14,12 @@
 package org.adempiere.webui.factory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.function.Function;
 
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
@@ -25,6 +30,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.util.CCache;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Static methods for instantiation of {@link InfoPanel}/{@link InfoWindow}
@@ -33,10 +39,10 @@ import org.osgi.framework.Constants;
  */
 public class InfoManager
 {
-	private final static CCache<Long, IServiceReferenceHolder<IInfoFactory>> s_infoFactoryCache = new CCache<Long, IServiceReferenceHolder<IInfoFactory>>(null, "IInfoFactory", 10, false);
-	
+	private static final CCache<Integer, ConcurrentHashMap<Long, IServiceReferenceHolder<IInfoFactory>>> s_infoFactoryCache = new CCache<>(null, "IInfoFactory", 10, 0, false, 0);
+	private static final Set<Integer> s_rankings = new ConcurrentSkipListSet<>(Comparator.reverseOrder());
 	/**
-	 * 
+	 * Create info panel or info window
 	 * @param WindowNo
 	 * @param tableName
 	 * @param keyColumn
@@ -50,48 +56,15 @@ public class InfoManager
             String tableName, String keyColumn, String value,
             boolean multiSelection, String whereClause, boolean lookup)
     {
-		InfoPanel info = null;
+		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = (service) -> {
+			return service.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, 0, lookup);
+		};
 		
-		List<Long> visitedIds = new ArrayList<Long>();
-		if (!s_infoFactoryCache.isEmpty()) {
-			Long[] keys = s_infoFactoryCache.keySet().toArray(new Long[0]);
-			for (Long key : keys) {
-				IServiceReferenceHolder<IInfoFactory> serviceReference = s_infoFactoryCache.get(key);
-				if (serviceReference != null) {
-					IInfoFactory service = serviceReference.getService();
-					if (service != null) {
-						visitedIds.add(key);
-						info = service.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, 0, lookup);
-						if (info != null)
-							return info;
-					} else {
-						s_infoFactoryCache.remove(key);
-					}
-				}
-			}
-		}
-		        
-		List<IServiceReferenceHolder<IInfoFactory>> serviceReferences = Service.locator().list(IInfoFactory.class).getServiceReferences();
-		for(IServiceReferenceHolder<IInfoFactory> serviceReference : serviceReferences)
-		{
-			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
-			if (visitedIds.contains(serviceId))
-				continue;
-			IInfoFactory service = serviceReference.getService();
-			if (service != null)
-			{
-				s_infoFactoryCache.put(serviceId, serviceReference);
-				info = service.create(WindowNo, tableName, keyColumn, value, multiSelection, whereClause, 0, lookup);
-				if (info != null)
-					break;
-			}
-		}
-        //
-        return info;
+        return create(funcGetInfoFromService);
     }
 
 	/**
-	 * 
+	 * Create info panel or info window
 	 * @param lookup
 	 * @param field
 	 * @param tableName
@@ -105,52 +78,24 @@ public class InfoManager
 			String keyColumn, String queryValue, boolean multiSelection,
 			String whereClause)
 	{
-		InfoPanel ip = null;
-		int AD_InfoWindow_ID = 0;
-		if (lookup instanceof MLookup)
-		{
-			AD_InfoWindow_ID  = ((MLookup)lookup).getAD_InfoWindow_ID();
+		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = null;
+		
+		if (lookup instanceof MLookup){
+			final int AD_InfoWindow_ID  = ((MLookup)lookup).getAD_InfoWindow_ID();
+			funcGetInfoFromService = (service) -> {
+				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID);
+			};
+		}else {
+			funcGetInfoFromService = (service) -> {
+				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, 0);
+			};
 		}
 		
-		List<Long> visitedIds = new ArrayList<Long>();
-		if (!s_infoFactoryCache.isEmpty()) {
-			Long[] keys = s_infoFactoryCache.keySet().toArray(new Long[0]);
-			for (Long key : keys) {
-				IServiceReferenceHolder<IInfoFactory> serviceReference = s_infoFactoryCache.get(key);
-				if (serviceReference != null) {
-					IInfoFactory service = serviceReference.getService();
-					if (service != null) {
-						visitedIds.add(key);
-						ip = service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID);
-						if (ip != null)
-							return ip;
-					} else {
-						s_infoFactoryCache.remove(key);
-					}
-				}
-			}
-		}
-				
-		List<IServiceReferenceHolder<IInfoFactory>> serviceReferences = Service.locator().list(IInfoFactory.class).getServiceReferences();
-		for(IServiceReferenceHolder<IInfoFactory> serviceReference : serviceReferences)
-		{
-			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
-			if (visitedIds.contains(serviceId))
-				continue;
-			IInfoFactory service = serviceReference.getService();
-			if (service != null)
-			{
-				s_infoFactoryCache.put(serviceId, serviceReference);
-				ip = service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID);
-				if (ip != null)
-					break;
-			}
-		}
-		return ip;
+		return create(funcGetInfoFromService);
 	}
 	
 	/**
-	 * 
+	 * Create info window
 	 * @param AD_InfoWindow_ID
 	 * @return {@link InfoWindow}
 	 */
@@ -160,7 +105,7 @@ public class InfoManager
 	}
 
 	/**
-	 * 
+	 * Create info window
 	 * @param AD_InfoWindow_ID
 	 * @param predefinedContextVariables
 	 * @return {@link InfoWindow}
@@ -171,7 +116,7 @@ public class InfoManager
 	}
 
 	/**
-	 * 
+	 * Create info window
 	 * @param windowNo
 	 * @param AD_InfoWindow_ID
 	 * @param predefinedContextVariables
@@ -179,38 +124,65 @@ public class InfoManager
 	 */
 	public static InfoWindow create (int windowNo, int AD_InfoWindow_ID, String predefinedContextVariables)
     {
-        InfoWindow info = null;
+		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = (service) -> {
+			return service.create(windowNo, AD_InfoWindow_ID ,predefinedContextVariables);
+		};
+		return (InfoWindow)create(funcGetInfoFromService);
+    }
+	
+	public static InfoPanel create (Function<IInfoFactory, InfoPanel> funcGetInfoFromService)
+    {
+        InfoPanel info = null;
 
         List<Long> visitedIds = new ArrayList<Long>();
 		if (!s_infoFactoryCache.isEmpty()) {
-			Long[] keys = s_infoFactoryCache.keySet().toArray(new Long[0]);
-			for (Long key : keys) {
-				IServiceReferenceHolder<IInfoFactory> serviceReference = s_infoFactoryCache.get(key);
-				if (serviceReference != null) {
-					IInfoFactory service = serviceReference.getService();
-					if (service != null) {
-						visitedIds.add(key);
-						info = service.create(windowNo, AD_InfoWindow_ID ,predefinedContextVariables);
-						if (info != null)
-							return info;
-					} else {
-						s_infoFactoryCache.remove(key);
+			for (Integer ranking : s_rankings) {
+				ConcurrentHashMap<Long, IServiceReferenceHolder<IInfoFactory>> serviceIdMap = s_infoFactoryCache.get(ranking);
+				if (serviceIdMap == null)
+					continue;
+				
+				Long[] keys = serviceIdMap.keySet().toArray(new Long[0]);
+				for (Long key : keys) {
+					IServiceReferenceHolder<IInfoFactory> serviceReference = serviceIdMap.get(key);
+					if (serviceReference != null) {
+						IInfoFactory service = serviceReference.getService();
+						if (service != null) {
+							visitedIds.add(key);
+							info = funcGetInfoFromService.apply(service);
+							if (info != null)
+								return info;
+						} else {
+							serviceIdMap.remove(key);
+						}
 					}
 				}
 			}
+			
 		}
 		
 		List<IServiceReferenceHolder<IInfoFactory>> serviceReferences = Service.locator().list(IInfoFactory.class).getServiceReferences();
 		for(IServiceReferenceHolder<IInfoFactory> serviceReference : serviceReferences)
 		{
-			Long serviceId = (Long) serviceReference.getServiceReference().getProperty(Constants.SERVICE_ID);
+			ServiceReference<IInfoFactory> reference = serviceReference.getServiceReference();
+			Long serviceId = (Long) reference.getProperty(Constants.SERVICE_ID);
 			if (visitedIds.contains(serviceId))
 				continue;
 			IInfoFactory service = serviceReference.getService();
 			if (service != null)
 			{
-				s_infoFactoryCache.put(serviceId, serviceReference);
-				info = service.create(windowNo, AD_InfoWindow_ID, predefinedContextVariables);
+        		Integer ranking = (Integer) reference.getProperty(Constants.SERVICE_RANKING);
+        		if (ranking == null)
+        			ranking = Integer.valueOf(0);
+        		if (!s_rankings.contains(ranking))
+        			s_rankings.add(ranking);
+        		ConcurrentHashMap<Long, IServiceReferenceHolder<IInfoFactory>> serviceIdMap = s_infoFactoryCache.get(ranking);
+        		if (serviceIdMap == null)
+        		{
+        			serviceIdMap = new ConcurrentHashMap<Long, IServiceReferenceHolder<IInfoFactory>>();
+        			s_infoFactoryCache.put(ranking, serviceIdMap);
+        		}
+        		serviceIdMap.put(serviceId, serviceReference);
+				info = funcGetInfoFromService.apply(service);
 				if (info != null)
 					break;
 			}

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Depreciation_Exp
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_Depreciation_Exp 
 {
@@ -41,6 +41,27 @@ public interface I_A_Depreciation_Exp
 
     /** Load Meta Data */
 
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
+
     /** Column name A_Account_Number_Acct */
     public static final String COLUMNNAME_A_Account_Number_Acct = "A_Account_Number_Acct";
 
@@ -50,6 +71,7 @@ public interface I_A_Depreciation_Exp
 	/** Get A_Account_Number_Acct	  */
 	public int getA_Account_Number_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_Account_Number_A() throws RuntimeException;
 
     /** Column name A_Accumulated_Depr */
@@ -97,6 +119,7 @@ public interface I_A_Depreciation_Exp
 	/** Get Asset Addition	  */
 	public int getA_Asset_Addition_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Addition getA_Asset_Addition() throws RuntimeException;
 
     /** Column name A_Asset_Cost */
@@ -126,6 +149,7 @@ public interface I_A_Depreciation_Exp
 	/** Get Asset Disposed	  */
 	public int getA_Asset_Disposed_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Disposed getA_Asset_Disposed() throws RuntimeException;
 
     /** Column name A_Asset_ID */
@@ -141,6 +165,7 @@ public interface I_A_Depreciation_Exp
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Remaining */
@@ -161,14 +186,6 @@ public interface I_A_Depreciation_Exp
 	/** Get Remaining Amt (fiscal)	  */
 	public BigDecimal getA_Asset_Remaining_F();
 
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
     /** Column name A_Depreciation_Entry_ID */
     public static final String COLUMNNAME_A_Depreciation_Entry_ID = "A_Depreciation_Entry_ID";
 
@@ -178,6 +195,7 @@ public interface I_A_Depreciation_Exp
 	/** Get Depreciation Entry	  */
 	public int getA_Depreciation_Entry_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Depreciation_Entry getA_Depreciation_Entry() throws RuntimeException;
 
     /** Column name A_Depreciation_Exp_ID */
@@ -198,19 +216,6 @@ public interface I_A_Depreciation_Exp
 	/** Get A_Depreciation_Exp_UU	  */
 	public String getA_Depreciation_Exp_UU();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name A_Entry_Type */
     public static final String COLUMNNAME_A_Entry_Type = "A_Entry_Type";
 
@@ -229,21 +234,6 @@ public interface I_A_Depreciation_Exp
 	/** Get Asset Period	  */
 	public int getA_Period();
 
-    /** Column name C_AcctSchema_ID */
-    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
-
-	/** Set Accounting Schema.
-	  * Rules for accounting
-	  */
-	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
-
-	/** Get Accounting Schema.
-	  * Rules for accounting
-	  */
-	public int getC_AcctSchema_ID();
-
-	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
-
     /** Column name CR_Account_ID */
     public static final String COLUMNNAME_CR_Account_ID = "CR_Account_ID";
 
@@ -257,7 +247,24 @@ public interface I_A_Depreciation_Exp
 	  */
 	public int getCR_Account_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCR_Account() throws RuntimeException;
+
+    /** Column name C_AcctSchema_ID */
+    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
+
+	/** Set Accounting Schema.
+	  * Rules for accounting
+	  */
+	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
+
+	/** Get Accounting Schema.
+	  * Rules for accounting
+	  */
+	public int getC_AcctSchema_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -274,6 +281,22 @@ public interface I_A_Depreciation_Exp
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DR_Account_ID */
+    public static final String COLUMNNAME_DR_Account_ID = "DR_Account_ID";
+
+	/** Set Account (debit).
+	  * Account used
+	  */
+	public void setDR_Account_ID (int DR_Account_ID);
+
+	/** Get Account (debit).
+	  * Account used
+	  */
+	public int getDR_Account_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getDR_Account() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -300,21 +323,6 @@ public interface I_A_Depreciation_Exp
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name DR_Account_ID */
-    public static final String COLUMNNAME_DR_Account_ID = "DR_Account_ID";
-
-	/** Set Account (debit).
-	  * Account used
-	  */
-	public void setDR_Account_ID (int DR_Account_ID);
-
-	/** Get Account (debit).
-	  * Account used
-	  */
-	public int getDR_Account_ID();
-
-	public I_C_ValidCombination getDR_Account() throws RuntimeException;
 
     /** Column name Expense */
     public static final String COLUMNNAME_Expense = "Expense";

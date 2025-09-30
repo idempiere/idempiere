@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -539,8 +540,31 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		}
 		return result.toString();
 	}	//	TO_NUMBER
+	
+	/**
+	 *	@return string with right casting for JSON inserts
+	 */
+	public String getJSONCast () {
+		return "CAST (? AS jsonb)";
+	}
+	
+	/**
+	 * 	Return string as JSON object for INSERT statements
+	 *	@param value
+	 *	@return value as json
+	 */
+	public String TO_JSON (String value)
+	{
+		if (value == null)
+			return "NULL";
 
-
+		StringBuilder retValue = null;
+		retValue = new StringBuilder("CAST (");
+		retValue.append(value);
+		retValue.append(" AS jsonb)");
+		return retValue.toString();
+	}
+	
 	/**
 	 * 	Get SQL Commands
 	 *	@param cmdType CMD_*
@@ -1211,6 +1235,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getClobDataType() {
 		return "TEXT";
 	}
+	
+	@Override
+	public String getJsonDataType() {
+		return "JSONB";
+	}
 
 	@Override
 	public String getTimestampDataType() {
@@ -1279,7 +1308,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
 			.append(table.getTableName())
 			.append(" ADD COLUMN ").append(column.getSQLDDL());
-		String constraint = column.getConstraint(table.getTableName());
+		String constraint = column.getConstraint(table);
 		if (constraint != null && constraint.length() > 0) {
 			sql.append(DB.SQLSTATEMENT_SEPARATOR).append("ALTER TABLE ")
 			.append(table.getTableName())
@@ -1376,5 +1405,10 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	@Override
 	public ITablePartitionService getTablePartitionService() {
 		return new TablePartitionService();
+	}
+
+	@Override
+	public String TO_Blob(byte[] blob) {
+		return "decode('"+HexFormat.of().formatHex(blob)+"','hex')";
 	}
 }   //  DB_PostgreSQL

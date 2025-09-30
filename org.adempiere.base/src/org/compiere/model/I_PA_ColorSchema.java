@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ColorSchema
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_ColorSchema 
 {
@@ -75,6 +75,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor1() throws RuntimeException;
 
     /** Column name AD_PrintColor2_ID */
@@ -90,6 +91,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor2() throws RuntimeException;
 
     /** Column name AD_PrintColor3_ID */
@@ -105,6 +107,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor3_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor3() throws RuntimeException;
 
     /** Column name AD_PrintColor4_ID */
@@ -120,6 +123,7 @@ public interface I_PA_ColorSchema
 	  */
 	public int getAD_PrintColor4_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor4() throws RuntimeException;
 
     /** Column name Created */

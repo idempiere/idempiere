@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Year
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Year 
@@ -64,6 +64,22 @@ public interface I_HR_Year
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_Year_ID */
+    public static final String COLUMNNAME_C_Year_ID = "C_Year_ID";
+
+	/** Set Year.
+	  * Calendar Year
+	  */
+	public void setC_Year_ID (int C_Year_ID);
+
+	/** Get Year.
+	  * Calendar Year
+	  */
+	public int getC_Year_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -80,21 +96,6 @@ public interface I_HR_Year
 	  */
 	public int getCreatedBy();
 
-    /** Column name C_Year_ID */
-    public static final String COLUMNNAME_C_Year_ID = "C_Year_ID";
-
-	/** Set Year.
-	  * Calendar Year
-	  */
-	public void setC_Year_ID (int C_Year_ID);
-
-	/** Get Year.
-	  * Calendar Year
-	  */
-	public int getC_Year_ID();
-
-	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException;
-
     /** Column name HR_Payroll_ID */
     public static final String COLUMNNAME_HR_Payroll_ID = "HR_Payroll_ID";
 
@@ -104,6 +105,7 @@ public interface I_HR_Year
 	/** Get Payroll	  */
 	public int getHR_Payroll_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException;
 
     /** Column name HR_Year_ID */

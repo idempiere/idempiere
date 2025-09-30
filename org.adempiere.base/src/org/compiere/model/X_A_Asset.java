@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for A_Asset
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset")
 public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Asset (Properties ctx, int A_Asset_ID, String trxName)
@@ -171,6 +171,50 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
+
+	/** Set User/Contact.
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID < 1)
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+	}
+
+	/** Get User/Contact.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Asset Type.
+		@param A_AssetType Asset Type
+	*/
+	public void setA_AssetType (String A_AssetType)
+	{
+		set_Value (COLUMNNAME_A_AssetType, A_AssetType);
+	}
+
+	/** Get Asset Type.
+		@return Asset Type	  */
+	public String getA_AssetType()
+	{
+		return (String)get_Value(COLUMNNAME_A_AssetType);
+	}
+
 	/** A_Asset_Action AD_Reference_ID=53360 */
 	public static final int A_ASSET_ACTION_AD_Reference_ID=53360;
 	/** Dispose = DI */
@@ -203,6 +247,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Asset_Action);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Class)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Class.Table_ID)
@@ -245,6 +290,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_A_Asset_CreateDate);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Group)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Group.Table_ID)
@@ -342,21 +388,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Asset_Status);
 	}
 
-	/** Set Asset Type.
-		@param A_AssetType Asset Type
-	*/
-	public void setA_AssetType (String A_AssetType)
-	{
-		set_Value (COLUMNNAME_A_AssetType, A_AssetType);
-	}
-
-	/** Get Asset Type.
-		@return Asset Type	  */
-	public String getA_AssetType()
-	{
-		return (String)get_Value(COLUMNNAME_A_AssetType);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Type)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Type.Table_ID)
@@ -399,34 +431,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Asset_UU);
 	}
 
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
-			.getPO(getAD_User_ID(), get_TrxName());
-	}
-
-	/** Set User/Contact.
-		@param AD_User_ID User within the system - Internal or Business Partner Contact
-	*/
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID < 1)
-			set_Value (COLUMNNAME_AD_User_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
-	}
-
-	/** Get User/Contact.
-		@return User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Parent_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -553,6 +558,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_AssetServiceDate);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -581,62 +587,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());
-	}
-
-	/** Set Partner Location.
-		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
-	*/
-	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
-	{
-		if (C_BPartner_Location_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
-	}
-
-	/** Get Partner Location.
-		@return Identifies the (ship to) address for this Business Partner
-	  */
-	public int getC_BPartner_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -665,6 +616,65 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
+
+	/** Set Partner Location.
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
+	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
+	{
+		if (C_BPartner_Location_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
+	}
+
+	/** Get Partner Location.
+		@return Identifies the (ship to) address for this Business Partner
+	  */
+	public int getC_BPartner_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
@@ -693,6 +703,7 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -950,6 +961,23 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Lease Termination.
+		@param LeaseTerminationDate Lease Termination Date
+	*/
+	public void setLeaseTerminationDate (Timestamp LeaseTerminationDate)
+	{
+		set_Value (COLUMNNAME_LeaseTerminationDate, LeaseTerminationDate);
+	}
+
+	/** Get Lease Termination.
+		@return Lease Termination Date
+	  */
+	public Timestamp getLeaseTerminationDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_LeaseTerminationDate);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getLease_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -976,22 +1004,6 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Lease Termination.
-		@param LeaseTerminationDate Lease Termination Date
-	*/
-	public void setLeaseTerminationDate (Timestamp LeaseTerminationDate)
-	{
-		set_Value (COLUMNNAME_LeaseTerminationDate, LeaseTerminationDate);
-	}
-
-	/** Get Lease Termination.
-		@return Lease Termination Date
-	  */
-	public Timestamp getLeaseTerminationDate()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_LeaseTerminationDate);
 	}
 
 	/** Set Life use.
@@ -1045,6 +1057,122 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 		return (String)get_Value(COLUMNNAME_Lot);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
+	{
+		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
+
+	/** Set Attribute Set Instance.
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
+	{
+		if (M_AttributeSetInstance_ID < 0)
+			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
+	}
+
+	/** Get Attribute Set Instance.
+		@return Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
+			.getPO(getM_InOutLine_ID(), get_TrxName());
+	}
+
+	/** Set Shipment/Receipt Line.
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
+	public void setM_InOutLine_ID (int M_InOutLine_ID)
+	{
+		if (M_InOutLine_ID < 1)
+			set_Value (COLUMNNAME_M_InOutLine_ID, null);
+		else
+			set_Value (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
+	}
+
+	/** Get Shipment/Receipt Line.
+		@return Line on Shipment or Receipt document
+	  */
+	public int getM_InOutLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_Locator getM_Locator() throws RuntimeException
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
+
+	/** Set Locator.
+		@param M_Locator_ID Warehouse Locator
+	*/
+	public void setM_Locator_ID (int M_Locator_ID)
+	{
+		if (M_Locator_ID < 1)
+			set_Value (COLUMNNAME_M_Locator_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
+	}
+
+	/** Get Locator.
+		@return Warehouse Locator
+	  */
+	public int getM_Locator_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
+
+	/** Set Product.
+		@param M_Product_ID Product, Service, Item
+	*/
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1)
+			set_Value (COLUMNNAME_M_Product_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Manufactured Year.
 		@param ManufacturedYear Manufactured Year
 	*/
@@ -1077,118 +1205,6 @@ public class X_A_Asset extends PO implements I_A_Asset, I_Persistent
 	public String getManufacturer()
 	{
 		return (String)get_Value(COLUMNNAME_Manufacturer);
-	}
-
-	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
-	{
-		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
-			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
-	}
-
-	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID Product Attribute Set Instance
-	*/
-	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
-	{
-		if (M_AttributeSetInstance_ID < 0)
-			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
-	}
-
-	/** Get Attribute Set Instance.
-		@return Product Attribute Set Instance
-	  */
-	public int getM_AttributeSetInstance_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
-			.getPO(getM_InOutLine_ID(), get_TrxName());
-	}
-
-	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID Line on Shipment or Receipt document
-	*/
-	public void setM_InOutLine_ID (int M_InOutLine_ID)
-	{
-		if (M_InOutLine_ID < 1)
-			set_Value (COLUMNNAME_M_InOutLine_ID, null);
-		else
-			set_Value (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
-	}
-
-	/** Get Shipment/Receipt Line.
-		@return Line on Shipment or Receipt document
-	  */
-	public int getM_InOutLine_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_M_Locator getM_Locator() throws RuntimeException
-	{
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
-			.getPO(getM_Locator_ID(), get_TrxName());
-	}
-
-	/** Set Locator.
-		@param M_Locator_ID Warehouse Locator
-	*/
-	public void setM_Locator_ID (int M_Locator_ID)
-	{
-		if (M_Locator_ID < 1)
-			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else
-			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
-	}
-
-	/** Get Locator.
-		@return Warehouse Locator
-	  */
-	public int getM_Locator_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
-			.getPO(getM_Product_ID(), get_TrxName());
-	}
-
-	/** Set Product.
-		@param M_Product_ID Product, Service, Item
-	*/
-	public void setM_Product_ID (int M_Product_ID)
-	{
-		if (M_Product_ID < 1)
-			set_Value (COLUMNNAME_M_Product_ID, null);
-		else
-			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
-	}
-
-	/** Get Product.
-		@return Product, Service, Item
-	  */
-	public int getM_Product_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Name.

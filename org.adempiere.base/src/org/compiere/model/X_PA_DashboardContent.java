@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_DashboardContent
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardContent")
 public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -155,6 +155,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
@@ -182,6 +183,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -210,6 +212,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -238,6 +241,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -266,6 +270,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_ID)
@@ -293,6 +298,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -321,6 +327,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -422,6 +429,22 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public String getHTML()
 	{
 		return (String)get_Value(COLUMNNAME_HTML);
+	}
+
+	/** Set Comment/Help.
+		@param Help Comment or Hint
+	*/
+	public void setHelp (String Help)
+	{
+		set_Value (COLUMNNAME_Help, Help);
+	}
+
+	/** Get Comment/Help.
+		@return Comment or Hint
+	  */
+	public String getHelp()
+	{
+		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Collapsed By Default.
@@ -538,28 +561,6 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
-	/** Set Show on Login.
-		@param IsShowinLogin Show on Login
-	*/
-	public void setIsShowinLogin (boolean IsShowinLogin)
-	{
-		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
-	}
-
-	/** Get Show on Login.
-		@return Show on Login	  */
-	public boolean isShowinLogin()
-	{
-		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Show Title.
 		@param IsShowTitle Show Title
 	*/
@@ -573,6 +574,28 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public boolean isShowTitle()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowTitle);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show on Login.
+		@param IsShowinLogin Show on Login
+	*/
+	public void setIsShowinLogin (boolean IsShowinLogin)
+	{
+		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
+	}
+
+	/** Get Show on Login.
+		@return Show on Login	  */
+	public boolean isShowinLogin()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
@@ -661,6 +684,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return (String)get_Value(COLUMNNAME_PA_DashboardContent_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Goal getPA_Goal() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_ID)

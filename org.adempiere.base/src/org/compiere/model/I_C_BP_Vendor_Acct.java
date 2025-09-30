@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BP_Vendor_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_BP_Vendor_Acct 
 {
@@ -75,7 +75,17 @@ public interface I_C_BP_Vendor_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+
+    /** Column name C_BP_Vendor_Acct_UU */
+    public static final String COLUMNNAME_C_BP_Vendor_Acct_UU = "C_BP_Vendor_Acct_UU";
+
+	/** Set C_BP_Vendor_Acct_UU	  */
+	public void setC_BP_Vendor_Acct_UU (String C_BP_Vendor_Acct_UU);
+
+	/** Get C_BP_Vendor_Acct_UU	  */
+	public String getC_BP_Vendor_Acct_UU();
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -90,16 +100,8 @@ public interface I_C_BP_Vendor_Acct
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
-
-    /** Column name C_BP_Vendor_Acct_UU */
-    public static final String COLUMNNAME_C_BP_Vendor_Acct_UU = "C_BP_Vendor_Acct_UU";
-
-	/** Set C_BP_Vendor_Acct_UU	  */
-	public void setC_BP_Vendor_Acct_UU (String C_BP_Vendor_Acct_UU);
-
-	/** Get C_BP_Vendor_Acct_UU	  */
-	public String getC_BP_Vendor_Acct_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -159,6 +161,7 @@ public interface I_C_BP_Vendor_Acct
 	  */
 	public int getV_Liability_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_A() throws RuntimeException;
 
     /** Column name V_Liability_Services_Acct */
@@ -174,6 +177,7 @@ public interface I_C_BP_Vendor_Acct
 	  */
 	public int getV_Liability_Services_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_Services_A() throws RuntimeException;
 
     /** Column name V_Prepayment_Acct */
@@ -189,5 +193,6 @@ public interface I_C_BP_Vendor_Acct
 	  */
 	public int getV_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Prepayment_A() throws RuntimeException;
 }

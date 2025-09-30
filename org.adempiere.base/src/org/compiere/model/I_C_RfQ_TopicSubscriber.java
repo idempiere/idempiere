@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQ_TopicSubscriber
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_RfQ_TopicSubscriber 
 {
@@ -75,6 +75,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -90,6 +91,7 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -105,38 +107,8 @@ public interface I_C_RfQ_TopicSubscriber
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
-
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
-    /** Column name C_RfQ_Topic_ID */
-    public static final String COLUMNNAME_C_RfQ_Topic_ID = "C_RfQ_Topic_ID";
-
-	/** Set RfQ Topic.
-	  * Topic for Request for Quotations
-	  */
-	public void setC_RfQ_Topic_ID (int C_RfQ_Topic_ID);
-
-	/** Get RfQ Topic.
-	  * Topic for Request for Quotations
-	  */
-	public int getC_RfQ_Topic_ID();
-
-	public org.compiere.model.I_C_RfQ_Topic getC_RfQ_Topic() throws RuntimeException;
 
     /** Column name C_RfQ_TopicSubscriber_ID */
     public static final String COLUMNNAME_C_RfQ_TopicSubscriber_ID = "C_RfQ_TopicSubscriber_ID";
@@ -159,6 +131,38 @@ public interface I_C_RfQ_TopicSubscriber
 
 	/** Get C_RfQ_TopicSubscriber_UU	  */
 	public String getC_RfQ_TopicSubscriber_UU();
+
+    /** Column name C_RfQ_Topic_ID */
+    public static final String COLUMNNAME_C_RfQ_Topic_ID = "C_RfQ_Topic_ID";
+
+	/** Set RfQ Topic.
+	  * Topic for Request for Quotations
+	  */
+	public void setC_RfQ_Topic_ID (int C_RfQ_Topic_ID);
+
+	/** Get RfQ Topic.
+	  * Topic for Request for Quotations
+	  */
+	public int getC_RfQ_Topic_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_RfQ_Topic getC_RfQ_Topic() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

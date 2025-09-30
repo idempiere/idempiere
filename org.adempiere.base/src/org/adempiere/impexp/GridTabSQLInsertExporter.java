@@ -73,20 +73,26 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 	        List<String> pgs = new ArrayList<>();
 	        if (isCurrentRowOnly) {
 	        	PO po = getPO(gridTab, table, gridTab.getCurrentRow());
-	        	if (po != null)        		
+	        	if (po != null)  
+				{
 					addSQLInsert(po, oracles, pgs);
+					addSQLTableAttributeInsert(po, oracles, pgs);
+				}
 	        } else {
 	        	for(int i = 0; i < gridTab.getRowCount(); i++) {
 	        		PO po = getPO(gridTab, table, i);
-	        		if (po != null)         		
+		        	if (po != null)  
+					{
 						addSQLInsert(po, oracles, pgs);
+						addSQLTableAttributeInsert(po, oracles, pgs);
+					}
 	        	}
 	        }
 	        
 	        ZipEntry fileEntry = new ZipEntry("oracle/" + table.getTableName() + ".sql");
 	        zos.putNextEntry(fileEntry);
 	        for(String oracle : oracles)
-	        	zos.write((oracle+"\n;\n").getBytes());
+	        	zos.write(!(oracle.endsWith("/")) ? (oracle+"\n;\n").getBytes() : (oracle+"\n").getBytes());
 	        zos.closeEntry();
 	        
 	        fileEntry = new ZipEntry("postgresql/" + table.getTableName() + ".sql");
@@ -109,8 +115,11 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 			        pgs = new ArrayList<>();
 			        for(int i = 0; i < childTab.getRowCount(); i++) {
 		        		PO po = getPO(childTab, table, i);
-		        		if (po != null)
-		        			addSQLInsert(po, oracles, pgs);
+			        	if (po != null)  
+						{
+							addSQLInsert(po, oracles, pgs);
+							addSQLTableAttributeInsert(po, oracles, pgs);
+						}
 		        	}
 			        fileEntry = new ZipEntry("oracle/" + table.getTableName() + ".sql");
 			        zos.putNextEntry(fileEntry);
@@ -129,6 +138,22 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 			throw new AdempiereException(e);
 		}
     }
+	
+	/**
+	 * Adds SQL insert scripts for table attributes of the given PO.
+	 * 
+	 * @param po      the persistent object containing table attributes to process
+	 * @param oracles the list to add Oracle SQL insert scripts
+	 * @param pgs     the list to add PostgreSQL SQL insert scripts
+	 */
+	private void addSQLTableAttributeInsert(PO po, List<String> oracles, List<String> pgs)
+	{
+		List<PO> attributes = po.get_TableAttributes();
+		for (PO as : attributes)
+		{
+			addSQLInsert(as, oracles, pgs);
+		}
+	}// addSQLTableAttributeInsert
 
 	/**
 	 * Create SQL insert script for po
@@ -137,9 +162,8 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 	 * @param pgs list to add postgresql insert script
 	 */
 	protected void addSQLInsert(PO po, List<String> oracles, List<String> pgs) {
-		String sql = po.toInsertSQL();
-		String oracle = Database.getDatabase(Database.DB_ORACLE).convertStatement(sql);
-		String pg = Database.getDatabase(Database.DB_POSTGRESQL).convertStatement(sql);
+		String oracle = Database.getDatabase(Database.DB_ORACLE).convertStatement(po.toInsertSQL(Database.DB_ORACLE));
+		String pg = Database.getDatabase(Database.DB_POSTGRESQL).convertStatement(po.toInsertSQL(Database.DB_POSTGRESQL));
 		oracles.add(oracle);
 		pgs.add(pg);
 	}

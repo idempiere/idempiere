@@ -35,7 +35,6 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
-import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListModelTable;
@@ -52,11 +51,15 @@ import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
@@ -100,7 +103,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
- *  Account Viewer : Based on class AcctViewer
+ *  Account Viewer
  *
  *  @author Niraj Sohun
  *  		July 27, 2007
@@ -108,12 +111,16 @@ import org.zkoss.zul.Space;
  *  @author Elaine Tan
  *  @author Low Heng Sin
  */
-public class WAcctViewer extends Window implements EventListener<Event>
+public class WAcctViewer extends ADForm implements EventListener<Event>
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 3440375640756094077L;
+	private static final long serialVersionUID = 5582897718567800420L;
+
+	/* Predefined context variables to initialize the form */
+	public static final String INITIAL_RECORD_ID = "_Initial_Record_ID_";
+	public static final String INITIAL_AD_TABLE_ID = "_Initial_AD_Table_ID_";
 
 	private static final String TITLE = "Posting";
 
@@ -164,8 +171,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	private Label lSort = new Label();
 	private Label lGroup = new Label();
 
-	private Datebox selDateFrom = new Datebox();
-	private Datebox selDateTo = new Datebox();
+	private WDateEditor selDateFrom = new WDateEditor();
+	private WDateEditor selDateTo = new WDateEditor();
 
 	private Checkbox selDocument = new Checkbox();
 	private Checkbox displayQty = new Checkbox();
@@ -193,8 +200,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	private Tabpanels tabpanels = new Tabpanels();
 
 	private Hlayout southPanel = new Hlayout();
-
-	private int m_windowNo;
 
 	private ArrayList<ArrayList<Object>> m_queryData;
 
@@ -233,19 +238,16 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		if (log.isLoggable(Level.INFO))
 			log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 
-		m_windowNo = SessionManager.getAppDesktop().registerWindow(this);
-		m_data = new WAcctViewerData (Env.getCtx(), m_windowNo, AD_Client_ID, AD_Table_ID);
+		m_data = new WAcctViewerData (Env.getCtx(), m_WindowNo, AD_Client_ID, AD_Table_ID);
 
 		try
 		{
 			init();
-			dynInit (AD_Table_ID, Record_ID);
 			setAttribute(MODE_KEY, MODE_EMBEDDED);
 			setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
-			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_windowNo);	// for closing the window with shortcut
+			setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);	// for closing the window with shortcut
 	    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 	    	addEventListener(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this);
-			AEnv.showWindow(this);
 		}
 		catch(Exception e)
 		{
@@ -254,7 +256,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	}
 
 	/**
-	 *  Static Init.
+	 *  Layout window
 	 *  <pre>
 	 *  - mainPanel
 	 *      - tabbedPane
@@ -327,9 +329,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		row = rows.newRow();
 		row.appendChild(lDate);
 		hlayout = new Hlayout();
-		hlayout.appendChild(selDateFrom);		
+		hlayout.appendChild(selDateFrom.getComponent());		
 		hlayout.appendChild(new Label(" - "));
-		hlayout.appendChild(selDateTo);
+		hlayout.appendChild(selDateTo.getComponent());
+		DateRangeButton drb = (new DateRangeButton(selDateFrom, selDateTo));
+		hlayout.appendChild(drb);
 		row.appendChild(hlayout);
 
 			// Organization
@@ -490,7 +494,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		// Elaine 2009/07/29
 		if (ThemeManager.isUseFontIconForImage())
-			bZoom.setIconSclass("z-icon-Zoom");
+			bZoom.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
 		else
 			bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		bZoom.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")));
@@ -499,14 +503,14 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		//
 		
 		if (ThemeManager.isUseFontIconForImage())
-			bQuery.setIconSclass("z-icon-Refresh");
+			bQuery.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			bQuery.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		bQuery.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		bQuery.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bExport.setIconSclass("z-icon-Export");
+			bExport.setIconSclass(Icon.getIconSclass(Icon.EXPORT));
 		else
 			bExport.setImage(ThemeManager.getThemeResource("images/Export16.png"));
 		bExport.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Export")));
@@ -533,6 +537,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		ZKUpdateUtil.setHflex(southRight, "1");
 		southPanel.appendChild(southRight);
 		Panel southRightPanel = new Panel();
+		southRightPanel.setStyle("display: flex; flex-direction: row; align-items: center; gap: 5px; justify-content: flex-end;");
 		southRightPanel.appendChild(bZoom); // Elaine 2009/07/29
 		southRightPanel.appendChild(bExport);
 		southRightPanel.appendChild(bQuery);
@@ -616,12 +621,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		southPanel.setParent(south);
 		ZKUpdateUtil.setVflex(southPanel, "1");
 		ZKUpdateUtil.setHflex(southPanel, "1");
-
-		this.setTitle(Msg.getMsg(Env.getCtx(), TITLE));
-		this.setClosable(true);
-		this.setStyle("position: relative; width: 100%; height: 100%;");
-		this.setSizable(true);
-		this.setMaximizable(true);
 	}
 
 	/**
@@ -643,7 +642,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		selTable.addEventListener(Events.ON_SELECT, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			selRecord.setIconSclass("z-icon-Find");
+			selRecord.setIconSclass(Icon.getIconSclass(Icon.FIND));
 		else
 			selRecord.setImage(ThemeManager.getThemeResource("images/Find16.png"));
 		selRecord.addEventListener(Events.ON_CLICK, this);
@@ -659,7 +658,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		selAcct.addEventListener(Events.ON_CLICK, this);
 		selAcct.setLabel("");
 		if (ThemeManager.isUseFontIconForImage())
-			selAcct.setIconSclass("z-icon-Find");
+			selAcct.setIconSclass(Icon.getIconSclass(Icon.FIND));
 		else
 			selAcct.setImage(ThemeManager.getThemeResource("images/Find16.png"));
 
@@ -742,24 +741,25 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		this.detach();
 	} // dispose;
 
-	/**************************************************************************
+	/**
 	 *  After Tab Selection Changed
 	 */
 	public void stateChanged()
 	{
 		boolean visible = m_data.documentQuery && tabResult.isSelected();
 
-		bRePost.setVisible(visible);
+		bRePost.setVisible(visible && !Env.isReadOnlySession());
 		bExport.setVisible(tabResult.isSelected());
 		bZoom.setVisible(tabResult.isSelected());
 
-		forcePost.setVisible(visible);
+		forcePost.setVisible(visible && !Env.isReadOnlySession());
 	}   //  stateChanged
 
 	/**
 	 *  Event Performed (Event Listener)
 	 *  @param e Event
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		Object source = e.getTarget();
@@ -808,16 +808,16 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		}
 		else if(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT.equals(e.getName())) {
         	IDesktop desktop = SessionManager.getAppDesktop();
-        	if (m_windowNo > 0 && desktop.isCloseTabWithShortcut())
-        		desktop.closeWindow(m_windowNo);
+        	if (m_WindowNo > 0 && desktop.isCloseTabWithShortcut())
+        		desktop.closeWindow(m_WindowNo);
         	else
         		desktop.setCloseTabWithShortcut(true);
         }
 	} // onEvent
 
 	/**
-	 * export to excel
-	 * show excel viewer if available
+	 * Export to excel.<br/>
+	 * Show excel viewer if available.
 	 */
 	private void actionExport() {
 		if (m_rmodel != null && m_rmodel.getRowCount() > 0) {
@@ -904,14 +904,18 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			//  Additional Elements
 
 			if (!ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Organization)
-				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Account))
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Account)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField1)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField2)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField3)
+				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField4))
 			{
 				labels[selectionIndex].setValue(Msg.translate(Env.getCtx(), displayColumnName));
 				labels[selectionIndex].setVisible(true);
 				buttons[selectionIndex].setName(columnName); // actionCommand
 				buttons[selectionIndex].addEventListener(Events.ON_CLICK, this);
 				if (ThemeManager.isUseFontIconForImage())
-					buttons[selectionIndex].setIconSclass("z-icon-Find");
+					buttons[selectionIndex].setIconSclass(Icon.getIconSclass(Icon.FIND));
 				else
 					buttons[selectionIndex].setImage(ThemeManager.getThemeResource("images/Find16.png"));
 				buttons[selectionIndex].setLabel("");
@@ -1145,7 +1149,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 			table.appendChild(listhead);
 		}
-		// Elaine 2008/07/28
 		else
 		{
 			Listhead listhead = table.getListhead();
@@ -1193,8 +1196,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		selTable.setEnabled(doc);
 		selRecord.setEnabled(doc);
 		//
-		selDateFrom.setEnabled(!doc);
-		selDateTo.setEnabled(!doc);
+		selDateFrom.setReadWrite(!doc);
+		selDateTo.setReadWrite(!doc);
 		selOrg.setEnabled(!doc);
 		selAcct.setEnabled(!doc);
 		sel1.setEnabled(!doc);
@@ -1231,8 +1234,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // actionTable
 
 	/**
-	 *  Handle Info Button action
-	 *  Show info window
+	 *  Handle Info Button action.<br/>
+	 *  Show info window.
 	 *
 	 *  @param button pressed button
 	 *  @throws Exception
@@ -1286,8 +1289,18 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
 			whereClause = "";
 		}
-		else if (keyColumn.equals("M_Product_ID"))
+		else if (keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Employee_ID))
 		{
+			lookupColumn = "C_BPartner_ID";
+			whereClause = "C_BPartner.IsEmployee='Y'";
+		}
+		// 
+		else if (keyColumn.equals("M_Product_ID") || keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_CostCenter_ID)
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Department_ID)
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_M_AttributeSetInstance_ID) 
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_M_Warehouse_ID)
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_A_Asset_ID) 
+				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Charge_ID)) {
 			whereClause = "";
 		}
 		else if (selDocument.isChecked())
@@ -1295,6 +1308,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		final String tableName = lookupColumn.substring(0, lookupColumn.length()-3);
 
+		// Show info window
 		final InfoPanel info = InfoPanel.create(m_data.WindowNo, tableName, lookupColumn, "", false, whereClause);
 
 		if (!info.loadedOK())
@@ -1373,7 +1387,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // actionRePost
 
 	/**
-	 * zoom to table id + record id
+	 * Zoom to table id + record id
 	 */
 	private void actionZoom()
 	{
@@ -1394,7 +1408,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	}
 
 	/**
-	 * zoom to fact acct window (double click action)
+	 * Zoom to fact acct window (double click action)
 	 */
 	private void actionZoomFactAcct() {
 		int selected = table.getSelectedIndex();
@@ -1427,5 +1441,13 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			keyEvent.stopPropagation();
 			Events.echoEvent(new Event(IDesktop.ON_CLOSE_WINDOW_SHORTCUT_EVENT, this));
 		}
+	}
+
+	@Override
+	protected void initForm() {
+		setTitle(Msg.getMsg(Env.getCtx(), TITLE));
+		int AD_Table_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + INITIAL_AD_TABLE_ID, true);
+		int Record_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE + INITIAL_RECORD_ID, true);
+		dynInit(AD_Table_ID, Record_ID);
 	}
 }

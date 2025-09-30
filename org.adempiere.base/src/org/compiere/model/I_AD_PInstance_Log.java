@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance_Log
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_PInstance_Log 
 {
@@ -54,6 +54,7 @@ public interface I_AD_PInstance_Log
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name AD_PInstance_Log_UU */
@@ -78,7 +79,21 @@ public interface I_AD_PInstance_Log
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name JsonData */
+    public static final String COLUMNNAME_JsonData = "JsonData";
+
+	/** Set JSON Data.
+	  * The json field stores json data.
+	  */
+	public void setJsonData (String JsonData);
+
+	/** Get JSON Data.
+	  * The json field stores json data.
+	  */
+	public String getJsonData();
 
     /** Column name Log_ID */
     public static final String COLUMNNAME_Log_ID = "Log_ID";
@@ -88,6 +103,19 @@ public interface I_AD_PInstance_Log
 
 	/** Get Log	  */
 	public int getLog_ID();
+
+    /** Column name PInstanceLogType */
+    public static final String COLUMNNAME_PInstanceLogType = "PInstanceLogType";
+
+	/** Set Log Type.
+	  * Process Audit Log Type
+	  */
+	public void setPInstanceLogType (String PInstanceLogType);
+
+	/** Get Log Type.
+	  * Process Audit Log Type
+	  */
+	public String getPInstanceLogType();
 
     /** Column name P_Date */
     public static final String COLUMNNAME_P_Date = "P_Date";
@@ -110,19 +138,6 @@ public interface I_AD_PInstance_Log
 
 	/** Get Process ID	  */
 	public int getP_ID();
-
-    /** Column name PInstanceLogType */
-    public static final String COLUMNNAME_PInstanceLogType = "PInstanceLogType";
-
-	/** Set Log Type.
-	  * Process Audit Log Type
-	  */
-	public void setPInstanceLogType (String PInstanceLogType);
-
-	/** Get Log Type.
-	  * Process Audit Log Type
-	  */
-	public String getPInstanceLogType();
 
     /** Column name P_Msg */
     public static final String COLUMNNAME_P_Msg = "P_Msg";

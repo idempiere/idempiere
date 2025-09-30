@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_BOM_Indented
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_T_BOM_Indented 
 {
@@ -75,6 +75,7 @@ public interface I_T_BOM_Indented
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -90,6 +91,7 @@ public interface I_T_BOM_Indented
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Cost */
@@ -222,6 +224,7 @@ public interface I_T_BOM_Indented
 	  */
 	public int getM_CostElement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -237,6 +240,7 @@ public interface I_T_BOM_Indented
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Qty */
@@ -274,6 +278,7 @@ public interface I_T_BOM_Indented
 	/** Get Selected Product	  */
 	public int getSel_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getSel_Product() throws RuntimeException;
 
     /** Column name SeqNo */

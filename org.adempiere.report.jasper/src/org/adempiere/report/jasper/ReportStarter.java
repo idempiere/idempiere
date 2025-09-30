@@ -188,10 +188,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
     }
 
     /**
-	 *  Start the process.
-	 *  It should only return false, if the function could not be performed
-	 *  as this causes the process to abort.
-	 *  author rlemeill
+	 *  Start the Jasper Report process.<br/>
+	 *  Setup context class loader and do the actual work in {@link #startProcess0(Properties, ProcessInfo, Trx)}.
 	 *  @param ctx context
 	 *  @param pi standard process info
 	 *  @param trx
@@ -213,6 +211,13 @@ public class ReportStarter implements ProcessCall, ClientProcess
     	}
     }
         
+    /**
+     * Start running of Jasper Report process
+     * @param ctx
+     * @param pi
+     * @param trx
+     * @return true if success
+     */
     private boolean startProcess0(Properties ctx, ProcessInfo pi, Trx trx)
     {
     	processInfo = pi;
@@ -231,10 +236,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         String[] reportPathList = reportFilePath.split(";");
 	    for (String reportPath : reportPathList) {
 	        if (Util.isEmpty(reportPath, true))
-			{
-	            pi.setSummary("Invalid report file path: " + reportFilePath, true);
-	            return false;
-	        }
+	        	throw new AdempiereException("Invalid report file path: " + reportFilePath);
 	        if (reportPath.startsWith("@#LocalHttpAddr@")) {
 	        	String localaddr = Env.getContext(Env.getCtx(), Env.LOCAL_HTTP_ADDRESS);
 	        	if (!Util.isEmpty(localaddr)) {
@@ -242,8 +244,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	        	}
 	        }
 	
-			HashMap<String, Object> params = new HashMap<String, Object>();	
-			addProcessParameters(AD_PInstance_ID, params, trxName);
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			if (AD_PInstance_ID > 0)
+				addProcessParameters(AD_PInstance_ID, params, trxName);
 			addProcessInfoParameters(params, pi.getParameter());
 	
 			File reportFile = null;
@@ -265,11 +268,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			}
 	
 			if (reportFile == null && reportURL == null)
-			{
-				String tmp = "Can not load report from path: " + reportPath;
-				pi.setSummary(tmp, true);
-				return false;
-			}
+	        	throw new AdempiereException("Can not load report from path: " + reportPath);
 			
 			JasperInfo jasperInfo = reportFile != null ? getJasperInfo(reportFile) : getJasperInfo(reportURL);			
 			JasperReport jasperReport = jasperInfo.getJasperReport();
@@ -508,7 +507,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	    		processInfo.setPDFReport(batchPDFExportList.get(0));
 	    	} else {
 	    		try {
-					File pdfFile = File.createTempFile(makePrefix(processInfo.getTitle()), ".pdf");
+					File pdfFile = File.createTempFile(FileUtil.makePrefix(processInfo.getTitle()), ".pdf");
 					Util.mergePdf(batchPDFExportList, pdfFile);					
 					processInfo.setPDFReport(pdfFile);
 				} catch (Exception e) {
@@ -525,7 +524,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 					throw new AdempiereException(e.getMessage(), e);
 				}
 	    	}
-	    } else {
+	    } else if (!processInfo.isExport()) {
 		    if (jasperPrintList.size() == 1) {
 	            JRViewerProvider viewerLauncher = getViewerProvider();
 	            JasperPrint jasperPrint = jasperPrintList.get(0);
@@ -558,7 +557,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
     }
 
 	private File createMultiFileArchive(List<File> exportFileList) throws Exception {
-		File archiveFile = File.createTempFile(makePrefix(processInfo.getTitle()), ".zip");
+		File archiveFile = File.createTempFile(FileUtil.makePrefix(processInfo.getTitle()), ".zip");
 		try (FileOutputStream out = new FileOutputStream(archiveFile)) {
 			try (ZipOutputStream zip = new ZipOutputStream(out);) {
 				zip.setMethod(ZipOutputStream.DEFLATED);
@@ -586,14 +585,20 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		return archiveFile;
 	}
 
+	/**
+	 * Do batch export of JasperPrint
+	 * @param jasperPrint
+	 * @param batchExportList
+	 * @throws JRException
+	 */
 	private void doBatchExport(JasperPrint jasperPrint, List<File> batchExportList) throws JRException {
 		try
 		{
 			File pdfFile = null;
 			if (processInfo.getPDFFileName() != null) {
-				pdfFile = new File(processInfo.getPDFFileName());
+				pdfFile = FileUtil.createFile(processInfo.getPDFFileName());
 			} else {
-				pdfFile = File.createTempFile(makePrefix(jasperPrint.getName()), ".pdf");
+				pdfFile = File.createTempFile(FileUtil.makePrefix(jasperPrint.getName()), ".pdf");
 			}
 			
 			JRPdfExporter exporter = new JRPdfExporter(jasperReportContext);                    		
@@ -653,7 +658,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		    				else
 		    					newQueryText = originalQueryText + " WHERE " + query.toString();
 		    				
-		    			    File jrxmlFile = File.createTempFile(makePrefix(jasperReport.getName()), ".jrxml");
+		    			    File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
 		            		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
 		            		
 		            		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlFile);
@@ -681,6 +686,15 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		return jasperReport;
 	}
 
+	/**
+	 * Direct print
+	 * @param pi
+	 * @param printerName
+	 * @param printFormat
+	 * @param printInfo
+	 * @param jasperPrint
+	 * @throws JRException
+	 */
 	private void doDirectPrint(ProcessInfo pi, String printerName, MPrintFormat printFormat, PrintInfo printInfo,
 			JasperPrint jasperPrint) throws JRException {
 		// Get printer job
@@ -717,12 +731,27 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		exporter.exportReport();
 	}
 
+	/**
+	 * Perform export of JasperPrint
+	 * @param pi
+	 * @param jasperPrint
+	 * @param exportFileList
+	 * @throws JRException
+	 */
 	private void doExport(ProcessInfo pi, JasperPrint jasperPrint, List<File> exportFileList) throws JRException {
 		String ext = pi.getExportFileExtension();
+		
+		//export JasperPrint to process info
+		if ("JasperPrint".equalsIgnoreCase(ext)) {
+			pi.setInternalReportObject(jasperPrint);
+			return;
+		}
+				
 		if (ext == null)
 			ext = "pdf";
+		
 		try {						
-			File exportFile = File.createTempFile(makePrefix(jasperPrint.getName()), "." + ext);
+			File exportFile = File.createTempFile(FileUtil.makePrefix(jasperPrint.getName()), "." + ext);
 
 			try (FileOutputStream outputStream = new FileOutputStream(exportFile);) {
 
@@ -842,19 +871,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		return viewerLauncher;
 	}	
 	
-    private String makePrefix(String name) {
-		StringBuilder prefix = new StringBuilder();
-		char[] nameArray = name.toCharArray();
-		for (char ch : nameArray) {
-			if (Character.isLetterOrDigit(ch)) {
-				prefix.append(ch);
-			} else {
-				prefix.append("_");
-			}
-		}
-		return prefix.toString();
-	}
-
 	private WebResourceLoader getWebResourceLoader() {
 		if (webResourceLoader == null)
 			webResourceLoader = new WebResourceLoader(getLocalDownloadFolder());

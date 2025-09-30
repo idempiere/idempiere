@@ -61,7 +61,6 @@ import org.zkoss.zul.Vlayout;
  * 	Chat dialog (CM_Chat)
  *
  *  @author Jorg Janke
- *  @version $Id: AChat.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
  */
 public class WChat extends Window implements EventListener<Event>, DialogEvents
 {
@@ -222,6 +221,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	 */
 	private void loadChat()
 	{
+		messageTree.getChildren().clear();
 		Treechildren treeChildren = messageTree.getTreechildren();		
 		if(treeChildren == null)
 		{
@@ -382,7 +382,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 		{
 			if (e.getTarget().getAttribute("cancel.button") != null) 
 			{
-				e.getTarget().getParent().detach();
+				loadChat();
 				return;
 			}
 			int CM_ChatEntryParent_ID = (Integer)e.getTarget().getAttribute("CM_ChatEntryParent_ID");
@@ -391,7 +391,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 			entry.setCM_ChatEntryParent_ID(CM_ChatEntryParent_ID);
 			entry.saveEx();
 			addEntry(entry);
-			e.getTarget().getParent().detach();
+			loadChat();
 		}
 		
 	}	//	actionPerformed

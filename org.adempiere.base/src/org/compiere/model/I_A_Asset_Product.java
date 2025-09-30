@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Product
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_Asset_Product 
 {
@@ -40,39 +40,6 @@ public interface I_A_Asset_Product
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name A_Asset_ID */
-    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
-
-	/** Set Asset.
-	  * Asset used internally or by customers
-	  */
-	public void setA_Asset_ID (int A_Asset_ID);
-
-	/** Get Asset.
-	  * Asset used internally or by customers
-	  */
-	public int getA_Asset_ID();
-
-	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
-
-    /** Column name A_Asset_Product_ID */
-    public static final String COLUMNNAME_A_Asset_Product_ID = "A_Asset_Product_ID";
-
-	/** Set Asset Product	  */
-	public void setA_Asset_Product_ID (int A_Asset_Product_ID);
-
-	/** Get Asset Product	  */
-	public int getA_Asset_Product_ID();
-
-    /** Column name A_Asset_Product_UU */
-    public static final String COLUMNNAME_A_Asset_Product_UU = "A_Asset_Product_UU";
-
-	/** Set A_Asset_Product_UU	  */
-	public void setA_Asset_Product_UU (String A_Asset_Product_UU);
-
-	/** Get A_Asset_Product_UU	  */
-	public String getA_Asset_Product_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -94,6 +61,40 @@ public interface I_A_Asset_Product
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name A_Asset_ID */
+    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+
+	/** Set Asset.
+	  * Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID);
+
+	/** Get Asset.
+	  * Asset used internally or by customers
+	  */
+	public int getA_Asset_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
+
+    /** Column name A_Asset_Product_ID */
+    public static final String COLUMNNAME_A_Asset_Product_ID = "A_Asset_Product_ID";
+
+	/** Set Asset Product	  */
+	public void setA_Asset_Product_ID (int A_Asset_Product_ID);
+
+	/** Get Asset Product	  */
+	public int getA_Asset_Product_ID();
+
+    /** Column name A_Asset_Product_UU */
+    public static final String COLUMNNAME_A_Asset_Product_UU = "A_Asset_Product_UU";
+
+	/** Set A_Asset_Product_UU	  */
+	public void setA_Asset_Product_UU (String A_Asset_Product_UU);
+
+	/** Get A_Asset_Product_UU	  */
+	public String getA_Asset_Product_UU();
 
     /** Column name A_QTY_Current */
     public static final String COLUMNNAME_A_QTY_Current = "A_QTY_Current";
@@ -159,6 +160,7 @@ public interface I_A_Asset_Product
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -174,6 +176,7 @@ public interface I_A_Asset_Product
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -189,6 +192,7 @@ public interface I_A_Asset_Product
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */

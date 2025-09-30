@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeInstance
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_AttributeInstance 
 {
@@ -91,21 +91,6 @@ public interface I_M_AttributeInstance
 	  */
 	public boolean isActive();
 
-    /** Column name M_Attribute_ID */
-    public static final String COLUMNNAME_M_Attribute_ID = "M_Attribute_ID";
-
-	/** Set Attribute.
-	  * Product Attribute
-	  */
-	public void setM_Attribute_ID (int M_Attribute_ID);
-
-	/** Get Attribute.
-	  * Product Attribute
-	  */
-	public int getM_Attribute_ID();
-
-	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
-
     /** Column name M_AttributeInstance_UU */
     public static final String COLUMNNAME_M_AttributeInstance_UU = "M_AttributeInstance_UU";
 
@@ -128,6 +113,7 @@ public interface I_M_AttributeInstance
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_AttributeValue_ID */
@@ -143,7 +129,24 @@ public interface I_M_AttributeInstance
 	  */
 	public int getM_AttributeValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeValue getM_AttributeValue() throws RuntimeException;
+
+    /** Column name M_Attribute_ID */
+    public static final String COLUMNNAME_M_Attribute_ID = "M_Attribute_ID";
+
+	/** Set Attribute.
+	  * Product Attribute
+	  */
+	public void setM_Attribute_ID (int M_Attribute_ID);
+
+	/** Get Attribute.
+	  * Product Attribute
+	  */
+	public int getM_Attribute_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -182,6 +185,19 @@ public interface I_M_AttributeInstance
 
 	/** Get Value Date	  */
 	public Timestamp getValueDate();
+
+    /** Column name ValueMultipleSelection */
+    public static final String COLUMNNAME_ValueMultipleSelection = "ValueMultipleSelection";
+
+	/** Set Value Multiple Selection.
+	  * Comma separated values.
+	  */
+	public void setValueMultipleSelection (String ValueMultipleSelection);
+
+	/** Get Value Multiple Selection.
+	  * Comma separated values.
+	  */
+	public String getValueMultipleSelection();
 
     /** Column name ValueNumber */
     public static final String COLUMNNAME_ValueNumber = "ValueNumber";

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebServiceTypeAccess
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_WS_WebServiceTypeAccess 
@@ -77,6 +77,7 @@ public interface I_WS_WebServiceTypeAccess
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name Created */
@@ -155,5 +156,6 @@ public interface I_WS_WebServiceTypeAccess
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

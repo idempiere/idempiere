@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Locator
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Locator")
 public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Locator (Properties ctx, int M_Locator_ID, String trxName)
@@ -156,28 +156,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 		return false;
 	}
 
-	/** Set Locator.
-		@param M_Locator_ID Warehouse Locator
-	*/
-	public void setM_Locator_ID (int M_Locator_ID)
-	{
-		if (M_Locator_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
-	}
-
-	/** Get Locator.
-		@return Warehouse Locator
-	  */
-	public int getM_Locator_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_LocatorType getM_LocatorType() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_LocatorType)MTable.get(getCtx(), org.compiere.model.I_M_LocatorType.Table_ID)
@@ -205,6 +184,28 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Locator.
+		@param M_Locator_ID Warehouse Locator
+	*/
+	public void setM_Locator_ID (int M_Locator_ID)
+	{
+		if (M_Locator_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
+	}
+
+	/** Get Locator.
+		@return Warehouse Locator
+	  */
+	public int getM_Locator_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set M_Locator_UU.
 		@param M_Locator_UU M_Locator_UU
 	*/
@@ -220,6 +221,7 @@ public class X_M_Locator extends PO implements I_M_Locator, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_Locator_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)

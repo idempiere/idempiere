@@ -136,8 +136,8 @@ public class AlertProcessor extends AdempiereServer
 		MSystem system = MSystem.get(Env.getCtx());
 		MClient client = MClient.get(Env.getCtx(), alert.getAD_Client_ID());
 		// parse variables from Client, then from System
-		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, true);
-		alertMessage = Env.parseVariable(alertMessage, system, null, true);
+		String alertMessage = Env.parseVariable(alert.getAlertMessage(), client, null, false, false, true, true); // keep escape sequence
+		alertMessage = Env.parseVariable(alertMessage, system, null, false, false, true, false);
 		StringBuilder message = new StringBuilder(alertMessage).append(Env.NL);
 		//
 		boolean valid = true;
@@ -291,12 +291,12 @@ public class AlertProcessor extends AdempiereServer
 					note.saveEx();
 					if (attachments.size() > 0) {
 						// Attachment
-						MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), trx.getTrxName());
+						try (MAttachment attachment = new MAttachment (getCtx(), MNote.Table_ID, note.getAD_Note_ID(), note.getAD_Note_UU(), trx.getTrxName())) {
 						attachment.setClientOrg(alert.getAD_Client_ID(), alert.getAD_Org_ID());
 						for (File f : attachments) {
 							attachment.addEntry(f);
 						}
-						attachment.saveEx();
+						attachment.saveEx();}
 					}
 					countMail++;
 					trx.commit();

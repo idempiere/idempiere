@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import org.adempiere.base.BaseActivator;
 import org.adempiere.base.event.annotations.BaseEventHandler;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -81,16 +82,14 @@ public class EventManager implements IEventManager {
 		String path = Ini.getAdempiereHome();
 		File file = new File(path, "event.handlers.blacklist");
 		if (file.exists()) {
-			BufferedReader br = null;
-			try {
-				FileReader reader = new FileReader(file);
-				br = new BufferedReader(reader);
+			try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 				String s = null;
 				do {
 					s = br.readLine();
-					if (!Util.isEmpty(s)) {
+					if (s != null)
 						s = s.trim();
-						s = s.replaceAll(" ", "");
+					if (!Util.isEmpty(s) && !s.startsWith("#")) {
+						s = s.replace(" ", "");
 						if (s.endsWith("[*]")) {
 							blackListEventHandlers.add(s.substring(0, s.length()-3));
 						} else {
@@ -122,12 +121,6 @@ public class EventManager implements IEventManager {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-			} finally {
-				if (br != null) {
-					try {
-						br.close();
-					} catch (IOException e) {}
-				}
 			}
 		}
 		
@@ -332,8 +325,11 @@ public class EventManager implements IEventManager {
 		} else {
 			Map<String, Object> map = new HashMap<String, Object>(3);
 			map.put(EventConstants.EVENT_TOPIC, topic);
-			if (data != null)
+			if (data != null) {
 				map.put(EVENT_DATA, data);
+				if (data instanceof PO po)
+					map.put(TABLE_NAME_PROPERTY, po.get_TableName());
+			}
 			map.put(EVENT_ERROR_MESSAGES, new ArrayList<String>());
 			if (copySessionContext)
 				map.put(EVENT_CONTEXT, getCurrentSessionContext());
@@ -376,5 +372,31 @@ public class EventManager implements IEventManager {
 		}
 		event = new Event(topic, map);
 		return event;
+	}
+	
+	@Override	
+	public String[] getDisabledEventHandlers() {
+		List<String> disabledTopics = new ArrayList<String>();
+		if (blackListEventHandlers != null && !blackListEventHandlers.isEmpty()) {
+			blackListEventHandlers.forEach( e -> disabledTopics.add(e+"[*]"));
+		}
+		if (blackListTopicMap != null && !blackListTopicMap.isEmpty()) {
+			for(Map.Entry<String, List<String>> entry : blackListTopicMap.entrySet()) {
+				String className = entry.getKey();
+				List<String> topics = entry.getValue();
+				if (topics != null && !topics.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					sb.append(className).append("[");
+					for(int i = 0; i < topics.size(); i++) {
+						if (i > 0)
+							sb.append(",");
+						sb.append(topics.get(i));
+					}
+					sb.append("]");
+					disabledTopics.add(sb.toString());
+				}
+			}
+		}
+		return disabledTopics.toArray(new String[disabledTopics.size()]);
 	}
 }

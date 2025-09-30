@@ -30,6 +30,8 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 
 /**
@@ -38,12 +40,12 @@ import org.compiere.util.DB;
  */
 public class MRoleIncluded extends X_AD_Role_Included
 {
-	/**
-	 * generated serial id
-	 */
-	private static final long serialVersionUID = -3284165639631581484L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4101136698198494931L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Role_Included_UU  UUID key
@@ -91,6 +93,7 @@ public class MRoleIncluded extends X_AD_Role_Included
 		//
 		if (newRecord || is_ValueChanged(COLUMNNAME_Included_Role_ID))
 		{
+			// Raise exception if there are loop
 			List<Integer> trace = new ArrayList<Integer>();
 			if (hasLoop(Table_Name, COLUMNNAME_Included_Role_ID, COLUMNNAME_AD_Role_ID, getIncluded_Role_ID(), trace, get_TrxName()))
 			{
@@ -105,6 +108,8 @@ public class MRoleIncluded extends X_AD_Role_Included
 				throw new AdempiereException("Loop has detected "+roles);
 			}
 		}
+		// Reset role cache
+		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		//
 		return true;
 	}
@@ -172,6 +177,14 @@ public class MRoleIncluded extends X_AD_Role_Included
 		}
 		//
 		return false;
+	}
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		// Reset role cache
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
 	}
 
 }

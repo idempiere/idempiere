@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ReplicationDocument
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ReplicationDocument")
 public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocument, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName)
@@ -174,6 +174,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -202,6 +203,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)

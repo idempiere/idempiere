@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Achievement
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_Achievement")
 public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_Achievement (Properties ctx, int PA_Achievement_ID, String trxName)
@@ -275,6 +275,7 @@ public class X_PA_Achievement extends PO implements I_PA_Achievement, I_Persiste
 		return (String)get_Value(COLUMNNAME_PA_Achievement_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_Measure)MTable.get(getCtx(), org.compiere.model.I_PA_Measure.Table_ID)

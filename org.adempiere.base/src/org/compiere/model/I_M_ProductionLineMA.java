@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ProductionLineMA
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_ProductionLineMA 
 {
@@ -117,20 +117,17 @@ public interface I_M_ProductionLineMA
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
-    /** Column name MovementQty */
-    public static final String COLUMNNAME_MovementQty = "MovementQty";
+    /** Column name M_ProductionLineMA_UU */
+    public static final String COLUMNNAME_M_ProductionLineMA_UU = "M_ProductionLineMA_UU";
 
-	/** Set Movement Quantity.
-	  * Quantity of a product moved.
-	  */
-	public void setMovementQty (BigDecimal MovementQty);
+	/** Set M_ProductionLineMA_UU	  */
+	public void setM_ProductionLineMA_UU (String M_ProductionLineMA_UU);
 
-	/** Get Movement Quantity.
-	  * Quantity of a product moved.
-	  */
-	public BigDecimal getMovementQty();
+	/** Get M_ProductionLineMA_UU	  */
+	public String getM_ProductionLineMA_UU();
 
     /** Column name M_ProductionLine_ID */
     public static final String COLUMNNAME_M_ProductionLine_ID = "M_ProductionLine_ID";
@@ -145,16 +142,21 @@ public interface I_M_ProductionLineMA
 	  */
 	public int getM_ProductionLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
 
-    /** Column name M_ProductionLineMA_UU */
-    public static final String COLUMNNAME_M_ProductionLineMA_UU = "M_ProductionLineMA_UU";
+    /** Column name MovementQty */
+    public static final String COLUMNNAME_MovementQty = "MovementQty";
 
-	/** Set M_ProductionLineMA_UU	  */
-	public void setM_ProductionLineMA_UU (String M_ProductionLineMA_UU);
+	/** Set Movement Quantity.
+	  * Quantity of a product moved.
+	  */
+	public void setMovementQty (BigDecimal MovementQty);
 
-	/** Get M_ProductionLineMA_UU	  */
-	public String getM_ProductionLineMA_UU();
+	/** Get Movement Quantity.
+	  * Quantity of a product moved.
+	  */
+	public BigDecimal getMovementQty();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

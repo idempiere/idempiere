@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tree_Favorite_Node
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Tree_Favorite_Node 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Tree_Favorite_Node
 	  */
 	public int getAD_Menu_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Menu getAD_Menu() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -86,6 +87,7 @@ public interface I_AD_Tree_Favorite_Node
 	/** Get Favorite Tree	  */
 	public int getAD_Tree_Favorite_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree_Favorite getAD_Tree_Favorite() throws RuntimeException;
 
     /** Column name AD_Tree_Favorite_Node_ID */
@@ -213,6 +215,7 @@ public interface I_AD_Tree_Favorite_Node
 	  */
 	public int getParent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree_Favorite_Node getParent() throws RuntimeException;
 
     /** Column name SeqNo */

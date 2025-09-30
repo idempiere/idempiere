@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Group
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_Group")
 public class X_R_Group extends PO implements I_R_Group, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_Group (Properties ctx, int R_Group_ID, String trxName)
@@ -137,6 +137,7 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
@@ -189,6 +190,7 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)

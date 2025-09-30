@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatType")
 public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

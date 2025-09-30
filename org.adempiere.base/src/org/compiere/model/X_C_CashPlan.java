@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashPlan
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CashPlan")
 public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CashPlan (Properties ctx, int C_CashPlan_ID, String trxName)
@@ -158,6 +158,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -186,30 +187,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 		return ii.intValue();
 	}
 
-	/** CashFlowType AD_Reference_ID=53385 */
-	public static final int CASHFLOWTYPE_AD_Reference_ID=53385;
-	/** Financing = F */
-	public static final String CASHFLOWTYPE_Financing = "F";
-	/** Investment = I */
-	public static final String CASHFLOWTYPE_Investment = "I";
-	/** Operational = O */
-	public static final String CASHFLOWTYPE_Operational = "O";
-	/** Set Cash Flow Type.
-		@param CashFlowType Cash Flow Type
-	*/
-	public void setCashFlowType (String CashFlowType)
-	{
-
-		set_Value (COLUMNNAME_CashFlowType, CashFlowType);
-	}
-
-	/** Get Cash Flow Type.
-		@return Cash Flow Type	  */
-	public String getCashFlowType()
-	{
-		return (String)get_Value(COLUMNNAME_CashFlowType);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -238,6 +216,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -302,22 +281,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_CashPlan_UU);
 	}
 
-	/** Set Copy From.
-		@param CopyFrom Copy From Record
-	*/
-	public void setCopyFrom (String CopyFrom)
-	{
-		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
-	}
-
-	/** Get Copy From.
-		@return Copy From Record
-	  */
-	public String getCopyFrom()
-	{
-		return (String)get_Value(COLUMNNAME_CopyFrom);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -344,6 +308,46 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** CashFlowType AD_Reference_ID=53385 */
+	public static final int CASHFLOWTYPE_AD_Reference_ID=53385;
+	/** Financing = F */
+	public static final String CASHFLOWTYPE_Financing = "F";
+	/** Investment = I */
+	public static final String CASHFLOWTYPE_Investment = "I";
+	/** Operational = O */
+	public static final String CASHFLOWTYPE_Operational = "O";
+	/** Set Cash Flow Type.
+		@param CashFlowType Cash Flow Type
+	*/
+	public void setCashFlowType (String CashFlowType)
+	{
+
+		set_Value (COLUMNNAME_CashFlowType, CashFlowType);
+	}
+
+	/** Get Cash Flow Type.
+		@return Cash Flow Type	  */
+	public String getCashFlowType()
+	{
+		return (String)get_Value(COLUMNNAME_CashFlowType);
+	}
+
+	/** Set Copy From.
+		@param CopyFrom Copy From Record
+	*/
+	public void setCopyFrom (String CopyFrom)
+	{
+		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
+	}
+
+	/** Get Copy From.
+		@return Copy From Record
+	  */
+	public String getCopyFrom()
+	{
+		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
 
 	/** Set Document Date.
@@ -505,6 +509,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -533,6 +538,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

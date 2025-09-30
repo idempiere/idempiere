@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_TrialBalance
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_TrialBalance")
 public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_TrialBalance (Properties ctx, String T_TrialBalance_UU, String trxName)
@@ -97,78 +97,6 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
       return sb.toString();
     }
 
-	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-	{
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
-			.getPO(getA_Asset_ID(), get_TrxName());
-	}
-
-	/** Set Asset.
-		@param A_Asset_ID Asset used internally or by customers
-	*/
-	public void setA_Asset_ID (int A_Asset_ID)
-	{
-		if (A_Asset_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
-	}
-
-	/** Get Asset.
-		@return Asset used internally or by customers
-	  */
-	public int getA_Asset_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
-			.getPO(getAccount_ID(), get_TrxName());
-	}
-
-	/** Set Account.
-		@param Account_ID Account used
-	*/
-	public void setAccount_ID (int Account_ID)
-	{
-		if (Account_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_Account_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_Account_ID, Integer.valueOf(Account_ID));
-	}
-
-	/** Get Account.
-		@return Account used
-	  */
-	public int getAccount_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Account_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Account Key.
-		@param AccountValue Key of Account Element
-	*/
-	public void setAccountValue (String AccountValue)
-	{
-		set_ValueNoCheck (COLUMNNAME_AccountValue, AccountValue);
-	}
-
-	/** Get Account Key.
-		@return Key of Account Element
-	  */
-	public String getAccountValue()
-	{
-		return (String)get_Value(COLUMNNAME_AccountValue);
-	}
-
 	/** Set Trx Organization.
 		@param AD_OrgTrx_ID Performing or initiating organization
 	*/
@@ -191,6 +119,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -219,6 +148,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -242,6 +172,80 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
+
+	/** Set Asset.
+		@param A_Asset_ID Asset used internally or by customers
+	*/
+	public void setA_Asset_ID (int A_Asset_ID)
+	{
+		if (A_Asset_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
+	}
+
+	/** Get Asset.
+		@return Asset used internally or by customers
+	  */
+	public int getA_Asset_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Account Key.
+		@param AccountValue Key of Account Element
+	*/
+	public void setAccountValue (String AccountValue)
+	{
+		set_ValueNoCheck (COLUMNNAME_AccountValue, AccountValue);
+	}
+
+	/** Get Account Key.
+		@return Key of Account Element
+	  */
+	public String getAccountValue()
+	{
+		return (String)get_Value(COLUMNNAME_AccountValue);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getAccount_ID(), get_TrxName());
+	}
+
+	/** Set Account.
+		@param Account_ID Account used
+	*/
+	public void setAccount_ID (int Account_ID)
+	{
+		if (Account_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_Account_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_Account_ID, Integer.valueOf(Account_ID));
+	}
+
+	/** Get Account.
+		@return Account used
+	  */
+	public int getAccount_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Account_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -361,6 +365,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -389,6 +394,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -417,6 +423,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -445,6 +452,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -473,6 +481,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -501,6 +510,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
@@ -529,6 +539,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
@@ -557,6 +568,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
@@ -585,6 +597,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -613,6 +626,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
@@ -641,6 +655,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
@@ -669,6 +684,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -766,6 +782,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)
@@ -794,6 +811,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
@@ -862,6 +880,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Locator)MTable.get(getCtx(), org.compiere.model.I_M_Locator.Table_ID)
@@ -890,6 +909,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -1003,6 +1023,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return (String)get_Value(COLUMNNAME_T_TrialBalance_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -1031,6 +1052,7 @@ public class X_T_TrialBalance extends PO implements I_T_TrialBalance, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

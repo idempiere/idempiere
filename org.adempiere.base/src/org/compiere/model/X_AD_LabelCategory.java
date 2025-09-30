@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_LabelCategory
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelCategory")
 public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_LabelCategory (Properties ctx, int AD_LabelCategory_ID, String trxName)
@@ -138,6 +138,7 @@ public class X_AD_LabelCategory extends PO implements I_AD_LabelCategory, I_Pers
 		return (String)get_Value(COLUMNNAME_AD_LabelCategory_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)

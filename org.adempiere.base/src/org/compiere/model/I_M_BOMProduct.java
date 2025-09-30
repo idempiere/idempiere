@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_BOMProduct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_BOMProduct 
 {
@@ -195,6 +195,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_BOMAlternative_ID */
@@ -210,22 +211,8 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_BOMAlternative_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_BOMAlternative getM_BOMAlternative() throws RuntimeException;
-
-    /** Column name M_BOM_ID */
-    public static final String COLUMNNAME_M_BOM_ID = "M_BOM_ID";
-
-	/** Set BOM.
-	  * Bill of Material
-	  */
-	public void setM_BOM_ID (int M_BOM_ID);
-
-	/** Get BOM.
-	  * Bill of Material
-	  */
-	public int getM_BOM_ID();
-
-	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException;
 
     /** Column name M_BOMProduct_ID */
     public static final String COLUMNNAME_M_BOMProduct_ID = "M_BOMProduct_ID";
@@ -249,6 +236,22 @@ public interface I_M_BOMProduct
 	/** Get M_BOMProduct_UU	  */
 	public String getM_BOMProduct_UU();
 
+    /** Column name M_BOM_ID */
+    public static final String COLUMNNAME_M_BOM_ID = "M_BOM_ID";
+
+	/** Set BOM.
+	  * Bill of Material
+	  */
+	public void setM_BOM_ID (int M_BOM_ID);
+
+	/** Get BOM.
+	  * Bill of Material
+	  */
+	public int getM_BOM_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_BOM getM_BOM() throws RuntimeException;
+
     /** Column name M_ChangeNotice_ID */
     public static final String COLUMNNAME_M_ChangeNotice_ID = "M_ChangeNotice_ID";
 
@@ -262,6 +265,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_ChangeNotice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException;
 
     /** Column name M_ProductBOM_ID */
@@ -277,6 +281,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_ProductBOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_ProductBOM() throws RuntimeException;
 
     /** Column name M_ProductOperation_ID */
@@ -292,6 +297,7 @@ public interface I_M_BOMProduct
 	  */
 	public int getM_ProductOperation_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException;
 
     /** Column name SeqNo */

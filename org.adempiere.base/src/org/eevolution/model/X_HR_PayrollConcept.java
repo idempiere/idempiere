@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_PayrollConcept
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_PayrollConcept")
 public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_PayrollConcept (Properties ctx, int HR_PayrollConcept_ID, String trxName)
@@ -118,6 +118,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_ID)
@@ -145,6 +146,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_ID)
@@ -208,6 +210,7 @@ public class X_HR_PayrollConcept extends PO implements I_HR_PayrollConcept, I_Pe
 		return (String)get_Value(COLUMNNAME_HR_PayrollConcept_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)

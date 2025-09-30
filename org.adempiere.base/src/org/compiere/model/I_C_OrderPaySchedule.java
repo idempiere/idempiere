@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_OrderPaySchedule
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_OrderPaySchedule 
 {
@@ -62,21 +62,6 @@ public interface I_C_OrderPaySchedule
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_Order_ID */
-    public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
-
-	/** Set Order.
-	  * Order
-	  */
-	public void setC_Order_ID (int C_Order_ID);
-
-	/** Get Order.
-	  * Order
-	  */
-	public int getC_Order_ID();
-
-	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
-
     /** Column name C_OrderPaySchedule_ID */
     public static final String COLUMNNAME_C_OrderPaySchedule_ID = "C_OrderPaySchedule_ID";
 
@@ -95,6 +80,22 @@ public interface I_C_OrderPaySchedule
 	/** Get C_OrderPaySchedule_UU	  */
 	public String getC_OrderPaySchedule_UU();
 
+    /** Column name C_Order_ID */
+    public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
+
+	/** Set Order.
+	  * Order
+	  */
+	public void setC_Order_ID (int C_Order_ID);
+
+	/** Get Order.
+	  * Order
+	  */
+	public int getC_Order_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
+
     /** Column name C_PaySchedule_ID */
     public static final String COLUMNNAME_C_PaySchedule_ID = "C_PaySchedule_ID";
 
@@ -108,6 +109,7 @@ public interface I_C_OrderPaySchedule
 	  */
 	public int getC_PaySchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaySchedule getC_PaySchedule() throws RuntimeException;
 
     /** Column name Created */

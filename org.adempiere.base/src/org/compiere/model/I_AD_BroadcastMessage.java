@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_BroadcastMessage 
 {
@@ -97,6 +97,7 @@ public interface I_AD_BroadcastMessage
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -112,6 +113,7 @@ public interface I_AD_BroadcastMessage
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name BroadcastFrequency */
@@ -182,15 +184,6 @@ public interface I_AD_BroadcastMessage
 	  */
 	public Timestamp getExpiration();
 
-    /** Column name Expired */
-    public static final String COLUMNNAME_Expired = "Expired";
-
-	/** Set Expired	  */
-	public void setExpired (boolean Expired);
-
-	/** Get Expired	  */
-	public boolean isExpired();
-
     /** Column name ExpireNow */
     public static final String COLUMNNAME_ExpireNow = "ExpireNow";
 
@@ -203,6 +196,15 @@ public interface I_AD_BroadcastMessage
 	  * Expire the broadcast message
 	  */
 	public String getExpireNow();
+
+    /** Column name Expired */
+    public static final String COLUMNNAME_Expired = "Expired";
+
+	/** Set Expired	  */
+	public void setExpired (boolean Expired);
+
+	/** Get Expired	  */
+	public boolean isExpired();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

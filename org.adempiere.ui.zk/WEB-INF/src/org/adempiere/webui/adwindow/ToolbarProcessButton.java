@@ -17,8 +17,11 @@ import org.adempiere.webui.editor.IProcessButton;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.compiere.model.I_AD_Process;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MToolBarButton;
+import org.compiere.model.MUserDefProc;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -61,7 +64,15 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		MProcess process = MProcess.get(Env.getCtx(), getProcess_ID());
 		name = process.get_Translation(I_AD_Process.COLUMNNAME_Name);
 		description = process.get_Translation(I_AD_Process.COLUMNNAME_Description);
-		
+
+		MUserDefProc userDef = MUserDefProc.getBestMatch(Env.getCtx(), process.getAD_Process_ID());
+		if (userDef != null) {
+			if (userDef.getName() != null)
+				name = userDef.getName();
+			if (userDef.getDescription() != null)
+				description = userDef.getDescription();
+		}
+
 		button = new Button();
     	button.setLabel(name);
     	if (description != null && description.trim().length() > 0)
@@ -149,9 +160,14 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	public String get_ValueAsString(String variableName) {
 		int tabNo = adTabpanel.getTabNo();
 		if( tabNo == 0)
+		{
 	    	return adTabpanel.get_ValueAsString(variableName);
+		}
 	    else
-	    	return Env.getContext (Env.getCtx(), windowNo, tabNo, variableName, false, true);
+	    {
+	    	DefaultEvaluatee evaluatee = new DefaultEvaluatee(adTabpanel.getGridTab(), windowNo, tabNo, false, true);
+	    	return evaluatee.get_ValueAsString(variableName);
+	    }
 	}
 
 	/**
@@ -181,7 +197,7 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	} // pressedLogic
 
 	/**
-	 * Evaluate SQL or boolean logic expression.
+	 * Evaluate SQL or boolean logic expression.<br/>
 	 * For SQL expression, return true if the SQL expression has result (it doesn't check the return value of the SQL statement).
 	 * @param logic SQL (@SQL=) or boolean expression
 	 * @param tabNo
@@ -189,7 +205,7 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	 */
 	private boolean validateLogic(String logic, int tabNo) {
 		boolean isValid = false;
-		if (logic.startsWith("@SQL=")) {
+		if (logic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, getColumnName());
 		} else {
 			isValid = Evaluator.evaluateLogic(this, logic);

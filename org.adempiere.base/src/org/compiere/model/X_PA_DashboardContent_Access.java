@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for PA_DashboardContent_Access
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardContent_Access")
 public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardContent_Access, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)
@@ -100,6 +100,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -128,6 +129,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -192,6 +194,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 		return (String)get_Value(COLUMNNAME_PA_DashboardContent_Access_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_DashboardContent)MTable.get(getCtx(), org.compiere.model.I_PA_DashboardContent.Table_ID)

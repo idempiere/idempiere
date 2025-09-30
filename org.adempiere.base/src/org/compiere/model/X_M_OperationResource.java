@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_OperationResource
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_OperationResource")
 public class X_M_OperationResource extends PO implements I_M_OperationResource, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName)
@@ -123,6 +123,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
@@ -151,6 +152,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
@@ -248,6 +250,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 		return (String)get_Value(COLUMNNAME_M_OperationResource_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductOperation)MTable.get(getCtx(), org.compiere.model.I_M_ProductOperation.Table_ID)

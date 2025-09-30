@@ -34,6 +34,7 @@ import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.SortComparator;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
@@ -57,12 +58,15 @@ import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Frozen;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Vlayout;
@@ -193,6 +197,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	/** true if auto hide empty column feature is enable **/
 	private String m_isAutoHideEmptyColumn;
 
+	private Menupopup gridColumnMenuPopup;
+
 	/**
 	 * default constructor
 	 */
@@ -252,7 +258,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * create data grid instances
+	 * Create data grid instances
 	 */
 	protected void createListbox() {
 		listbox = new Grid();		
@@ -264,7 +270,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 	
 	/**
-	 * turn on/off detail pane mode
+	 * Turn on/off detail pane mode
 	 * @param detailPaneMode
 	 * @param gridTab
 	 */
@@ -277,6 +283,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Get detail pane paging size for a GridTab 
 	 * @param gridTab
 	 * @return the number of records to be displayed in detail grid
 	 */
@@ -286,9 +293,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		if (Util.isEmpty(pageDetailSizes, true)) {
 			return size;
 		}
-		/* Format of ZK_PAGING_DETAIL_SIZE is a list of components separated by ;
-		 * first component is the wide default
-		 * next components are exceptions defined as pair of tab:size - where tab can be AD_Tab_ID, AD_Tab_UU or AD_TableName
+		/** 
+		 * Format of ZK_PAGING_DETAIL_SIZE is a list of components separated by ;<br/>
+		 * Each component is either a number (page size) or a pair of tab:pageSize - where tab can be AD_Tab_ID, AD_Tab_UU or AD_TableName.
 		 */
 		for (String pageDetailSize : pageDetailSizes.split(";")) {
 			String[] parts = pageDetailSize.split(":");
@@ -328,6 +335,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Is in detail pane mode
 	 * @return true if it is in detail pane mode
 	 */
 	public boolean isDetailPaneMode() {
@@ -464,7 +472,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 *
+	 * Is data grid have been init with GridTab
 	 * @return true if data grid have been init with GridTab
 	 */
 	public boolean isInit() {
@@ -507,6 +515,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Is data grid in the process of refreshing data from GridTab
 	 * @return true if data grid is refreshing data from GridTab
 	 */
 	public boolean isRefreshing() {
@@ -571,7 +580,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * hide paging component
+	 * Hide paging component
 	 */
 	private void hidePagingControl() {
 		if (gridFooter.isVisible())
@@ -579,7 +588,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * show paging component
+	 * Show paging component
 	 */
 	private void showPagingControl() {
 		if (!gridFooter.isVisible())
@@ -587,7 +596,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * echo ON_POST_SELECTED_ROW_CHANGED_EVENT after current row index has changed
+	 * Echo ON_POST_SELECTED_ROW_CHANGED_EVENT after current row index has changed
 	 */
 	protected void echoOnPostSelectedRowChanged() {
 		if (getAttribute(ATTR_ON_POST_SELECTED_ROW_CHANGED) == null) {
@@ -613,6 +622,44 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		this.getChildren().clear();
 	}
 
+	// value of attribute to identify freeze menu item
+	public static final String ATTR_VALUE_MENU_ITEM_FROZEN = "Frozen";
+	public static final String MENU_ITEM_FROZEN_LABEL = "FrozenColumnContextMenuLabel";
+	// value of attribute to identify reset freeze menu item
+	public static final String ATTR_VALUE_MENU_ITEM_RESET_FROZEN = "Reset Frozen";
+	public static final String MENU_ITEM_RESET_FROZEN_LABEL = "ResetFrozenColumnContextMenuLabel";
+	// name of attribute to store reference to column doing right click contextMenuColumn
+	public static final String ATTR_NAME_CONTEXT_MENU_COLUMN = "contextMenuColumn";
+	// name of attribute to store reference to menu popup
+	public static final String ATTR_NAME_GRID_VIEW_CONTEXT_MENU_POPUP = "gridViewContextMenuPopup";
+	
+	/**
+	 * Event listener for context menu on grid header<br/>
+	 * Freeze the current column when click "frozen" column and reset to default column when click "reset frozen"
+	 */
+	public static final EventListener<? extends Event> listener = event -> {
+		Menuitem menuItem = (Menuitem)event.getTarget();
+		Menupopup menupopup = (Menupopup)menuItem.getParent();
+		
+		// get refers to the column set when handling the onOpen event of MenuPopop
+		org.zkoss.zul.Column contextMenuColumn = (org.zkoss.zul.Column)menupopup.getAttribute(GridView.ATTR_NAME_CONTEXT_MENU_COLUMN);
+		org.zkoss.zul.Grid grid = contextMenuColumn.getGrid();
+		
+		// calculate frozen up to click menu
+		int frozenColumns = -1;
+		Object valueIdentifyMenuItem = menuItem.getValue();
+		if (GridView.ATTR_VALUE_MENU_ITEM_FROZEN.equals(valueIdentifyMenuItem)) {// freeze column menu
+			frozenColumns = grid.getColumns().getChildren().indexOf(contextMenuColumn) + 1;
+		}else if (GridView.ATTR_VALUE_MENU_ITEM_RESET_FROZEN.equals(valueIdentifyMenuItem)) {// reset freeze menu
+			frozenColumns = 2;
+		}
+		
+		Frozen frozen = grid.getFrozen();
+		if (frozenColumns != -1 && frozen != null) {
+			frozen.setColumns(frozenColumns);
+		}
+	};
+	
 	/**
 	 * Setup {@link Columns} of data grid
 	 */
@@ -662,9 +709,37 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		listbox.appendChild(columns);
 		columns.setSizable(true);
-		columns.setMenupopup("none");
 		columns.setColumnsgroup(false);
 
+		if (gridColumnMenuPopup != null && gridColumnMenuPopup.getParent() != null)
+			gridColumnMenuPopup.detach();
+		gridColumnMenuPopup = new Menupopup();
+		appendChild(gridColumnMenuPopup);
+		
+		// handle onOpen event to store column to attribute
+		gridColumnMenuPopup.addEventListener(Events.ON_OPEN, event -> {
+			OpenEvent openEvent = (OpenEvent)event;
+			if (openEvent.isOpen()) {
+				openEvent.getTarget().setAttribute(GridView.ATTR_NAME_CONTEXT_MENU_COLUMN, openEvent.getReference());
+			}else {
+				openEvent.getTarget().removeAttribute(GridView.ATTR_NAME_CONTEXT_MENU_COLUMN);
+			}
+		});
+		
+		// setup freeze column menu
+		Menuitem frozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_FROZEN_LABEL, true));
+		frozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_FROZEN);
+		frozenMenuItem.setIconSclass(Icon.getIconSclass(Icon.LOCK));
+		frozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
+		gridColumnMenuPopup.appendChild(frozenMenuItem);
+		
+		// setup reset freeze column menu
+		Menuitem resetFrozenMenuItem = new Menuitem(Msg.getMsg(Env.getCtx(), MENU_ITEM_RESET_FROZEN_LABEL, true));
+		resetFrozenMenuItem.setValue(ATTR_VALUE_MENU_ITEM_RESET_FROZEN);
+		resetFrozenMenuItem.setIconSclass(Icon.getIconSclass(Icon.MAIL_REPLY));
+		resetFrozenMenuItem.addEventListener(Events.ON_CLICK, GridView.listener);
+		gridColumnMenuPopup.appendChild(resetFrozenMenuItem);
+		
 		Map<Integer, String> colnames = new HashMap<Integer, String>();
 		int index = 0;
 		
@@ -761,8 +836,9 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 					}
 				} 
 				columns.appendChild(column);
+				column.setContext(gridColumnMenuPopup);
 			}
-		}
+		}		
 	}
 
 	/**
@@ -888,13 +964,18 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Is auto hide empty columns
 	 * @return if auto hide empty columns feature have been turned on
 	 */
 	private boolean isAutoHideEmptyColumns() {
-		if (!Util.isEmpty(m_isAutoHideEmptyColumn, true)) 
+		if (!Util.isEmpty(m_isAutoHideEmptyColumn, true)) {
 			return "Y".equalsIgnoreCase(m_isAutoHideEmptyColumn);
-		else
-			return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		} else {
+			if (ClientInfo.isMobile())
+				return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_AUTO_HIDE_EMPTY_COLUMNS, true, Env.getAD_Client_ID(Env.getCtx()));
+			else
+				return MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()));
+		}
 	}
 
 	/**
@@ -912,7 +993,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * Update {@link #listModel} with {@link #tableModel} changes.
+	 * Update {@link #listModel} with {@link #tableModel} changes.<br/>
 	 * Re-create {@link #renderer}. 
 	 */
 	private void updateModel() {
@@ -1033,6 +1114,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Find nearest Center component that own this GridView.
 	 * @param gridView
 	 * @return {@link Center} that own this GridView instance
 	 */
@@ -1049,6 +1131,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 	
 	/**
+	 * Is all row of current page is selected
 	 * @return true if all row of current page is selected
 	 */
 	private boolean isAllSelected() {
@@ -1073,7 +1156,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * turn on/off select all rows for current page
+	 * Turn on/off select all rows for current page
 	 * @param b
 	 */
 	private void toggleSelectionForAll(boolean b) {
@@ -1198,14 +1281,14 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * scroll grid to the current focus row
+	 * Scroll grid to the current focus row
 	 */
 	public void scrollToCurrentRow() {
 		onPostSelectedRowChanged();
 	}
 	
 	/**
-	 * Focus to row.
+	 * Focus to row.<br/>
 	 * If it is in edit mode, assume row is the current editing row. 
 	 * @param row
 	 */
@@ -1250,6 +1333,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Is row have been rendered by row renderer
 	 * @param row
 	 * @param index
 	 * @return true if row have been rendered by row renderer
@@ -1372,6 +1456,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Is this GridView instance own by DetailPane
 	 * @return true if this GridView instance is own by DetailPane 
 	 */
 	private boolean isDetailPane() {
@@ -1386,7 +1471,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 	
 	/**
-	 *
+	 * Set window no
 	 * @param windowNo
 	 */
 	public void setWindowNo(int windowNo) {
@@ -1416,6 +1501,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
+	 * Set focus to field
 	 * @param columnName
 	 */
 	public void setFocusToField(String columnName) {
@@ -1469,7 +1555,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * redraw grid view
+	 * Redraw grid view
 	 */
 	public void invalidateGridView() {
 		Center center = findCenter(this);
@@ -1480,7 +1566,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * list field display in grid mode, in case user customize grid
+	 * List of field display in grid mode. If there is grid customization record.
 	 * this list container only customize list.
 	 * @return GridField[]
 	 */
@@ -1489,7 +1575,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 	
 	/**
-	 * call {@link #onEditCurrentRow(Event)}
+	 * Call {@link #onEditCurrentRow(Event)}
 	 */
 	public void onEditCurrentRow() {
 		onEditCurrentRow(null);
@@ -1549,7 +1635,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 
 	/**
 	 * Parent component change notification from ADTabpanel that own this GridView instance (Usually
-	 * after movement between Header and DetailPane panel).
+	 * after movement between Header and DetailPane panel).<br/>
 	 * Re-position paging component.
 	 */
 	protected void onADTabPanelParentChanged() {
@@ -1586,7 +1672,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	}
 
 	/**
-	 * call editorTaverseCallback for all field editors.
+	 * Call editorTaverseCallback for all field editors.
 	 */
 	@Override
 	public void editorTraverse(Callback<WEditor> editorTaverseCallback) {

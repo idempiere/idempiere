@@ -28,11 +28,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
@@ -72,6 +76,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * 
@@ -312,17 +318,12 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mulchX.getM_Product_ID(), 0, getTrxName());
 			MAccount acctVariance = pc.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as);
 			
-			whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MProduction.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + production.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-				    + " AND " + MFactAcct.COLUMNNAME_Account_ID + "=" + acctVariance.getAccount_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			Query query = MFactAcct.createRecordIdQuery(MProduction.Table_ID, production.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
 			BigDecimal variance = BigDecimal.ZERO;
-			for (int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-				variance = fa.getAmtAcctDr().subtract(fa.getAmtAcctCr());
-				break;
-			}
+			Optional<MFactAcct> optional = factAccts.stream().filter(e -> e.getAccount_ID() == acctVariance.getAccount_ID()).findFirst();
+			if (optional.isPresent())
+				variance = optional.get().getAmtAcctDr().subtract(optional.get().getAmtAcctCr());
 			BigDecimal varianceExpected = componentCost.subtract(endProductCost).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 			assertEquals(varianceExpected.setScale(2, RoundingMode.HALF_UP), variance.setScale(2, RoundingMode.HALF_UP), "Variance not posted correctly.");
 		} finally {
@@ -335,12 +336,12 @@ public class ProductionTestIsolated extends AbstractTestCase {
 	
 	@Test
 	public void testRollUp() {		
-		MProductCategory category = new MProductCategory(Env.getCtx(), 0, null);
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, getTrxName());
 		category.setName("Standard Costing");
 		category.saveEx();
 		
 		String whereClause = "M_Product_Category_ID=?";
-		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, null)
+		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, getTrxName())
 									.setParameters(category.get_ID())
 									.list();
 		for (MProductCategoryAcct categoryAcct : categoryAccts) {
@@ -348,7 +349,9 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			categoryAcct.saveEx();
 		}
 		
-		try {
+		try (MockedStatic<MProductCategory> mockedCategory = org.mockito.Mockito.mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS)) {
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(category.get_ID())))
+				.thenReturn(category);
 			int rollUpProcessId = 53230;
 			int mulchId = 137;
 			MProduct mulch = new MProduct(Env.getCtx(), mulchId, getTrxName());
@@ -403,11 +406,8 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			ServerProcessCtl.process(info, getTrx(), false);
 			assertFalse(info.isError(), info.getSummary());
 			
-			BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);;
+			BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			assertEquals(componentCost, endProductCost, "BOM Cost not roll up.");
-		} finally {
-			getTrx().rollback();
-			category.deleteEx(true);
 		}
 	}
 	

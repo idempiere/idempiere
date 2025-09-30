@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_CountryGroupCountry
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CountryGroupCountry")
 public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCountry, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName)
@@ -137,6 +137,7 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 		return (String)get_Value(COLUMNNAME_C_CountryGroupCountry_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CountryGroup getC_CountryGroup() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_ID)
@@ -164,6 +165,7 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)

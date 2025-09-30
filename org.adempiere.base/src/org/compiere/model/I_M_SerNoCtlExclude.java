@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_SerNoCtlExclude
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_SerNoCtlExclude 
 {
@@ -75,6 +75,7 @@ public interface I_M_SerNoCtlExclude
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */
@@ -154,6 +155,7 @@ public interface I_M_SerNoCtlExclude
 	  */
 	public int getM_SerNoCtl_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_SerNoCtl getM_SerNoCtl() throws RuntimeException;
 
     /** Column name Updated */

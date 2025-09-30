@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_AcctSchema 
 {
@@ -49,19 +49,6 @@ public interface I_C_AcctSchema
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgOnly_ID */
     public static final String COLUMNNAME_AD_OrgOnly_ID = "AD_OrgOnly_ID";
 
@@ -75,6 +62,19 @@ public interface I_C_AcctSchema
 	  */
 	public int getAD_OrgOnly_ID();
 
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
+
     /** Column name AutoPeriodControl */
     public static final String COLUMNNAME_AutoPeriodControl = "AutoPeriodControl";
 
@@ -87,6 +87,19 @@ public interface I_C_AcctSchema
 	  * If selected, the periods are automatically opened and closed
 	  */
 	public boolean isAutoPeriodControl();
+
+    /** Column name BackDateDay */
+    public static final String COLUMNNAME_BackDateDay = "BackDateDay";
+
+	/** Set Back-Date Days.
+	  * Number of days to be able to post a back-date transaction (based on system date)
+	  */
+	public void setBackDateDay (int BackDateDay);
+
+	/** Get Back-Date Days.
+	  * Number of days to be able to post a back-date transaction (based on system date)
+	  */
+	public int getBackDateDay();
 
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
@@ -123,7 +136,24 @@ public interface I_C_AcctSchema
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
+    /** Column name C_Period_ID */
+    public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";
+
+	/** Set Period.
+	  * Period of the Calendar
+	  */
+	public void setC_Period_ID (int C_Period_ID);
+
+	/** Get Period.
+	  * Period of the Calendar
+	  */
+	public int getC_Period_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name CommitmentType */
     public static final String COLUMNNAME_CommitmentType = "CommitmentType";
@@ -164,21 +194,6 @@ public interface I_C_AcctSchema
 	  */
 	public String getCostingMethod();
 
-    /** Column name C_Period_ID */
-    public static final String COLUMNNAME_C_Period_ID = "C_Period_ID";
-
-	/** Set Period.
-	  * Period of the Calendar
-	  */
-	public void setC_Period_ID (int C_Period_ID);
-
-	/** Get Period.
-	  * Period of the Calendar
-	  */
-	public int getC_Period_ID();
-
-	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -207,6 +222,19 @@ public interface I_C_AcctSchema
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name EndDate */
+    public static final String COLUMNNAME_EndDate = "EndDate";
+
+	/** Set End Date.
+	  * Last effective date (inclusive)
+	  */
+	public void setEndDate (Timestamp EndDate);
+
+	/** Get End Date.
+	  * Last effective date (inclusive)
+	  */
+	public Timestamp getEndDate();
 
     /** Column name GAAP */
     public static final String COLUMNNAME_GAAP = "GAAP";
@@ -390,6 +418,7 @@ public interface I_C_AcctSchema
 	  */
 	public int getM_CostType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException;
 
     /** Column name Name */
@@ -452,6 +481,19 @@ public interface I_C_AcctSchema
 	  * Element Separator
 	  */
 	public String getSeparator();
+
+    /** Column name StartDate */
+    public static final String COLUMNNAME_StartDate = "StartDate";
+
+	/** Set Start Date.
+	  * First effective day (inclusive)
+	  */
+	public void setStartDate (Timestamp StartDate);
+
+	/** Get Start Date.
+	  * First effective day (inclusive)
+	  */
+	public Timestamp getStartDate();
 
     /** Column name TaxCorrectionType */
     public static final String COLUMNNAME_TaxCorrectionType = "TaxCorrectionType";

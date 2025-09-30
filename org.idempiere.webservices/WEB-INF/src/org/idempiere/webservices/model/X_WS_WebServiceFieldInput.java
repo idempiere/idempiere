@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldInput
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceFieldInput")
 public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFieldInput, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, int WS_WebServiceFieldInput_ID, String trxName)
@@ -106,6 +106,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -134,6 +135,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -162,6 +164,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -311,6 +314,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 		return (String)get_Value(COLUMNNAME_WS_WebServiceFieldInput_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
 	{
 		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_ID)

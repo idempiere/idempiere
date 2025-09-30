@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BP_Relation
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_BP_Relation 
 {
@@ -62,66 +62,6 @@ public interface I_C_BP_Relation
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_BPartner_ID */
-    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
-
-	/** Set Business Partner.
-	  * Identifies a Business Partner
-	  */
-	public void setC_BPartner_ID (int C_BPartner_ID);
-
-	/** Get Business Partner.
-	  * Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
-
-    /** Column name C_BPartner_Location_ID */
-    public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
-
-	/** Set Partner Location.
-	  * Identifies the (ship to) address for this Business Partner
-	  */
-	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID);
-
-	/** Get Partner Location.
-	  * Identifies the (ship to) address for this Business Partner
-	  */
-	public int getC_BPartner_Location_ID();
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
-
-    /** Column name C_BPartnerRelation_ID */
-    public static final String COLUMNNAME_C_BPartnerRelation_ID = "C_BPartnerRelation_ID";
-
-	/** Set Related Partner.
-	  * Related Business Partner
-	  */
-	public void setC_BPartnerRelation_ID (int C_BPartnerRelation_ID);
-
-	/** Get Related Partner.
-	  * Related Business Partner
-	  */
-	public int getC_BPartnerRelation_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartnerRelation() throws RuntimeException;
-
-    /** Column name C_BPartnerRelation_Location_ID */
-    public static final String COLUMNNAME_C_BPartnerRelation_Location_ID = "C_BPartnerRelation_Location_ID";
-
-	/** Set Related Partner Location.
-	  * Location of the related Business Partner
-	  */
-	public void setC_BPartnerRelation_Location_ID (int C_BPartnerRelation_Location_ID);
-
-	/** Get Related Partner Location.
-	  * Location of the related Business Partner
-	  */
-	public int getC_BPartnerRelation_Location_ID();
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartnerRelation_Location() throws RuntimeException;
-
     /** Column name C_BP_Relation_ID */
     public static final String COLUMNNAME_C_BP_Relation_ID = "C_BP_Relation_ID";
 
@@ -143,6 +83,70 @@ public interface I_C_BP_Relation
 
 	/** Get C_BP_Relation_UU	  */
 	public String getC_BP_Relation_UU();
+
+    /** Column name C_BPartnerRelation_ID */
+    public static final String COLUMNNAME_C_BPartnerRelation_ID = "C_BPartnerRelation_ID";
+
+	/** Set Related Partner.
+	  * Related Business Partner
+	  */
+	public void setC_BPartnerRelation_ID (int C_BPartnerRelation_ID);
+
+	/** Get Related Partner.
+	  * Related Business Partner
+	  */
+	public int getC_BPartnerRelation_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartnerRelation() throws RuntimeException;
+
+    /** Column name C_BPartnerRelation_Location_ID */
+    public static final String COLUMNNAME_C_BPartnerRelation_Location_ID = "C_BPartnerRelation_Location_ID";
+
+	/** Set Related Partner Location.
+	  * Location of the related Business Partner
+	  */
+	public void setC_BPartnerRelation_Location_ID (int C_BPartnerRelation_Location_ID);
+
+	/** Get Related Partner Location.
+	  * Location of the related Business Partner
+	  */
+	public int getC_BPartnerRelation_Location_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartnerRelation_Location() throws RuntimeException;
+
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+
+	/** Set Business Partner.
+	  * Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID);
+
+	/** Get Business Partner.
+	  * Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
+    /** Column name C_BPartner_Location_ID */
+    public static final String COLUMNNAME_C_BPartner_Location_ID = "C_BPartner_Location_ID";
+
+	/** Set Partner Location.
+	  * Identifies the (ship to) address for this Business Partner
+	  */
+	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID);
+
+	/** Get Partner Location.
+	  * Identifies the (ship to) address for this Business Partner
+	  */
+	public int getC_BPartner_Location_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

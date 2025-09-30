@@ -41,6 +41,7 @@ import org.adempiere.webui.panel.HelpController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.GridTabDataBinder;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -63,12 +64,14 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.RowRendererExt;
+import org.zkoss.zul.Span;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -151,7 +154,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	};
 	
 	/**
-	 *
 	 * @param gridTab
 	 * @param windowNo
 	 */
@@ -208,6 +210,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Get column index for field
 	 * @param field
 	 * @return column index for field, -1 if not found
 	 */
@@ -221,6 +224,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Create a disabled checkbox component for value
 	 * @param value
 	 * @return readonly checkbox component
 	 */
@@ -235,8 +239,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * Create invisible component for GridField with IsHeading=Y.
-	 * To fill up space allocated for field component.
+	 * Create invisible component for GridField with IsHeading=Y.<br/>
+	 * To fill up space allocated for field editor component.
 	 * @return invisible text box component
 	 */
 	private Component createInvisibleComponent() {
@@ -265,7 +269,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 	
 	/**
-	 * call {@link #getDisplayText(Object, GridField, int, boolean)} with isForceGetValue = false
+	 * Call {@link #getDisplayText(Object, GridField, int, boolean)} with isForceGetValue = false
 	 * @param value
 	 * @param gridField
 	 * @param rowIndex
@@ -330,12 +334,24 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		} else if (gridField.getDisplayType() == DisplayType.Button) {
 			// Each row renderer --- ctx per row wise
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
+			WButtonEditor editor = (WButtonEditor) WebEditorFactory.getEditor(gridField, false);
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
 			editor.setReadWrite(gridField.isEditable(gridRowCtx, true,true));
 			editor.getComponent().setAttribute(GRID_ROW_INDEX_ATTR, rowIndex);
 			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
+		} else if (gridField.getDisplayType() == DisplayType.Image) {
+			if (value != null) {
+				WImageEditor editor = new WImageEditor(gridField);
+				editor.setReadWrite(false);
+				editor.setValue(value);
+				Image image = editor.getComponent();
+				component = image;
+			} else {
+				Span span = new Span();
+				span.setSclass("no-image");
+				component = span;
+			}
 		} else {
 			String text = getDisplayText(value, gridField, rowIndex, isForceGetValue);
 			WEditor editor = getEditorCell(gridField);
@@ -345,8 +361,17 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				component = label;
 			}else{
 				component = editor.getDisplayComponent();
-				if (component instanceof Html){
-					((Html)component).setContent(text);
+				if (component instanceof Html html){
+					if (Util.isEmpty(text) && value == null) {
+						String nullText = editor.getDisplayTextForGridView(value);
+						if (!Util.isEmpty(nullText)) {
+							html.setContent(nullText);
+						} else {
+							html.setContent(text);
+						}
+					} else {
+						html.setContent(text);
+					}
 				}else{
 					throw new UnsupportedOperationException("Only implemented for Html component.");
 				}
@@ -400,7 +425,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * set label text, shorten text if length exceed define max length.
+	 * Set label text, shorten text if length exceed define max length.
 	 * @param text
 	 * @param label
 	 */
@@ -410,11 +435,14 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
 			display = text.substring(0, MAX_TEXT_LENGTH - 3) + "...";
 		label.setValue(display);
-		if (text != null && text.length() > MAX_TEXT_LENGTH)
+		if (text != null && text.length() > MAX_TEXT_LENGTH) {
+			text = Util.maskHTML(text);
 			label.setTooltiptext(text);
+		}
 	}
 
 	/**
+	 * Get editor list
 	 * @return field editor list
 	 */
 	public List<WEditor> getEditors() {
@@ -426,6 +454,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 	
 	/**
+	 * Set paging component
 	 * @param paging
 	 */
 	public void setPaging(Paging paging) {
@@ -605,10 +634,12 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 								    			
     			if (editor.getComponent() instanceof AbstractComponent) {
+    				String entityTypeInf = Env.IsShowTechnicalInfOnHelp(Env.getCtx())?"this.fieldEntityType());":"'');";
     				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(gridPanelFields[i].getHeader()));
         			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
         			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
-    				editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp());");
+        			editor.getComponent().setWidgetOverride("fieldEntityType", HelpController.escapeJavascriptContent(gridPanelFields[i].getEntityType()));
+        			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp(),"+entityTypeInf);
     				((AbstractComponent)editor.getComponent()).addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, (t) -> {((AbstractComponent)t).setWidgetListener("onFocus", null);});
     			}
     			
@@ -698,6 +729,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Set current row
 	 * @param row
 	 */
 	public void setCurrentRow(Row row) {
@@ -715,7 +747,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			if (ThemeManager.isUseFontIconForImage()) 
 			{
 				Label indicatorLabel = (Label) cell.getFirstChild();
-				indicatorLabel.setSclass("row-indicator-selected z-icon-Edit");
+				indicatorLabel.setSclass("row-indicator-selected "+Icon.getIconSclass(Icon.EDIT));
 			}
 			else
 				cell.setSclass("row-indicator-selected");
@@ -753,6 +785,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Get current row
 	 * @return current {@link Row}
 	 */
 	public Row getCurrentRow() {
@@ -827,11 +860,12 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 
 			GridTableListModel model = (GridTableListModel) grid.getModel();
 			model.setEditing(true);
-
+			Clients.evalJavaScript("jq('img.fullsize-image').remove();");
 		}
 	}
 
 	/**
+	 * Is own by DetailPane
 	 * @return true if it is own by {@link DetailPane}.
 	 */
 	private boolean isDetailPane() {
@@ -891,7 +925,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * Set focus to first writable field editor (or default focus field editor if it is writable).
+	 * Set focus to first writable field editor (or default focus field editor if it is writable).<br/>
 	 * If no field editor is writable, set focus to first visible field editor.
 	 */
 	public void focusToFirstEditor() {
@@ -925,6 +959,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Set focus to editor
 	 * @param toFocus
 	 */
 	protected void focusToEditor(WEditor toFocus) {
@@ -940,7 +975,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 	
 	/**
-	 * set focus to next writable editor from ref
+	 * Set focus to next writable editor from ref
 	 * @param ref
 	 */
 	public void focusToNextEditor(WEditor ref) {
@@ -998,6 +1033,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Is current row in edit mode
 	 * @return true if current row is in edit mode, false otherwise
 	 */
 	public boolean isEditing() {
@@ -1005,7 +1041,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * Set AD window content part that own this renderer.
+	 * Set AD window content part that own this renderer.<br/>
 	 * {@link #buttonListener} need this to call {@link AbstractADWindowContent#actionPerformed(ActionEvent)}.
 	 * @param windowPanel
 	 */
@@ -1049,6 +1085,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
+	 * Is show current row indicator
 	 * @return {@link GridView#isShowCurrentRowIndicatorColumn}
 	 */
 	private boolean isShowCurrentRowIndicatorColumn() {

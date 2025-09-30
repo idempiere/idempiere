@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AllocationLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AllocationLine")
 public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AllocationLine (Properties ctx, int C_AllocationLine_ID, String trxName)
@@ -139,6 +139,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AllocationHdr getC_AllocationHdr() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AllocationHdr)MTable.get(getCtx(), org.compiere.model.I_C_AllocationHdr.Table_ID)
@@ -204,34 +205,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 		return (String)get_Value(COLUMNNAME_C_AllocationLine_UU);
 	}
 
-	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankTransfer)MTable.get(getCtx(), org.compiere.model.I_C_BankTransfer.Table_ID)
-			.getPO(getC_BankTransfer_ID(), get_TrxName());
-	}
-
-	/** Set Bank Transfer.
-		@param C_BankTransfer_ID Bank Transfer
-	*/
-	public void setC_BankTransfer_ID (int C_BankTransfer_ID)
-	{
-		if (C_BankTransfer_ID < 1)
-			set_Value (COLUMNNAME_C_BankTransfer_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BankTransfer_ID, Integer.valueOf(C_BankTransfer_ID));
-	}
-
-	/** Get Bank Transfer.
-		@return Bank Transfer
-	  */
-	public int getC_BankTransfer_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankTransfer_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -260,6 +234,36 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankTransfer)MTable.get(getCtx(), org.compiere.model.I_C_BankTransfer.Table_ID)
+			.getPO(getC_BankTransfer_ID(), get_TrxName());
+	}
+
+	/** Set Bank Transfer.
+		@param C_BankTransfer_ID Bank Transfer
+	*/
+	public void setC_BankTransfer_ID (int C_BankTransfer_ID)
+	{
+		if (C_BankTransfer_ID < 1)
+			set_Value (COLUMNNAME_C_BankTransfer_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankTransfer_ID, Integer.valueOf(C_BankTransfer_ID));
+	}
+
+	/** Get Bank Transfer.
+		@return Bank Transfer
+	  */
+	public int getC_BankTransfer_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankTransfer_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashLine getC_CashLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CashLine)MTable.get(getCtx(), org.compiere.model.I_C_CashLine.Table_ID)
@@ -288,6 +292,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -316,6 +321,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
@@ -352,6 +358,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getC_Invoice_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -380,6 +387,7 @@ public class X_C_AllocationLine extends PO implements I_C_AllocationLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)

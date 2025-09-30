@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for A_FundingMode_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_FundingMode_Acct")
 public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_FundingMode_Acct (Properties ctx, int A_FundingMode_Acct_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getA_FundingMode_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -147,6 +148,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 		return (String)get_Value(COLUMNNAME_A_FundingMode_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_FundingMode getA_FundingMode() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_FundingMode)MTable.get(getCtx(), org.compiere.model.I_A_FundingMode.Table_ID)
@@ -174,6 +176,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)

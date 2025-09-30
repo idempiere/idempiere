@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Phase
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_Phase 
 {
@@ -97,6 +97,7 @@ public interface I_C_Phase
 	  */
 	public int getC_ProjectType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectType getC_ProjectType() throws RuntimeException;
 
     /** Column name Created */
@@ -167,6 +168,7 @@ public interface I_C_Phase
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */

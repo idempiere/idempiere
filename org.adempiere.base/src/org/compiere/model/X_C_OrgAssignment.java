@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_OrgAssignment
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_OrgAssignment")
 public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_OrgAssignment (Properties ctx, int C_OrgAssignment_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_C_OrgAssignment extends PO implements I_C_OrgAssignment, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

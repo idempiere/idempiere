@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportColumn
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_ReportColumn 
 {
@@ -49,19 +49,6 @@ public interface I_PA_ReportColumn
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -74,6 +61,19 @@ public interface I_PA_ReportColumn
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -88,16 +88,8 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
-
-    /** Column name CalculationType */
-    public static final String COLUMNNAME_CalculationType = "CalculationType";
-
-	/** Set Calculation	  */
-	public void setCalculationType (String CalculationType);
-
-	/** Get Calculation	  */
-	public String getCalculationType();
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -112,6 +104,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -127,6 +120,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -142,6 +136,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_ElementValue_ID */
@@ -157,6 +152,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_ElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -172,16 +168,8 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
-
-    /** Column name ColumnType */
-    public static final String COLUMNNAME_ColumnType = "ColumnType";
-
-	/** Set Column Type	  */
-	public void setColumnType (String ColumnType);
-
-	/** Get Column Type	  */
-	public String getColumnType();
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -196,7 +184,42 @@ public interface I_PA_ReportColumn
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name C_SalesRegion_ID */
+    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
+
+	/** Set Sales Region.
+	  * Sales coverage region
+	  */
+	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
+
+	/** Get Sales Region.
+	  * Sales coverage region
+	  */
+	public int getC_SalesRegion_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
+
+    /** Column name CalculationType */
+    public static final String COLUMNNAME_CalculationType = "CalculationType";
+
+	/** Set Calculation	  */
+	public void setCalculationType (String CalculationType);
+
+	/** Get Calculation	  */
+	public String getCalculationType();
+
+    /** Column name ColumnType */
+    public static final String COLUMNNAME_ColumnType = "ColumnType";
+
+	/** Set Column Type	  */
+	public void setColumnType (String ColumnType);
+
+	/** Get Column Type	  */
+	public String getColumnType();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -213,21 +236,6 @@ public interface I_PA_ReportColumn
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_SalesRegion_ID */
-    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
-
-	/** Set Sales Region.
-	  * Sales coverage region
-	  */
-	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
-
-	/** Get Sales Region.
-	  * Sales coverage region
-	  */
-	public int getC_SalesRegion_ID();
-
-	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name CurrencyType */
     public static final String COLUMNNAME_CurrencyType = "CurrencyType";
@@ -303,6 +311,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getGL_Budget_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException;
 
     /** Column name IsActive */
@@ -526,6 +535,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Multiplier */
@@ -567,6 +577,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getOper_1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumn getOper_1() throws RuntimeException;
 
     /** Column name Oper_2_ID */
@@ -582,6 +593,7 @@ public interface I_PA_ReportColumn
 	  */
 	public int getOper_2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumn getOper_2() throws RuntimeException;
 
     /** Column name Oper_2_LineName */
@@ -636,19 +648,6 @@ public interface I_PA_ReportColumn
 	  */
 	public String getPAPeriodType();
 
-    /** Column name PA_ReportColumn_ID */
-    public static final String COLUMNNAME_PA_ReportColumn_ID = "PA_ReportColumn_ID";
-
-	/** Set Report Column.
-	  * Column in Report
-	  */
-	public void setPA_ReportColumn_ID (int PA_ReportColumn_ID);
-
-	/** Get Report Column.
-	  * Column in Report
-	  */
-	public int getPA_ReportColumn_ID();
-
     /** Column name PA_ReportColumnSet_ID */
     public static final String COLUMNNAME_PA_ReportColumnSet_ID = "PA_ReportColumnSet_ID";
 
@@ -662,7 +661,21 @@ public interface I_PA_ReportColumn
 	  */
 	public int getPA_ReportColumnSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException;
+
+    /** Column name PA_ReportColumn_ID */
+    public static final String COLUMNNAME_PA_ReportColumn_ID = "PA_ReportColumn_ID";
+
+	/** Set Report Column.
+	  * Column in Report
+	  */
+	public void setPA_ReportColumn_ID (int PA_ReportColumn_ID);
+
+	/** Get Report Column.
+	  * Column in Report
+	  */
+	public int getPA_ReportColumn_ID();
 
     /** Column name PA_ReportColumn_UU */
     public static final String COLUMNNAME_PA_ReportColumn_UU = "PA_ReportColumn_UU";

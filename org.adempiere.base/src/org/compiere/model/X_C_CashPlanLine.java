@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashPlanLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CashPlanLine")
 public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CashPlanLine (Properties ctx, int C_CashPlanLine_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
       super (ctx, C_CashPlanLine_ID, trxName);
       /** if (C_CashPlanLine_ID == 0)
         {
-			setC_CashPlan_ID (0);
 			setC_CashPlanLine_ID (0);
+			setC_CashPlan_ID (0);
 			setDateTrx (new Timestamp( System.currentTimeMillis() ));
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CashPlanLine WHERE C_CashPlanLine_ID=@C_CashPlanLine_ID@
@@ -59,8 +59,8 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
       super (ctx, C_CashPlanLine_ID, trxName, virtualColumns);
       /** if (C_CashPlanLine_ID == 0)
         {
-			setC_CashPlan_ID (0);
 			setC_CashPlanLine_ID (0);
+			setC_CashPlan_ID (0);
 			setDateTrx (new Timestamp( System.currentTimeMillis() ));
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CashPlanLine WHERE C_CashPlanLine_ID=@C_CashPlanLine_ID@
@@ -76,8 +76,8 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
       super (ctx, C_CashPlanLine_UU, trxName);
       /** if (C_CashPlanLine_UU == null)
         {
-			setC_CashPlan_ID (0);
 			setC_CashPlanLine_ID (0);
+			setC_CashPlan_ID (0);
 			setDateTrx (new Timestamp( System.currentTimeMillis() ));
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CashPlanLine WHERE C_CashPlanLine_ID=@C_CashPlanLine_ID@
@@ -93,8 +93,8 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
       super (ctx, C_CashPlanLine_UU, trxName, virtualColumns);
       /** if (C_CashPlanLine_UU == null)
         {
-			setC_CashPlan_ID (0);
 			setC_CashPlanLine_ID (0);
+			setC_CashPlan_ID (0);
 			setDateTrx (new Timestamp( System.currentTimeMillis() ));
 			setLine (0);
 // @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CashPlanLine WHERE C_CashPlanLine_ID=@C_CashPlanLine_ID@
@@ -154,6 +154,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -182,6 +183,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -210,6 +212,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -237,41 +240,6 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 			 return 0;
 		return ii.intValue();
 	}
-
-	public org.compiere.model.I_C_CashPlan getC_CashPlan() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_CashPlan)MTable.get(getCtx(), org.compiere.model.I_C_CashPlan.Table_ID)
-			.getPO(getC_CashPlan_ID(), get_TrxName());
-	}
-
-	/** Set Cash Plan.
-		@param C_CashPlan_ID Cash Plan
-	*/
-	public void setC_CashPlan_ID (int C_CashPlan_ID)
-	{
-		if (C_CashPlan_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_CashPlan_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_CashPlan_ID, Integer.valueOf(C_CashPlan_ID));
-	}
-
-	/** Get Cash Plan.
-		@return Cash Plan	  */
-	public int getC_CashPlan_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashPlan_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_CashPlan_ID()));
-    }
 
 	/** Set Cash Plan Line.
 		@param C_CashPlanLine_ID Cash Plan Line
@@ -309,6 +277,43 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return (String)get_Value(COLUMNNAME_C_CashPlanLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CashPlan getC_CashPlan() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CashPlan)MTable.get(getCtx(), org.compiere.model.I_C_CashPlan.Table_ID)
+			.getPO(getC_CashPlan_ID(), get_TrxName());
+	}
+
+	/** Set Cash Plan.
+		@param C_CashPlan_ID Cash Plan
+	*/
+	public void setC_CashPlan_ID (int C_CashPlan_ID)
+	{
+		if (C_CashPlan_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_CashPlan_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_CashPlan_ID, Integer.valueOf(C_CashPlan_ID));
+	}
+
+	/** Get Cash Plan.
+		@return Cash Plan	  */
+	public int getC_CashPlan_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashPlan_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_CashPlan_ID()));
+    }
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -337,34 +342,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
-			.getPO(getC_Project_ID(), get_TrxName());
-	}
-
-	/** Set Project.
-		@param C_Project_ID Financial Project
-	*/
-	public void setC_Project_ID (int C_Project_ID)
-	{
-		if (C_Project_ID < 1)
-			set_Value (COLUMNNAME_C_Project_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
-	}
-
-	/** Get Project.
-		@return Financial Project
-	  */
-	public int getC_Project_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
@@ -393,6 +371,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
@@ -416,6 +395,35 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 	public int getC_ProjectTask_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectTask_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
+
+	/** Set Project.
+		@param C_Project_ID Financial Project
+	*/
+	public void setC_Project_ID (int C_Project_ID)
+	{
+		if (C_Project_ID < 1)
+			set_Value (COLUMNNAME_C_Project_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+	}
+
+	/** Get Project.
+		@return Financial Project
+	  */
+	public int getC_Project_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -491,6 +499,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -595,6 +604,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -623,6 +633,7 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

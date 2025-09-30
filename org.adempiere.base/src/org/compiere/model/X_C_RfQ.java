@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQ")
 public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_RfQ (Properties ctx, int C_RfQ_ID, String trxName)
@@ -172,6 +172,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -200,6 +201,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -228,6 +230,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -256,6 +259,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -284,21 +288,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Copy Lines.
-		@param CopyLines Copy Lines
-	*/
-	public void setCopyLines (String CopyLines)
-	{
-		set_Value (COLUMNNAME_CopyLines, CopyLines);
-	}
-
-	/** Get Copy Lines.
-		@return Copy Lines	  */
-	public String getCopyLines()
-	{
-		return (String)get_Value(COLUMNNAME_CopyLines);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -327,37 +317,6 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Create PO.
-		@param CreatePO Create Purchase Order
-	*/
-	public void setCreatePO (String CreatePO)
-	{
-		set_Value (COLUMNNAME_CreatePO, CreatePO);
-	}
-
-	/** Get Create PO.
-		@return Create Purchase Order
-	  */
-	public String getCreatePO()
-	{
-		return (String)get_Value(COLUMNNAME_CreatePO);
-	}
-
-	/** Set Create SO.
-		@param CreateSO Create SO
-	*/
-	public void setCreateSO (String CreateSO)
-	{
-		set_Value (COLUMNNAME_CreateSO, CreateSO);
-	}
-
-	/** Get Create SO.
-		@return Create SO	  */
-	public String getCreateSO()
-	{
-		return (String)get_Value(COLUMNNAME_CreateSO);
-	}
-
 	/** Set RfQ.
 		@param C_RfQ_ID Request for Quotation
 	*/
@@ -380,6 +339,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RfQ_Topic getC_RfQ_Topic() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RfQ_Topic)MTable.get(getCtx(), org.compiere.model.I_C_RfQ_Topic.Table_ID)
@@ -421,6 +381,52 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 	public String getC_RfQ_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQ_UU);
+	}
+
+	/** Set Copy Lines.
+		@param CopyLines Copy Lines
+	*/
+	public void setCopyLines (String CopyLines)
+	{
+		set_Value (COLUMNNAME_CopyLines, CopyLines);
+	}
+
+	/** Get Copy Lines.
+		@return Copy Lines	  */
+	public String getCopyLines()
+	{
+		return (String)get_Value(COLUMNNAME_CopyLines);
+	}
+
+	/** Set Create PO.
+		@param CreatePO Create Purchase Order
+	*/
+	public void setCreatePO (String CreatePO)
+	{
+		set_Value (COLUMNNAME_CreatePO, CreatePO);
+	}
+
+	/** Get Create PO.
+		@return Create Purchase Order
+	  */
+	public String getCreatePO()
+	{
+		return (String)get_Value(COLUMNNAME_CreatePO);
+	}
+
+	/** Set Create SO.
+		@param CreateSO Create SO
+	*/
+	public void setCreateSO (String CreateSO)
+	{
+		set_Value (COLUMNNAME_CreateSO, CreateSO);
+	}
+
+	/** Get Create SO.
+		@return Create SO	  */
+	public String getCreateSO()
+	{
+		return (String)get_Value(COLUMNNAME_CreateSO);
 	}
 
 	/** Set Response Date.
@@ -796,6 +802,7 @@ public class X_C_RfQ extends PO implements I_C_RfQ, I_Persistent
 		return (String)get_Value(COLUMNNAME_RankRfQ);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

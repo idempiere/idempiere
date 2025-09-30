@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table_ScriptValidator
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table_ScriptValidator")
 public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptValidator, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Table_ScriptValidator (Properties ctx, int AD_Table_ScriptValidator_ID, String trxName)
@@ -121,6 +121,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_ID)
@@ -148,6 +149,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

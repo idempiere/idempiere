@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_Product_Acct 
 {
@@ -75,6 +75,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
@@ -128,6 +129,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name P_Asset_Acct */
@@ -143,6 +145,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Asset_A() throws RuntimeException;
 
     /** Column name P_AverageCostVariance_Acct */
@@ -158,6 +161,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_AverageCostVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException;
 
     /** Column name P_COGS_Acct */
@@ -173,6 +177,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_COGS_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_COGS_A() throws RuntimeException;
 
     /** Column name P_CostAdjustment_Acct */
@@ -188,6 +193,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_CostAdjustment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException;
 
     /** Column name P_Expense_Acct */
@@ -203,6 +209,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Expense_A() throws RuntimeException;
 
     /** Column name P_InventoryClearing_Acct */
@@ -218,6 +225,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_InventoryClearing_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException;
 
     /** Column name P_InvoicePriceVariance_Acct */
@@ -233,6 +241,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_InvoicePriceVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException;
 
     /** Column name P_LandedCostClearing_Acct */
@@ -248,6 +257,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_LandedCostClearing_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException;
 
     /** Column name P_PurchasePriceVariance_Acct */
@@ -263,6 +273,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_PurchasePriceVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_PurchasePriceVariance_A() throws RuntimeException;
 
     /** Column name P_RateVariance_Acct */
@@ -278,6 +289,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_RateVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_RateVariance_A() throws RuntimeException;
 
     /** Column name P_Revenue_Acct */
@@ -293,6 +305,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException;
 
     /** Column name P_TradeDiscountGrant_Acct */
@@ -308,6 +321,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_TradeDiscountGrant_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException;
 
     /** Column name P_TradeDiscountRec_Acct */
@@ -323,6 +337,7 @@ public interface I_M_Product_Acct
 	  */
 	public int getP_TradeDiscountRec_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException;
 
     /** Column name Updated */

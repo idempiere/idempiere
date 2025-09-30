@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_TaxProvider
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_TaxProvider 
 {
@@ -40,15 +40,6 @@ public interface I_C_TaxProvider
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name Account */
-    public static final String COLUMNNAME_Account = "Account";
-
-	/** Set Account	  */
-	public void setAccount (String Account);
-
-	/** Get Account	  */
-	public String getAccount();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -70,6 +61,45 @@ public interface I_C_TaxProvider
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name Account */
+    public static final String COLUMNNAME_Account = "Account";
+
+	/** Set Account	  */
+	public void setAccount (String Account);
+
+	/** Get Account	  */
+	public String getAccount();
+
+    /** Column name C_TaxProviderCfg_ID */
+    public static final String COLUMNNAME_C_TaxProviderCfg_ID = "C_TaxProviderCfg_ID";
+
+	/** Set Tax Provider Configuration	  */
+	public void setC_TaxProviderCfg_ID (int C_TaxProviderCfg_ID);
+
+	/** Get Tax Provider Configuration	  */
+	public int getC_TaxProviderCfg_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException;
+
+    /** Column name C_TaxProvider_ID */
+    public static final String COLUMNNAME_C_TaxProvider_ID = "C_TaxProvider_ID";
+
+	/** Set Tax Provider	  */
+	public void setC_TaxProvider_ID (int C_TaxProvider_ID);
+
+	/** Get Tax Provider	  */
+	public int getC_TaxProvider_ID();
+
+    /** Column name C_TaxProvider_UU */
+    public static final String COLUMNNAME_C_TaxProvider_UU = "C_TaxProvider_UU";
+
+	/** Set C_TaxProvider_UU	  */
+	public void setC_TaxProvider_UU (String C_TaxProvider_UU);
+
+	/** Get C_TaxProvider_UU	  */
+	public String getC_TaxProvider_UU();
 
     /** Column name CompanyCode */
     public static final String COLUMNNAME_CompanyCode = "CompanyCode";
@@ -95,35 +125,6 @@ public interface I_C_TaxProvider
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_TaxProviderCfg_ID */
-    public static final String COLUMNNAME_C_TaxProviderCfg_ID = "C_TaxProviderCfg_ID";
-
-	/** Set Tax Provider Configuration	  */
-	public void setC_TaxProviderCfg_ID (int C_TaxProviderCfg_ID);
-
-	/** Get Tax Provider Configuration	  */
-	public int getC_TaxProviderCfg_ID();
-
-	public org.compiere.model.I_C_TaxProviderCfg getC_TaxProviderCfg() throws RuntimeException;
-
-    /** Column name C_TaxProvider_ID */
-    public static final String COLUMNNAME_C_TaxProvider_ID = "C_TaxProvider_ID";
-
-	/** Set Tax Provider	  */
-	public void setC_TaxProvider_ID (int C_TaxProvider_ID);
-
-	/** Get Tax Provider	  */
-	public int getC_TaxProvider_ID();
-
-    /** Column name C_TaxProvider_UU */
-    public static final String COLUMNNAME_C_TaxProvider_UU = "C_TaxProvider_UU";
-
-	/** Set C_TaxProvider_UU	  */
-	public void setC_TaxProvider_UU (String C_TaxProvider_UU);
-
-	/** Get C_TaxProvider_UU	  */
-	public String getC_TaxProvider_UU();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

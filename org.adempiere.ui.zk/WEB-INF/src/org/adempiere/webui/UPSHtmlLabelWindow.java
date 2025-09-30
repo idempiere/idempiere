@@ -42,14 +42,13 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Separator;
 
 /**
- * 
+ * Window to show and print shipping label in html and image format
  * @author Low Heng Sin
- *
  */
 public class UPSHtmlLabelWindow extends Window implements EventListener<Event> 
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3700882367300286247L;
 	private List<MAttachmentEntry> images;
@@ -107,6 +106,10 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Load shipping label from attachment
+	 * @throws Exception
+	 */
 	private void loadContent() throws Exception 
 	{
 		MAttachmentEntry entry = (MAttachmentEntry) html.getSelectedItem().getValue();
@@ -126,10 +129,9 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 		if (imageEntry != null) 
 		{
 			File tmp = File.createTempFile(name, ".gif");
-			FileOutputStream os = new FileOutputStream(tmp);
+			try (FileOutputStream os = new FileOutputStream(tmp)) {
 			os.write(imageEntry.getData());
-			os.flush();
-			os.close();
+			os.flush();}
 			
 			if (Executions.getCurrent() != null)
 			{
@@ -142,6 +144,7 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 		content.setContent(media);
 	}
 	
+	@Override
 	public void onPageAttached(Page newpage, Page oldpage) 
 	{
 		super.onPageAttached(newpage, oldpage);
@@ -161,6 +164,7 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 		}
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception 
 	{
 		if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
@@ -169,6 +173,7 @@ public class UPSHtmlLabelWindow extends Window implements EventListener<Event>
 			loadContent();
 		else if (event.getTarget().getId().equals(ConfirmPanel.A_PRINT))
 		{
+			// Send script to trigger browser's print dialog
 			content.focus();
 			String script = "frames['" + content.getUuid() + "'].contentWindow.print()";
 			if (Executions.getCurrent() != null)

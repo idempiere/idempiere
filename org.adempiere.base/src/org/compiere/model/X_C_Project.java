@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Project
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Project")
 public class X_C_Project extends PO implements I_C_Project, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Project (Properties ctx, int C_Project_ID, String trxName)
@@ -43,9 +43,9 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
       /** if (C_Project_ID == 0)
         {
 			setC_Currency_ID (0);
+			setC_Project_ID (0);
 			setCommittedAmt (Env.ZERO);
 			setCommittedQty (Env.ZERO);
-			setC_Project_ID (0);
 			setInvoicedAmt (Env.ZERO);
 			setInvoicedQty (Env.ZERO);
 			setIsCommitCeiling (false);
@@ -56,11 +56,11 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 			setPlannedMarginAmt (Env.ZERO);
 			setPlannedQty (Env.ZERO);
 			setProcessed (false);
+			setProjInvoiceRule (null);
+// -
 			setProjectBalanceAmt (Env.ZERO);
 			setProjectLineLevel (null);
 // P
-			setProjInvoiceRule (null);
-// -
 			setValue (null);
         } */
     }
@@ -72,9 +72,9 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
       /** if (C_Project_ID == 0)
         {
 			setC_Currency_ID (0);
+			setC_Project_ID (0);
 			setCommittedAmt (Env.ZERO);
 			setCommittedQty (Env.ZERO);
-			setC_Project_ID (0);
 			setInvoicedAmt (Env.ZERO);
 			setInvoicedQty (Env.ZERO);
 			setIsCommitCeiling (false);
@@ -85,11 +85,11 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 			setPlannedMarginAmt (Env.ZERO);
 			setPlannedQty (Env.ZERO);
 			setProcessed (false);
+			setProjInvoiceRule (null);
+// -
 			setProjectBalanceAmt (Env.ZERO);
 			setProjectLineLevel (null);
 // P
-			setProjInvoiceRule (null);
-// -
 			setValue (null);
         } */
     }
@@ -101,9 +101,9 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
       /** if (C_Project_UU == null)
         {
 			setC_Currency_ID (0);
+			setC_Project_ID (0);
 			setCommittedAmt (Env.ZERO);
 			setCommittedQty (Env.ZERO);
-			setC_Project_ID (0);
 			setInvoicedAmt (Env.ZERO);
 			setInvoicedQty (Env.ZERO);
 			setIsCommitCeiling (false);
@@ -114,11 +114,11 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 			setPlannedMarginAmt (Env.ZERO);
 			setPlannedQty (Env.ZERO);
 			setProcessed (false);
+			setProjInvoiceRule (null);
+// -
 			setProjectBalanceAmt (Env.ZERO);
 			setProjectLineLevel (null);
 // P
-			setProjInvoiceRule (null);
-// -
 			setValue (null);
         } */
     }
@@ -130,9 +130,9 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
       /** if (C_Project_UU == null)
         {
 			setC_Currency_ID (0);
+			setC_Project_ID (0);
 			setCommittedAmt (Env.ZERO);
 			setCommittedQty (Env.ZERO);
-			setC_Project_ID (0);
 			setInvoicedAmt (Env.ZERO);
 			setInvoicedQty (Env.ZERO);
 			setIsCommitCeiling (false);
@@ -143,11 +143,11 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 			setPlannedMarginAmt (Env.ZERO);
 			setPlannedQty (Env.ZERO);
 			setProcessed (false);
+			setProjInvoiceRule (null);
+// -
 			setProjectBalanceAmt (Env.ZERO);
 			setProjectLineLevel (null);
 // P
-			setProjInvoiceRule (null);
-// -
 			setValue (null);
         } */
     }
@@ -202,6 +202,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -230,6 +231,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -258,62 +260,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());
-	}
-
-	/** Set Partner Location.
-		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
-	*/
-	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
-	{
-		if (C_BPartner_Location_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
-	}
-
-	/** Get Partner Location.
-		@return Identifies the (ship to) address for this Business Partner
-	  */
-	public int getC_BPartner_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -342,6 +289,65 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
+
+	/** Set Partner Location.
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
+	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
+	{
+		if (C_BPartner_Location_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
+	}
+
+	/** Get Partner Location.
+		@return Identifies the (ship to) address for this Business Partner
+	  */
+	public int getC_BPartner_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -370,6 +376,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -396,6 +403,123 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
+
+	/** Set Payment Term.
+		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
+	*/
+	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
+	{
+		if (C_PaymentTerm_ID < 1)
+			set_Value (COLUMNNAME_C_PaymentTerm_ID, null);
+		else
+			set_Value (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
+	}
+
+	/** Get Payment Term.
+		@return The terms of Payment (timing, discount)
+	  */
+	public int getC_PaymentTerm_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Phase getC_Phase() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Phase)MTable.get(getCtx(), org.compiere.model.I_C_Phase.Table_ID)
+			.getPO(getC_Phase_ID(), get_TrxName());
+	}
+
+	/** Set Standard Phase.
+		@param C_Phase_ID Standard Phase of the Project Type
+	*/
+	public void setC_Phase_ID (int C_Phase_ID)
+	{
+		if (C_Phase_ID < 1)
+			set_Value (COLUMNNAME_C_Phase_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Phase_ID, Integer.valueOf(C_Phase_ID));
+	}
+
+	/** Get Standard Phase.
+		@return Standard Phase of the Project Type
+	  */
+	public int getC_Phase_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Phase_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Project Type.
+		@param C_ProjectType_ID Type of the project
+	*/
+	public void setC_ProjectType_ID (int C_ProjectType_ID)
+	{
+		if (C_ProjectType_ID < 1)
+			set_Value (COLUMNNAME_C_ProjectType_ID, null);
+		else
+			set_Value (COLUMNNAME_C_ProjectType_ID, Integer.valueOf(C_ProjectType_ID));
+	}
+
+	/** Get Project Type.
+		@return Type of the project
+	  */
+	public int getC_ProjectType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Project.
+		@param C_Project_ID Financial Project
+	*/
+	public void setC_Project_ID (int C_Project_ID)
+	{
+		if (C_Project_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+	}
+
+	/** Get Project.
+		@return Financial Project
+	  */
+	public int getC_Project_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set C_Project_UU.
+		@param C_Project_UU C_Project_UU
+	*/
+	public void setC_Project_UU (String C_Project_UU)
+	{
+		set_Value (COLUMNNAME_C_Project_UU, C_Project_UU);
+	}
+
+	/** Get C_Project_UU.
+		@return C_Project_UU	  */
+	public String getC_Project_UU()
+	{
+		return (String)get_Value(COLUMNNAME_C_Project_UU);
 	}
 
 	/** Set Committed Amount.
@@ -450,121 +574,6 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 	public String getCopyFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CopyFrom);
-	}
-
-	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());
-	}
-
-	/** Set Payment Term.
-		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
-	*/
-	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
-	{
-		if (C_PaymentTerm_ID < 1)
-			set_Value (COLUMNNAME_C_PaymentTerm_ID, null);
-		else
-			set_Value (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
-	}
-
-	/** Get Payment Term.
-		@return The terms of Payment (timing, discount)
-	  */
-	public int getC_PaymentTerm_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Phase getC_Phase() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Phase)MTable.get(getCtx(), org.compiere.model.I_C_Phase.Table_ID)
-			.getPO(getC_Phase_ID(), get_TrxName());
-	}
-
-	/** Set Standard Phase.
-		@param C_Phase_ID Standard Phase of the Project Type
-	*/
-	public void setC_Phase_ID (int C_Phase_ID)
-	{
-		if (C_Phase_ID < 1)
-			set_Value (COLUMNNAME_C_Phase_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Phase_ID, Integer.valueOf(C_Phase_ID));
-	}
-
-	/** Get Standard Phase.
-		@return Standard Phase of the Project Type
-	  */
-	public int getC_Phase_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Phase_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Project.
-		@param C_Project_ID Financial Project
-	*/
-	public void setC_Project_ID (int C_Project_ID)
-	{
-		if (C_Project_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
-	}
-
-	/** Get Project.
-		@return Financial Project
-	  */
-	public int getC_Project_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Project Type.
-		@param C_ProjectType_ID Type of the project
-	*/
-	public void setC_ProjectType_ID (int C_ProjectType_ID)
-	{
-		if (C_ProjectType_ID < 1)
-			set_Value (COLUMNNAME_C_ProjectType_ID, null);
-		else
-			set_Value (COLUMNNAME_C_ProjectType_ID, Integer.valueOf(C_ProjectType_ID));
-	}
-
-	/** Get Project Type.
-		@return Type of the project
-	  */
-	public int getC_ProjectType_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectType_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_Project_UU.
-		@param C_Project_UU C_Project_UU
-	*/
-	public void setC_Project_UU (String C_Project_UU)
-	{
-		set_Value (COLUMNNAME_C_Project_UU, C_Project_UU);
-	}
-
-	/** Get C_Project_UU.
-		@return C_Project_UU	  */
-	public String getC_Project_UU()
-	{
-		return (String)get_Value(COLUMNNAME_C_Project_UU);
 	}
 
 	/** Set Contract Date.
@@ -738,6 +747,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
@@ -766,6 +776,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -826,6 +837,22 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return (String)get_Value(COLUMNNAME_Note);
 	}
 
+	/** Set Order Reference.
+		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	*/
+	public void setPOReference (String POReference)
+	{
+		set_Value (COLUMNNAME_POReference, POReference);
+	}
+
+	/** Get Order Reference.
+		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	  */
+	public String getPOReference()
+	{
+		return (String)get_Value(COLUMNNAME_POReference);
+	}
+
 	/** Set Planned Amount.
 		@param PlannedAmt Planned amount for this project
 	*/
@@ -883,22 +910,6 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return bd;
 	}
 
-	/** Set Order Reference.
-		@param POReference Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	*/
-	public void setPOReference (String POReference)
-	{
-		set_Value (COLUMNNAME_POReference, POReference);
-	}
-
-	/** Get Order Reference.
-		@return Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	  */
-	public String getPOReference()
-	{
-		return (String)get_Value(COLUMNNAME_POReference);
-	}
-
 	/** Set Processed.
 		@param Processed The document has been processed
 	*/
@@ -942,6 +953,35 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** ProjInvoiceRule AD_Reference_ID=383 */
+	public static final int PROJINVOICERULE_AD_Reference_ID=383;
+	/** None = - */
+	public static final String PROJINVOICERULE_None = "-";
+	/** Committed Amount = C */
+	public static final String PROJINVOICERULE_CommittedAmount = "C";
+	/** Product  Quantity = P */
+	public static final String PROJINVOICERULE_ProductQuantity = "P";
+	/** Time&amp;Material = T */
+	public static final String PROJINVOICERULE_TimeMaterial = "T";
+	/** Time&amp;Material max Committed = c */
+	public static final String PROJINVOICERULE_TimeMaterialMaxCommitted = "c";
+	/** Set Invoice Rule.
+		@param ProjInvoiceRule Invoice Rule for the project
+	*/
+	public void setProjInvoiceRule (String ProjInvoiceRule)
+	{
+
+		set_Value (COLUMNNAME_ProjInvoiceRule, ProjInvoiceRule);
+	}
+
+	/** Get Invoice Rule.
+		@return Invoice Rule for the project
+	  */
+	public String getProjInvoiceRule()
+	{
+		return (String)get_Value(COLUMNNAME_ProjInvoiceRule);
 	}
 
 	/** Set Project Balance.
@@ -1015,35 +1055,7 @@ public class X_C_Project extends PO implements I_C_Project, I_Persistent
 		return (String)get_Value(COLUMNNAME_ProjectLineLevel);
 	}
 
-	/** ProjInvoiceRule AD_Reference_ID=383 */
-	public static final int PROJINVOICERULE_AD_Reference_ID=383;
-	/** None = - */
-	public static final String PROJINVOICERULE_None = "-";
-	/** Time&amp;Material max Committed = c */
-	public static final String PROJINVOICERULE_TimeMaterialMaxCommitted = "c";
-	/** Committed Amount = C */
-	public static final String PROJINVOICERULE_CommittedAmount = "C";
-	/** Product  Quantity = P */
-	public static final String PROJINVOICERULE_ProductQuantity = "P";
-	/** Time&amp;Material = T */
-	public static final String PROJINVOICERULE_TimeMaterial = "T";
-	/** Set Invoice Rule.
-		@param ProjInvoiceRule Invoice Rule for the project
-	*/
-	public void setProjInvoiceRule (String ProjInvoiceRule)
-	{
-
-		set_Value (COLUMNNAME_ProjInvoiceRule, ProjInvoiceRule);
-	}
-
-	/** Get Invoice Rule.
-		@return Invoice Rule for the project
-	  */
-	public String getProjInvoiceRule()
-	{
-		return (String)get_Value(COLUMNNAME_ProjInvoiceRule);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

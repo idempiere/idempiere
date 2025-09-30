@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for U_WebMenu
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="U_WebMenu")
 public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName)
@@ -252,6 +252,7 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_U_WebMenu getParentMenu() throws RuntimeException
 	{
 		return (org.compiere.model.I_U_WebMenu)MTable.get(getCtx(), org.compiere.model.I_U_WebMenu.Table_ID)

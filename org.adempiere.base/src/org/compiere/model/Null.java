@@ -38,6 +38,7 @@ public class Null
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		return "NULL";

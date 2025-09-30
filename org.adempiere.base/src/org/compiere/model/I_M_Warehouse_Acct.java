@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Warehouse_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_Warehouse_Acct 
 {
@@ -75,6 +75,7 @@ public interface I_M_Warehouse_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
@@ -128,6 +129,7 @@ public interface I_M_Warehouse_Acct
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Updated */
@@ -159,5 +161,6 @@ public interface I_M_Warehouse_Acct
 	  */
 	public int getW_Differences_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getW_Differences_A() throws RuntimeException;
 }

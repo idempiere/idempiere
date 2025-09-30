@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Document_Action_Access
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Document_Action_Access 
 {
@@ -84,6 +84,7 @@ public interface I_AD_Document_Action_Access
 	  */
 	public int getAD_Ref_List_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException;
 
     /** Column name AD_Role_ID */
@@ -99,6 +100,7 @@ public interface I_AD_Document_Action_Access
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -114,6 +116,7 @@ public interface I_AD_Document_Action_Access
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Created */

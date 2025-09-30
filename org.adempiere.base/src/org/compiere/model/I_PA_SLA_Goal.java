@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_SLA_Goal
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_SLA_Goal 
 {
@@ -75,6 +75,7 @@ public interface I_PA_SLA_Goal
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */
@@ -197,6 +198,7 @@ public interface I_PA_SLA_Goal
 	  */
 	public int getPA_SLA_Criteria_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_SLA_Criteria getPA_SLA_Criteria() throws RuntimeException;
 
     /** Column name PA_SLA_Goal_ID */

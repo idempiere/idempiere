@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_BenchmarkData
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_BenchmarkData")
 public class X_PA_BenchmarkData extends PO implements I_PA_BenchmarkData, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_PA_BenchmarkData extends PO implements I_PA_BenchmarkData, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_BenchmarkData (Properties ctx, int PA_BenchmarkData_ID, String trxName)
@@ -232,6 +232,7 @@ public class X_PA_BenchmarkData extends PO implements I_PA_BenchmarkData, I_Pers
 		return (String)get_Value(COLUMNNAME_PA_BenchmarkData_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Benchmark getPA_Benchmark() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_Benchmark)MTable.get(getCtx(), org.compiere.model.I_PA_Benchmark.Table_ID)

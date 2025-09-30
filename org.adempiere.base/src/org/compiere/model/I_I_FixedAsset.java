@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_FixedAsset
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_I_FixedAsset 
 {
@@ -40,6 +40,27 @@ public interface I_I_FixedAsset
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name A_Accumulated_Depr */
     public static final String COLUMNNAME_A_Accumulated_Depr = "A_Accumulated_Depr";
@@ -68,6 +89,7 @@ public interface I_I_FixedAsset
 	/** Get Asset class	  */
 	public int getA_Asset_Class_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException;
 
     /** Column name A_Asset_Class_Value */
@@ -101,6 +123,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getA_Asset_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
 
     /** Column name A_Asset_Group_Value */
@@ -125,6 +148,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getA_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name A_Asset_Type_ID */
@@ -136,6 +160,7 @@ public interface I_I_FixedAsset
 	/** Get Asset Type	  */
 	public int getA_Asset_Type_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException;
 
     /** Column name A_Asset_Type_Value */
@@ -147,19 +172,6 @@ public interface I_I_FixedAsset
 	/** Get Asset Type Value	  */
 	public String getA_Asset_Type_Value();
 
-    /** Column name AcctSchemaName */
-    public static final String COLUMNNAME_AcctSchemaName = "AcctSchemaName";
-
-	/** Set Account Schema Name.
-	  * Name of the Accounting Schema
-	  */
-	public void setAcctSchemaName (String AcctSchemaName);
-
-	/** Get Account Schema Name.
-	  * Name of the Accounting Schema
-	  */
-	public String getAcctSchemaName();
-
     /** Column name A_Current_Period */
     public static final String COLUMNNAME_A_Current_Period = "A_Current_Period";
 
@@ -168,27 +180,6 @@ public interface I_I_FixedAsset
 
 	/** Get Current Period	  */
 	public int getA_Current_Period();
-
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
 
     /** Column name A_Remaining_Period */
     public static final String COLUMNNAME_A_Remaining_Period = "A_Remaining_Period";
@@ -207,6 +198,19 @@ public interface I_I_FixedAsset
 
 	/** Get Asset Salvage Value	  */
 	public BigDecimal getA_Salvage_Value();
+
+    /** Column name AcctSchemaName */
+    public static final String COLUMNNAME_AcctSchemaName = "AcctSchemaName";
+
+	/** Set Account Schema Name.
+	  * Name of the Accounting Schema
+	  */
+	public void setAcctSchemaName (String AcctSchemaName);
+
+	/** Get Account Schema Name.
+	  * Name of the Accounting Schema
+	  */
+	public String getAcctSchemaName();
 
     /** Column name AssetAmtEntered */
     public static final String COLUMNNAME_AssetAmtEntered = "AssetAmtEntered";
@@ -291,6 +295,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_BPartnerSR_ID */
@@ -306,6 +311,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_BPartnerSR_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException;
 
     /** Column name C_City_ID */
@@ -321,6 +327,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_City_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
 
     /** Column name C_City_Value */
@@ -345,7 +352,24 @@ public interface I_I_FixedAsset
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
+    /** Column name C_UOM_ID */
+    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
+
+	/** Set UOM.
+	  * Unit of Measure
+	  */
+	public void setC_UOM_ID (int C_UOM_ID);
+
+	/** Get UOM.
+	  * Unit of Measure
+	  */
+	public int getC_UOM_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -362,21 +386,6 @@ public interface I_I_FixedAsset
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_UOM_ID */
-    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
-
-	/** Set UOM.
-	  * Unit of Measure
-	  */
-	public void setC_UOM_ID (int C_UOM_ID);
-
-	/** Get UOM.
-	  * Unit of Measure
-	  */
-	public int getC_UOM_ID();
-
-	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -416,6 +425,19 @@ public interface I_I_FixedAsset
 	  * The targeted status of the document
 	  */
 	public String getDocAction();
+
+    /** Column name ISO_Code */
+    public static final String COLUMNNAME_ISO_Code = "ISO_Code";
+
+	/** Set ISO Currency Code.
+	  * Three letter ISO 4217 Code of the Currency
+	  */
+	public void setISO_Code (String ISO_Code);
+
+	/** Get ISO Currency Code.
+	  * Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code();
 
     /** Column name I_ErrorMsg */
     public static final String COLUMNNAME_I_ErrorMsg = "I_ErrorMsg";
@@ -483,19 +505,6 @@ public interface I_I_FixedAsset
 	  */
 	public boolean isActive();
 
-    /** Column name ISO_Code */
-    public static final String COLUMNNAME_ISO_Code = "ISO_Code";
-
-	/** Set ISO Currency Code.
-	  * Three letter ISO 4217 Code of the Currency
-	  */
-	public void setISO_Code (String ISO_Code);
-
-	/** Get ISO Currency Code.
-	  * Three letter ISO 4217 Code of the Currency
-	  */
-	public String getISO_Code();
-
     /** Column name LocatorValue */
     public static final String COLUMNNAME_LocatorValue = "LocatorValue";
 
@@ -522,6 +531,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -537,6 +547,7 @@ public interface I_I_FixedAsset
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */

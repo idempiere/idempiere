@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for PA_DocumentStatusAccess
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_DocumentStatusAccess")
 public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatusAccess, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatusAccess (Properties ctx, int PA_DocumentStatusAccess_ID, String trxName)
@@ -100,6 +100,7 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -128,6 +129,7 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -192,6 +194,7 @@ public class X_PA_DocumentStatusAccess extends PO implements I_PA_DocumentStatus
 		return (String)get_Value(COLUMNNAME_PA_DocumentStatusAccess_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_DocumentStatus getPA_DocumentStatus() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_DocumentStatus)MTable.get(getCtx(), org.compiere.model.I_PA_DocumentStatus.Table_ID)

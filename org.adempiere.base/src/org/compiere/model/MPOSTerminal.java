@@ -156,12 +156,10 @@ public class MPOSTerminal extends X_U_POSTerminal
         }
     }
 
-    /**
-     * @see org.compiere.model.PO#beforeSave(boolean)
-     */
     @Override
     protected boolean beforeSave(boolean newRecord)
     {
+    	// Update last lock time
         if (is_ValueChanged(COLUMNNAME_Locked) && isLocked())
         {
             setLastLockTime(new Timestamp(System.currentTimeMillis()));

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_TopicCategory
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="B_TopicCategory")
 public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_B_TopicCategory (Properties ctx, int B_TopicCategory_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_B_TopicCategory extends PO implements I_B_TopicCategory, I_Persis
 		return (String)get_Value(COLUMNNAME_B_TopicCategory_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_B_TopicType getB_TopicType() throws RuntimeException
 	{
 		return (org.compiere.model.I_B_TopicType)MTable.get(getCtx(), org.compiere.model.I_B_TopicType.Table_ID)

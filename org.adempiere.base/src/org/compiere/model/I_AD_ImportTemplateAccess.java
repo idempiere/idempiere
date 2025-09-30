@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ImportTemplateAccess
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_ImportTemplateAccess 
 {
@@ -76,6 +76,7 @@ public interface I_AD_ImportTemplateAccess
 	/** Get Import Template	  */
 	public int getAD_ImportTemplate_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ImportTemplate getAD_ImportTemplate() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -104,6 +105,7 @@ public interface I_AD_ImportTemplateAccess
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name Created */

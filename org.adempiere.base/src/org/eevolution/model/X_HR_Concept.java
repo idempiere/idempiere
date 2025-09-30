@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_Concept")
 public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Concept (Properties ctx, int HR_Concept_ID, String trxName)
@@ -115,31 +115,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
       return sb.toString();
     }
 
-	/** AccountSign AD_Reference_ID=118 */
-	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
-	/** Credit = C */
-	public static final String ACCOUNTSIGN_Credit = "C";
-	/** Debit = D */
-	public static final String ACCOUNTSIGN_Debit = "D";
-	/** Natural = N */
-	public static final String ACCOUNTSIGN_Natural = "N";
-	/** Set Account Sign.
-		@param AccountSign Indicates the Natural Sign of the Account as a Debit or Credit
-	*/
-	public void setAccountSign (String AccountSign)
-	{
-
-		set_Value (COLUMNNAME_AccountSign, AccountSign);
-	}
-
-	/** Get Account Sign.
-		@return Indicates the Natural Sign of the Account as a Debit or Credit
-	  */
-	public String getAccountSign()
-	{
-		return (String)get_Value(COLUMNNAME_AccountSign);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -166,6 +142,31 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** AccountSign AD_Reference_ID=118 */
+	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
+	/** Credit = C */
+	public static final String ACCOUNTSIGN_Credit = "C";
+	/** Debit = D */
+	public static final String ACCOUNTSIGN_Debit = "D";
+	/** Natural = N */
+	public static final String ACCOUNTSIGN_Natural = "N";
+	/** Set Account Sign.
+		@param AccountSign Indicates the Natural Sign of the Account as a Debit or Credit
+	*/
+	public void setAccountSign (String AccountSign)
+	{
+
+		set_Value (COLUMNNAME_AccountSign, AccountSign);
+	}
+
+	/** Get Account Sign.
+		@return Indicates the Natural Sign of the Account as a Debit or Credit
+	  */
+	public String getAccountSign()
+	{
+		return (String)get_Value(COLUMNNAME_AccountSign);
 	}
 
 	/** ColumnType AD_Reference_ID=53243 */
@@ -210,6 +211,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept_Category getHR_Concept_Category() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Concept_Category)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept_Category.Table_ID)
@@ -273,6 +275,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 		return (String)get_Value(COLUMNNAME_HR_Concept_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
@@ -300,6 +303,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_ID)
@@ -327,6 +331,7 @@ public class X_HR_Concept extends PO implements I_HR_Concept, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)

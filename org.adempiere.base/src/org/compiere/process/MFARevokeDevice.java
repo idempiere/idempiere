@@ -24,7 +24,6 @@
  * Contributors:                                                       *
  * - Carlos Ruiz                                                       *
  **********************************************************************/
-
 package org.compiere.process;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ import org.compiere.model.Query;
 import org.compiere.util.Env;
 
 /**
- *	IDEMPIERE-4782
+ *	IDEMPIERE-4782 Multi-factor authentication
  * 	@author Carlos Ruiz - globalqss - BX Service
  */
 @org.adempiere.base.annotation.Process

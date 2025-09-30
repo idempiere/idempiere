@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintLabel
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintLabel")
 public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_PrintLabel (Properties ctx, int AD_PrintLabel_ID, String trxName)
@@ -125,6 +125,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_LabelPrinter getAD_LabelPrinter() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_LabelPrinter)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinter.Table_ID)
@@ -190,6 +191,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_PrintLabel_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

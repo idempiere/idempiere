@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_DistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_GL_DistributionLine 
 {
@@ -41,19 +41,6 @@ public interface I_GL_DistributionLine
 
     /** Load Meta Data */
 
-    /** Column name Account_ID */
-    public static final String COLUMNNAME_Account_ID = "Account_ID";
-
-	/** Set Account.
-	  * Account used
-	  */
-	public void setAccount_ID (int Account_ID);
-
-	/** Get Account.
-	  * Account used
-	  */
-	public int getAccount_ID();
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -61,19 +48,6 @@ public interface I_GL_DistributionLine
 	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
 
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
@@ -88,6 +62,48 @@ public interface I_GL_DistributionLine
 	  */
 	public int getAD_OrgTrx_ID();
 
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
+
+    /** Column name A_Asset_ID */
+    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+
+	/** Set Asset.
+	  * Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID);
+
+	/** Get Asset.
+	  * Asset used internally or by customers
+	  */
+	public int getA_Asset_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
+
+    /** Column name Account_ID */
+    public static final String COLUMNNAME_Account_ID = "Account_ID";
+
+	/** Set Account.
+	  * Account used
+	  */
+	public void setAccount_ID (int Account_ID);
+
+	/** Get Account.
+	  * Account used
+	  */
+	public int getAccount_ID();
+
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
 
@@ -101,6 +117,7 @@ public interface I_GL_DistributionLine
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -116,6 +133,7 @@ public interface I_GL_DistributionLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -131,7 +149,64 @@ public interface I_GL_DistributionLine
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
+
+    /** Column name C_Charge_ID */
+    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
+
+	/** Set Charge.
+	  * Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID);
+
+	/** Get Charge.
+	  * Additional document charges
+	  */
+	public int getC_Charge_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
+
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
+
+    /** Column name C_Employee_ID */
+    public static final String COLUMNNAME_C_Employee_ID = "C_Employee_ID";
+
+	/** Set Employee.
+	  * Identifies a Business Partner
+	  */
+	public void setC_Employee_ID (int C_Employee_ID);
+
+	/** Get Employee.
+	  * Identifies a Business Partner
+	  */
+	public int getC_Employee_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException;
 
     /** Column name C_LocFrom_ID */
     public static final String COLUMNNAME_C_LocFrom_ID = "C_LocFrom_ID";
@@ -146,6 +221,7 @@ public interface I_GL_DistributionLine
 	  */
 	public int getC_LocFrom_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException;
 
     /** Column name C_LocTo_ID */
@@ -161,6 +237,7 @@ public interface I_GL_DistributionLine
 	  */
 	public int getC_LocTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -176,7 +253,24 @@ public interface I_GL_DistributionLine
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name C_SalesRegion_ID */
+    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
+
+	/** Set Sales Region.
+	  * Sales coverage region
+	  */
+	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
+
+	/** Get Sales Region.
+	  * Sales coverage region
+	  */
+	public int getC_SalesRegion_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -194,21 +288,6 @@ public interface I_GL_DistributionLine
 	  */
 	public int getCreatedBy();
 
-    /** Column name C_SalesRegion_ID */
-    public static final String COLUMNNAME_C_SalesRegion_ID = "C_SalesRegion_ID";
-
-	/** Set Sales Region.
-	  * Sales coverage region
-	  */
-	public void setC_SalesRegion_ID (int C_SalesRegion_ID);
-
-	/** Get Sales Region.
-	  * Sales coverage region
-	  */
-	public int getC_SalesRegion_ID();
-
-	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException;
-
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -221,21 +300,6 @@ public interface I_GL_DistributionLine
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name GL_Distribution_ID */
-    public static final String COLUMNNAME_GL_Distribution_ID = "GL_Distribution_ID";
-
-	/** Set GL Distribution.
-	  * General Ledger Distribution
-	  */
-	public void setGL_Distribution_ID (int GL_Distribution_ID);
-
-	/** Get GL Distribution.
-	  * General Ledger Distribution
-	  */
-	public int getGL_Distribution_ID();
-
-	public org.compiere.model.I_GL_Distribution getGL_Distribution() throws RuntimeException;
 
     /** Column name GL_DistributionLine_ID */
     public static final String COLUMNNAME_GL_DistributionLine_ID = "GL_DistributionLine_ID";
@@ -258,6 +322,22 @@ public interface I_GL_DistributionLine
 
 	/** Get GL_DistributionLine_UU	  */
 	public String getGL_DistributionLine_UU();
+
+    /** Column name GL_Distribution_ID */
+    public static final String COLUMNNAME_GL_Distribution_ID = "GL_Distribution_ID";
+
+	/** Set GL Distribution.
+	  * General Ledger Distribution
+	  */
+	public void setGL_Distribution_ID (int GL_Distribution_ID);
+
+	/** Get GL Distribution.
+	  * General Ledger Distribution
+	  */
+	public int getGL_Distribution_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_GL_Distribution getGL_Distribution() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -285,6 +365,22 @@ public interface I_GL_DistributionLine
 	  */
 	public int getLine();
 
+    /** Column name M_AttributeSetInstance_ID */
+    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+
+	/** Set Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
+
+	/** Get Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
+
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
 
@@ -298,7 +394,24 @@ public interface I_GL_DistributionLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Warehouse_ID */
+    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
+
+	/** Set Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public void setM_Warehouse_ID (int M_Warehouse_ID);
+
+	/** Get Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Org_ID */
     public static final String COLUMNNAME_Org_ID = "Org_ID";
@@ -339,6 +452,32 @@ public interface I_GL_DistributionLine
 	  */
 	public boolean isOverwriteActivity();
 
+    /** Column name OverwriteAsset */
+    public static final String COLUMNNAME_OverwriteAsset = "OverwriteAsset";
+
+	/** Set Overwrite Asset.
+	  * Overwrite the account segment Asset with the value specified
+	  */
+	public void setOverwriteAsset (boolean OverwriteAsset);
+
+	/** Get Overwrite Asset.
+	  * Overwrite the account segment Asset with the value specified
+	  */
+	public boolean isOverwriteAsset();
+
+    /** Column name OverwriteAttributeSetInstance */
+    public static final String COLUMNNAME_OverwriteAttributeSetInstance = "OverwriteAttributeSetInstance";
+
+	/** Set Overwrite Attribute Set Instance.
+	  * Overwrite the account segment Attribute Set Instance with the value specified
+	  */
+	public void setOverwriteAttributeSetInstance (boolean OverwriteAttributeSetInstance);
+
+	/** Get Overwrite Attribute Set Instance.
+	  * Overwrite the account segment Attribute Set Instance with the value specified
+	  */
+	public boolean isOverwriteAttributeSetInstance();
+
     /** Column name OverwriteBPartner */
     public static final String COLUMNNAME_OverwriteBPartner = "OverwriteBPartner";
 
@@ -364,6 +503,58 @@ public interface I_GL_DistributionLine
 	  * Overwrite the account segment Campaign with the value specified
 	  */
 	public boolean isOverwriteCampaign();
+
+    /** Column name OverwriteCharge */
+    public static final String COLUMNNAME_OverwriteCharge = "OverwriteCharge";
+
+	/** Set Overwrite Charge.
+	  * Overwrite the account segment Charge with the value specified
+	  */
+	public void setOverwriteCharge (boolean OverwriteCharge);
+
+	/** Get Overwrite Charge.
+	  * Overwrite the account segment Charge with the value specified
+	  */
+	public boolean isOverwriteCharge();
+
+    /** Column name OverwriteCostCenter */
+    public static final String COLUMNNAME_OverwriteCostCenter = "OverwriteCostCenter";
+
+	/** Set Overwrite Cost Center.
+	  * Overwrite the account segment Cost Center with the value specified
+	  */
+	public void setOverwriteCostCenter (boolean OverwriteCostCenter);
+
+	/** Get Overwrite Cost Center.
+	  * Overwrite the account segment Cost Center with the value specified
+	  */
+	public boolean isOverwriteCostCenter();
+
+    /** Column name OverwriteDepartment */
+    public static final String COLUMNNAME_OverwriteDepartment = "OverwriteDepartment";
+
+	/** Set Overwrite Department.
+	  * Overwrite the account segment Department with the value specified
+	  */
+	public void setOverwriteDepartment (boolean OverwriteDepartment);
+
+	/** Get Overwrite Department.
+	  * Overwrite the account segment Department with the value specified
+	  */
+	public boolean isOverwriteDepartment();
+
+    /** Column name OverwriteEmployee */
+    public static final String COLUMNNAME_OverwriteEmployee = "OverwriteEmployee";
+
+	/** Set Overwrite Employee.
+	  * Overwrite the account segment Employee with the value specified
+	  */
+	public void setOverwriteEmployee (boolean OverwriteEmployee);
+
+	/** Get Overwrite Employee.
+	  * Overwrite the account segment Employee with the value specified
+	  */
+	public boolean isOverwriteEmployee();
 
     /** Column name OverwriteLocFrom */
     public static final String COLUMNNAME_OverwriteLocFrom = "OverwriteLocFrom";
@@ -482,6 +673,19 @@ public interface I_GL_DistributionLine
 	  */
 	public boolean isOverwriteUser2();
 
+    /** Column name OverwriteWarehouse */
+    public static final String COLUMNNAME_OverwriteWarehouse = "OverwriteWarehouse";
+
+	/** Set Overwrite Warehouse.
+	  * Overwrite the account segment Warehouse with the value specified
+	  */
+	public void setOverwriteWarehouse (boolean OverwriteWarehouse);
+
+	/** Get Overwrite Warehouse.
+	  * Overwrite the account segment Warehouse with the value specified
+	  */
+	public boolean isOverwriteWarehouse();
+
     /** Column name Percent */
     public static final String COLUMNNAME_Percent = "Percent";
 
@@ -524,6 +728,7 @@ public interface I_GL_DistributionLine
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -539,5 +744,6 @@ public interface I_GL_DistributionLine
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

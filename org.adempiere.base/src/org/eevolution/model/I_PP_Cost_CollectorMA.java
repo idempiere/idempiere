@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Cost_CollectorMA
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_Cost_CollectorMA 
@@ -106,6 +106,7 @@ public interface I_PP_Cost_CollectorMA
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name MovementQty */
@@ -120,17 +121,6 @@ public interface I_PP_Cost_CollectorMA
 	  * Quantity of a product moved.
 	  */
 	public BigDecimal getMovementQty();
-
-    /** Column name PP_Cost_Collector_ID */
-    public static final String COLUMNNAME_PP_Cost_Collector_ID = "PP_Cost_Collector_ID";
-
-	/** Set Manufacturing Cost Collector	  */
-	public void setPP_Cost_Collector_ID (int PP_Cost_Collector_ID);
-
-	/** Get Manufacturing Cost Collector	  */
-	public int getPP_Cost_Collector_ID();
-
-	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException;
 
     /** Column name PP_Cost_CollectorMA_ID */
     public static final String COLUMNNAME_PP_Cost_CollectorMA_ID = "PP_Cost_CollectorMA_ID";
@@ -149,6 +139,18 @@ public interface I_PP_Cost_CollectorMA
 
 	/** Get PP_Cost_CollectorMA_UU	  */
 	public String getPP_Cost_CollectorMA_UU();
+
+    /** Column name PP_Cost_Collector_ID */
+    public static final String COLUMNNAME_PP_Cost_Collector_ID = "PP_Cost_Collector_ID";
+
+	/** Set Manufacturing Cost Collector	  */
+	public void setPP_Cost_Collector_ID (int PP_Cost_Collector_ID);
+
+	/** Get Manufacturing Cost Collector	  */
+	public int getPP_Cost_Collector_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

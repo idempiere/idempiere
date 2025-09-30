@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DiscountSchemaLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_DiscountSchemaLine 
 {
@@ -75,6 +75,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
@@ -90,6 +91,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getC_ConversionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
 
     /** Column name Classification */
@@ -377,21 +379,6 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public String getList_Rounding();
 
-    /** Column name M_DiscountSchema_ID */
-    public static final String COLUMNNAME_M_DiscountSchema_ID = "M_DiscountSchema_ID";
-
-	/** Set Discount Schema.
-	  * Schema to calculate the trade discount percentage
-	  */
-	public void setM_DiscountSchema_ID (int M_DiscountSchema_ID);
-
-	/** Get Discount Schema.
-	  * Schema to calculate the trade discount percentage
-	  */
-	public int getM_DiscountSchema_ID();
-
-	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
-
     /** Column name M_DiscountSchemaLine_ID */
     public static final String COLUMNNAME_M_DiscountSchemaLine_ID = "M_DiscountSchemaLine_ID";
 
@@ -414,6 +401,22 @@ public interface I_M_DiscountSchemaLine
 	/** Get M_DiscountSchemaLine_UU	  */
 	public String getM_DiscountSchemaLine_UU();
 
+    /** Column name M_DiscountSchema_ID */
+    public static final String COLUMNNAME_M_DiscountSchema_ID = "M_DiscountSchema_ID";
+
+	/** Set Discount Schema.
+	  * Schema to calculate the trade discount percentage
+	  */
+	public void setM_DiscountSchema_ID (int M_DiscountSchema_ID);
+
+	/** Get Discount Schema.
+	  * Schema to calculate the trade discount percentage
+	  */
+	public int getM_DiscountSchema_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
+
     /** Column name M_Product_Category_ID */
     public static final String COLUMNNAME_M_Product_Category_ID = "M_Product_Category_ID";
 
@@ -427,6 +430,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_Product_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -442,6 +446,7 @@ public interface I_M_DiscountSchemaLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name SeqNo */

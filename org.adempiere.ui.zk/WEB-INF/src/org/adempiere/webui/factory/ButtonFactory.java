@@ -16,6 +16,7 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -29,6 +30,7 @@ import org.compiere.util.Util;
 public class ButtonFactory {
 
 	/**
+	 * Is button with text label the current default UI preference
 	 * @return true if button should have text label
 	 */
 	public static final boolean isWithText() {
@@ -37,6 +39,7 @@ public class ButtonFactory {
 	}
 	
 	/**
+	 * Is button with image icon the current default UI preference
 	 * @return true if button should include an image icon
 	 */
 	public static final boolean isWithImage() {
@@ -55,9 +58,10 @@ public class ButtonFactory {
 	}
 	
 	/**
-	 * 
-	 * @param name button name. If withText is true, the name will be used to 
-	 * lookup the button label from ad_message
+	 * Create named button
+	 * @param name button name.<br/>
+	 * Button created with name="btn"+name and include css class of "btn-"+lower(name).<br/>
+	 * If withText is true, the name will be used to lookup the button label from ad_message.
 	 * @param withText text button
 	 * @param withImage image button 
 	 * @return new button instance
@@ -75,7 +79,7 @@ public class ButtonFactory {
         	if (withImage) 
         	{
         		if (ThemeManager.isUseFontIconForImage())
-        			button.setIconSclass("z-icon-"+name);
+        			button.setIconSclass(Icon.getIconSclass(name));
         		else
         			button.setImage(ThemeManager.getThemeResource("images/"+name+"16.png"));        	
         	}
@@ -84,7 +88,7 @@ public class ButtonFactory {
         else
         {
         	if (ThemeManager.isUseFontIconForImage())
-    			button.setIconSclass("z-icon-"+name);
+    			button.setIconSclass(Icon.getIconSclass(name));
         	else
         		button.setImage(ThemeManager.getThemeResource("images/"+name+"24.png"));
         	
@@ -103,6 +107,7 @@ public class ButtonFactory {
     }
 	
 	/**
+	 * Create button
 	 * @param label
 	 * @param image
 	 * @param tooltiptext

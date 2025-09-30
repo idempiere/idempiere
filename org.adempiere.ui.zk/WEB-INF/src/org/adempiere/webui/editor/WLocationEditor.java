@@ -30,6 +30,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocationDialog;
@@ -104,7 +105,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
     private void init()
     {
     	if (ThemeManager.isUseFontIconForImage())
-    		getComponent().getButton().setIconSclass("z-icon-Location");
+    		getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.LOCATION));
     	else
     		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Location16.png"));
     	
@@ -189,13 +190,13 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 
 				@Override
 				public void onEvent(Event event) throws Exception {
-					getComponent().getTextbox().focus();
-					m_value = ld.getValue();
+					getComponent().getTextbox().focus();					
 		            //
 					if (!ld.isChanged())
 		                return;
 		    
 		            //  Data Binding
+					m_value = ld.getValue();
 		            int C_Location_ID = 0;
 		            if (m_value != null)
 		                C_Location_ID = m_value.getC_Location_ID();
@@ -206,7 +207,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		                ValueChangeEvent vc = new ValueChangeEvent(WLocationEditor.this,getColumnName(),null,ii);
 		                fireValueChange(vc);
 		            }
-		            setValue(ii);					
+		            getComponent().setText(m_value != null ? m_value.toString() : null);				
 				}
 			});
             ld.addEventListener(Events.ON_OPEN, new EventListener<OpenEvent>() {

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Relation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_Relation")
 public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BP_Relation (Properties ctx, int C_BP_Relation_ID, String trxName)
@@ -39,10 +39,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
       super (ctx, C_BP_Relation_ID, trxName);
       /** if (C_BP_Relation_ID == 0)
         {
-			setC_BPartner_ID (0);
+			setC_BP_Relation_ID (0);
 			setC_BPartnerRelation_ID (0);
 			setC_BPartnerRelation_Location_ID (0);
-			setC_BP_Relation_ID (0);
+			setC_BPartner_ID (0);
 			setIsBillTo (false);
 			setIsPayFrom (false);
 			setIsRemitTo (false);
@@ -58,10 +58,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
       super (ctx, C_BP_Relation_ID, trxName, virtualColumns);
       /** if (C_BP_Relation_ID == 0)
         {
-			setC_BPartner_ID (0);
+			setC_BP_Relation_ID (0);
 			setC_BPartnerRelation_ID (0);
 			setC_BPartnerRelation_Location_ID (0);
-			setC_BP_Relation_ID (0);
+			setC_BPartner_ID (0);
 			setIsBillTo (false);
 			setIsPayFrom (false);
 			setIsRemitTo (false);
@@ -77,10 +77,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
       super (ctx, C_BP_Relation_UU, trxName);
       /** if (C_BP_Relation_UU == null)
         {
-			setC_BPartner_ID (0);
+			setC_BP_Relation_ID (0);
 			setC_BPartnerRelation_ID (0);
 			setC_BPartnerRelation_Location_ID (0);
-			setC_BP_Relation_ID (0);
+			setC_BPartner_ID (0);
 			setIsBillTo (false);
 			setIsPayFrom (false);
 			setIsRemitTo (false);
@@ -96,10 +96,10 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
       super (ctx, C_BP_Relation_UU, trxName, virtualColumns);
       /** if (C_BP_Relation_UU == null)
         {
-			setC_BPartner_ID (0);
+			setC_BP_Relation_ID (0);
 			setC_BPartnerRelation_ID (0);
 			setC_BPartnerRelation_Location_ID (0);
-			setC_BP_Relation_ID (0);
+			setC_BPartner_ID (0);
 			setIsBillTo (false);
 			setIsPayFrom (false);
 			setIsRemitTo (false);
@@ -137,118 +137,6 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
       return sb.toString();
     }
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());
-	}
-
-	/** Set Partner Location.
-		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
-	*/
-	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
-	{
-		if (C_BPartner_Location_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
-	}
-
-	/** Get Partner Location.
-		@return Identifies the (ship to) address for this Business Partner
-	  */
-	public int getC_BPartner_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner getC_BPartnerRelation() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartnerRelation_ID(), get_TrxName());
-	}
-
-	/** Set Related Partner.
-		@param C_BPartnerRelation_ID Related Business Partner
-	*/
-	public void setC_BPartnerRelation_ID (int C_BPartnerRelation_ID)
-	{
-		if (C_BPartnerRelation_ID < 1)
-			set_Value (COLUMNNAME_C_BPartnerRelation_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartnerRelation_ID, Integer.valueOf(C_BPartnerRelation_ID));
-	}
-
-	/** Get Related Partner.
-		@return Related Business Partner
-	  */
-	public int getC_BPartnerRelation_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartnerRelation_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner_Location getC_BPartnerRelation_Location() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
-			.getPO(getC_BPartnerRelation_Location_ID(), get_TrxName());
-	}
-
-	/** Set Related Partner Location.
-		@param C_BPartnerRelation_Location_ID Location of the related Business Partner
-	*/
-	public void setC_BPartnerRelation_Location_ID (int C_BPartnerRelation_Location_ID)
-	{
-		if (C_BPartnerRelation_Location_ID < 1)
-			set_Value (COLUMNNAME_C_BPartnerRelation_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartnerRelation_Location_ID, Integer.valueOf(C_BPartnerRelation_Location_ID));
-	}
-
-	/** Get Related Partner Location.
-		@return Location of the related Business Partner
-	  */
-	public int getC_BPartnerRelation_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartnerRelation_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Partner Relation.
 		@param C_BP_Relation_ID Business Partner Relation
 	*/
@@ -284,6 +172,122 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	public String getC_BP_Relation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BP_Relation_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartnerRelation() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartnerRelation_ID(), get_TrxName());
+	}
+
+	/** Set Related Partner.
+		@param C_BPartnerRelation_ID Related Business Partner
+	*/
+	public void setC_BPartnerRelation_ID (int C_BPartnerRelation_ID)
+	{
+		if (C_BPartnerRelation_ID < 1)
+			set_Value (COLUMNNAME_C_BPartnerRelation_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartnerRelation_ID, Integer.valueOf(C_BPartnerRelation_ID));
+	}
+
+	/** Get Related Partner.
+		@return Related Business Partner
+	  */
+	public int getC_BPartnerRelation_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartnerRelation_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartnerRelation_Location() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartnerRelation_Location_ID(), get_TrxName());
+	}
+
+	/** Set Related Partner Location.
+		@param C_BPartnerRelation_Location_ID Location of the related Business Partner
+	*/
+	public void setC_BPartnerRelation_Location_ID (int C_BPartnerRelation_Location_ID)
+	{
+		if (C_BPartnerRelation_Location_ID < 1)
+			set_Value (COLUMNNAME_C_BPartnerRelation_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartnerRelation_Location_ID, Integer.valueOf(C_BPartnerRelation_Location_ID));
+	}
+
+	/** Get Related Partner Location.
+		@return Location of the related Business Partner
+	  */
+	public int getC_BPartnerRelation_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartnerRelation_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
+
+	/** Set Partner Location.
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
+	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
+	{
+		if (C_BPartner_Location_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
+	}
+
+	/** Get Partner Location.
+		@return Identifies the (ship to) address for this Business Partner
+	  */
+	public int getC_BPartner_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

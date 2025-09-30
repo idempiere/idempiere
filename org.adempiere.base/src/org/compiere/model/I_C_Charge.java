@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Charge
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_Charge 
 {
@@ -75,7 +75,20 @@ public interface I_C_Charge
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
+    /** Column name C_ChargeType_ID */
+    public static final String COLUMNNAME_C_ChargeType_ID = "C_ChargeType_ID";
+
+	/** Set Charge Type	  */
+	public void setC_ChargeType_ID (int C_ChargeType_ID);
+
+	/** Get Charge Type	  */
+	public int getC_ChargeType_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException;
 
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
@@ -90,17 +103,6 @@ public interface I_C_Charge
 	  */
 	public int getC_Charge_ID();
 
-    /** Column name C_ChargeType_ID */
-    public static final String COLUMNNAME_C_ChargeType_ID = "C_ChargeType_ID";
-
-	/** Set Charge Type	  */
-	public void setC_ChargeType_ID (int C_ChargeType_ID);
-
-	/** Get Charge Type	  */
-	public int getC_ChargeType_ID();
-
-	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException;
-
     /** Column name C_Charge_UU */
     public static final String COLUMNNAME_C_Charge_UU = "C_Charge_UU";
 
@@ -109,6 +111,22 @@ public interface I_C_Charge
 
 	/** Get C_Charge_UU	  */
 	public String getC_Charge_UU();
+
+    /** Column name C_TaxCategory_ID */
+    public static final String COLUMNNAME_C_TaxCategory_ID = "C_TaxCategory_ID";
+
+	/** Set Tax Category.
+	  * Tax Category
+	  */
+	public void setC_TaxCategory_ID (int C_TaxCategory_ID);
+
+	/** Get Tax Category.
+	  * Tax Category
+	  */
+	public int getC_TaxCategory_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
 
     /** Column name ChargeAmt */
     public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
@@ -139,21 +157,6 @@ public interface I_C_Charge
 	  */
 	public int getCreatedBy();
 
-    /** Column name C_TaxCategory_ID */
-    public static final String COLUMNNAME_C_TaxCategory_ID = "C_TaxCategory_ID";
-
-	/** Set Tax Category.
-	  * Tax Category
-	  */
-	public void setC_TaxCategory_ID (int C_TaxCategory_ID);
-
-	/** Get Tax Category.
-	  * Tax Category
-	  */
-	public int getC_TaxCategory_ID();
-
-	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException;
-
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -179,6 +182,19 @@ public interface I_C_Charge
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsExcludedFromDiscount */
+    public static final String COLUMNNAME_IsExcludedFromDiscount = "IsExcludedFromDiscount";
+
+	/** Set Exclude from Payment Discount.
+	  * If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	  */
+	public void setIsExcludedFromDiscount (boolean IsExcludedFromDiscount);
+
+	/** Get Exclude from Payment Discount.
+	  * If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	  */
+	public boolean isExcludedFromDiscount();
 
     /** Column name IsSameCurrency */
     public static final String COLUMNNAME_IsSameCurrency = "IsSameCurrency";

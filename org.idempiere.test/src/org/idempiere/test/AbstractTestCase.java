@@ -24,55 +24,63 @@
  **********************************************************************/
 package org.idempiere.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MRole;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
+ * Abstract base class for all test case
  * @author hengsin
- *
  */
+@ExtendWith(AbstractTestCase.MyBeforeAllCallback.class)
 public abstract class AbstractTestCase {
 
 	private Trx trx;
 	private LoginDetails loginDetails;
 	
-	protected final int GARDEN_WORLD_CLIENT = 11;
-	protected final int GARDEN_WORLD_HQ_ORG = 11;
-	protected final int GARDEN_WORLD_ADMIN_USER = 101;
-	protected final int GARDEN_WORLD_ADMIN_ROLE = 102;
-	protected final int GARDEN_WORLD_HQ_WAREHOUSE = 103;
+	protected final int GARDEN_WORLD_CLIENT = DictionaryIDs.AD_Client.GARDEN_WORLD.id;
+	protected final int GARDEN_WORLD_HQ_ORG = DictionaryIDs.AD_Org.HQ.id;
+	protected final int GARDEN_WORLD_ADMIN_USER = DictionaryIDs.AD_User.GARDEN_ADMIN.id;
+	protected final int GARDEN_WORLD_ADMIN_ROLE = DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id;
+	protected final int GARDEN_WORLD_HQ_WAREHOUSE = DictionaryIDs.M_Warehouse.HQ.id;
 	
-	@BeforeAll
-	/**
-	 * setup for class
-	 */
-	static void setup() {
-		Adempiere.startup(false);
-	}
-
 	@BeforeEach
 	/**
 	 * Init for each test method
 	 * @param testInfo
 	 */
 	protected void init(TestInfo testInfo) {
+		StringBuilder builder = new StringBuilder("Running ");
+		Optional<Class<?>> optional = testInfo.getTestClass();
+		if (optional.isPresent())
+			builder.append(optional.get().getName()).append(".");
+		builder.append(testInfo.getDisplayName());
+		System.out.println(builder.toString());
 		ServerContext.setCurrentInstance(new Properties());
 		
 		String trxName = Trx.createTrxName(getClass().getName()+"_");
@@ -229,5 +237,112 @@ public abstract class AbstractTestCase {
 	 * shutdown for class
 	 */
 	static void shutdown() {
+	}
+	
+	protected static final class MyBeforeAllCallback implements BeforeAllCallback {
+		@Override
+		public void beforeAll(ExtensionContext context) throws Exception {
+			Adempiere.startup(false);
+		}		
+	}
+	
+	/**
+	 * Match expectedList against a list of MFactAcct records
+	 * @param factAccts
+	 * @param expectedList
+	 */
+	protected void assertFactAcctEntries(List<MFactAcct> factAccts, List<FactAcct> expectedList) {
+		List<FactAcct> found = new ArrayList<FactAcct>();
+		List<MFactAcct> matches = new ArrayList<MFactAcct>();
+		expectedList.forEach(fa -> {
+			//LineId and account id match
+			List<MFactAcct> accountMatches = new ArrayList<MFactAcct>();
+			//find exact match
+			for(MFactAcct mfa : factAccts) {
+				if (fa.account().getAccount().get_ID() == mfa.getAccount_ID()) {					
+					if (fa.lineId() > 0 && fa.lineId() != mfa.getLine_ID())
+						continue;
+					accountMatches.add(mfa);
+					if (fa.qty() != null && (mfa.getQty() == null || !mfa.getQty().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP))))
+						continue;
+					if (fa.debit()) {
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+						found.add(fa);
+						matches.add(mfa);
+						break;
+					} else {
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+						found.add(fa);
+						matches.add(mfa);
+						break;
+					}
+				}
+			}
+			//assert qty mismatch
+			if (!found.contains(fa) && !accountMatches.isEmpty()) {
+				for(MFactAcct mfa : accountMatches) {
+					if (fa.debit()) {
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+					} else {
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+							continue;
+					}
+					assertEquals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getQty().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Qty for " + fa);
+					found.add(fa);
+				}
+			}			
+		});
+		
+		//assert amount mismatch
+		expectedList.forEach(fa -> {
+			if (!found.contains(fa)) {
+				for(MFactAcct mfa : factAccts) {
+					if (matches.contains(mfa))
+						continue;
+					if (fa.account().getAccount().get_ID() != mfa.getAccount_ID())
+						continue;
+					if (fa.lineId() > 0 && fa.lineId() != mfa.getLine_ID())
+						continue;
+					if (fa.debit()) {
+						if (fa.accountedAmount() != null && fa.accountedAmount().signum() == mfa.getAmtAcctDr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Accounted Dr amount for " + fa);
+						else if (fa.accountedAmount() != null)
+							continue;
+						if (fa.sourceAmount() != null && fa.sourceAmount().signum() == mfa.getAmtSourceDr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Source Dr amount for " + fa);
+						else if (fa.sourceAmount() != null)
+							continue;
+					} else {
+						if (fa.accountedAmount() != null && fa.accountedAmount().signum() == mfa.getAmtAcctCr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Accounted Cr amount for " + fa);
+						else if (fa.accountedAmount() != null)
+							continue;
+						if (fa.sourceAmount() != null && fa.sourceAmount().signum() == mfa.getAmtSourceCr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Source Cr amount for " + fa);
+						else if (fa.sourceAmount() != null)
+							continue;
+					}
+					if (fa.qty() != null && mfa.getQty() != null)
+						assertEquals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getQty().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Qty for " + fa);
+					found.add(fa);
+				}
+			}
+		});
+		
+		//assert not found
+		for(FactAcct factAcct : expectedList) {
+			assertTrue(found.contains(factAcct), "No fact acct record found for " + factAcct);
+		}
 	}
 }

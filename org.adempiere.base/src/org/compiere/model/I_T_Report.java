@@ -21,7 +21,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_Report
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_T_Report 
 {
@@ -53,6 +53,7 @@ public interface I_T_Report
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name Col_0 */
@@ -387,6 +388,7 @@ public interface I_T_Report
 	/** Get Report Line	  */
 	public int getPA_ReportLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
 
     /** Column name Record_ID */

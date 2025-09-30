@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -124,7 +125,8 @@ public class MLandedCost extends X_C_LandedCost
 	}	//	MLandedCost
 	
 	/**
-	 * 	Before Save
+	 * 	Check that one of M_Product_ID, M_InOut_ID or M_InOutLine_ID is fill.<br/>
+	 *  Ensure M_Product_ID is 0 if M_InOutLine_ID is fill.
 	 *	@param newRecord new
 	 *	@return true if ok
 	 */
@@ -143,6 +145,9 @@ public class MLandedCost extends X_C_LandedCost
 		//	No Product if Line entered
 		if (getM_InOutLine_ID() != 0 && getM_Product_ID() != 0)
 			setM_Product_ID(0);
+		//	No Qty if Receipt entered or Line entered or Product not entered
+		if (getM_InOut_ID() != 0 || getM_InOutLine_ID() != 0 || getM_Product_ID() == 0)
+			setQty(BigDecimal.ZERO);
 				
 		return true;
 	}	//	beforeSave

@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
@@ -80,10 +82,10 @@ public class GridField
 	implements Serializable, Evaluatee, Cloneable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -4496344553246662012L;
-	
+	private static final long serialVersionUID = -1301956809914059765L;
+
 	private static final Character SPECIAL_CASE_DEFAULT = '1';
 	private static final Character SQL_DEFAULT = '2';
 	private static final Character DEFAULT_LOGIC = '3';
@@ -304,7 +306,7 @@ public class GridField
 		Evaluator.parseDepends(list, m_vo.ReadOnlyLogic);
 		Evaluator.parseDepends(list, m_vo.MandatoryLogic);
 		// Virtual UI Column
-		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQL="))
+		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 			Evaluator.parseDepends(list, m_vo.ColumnSQL.substring(5));
 		//  Lookup
 		if (m_lookup != null)
@@ -349,7 +351,7 @@ public class GridField
 		if (checkContext && m_vo.MandatoryLogic.length() > 0)
 		{
 			boolean retValue  = false;
-			if (m_vo.MandatoryLogic != null && m_vo.MandatoryLogic.startsWith("@SQL=")) {
+			if (m_vo.MandatoryLogic != null && m_vo.MandatoryLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				retValue = Evaluator.parseSQLLogic(m_vo.MandatoryLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 
 			} else{
@@ -390,7 +392,7 @@ public class GridField
 	public boolean isEditablePara(boolean checkContext) {
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
-			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
+			if (m_vo.ReadOnlyLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 			{
 				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
@@ -462,15 +464,11 @@ public class GridField
 		if (checkContext && m_vo.AlwaysUpdatableLogic.length() > 0)
 		{
 			boolean isAlwaysUpdatable = false;
-			if (m_vo.AlwaysUpdatableLogic.startsWith("@SQL=")) {
+			if (m_vo.AlwaysUpdatableLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, ctx, m_vo.WindowNo,
 						m_vo.TabNo, m_vo.ColumnName);
 			} else {
-				Evaluatee evaluatee = new Evaluatee() {
-					public String get_ValueAsString(String variableName) {
-						return GridField.this.get_ValueAsString(ctx, variableName);
-					}
-				};
+				Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 				isAlwaysUpdatable = Evaluator.evaluateLogic(evaluatee, m_vo.AlwaysUpdatableLogic);
 				if (log.isLoggable(Level.FINEST))
 					log.finest(m_vo.ColumnName + " R/O(" + m_vo.AlwaysUpdatableLogic + ") => R/W-" + isAlwaysUpdatable);
@@ -543,7 +541,7 @@ public class GridField
 		//  Do we have a readonly rule
 		if (checkContext && m_vo.ReadOnlyLogic.length() > 0)
 		{
-			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
+			if (m_vo.ReadOnlyLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 			{
 				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
@@ -551,11 +549,7 @@ public class GridField
 			}
 			else
 			{
-				Evaluatee evaluatee = new Evaluatee() {
-					public String get_ValueAsString(String variableName) {
-						return GridField.this.get_ValueAsString(ctx, variableName);
-					}
-				};
+				Evaluatee evaluatee = variableName -> {return get_ValueAsString(ctx, variableName);};
 				boolean retValue = !Evaluator.evaluateLogic(evaluatee, m_vo.ReadOnlyLogic);
 				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
 				if (!retValue)
@@ -821,7 +815,7 @@ public class GridField
 		 *  (b) SQL Statement (for data integity & consistency)
 		 */
 		String	defStr = "";
-		if (m_vo.DefaultValue != null && m_vo.DefaultValue.startsWith("@SQL="))
+		if (m_vo.DefaultValue != null && m_vo.DefaultValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 		{
 			String sql = m_vo.DefaultValue.substring(5);			//	w/o tag
 			//hengsin, capture unparseable error to avoid subsequent sql exception
@@ -878,9 +872,10 @@ public class GridField
 		/**
 		 * 	(c) Field DefaultValue		=== similar code in AStartRPDialog.getDefault ===
 		 */
-		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith("@SQL="))
+		if (m_vo.DefaultValue != null && !m_vo.DefaultValue.equals("") && !m_vo.DefaultValue.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 		{
 			String defStr = "";		//	problem is with texts like 'sss;sss'
+			String defStrMultipleSelect = "";
 			//	It is one or more variables/constants
 			StringTokenizer st = new StringTokenizer(m_vo.DefaultValue, ",;", false);
 			while (st.hasMoreTokens())
@@ -892,7 +887,16 @@ public class GridField
 					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, defStr.trim(), false, false);
 				else if (defStr.indexOf("'") != -1)			//	it is a 'String'
 					defStr = defStr.replace('\'', ' ').trim();
-
+				
+				if (DisplayType.isChosenMultipleSelection(m_vo.displayType)) {
+					defStrMultipleSelect += defStr + ",";
+					if (!st.hasMoreTokens()) {
+						defStr = defStrMultipleSelect.substring(0, defStrMultipleSelect.length() - 1);
+					} else {
+						continue;
+					}
+				}
+				
 				if (!defStr.equals(""))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("[DefaultValue] " + m_vo.ColumnName + "=" + defStr);
@@ -1225,6 +1229,7 @@ public class GridField
 	 *  @return true if valid
 	 *  @deprecated use validateValueNoDirect instead
 	 */
+	@Deprecated
 	public boolean validateValue()
 	{
 		//  null
@@ -1297,14 +1302,10 @@ public class GridField
 		//  ** dynamic content **
 		if (checkContext)
 		{
-			if (m_vo.DisplayLogic.startsWith("@SQL=")) {
+			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return GridField.this.get_ValueAsString(ctx, variableName);
-				}
-			};
+			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
@@ -1342,14 +1343,10 @@ public class GridField
 		//  ** dynamic content **
 		if (checkContext)
 		{
-			if (m_vo.DisplayLogic.startsWith("@SQL=")) {
+			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
-			Evaluatee evaluatee = new Evaluatee() {
-				public String get_ValueAsString(String variableName) {
-					return GridField.this.get_ValueAsString(ctx, variableName);
-				}
-			};
+			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
 			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
 				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
@@ -1363,6 +1360,7 @@ public class GridField
 	 *	@param variableName name
 	 *	@return value
 	 */
+	@Override
 	public String get_ValueAsString (String variableName)
 	{
 		return get_ValueAsString(m_vo.ctx, variableName);
@@ -1434,7 +1432,7 @@ public class GridField
 		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
 		{
 			String query;
-			if (m_vo.ColumnSQL.startsWith("@SQL=") || m_vo.ColumnSQL.startsWith("@SQLFIND="))
+			if (m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX))
 				query = "NULL";
 			else
 				query = m_vo.ColumnSQL;
@@ -1455,9 +1453,9 @@ public class GridField
 		if (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0)
 		{
 			String query;
-			if (m_vo.ColumnSQL.startsWith("@SQL="))
+			if (m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
 				query = "NULL";
-			else if (m_vo.ColumnSQL.startsWith("@SQLFIND="))
+			else if (m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX))
 				query = m_vo.ColumnSQL.substring(9);
 			else
 				query = m_vo.ColumnSQL;
@@ -1481,7 +1479,7 @@ public class GridField
 	 */
 	public boolean isVirtualDBColumn()
 	{
-		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && !m_vo.ColumnSQL.startsWith("@SQL="));
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && !m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX));
 	}	//	isVirtualDBColumn
 	
 	/**
@@ -1490,7 +1488,7 @@ public class GridField
 	 */
 	public boolean isVirtualUIColumn()
 	{
-		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQL="));
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX));
 	}	//	isVirtualUIColumn
 	
 	/**
@@ -1499,7 +1497,7 @@ public class GridField
 	 */
 	public boolean isVirtualSearchColumn()
 	{
-		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith("@SQLFIND="));
+		return (m_vo.ColumnSQL != null && m_vo.ColumnSQL.length() > 0 && m_vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX));
 	}	//	isVirtualDBColumn
 	
 	/**
@@ -1510,6 +1508,16 @@ public class GridField
 	{
 		return m_vo.Header;
 	}
+
+	/**
+	 * Get EntityType
+	 * @return Window Entity Type
+	 */
+	public String getEntityType()
+	{
+		return m_vo.EntityType;
+	}
+
 	/**
 	 * 	Get Display Type
 	 *	@return display type
@@ -2106,6 +2114,7 @@ public class GridField
 		if (m_vo.displayType == DisplayType.Text 
 			|| m_vo.displayType == DisplayType.Memo
 			|| m_vo.displayType == DisplayType.TextLong
+			|| m_vo.displayType == DisplayType.JSON
 			|| m_vo.displayType == DisplayType.Binary
 			|| m_vo.displayType == DisplayType.RowID
 			|| isEncrypted())
@@ -2827,5 +2836,50 @@ public class GridField
 	 */
 	public void setParentEvaluatee(Evaluatee evaluatee) {
 		m_parentEvaluatee  = evaluatee;
+	}
+	
+	/**
+	 * Update dependent field after changes to a column
+	 * @param dependentField field with logic depending on column that changed
+	 * @param columnName name of column that changed
+	 * @param tabNo optional tab number
+	 * @param resetFieldAction optional action to reset dependent field value
+	 */
+	public static void updateDependentField(GridField dependentField, String columnName, int tabNo, Runnable resetFieldAction) {
+		//  if the field has a lookup
+		if (dependentField.getLookup() instanceof MLookup mLookup)
+		{
+			//  if the lookup is dynamic (i.e. contains this columnName as variable)
+			String validation = mLookup.getValidation();
+
+			// Regex
+			String regex = ".*@(?:~|"+tabNo+"\\|)?"+columnName+"(:.+)?@.*";
+
+			// Pattern with DOTALL to match multiple lines
+			Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+			Matcher matcher = pattern.matcher(validation);
+			
+			if (matcher.find())
+			{
+				if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
+					+ dependentField.getColumnName() + " set to null");
+				mLookup.refresh();
+				if (resetFieldAction != null) {
+					resetFieldAction.run();
+				} else {
+					Object currentValue = dependentField.getValue();
+					
+					//  invalidate current selection
+					dependentField.setValue(null, false);
+					
+					if (currentValue != null && mLookup.containsKeyNoDirect(currentValue))
+						dependentField.setValue(currentValue, false);
+				}
+			}
+		}
+		//  if the field is a Virtual UI Column
+		if (dependentField.isVirtualUIColumn()) {
+			dependentField.processUIVirtualColumn();
+		}
 	}
 }   //  GridField

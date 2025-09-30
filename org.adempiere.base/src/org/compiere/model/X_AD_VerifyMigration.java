@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_VerifyMigration
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_VerifyMigration")
 public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_VerifyMigration (Properties ctx, int AD_VerifyMigration_ID, String trxName)
@@ -116,6 +116,7 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ChangeLog getAD_ChangeLog() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_ChangeLog)MTable.get(getCtx(), org.compiere.model.I_AD_ChangeLog.Table_ID)
@@ -144,6 +145,7 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -172,6 +174,7 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -200,6 +203,7 @@ public class X_AD_VerifyMigration extends PO implements I_AD_VerifyMigration, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

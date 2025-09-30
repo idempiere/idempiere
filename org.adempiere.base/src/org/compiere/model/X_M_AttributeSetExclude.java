@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_AttributeSetExclude
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeSetExclude")
 public class X_M_AttributeSetExclude extends PO implements I_M_AttributeSetExclude, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_M_AttributeSetExclude extends PO implements I_M_AttributeSetExclu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_AttributeSetExclude (Properties ctx, int M_AttributeSetExclude_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_M_AttributeSetExclude extends PO implements I_M_AttributeSetExclu
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -200,6 +201,7 @@ public class X_M_AttributeSetExclude extends PO implements I_M_AttributeSetExclu
 		return (String)get_Value(COLUMNNAME_M_AttributeSetExclude_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)

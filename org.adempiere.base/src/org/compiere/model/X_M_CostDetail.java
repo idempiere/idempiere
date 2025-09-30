@@ -19,12 +19,13 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_CostDetail
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_CostDetail")
 public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 {
@@ -32,7 +33,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_CostDetail (Properties ctx, int M_CostDetail_ID, String trxName)
@@ -42,6 +43,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -59,6 +63,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -76,6 +83,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -93,6 +103,9 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
         {
 			setAmt (Env.ZERO);
 			setC_AcctSchema_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsBackDate (false);
+// N
 			setIsSOTrx (false);
 			setM_AttributeSetInstance_ID (0);
 			setM_CostDetail_ID (0);
@@ -149,6 +162,23 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return bd;
 	}
 
+	/** Set Back-Date Processed On.
+		@param BackDateProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
+	public void setBackDateProcessedOn (Timestamp BackDateProcessedOn)
+	{
+		set_Value (COLUMNNAME_BackDateProcessedOn, BackDateProcessedOn);
+	}
+
+	/** Get Back-Date Processed On.
+		@return The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public Timestamp getBackDateProcessedOn()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_BackDateProcessedOn);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -177,6 +207,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -205,6 +236,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
@@ -233,6 +265,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ProjectIssue)MTable.get(getCtx(), org.compiere.model.I_C_ProjectIssue.Table_ID)
@@ -337,6 +370,22 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return bd;
 	}
 
+	/** Set Account Date.
+		@param DateAcct Accounting Date
+	*/
+	public void setDateAcct (Timestamp DateAcct)
+	{
+		set_Value (COLUMNNAME_DateAcct, DateAcct);
+	}
+
+	/** Get Account Date.
+		@return Accounting Date
+	  */
+	public Timestamp getDateAcct()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
+	}
+
 	/** Set Delta Amount.
 		@param DeltaAmt Difference Amount
 	*/
@@ -391,6 +440,28 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set Back-Date.
+		@param IsBackDate Back-Date
+	*/
+	public void setIsBackDate (boolean IsBackDate)
+	{
+		set_Value (COLUMNNAME_IsBackDate, Boolean.valueOf(IsBackDate));
+	}
+
+	/** Get Back-Date.
+		@return Back-Date	  */
+	public boolean isBackDate()
+	{
+		Object oo = get_Value(COLUMNNAME_IsBackDate);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Sales Transaction.
 		@param IsSOTrx This is a Sales Transaction
 	*/
@@ -414,6 +485,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -479,6 +551,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_CostDetail_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
@@ -507,6 +580,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -535,6 +609,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
@@ -563,6 +638,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchInv getM_MatchInv() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_ID)
@@ -591,6 +667,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)
@@ -619,6 +696,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -647,6 +725,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)
@@ -675,6 +754,7 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Cost_Collector)MTable.get(getCtx(), org.eevolution.model.I_PP_Cost_Collector.Table_ID)
@@ -760,5 +840,26 @@ public class X_M_CostDetail extends PO implements I_M_CostDetail, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Referenced Cost Detail.
+		@param Ref_CostDetail_ID Referenced Cost Detail
+	*/
+	public void setRef_CostDetail_ID (int Ref_CostDetail_ID)
+	{
+		if (Ref_CostDetail_ID < 1)
+			set_Value (COLUMNNAME_Ref_CostDetail_ID, null);
+		else
+			set_Value (COLUMNNAME_Ref_CostDetail_ID, Integer.valueOf(Ref_CostDetail_ID));
+	}
+
+	/** Get Referenced Cost Detail.
+		@return Referenced Cost Detail	  */
+	public int getRef_CostDetail_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Ref_CostDetail_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

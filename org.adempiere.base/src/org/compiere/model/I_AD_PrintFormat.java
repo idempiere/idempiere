@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFormat
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_PrintFormat 
 {
@@ -75,6 +75,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getAD_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
 
     /** Column name AD_PrintFont_ID */
@@ -90,6 +91,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getAD_PrintFont_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException;
 
     /** Column name AD_PrintFormat_ID */
@@ -123,6 +125,7 @@ public interface I_AD_PrintFormat
 	/** Get Print Header/Footer	  */
 	public int getAD_PrintHeaderFooter_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintHeaderFooter getAD_PrintHeaderFooter() throws RuntimeException;
 
     /** Column name AD_PrintPaper_ID */
@@ -138,6 +141,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getAD_PrintPaper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintPaper getAD_PrintPaper() throws RuntimeException;
 
     /** Column name AD_PrintTableFormat_ID */
@@ -153,6 +157,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getAD_PrintTableFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintTableFormat getAD_PrintTableFormat() throws RuntimeException;
 
     /** Column name AD_ReportView_ID */
@@ -168,6 +173,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getAD_ReportView_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -183,6 +189,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -198,6 +205,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name CreateCopy */
@@ -364,6 +372,7 @@ public interface I_AD_PrintFormat
 	  */
 	public int getJasperProcess_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getJasperProcess() throws RuntimeException;
 
     /** Column name Name */

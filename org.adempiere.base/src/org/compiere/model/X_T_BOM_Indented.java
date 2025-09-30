@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BOM_Indented
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_BOM_Indented")
 public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_BOM_Indented (Properties ctx, int T_BOM_Indented_ID, String trxName)
@@ -102,6 +102,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -130,6 +131,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -303,6 +305,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 		return (String)get_Value(COLUMNNAME_Levels);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
@@ -331,6 +334,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -397,6 +401,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getSel_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

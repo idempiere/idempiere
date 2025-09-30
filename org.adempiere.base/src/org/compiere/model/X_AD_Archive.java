@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Archive
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Archive")
 public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Archive (Properties ctx, int AD_Archive_ID, String trxName)
@@ -150,6 +150,7 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Archive_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -178,6 +179,7 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_StorageProvider)MTable.get(getCtx(), org.compiere.model.I_AD_StorageProvider.Table_ID)
@@ -205,6 +207,7 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -249,6 +252,7 @@ public class X_AD_Archive extends PO implements I_AD_Archive, I_Persistent
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)

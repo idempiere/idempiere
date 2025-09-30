@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_Order_Node_Product
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Node_Product")
 public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Product, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Product (Properties ctx, int PP_Order_Node_Product_ID, String trxName)
@@ -141,6 +141,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -169,6 +170,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
@@ -197,6 +199,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_ID)
@@ -261,6 +264,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 		return (String)get_Value(COLUMNNAME_PP_Order_Node_Product_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order_Workflow)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Workflow.Table_ID)

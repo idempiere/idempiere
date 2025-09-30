@@ -216,14 +216,10 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		return sb.toString();
 	}	//	toString
 			
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Reset IsValid to false after change of DueAmt
 		if (is_ValueChanged("DueAmt"))
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("beforeSave");
@@ -232,17 +228,12 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Re-validate pay schedule after change of DueAmt or IsActive
 		if (is_ValueChanged("DueAmt") || is_ValueChanged("IsActive"))
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("afterSave");
@@ -258,6 +249,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		if (!success)
 			return success;
 		if (log.isLoggable(Level.FINE)) log.fine("afterDelete");
+		// Load m_parent and validate pay schedule
 		getParent();
 		m_parent.validatePaySchedule();
 		m_parent.saveEx();

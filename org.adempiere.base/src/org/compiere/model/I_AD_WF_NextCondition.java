@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_NextCondition
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_WF_NextCondition 
 {
@@ -62,6 +62,7 @@ public interface I_AD_WF_NextCondition
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -112,6 +113,7 @@ public interface I_AD_WF_NextCondition
 	  */
 	public int getAD_WF_NodeNext_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_NodeNext getAD_WF_NodeNext() throws RuntimeException;
 
     /** Column name AndOr */
@@ -184,6 +186,15 @@ public interface I_AD_WF_NextCondition
 	  */
 	public String getOperation();
 
+    /** Column name SQLStatement */
+    public static final String COLUMNNAME_SQLStatement = "SQLStatement";
+
+	/** Set SQL Expression/Statement	  */
+	public void setSQLStatement (String SQLStatement);
+
+	/** Get SQL Expression/Statement	  */
+	public String getSQLStatement();
+
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
 
@@ -198,15 +209,6 @@ public interface I_AD_WF_NextCondition
  lowest number comes first
 	  */
 	public int getSeqNo();
-
-    /** Column name SQLStatement */
-    public static final String COLUMNNAME_SQLStatement = "SQLStatement";
-
-	/** Set SQL Expression/Statement	  */
-	public void setSQLStatement (String SQLStatement);
-
-	/** Get SQL Expression/Statement	  */
-	public String getSQLStatement();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

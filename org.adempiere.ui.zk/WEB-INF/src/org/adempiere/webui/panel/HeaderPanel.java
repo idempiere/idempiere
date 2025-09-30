@@ -26,6 +26,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.AboutWindow;
 import org.compiere.model.MQuery;
@@ -50,7 +51,6 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @author  <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Mar 2, 2007
  * @date    July 7, 2007
- * @version $Revision: 0.20 $
  */
 
 public class HeaderPanel extends Panel implements EventListener<Event>
@@ -94,8 +94,13 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	createSearchPanel();
 
     	btnMenu = (LabelImageElement) getFellow("menuButton");
-    	btnMenu.setIconSclass("z-icon-sitemap");
-    	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")));
+
+    	if (ThemeManager.isUseFontIconForImage())
+    		btnMenu.setIconSclass(Icon.getIconSclass(Icon.SITEMAP));
+    	else
+    		btnMenu.setImage(ThemeManager.getThemeResource("images/MenuTree16.png"));
+
+    	btnMenu.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Menu")) + " Alt+M");
     	btnMenu.addEventListener(Events.ON_CLICK, this);
     	if (ClientInfo.isMobile()) {
     		LayoutUtils.addSclass("mobile", this);
@@ -131,6 +136,8 @@ public class HeaderPanel extends Panel implements EventListener<Event>
     	stub.getParent().insertBefore(globalSearch, stub);
     	stub.detach();
     	globalSearch.setId("menuLookup");
+    	globalSearch.setPlaceHolderText("Alt+G");
+    	globalSearch.setTooltipText("Alt+G");
 	}
 
 	@Override
@@ -154,16 +161,19 @@ public class HeaderPanel extends Panel implements EventListener<Event>
 		} else if (Events.ON_CREATE.equals(event.getName())) {
 			onCreate();
 		}else if (event instanceof KeyEvent)
-		{
-			//alt+m for the menu
+		{			
 			KeyEvent ke = (KeyEvent) event;
-			if (ke.getKeyCode() == 77)
+			if (ke.getKeyCode() == 77) // alt+m for the menu
 			{
 				popMenu.open(btnMenu, "after_start");
 				popMenu.setFocus(true);
-			}else if (ke.getKeyCode() == 27) {
+			}
+			else if (ke.getKeyCode() == 27) // esc to close menu 
+			{ 
 				popMenu.close();
-			}else if (ke.getKeyCode() == 71) {
+			}
+			else if (ke.getKeyCode() == 71) // alt+g for the search 
+			{ 
 				globalSearch.setFocus(true);
 			}
 		} else if(event.getName().equals(ZoomEvent.EVENT_NAME)) {

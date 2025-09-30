@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DunningRunEntry
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_DunningRunEntry 
 {
@@ -75,6 +75,7 @@ public interface I_C_DunningRunEntry
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Amt */
@@ -103,6 +104,7 @@ public interface I_C_DunningRunEntry
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -118,6 +120,7 @@ public interface I_C_DunningRunEntry
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -133,6 +136,7 @@ public interface I_C_DunningRunEntry
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_DunningLevel_ID */
@@ -144,6 +148,7 @@ public interface I_C_DunningRunEntry
 	/** Get Dunning Level	  */
 	public int getC_DunningLevel_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DunningLevel getC_DunningLevel() throws RuntimeException;
 
     /** Column name C_DunningRunEntry_ID */
@@ -181,6 +186,7 @@ public interface I_C_DunningRunEntry
 	  */
 	public int getC_DunningRun_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DunningRun getC_DunningRun() throws RuntimeException;
 
     /** Column name Created */
@@ -264,6 +270,7 @@ public interface I_C_DunningRunEntry
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name Updated */

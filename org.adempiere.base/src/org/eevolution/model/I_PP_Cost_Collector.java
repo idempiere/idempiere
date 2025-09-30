@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Cost_Collector
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_Cost_Collector 
@@ -51,19 +51,6 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -76,6 +63,19 @@ public interface I_PP_Cost_Collector
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -90,6 +90,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -105,6 +106,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -120,22 +122,8 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
-
-    /** Column name C_DocType_ID */
-    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
-
-	/** Set Document Type.
-	  * Document type or rules
-	  */
-	public void setC_DocType_ID (int C_DocType_ID);
-
-	/** Get Document Type.
-	  * Document type or rules
-	  */
-	public int getC_DocType_ID();
-
-	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_DocTypeTarget_ID */
     public static final String COLUMNNAME_C_DocTypeTarget_ID = "C_DocTypeTarget_ID";
@@ -150,20 +138,24 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_DocTypeTarget_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException;
 
-    /** Column name CostCollectorType */
-    public static final String COLUMNNAME_CostCollectorType = "CostCollectorType";
+    /** Column name C_DocType_ID */
+    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
 
-	/** Set Cost Collector Type.
-	  * Transaction Type for Manufacturing Management
+	/** Set Document Type.
+	  * Document type or rules
 	  */
-	public void setCostCollectorType (String CostCollectorType);
+	public void setC_DocType_ID (int C_DocType_ID);
 
-	/** Get Cost Collector Type.
-	  * Transaction Type for Manufacturing Management
+	/** Get Document Type.
+	  * Document type or rules
 	  */
-	public String getCostCollectorType();
+	public int getC_DocType_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -178,7 +170,37 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name C_UOM_ID */
+    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
+
+	/** Set UOM.
+	  * Unit of Measure
+	  */
+	public void setC_UOM_ID (int C_UOM_ID);
+
+	/** Get UOM.
+	  * Unit of Measure
+	  */
+	public int getC_UOM_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
+
+    /** Column name CostCollectorType */
+    public static final String COLUMNNAME_CostCollectorType = "CostCollectorType";
+
+	/** Set Cost Collector Type.
+	  * Transaction Type for Manufacturing Management
+	  */
+	public void setCostCollectorType (String CostCollectorType);
+
+	/** Get Cost Collector Type.
+	  * Transaction Type for Manufacturing Management
+	  */
+	public String getCostCollectorType();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -195,21 +217,6 @@ public interface I_PP_Cost_Collector
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_UOM_ID */
-    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
-
-	/** Set UOM.
-	  * Unit of Measure
-	  */
-	public void setC_UOM_ID (int C_UOM_ID);
-
-	/** Get UOM.
-	  * Unit of Measure
-	  */
-	public int getC_UOM_ID();
-
-	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -329,6 +336,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -344,7 +352,40 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Warehouse_ID */
+    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
+
+	/** Set Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public void setM_Warehouse_ID (int M_Warehouse_ID);
+
+	/** Get Warehouse.
+	  * Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name MovementDate */
     public static final String COLUMNNAME_MovementDate = "MovementDate";
@@ -371,49 +412,6 @@ public interface I_PP_Cost_Collector
 	  * Quantity of a product moved.
 	  */
 	public BigDecimal getMovementQty();
-
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
-
-    /** Column name M_Warehouse_ID */
-    public static final String COLUMNNAME_M_Warehouse_ID = "M_Warehouse_ID";
-
-	/** Set Warehouse.
-	  * Storage Warehouse and Service Point
-	  */
-	public void setM_Warehouse_ID (int M_Warehouse_ID);
-
-	/** Get Warehouse.
-	  * Storage Warehouse and Service Point
-	  */
-	public int getM_Warehouse_ID();
-
-	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
-
-    /** Column name Posted */
-    public static final String COLUMNNAME_Posted = "Posted";
-
-	/** Set Posted.
-	  * Posting status
-	  */
-	public void setPosted (boolean Posted);
-
-	/** Get Posted.
-	  * Posting status
-	  */
-	public boolean isPosted();
 
     /** Column name PP_Cost_Collector_ID */
     public static final String COLUMNNAME_PP_Cost_Collector_ID = "PP_Cost_Collector_ID";
@@ -442,6 +440,7 @@ public interface I_PP_Cost_Collector
 	/** Get Manufacturing Order BOM Line	  */
 	public int getPP_Order_BOMLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_BOMLine getPP_Order_BOMLine() throws RuntimeException;
 
     /** Column name PP_Order_ID */
@@ -457,6 +456,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getPP_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException;
 
     /** Column name PP_Order_Node_ID */
@@ -472,6 +472,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getPP_Order_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException;
 
     /** Column name PP_Order_Workflow_ID */
@@ -483,7 +484,21 @@ public interface I_PP_Cost_Collector
 	/** Get Manufacturing Order Workflow	  */
 	public int getPP_Order_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order_Workflow getPP_Order_Workflow() throws RuntimeException;
+
+    /** Column name Posted */
+    public static final String COLUMNNAME_Posted = "Posted";
+
+	/** Set Posted.
+	  * Posting status
+	  */
+	public void setPosted (boolean Posted);
+
+	/** Get Posted.
+	  * Posting status
+	  */
+	public boolean isPosted();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
@@ -542,7 +557,24 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getReversal() throws RuntimeException;
+
+    /** Column name S_Resource_ID */
+    public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
+
+	/** Set Resource.
+	  * Resource
+	  */
+	public void setS_Resource_ID (int S_Resource_ID);
+
+	/** Get Resource.
+	  * Resource
+	  */
+	public int getS_Resource_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name ScrappedQty */
     public static final String COLUMNNAME_ScrappedQty = "ScrappedQty";
@@ -565,21 +597,6 @@ public interface I_PP_Cost_Collector
 
 	/** Get Setup Time Real	  */
 	public BigDecimal getSetupTimeReal();
-
-    /** Column name S_Resource_ID */
-    public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
-
-	/** Set Resource.
-	  * Resource
-	  */
-	public void setS_Resource_ID (int S_Resource_ID);
-
-	/** Get Resource.
-	  * Resource
-	  */
-	public int getS_Resource_ID();
-
-	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -610,6 +627,7 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -625,5 +643,6 @@ public interface I_PP_Cost_Collector
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getUser2() throws RuntimeException;
 }

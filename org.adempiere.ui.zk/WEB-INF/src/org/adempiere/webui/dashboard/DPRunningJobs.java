@@ -20,13 +20,14 @@ import java.util.List;
 import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.BackgroundJob;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
-import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -98,7 +99,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		if (ThemeManager.isUseFontIconForImage())
 		{
 			ToolBarButton btn = new ToolBarButton();
-			btn.setIconSclass("z-icon-Refresh");
+			btn.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 			btn.setSclass("trash-toolbarbutton");
 			jobsToolbar.appendChild(btn);
 			btn.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
@@ -210,7 +211,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 			bxJobs.appendChild(btnJob);
 			btnJob.setLabel(label);
 			if (ThemeManager.isUseFontIconForImage())
-				btnJob.setIconSclass("z-icon-Window");
+				btnJob.setIconSclass(Icon.getIconSclass(Icon.WINDOW));
 			else
 				btnJob.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 			btnJob.addEventListener(Events.ON_CLICK, this);
@@ -225,13 +226,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	 */
 	public static List<MPInstance> getRunningJobForUser(int AD_User_ID) 
 	{
-		List<MPInstance> pis = new Query(Env.getCtx(), MPInstance.Table_Name, "Coalesce(AD_User_ID,0)=? AND IsProcessing='Y' AND IsRunAsJob='Y'", null)
-			.setOnlyActiveRecords(true)
-			.setClient_ID()
-			.setParameters(AD_User_ID)
-			.setOrderBy("Updated DESC")
-			.list();
-		return pis;
+		return BackgroundJob.getRunningJobForUser(AD_User_ID);
 	}
 
 	@Override

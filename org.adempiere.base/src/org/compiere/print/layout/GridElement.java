@@ -28,8 +28,8 @@ import java.text.AttributedString;
 import java.util.Properties;
 
 /**
- *	Grid Element.
- *  Simple Table with Rows/Columns, but no Headers
+ *	Grid Element.<br/>
+ *  Simple Table with Rows/Columns, but no Headers.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: GridElement.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
@@ -37,7 +37,7 @@ import java.util.Properties;
 public class GridElement extends PrintElement
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1744788593309619751L;
 
@@ -91,8 +91,8 @@ public class GridElement extends PrintElement
 	protected FontRenderContext	m_frc = new FontRenderContext(null, true, true);
 
 	/**
-	 * 	Create TextLayout from Data and calculate size.
-	 * 	Called from ParameterElement and Location
+	 * 	Create TextLayout from Data and calculate size.<br/>
+	 * 	Called from ParameterElement and Location.<br/>
 	 *  @param row row
 	 *  @param col column
 	 *  @param stringData info element
@@ -104,7 +104,6 @@ public class GridElement extends PrintElement
 		if (stringData == null || stringData.length() == 0)
 			return;
 		//
-	//	log.fine("setData - " + row + "/" + col + " - " + stringData);
 		AttributedString aString = new AttributedString(stringData);
 		aString.addAttribute(TextAttribute.FONT, font);
 		aString.addAttribute(TextAttribute.FOREGROUND, foreground);
@@ -143,7 +142,7 @@ public class GridElement extends PrintElement
 	}	//	setData
 
 	/**
-	 * 	Set Rpw/Column gap
+	 * 	Set Row/Column gap
 	 * 	@param rowGap row gap
 	 * 	@param colGap column gap
 	 */
@@ -152,13 +151,13 @@ public class GridElement extends PrintElement
 		m_rowGap = rowGap;
 		m_colGap = colGap;
 	}	//	setGap
-
 	
-	/**************************************************************************
-	 * 	Layout and Calculate Image Size.
-	 * 	Set p_width and p_height
+	/**
+	 * 	Layout and Calculate Image Size.<br/>
+	 * 	Set p_width and p_height.<br/>
 	 * 	@return true if calculated
 	 */
+	@Override
 	protected boolean calculateSize()
 	{
 		p_height = 0;
@@ -181,13 +180,14 @@ public class GridElement extends PrintElement
 	}	//	calculateSize
 
 	/**
-	 * 	Paint it
+	 * 	Paint element
 	 * 	@param g2D Graphics
 	 *  @param pageStart top left Location of page
 	 *  @param pageNo page number for multi page support (0 = header/footer) - ignored
 	 *  @param ctx print context
 	 *  @param isView true if online view (IDs are links)
 	 */
+	@Override
 	public void paint(Graphics2D g2D, int pageNo, Point2D pageStart, Properties ctx, boolean isView)
 	{
 		Point2D.Double location = getAbsoluteLocation(pageStart);

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Charge_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Charge_Acct")
 public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Charge_Acct (Properties ctx, int C_Charge_Acct_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -151,6 +152,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_Charge_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -179,6 +181,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

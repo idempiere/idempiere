@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AllocationLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_AllocationLine 
 {
@@ -88,6 +88,7 @@ public interface I_C_AllocationLine
 	  */
 	public int getC_AllocationHdr_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AllocationHdr getC_AllocationHdr() throws RuntimeException;
 
     /** Column name C_AllocationLine_ID */
@@ -112,21 +113,6 @@ public interface I_C_AllocationLine
 	/** Get C_AllocationLine_UU	  */
 	public String getC_AllocationLine_UU();
 
-    /** Column name C_BankTransfer_ID */
-    public static final String COLUMNNAME_C_BankTransfer_ID = "C_BankTransfer_ID";
-
-	/** Set Bank Transfer.
-	  * Bank Transfer
-	  */
-	public void setC_BankTransfer_ID (int C_BankTransfer_ID);
-
-	/** Get Bank Transfer.
-	  * Bank Transfer
-	  */
-	public int getC_BankTransfer_ID();
-
-	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException;
-
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
@@ -140,7 +126,24 @@ public interface I_C_AllocationLine
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
+    /** Column name C_BankTransfer_ID */
+    public static final String COLUMNNAME_C_BankTransfer_ID = "C_BankTransfer_ID";
+
+	/** Set Bank Transfer.
+	  * Bank Transfer
+	  */
+	public void setC_BankTransfer_ID (int C_BankTransfer_ID);
+
+	/** Get Bank Transfer.
+	  * Bank Transfer
+	  */
+	public int getC_BankTransfer_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException;
 
     /** Column name C_CashLine_ID */
     public static final String COLUMNNAME_C_CashLine_ID = "C_CashLine_ID";
@@ -155,6 +158,7 @@ public interface I_C_AllocationLine
 	  */
 	public int getC_CashLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashLine getC_CashLine() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -170,6 +174,7 @@ public interface I_C_AllocationLine
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -185,6 +190,7 @@ public interface I_C_AllocationLine
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_Order_ID */
@@ -200,6 +206,7 @@ public interface I_C_AllocationLine
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -215,6 +222,7 @@ public interface I_C_AllocationLine
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name Created */

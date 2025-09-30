@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOutLineConfirm
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_InOutLineConfirm")
 public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_InOutLineConfirm (Properties ctx, int M_InOutLineConfirm_ID, String trxName)
@@ -123,6 +123,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -221,6 +222,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutConfirm getM_InOutConfirm() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutConfirm)MTable.get(getCtx(), org.compiere.model.I_M_InOutConfirm.Table_ID)
@@ -286,6 +288,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 		return (String)get_Value(COLUMNNAME_M_InOutLineConfirm_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -322,6 +325,7 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
         return new KeyNamePair(get_ID(), String.valueOf(getM_InOutLine_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)

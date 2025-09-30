@@ -31,7 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.LogRecord;
 
@@ -64,9 +66,10 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
-import org.junit.jupiter.api.parallel.ResourceLock;
+import org.mockito.MockedStatic;
 
 /**
  * @author Carlos Ruiz - globalqss
@@ -399,13 +402,12 @@ public class AllocationTest extends AbstractTestCase {
 	}
 
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testPaymentReversePosting() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.COLOR_INC.id); 
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -418,12 +420,15 @@ public class AllocationTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = BigDecimal.valueOf(1d / eurToUsd1.doubleValue());
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = BigDecimal.valueOf(1d / eurToUsd2.doubleValue());
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			
 			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
 			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
 					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
@@ -459,12 +464,9 @@ public class AllocationTest extends AbstractTestCase {
 				BigDecimal ucAmtAcctCr = new BigDecimal(31000);
 				BigDecimal lossAmtAcct = new BigDecimal(1000);
 				
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				for (MFactAcct fa : factAccts) {
 					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
 						if (fa.getAmtAcctDr().signum() > 0)
 							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
@@ -476,18 +478,11 @@ public class AllocationTest extends AbstractTestCase {
 					else if (acctLoss.getAccount_ID() == fa.getAccount_ID())
 						assertTrue(fa.getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
 				}
-			}
-			
-		} finally {
-			rollback();
-
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);			
+			}			
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5757
 	 */
@@ -541,25 +536,26 @@ public class AllocationTest extends AbstractTestCase {
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5591
 	 */
 	public void testInvoiceReversePostingWithDiffCurrency() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
-		Timestamp date = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp date = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(0.000063836578);
-		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date, eurToUsd, false);
+		BigDecimal usdToEur = BigDecimal.valueOf(1d / eurToUsd.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		BigDecimal totalLines = new BigDecimal(33300);
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date, usdToEur);
+			
 			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 			invoice.setBPartner(bpartner);
 			invoice.setIsSOTrx(false);
@@ -603,14 +599,11 @@ public class AllocationTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(invoice.getC_BPartner_ID());
 				
 				MAccount acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);;
+				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				for (MFactAcct fa : factAccts) {
 					if (acctLiability.getAccount_ID() == fa.getAccount_ID()) {
 						if (fa.getAmtAcctDr().signum() > 0)
 							assertTrue(fa.getAmtAcctDr().compareTo(tradeAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + tradeAmtAcct.toPlainString());						
@@ -621,18 +614,13 @@ public class AllocationTest extends AbstractTestCase {
 					}				
 				}
 			}
-			
-		} finally {
-			rollback();
-			deleteConversionRate(cr);		
 		}
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	public void testAllocatePaymentPosting() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHROME_INC.id); 
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
@@ -645,12 +633,15 @@ public class AllocationTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30);
-		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur1 = BigDecimal.valueOf(1d / eurToUsd1.doubleValue());
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31);
-		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
+		BigDecimal usdToEur2 = BigDecimal.valueOf(1d / eurToUsd2.doubleValue());
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, usdToEur1);
+			mockGetRate(conversionRateMock, usd, euro, 0, date2, usdToEur2);
+			
 			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
 			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
 					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
@@ -706,12 +697,9 @@ public class AllocationTest extends AbstractTestCase {
 				BigDecimal ucAmtAcctCr = new BigDecimal(31000);
 				BigDecimal lossAmtAcct = new BigDecimal(1000);
 				
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				for (MFactAcct fa : factAccts) {
 					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
 						if (fa.getAmtAcctDr().signum() > 0)
 							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
@@ -724,22 +712,7 @@ public class AllocationTest extends AbstractTestCase {
 						assertTrue(fa.getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
 				}
 			}
-			
-		} finally {
-			rollback();
-
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);			
 		}
-	}
-	
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
-	}
-	
-	private void deleteConversionRate(MConversionRate cr) {
-		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MPayment createReceiptPayment(int C_BPartner_ID, int C_BankAccount_ID, Timestamp date, int C_Currency_ID, int C_ConversionType_ID, BigDecimal payAmt) {
@@ -897,43 +870,14 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + alloc.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctUC.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDEP.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-
-					} else if(fa.getAccount_ID() == acctART.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctUC, new BigDecimal("102.00"), 2, true),
+						new FactAcct(acctDEP, new BigDecimal("2.00"), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctWO, new BigDecimal("2.00"), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctART, new BigDecimal("106.00"), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, true));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -1028,42 +972,14 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + alloc.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctPS.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00").negate());
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDEP.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctART.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00").negate());
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list(); 
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPS, new BigDecimal("-102.00"), 2, true),
+						new FactAcct(acctDEP, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctART, new BigDecimal("106.00").negate(), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, false));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -1158,42 +1074,14 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + alloc.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctPT.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDRE.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctPS.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00"));
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00"), 2, true),
+						new FactAcct(acctDRE, new BigDecimal("2.00"), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctWO, new BigDecimal("2.00"), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctPS, new BigDecimal("102.00"), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, false));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -1288,44 +1176,15 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctUC = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_UnallocatedCash_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + alloc.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctPT.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00").negate());
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDRE.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-					} else if(fa.getAccount_ID() == acctUC.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00").negate());
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00").negate(), 2, true),
+						new FactAcct(acctDRE, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctUC, new BigDecimal("102.00").negate(), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, true));
+				assertFactAcctEntries(factAccts, expected);
 			}
-
 		} finally {
 
 			rollback();
@@ -1419,43 +1278,14 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocationa[0].get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctUC.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDEP.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-
-					} else if(fa.getAccount_ID() == acctART.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctUC, new BigDecimal("102.00"), 2, true),
+						new FactAcct(acctDEP, new BigDecimal("2.00"), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctWO, new BigDecimal("2.00"), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctART, new BigDecimal("106.00"), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, true));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -1545,48 +1375,20 @@ public class AllocationTest extends AbstractTestCase {
 				// 78100_Bad Debts Write-off			|		   0.11	|		   0.00
 				// 21610 Tax due						|		   0.00	|		   0.11
 				// --------------------------------------------------------------------
-				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
+				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_UnallocatedCash_Acct(), getTrxName());
 				MAccount acctDEP = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Exp_Acct(), getTrxName());
 				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
 				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocationa[0].get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctPS.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00").negate());
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDEP.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctART.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00").negate());
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPS, new BigDecimal("102.00").negate(), 2, true),
+						new FactAcct(acctDEP, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctART, new BigDecimal("106.00").negate(), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, false));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -1682,42 +1484,14 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocationa[0].get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctPT.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDRE.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctPS.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00"));
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00"), 2, true),
+						new FactAcct(acctDRE, new BigDecimal("2.00"), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctWO, new BigDecimal("2.00"), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctPS, new BigDecimal("102.00"), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, false));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -1810,45 +1584,17 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctPT = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
 				MAccount acctDRE = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Rev_Acct(), getTrxName());
 				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctUC = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_UnallocatedCash_Acct(), getTrxName());
+				MAccount acctUC = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocationa[0].get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctPT.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00").negate());
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					} else if(fa.getAccount_ID() == acctDRE.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)<0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00").negate());
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-					} else if(fa.getAccount_ID() == acctUC.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("104.00").negate());
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00").negate(), 2, true),
+						new FactAcct(acctDRE, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctUC, new BigDecimal("102.00").negate(), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, true));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -1932,60 +1678,29 @@ public class AllocationTest extends AbstractTestCase {
 
 				// Account								|	Acct Debit	|	Acct Credit
 				// --------------------------------------------------------------------
-				// 59201_Payment discount revenue		|		  2.00	|		   0.00
+				// 59201_Payment discount expense		|		  2.00	|		   0.00
 				// 78100_Bad Debts Write-off			|		  2.00	|		   0.00
 				// 12110 Accounts Receivable - Trade	|		  0.00	|		 106.00
 				// 21610 Tax due						|		  0.11	|		   0.00
-				// 59201_Payment discount revenue		|		  0.00	|		   0.11
+				// 59201_Payment discount expense		|		  0.00	|		   0.11
 				// 21610 Tax due						|		  0.11	|		   0.00
 				// 78100_Bad Debts Write-off			|		  0.00	|		   0.11
 				// 12110_Accounts Receivable - Trade	|		  0.00	|		-102.00
 				// --------------------------------------------------------------------
-				// ToDo: set Account
-				MAccount acctDRE = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Rev_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
+				doc.setC_BPartner_ID(bpartner.getC_BPartner_ID());
+				MAccount acctDRE = doc.getAccount(Doc.ACCTTYPE_DiscountExp, as);
+				MAccount acctWO = doc.getAccount(Doc.ACCTTYPE_WriteOff, as);
+				MAccount acctART = doc.getAccount(Doc.ACCTTYPE_C_Receivable, as);
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + alloc.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctDRE.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						}
-
-					} else if(fa.getAccount_ID() == acctART.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("-102.00"));
-						}
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-					}
-
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctDRE, new BigDecimal("2.00"), 2, true), 
+						new FactAcct(acctDRE, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctWO, new BigDecimal("2.00"), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
+						new FactAcct(acctART, new BigDecimal("106.00"), 2, false), new FactAcct(acctART, new BigDecimal("-102.00"), 2, false),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, true));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -2085,43 +1800,14 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
 				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
 
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + alloc.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if(fa.getAccount_ID() == acctPT.getAccount_ID()) {
-						if(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("-102.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctDRE.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctWO.getAccount_ID()) {
-						if(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP).compareTo(Env.ZERO)>0) {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("2.00"));
-						} else {
-							assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-							assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						}
-					} else if(fa.getAccount_ID() == acctTD.getAccount_ID()) {
-						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.00"));
-						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), new BigDecimal("0.11"));
-					}
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00"), 2, true),
+						new FactAcct(acctPT, new BigDecimal("-102.00"), 2, true),
+						new FactAcct(acctDRE, new BigDecimal("2.00"), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctWO, new BigDecimal("2.00"), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
+						new FactAcct(acctTD, new BigDecimal("0.11"), 2, false));
+				assertFactAcctEntries(factAccts, expected);
 			}
 
 		} finally {
@@ -2131,7 +1817,6 @@ public class AllocationTest extends AbstractTestCase {
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,587.48, Period 1
@@ -2142,7 +1827,7 @@ public class AllocationTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5053
 	 */
 	public void testAllocatePaymentPostingWithCurrencyBalancing() {
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(currentDate.getTime());
 		cal.add(Calendar.DAY_OF_MONTH, -2);
@@ -2156,22 +1841,25 @@ public class AllocationTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		BigDecimal eurToUsd1 = new BigDecimal(32.458922422202);
+		BigDecimal usdToEur1 = new BigDecimal(32.458922422202);
+		BigDecimal eurToUsd1 = BigDecimal.valueOf(1d / usdToEur1.doubleValue());
 		
 		MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
 		DB.getDatabase().forUpdate(bp, 0);
 		
-		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
+		BigDecimal usdToEur2 = new BigDecimal(33.93972535567);
+		BigDecimal eurToUsd2 = BigDecimal.valueOf(1d / usdToEur2.doubleValue());
 		
-		BigDecimal eurToUsd2 = new BigDecimal(33.93972535567);
-		MConversionRate cr2 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
-		
-		BigDecimal eurToUsd3 = new BigDecimal(33.27812049435);
-		MConversionRate cr3 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, eurToUsd3, false);
+		BigDecimal usdToEur3 = new BigDecimal(33.27812049435);
+		BigDecimal eurToUsd3 = BigDecimal.valueOf(1d / usdToEur3.doubleValue());
 		
 		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, euro, usd, 0, date1, eurToUsd1);
+			mockGetRate(conversionRateMock, euro, usd, 0, date2, eurToUsd2);
+			mockGetRate(conversionRateMock, euro, usd, 0, date3, eurToUsd3);
+			
 			String whereClause = "AD_Org_ID=? AND C_Currency_ID=?";
 			MBankAccount ba = new Query(Env.getCtx(),MBankAccount.Table_Name, whereClause, getTrxName())
 					.setParameters(Env.getAD_Org_ID(Env.getCtx()), usd.getC_Currency_ID())
@@ -2242,18 +1930,10 @@ public class AllocationTest extends AbstractTestCase {
 				MAccount acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
 				BigDecimal ucAmtAcctDr = new BigDecimal(370.88).setScale(2, RoundingMode.HALF_UP);
 				
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
-						if (fa.getAmtAcctDr().signum() > 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());
-					}
-				}
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctUC, ucAmtAcctDr, 2, true));
+				assertFactAcctEntries(factAccts, expected);
 			}
 			
 			MInvoice invoice2 = new MInvoice(Env.getCtx(), 0, getTrxName());			
@@ -2313,13 +1993,9 @@ public class AllocationTest extends AbstractTestCase {
 				BigDecimal ucAmtAcctDr = new BigDecimal(175.67).setScale(2, RoundingMode.HALF_UP);
 				BigDecimal ucAmtAcctCr = new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP);
 				
-				whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MAllocationHdr.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + allocation.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID()
-						+ " ORDER BY Created";
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				for (MFactAcct fa : factAccts) {
 					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
 						if (fa.getAmtAcctDr().signum() > 0)
 							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());		
@@ -2328,12 +2004,6 @@ public class AllocationTest extends AbstractTestCase {
 					}
 				}
 			}
-		} finally {
-			rollback();
-			
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			deleteConversionRate(cr3);			
 		}
 	}
 
@@ -2385,5 +2055,13 @@ public class AllocationTest extends AbstractTestCase {
 		postDocument(invoice);
 
 		return invoice;
-	}	
+	}
+	
+	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
+		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
+				conversionDate, multiplyRate, getAD_Client_ID(), getAD_Org_ID());
+		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
+				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
+	}
 }

@@ -101,14 +101,10 @@ public class MProductPO extends X_M_Product_PO
 		super(ctx, rs, trxName);
 	}	//	MProductPO
 
-	/**
-	 * Before Save
-	 * @param newRecord new
-	 * @return true
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) 
 	{
+		// Can only have one current vendor for a product
 		if (isActive() && isCurrentVendor())
 		{
 			int cnt = DB.getSQLValue(get_TrxName(),

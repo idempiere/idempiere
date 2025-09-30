@@ -22,9 +22,8 @@ import org.adempiere.webui.WebUIActivator;
 import org.adempiere.webui.theme.ThemeManager;
 
 /**
- *
+ * {@link IResourceFinder} implementation for web client
  * @author hengsin
- *
  */
 public class WebUIResourceFinder implements IResourceFinder {
 

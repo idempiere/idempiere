@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_LdapProcessor
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_LdapProcessor 
 {
@@ -213,6 +213,7 @@ public interface I_AD_LdapProcessor
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */

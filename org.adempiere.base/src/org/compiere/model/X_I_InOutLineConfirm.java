@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_InOutLineConfirm
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_InOutLineConfirm")
 public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName)
@@ -281,6 +281,7 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLineConfirm getM_InOutLineConfirm() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLineConfirm)MTable.get(getCtx(), org.compiere.model.I_M_InOutLineConfirm.Table_ID)

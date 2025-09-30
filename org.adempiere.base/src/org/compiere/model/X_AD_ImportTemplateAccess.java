@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_ImportTemplateAccess
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ImportTemplateAccess")
 public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplateAccess, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ImportTemplateAccess (Properties ctx, int AD_ImportTemplateAccess_ID, String trxName)
@@ -136,6 +136,7 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
 		return (String)get_Value(COLUMNNAME_AD_ImportTemplateAccess_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ImportTemplate getAD_ImportTemplate() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_ImportTemplate)MTable.get(getCtx(), org.compiere.model.I_AD_ImportTemplate.Table_ID)
@@ -163,6 +164,7 @@ public class X_AD_ImportTemplateAccess extends PO implements I_AD_ImportTemplate
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)

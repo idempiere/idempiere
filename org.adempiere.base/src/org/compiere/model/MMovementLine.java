@@ -40,7 +40,7 @@ public class MMovementLine extends X_M_MovementLine
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -5614562023263896756L;
+	private static final long serialVersionUID = -2529644775541337889L;
 
     /**
      * UUID based Constructor
@@ -171,11 +171,6 @@ public class MMovementLine extends X_M_MovementLine
 		return m_parent;
 	}	//	getParent
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -183,6 +178,7 @@ public class MMovementLine extends X_M_MovementLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Movement_ID"));
 			return false;
 		}
+		// Disallow create of new movement line or change of MovementQty if there are pending confirmations
 		if (getParent().pendingConfirmations()) {
 			if (  newRecord ||
 				(is_ValueChanged(COLUMNNAME_MovementQty) && !is_ValueChanged(COLUMNNAME_TargetQty))) {
@@ -198,13 +194,18 @@ public class MMovementLine extends X_M_MovementLine
 			setLine (ii);
 		}
 		
-		 //either movement between locator or movement between lot
+		 // Either movement between locator or movement between ASI
 		if (getM_Locator_ID() == getM_LocatorTo_ID() && getM_AttributeSetInstance_ID() == getM_AttributeSetInstanceTo_ID())
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@M_Locator_ID@ == @M_LocatorTo_ID@ and @M_AttributeSetInstance_ID@ == @M_AttributeSetInstanceTo_ID@"));
 			return false;
 		}
+		
+		//	Set Default UOM
+		if (getC_UOM_ID() == 0)
+			setDefaultC_UOM_ID();
 
+		// Validate MovementQty=0
 		if (getMovementQty().signum() == 0)
 		{
 			String docAction = getParent().getDocAction();
@@ -230,31 +231,47 @@ public class MMovementLine extends X_M_MovementLine
 				return false;
 			}
 		}
+		
+		//Validate UOM and Quantities
+		// If UOM is not the default one and Movement Qty > 0 and QtyEntered = 0 - wrong call
+		int C_UOM_ID = MProduct.get(getCtx(), getM_Product_ID()).getC_UOM_ID();
+		if (getC_UOM_ID() != C_UOM_ID && getMovementQty().compareTo(BigDecimal.ZERO) != 0 && 
+				(getQtyEntered() == null || getQtyEntered().compareTo(BigDecimal.ZERO) == 0)) {
+			log.saveError("SaveError", "Please provide a valid Entered Quantity or use the default UOM");
+			return false;
+		}
 
-		//	Qty Precision
+		if (newRecord) {
+			//Backward compatibility for potential processes creating movements in code 
+			if (getMovementQty().compareTo(BigDecimal.ZERO) != 0 && 
+					(getQtyEntered() == null || getQtyEntered().compareTo(BigDecimal.ZERO) == 0)) {
+				setQtyEntered(getMovementQty());
+			}
+		}
+
+		// Enforce Qty Precision
 		if (newRecord || is_ValueChanged(COLUMNNAME_MovementQty))
 			setMovementQty(getMovementQty());
+		if (newRecord || is_ValueChanged(COLUMNNAME_QtyEntered) || is_ValueChanged(COLUMNNAME_C_UOM_ID))
+			setQtyEntered(getQtyEntered());
 
 		if (getM_AttributeSetInstanceTo_ID() == 0)
 		{
-			//instance id default to same for movement between locator 
+			// For movement between locator, default M_AttributeSetInstanceTo_ID to M_AttributeSetInstance_ID   
 			if (getM_Locator_ID() != getM_LocatorTo_ID())
 			{
 				if (getM_AttributeSetInstance_ID() != 0)        //set to from
 					setM_AttributeSetInstanceTo_ID(getM_AttributeSetInstance_ID());
 			}
 
-		}       //      ASI
+		}
 
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	Before Delete
-	 *	@return true if it can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete() {
+		// Disallow delete if there are pending confirmation records
 		if (getParent().pendingConfirmations()) {
 			log.saveError("DeleteError", Msg.parseTranslation(getCtx(), "@Open@: @M_MovementConfirm_ID@"));
 			return false;
@@ -347,6 +364,43 @@ public class MMovementLine extends X_M_MovementLine
 		//      set to 0 explicitly to reset 
 		set_Value (COLUMNNAME_M_LocatorTo_ID, M_LocatorTo_ID); 
 	}       //      M_LocatorTo_ID 
+	
+	/**
+	 * 	Set Qty Entered - enforce entered UOM precision.
+	 *	@param QtyEntered
+	 */
+	public void setQtyEntered(BigDecimal qtyEntered)
+	{
+		if (qtyEntered != null && getC_UOM_ID() != 0)
+		{
+			int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
+			qtyEntered = qtyEntered.setScale(precision, RoundingMode.HALF_UP);
+		}
+		super.setQtyEntered(qtyEntered);
+		setMovementQtyFromQtyEntered(qtyEntered);
+	}	//	setQtyEntered
+	
+	/**
+	 * 	Set Movement Qty based on the QtyEntered and the UOM
+	 *	@param QtyEntered
+	 */
+	public void setMovementQtyFromQtyEntered(BigDecimal qtyEntered)
+	{
+		BigDecimal movementQty = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(),getC_UOM_ID(), qtyEntered);
+		if (movementQty == null)
+			movementQty = qtyEntered;
+		
+		super.setMovementQty(movementQty);
+	}	//	setMovementQtyFromQtyEntered
+	
+	/***
+	 * Set default unit of measurement.<br/>
+	 * It sets the UOM of the product.<br/>
+	 */
+	private void setDefaultC_UOM_ID() {
+		int C_UOM_ID = MProduct.get(getCtx(), getM_Product_ID()).getC_UOM_ID();
+		setC_UOM_ID (C_UOM_ID);
+	}
 
 	/** 
 	 *  Get Movement lines Of Distribution Order Line 

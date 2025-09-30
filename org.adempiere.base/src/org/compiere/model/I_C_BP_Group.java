@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BP_Group
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_BP_Group 
 {
@@ -75,6 +75,7 @@ public interface I_C_BP_Group
 	  */
 	public int getAD_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
@@ -112,6 +113,7 @@ public interface I_C_BP_Group
 	  */
 	public int getC_Dunning_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
 
     /** Column name Created */
@@ -208,6 +210,7 @@ public interface I_C_BP_Group
 	  */
 	public int getM_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_PriceList_ID */
@@ -223,6 +226,7 @@ public interface I_C_BP_Group
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name Name */
@@ -251,6 +255,7 @@ public interface I_C_BP_Group
 	  */
 	public int getPO_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException;
 
     /** Column name PO_PriceList_ID */
@@ -266,6 +271,7 @@ public interface I_C_BP_Group
 	  */
 	public int getPO_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException;
 
     /** Column name PriceMatchTolerance */

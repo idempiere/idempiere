@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertProcessor
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_AlertProcessor")
 public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessor (Properties ctx, int AD_AlertProcessor_ID, String trxName)
@@ -159,6 +159,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_AlertProcessor_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_ID)
@@ -299,6 +300,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

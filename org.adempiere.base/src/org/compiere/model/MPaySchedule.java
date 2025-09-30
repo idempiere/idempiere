@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -104,36 +105,28 @@ public class MPaySchedule extends X_C_PaySchedule
 		m_parent = parent;
 	}	//	setParent
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Reset IsValid to false after change of Percentage or IsActive field
 		if (is_ValueChanged("Percentage") || is_ValueChanged("IsActive"))
 		{
-			log.fine("beforeSave");
+			if (log.isLoggable(Level.FINE)) log.fine("beforeSave");
 			setIsValid(false);
 		}
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
+		// Validate payment term for new record or after change of Percentage/IsActive
 		if (newRecord || is_ValueChanged("Percentage") || is_ValueChanged("IsActive"))
 		{
-			log.fine("afterSave");
+			if (log.isLoggable(Level.FINE)) log.fine("afterSave");
+			// Load m_parent
 			getParent();
 			m_parent.validate();
 			m_parent.saveEx();
@@ -145,6 +138,7 @@ public class MPaySchedule extends X_C_PaySchedule
 	protected boolean afterDelete(boolean success) {
 		if (!success)
 			return false;
+		// Load m_parent and validate schedule
 		getParent();
 		m_parent.validate();
 		m_parent.saveEx();

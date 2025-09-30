@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,13 +43,18 @@ import org.compiere.dbPort.Convert;
 import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MChangeLog;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MMessage;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
+import org.compiere.model.MProductionLine;
+import org.compiere.model.MSession;
 import org.compiere.model.MTest;
 import org.compiere.model.POInfo;
+import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -56,12 +62,16 @@ import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Tests for {@link org.compiere.model.PO} class.
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * @author hengsin
+ * 
+ * Run Isolated because of migration script file management
  */
+@Isolated
 public class POTest extends AbstractTestCase
 {
 	public static class MyTestPO extends MTest
@@ -510,9 +520,6 @@ public class POTest extends AbstractTestCase
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");
 		Env.setContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment, "testLogMigrationScript");
 		assertTrue(Env.isLogMigrationScript(MProduct.Table_Name), "Unexpected Log Migration Script Y/N value for MProduct");
-		String fileName = Convert.getMigrationScriptFileName("testLogMigrationScript");
-		String folderPg = Convert.getMigrationScriptFolder("postgresql");
-		String folderOr = Convert.getMigrationScriptFolder("oracle");
 		
 		MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, null);
 		lotLevel.setName("testLogMigrationScript");
@@ -546,11 +553,77 @@ public class POTest extends AbstractTestCase
 			lotLevel.deleteEx(true);
 		}
 		
+		String fileName = Convert.getGeneratedMigrationScriptFileName();
+		String folderPg = Convert.getMigrationScriptFolder("postgresql");
+		String folderOr = Convert.getMigrationScriptFolder("oracle");
+		Convert.closeLogMigrationScript();
 		File file = new File(folderPg + fileName);
 		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
 		file.delete();
 		file = new File(folderOr + fileName);
 		assertTrue(file.exists(), "Not found: " + folderOr + fileName);
 		file.delete();
+	}
+	
+	@Test
+	public void testIsVirtualColumnMethods() {
+		//column sql with no prefix
+		MColumn column = MColumn.get(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_TestVirtualQty);
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+
+		//column sql with @SQLFIND= prefix
+		column = MColumn.get(Env.getCtx(), MProductionLine.Table_Name, "ProductType");
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		
+		//column sql with @SQL= prefix
+		column = MColumn.get(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_TestVirtualQty);
+		column = new MColumn(column);
+		column.setColumnSQL(MColumn.VIRTUAL_UI_COLUMN_PREFIX+column.getColumnSQL());
+		assertTrue(column.isVirtualColumn(), "MColumn.isVirtualColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualDBColumn(), "MColumn.isVirtualDBColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertTrue(column.isVirtualUIColumn(), "MColumn.isVirtualUIColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+		assertFalse(column.isVirtualSearchColumn(), "MColumn.isVirtualSearchColumn() not working as expected for ColumnSQL="+column.getColumnSQL());
+	}
+	
+	@Test
+	public void testChangeLog() {
+		MSession.create(Env.getCtx());
+		MSession session = MSession.get(Env.getCtx());
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, null);
+		String description = product.getDescription();
+		try {
+			product.setDescription(description != null ? description + "+1" : "+1");
+			product.saveEx();
+			
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, "AD_Session_ID=? AND AD_Table_ID=? AND Record_ID=? AND AD_Column_ID=? AND NewValue=?", null);
+			MColumn column = MColumn.get(Env.getCtx(), MProduct.Table_Name, MProduct.COLUMNNAME_Description);
+			MChangeLog changeLog = query.setParameters(session.get_ID(), MProduct.Table_ID, product.get_ID(), column.get_ID(), product.getDescription()).first();
+			assertNotNull(changeLog);
+			assertTrue(changeLog.getAD_ChangeLog_ID() > 0);
+			
+			session.addSkipChangeLogForUpdate(MProduct.Table_Name);
+			product.setDescription(description != null ? description + "+2" : "+2");
+			product.saveEx();
+			
+			changeLog = query.setParameters(session.get_ID(), MProduct.Table_ID, product.get_ID(), column.get_ID(), product.getDescription()).first();
+			assertNull(changeLog);
+			
+			session.removeSkipChangeLogForUpdate(MProduct.Table_Name);
+			product.setDescription(description != null ? description + "+3" : "+3");
+			product.saveEx();
+			
+			changeLog = query.setParameters(session.get_ID(), MProduct.Table_ID, product.get_ID(), column.get_ID(), product.getDescription()).first();
+			assertNotNull(changeLog);
+			assertTrue(changeLog.getAD_ChangeLog_ID() > 0);
+		} finally {
+			product.setDescription(description);
+			product.saveEx();
+		}
 	}
 }

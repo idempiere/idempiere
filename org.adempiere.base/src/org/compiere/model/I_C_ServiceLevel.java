@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ServiceLevel
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_ServiceLevel 
 {
@@ -62,22 +62,6 @@ public interface I_C_ServiceLevel
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
     /** Column name C_RevenueRecognition_Plan_ID */
     public static final String COLUMNNAME_C_RevenueRecognition_Plan_ID = "C_RevenueRecognition_Plan_ID";
 
@@ -91,6 +75,7 @@ public interface I_C_ServiceLevel
 	  */
 	public int getC_RevenueRecognition_Plan_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException;
 
     /** Column name C_ServiceLevel_ID */
@@ -114,6 +99,22 @@ public interface I_C_ServiceLevel
 
 	/** Get C_ServiceLevel_UU	  */
 	public String getC_ServiceLevel_UU();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -154,6 +155,7 @@ public interface I_C_ServiceLevel
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Processed */

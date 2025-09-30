@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import org.adempiere.base.IModelFactory;
@@ -65,9 +67,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MTable extends X_AD_Table implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 4325276636597337437L;
+	private static final long serialVersionUID = 6774131577483620665L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -202,8 +204,30 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return MTable.get(ctx, AD_Table_ID).getTableName();
 	}	//	getTableName
 
+	/**
+	 * Get table accessible by current effective role (via window access).<br/>
+	 * @param withEmptyElement if true, first element of the return array is an empty element with (-1,"")
+	 * @param trxName optional transaction name
+	 * @return table records (AD_Table_ID, translated Name), order by translated name
+	 */
+	public static KeyNamePair[] getWithWindowAccessKeyNamePairs(boolean withEmptyElement, String trxName)
+	{
+		final MRole role = MRole.getDefault(); 
+		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Table");
+		String lang = Env.getAD_Language(Env.getCtx());
+		String sql = "SELECT DISTINCT t.AD_Table_ID,"
+				+ (trl ? "trl.Name" : "t.Name")
+			+ " FROM AD_Table t INNER JOIN AD_Tab tab ON (tab.AD_Table_ID=t.AD_Table_ID)"
+			+ " INNER JOIN AD_Window_Access wa ON (tab.AD_Window_ID=wa.AD_Window_ID) "
+			+ (trl ? "LEFT JOIN AD_Table_Trl trl on (trl.AD_Table_ID=t.AD_Table_ID and trl.AD_Language=" + DB.TO_STRING(lang) + ")" : "") 
+			+ " WHERE "+role.getIncludedRolesWhereClause("wa.AD_Role_ID", null) 
+			+ " AND t.IsActive='Y' AND tab.IsActive='Y' "
+			+ "ORDER BY 2";
+		return DB.getKeyNamePairsEx(trxName, sql, withEmptyElement);			
+	}
+	
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MTable> s_cache = new ImmutableIntPOCache<Integer,MTable>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MTable> s_cache = new ImmutableIntPOCache<Integer,MTable>(Table_Name, Table_Name, 20, 0, false, 0);
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTable.class);
@@ -328,8 +352,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		this(ctx, -1, trxName);
 		copyPO(copy);
 		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MColumn(ctx, e, trxName);}).toArray(MColumn[]::new): null;
-		this.m_columnNameMap = copy.m_columnNameMap != null ? new HashMap<String, Integer>(copy.m_columnNameMap) : null;
-		this.m_columnIdMap = copy.m_columnIdMap != null ? new HashMap<Integer, Integer>(copy.m_columnIdMap) : null;
+		this.m_columnNameMap = copy.m_columnNameMap != null ? new ConcurrentHashMap<String, Integer>(copy.m_columnNameMap) : null;
+		this.m_columnIdMap = copy.m_columnIdMap != null ? new ConcurrentHashMap<Integer, Integer>(copy.m_columnIdMap) : null;
 		this.m_viewComponents = copy.m_viewComponents != null ? Arrays.stream(copy.m_viewComponents).map(e -> {return new MViewComponent(ctx, e, trxName);}).toArray(MViewComponent[]::new) : null;
 	}
 
@@ -338,9 +362,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/** Key Columns					*/
 	private String[]	m_KeyColumns = null;
 	/** column name to column index map **/
-	private Map<String, Integer> m_columnNameMap;
+	private ConcurrentMap<String, Integer> m_columnNameMap;
 	/** ad_column_id to column index map **/
-	private Map<Integer, Integer> m_columnIdMap;
+	private ConcurrentMap<Integer, Integer> m_columnIdMap;
 	/** View Components		*/
 	private MViewComponent[]	m_viewComponents = null;
 
@@ -353,8 +377,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	{
 		if (m_columns != null && !requery)
 			return m_columns;
-		m_columnNameMap = new HashMap<String, Integer>();
-		m_columnIdMap = new HashMap<Integer, Integer>();
+		m_columnNameMap = new ConcurrentHashMap<String, Integer>();
+		m_columnIdMap = new ConcurrentHashMap<Integer, Integer>();
 		String sql = "SELECT * FROM AD_Column WHERE AD_Table_ID=? AND IsActive='Y' ORDER BY ColumnName";
 		ArrayList<MColumn> list = new ArrayList<MColumn>();
 		PreparedStatement pstmt = null;
@@ -504,7 +528,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getKeyColumns
 	
 	/**
-	 * @return true if table has single key column and the key column name ends with _ID.
+	 * @return true if table has single key column and the key column name is the same as the table name plus _ID.
 	 */
 	public boolean isIDKeyTable()
 	{
@@ -623,6 +647,40 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}	//	getPO
 
+	private static final ThreadLocal<Map<Integer, String[]>> partialPOResultSetColumns = new ThreadLocal<>();
+	
+	/**
+	 * Get columns included in result set of {@link #getPO(int, String)} call.<br/>
+	 * Use by {@link #getPartialPO(ResultSet, String[], String)}.
+	 * @param rs result set
+	 * @return columns included in result set of {@link #getPO(int, String)} call
+	 */
+	protected static final String[] getPartialPOResultSetColumns(ResultSet rs) {
+		Map<Integer, String[]> map = partialPOResultSetColumns.get();
+		return map != null ? map.get(rs.hashCode()) : null;
+	}
+	
+	/**
+	 * 	Get PO Instance from result set that only include some of the columns of the PO model.
+	 *	@param rs result set
+	 *  @param selectColumns 
+	 *	@param trxName transaction
+	 *	@return immutable PO instance
+	 */
+	public final PO getPartialPO (ResultSet rs, String[] selectColumns, String trxName)
+	{
+		try {
+			HashMap<Integer, String[]> map = new HashMap<Integer, String[]>();
+			map.put(rs.hashCode(), selectColumns);
+			partialPOResultSetColumns.set(map);
+			PO po = getPO(rs, trxName);
+			po.makeImmutable();
+			return po;
+		} finally {
+			partialPOResultSetColumns.remove();
+		}
+	}
+	
 	/**
 	 * 	Get PO Instance from result set
 	 *	@param rs result set
@@ -747,23 +805,19 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (isView() && isDeleteable())
 			setIsDeleteable(false);
-		//
+		// Validate table name is valid DB identifier
 		String error = Database.isValidIdentifier(getTableName());
 		if (!Util.isEmpty(error)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [TableName]");
 			return false;
 		}
 				
+		// Validate table partition configuration
 		if (is_ValueChanged(COLUMNNAME_IsPartition)) {
 			ITablePartitionService service = DB.getDatabase().getTablePartitionService();
 			if (service == null) {
@@ -780,19 +834,13 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	Sync Table ID
 		if(!isView()) {
+			// Create or update table sequence
 			MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
 			if (seq == null || seq.get_ID() == 0)
 				MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
@@ -802,6 +850,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				seq.saveEx();
 			}
 		}
+		// Reset logged table list
 		if (newRecord || is_ValueChanged(COLUMNNAME_IsChangeLog)) {
 			MChangeLog.resetLoggedList();
 		}
@@ -905,7 +954,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				tablename.equals("AD_Role") ||
 				tablename.equals("AD_AllRoles_V") ||
 				tablename.equals("AD_System") ||
-				tablename.equals("AD_User") ||
 				tablename.equals("AD_AllUsers_V") ||
 				tablename.equals("C_DocType") ||
 				tablename.equals("GL_Category") ||
@@ -1083,5 +1131,56 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		for (X_AD_TablePartition partition : partitions)
 			tablePartitionNames.add(partition.getName());
 		return tablePartitionNames;
+	}
+
+	/**
+	 * Get the Unique UU Index name
+	 * @return indexName
+	 */
+	public static String getUUIDIndexName(String tableName) {
+
+		StringBuilder indexName = new StringBuilder().append(PO.getUUIDColumnName(tableName)).append("_idx");
+		if (indexName.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH)
+			indexName = new StringBuilder().append(PO.getUUIDColumnName(tableName).substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH - 5)).append("uuidx");
+
+		return indexName.toString();
+	}
+
+	private Boolean hasCustomTree = null;
+
+	/**
+	 * If the table has a custom tree defined
+	 * @return
+	 */
+	public boolean hasCustomTree() {
+		if (hasCustomTree == null) {
+			int exists = DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM AD_Tree WHERE TreeType=? AND AD_Table_ID=? AND IsActive='Y'", MTree_Base.TREETYPE_CustomTable, getAD_Table_ID());
+			hasCustomTree = Boolean.valueOf(exists == 1);
+		}
+		return hasCustomTree.booleanValue();
+	}
+
+	/**
+	 * Get Partition Name of the table of the given level
+	 * @param tableName
+	 * @param primaryLevelOnly - if true, ignore the sub-partition, if exists
+	 * @return table partition name, or empty
+	 */
+	public static String getPartitionName(Properties ctx, String tableName, boolean primaryLevelOnly, String trxName) {
+		if(Util.isEmpty(tableName))
+			return "";
+		
+		String[] partitionColsAll = MTablePartition.getPartitionKeyColumns(ctx, tableName, trxName);
+		
+		if(partitionColsAll.length == 0)
+			return tableName;
+		
+		int level = primaryLevelOnly ? 1 : partitionColsAll.length;
+		StringBuilder partitionName = new StringBuilder();
+		partitionName.append(tableName);
+		for(int i = 0; i < level; i++) {
+			partitionName.append("_").append(partitionColsAll[i]);
+		}
+		return partitionName.toString();
 	}
 }	//	MTable

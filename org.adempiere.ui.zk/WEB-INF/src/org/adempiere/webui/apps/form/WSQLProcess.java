@@ -36,6 +36,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MIssue;
 import org.compiere.model.MSysConfig;
@@ -169,7 +170,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
     public static final Button createProcessButton() {
         Button btnProcess = new Button();
         if(ThemeManager.isUseFontIconForImage())
-        	btnProcess.setIconSclass("z-icon-Process");
+        	btnProcess.setIconSclass(Icon.getIconSclass(Icon.PROCESS));
         else
         	btnProcess.setImage(ThemeManager.getThemeResource("images/Process24.png"));
         btnProcess.setName(Msg.getMsg(Env.getCtx(), "Process"));
@@ -293,6 +294,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
      *  Process the events for this form
      *  @param event
      */
+    @Override
     public void onEvent(Event event) throws Exception {
     	if (event.getTarget() == m_btnSql)
     		m_txbResultField.setText(processStatements (m_txbSqlField.getText()));

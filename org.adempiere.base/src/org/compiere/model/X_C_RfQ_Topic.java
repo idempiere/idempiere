@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_Topic
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQ_Topic")
 public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_RfQ_Topic (Properties ctx, int C_RfQ_Topic_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_C_RfQ_Topic extends PO implements I_C_RfQ_Topic, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)

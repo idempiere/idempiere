@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -64,6 +65,8 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
+
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 /**
  * Zk Port
@@ -246,26 +249,38 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		noOfParameterColumn = getNoOfParameterColumn();
 		Rows rows = new Rows();
 		grid.appendChild(rows);
+		LayoutUtils.addSclass("form-label-above-input", grid);
 
 		Row row = new Row();
 		rows.appendChild(row);
-		row.appendChild(lbl1.rightAlign());
+		if (noOfParameterColumn == 1) {
+			row.appendChild(lbl1);
+			row = rows.newRow();
+		} else
+			row.appendChild(lbl1.rightAlign());
 		row.appendChild(txt1);
 		ZKUpdateUtil.setHflex(txt1, "1");
 		if (row.getChildren().size() % noOfParameterColumn == 0)
 			row = rows.newRow();
-		row.appendChild(lbl2.rightAlign());
+		if (noOfParameterColumn == 1) {
+			row.appendChild(lbl2);
+			row = rows.newRow();
+		} else
+			row.appendChild(lbl2.rightAlign());
 		row.appendChild(txt2);		
 		ZKUpdateUtil.setHflex(txt2, "1");
 		if (row.getChildren().size() % noOfParameterColumn == 0)
 			row = rows.newRow();
 		Cell cell = new Cell();
-		cell.setAlign("right");
+		if (noOfParameterColumn != 1)
+			cell.setAlign("right");
 		cell.setValign("middle");
 		Div ldiv = new Div();
 		ldiv.appendChild(lbl3);
 		cell.appendChild(ldiv);
 		row.appendChild(cell);
+		if (noOfParameterColumn == 1)
+			row = rows.newRow();
 		cell = new Cell();
 		cell.setValign("middle");
 		cell.appendChild(txt3);
@@ -274,12 +289,15 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		if (row.getChildren().size() % noOfParameterColumn == 0)
 			row = rows.newRow();
 		cell = new Cell();
-		cell.setAlign("right");
+		if (noOfParameterColumn != 1)
+			cell.setAlign("right");
 		cell.setValign("middle");
 		ldiv = new Div();
 		ldiv.appendChild(lbl4);
 		cell.appendChild(ldiv);
 		row.appendChild(cell);
+		if (noOfParameterColumn == 1)
+			row = rows.newRow();
 		cell = new Cell();
 		cell.setValign("middle");
 		cell.appendChild(txt4);
@@ -288,7 +306,9 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	}
 
 	private int getNoOfParameterColumn() {
-		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))
+		if (isLabelAboveInputForSmallWidth())
+			return 1;
+		else if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1))
 			return 2;
 		else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
 			return 4;
@@ -305,15 +325,19 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		txt3 = new Textbox();
 		txt4 = new Textbox();
 		
-		txt1.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox1");
-		txt2.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox2");
-		txt3.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox3");
-		txt4.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox4");
+		txt1.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox1");
+		txt2.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox2");
+		txt3.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox3");
+		txt4.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "textbox4");
 
 		lbl1 = new Label();
+		lbl1.setSclass("idempiere-label");
 		lbl2 = new Label();
+		lbl2.setSclass("idempiere-label");
 		lbl3 = new Label();
+		lbl3.setSclass("idempiere-label");
 		lbl4 = new Label();
+		lbl4.setSclass("idempiere-label");
 	}
 
 	private boolean initInfo ()
@@ -550,7 +574,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				boolean isDisplayed = rs.getString(4).equals("Y");
 				int AD_Reference_Value_ID = rs.getInt(5);
 				String columnSql = rs.getString(6);
-				if (columnSql != null && columnSql.length() > 0 && (columnSql.startsWith("@SQL=") || columnSql.startsWith("@SQLFIND=")))
+				if (columnSql != null && columnSql.length() > 0 && (columnSql.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || columnSql.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX)))
 					columnSql = "NULL";
 				if (columnSql != null && columnSql.contains("@"))
 					columnSql = Env.parseContext(Env.getCtx(), -1, columnSql, false, true);
@@ -582,7 +606,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				else if (DisplayType.isDate(displayType))
 					colClass = Timestamp.class;
 				//  ignore Binary, Button, ID, RowID
-				else if (displayType == DisplayType.List)
+				else if (displayType == DisplayType.List || displayType == DisplayType.RadiogroupList  || displayType == DisplayType.Payment)
 				{
 					if (Env.isBaseLanguage(Env.getCtx(), "AD_Ref_List"))
 						colSql = new StringBuffer("(SELECT l.Name FROM AD_Ref_List l WHERE l.AD_Reference_ID=")
@@ -602,7 +626,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					list.add(new ColumnInfo(Msg.translate(Env.getCtx(), columnName), colSql.toString(), colClass, true, columnName ));
 					if (log.isLoggable(Level.FINEST)) log.finest("Added Column=" + columnName);
 				}
-				else if (isDisplayed && DisplayType.isLookup(displayType))
+				else if (isDisplayed && DisplayType.isLookup(displayType)
+						&& !(displayType == DisplayType.ChosenMultipleSelectionTable || displayType == DisplayType.ChosenMultipleSelectionSearch || displayType == DisplayType.ChosenMultipleSelectionList))
 				{
 					ColumnInfo colInfo = createLookupColumnInfo(Msg.translate(Env.getCtx(), columnName), columnName, displayType, AD_Reference_Value_ID, AD_Column_ID, colSql.toString());
 					if (colInfo != null)

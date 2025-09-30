@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_ChangeRequest
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_ChangeRequest 
 {
@@ -169,6 +169,7 @@ public interface I_M_ChangeRequest
 	  */
 	public int getM_ChangeNotice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException;
 
     /** Column name M_ChangeRequest_ID */
@@ -206,6 +207,7 @@ public interface I_M_ChangeRequest
 	  */
 	public int getM_FixChangeNotice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_FixChangeNotice() throws RuntimeException;
 
     /** Column name Name */
@@ -238,6 +240,7 @@ public interface I_M_ChangeRequest
 	  */
 	public int getPP_Product_BOM_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException;
 
     /** Column name Processed */

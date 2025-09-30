@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_InterOrg_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_InterOrg_Acct")
 public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_InterOrg_Acct (Properties ctx, int C_InterOrg_Acct_ID, String trxName)
@@ -134,6 +134,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -177,6 +178,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 		return (String)get_Value(COLUMNNAME_C_InterOrg_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueFrom_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -202,6 +204,7 @@ public class X_C_InterOrg_Acct extends PO implements I_C_InterOrg_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueTo_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

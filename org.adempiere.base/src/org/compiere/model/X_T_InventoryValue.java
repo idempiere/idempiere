@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_InventoryValue
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="T_InventoryValue")
 public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_T_InventoryValue (Properties ctx, String T_InventoryValue_UU, String trxName)
@@ -89,6 +89,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
@@ -117,6 +118,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -237,6 +239,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 		return (Timestamp)get_Value(COLUMNNAME_DateValue);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -265,6 +268,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostElement)MTable.get(getCtx(), org.compiere.model.I_M_CostElement.Table_ID)
@@ -293,6 +297,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
@@ -321,6 +326,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -349,6 +355,7 @@ public class X_T_InventoryValue extends PO implements I_T_InventoryValue, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_POSPayment
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_POSPayment")
 public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_POSPayment (Properties ctx, int C_POSPayment_ID, String trxName)
@@ -127,6 +127,22 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
       return sb.toString();
     }
 
+	/** Set Account Name.
+		@param A_Name Name on Credit Card or Account holder
+	*/
+	public void setA_Name (String A_Name)
+	{
+		set_Value (COLUMNNAME_A_Name, A_Name);
+	}
+
+	/** Get Account Name.
+		@return Name on Credit Card or Account holder
+	  */
+	public String getA_Name()
+	{
+		return (String)get_Value(COLUMNNAME_A_Name);
+	}
+
 	/** Set Account No.
 		@param AccountNo Account Number
 	*/
@@ -143,20 +159,126 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 		return (String)get_Value(COLUMNNAME_AccountNo);
 	}
 
-	/** Set Account Name.
-		@param A_Name Name on Credit Card or Account holder
-	*/
-	public void setA_Name (String A_Name)
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
-		set_Value (COLUMNNAME_A_Name, A_Name);
+		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
+			.getPO(getC_Order_ID(), get_TrxName());
 	}
 
-	/** Get Account Name.
-		@return Name on Credit Card or Account holder
-	  */
-	public String getA_Name()
+	/** Set Order.
+		@param C_Order_ID Order
+	*/
+	public void setC_Order_ID (int C_Order_ID)
 	{
-		return (String)get_Value(COLUMNNAME_A_Name);
+		if (C_Order_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
+	}
+
+	/** Get Order.
+		@return Order
+	  */
+	public int getC_Order_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set POS Payment.
+		@param C_POSPayment_ID POS Payment
+	*/
+	public void setC_POSPayment_ID (int C_POSPayment_ID)
+	{
+		if (C_POSPayment_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_POSPayment_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_POSPayment_ID, Integer.valueOf(C_POSPayment_ID));
+	}
+
+	/** Get POS Payment.
+		@return POS Payment	  */
+	public int getC_POSPayment_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSPayment_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set C_POSPayment_UU.
+		@param C_POSPayment_UU C_POSPayment_UU
+	*/
+	public void setC_POSPayment_UU (String C_POSPayment_UU)
+	{
+		set_Value (COLUMNNAME_C_POSPayment_UU, C_POSPayment_UU);
+	}
+
+	/** Get C_POSPayment_UU.
+		@return C_POSPayment_UU	  */
+	public String getC_POSPayment_UU()
+	{
+		return (String)get_Value(COLUMNNAME_C_POSPayment_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_ID)
+			.getPO(getC_POSTenderType_ID(), get_TrxName());
+	}
+
+	/** Set POS Tender Type.
+		@param C_POSTenderType_ID POS Tender Type
+	*/
+	public void setC_POSTenderType_ID (int C_POSTenderType_ID)
+	{
+		if (C_POSTenderType_ID < 1)
+			set_Value (COLUMNNAME_C_POSTenderType_ID, null);
+		else
+			set_Value (COLUMNNAME_C_POSTenderType_ID, Integer.valueOf(C_POSTenderType_ID));
+	}
+
+	/** Get POS Tender Type.
+		@return POS Tender Type	  */
+	public int getC_POSTenderType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSTenderType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
+
+	/** Set Payment.
+		@param C_Payment_ID Payment identifier
+	*/
+	public void setC_Payment_ID (int C_Payment_ID)
+	{
+		if (C_Payment_ID < 1)
+			set_Value (COLUMNNAME_C_Payment_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
+	}
+
+	/** Get Payment.
+		@return Payment identifier
+	  */
+	public int getC_Payment_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Check No.
@@ -201,125 +323,6 @@ public class X_C_POSPayment extends PO implements I_C_POSPayment, I_Persistent
 	public String getCheckStatus()
 	{
 		return (String)get_Value(COLUMNNAME_CheckStatus);
-	}
-
-	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
-			.getPO(getC_Order_ID(), get_TrxName());
-	}
-
-	/** Set Order.
-		@param C_Order_ID Order
-	*/
-	public void setC_Order_ID (int C_Order_ID)
-	{
-		if (C_Order_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
-	}
-
-	/** Get Order.
-		@return Order
-	  */
-	public int getC_Order_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
-			.getPO(getC_Payment_ID(), get_TrxName());
-	}
-
-	/** Set Payment.
-		@param C_Payment_ID Payment identifier
-	*/
-	public void setC_Payment_ID (int C_Payment_ID)
-	{
-		if (C_Payment_ID < 1)
-			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
-	}
-
-	/** Get Payment.
-		@return Payment identifier
-	  */
-	public int getC_Payment_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set POS Payment.
-		@param C_POSPayment_ID POS Payment
-	*/
-	public void setC_POSPayment_ID (int C_POSPayment_ID)
-	{
-		if (C_POSPayment_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_POSPayment_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_POSPayment_ID, Integer.valueOf(C_POSPayment_ID));
-	}
-
-	/** Get POS Payment.
-		@return POS Payment	  */
-	public int getC_POSPayment_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSPayment_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_POSPayment_UU.
-		@param C_POSPayment_UU C_POSPayment_UU
-	*/
-	public void setC_POSPayment_UU (String C_POSPayment_UU)
-	{
-		set_Value (COLUMNNAME_C_POSPayment_UU, C_POSPayment_UU);
-	}
-
-	/** Get C_POSPayment_UU.
-		@return C_POSPayment_UU	  */
-	public String getC_POSPayment_UU()
-	{
-		return (String)get_Value(COLUMNNAME_C_POSPayment_UU);
-	}
-
-	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_ID)
-			.getPO(getC_POSTenderType_ID(), get_TrxName());
-	}
-
-	/** Set POS Tender Type.
-		@param C_POSTenderType_ID POS Tender Type
-	*/
-	public void setC_POSTenderType_ID (int C_POSTenderType_ID)
-	{
-		if (C_POSTenderType_ID < 1)
-			set_Value (COLUMNNAME_C_POSTenderType_ID, null);
-		else
-			set_Value (COLUMNNAME_C_POSTenderType_ID, Integer.valueOf(C_POSTenderType_ID));
-	}
-
-	/** Get POS Tender Type.
-		@return POS Tender Type	  */
-	public int getC_POSTenderType_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSTenderType_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Number.

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Split
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_Asset_Split 
 {
@@ -40,6 +40,27 @@ public interface I_A_Asset_Split
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name A_Amount_Split */
     public static final String COLUMNNAME_A_Amount_Split = "A_Amount_Split";
@@ -90,6 +111,7 @@ public interface I_A_Asset_Split
 	/** Get To Asset ID	  */
 	public int getA_Asset_ID_To();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Asset_To() throws RuntimeException;
 
     /** Column name A_Asset_Split_ID */
@@ -110,14 +132,6 @@ public interface I_A_Asset_Split
 	/** Get A_Asset_Split_UU	  */
 	public String getA_Asset_Split_UU();
 
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
     /** Column name A_Depreciation_Workfile_ID */
     public static final String COLUMNNAME_A_Depreciation_Workfile_ID = "A_Depreciation_Workfile_ID";
 
@@ -126,19 +140,6 @@ public interface I_A_Asset_Split
 
 	/** Get A_Depreciation_Workfile_ID	  */
 	public int getA_Depreciation_Workfile_ID();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
 
     /** Column name A_Percent_Original */
     public static final String COLUMNNAME_A_Percent_Original = "A_Percent_Original";
@@ -207,6 +208,7 @@ public interface I_A_Asset_Split
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name Created */

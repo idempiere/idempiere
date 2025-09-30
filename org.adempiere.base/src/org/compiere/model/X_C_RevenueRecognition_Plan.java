@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RevenueRecognition_Plan
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_RevenueRecognition_Plan")
 public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecognition_Plan, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_RevenueRecognition_Plan (Properties ctx, int C_RevenueRecognition_Plan_ID, String trxName)
@@ -135,6 +135,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -163,6 +164,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -191,6 +193,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -219,6 +222,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
@@ -292,6 +296,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 		return (String)get_Value(COLUMNNAME_C_RevenueRecognition_Plan_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -354,6 +359,7 @@ public class X_C_RevenueRecognition_Plan extends PO implements I_C_RevenueRecogn
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Field")
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -183,6 +183,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
@@ -210,6 +211,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -238,6 +240,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
@@ -266,28 +269,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Field.
-		@param AD_Field_ID Field on a database table
-	*/
-	public void setAD_Field_ID (int AD_Field_ID)
-	{
-		if (AD_Field_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
-	}
-
-	/** Get Field.
-		@return Field on a database table
-	  */
-	public int getAD_Field_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
@@ -316,6 +298,28 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Field.
+		@param AD_Field_ID Field on a database table
+	*/
+	public void setAD_Field_ID (int AD_Field_ID)
+	{
+		if (AD_Field_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
+	}
+
+	/** Get Field.
+		@return Field on a database table
+	  */
+	public int getAD_Field_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set AD_Field_UU.
 		@param AD_Field_UU AD_Field_UU
 	*/
@@ -331,6 +335,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Field_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
@@ -359,6 +364,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -387,6 +393,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -415,6 +422,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -443,6 +451,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
@@ -471,6 +480,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Val_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Val_Rule.Table_ID)
@@ -515,6 +525,22 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_AlwaysUpdatableLogic);
 	}
 
+	/** Set Column SQL.
+		@param ColumnSQL Virtual Column (r/o)
+	*/
+	public void setColumnSQL (String ColumnSQL)
+	{
+		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
+	}
+
+	/** Get Column SQL.
+		@return Virtual Column (r/o)
+	  */
+	public String getColumnSQL()
+	{
+		return (String)get_Value(COLUMNNAME_ColumnSQL);
+	}
+
 	/** Set Column Span.
 		@param ColumnSpan Number of column for a box of field
 	*/
@@ -532,22 +558,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Column SQL.
-		@param ColumnSQL Virtual Column (r/o)
-	*/
-	public void setColumnSQL (String ColumnSQL)
-	{
-		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
-	}
-
-	/** Get Column SQL.
-		@return Virtual Column (r/o)
-	  */
-	public String getColumnSQL()
-	{
-		return (String)get_Value(COLUMNNAME_ColumnSQL);
 	}
 
 	/** Set Default Logic.
@@ -652,6 +662,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getIncluded_Tab() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
@@ -905,6 +916,29 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** IsHtml AD_Reference_ID=319 */
+	public static final int ISHTML_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISHTML_No = "N";
+	/** Yes = Y */
+	public static final String ISHTML_Yes = "Y";
+	/** Set HTML.
+		@param IsHtml Text has HTML tags
+	*/
+	public void setIsHtml (String IsHtml)
+	{
+
+		set_Value (COLUMNNAME_IsHtml, IsHtml);
+	}
+
+	/** Get HTML.
+		@return Text has HTML tags
+	  */
+	public String getIsHtml()
+	{
+		return (String)get_Value(COLUMNNAME_IsHtml);
 	}
 
 	/** IsMandatory AD_Reference_ID=319 */
@@ -1265,7 +1299,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	/** Set Value Format.
-		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;, or ~regex
 	*/
 	public void setVFormat (String VFormat)
 	{
@@ -1273,7 +1307,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	}
 
 	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;, or ~regex
 	  */
 	public String getVFormat()
 	{

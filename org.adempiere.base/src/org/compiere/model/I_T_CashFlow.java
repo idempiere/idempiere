@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_CashFlow
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_T_CashFlow 
 {
@@ -75,6 +75,7 @@ public interface I_T_CashFlow
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -90,6 +91,7 @@ public interface I_T_CashFlow
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -105,7 +107,132 @@ public interface I_T_CashFlow
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
+
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+
+	/** Set Business Partner.
+	  * Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID);
+
+	/** Get Business Partner.
+	  * Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
+    /** Column name C_Campaign_ID */
+    public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
+
+	/** Set Campaign.
+	  * Marketing Campaign
+	  */
+	public void setC_Campaign_ID (int C_Campaign_ID);
+
+	/** Get Campaign.
+	  * Marketing Campaign
+	  */
+	public int getC_Campaign_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
+
+    /** Column name C_CashPlanLine_ID */
+    public static final String COLUMNNAME_C_CashPlanLine_ID = "C_CashPlanLine_ID";
+
+	/** Set Cash Plan Line	  */
+	public void setC_CashPlanLine_ID (int C_CashPlanLine_ID);
+
+	/** Get Cash Plan Line	  */
+	public int getC_CashPlanLine_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CashPlanLine getC_CashPlanLine() throws RuntimeException;
+
+    /** Column name C_Charge_ID */
+    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
+
+	/** Set Charge.
+	  * Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID);
+
+	/** Get Charge.
+	  * Additional document charges
+	  */
+	public int getC_Charge_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
+
+    /** Column name C_ElementValue_ID */
+    public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
+
+	/** Set Account Element.
+	  * Account Element
+	  */
+	public void setC_ElementValue_ID (int C_ElementValue_ID);
+
+	/** Get Account Element.
+	  * Account Element
+	  */
+	public int getC_ElementValue_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
+
+    /** Column name C_Invoice_ID */
+    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
+
+	/** Set Invoice.
+	  * Invoice Identifier
+	  */
+	public void setC_Invoice_ID (int C_Invoice_ID);
+
+	/** Get Invoice.
+	  * Invoice Identifier
+	  */
+	public int getC_Invoice_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
+
+    /** Column name C_Order_ID */
+    public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
+
+	/** Set Order.
+	  * Order
+	  */
+	public void setC_Order_ID (int C_Order_ID);
+
+	/** Get Order.
+	  * Order
+	  */
+	public int getC_Order_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
+
+    /** Column name C_Project_ID */
+    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
+
+	/** Set Project.
+	  * Financial Project
+	  */
+	public void setC_Project_ID (int C_Project_ID);
+
+	/** Get Project.
+	  * Financial Project
+	  */
+	public int getC_Project_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name CashFlowSource */
     public static final String COLUMNNAME_CashFlowSource = "CashFlowSource";
@@ -124,122 +251,6 @@ public interface I_T_CashFlow
 
 	/** Get Cash Flow Type	  */
 	public String getCashFlowType();
-
-    /** Column name C_BPartner_ID */
-    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
-
-	/** Set Business Partner.
-	  * Identifies a Business Partner
-	  */
-	public void setC_BPartner_ID (int C_BPartner_ID);
-
-	/** Get Business Partner.
-	  * Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
-
-    /** Column name C_Campaign_ID */
-    public static final String COLUMNNAME_C_Campaign_ID = "C_Campaign_ID";
-
-	/** Set Campaign.
-	  * Marketing Campaign
-	  */
-	public void setC_Campaign_ID (int C_Campaign_ID);
-
-	/** Get Campaign.
-	  * Marketing Campaign
-	  */
-	public int getC_Campaign_ID();
-
-	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
-
-    /** Column name C_CashPlanLine_ID */
-    public static final String COLUMNNAME_C_CashPlanLine_ID = "C_CashPlanLine_ID";
-
-	/** Set Cash Plan Line	  */
-	public void setC_CashPlanLine_ID (int C_CashPlanLine_ID);
-
-	/** Get Cash Plan Line	  */
-	public int getC_CashPlanLine_ID();
-
-	public org.compiere.model.I_C_CashPlanLine getC_CashPlanLine() throws RuntimeException;
-
-    /** Column name C_Charge_ID */
-    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
-
-	/** Set Charge.
-	  * Additional document charges
-	  */
-	public void setC_Charge_ID (int C_Charge_ID);
-
-	/** Get Charge.
-	  * Additional document charges
-	  */
-	public int getC_Charge_ID();
-
-	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
-
-    /** Column name C_ElementValue_ID */
-    public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
-
-	/** Set Account Element.
-	  * Account Element
-	  */
-	public void setC_ElementValue_ID (int C_ElementValue_ID);
-
-	/** Get Account Element.
-	  * Account Element
-	  */
-	public int getC_ElementValue_ID();
-
-	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
-
-    /** Column name C_Invoice_ID */
-    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
-
-	/** Set Invoice.
-	  * Invoice Identifier
-	  */
-	public void setC_Invoice_ID (int C_Invoice_ID);
-
-	/** Get Invoice.
-	  * Invoice Identifier
-	  */
-	public int getC_Invoice_ID();
-
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
-
-    /** Column name C_Order_ID */
-    public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
-
-	/** Set Order.
-	  * Order
-	  */
-	public void setC_Order_ID (int C_Order_ID);
-
-	/** Get Order.
-	  * Order
-	  */
-	public int getC_Order_ID();
-
-	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
-
-    /** Column name C_Project_ID */
-    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
-
-	/** Set Project.
-	  * Financial Project
-	  */
-	public void setC_Project_ID (int C_Project_ID);
-
-	/** Get Project.
-	  * Financial Project
-	  */
-	public int getC_Project_ID();
-
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -348,6 +359,7 @@ public interface I_T_CashFlow
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */

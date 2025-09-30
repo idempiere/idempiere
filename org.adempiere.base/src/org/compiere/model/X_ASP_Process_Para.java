@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Process_Para
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Process_Para")
 public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_ASP_Process_Para (Properties ctx, int ASP_Process_Para_ID, String trxName)
@@ -104,6 +104,7 @@ public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
@@ -131,6 +132,7 @@ public class X_ASP_Process_Para extends PO implements I_ASP_Process_Para, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Process getASP_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_ASP_Process)MTable.get(getCtx(), org.compiere.model.I_ASP_Process.Table_ID)

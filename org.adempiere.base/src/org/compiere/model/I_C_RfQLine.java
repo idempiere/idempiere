@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RfQLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_RfQLine 
 {
@@ -62,37 +62,6 @@ public interface I_C_RfQLine
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
-
-    /** Column name C_RfQ_ID */
-    public static final String COLUMNNAME_C_RfQ_ID = "C_RfQ_ID";
-
-	/** Set RfQ.
-	  * Request for Quotation
-	  */
-	public void setC_RfQ_ID (int C_RfQ_ID);
-
-	/** Get RfQ.
-	  * Request for Quotation
-	  */
-	public int getC_RfQ_ID();
-
-	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException;
-
     /** Column name C_RfQLine_ID */
     public static final String COLUMNNAME_C_RfQLine_ID = "C_RfQLine_ID";
 
@@ -114,6 +83,38 @@ public interface I_C_RfQLine
 
 	/** Get C_RfQLine_UU	  */
 	public String getC_RfQLine_UU();
+
+    /** Column name C_RfQ_ID */
+    public static final String COLUMNNAME_C_RfQ_ID = "C_RfQ_ID";
+
+	/** Set RfQ.
+	  * Request for Quotation
+	  */
+	public void setC_RfQ_ID (int C_RfQ_ID);
+
+	/** Get RfQ.
+	  * Request for Quotation
+	  */
+	public int getC_RfQ_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_RfQ getC_RfQ() throws RuntimeException;
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name DateWorkComplete */
     public static final String COLUMNNAME_DateWorkComplete = "DateWorkComplete";
@@ -219,6 +220,7 @@ public interface I_C_RfQLine
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -234,6 +236,7 @@ public interface I_C_RfQLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Updated */

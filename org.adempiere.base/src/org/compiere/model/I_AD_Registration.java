@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Registration
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Registration 
 {
@@ -97,6 +97,7 @@ public interface I_AD_Registration
 	  */
 	public int getAD_System_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_System getAD_System() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -112,6 +113,7 @@ public interface I_AD_Registration
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -127,6 +129,7 @@ public interface I_AD_Registration
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name Created */

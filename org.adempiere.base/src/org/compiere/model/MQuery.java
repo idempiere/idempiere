@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -176,6 +177,12 @@ public class MQuery implements Serializable, Cloneable
 				if (!Util.isEmpty(P_Query) || (table != null && table.getColumn(ParameterName) == null))
 				{
 					query = reportQuery.getReportProcessQuery();
+				}
+
+				if (table != null && table.getColumn(ParameterName) != null) {
+					MColumn column = table.getColumn(ParameterName);
+					if (column != null && !Util.isEmpty(column.getColumnSQL()))
+						ParameterName = column.getColumnSQL();
 				}
 
 				//-------------------------------------------------------------
@@ -563,6 +570,9 @@ public class MQuery implements Serializable, Cloneable
 	public static final String	MSG_NOT_EQUAL = "OPERATOR_NOT_EQUAL";
 	/** Not Equal - 1		*/
 	public static final int		NOT_EQUAL_INDEX = 1;
+	/** Non Case Sensitive Like*/
+	public static final String	ILIKE = " ILIKE ";
+	public static final String	MSG_ILIKE = "OPERATOR_ILIKE";
 	/** Like			*/
 	public static final String	LIKE = " LIKE ";
 	public static final String	MSG_LIKE = "OPERATOR_LIKE";
@@ -584,8 +594,8 @@ public class MQuery implements Serializable, Cloneable
 	/** Between			*/
 	public static final String	BETWEEN = " BETWEEN ";
 	public static final String	MSG_BETWEEN = "OPERATOR_BETWEEN";
-	/** Between - 8		*/
-	public static final int		BETWEEN_INDEX = 8;
+	/** Between - 9		*/
+	public static final int		BETWEEN_INDEX = 9;
 	/** For IDEMPIERE-377	*/
 	public static final String 	NOT_NULL = " IS NOT NULL ";
 	public static final String 	MSG_NOT_NULL = "OPERATOR_NOT_NULL";
@@ -595,16 +605,18 @@ public class MQuery implements Serializable, Cloneable
 
 	/** NOTE: Value is the SQL operator, and Name is the message that appears in find window and reports */
 	/**	All the Operators			*/
+	/** WARNING: adding operators can change the _INDEX variables */
 	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),		//	0 - EQUAL_INDEX
 		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),	//  1 - NOT_EQUAL_INDEX
+		new ValueNamePair (ILIKE,			MSG_ILIKE),
 		new ValueNamePair (LIKE,			MSG_LIKE),
 		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
 		new ValueNamePair (GREATER,			MSG_GREATER),
 		new ValueNamePair (GREATER_EQUAL,	MSG_GREATER_EQUAL),
 		new ValueNamePair (LESS,			MSG_LESS),
 		new ValueNamePair (LESS_EQUAL,		MSG_LESS_EQUAL),
-		new ValueNamePair (BETWEEN,			MSG_BETWEEN),	//	8 - BETWEEN_INDEX
+		new ValueNamePair (BETWEEN,			MSG_BETWEEN),	//	9 - BETWEEN_INDEX
 		new ValueNamePair (NULL,			MSG_NULL),
 		new ValueNamePair (NOT_NULL,		MSG_NOT_NULL)
 	};
@@ -612,6 +624,7 @@ public class MQuery implements Serializable, Cloneable
 	public static final ValueNamePair[]	OPERATORS_STRINGS = new ValueNamePair[] {
 		new ValueNamePair (EQUAL,			MSG_EQUAL),
 		new ValueNamePair (NOT_EQUAL,		MSG_NOT_EQUAL),
+		new ValueNamePair (ILIKE,			MSG_ILIKE),
 		new ValueNamePair (LIKE,			MSG_LIKE),
 		new ValueNamePair (NOT_LIKE,		MSG_NOT_LIKE),
 		new ValueNamePair (GREATER,			MSG_GREATER),
@@ -1686,11 +1699,11 @@ class Restriction  implements Serializable
 			sb.append(ExistsClause);
 
 			if (Code instanceof String)
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", DB.TO_STRING(Code.toString())));
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_STRING(Code.toString())));
 			else if (Code instanceof Timestamp)
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", DB.TO_DATE((Timestamp)Code, false)));
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_DATE((Timestamp)Code, false)));
 			else
-				sb = new StringBuilder(sb.toString().replaceAll("\\?", Code.toString()));
+				sb = new StringBuilder(sb.toString().replace("?", Code.toString()));
 
 			return sb.toString();
 		}
@@ -1739,8 +1752,10 @@ class Restriction  implements Serializable
 		}
 		else
 			sb.append(virtualColumn ? ColumnName : DB.getDatabase().quoteColumnName(ColumnName));
-		
-		sb.append(Operator);
+		if(MQuery.ILIKE.equals(Operator))
+			sb.append(MQuery.LIKE);
+		else
+			sb.append(Operator);
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
 			if (Code instanceof String) {
@@ -1836,53 +1851,35 @@ class QueryEvaluatee implements Evaluatee {
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{
-		//ref column
-		String foreignColumn = "";
-		int f = variableName.indexOf('.');
-		if (f > 0) {
-			foreignColumn = variableName.substring(f+1, variableName.length());
-			variableName = variableName.substring(0, f);
-		}
-
-		String value = null;
-		if (variableName.startsWith("#") || variableName.startsWith("$")) {
-			value = Env.getContext(ctx, variableName);
-		} else {
-			value = parameterMap.get(variableName);
-		}
-		if (!Util.isEmpty(value) && !Util.isEmpty(foreignColumn) && variableName.endsWith("_ID")) {
-			String refValue = "";
-			int id = 0;
-			try {
-				id = Integer.parseInt(value);
-			} catch (Exception e){}
-			if (id > 0) {
-				if (variableName.startsWith("#") || variableName.startsWith("$")) {
-					variableName = variableName.substring(1);
-				} else if (variableName.indexOf("|") > 0) {
-					variableName = variableName.substring(variableName.lastIndexOf("|")+1);
-				}
-				String foreignTable = null;
-				if (foreignColumn.indexOf(".") > 0) {
-					foreignTable = foreignColumn.substring(0, foreignColumn.indexOf("."));
-				} else {
-					foreignTable = variableName.substring(0, variableName.length()-3);
-				}
-				MTable t = MTable.get(Env.getCtx(), foreignTable);
-				if (t != null) {
-					refValue = DB.getSQLValueString(null,
-							"SELECT " + foreignColumn + " FROM " + foreignTable + " WHERE "
-							+ foreignTable + "_ID = ?", id);
-				}
-			}
-			return refValue;
-		}
-		return value;
-	}	//	get_ValueAsString
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(new ParameterDataProvider());
+		return evaluatee.get_ValueAsString(ctx, variableName);
+	}
 
 	@Override
 	public String get_ValueAsString(String variableName) {
 		return get_ValueAsString(Env.getCtx(), variableName);
 	}
 
+	private class ParameterDataProvider implements DefaultEvaluatee.DataProvider {
+
+		@Override
+		public Object getValue(String columnName) {
+			return parameterMap.get(columnName);
+		}
+
+		@Override
+		public Object getProperty(String propertyName) {
+			return null;
+		}
+
+		@Override
+		public MColumn getColumn(String columnName) {
+			return null;
+		}
+
+		@Override
+		public String getTrxName() {
+			return null;
+		}		
+	}
 }

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Fund
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="GL_Fund")
 public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_GL_Fund (Properties ctx, int GL_Fund_ID, String trxName)
@@ -135,6 +135,7 @@ public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)

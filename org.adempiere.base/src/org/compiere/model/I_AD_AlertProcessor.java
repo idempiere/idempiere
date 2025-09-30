@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AlertProcessor
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_AlertProcessor 
 {
@@ -93,6 +93,7 @@ public interface I_AD_AlertProcessor
 	/** Get Schedule	  */
 	public int getAD_Schedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
 
     /** Column name Created */
@@ -211,6 +212,7 @@ public interface I_AD_AlertProcessor
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */

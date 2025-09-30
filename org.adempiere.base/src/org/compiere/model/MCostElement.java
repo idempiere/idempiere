@@ -338,15 +338,10 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 		copyPO(copy);
 	}
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Check Unique Costing Method
+		// For material and outside processing cost element type, CostingMethod must be unique
 		if (
 			(  COSTELEMENTTYPE_Material.equals(getCostElementType())
 			|| COSTELEMENTTYPE_OutsideProcessing.equals(getCostElementType())
@@ -368,10 +363,6 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	Before Delete
-	 *	@return true if can be deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
@@ -380,7 +371,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			|| !COSTELEMENTTYPE_Material.equals(getCostElementType()))
 			return true;
 		
-		//	Costing Methods on AS level
+		// Disallow delete if costing method is use by accounting schema
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for (int i = 0; i < ass.length; i++)
 		{
@@ -392,7 +383,7 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			}
 		}
 		
-		//	Costing Methods on PC level
+		// Disallow delete if costing method is use by product category accounting
 		int M_Product_Category_ID = 0;
 		final String whereClause ="AD_Client_ID=? AND CostingMethod=?";
 		MProductCategoryAcct retValue = new Query(getCtx(), I_M_Product_Category_Acct.Table_Name, whereClause, null)

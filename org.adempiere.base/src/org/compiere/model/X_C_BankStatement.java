@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatement
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BankStatement")
 public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BankStatement (Properties ctx, int C_BankStatement_ID, String trxName)
@@ -203,6 +203,7 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
@@ -268,6 +269,7 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 		return (String)get_Value(COLUMNNAME_C_BankStatement_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)

@@ -14,7 +14,6 @@
  * Posterita Ltd., 3, Draper Avenue, Quatre Bornes, Mauritius                 *
  * or via info@posterita.org or http://www.posterita.org/                     *
  *****************************************************************************/
-
 package org.adempiere.webui;
 
 import java.lang.ref.WeakReference;
@@ -32,6 +31,7 @@ import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
 import org.adempiere.webui.apps.AEnv;
@@ -83,10 +83,9 @@ import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
 /**
- * Entry point for iDempiere web client
+ * Entry point for iDempiere web client (index.zul)
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  *
  * @author hengsin
  */
@@ -105,6 +104,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	/** {@link Desktop} attribute to hold {@link IDesktop} reference */
 	public static final String APPLICATION_DESKTOP_KEY = "application.desktop";
+	public static final String ON_CREATE_LOGIN_WINDOW = "onCreateLoginWindow";
 
 	/** org.zkoss.zk.ui.WebApp.name preference from zk.xml */
 	public static String APP_NAME = null;
@@ -161,10 +161,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	this.setVisible(false);
 
     	userPreference = new UserPreference();
-    	// preserve the original URL parameters as is destroyed later on login
+    	// preserve the original URL parameters as it is destroyed later on login
     	m_URLParameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
     	
     	this.addEventListener(ON_LOGIN_COMPLETED, this);
+		this.addEventListener(ON_CREATE_LOGIN_WINDOW, this);
     }
 
     /**
@@ -189,11 +190,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         
         Properties ctx = Env.getCtx();
         langSession = Env.getContext(ctx, Env.LANGUAGE);
+        // Open login dialog or if with valid login session, goes to desktop
         if (session.getAttribute(SessionContextListener.SESSION_CTX) == null || !SessionManager.isUserLoggedIn(ctx))
         {
-            loginDesktop = new WLogin(this);
-            loginDesktop.createPart(this.getPage());
-            loginDesktop.getComponent().getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
+			getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
+			// use echo event to create login window after client info event
+			Events.echoEvent(ON_CREATE_LOGIN_WINDOW, this, null);
         }
         else
         {
@@ -209,9 +211,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
         Executions.getCurrent().getDesktop().addListener(new DrillCommand());
         Executions.getCurrent().getDesktop().addListener(new TokenCommand());
-        Executions.getCurrent().getDesktop().addListener(new ZoomCommand());
-        
-        eventThreadEnabled = Executions.getCurrent().getDesktop().getWebApp().getConfiguration().isEventThreadEnabled();        
+        Executions.getCurrent().getDesktop().addListener(new ZoomCommand());        
     }
 
 	/**
@@ -302,6 +302,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	Env.verifyLanguage(ctx, language);
     	Env.setContext(ctx, Env.LANGUAGE, language.getAD_Language()); //Bug
 
+    	//script for calendar
     	StringBuilder calendarMsgScript = new StringBuilder();
 		String monthMore = Msg.getMsg(ctx,"more");
 		String dayMore = Msg.getMsg(ctx,"more");
@@ -312,7 +313,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		AuScript auscript = new AuScript(calendarMsgScript.toString());
 		Clients.response(auscript);
 
-		//	Create adempiere Session - user id in ctx
+		// Create AD_Session
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
@@ -326,20 +327,20 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		currSess.setAttribute(CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
 
-		//enable full interface, relook into this when doing preference
+		// Enable full interface
 		Env.setContext(ctx, Env.SHOW_TRANSLATION, true);
 		Env.setContext(ctx, Env.SHOW_ACCOUNTING, MRole.getDefault().isShowAcct());
 
 		// to reload preferences when the user refresh the browser
 		userPreference = loadUserPreference(Env.getAD_User_ID(ctx));
     	userPreferences = MUserPreference.getUserPreference(Env.getAD_User_ID(ctx), Env.getAD_Client_ID(ctx));
-
-		//auto commit user preference
     	userPreferences.fillPreferences();
 
+    	// Setup global key listener
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@g@h@l@m@n@o@p@q@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
+		// do not listen for Q because Alt+Q is used by Mac for other purposes
+		keyListener.setCtrlKeys("@a@c@d@e@f@g@h@l@m@n@o@p@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
 		keyListener.setAutoBlur(false);
 		
 		//create IDesktop instance
@@ -356,13 +357,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		if (!this.getPage().getDesktop().isServerPushEnabled())
 			this.getPage().getDesktop().enableServerPush(true);
 		
-		//update session context
+		// Store session context into http session
 		currSess.setAttribute(SessionContextListener.SESSION_CTX, ServerContext.getCurrentInstance());
 		
 		MUser user = MUser.get(ctx);
 		BrowserToken.save(mSession, user);
 		
 		Env.setContext(ctx, Env.UI_CLIENT, "zk");
+		Env.setContext(ctx, Env.THEME, ThemeManager.getTheme());
 		Env.setContext(ctx, Env.DB_TYPE, DB.getDatabase().getName());
 		StringBuilder localHttpAddr = new StringBuilder(Executions.getCurrent().getScheme());
 		localHttpAddr.append("://").append(Executions.getCurrent().getLocalAddr());
@@ -384,6 +386,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Style style = new Style();
 		style.setContent(cssContent.toString());
 		appendChild(style);
+		
+		//add user defined style
+		String userStyleURL = ThemeManager.getUserDefineStyleSheet();
+		if (!Util.isEmpty(userStyleURL, true)) {
+			Style userStyle = new Style();
+			userStyle.setSrc(userStyleURL);
+			appendChild(userStyle);
+		}
 		
 		//init favorite
 		FavouriteController.getInstance(currSess);
@@ -502,6 +512,19 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    boolean isAdminLogin = false;
 	    if (desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
 	    	isAdminLogin  = (boolean)desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
+	    
+	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
+		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+	    String ssoLogoutURL = null;
+	    if (!isAdminLogin && (isSSOLogin && Util.isEmpty(provider)))
+		{
+			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider);
+			if (service != null)
+				ssoLogoutURL = service.getLogoutURL();
+			else
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "SSOServiceNotFound"));
+		}
+	    
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -510,7 +533,21 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
             	
         //redirect to login page
-        Executions.sendRedirect(isAdminLogin ? "admin.zul" : "index.zul");       
+    	if (isAdminLogin) 
+    	{
+    		Executions.sendRedirect("admin.zul");
+    	}
+    	else
+    	{
+    		if (isSSOLogin && !Util.isEmpty(ssoLogoutURL, true))
+    		{
+    			Executions.sendRedirect(ssoLogoutURL);
+    		}
+    		else
+    		{
+    			Executions.sendRedirect("index.zul");
+    		}
+    	}
         
         try {
     		desktopCache.removeDesktop(desktop);
@@ -642,8 +679,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 				appDesktop.setClientInfo(clientInfo);
 		} else if (event.getName().equals(ON_LOGIN_COMPLETED)) {
 			loginCompleted();
-		} 
-
+		} else if (event.getName().equals(ON_CREATE_LOGIN_WINDOW)) {
+			loginDesktop = new WLogin(this);
+			loginDesktop.createPart(this.getPage());
+		}
 	}
 
 	/**

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Exp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Package_Exp_Detail 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_EntityType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_EntityType getAD_EntityType() throws RuntimeException;
 
     /** Column name AD_Form_ID */
@@ -77,6 +78,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Form_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
     /** Column name AD_ImpFormat_ID */
@@ -88,6 +90,7 @@ public interface I_AD_Package_Exp_Detail
 	/** Get Import Format	  */
 	public int getAD_ImpFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ImpFormat getAD_ImpFormat() throws RuntimeException;
 
     /** Column name AD_InfoWindow_ID */
@@ -103,6 +106,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Menu_ID */
@@ -118,6 +122,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Menu_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Menu getAD_Menu() throws RuntimeException;
 
     /** Column name AD_Message_ID */
@@ -133,6 +138,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Message_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException;
 
     /** Column name AD_ModelValidator_ID */
@@ -144,6 +150,7 @@ public interface I_AD_Package_Exp_Detail
 	/** Get Model Validator	  */
 	public int getAD_ModelValidator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ModelValidator getAD_ModelValidator() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -204,6 +211,7 @@ public interface I_AD_Package_Exp_Detail
 	/** Get Package Exp.	  */
 	public int getAD_Package_Exp_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Package_Exp getAD_Package_Exp() throws RuntimeException;
 
     /** Column name AD_PrintFormat_ID */
@@ -219,6 +227,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
@@ -234,6 +243,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Reference_ID */
@@ -249,6 +259,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_ReportView_ID */
@@ -264,6 +275,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_ReportView_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReportView getAD_ReportView() throws RuntimeException;
 
     /** Column name AD_Role_ID */
@@ -279,6 +291,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -294,6 +307,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Val_Rule_ID */
@@ -309,6 +323,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -324,6 +339,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
@@ -339,6 +355,7 @@ public interface I_AD_Package_Exp_Detail
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name Created */
@@ -406,15 +423,6 @@ public interface I_AD_Package_Exp_Detail
 	/** Get Execution Code	  */
 	public String getExecCode();
 
-    /** Column name File_Directory */
-    public static final String COLUMNNAME_File_Directory = "File_Directory";
-
-	/** Set File_Directory	  */
-	public void setFile_Directory (String File_Directory);
-
-	/** Get File_Directory	  */
-	public String getFile_Directory();
-
     /** Column name FileName */
     public static final String COLUMNNAME_FileName = "FileName";
 
@@ -427,6 +435,15 @@ public interface I_AD_Package_Exp_Detail
 	  * Name of the local file or URL
 	  */
 	public String getFileName();
+
+    /** Column name File_Directory */
+    public static final String COLUMNNAME_File_Directory = "File_Directory";
+
+	/** Set File_Directory	  */
+	public void setFile_Directory (String File_Directory);
+
+	/** Get File_Directory	  */
+	public String getFile_Directory();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

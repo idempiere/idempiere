@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_HouseKeeping
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_HouseKeeping")
 public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_HouseKeeping (Properties ctx, int AD_HouseKeeping_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_AD_HouseKeeping extends PO implements I_AD_HouseKeeping, I_Persis
 		return (String)get_Value(COLUMNNAME_AD_HouseKeeping_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

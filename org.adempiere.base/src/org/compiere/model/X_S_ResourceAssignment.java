@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceAssignment
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceAssignment")
 public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName)
@@ -263,6 +263,7 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 		return (String)get_Value(COLUMNNAME_S_ResourceAssignment_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)

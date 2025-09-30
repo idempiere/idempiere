@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +31,6 @@ import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
-import org.adempiere.base.sso.ISSOPrincipalService;
-import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
@@ -463,7 +460,7 @@ public class Login
 	}	//	getRoles
 	
 	/**
-	 *  Get Clients.
+	 *  Get Clients (AD_Client).
 	 *  <p>
 	 *  Sets Role info in context and loads its clients
 	 *  @param  role    role information
@@ -538,7 +535,7 @@ public class Login
 	}   //  getClients
 
 	/**
-	 *  Get Organizations.
+	 *  Get Organizations (AD_Org).
 	 *  <p>
 	 *  Sets Client info in context and loads organizations that the role has access to
 	 *  @param  rol role
@@ -981,7 +978,7 @@ public class Login
 						at = "P|" + rs.getString(1);
 					  else
 						at = "P" + AD_Window_ID + "|" + rs.getString(1);
-					}else if ("P".equals(PreferenceFor)){ // preference for processs
+					}else if ("P".equals(PreferenceFor)){ // preference for process
 						// when apply for all window or all process format is "P0|0|m_Attribute; 
 						at = "P" + AD_Window_ID + "|" + AD_InfoWindow_ID + "|" + AD_Process_ID + "|" + rs.getString(1);
 					}else if ("I".equals(PreferenceFor)){ // preference for infoWindow
@@ -1033,7 +1030,7 @@ public class Login
 	}// loadUserPreferences
 
 	/**
-	 *	Load Default Value for Table into Context.
+	 *	Load Default Value for Table into Context (IsDefault=Y, #ColumnName=Value).
 	 *  @param TableName table name
 	 *  @param ColumnName column name
 	 */
@@ -1074,6 +1071,7 @@ public class Login
 	
 	/**
 	 * 	Batch Login using Ini values
+	 * <pre>
 	 * 	<code>
 		Adempiere.startup(true);
 		Ini.setProperty(Ini.P_UID,"SuperUser");
@@ -1087,6 +1085,7 @@ public class Login
 		Login login = new Login(Env.getCtx());
 		login.batchLogin();
 	 * 	</code>
+	 *  </pre>
 	 * 	@param loginDate optional login date
 	 * 	@return true if logged in using Ini values
 	 */
@@ -1254,7 +1253,7 @@ public class Login
 	}	//	getPrincipal
 
 	/**
-	 * Get clients
+	 * Get clients (AD_Client)
 	 * @param app_user login id
 	 * @param app_pwd login password
 	 * @return list of accessible client
@@ -1277,12 +1276,12 @@ public class Login
 	}
 
 	/**
-	 *  Validate Client Login.
+	 *  Validate Client Login.<br/>
 	 *  Sets Context with login info.
 	 *  @param app_user user id
-	 *  @param app_pwd password
+	 *  @param app_pwd password, ignore for SSO login
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
-	 *  @param token validate the user with a token for SSO login.
+	 *  @param token token to validate SSO login user (app_user).
 	 *  @return client array or null if in error.
 	 */
 	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, Object token) {
@@ -1296,15 +1295,8 @@ public class Login
 
 		//	Authentication
 		boolean authenticated = false;
-		try
-		{
-			isSSOLogin = token != null && SSOUtils.getSSOPrincipalService() != null && SSOUtils.getSSOPrincipalService().getUserName(token).equalsIgnoreCase(app_user);
-		}
-		catch (ParseException e)
-		{
-			log.warning("Parsing failed: " + e.getLocalizedMessage());
-			isSSOLogin = false;
-		}
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		isSSOLogin = isSSOEnable && token != null;
 
 		MSystem system = MSystem.get(m_ctx);
 		if (system == null)
@@ -1362,13 +1354,11 @@ public class Login
 		else
 			where.append("COALESCE(LDAPUser,Name)=?");
 
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
-		ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService();
 		where.append("	AND EXISTS (SELECT * FROM AD_User u ")
 						.append("	INNER JOIN	AD_Client c ON (u.AD_Client_ID = c.AD_Client_ID)	")
 						.append("	WHERE (COALESCE(u.AuthenticationType, c.AuthenticationType) IN ");
 		//If Enable_SSO=N then don't allow SSO only users. 
-		where.append((isSSOEnable && ssoPrincipal != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
+		where.append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
 		where.append("	OR COALESCE(u.AuthenticationType, c.AuthenticationType) IS NULL) AND u.AD_User_ID = AD_User.AD_User_ID) ");
 
 		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
@@ -1470,7 +1460,7 @@ public class Login
 				if (! Util.isEmpty(whereRoleType)) {
 					sql.append(" AND ").append(whereRoleType);
 				}
-				sql.append(" AND  cli.AuthenticationType IN ").append((isSSOEnable && ssoPrincipal != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
+				sql.append(" AND  cli.AuthenticationType IN ").append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
 				sql.append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
 			      PreparedStatement pstmt=null;
 			      ResultSet rs=null;
@@ -1578,7 +1568,7 @@ public class Login
 		else 
 		{
 			boolean foundLockedAccount = false;
-			for (MUser user : usersAuthenticated)
+			for (MUser user : users)
 			{
 				if (user.isLocked())
 				{
@@ -1626,11 +1616,17 @@ public class Login
 				loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});				
 			}
 		}
+		
+		if (isSSOLogin)
+			Env.setContext(Env.getCtx(), Env.IS_SSO_LOGIN, true);
+		else
+			Env.setContext(Env.getCtx(), Env.IS_SSO_LOGIN, false);
+		
 		return retValue;
 	}
 
 	/**
-	 * Get the tenant from the login text when using login prefix
+	 * Get the tenant from the login text when using login prefix (tenant/user)
 	 * @param app_user
 	 * @return tenant from app_user or null
 	 */
@@ -1758,7 +1754,7 @@ public class Login
 	}   //  getRoles
 	
 	/**
-	 * Get clients
+	 * Get clients (AD_Client)
 	 * @return clients
 	 */
     public KeyNamePair[] getClients() {		
@@ -1768,7 +1764,6 @@ public class Login
 		
 		loginErrMsg = null;
 		isPasswordExpired = false;
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		int AD_User_ID = Env.getContextAsInt(m_ctx, Env.AD_USER_ID);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
@@ -1780,7 +1775,7 @@ public class Login
                          .append(" AND cli.IsActive='Y'")
                          .append(" AND u.IsActive='Y'")
                          .append(" AND u.AD_User_ID=? ")
-						 .append(" AND cli.AuthenticationType IN ").append((isSSOEnable && SSOUtils.getSSOPrincipalService() != null && isSSOLogin) ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ")
+						 .append(" AND cli.AuthenticationType IN ").append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ")
 						 .append(" ORDER BY cli.Name");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

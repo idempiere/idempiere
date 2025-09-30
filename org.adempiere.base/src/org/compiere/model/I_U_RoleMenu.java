@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for U_RoleMenu
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_U_RoleMenu 
 {
@@ -75,6 +75,7 @@ public interface I_U_RoleMenu
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name Created */
@@ -106,22 +107,6 @@ public interface I_U_RoleMenu
 	  */
 	public boolean isActive();
 
-    /** Column name Updated */
-    public static final String COLUMNNAME_Updated = "Updated";
-
-	/** Get Updated.
-	  * Date this record was updated
-	  */
-	public Timestamp getUpdated();
-
-    /** Column name UpdatedBy */
-    public static final String COLUMNNAME_UpdatedBy = "UpdatedBy";
-
-	/** Get Updated By.
-	  * User who updated this records
-	  */
-	public int getUpdatedBy();
-
     /** Column name U_RoleMenu_ID */
     public static final String COLUMNNAME_U_RoleMenu_ID = "U_RoleMenu_ID";
 
@@ -149,5 +134,22 @@ public interface I_U_RoleMenu
 	/** Get Web Menu	  */
 	public int getU_WebMenu_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_U_WebMenu getU_WebMenu() throws RuntimeException;
+
+    /** Column name Updated */
+    public static final String COLUMNNAME_Updated = "Updated";
+
+	/** Get Updated.
+	  * Date this record was updated
+	  */
+	public Timestamp getUpdated();
+
+    /** Column name UpdatedBy */
+    public static final String COLUMNNAME_UpdatedBy = "UpdatedBy";
+
+	/** Get Updated By.
+	  * User who updated this records
+	  */
+	public int getUpdatedBy();
 }

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema_Default
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_AcctSchema_Default 
 {
@@ -75,7 +75,24 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException;
+
+    /** Column name B_InTransit_Acct */
+    public static final String COLUMNNAME_B_InTransit_Acct = "B_InTransit_Acct";
+
+	/** Set Bank In Transit.
+	  * Bank In Transit Account
+	  */
+	public void setB_InTransit_Acct (int B_InTransit_Acct);
+
+	/** Get Bank In Transit.
+	  * Bank In Transit Account
+	  */
+	public int getB_InTransit_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException;
 
     /** Column name B_InterestExp_Acct */
     public static final String COLUMNNAME_B_InterestExp_Acct = "B_InterestExp_Acct";
@@ -90,6 +107,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_InterestExp_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException;
 
     /** Column name B_InterestRev_Acct */
@@ -105,22 +123,8 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_InterestRev_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException;
-
-    /** Column name B_InTransit_Acct */
-    public static final String COLUMNNAME_B_InTransit_Acct = "B_InTransit_Acct";
-
-	/** Set Bank In Transit.
-	  * Bank In Transit Account
-	  */
-	public void setB_InTransit_Acct (int B_InTransit_Acct);
-
-	/** Get Bank In Transit.
-	  * Bank In Transit Account
-	  */
-	public int getB_InTransit_Acct();
-
-	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException;
 
     /** Column name B_PaymentSelect_Acct */
     public static final String COLUMNNAME_B_PaymentSelect_Acct = "B_PaymentSelect_Acct";
@@ -135,6 +139,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_PaymentSelect_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException;
 
     /** Column name B_UnallocatedCash_Acct */
@@ -150,7 +155,88 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getB_UnallocatedCash_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException;
+
+    /** Column name CB_Asset_Acct */
+    public static final String COLUMNNAME_CB_Asset_Acct = "CB_Asset_Acct";
+
+	/** Set Cash Book Asset.
+	  * Cash Book Asset Account
+	  */
+	public void setCB_Asset_Acct (int CB_Asset_Acct);
+
+	/** Get Cash Book Asset.
+	  * Cash Book Asset Account
+	  */
+	public int getCB_Asset_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException;
+
+    /** Column name CB_CashTransfer_Acct */
+    public static final String COLUMNNAME_CB_CashTransfer_Acct = "CB_CashTransfer_Acct";
+
+	/** Set Cash Transfer.
+	  * Cash Transfer Clearing Account
+	  */
+	public void setCB_CashTransfer_Acct (int CB_CashTransfer_Acct);
+
+	/** Get Cash Transfer.
+	  * Cash Transfer Clearing Account
+	  */
+	public int getCB_CashTransfer_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException;
+
+    /** Column name CB_Differences_Acct */
+    public static final String COLUMNNAME_CB_Differences_Acct = "CB_Differences_Acct";
+
+	/** Set Cash Book Differences.
+	  * Cash Book Differences Account
+	  */
+	public void setCB_Differences_Acct (int CB_Differences_Acct);
+
+	/** Get Cash Book Differences.
+	  * Cash Book Differences Account
+	  */
+	public int getCB_Differences_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException;
+
+    /** Column name CB_Expense_Acct */
+    public static final String COLUMNNAME_CB_Expense_Acct = "CB_Expense_Acct";
+
+	/** Set Cash Book Expense.
+	  * Cash Book Expense Account
+	  */
+	public void setCB_Expense_Acct (int CB_Expense_Acct);
+
+	/** Get Cash Book Expense.
+	  * Cash Book Expense Account
+	  */
+	public int getCB_Expense_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException;
+
+    /** Column name CB_Receipt_Acct */
+    public static final String COLUMNNAME_CB_Receipt_Acct = "CB_Receipt_Acct";
+
+	/** Set Cash Book Receipt.
+	  * Cash Book Receipts Account
+	  */
+	public void setCB_Receipt_Acct (int CB_Receipt_Acct);
+
+	/** Get Cash Book Receipt.
+	  * Cash Book Receipts Account
+	  */
+	public int getCB_Receipt_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException;
 
     /** Column name C_AcctSchema_Default_UU */
     public static final String COLUMNNAME_C_AcctSchema_Default_UU = "C_AcctSchema_Default_UU";
@@ -174,97 +260,8 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
-
-    /** Column name CB_Asset_Acct */
-    public static final String COLUMNNAME_CB_Asset_Acct = "CB_Asset_Acct";
-
-	/** Set Cash Book Asset.
-	  * Cash Book Asset Account
-	  */
-	public void setCB_Asset_Acct (int CB_Asset_Acct);
-
-	/** Get Cash Book Asset.
-	  * Cash Book Asset Account
-	  */
-	public int getCB_Asset_Acct();
-
-	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException;
-
-    /** Column name CB_CashTransfer_Acct */
-    public static final String COLUMNNAME_CB_CashTransfer_Acct = "CB_CashTransfer_Acct";
-
-	/** Set Cash Transfer.
-	  * Cash Transfer Clearing Account
-	  */
-	public void setCB_CashTransfer_Acct (int CB_CashTransfer_Acct);
-
-	/** Get Cash Transfer.
-	  * Cash Transfer Clearing Account
-	  */
-	public int getCB_CashTransfer_Acct();
-
-	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException;
-
-    /** Column name CB_Differences_Acct */
-    public static final String COLUMNNAME_CB_Differences_Acct = "CB_Differences_Acct";
-
-	/** Set Cash Book Differences.
-	  * Cash Book Differences Account
-	  */
-	public void setCB_Differences_Acct (int CB_Differences_Acct);
-
-	/** Get Cash Book Differences.
-	  * Cash Book Differences Account
-	  */
-	public int getCB_Differences_Acct();
-
-	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException;
-
-    /** Column name CB_Expense_Acct */
-    public static final String COLUMNNAME_CB_Expense_Acct = "CB_Expense_Acct";
-
-	/** Set Cash Book Expense.
-	  * Cash Book Expense Account
-	  */
-	public void setCB_Expense_Acct (int CB_Expense_Acct);
-
-	/** Get Cash Book Expense.
-	  * Cash Book Expense Account
-	  */
-	public int getCB_Expense_Acct();
-
-	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException;
-
-    /** Column name CB_Receipt_Acct */
-    public static final String COLUMNNAME_CB_Receipt_Acct = "CB_Receipt_Acct";
-
-	/** Set Cash Book Receipt.
-	  * Cash Book Receipts Account
-	  */
-	public void setCB_Receipt_Acct (int CB_Receipt_Acct);
-
-	/** Get Cash Book Receipt.
-	  * Cash Book Receipts Account
-	  */
-	public int getCB_Receipt_Acct();
-
-	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException;
-
-    /** Column name Ch_Expense_Acct */
-    public static final String COLUMNNAME_Ch_Expense_Acct = "Ch_Expense_Acct";
-
-	/** Set Charge Account.
-	  * Charge Account
-	  */
-	public void setCh_Expense_Acct (int Ch_Expense_Acct);
-
-	/** Get Charge Account.
-	  * Charge Account
-	  */
-	public int getCh_Expense_Acct();
-
-	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
 
     /** Column name C_Prepayment_Acct */
     public static final String COLUMNNAME_C_Prepayment_Acct = "C_Prepayment_Acct";
@@ -279,7 +276,56 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getC_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException;
+
+    /** Column name C_Receivable_Acct */
+    public static final String COLUMNNAME_C_Receivable_Acct = "C_Receivable_Acct";
+
+	/** Set Customer Receivables.
+	  * Account for Customer Receivables
+	  */
+	public void setC_Receivable_Acct (int C_Receivable_Acct);
+
+	/** Get Customer Receivables.
+	  * Account for Customer Receivables
+	  */
+	public int getC_Receivable_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException;
+
+    /** Column name C_Receivable_Services_Acct */
+    public static final String COLUMNNAME_C_Receivable_Services_Acct = "C_Receivable_Services_Acct";
+
+	/** Set Receivable Services.
+	  * Customer Accounts Receivables Services Account
+	  */
+	public void setC_Receivable_Services_Acct (int C_Receivable_Services_Acct);
+
+	/** Get Receivable Services.
+	  * Customer Accounts Receivables Services Account
+	  */
+	public int getC_Receivable_Services_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
+
+    /** Column name Ch_Expense_Acct */
+    public static final String COLUMNNAME_Ch_Expense_Acct = "Ch_Expense_Acct";
+
+	/** Set Charge Account.
+	  * Charge Account
+	  */
+	public void setCh_Expense_Acct (int Ch_Expense_Acct);
+
+	/** Get Charge Account.
+	  * Charge Account
+	  */
+	public int getCh_Expense_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -296,36 +342,6 @@ public interface I_C_AcctSchema_Default
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_Receivable_Acct */
-    public static final String COLUMNNAME_C_Receivable_Acct = "C_Receivable_Acct";
-
-	/** Set Customer Receivables.
-	  * Account for Customer Receivables
-	  */
-	public void setC_Receivable_Acct (int C_Receivable_Acct);
-
-	/** Get Customer Receivables.
-	  * Account for Customer Receivables
-	  */
-	public int getC_Receivable_Acct();
-
-	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException;
-
-    /** Column name C_Receivable_Services_Acct */
-    public static final String COLUMNNAME_C_Receivable_Services_Acct = "C_Receivable_Services_Acct";
-
-	/** Set Receivable Services.
-	  * Customer Accounts Receivables Services Account
-	  */
-	public void setC_Receivable_Services_Acct (int C_Receivable_Services_Acct);
-
-	/** Get Receivable Services.
-	  * Customer Accounts Receivables Services Account
-	  */
-	public int getC_Receivable_Services_Acct();
-
-	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -353,142 +369,8 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getNotInvoicedReceipts_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getNotInvoicedReceipts_A() throws RuntimeException;
-
-    /** Column name P_Asset_Acct */
-    public static final String COLUMNNAME_P_Asset_Acct = "P_Asset_Acct";
-
-	/** Set Product Asset.
-	  * Account for Product Asset (Inventory)
-	  */
-	public void setP_Asset_Acct (int P_Asset_Acct);
-
-	/** Get Product Asset.
-	  * Account for Product Asset (Inventory)
-	  */
-	public int getP_Asset_Acct();
-
-	public I_C_ValidCombination getP_Asset_A() throws RuntimeException;
-
-    /** Column name P_AverageCostVariance_Acct */
-    public static final String COLUMNNAME_P_AverageCostVariance_Acct = "P_AverageCostVariance_Acct";
-
-	/** Set Average Cost Variance.
-	  * Average Cost Variance
-	  */
-	public void setP_AverageCostVariance_Acct (int P_AverageCostVariance_Acct);
-
-	/** Get Average Cost Variance.
-	  * Average Cost Variance
-	  */
-	public int getP_AverageCostVariance_Acct();
-
-	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException;
-
-    /** Column name PayDiscount_Exp_Acct */
-    public static final String COLUMNNAME_PayDiscount_Exp_Acct = "PayDiscount_Exp_Acct";
-
-	/** Set Payment Discount Expense.
-	  * Payment Discount Expense Account
-	  */
-	public void setPayDiscount_Exp_Acct (int PayDiscount_Exp_Acct);
-
-	/** Get Payment Discount Expense.
-	  * Payment Discount Expense Account
-	  */
-	public int getPayDiscount_Exp_Acct();
-
-	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException;
-
-    /** Column name PayDiscount_Rev_Acct */
-    public static final String COLUMNNAME_PayDiscount_Rev_Acct = "PayDiscount_Rev_Acct";
-
-	/** Set Payment Discount Revenue.
-	  * Payment Discount Revenue Account
-	  */
-	public void setPayDiscount_Rev_Acct (int PayDiscount_Rev_Acct);
-
-	/** Get Payment Discount Revenue.
-	  * Payment Discount Revenue Account
-	  */
-	public int getPayDiscount_Rev_Acct();
-
-	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException;
-
-    /** Column name P_COGS_Acct */
-    public static final String COLUMNNAME_P_COGS_Acct = "P_COGS_Acct";
-
-	/** Set Product COGS.
-	  * Account for Cost of Goods Sold
-	  */
-	public void setP_COGS_Acct (int P_COGS_Acct);
-
-	/** Get Product COGS.
-	  * Account for Cost of Goods Sold
-	  */
-	public int getP_COGS_Acct();
-
-	public I_C_ValidCombination getP_COGS_A() throws RuntimeException;
-
-    /** Column name P_CostAdjustment_Acct */
-    public static final String COLUMNNAME_P_CostAdjustment_Acct = "P_CostAdjustment_Acct";
-
-	/** Set Cost Adjustment.
-	  * Product Cost Adjustment Account
-	  */
-	public void setP_CostAdjustment_Acct (int P_CostAdjustment_Acct);
-
-	/** Get Cost Adjustment.
-	  * Product Cost Adjustment Account
-	  */
-	public int getP_CostAdjustment_Acct();
-
-	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException;
-
-    /** Column name P_Expense_Acct */
-    public static final String COLUMNNAME_P_Expense_Acct = "P_Expense_Acct";
-
-	/** Set Product Expense.
-	  * Account for Product Expense
-	  */
-	public void setP_Expense_Acct (int P_Expense_Acct);
-
-	/** Get Product Expense.
-	  * Account for Product Expense
-	  */
-	public int getP_Expense_Acct();
-
-	public I_C_ValidCombination getP_Expense_A() throws RuntimeException;
-
-    /** Column name P_InventoryClearing_Acct */
-    public static final String COLUMNNAME_P_InventoryClearing_Acct = "P_InventoryClearing_Acct";
-
-	/** Set Inventory Clearing.
-	  * Product Inventory Clearing Account
-	  */
-	public void setP_InventoryClearing_Acct (int P_InventoryClearing_Acct);
-
-	/** Get Inventory Clearing.
-	  * Product Inventory Clearing Account
-	  */
-	public int getP_InventoryClearing_Acct();
-
-	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException;
-
-    /** Column name P_InvoicePriceVariance_Acct */
-    public static final String COLUMNNAME_P_InvoicePriceVariance_Acct = "P_InvoicePriceVariance_Acct";
-
-	/** Set Invoice Price Variance.
-	  * Difference between Costs and Invoice Price (IPV)
-	  */
-	public void setP_InvoicePriceVariance_Acct (int P_InvoicePriceVariance_Acct);
-
-	/** Get Invoice Price Variance.
-	  * Difference between Costs and Invoice Price (IPV)
-	  */
-	public int getP_InvoicePriceVariance_Acct();
-
-	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException;
 
     /** Column name PJ_Asset_Acct */
     public static final String COLUMNNAME_PJ_Asset_Acct = "PJ_Asset_Acct";
@@ -503,6 +385,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getPJ_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException;
 
     /** Column name PJ_WIP_Acct */
@@ -518,7 +401,120 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getPJ_WIP_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException;
+
+    /** Column name P_Asset_Acct */
+    public static final String COLUMNNAME_P_Asset_Acct = "P_Asset_Acct";
+
+	/** Set Product Asset.
+	  * Account for Product Asset (Inventory)
+	  */
+	public void setP_Asset_Acct (int P_Asset_Acct);
+
+	/** Get Product Asset.
+	  * Account for Product Asset (Inventory)
+	  */
+	public int getP_Asset_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_Asset_A() throws RuntimeException;
+
+    /** Column name P_AverageCostVariance_Acct */
+    public static final String COLUMNNAME_P_AverageCostVariance_Acct = "P_AverageCostVariance_Acct";
+
+	/** Set Average Cost Variance.
+	  * Average Cost Variance
+	  */
+	public void setP_AverageCostVariance_Acct (int P_AverageCostVariance_Acct);
+
+	/** Get Average Cost Variance.
+	  * Average Cost Variance
+	  */
+	public int getP_AverageCostVariance_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException;
+
+    /** Column name P_COGS_Acct */
+    public static final String COLUMNNAME_P_COGS_Acct = "P_COGS_Acct";
+
+	/** Set Product COGS.
+	  * Account for Cost of Goods Sold
+	  */
+	public void setP_COGS_Acct (int P_COGS_Acct);
+
+	/** Get Product COGS.
+	  * Account for Cost of Goods Sold
+	  */
+	public int getP_COGS_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_COGS_A() throws RuntimeException;
+
+    /** Column name P_CostAdjustment_Acct */
+    public static final String COLUMNNAME_P_CostAdjustment_Acct = "P_CostAdjustment_Acct";
+
+	/** Set Cost Adjustment.
+	  * Product Cost Adjustment Account
+	  */
+	public void setP_CostAdjustment_Acct (int P_CostAdjustment_Acct);
+
+	/** Get Cost Adjustment.
+	  * Product Cost Adjustment Account
+	  */
+	public int getP_CostAdjustment_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException;
+
+    /** Column name P_Expense_Acct */
+    public static final String COLUMNNAME_P_Expense_Acct = "P_Expense_Acct";
+
+	/** Set Product Expense.
+	  * Account for Product Expense
+	  */
+	public void setP_Expense_Acct (int P_Expense_Acct);
+
+	/** Get Product Expense.
+	  * Account for Product Expense
+	  */
+	public int getP_Expense_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_Expense_A() throws RuntimeException;
+
+    /** Column name P_InventoryClearing_Acct */
+    public static final String COLUMNNAME_P_InventoryClearing_Acct = "P_InventoryClearing_Acct";
+
+	/** Set Inventory Clearing.
+	  * Product Inventory Clearing Account
+	  */
+	public void setP_InventoryClearing_Acct (int P_InventoryClearing_Acct);
+
+	/** Get Inventory Clearing.
+	  * Product Inventory Clearing Account
+	  */
+	public int getP_InventoryClearing_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException;
+
+    /** Column name P_InvoicePriceVariance_Acct */
+    public static final String COLUMNNAME_P_InvoicePriceVariance_Acct = "P_InvoicePriceVariance_Acct";
+
+	/** Set Invoice Price Variance.
+	  * Difference between Costs and Invoice Price (IPV)
+	  */
+	public void setP_InvoicePriceVariance_Acct (int P_InvoicePriceVariance_Acct);
+
+	/** Get Invoice Price Variance.
+	  * Difference between Costs and Invoice Price (IPV)
+	  */
+	public int getP_InvoicePriceVariance_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException;
 
     /** Column name P_LandedCostClearing_Acct */
     public static final String COLUMNNAME_P_LandedCostClearing_Acct = "P_LandedCostClearing_Acct";
@@ -533,6 +529,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_LandedCostClearing_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException;
 
     /** Column name P_PurchasePriceVariance_Acct */
@@ -548,6 +545,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_PurchasePriceVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_PurchasePriceVariance_A() throws RuntimeException;
 
     /** Column name P_RateVariance_Acct */
@@ -563,6 +561,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_RateVariance_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_RateVariance_A() throws RuntimeException;
 
     /** Column name P_Revenue_Acct */
@@ -578,16 +577,8 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException;
-
-    /** Column name Processing */
-    public static final String COLUMNNAME_Processing = "Processing";
-
-	/** Set Process Now	  */
-	public void setProcessing (boolean Processing);
-
-	/** Get Process Now	  */
-	public boolean isProcessing();
 
     /** Column name P_TradeDiscountGrant_Acct */
     public static final String COLUMNNAME_P_TradeDiscountGrant_Acct = "P_TradeDiscountGrant_Acct";
@@ -602,6 +593,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_TradeDiscountGrant_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException;
 
     /** Column name P_TradeDiscountRec_Acct */
@@ -617,7 +609,49 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getP_TradeDiscountRec_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException;
+
+    /** Column name PayDiscount_Exp_Acct */
+    public static final String COLUMNNAME_PayDiscount_Exp_Acct = "PayDiscount_Exp_Acct";
+
+	/** Set Payment Discount Expense.
+	  * Payment Discount Expense Account
+	  */
+	public void setPayDiscount_Exp_Acct (int PayDiscount_Exp_Acct);
+
+	/** Get Payment Discount Expense.
+	  * Payment Discount Expense Account
+	  */
+	public int getPayDiscount_Exp_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException;
+
+    /** Column name PayDiscount_Rev_Acct */
+    public static final String COLUMNNAME_PayDiscount_Rev_Acct = "PayDiscount_Rev_Acct";
+
+	/** Set Payment Discount Revenue.
+	  * Payment Discount Revenue Account
+	  */
+	public void setPayDiscount_Rev_Acct (int PayDiscount_Rev_Acct);
+
+	/** Get Payment Discount Revenue.
+	  * Payment Discount Revenue Account
+	  */
+	public int getPayDiscount_Rev_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException;
+
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
+
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
 
     /** Column name RealizedGain_Acct */
     public static final String COLUMNNAME_RealizedGain_Acct = "RealizedGain_Acct";
@@ -632,6 +666,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getRealizedGain_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getRealizedGain_A() throws RuntimeException;
 
     /** Column name RealizedLoss_Acct */
@@ -647,6 +682,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getRealizedLoss_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getRealizedLoss_A() throws RuntimeException;
 
     /** Column name T_Credit_Acct */
@@ -662,6 +698,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getT_Credit_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Credit_A() throws RuntimeException;
 
     /** Column name T_Due_Acct */
@@ -677,6 +714,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getT_Due_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Due_A() throws RuntimeException;
 
     /** Column name T_Expense_Acct */
@@ -692,6 +730,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getT_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Expense_A() throws RuntimeException;
 
     /** Column name UnEarnedRevenue_Acct */
@@ -707,6 +746,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getUnEarnedRevenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException;
 
     /** Column name UnrealizedGain_Acct */
@@ -722,6 +762,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getUnrealizedGain_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnrealizedGain_A() throws RuntimeException;
 
     /** Column name UnrealizedLoss_Acct */
@@ -737,6 +778,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getUnrealizedLoss_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnrealizedLoss_A() throws RuntimeException;
 
     /** Column name Updated */
@@ -768,6 +810,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getV_Liability_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_A() throws RuntimeException;
 
     /** Column name V_Liability_Services_Acct */
@@ -783,6 +826,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getV_Liability_Services_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_Services_A() throws RuntimeException;
 
     /** Column name V_Prepayment_Acct */
@@ -798,6 +842,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getV_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Prepayment_A() throws RuntimeException;
 
     /** Column name W_Differences_Acct */
@@ -813,6 +858,7 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getW_Differences_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getW_Differences_A() throws RuntimeException;
 
     /** Column name WriteOff_Acct */
@@ -828,5 +874,6 @@ public interface I_C_AcctSchema_Default
 	  */
 	public int getWriteOff_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getWriteOff_A() throws RuntimeException;
 }

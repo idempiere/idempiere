@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Tax
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Tax")
 public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Tax (Properties ctx, int C_Tax_ID, String trxName)
@@ -156,6 +156,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_ID)
@@ -183,6 +184,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CountryGroup getC_CountryGroupFrom() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_ID)
@@ -210,6 +212,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CountryGroup getC_CountryGroupTo() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CountryGroup)MTable.get(getCtx(), org.compiere.model.I_C_CountryGroup.Table_ID)
@@ -259,6 +262,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
@@ -287,6 +291,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
@@ -315,28 +320,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Tax.
-		@param C_Tax_ID Tax identifier
-	*/
-	public void setC_Tax_ID (int C_Tax_ID)
-	{
-		if (C_Tax_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
-	}
-
-	/** Get Tax.
-		@return Tax identifier
-	  */
-	public int getC_Tax_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxProvider)MTable.get(getCtx(), org.compiere.model.I_C_TaxProvider.Table_ID)
@@ -359,6 +343,28 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 	public int getC_TaxProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxProvider_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Tax.
+		@param C_Tax_ID Tax identifier
+	*/
+	public void setC_Tax_ID (int C_Tax_ID)
+	{
+		if (C_Tax_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
+	}
+
+	/** Get Tax.
+		@return Tax identifier
+	  */
+	public int getC_Tax_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -534,6 +540,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getParent_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
@@ -690,6 +697,7 @@ public class X_C_Tax extends PO implements I_C_Tax, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Region getTo_Region() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)

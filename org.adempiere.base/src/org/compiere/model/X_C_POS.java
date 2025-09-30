@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POS
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_POS")
 public class X_C_POS extends PO implements I_C_POS, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_POS (Properties ctx, int C_POS_ID, String trxName)
@@ -144,49 +144,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Cash Drawer.
-		@param CashDrawer Cash Drawer
-	*/
-	public void setCashDrawer (String CashDrawer)
-	{
-		set_Value (COLUMNNAME_CashDrawer, CashDrawer);
-	}
-
-	/** Get Cash Drawer.
-		@return Cash Drawer	  */
-	public String getCashDrawer()
-	{
-		return (String)get_Value(COLUMNNAME_CashDrawer);
-	}
-
-	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
-			.getPO(getC_BankAccount_ID(), get_TrxName());
-	}
-
-	/** Set Bank Account.
-		@param C_BankAccount_ID Account at the Bank
-	*/
-	public void setC_BankAccount_ID (int C_BankAccount_ID)
-	{
-		if (C_BankAccount_ID < 1)
-			set_Value (COLUMNNAME_C_BankAccount_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
-	}
-
-	/** Get Bank Account.
-		@return Account at the Bank
-	  */
-	public int getC_BankAccount_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -215,6 +173,36 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
+
+	/** Set Bank Account.
+		@param C_BankAccount_ID Account at the Bank
+	*/
+	public void setC_BankAccount_ID (int C_BankAccount_ID)
+	{
+		if (C_BankAccount_ID < 1)
+			set_Value (COLUMNNAME_C_BankAccount_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
+	}
+
+	/** Get Bank Account.
+		@return Account at the Bank
+	  */
+	public int getC_BankAccount_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)
@@ -243,6 +231,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -271,28 +260,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set POS Terminal.
-		@param C_POS_ID Point of Sales Terminal
-	*/
-	public void setC_POS_ID (int C_POS_ID)
-	{
-		if (C_POS_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_POS_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_POS_ID, Integer.valueOf(C_POS_ID));
-	}
-
-	/** Get POS Terminal.
-		@return Point of Sales Terminal
-	  */
-	public int getC_POS_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_POS_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_ID)
@@ -321,6 +289,28 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set POS Terminal.
+		@param C_POS_ID Point of Sales Terminal
+	*/
+	public void setC_POS_ID (int C_POS_ID)
+	{
+		if (C_POS_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_POS_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_POS_ID, Integer.valueOf(C_POS_ID));
+	}
+
+	/** Get POS Terminal.
+		@return Point of Sales Terminal
+	  */
+	public int getC_POS_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_POS_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set C_POS_UU.
 		@param C_POS_UU C_POS_UU
 	*/
@@ -334,6 +324,21 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 	public String getC_POS_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_POS_UU);
+	}
+
+	/** Set Cash Drawer.
+		@param CashDrawer Cash Drawer
+	*/
+	public void setCashDrawer (String CashDrawer)
+	{
+		set_Value (COLUMNNAME_CashDrawer, CashDrawer);
+	}
+
+	/** Get Cash Drawer.
+		@return Cash Drawer	  */
+	public String getCashDrawer()
+	{
+		return (String)get_Value(COLUMNNAME_CashDrawer);
 	}
 
 	/** Set Description.
@@ -391,6 +396,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
@@ -419,6 +425,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -471,6 +478,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getOSK_KeyLayout() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_ID)
@@ -499,6 +507,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getOSNP_KeyLayout() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_ID)
@@ -543,6 +552,7 @@ public class X_C_POS extends PO implements I_C_POS, I_Persistent
 		return (String)get_Value(COLUMNNAME_PrinterName);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

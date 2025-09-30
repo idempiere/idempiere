@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for MFA_Registration
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_MFA_Registration 
 {
@@ -75,6 +75,7 @@ public interface I_MFA_Registration
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
@@ -190,39 +191,6 @@ public interface I_MFA_Registration
 	/** Get Last MFA Secret	  */
 	public String getMFALastSecret();
 
-    /** Column name MFA_Method_ID */
-    public static final String COLUMNNAME_MFA_Method_ID = "MFA_Method_ID";
-
-	/** Set MFA Method.
-	  * Multi-factor Authentication Method
-	  */
-	public void setMFA_Method_ID (int MFA_Method_ID);
-
-	/** Get MFA Method.
-	  * Multi-factor Authentication Method
-	  */
-	public int getMFA_Method_ID();
-
-	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException;
-
-    /** Column name MFA_Registration_ID */
-    public static final String COLUMNNAME_MFA_Registration_ID = "MFA_Registration_ID";
-
-	/** Set MFA Registration	  */
-	public void setMFA_Registration_ID (int MFA_Registration_ID);
-
-	/** Get MFA Registration	  */
-	public int getMFA_Registration_ID();
-
-    /** Column name MFA_Registration_UU */
-    public static final String COLUMNNAME_MFA_Registration_UU = "MFA_Registration_UU";
-
-	/** Set MFA_Registration_UU	  */
-	public void setMFA_Registration_UU (String MFA_Registration_UU);
-
-	/** Get MFA_Registration_UU	  */
-	public String getMFA_Registration_UU();
-
     /** Column name MFASecret */
     public static final String COLUMNNAME_MFASecret = "MFASecret";
 
@@ -253,6 +221,40 @@ public interface I_MFA_Registration
 
 	/** Get Validated at	  */
 	public Timestamp getMFAValidatedAt();
+
+    /** Column name MFA_Method_ID */
+    public static final String COLUMNNAME_MFA_Method_ID = "MFA_Method_ID";
+
+	/** Set MFA Method.
+	  * Multi-factor Authentication Method
+	  */
+	public void setMFA_Method_ID (int MFA_Method_ID);
+
+	/** Get MFA Method.
+	  * Multi-factor Authentication Method
+	  */
+	public int getMFA_Method_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException;
+
+    /** Column name MFA_Registration_ID */
+    public static final String COLUMNNAME_MFA_Registration_ID = "MFA_Registration_ID";
+
+	/** Set MFA Registration	  */
+	public void setMFA_Registration_ID (int MFA_Registration_ID);
+
+	/** Get MFA Registration	  */
+	public int getMFA_Registration_ID();
+
+    /** Column name MFA_Registration_UU */
+    public static final String COLUMNNAME_MFA_Registration_UU = "MFA_Registration_UU";
+
+	/** Set MFA_Registration_UU	  */
+	public void setMFA_Registration_UU (String MFA_Registration_UU);
+
+	/** Get MFA_Registration_UU	  */
+	public String getMFA_Registration_UU();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

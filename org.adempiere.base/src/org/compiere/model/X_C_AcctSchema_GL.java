@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for C_AcctSchema_GL
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema_GL")
 public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_GL (Properties ctx, int C_AcctSchema_GL_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
       /** if (C_AcctSchema_GL_ID == 0)
         {
 			setC_AcctSchema_ID (0);
-			setCommitmentOffset_Acct (0);
 			setCommitmentOffsetSales_Acct (0);
+			setCommitmentOffset_Acct (0);
 			setIntercompanyDueFrom_Acct (0);
 			setIntercompanyDueTo_Acct (0);
 			setPPVOffset_Acct (0);
@@ -58,8 +58,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
       /** if (C_AcctSchema_GL_ID == 0)
         {
 			setC_AcctSchema_ID (0);
-			setCommitmentOffset_Acct (0);
 			setCommitmentOffsetSales_Acct (0);
+			setCommitmentOffset_Acct (0);
 			setIntercompanyDueFrom_Acct (0);
 			setIntercompanyDueTo_Acct (0);
 			setPPVOffset_Acct (0);
@@ -76,8 +76,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
       /** if (C_AcctSchema_GL_UU == null)
         {
 			setC_AcctSchema_ID (0);
-			setCommitmentOffset_Acct (0);
 			setCommitmentOffsetSales_Acct (0);
+			setCommitmentOffset_Acct (0);
 			setIntercompanyDueFrom_Acct (0);
 			setIntercompanyDueTo_Acct (0);
 			setPPVOffset_Acct (0);
@@ -94,8 +94,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
       /** if (C_AcctSchema_GL_UU == null)
         {
 			setC_AcctSchema_ID (0);
-			setCommitmentOffset_Acct (0);
 			setCommitmentOffsetSales_Acct (0);
+			setCommitmentOffset_Acct (0);
 			setIntercompanyDueFrom_Acct (0);
 			setIntercompanyDueTo_Acct (0);
 			setPPVOffset_Acct (0);
@@ -148,6 +148,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return (String)get_Value(COLUMNNAME_C_AcctSchema_GL_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -184,31 +185,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
         return new ValueNamePair(get_UUID(), String.valueOf(getC_AcctSchema_ID()));
     }
 
-	public I_C_ValidCombination getCommitmentOffset_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCommitmentOffset_Acct(), get_TrxName());
-	}
-
-	/** Set Commitment Offset.
-		@param CommitmentOffset_Acct Budgetary Commitment Offset Account
-	*/
-	public void setCommitmentOffset_Acct (int CommitmentOffset_Acct)
-	{
-		set_Value (COLUMNNAME_CommitmentOffset_Acct, Integer.valueOf(CommitmentOffset_Acct));
-	}
-
-	/** Get Commitment Offset.
-		@return Budgetary Commitment Offset Account
-	  */
-	public int getCommitmentOffset_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CommitmentOffset_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCommitmentOffsetSales_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -234,6 +211,33 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCommitmentOffset_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCommitmentOffset_Acct(), get_TrxName());
+	}
+
+	/** Set Commitment Offset.
+		@param CommitmentOffset_Acct Budgetary Commitment Offset Account
+	*/
+	public void setCommitmentOffset_Acct (int CommitmentOffset_Acct)
+	{
+		set_Value (COLUMNNAME_CommitmentOffset_Acct, Integer.valueOf(CommitmentOffset_Acct));
+	}
+
+	/** Get Commitment Offset.
+		@return Budgetary Commitment Offset Account
+	  */
+	public int getCommitmentOffset_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CommitmentOffset_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCurrencyBalancing_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -259,6 +263,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueFrom_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -284,6 +289,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getIntercompanyDueTo_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -309,6 +315,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPPVOffset_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -334,6 +341,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getSuspenseBalancing_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

@@ -30,6 +30,8 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.compiere.model.AttachmentData;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MImage;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -52,25 +54,21 @@ public class ManageImageCache {
 	 */
 	private final CCache<String, Image> imageCache = new CCache<String, Image>(null, "WindowImageCache", 50, 0, false);
 	
-	private static ManageImageCache instance;
+	private static final ManageImageCache instance = new ManageImageCache();
+
+	private ManageImageCache(){
+	}
 	
 	/**
 	 * Get singleton instance
 	 * @return ManageImageCache instance
 	 */
 	public static ManageImageCache instance(){
-		if (instance == null){
-			synchronized (ManageImageCache.class){
-				if (instance == null)
-					instance = new ManageImageCache();
-			}
-		}
-		
 		return instance;
 	}
 	
 	/**
-	 * 	nvestigate path of MImage, if path is internal return internal url, otherwise return null.
+	 * Investigate path of MImage, if path is internal return internal url, otherwise return null.
 	 * @param image
 	 * @return URL of image or null
 	 */
@@ -86,7 +84,7 @@ public class ManageImageCache {
 	 * @return URL of image or null
 	 */
 	public static URL getImageInternalUrl (String url){
-		if (url == null || url.trim().length() == 0 || url.indexOf("://") > 0)
+		if (url == null || url.trim().length() == 0 || url.indexOf("://") > 0 || MAttachment.isAttachmentURLPath(url))
 			return null;
 		
 		URL urlRsource = Core.getResourceFinder().getResource(url);
@@ -235,15 +233,28 @@ public class ManageImageCache {
 	 * @param imagePath
 	 */
 	protected void loadExtend (String imagePath){
-		byte[] data = loadImageData(imagePath);
 		AImage aImage = null;
-		// when can't load image (due to incorrect url or disconnect or any exception), just set image as null
-		if (data != null)
+		if (MAttachment.isAttachmentURLPath(imagePath))
+		{
+			AttachmentData data = MAttachment.getDataFromAttachmentURLPath(imagePath);
+			if (data != null && data.data() != null && data.data().length > 0)
+			{
+				try {
+					aImage = new AImage(data.name(), data.data());
+				} catch (IOException e) {
+					aImage = null;
+				}
+			}
+		}
+		else
+		{
+			// when can't load image (due to incorrect url or disconnect or any exception), just set image as null
 			try {
-				aImage = new AImage(imagePath, data);
+				aImage = new AImage(new URL(imagePath));
 			} catch (IOException e) {
 				aImage = null;
 			}
+		}
 		
 		synchronized (imageCache) {
 			imageCache.put(imagePath, aImage);

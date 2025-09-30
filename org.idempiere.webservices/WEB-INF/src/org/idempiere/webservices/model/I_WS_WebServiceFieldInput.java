@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebServiceFieldInput
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_WS_WebServiceFieldInput 
@@ -64,6 +64,7 @@ public interface I_WS_WebServiceFieldInput
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -92,6 +93,7 @@ public interface I_WS_WebServiceFieldInput
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -107,6 +109,7 @@ public interface I_WS_WebServiceFieldInput
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name ColumnName */
@@ -229,5 +232,6 @@ public interface I_WS_WebServiceFieldInput
 	/** Get Web Service Type	  */
 	public int getWS_WebServiceType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException;
 }

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Cycle
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Cycle")
 public class X_C_Cycle extends PO implements I_C_Cycle, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_Cycle extends PO implements I_C_Cycle, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Cycle (Properties ctx, int C_Cycle_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_C_Cycle extends PO implements I_C_Cycle, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)

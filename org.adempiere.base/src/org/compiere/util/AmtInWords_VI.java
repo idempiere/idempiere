@@ -80,6 +80,7 @@ public class AmtInWords_VI implements AmtInWords
 		" triệu ",
 		" tỉ "
 	};
+	
 	/** numbers to 99				*/
 	private static final String[]	numNames	= { 
 		"", 
@@ -188,8 +189,7 @@ public class AmtInWords_VI implements AmtInWords
 	 * 	Convert Less Than One Thousand
 	 *	@param number
 	 *	@return amt
-	 */
-	
+	 */	
 	private String convertLessThanOneThousand (int number)
 	{
 		String soFar = "";
@@ -226,7 +226,7 @@ public class AmtInWords_VI implements AmtInWords
 		String soFar = "";
 		
 		int place = 0;
-	do
+		do
 		{
 			long n = number % 1000;
 			if (n != 0)
@@ -254,14 +254,14 @@ public class AmtInWords_VI implements AmtInWords
 		}
 		return (prefix + soFar).trim ();
 	}	//	convert
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)
@@ -279,7 +279,7 @@ public class AmtInWords_VI implements AmtInWords
 			if (period != -1) //like 1.000.000,89
 			{
 				decamt = amount.substring(comma+1,amount.length());
-				amount = amount.replaceAll ("\\.", "");
+				amount = amount.replace(".", "");
 				newpos = amount.lastIndexOf (',')+1;
 			}
 			else if ((amount.length()-comma-1) <=2 )
@@ -289,22 +289,22 @@ public class AmtInWords_VI implements AmtInWords
 				}
 				else	//like 1,000,000
 				{	decamt = "";
-					amount = amount.replaceAll (",", "");
+					amount = amount.replace(",", "");
 					newpos = 0;
 				}
 		}
 		if (comma < period) //like 1,000.09 or 1.000.000 or 120.355 (a hundred and twenty 355/100)
 		{	
-			if ((comma !=-1) | (numberOfPeriods ==1))//like 1,000.09
+			if ((comma !=-1) || (numberOfPeriods ==1))//like 1,000.09
 			{
 				decamt = amount.substring(period+1,amount.length());
-				amount = amount.replaceAll (",", "");
+				amount = amount.replace(",", "");
 				newpos = amount.lastIndexOf ('.')+1;
 			} 
 			else //like 1.000.000
 			{
 				decamt = "";
-				amount = amount.replaceAll ("\\.", "");
+				amount = amount.replace(".", "");
 				newpos = 0;
 			}
 		}
@@ -326,7 +326,7 @@ public class AmtInWords_VI implements AmtInWords
 			dollars = Long.parseLong(amount.substring(0,amount.length()));
 			sb.append (convert(dollars));
 		}
-	return sb.toString ().replaceAll("  ", " ").replaceAll("linh nghìn", "nghìn").replaceAll("linh triệu","triệu").replaceAll("linh tỉ","tỉ");
+		return sb.toString ().replace("  ", " ").replaceAll("linh nghìn", "nghìn").replace("linh triệu","triệu").replace("linh tỉ","tỉ");
 	}	//	getAmtInWords
 
 	/**
@@ -352,7 +352,6 @@ public class AmtInWords_VI implements AmtInWords
 	public static void main (String[] args)
 	{
 		AmtInWords_VI aiw = new AmtInWords_VI();
-	//	aiw.print (".23");	Error
 		aiw.print ("0.23");
 		aiw.print ("1.23");
 		aiw.print ("12,345");

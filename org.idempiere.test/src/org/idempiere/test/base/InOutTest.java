@@ -27,16 +27,24 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
@@ -54,6 +62,8 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
+import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BP_ShippingAcct;
 import org.compiere.model.X_M_ShippingProcessorCfg;
@@ -66,8 +76,9 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
+import org.mockito.MockedStatic;
 
 /**
  * @author etantg
@@ -78,19 +89,18 @@ public class InOutTest extends AbstractTestCase {
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
 	public void testMatReceiptPosting() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		int Spot_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot;
 		int Company_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Purchase AUD " + System.currentTimeMillis());
 		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
@@ -108,17 +118,22 @@ public class InOutTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal audToUsdCompany = new BigDecimal(0.676234);
-		MConversionRate crUsdCompany = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToUsdCompany);
 		BigDecimal audToUsdSpot = new BigDecimal(0.77);
-		MConversionRate crUsdSpot = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Spot_ConversionType_ID, currentDate, audToUsdSpot);
 		
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal audToEuroCompany = new BigDecimal(0.746234);
-		MConversionRate crEurCompany = createConversionRate(australianDollar.getC_Currency_ID(), euro.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToEuroCompany);
 		BigDecimal audToEuroSpot = new BigDecimal(0.64);
-		MConversionRate crEurSpot = createConversionRate(australianDollar.getC_Currency_ID(), euro.getC_Currency_ID(), Spot_ConversionType_ID, currentDate, audToEuroSpot);
 
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, australianDollar, usd, Company_ConversionType_ID, currentDate, audToUsdCompany);
+			mockGetRate(conversionRateMock, australianDollar, usd, Spot_ConversionType_ID, currentDate, audToUsdSpot);
+			mockGetRate(conversionRateMock, australianDollar, euro, Company_ConversionType_ID, currentDate, audToEuroCompany);
+			mockGetRate(conversionRateMock, australianDollar, euro, Spot_ConversionType_ID, currentDate, audToEuroSpot);
+			
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), Company_ConversionType_ID);			
 			BigDecimal qtyOrdered = new BigDecimal(500);
 			MOrderLine orderLine = createOrderLine(order, 10, product, qtyOrdered, priceInAud);
@@ -142,23 +157,14 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (receiptLine.get_ID() == fa.getLine_ID()) {
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtSourceCr().compareTo(acctSource) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
-							assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getC_Currency().getStdPrecision(), false, receiptLine.get_ID()));
+				assertFactAcctEntries(factAccts, expected);
 			}
 			
 			order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), Spot_ConversionType_ID);
@@ -181,51 +187,30 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (receiptLine.get_ID() == fa.getLine_ID()) {							
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
 									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtSourceCr().compareTo(acctSource) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
-							assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> factAccts = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getC_Currency().getStdPrecision(), false, receiptLine.get_ID()));
+				assertFactAcctEntries(factAccts, expected);
 			}
-		} finally {
-			rollback();
-			
-			deleteConversionRate(crUsdCompany);
-			deleteConversionRate(crUsdSpot);
-			deleteConversionRate(crEurCompany);
-			deleteConversionRate(crEurSpot);
-			
-			pp.deleteEx(true);
-			plv.deleteEx(true);
-			priceList.deleteEx(true);						
 		}		
 	}
 	
 	@Test
-	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
 	public void testMatShipmentPosting() {
 		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
-		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		
 		int Company_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
 		priceList.setName("Purchase AUD " + System.currentTimeMillis());
 		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
@@ -243,12 +228,17 @@ public class InOutTest extends AbstractTestCase {
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal audToUsdCompany = new BigDecimal(0.676234);
-		MConversionRate crUsdCompany = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToUsdCompany);
 		
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal audToEuroCompany = new BigDecimal(0.746234);
-		MConversionRate crEurCompany = createConversionRate(australianDollar.getC_Currency_ID(), euro.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToEuroCompany);
-		try {
+		try (MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			mockGetRate(conversionRateMock, australianDollar, usd, Company_ConversionType_ID, currentDate, audToUsdCompany);
+			mockGetRate(conversionRateMock, australianDollar, euro, Company_ConversionType_ID, currentDate, audToEuroCompany);
+			
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
 			MOrder order = createPurchaseOrder(bpartner, currentDate, priceList.getM_PriceList_ID(), Company_ConversionType_ID);			
 			BigDecimal qtyOrdered = BigDecimal.TEN;
 			MOrderLine orderLine = createOrderLine(order, 10, product, qtyOrdered, priceInAud);
@@ -272,23 +262,14 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (receiptLine.get_ID() == fa.getLine_ID()) {
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtSourceCr().compareTo(acctSource) == 0, fa.getAmtSourceCr().toPlainString() + " != " + acctSource.toPlainString());
-							assertTrue(fa.getAmtAcctCr().compareTo(acctAmount) == 0, fa.getAmtAcctCr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> fas = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, false, receiptLine.get_ID()));
+				assertFactAcctEntries(fas, expected);
 			}
 			
 			MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
@@ -342,46 +323,16 @@ public class InOutTest extends AbstractTestCase {
 				doc.setC_BPartner_ID(delivery.getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
-				String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-						+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + delivery.get_ID()
-						+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + as.getC_AcctSchema_ID();
-				int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
-				for (int id : ids) {
-					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-						if (deliveryLine.get_ID() == fa.getLine_ID()) {
-							BigDecimal acctSource = orderLine.getPriceActual().multiply(deliveryLine.getMovementQty())
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							BigDecimal acctAmount = acctSource.multiply(rate)
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
-							assertTrue(fa.getAmtAcctDr().compareTo(acctAmount) == 0, fa.getAmtAcctDr().toPlainString() + " != " + acctAmount.toPlainString());							
-						}
-					}
-				}
+				BigDecimal acctSource = orderLine.getPriceActual().multiply(deliveryLine.getMovementQty())
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				BigDecimal acctAmount = acctSource.multiply(rate)
+						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, delivery.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+				List<MFactAcct> fas = query.list();
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, null, 2, true, deliveryLine.get_ID()));
+				assertFactAcctEntries(fas, expected);
 			}
-		} finally {
-			rollback();
-			deleteConversionRate(crUsdCompany);
-			deleteConversionRate(crEurCompany);
-			
-			pp.deleteEx(true);
-			plv.deleteEx(true);
-			priceList.deleteEx(true);						
 		}		
-	}
-	
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate) {
-		return createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, true);
-	}
-	
-	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
-			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
-	}
-	
-	private void deleteConversionRate(MConversionRate cr) {
-		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MOrder createPurchaseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID)
@@ -417,7 +368,10 @@ public class InOutTest extends AbstractTestCase {
 		orderLine.setLine(line);
 		orderLine.setProduct(product);
 		orderLine.setQty(qty);
-		orderLine.setPrice(price);
+		if (price != null)
+			orderLine.setPrice(price);
+		else
+			orderLine.setPrice();
 		orderLine.saveEx();
 		return orderLine;
 	}
@@ -458,6 +412,15 @@ public class InOutTest extends AbstractTestCase {
 	
 	private void postDocument(PO po) {
 		if (!po.get_ValueAsBoolean("Posted")) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), po.getAD_Client_ID(), po.get_Table_ID(), po.get_ID(), false, getTrxName());
+			assertTrue(error == null, error);
+		}
+		po.load(getTrxName());
+		assertTrue(po.get_ValueAsBoolean("Posted"));
+	}
+	
+	private void repostDocument(PO po) {
+		if (po.get_ValueAsBoolean("Posted")) {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), po.getAD_Client_ID(), po.get_Table_ID(), po.get_ID(), false, getTrxName());
 			assertTrue(error == null, error);
 		}
@@ -561,5 +524,95 @@ public class InOutTest extends AbstractTestCase {
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Prepare);
 		assertTrue(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Invalid, receipt.getDocStatus());
+	}
+	
+	@Test
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5503
+	 */
+	public void testShipmentRePosting() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		
+		// make sure there's cost for AZALEA_BUSH
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id);
+		MOrder purchaseOrder = createPurchaseOrder(vendor, currentDate, DictionaryIDs.M_PriceList.PURCHASE.id, DictionaryIDs.C_ConversionType.SPOT.id);
+		MOrderLine poLine = createOrderLine(purchaseOrder, 10, product, new BigDecimal("1"), null);
+		completeDocument(purchaseOrder);
+		MInOut receipt = createMMReceipt(purchaseOrder, currentDate);
+		createInOutLine(receipt, poLine, new BigDecimal("1"));
+		completeDocument(receipt);
+		
+		MOrder order = createSalseOrder(bpartner, currentDate, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.SPOT.id);
+		int plv = MPriceList.get(DictionaryIDs.M_PriceList.STANDARD.id).getPriceListVersion(currentDate).get_ID();
+		BigDecimal price = MProductPrice.get(Env.getCtx(), plv, product.get_ID(), getTrxName()).getPriceStd();
+		MOrderLine orderLine = createOrderLine(order, 10, product, new BigDecimal("1"), price);
+		completeDocument(order);
+		
+		MInOut delivery = createShipment(order, currentDate);
+					
+		MInOutLine deliveryLine = createInOutLine(delivery, orderLine, new BigDecimal("1"));
+		completeDocument(delivery);
+		postDocument(delivery);
+		
+		ProductCost pc = new ProductCost(Env.getCtx(), deliveryLine.getM_Product_ID(), deliveryLine.getM_AttributeSetInstance_ID(), getTrxName());
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		MAccount cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+		MAccount asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			
+		Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, delivery.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+		List<MFactAcct> fas = query.list();
+		assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
+		boolean cogsFound = false;
+		boolean assetFound = false;
+		for (MFactAcct fa : fas) {
+			if (cogs.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
+					assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR COGS");
+				}
+				cogsFound = true;
+			} else if (asset.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+					assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+				}
+				assetFound = true;
+			}
+		}
+		assertTrue(cogsFound, "No COGS posting found");
+		assertTrue(assetFound, "No Product Asset posting found");
+		
+		//re-post
+		repostDocument(delivery);
+		fas = query.list();
+		cogsFound = false;
+		assetFound = false;
+		for (MFactAcct fa : fas) {
+			if (cogs.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
+					assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR COGS");
+				}
+				cogsFound = true;
+			} else if (asset.getAccount_ID() == fa.getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getLine_ID()) {
+					assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+					assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+				}
+				assetFound = true;
+			}
+		}
+		assertTrue(cogsFound, "No COGS posting found");
+		assertTrue(assetFound, "No Product Asset posting found");
+	}
+	
+	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
+			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
+		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
+				conversionDate, multiplyRate, getAD_Client_ID(), getAD_Org_ID());
+		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
+				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
 	}
 }

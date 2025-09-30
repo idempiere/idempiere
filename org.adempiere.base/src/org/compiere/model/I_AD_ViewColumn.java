@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ViewColumn
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_ViewColumn 
 {
@@ -89,6 +89,7 @@ public interface I_AD_ViewColumn
 	/** Get Database View Component	  */
 	public int getAD_ViewComponent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ViewComponent getAD_ViewComponent() throws RuntimeException;
 
     /** Column name ColumnName */

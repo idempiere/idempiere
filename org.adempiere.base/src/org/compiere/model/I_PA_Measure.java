@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Measure
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_Measure 
 {
@@ -62,19 +62,6 @@ public interface I_PA_Measure
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name CalculationClass */
-    public static final String COLUMNNAME_CalculationClass = "CalculationClass";
-
-	/** Set Calculation Class.
-	  * Java Class for calculation, implementing Interface Measure
-	  */
-	public void setCalculationClass (String CalculationClass);
-
-	/** Get Calculation Class.
-	  * Java Class for calculation, implementing Interface Measure
-	  */
-	public String getCalculationClass();
-
     /** Column name C_ProjectType_ID */
     public static final String COLUMNNAME_C_ProjectType_ID = "C_ProjectType_ID";
 
@@ -88,7 +75,21 @@ public interface I_PA_Measure
 	  */
 	public int getC_ProjectType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectType getC_ProjectType() throws RuntimeException;
+
+    /** Column name CalculationClass */
+    public static final String COLUMNNAME_CalculationClass = "CalculationClass";
+
+	/** Set Calculation Class.
+	  * Java Class for calculation, implementing Interface Measure
+	  */
+	public void setCalculationClass (String CalculationClass);
+
+	/** Get Calculation Class.
+	  * Java Class for calculation, implementing Interface Measure
+	  */
+	public String getCalculationClass();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -210,6 +211,7 @@ public interface I_PA_Measure
 	  */
 	public int getPA_Benchmark_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Benchmark getPA_Benchmark() throws RuntimeException;
 
     /** Column name PA_Hierarchy_ID */
@@ -225,6 +227,7 @@ public interface I_PA_Measure
 	  */
 	public int getPA_Hierarchy_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Hierarchy getPA_Hierarchy() throws RuntimeException;
 
     /** Column name PA_MeasureCalc_ID */
@@ -240,6 +243,7 @@ public interface I_PA_Measure
 	  */
 	public int getPA_MeasureCalc_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_MeasureCalc getPA_MeasureCalc() throws RuntimeException;
 
     /** Column name PA_Measure_ID */
@@ -277,6 +281,7 @@ public interface I_PA_Measure
 	  */
 	public int getPA_Ratio_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Ratio getPA_Ratio() throws RuntimeException;
 
     /** Column name R_RequestType_ID */
@@ -292,6 +297,7 @@ public interface I_PA_Measure
 	  */
 	public int getR_RequestType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException;
 
     /** Column name Updated */

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_AddressValidation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AddressValidation")
 public class X_C_AddressValidation extends PO implements I_C_AddressValidation, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AddressValidation (Properties ctx, int C_AddressValidation_ID, String trxName)
@@ -120,6 +120,7 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AddressValidationCfg getC_AddressValidationCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AddressValidationCfg)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidationCfg.Table_ID)

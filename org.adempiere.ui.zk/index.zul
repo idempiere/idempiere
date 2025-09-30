@@ -24,11 +24,10 @@ Copyright (C) 2007 Ashley G Ramdass.
   zk.load("jawwa.atmosphere");
   zk.load("org.idempiere.websocket");
   zk.load("adempiere.local.storage");
-  zk.load("html2canvas");
+  zk.load("html2canvaspro");
   zk.load("org.idempiere.commons");
   zk.load("jquery.maskedinput");
   zk.load("photobooth");
-  zk.load("dragdrop.attachment");
 
   zk.afterLoad(function() {
     zk._Erbx.push = function(msg) {
@@ -38,5 +37,14 @@ Copyright (C) 2007 Ashley G Ramdass.
 ]]>
 </script>
 <include src="${themePreference}"/>
+<zscript>
+<![CDATA[
+var currentZkTheme = org.zkoss.zul.theme.Themes.getTheme(org.zkoss.zk.ui.Executions.getCurrent());
+var setZkTheme = org.zkoss.zk.ui.Executions.getCurrent().getAttribute("Themes.setTheme");
+if (setZkTheme != null && !setZkTheme.equals(currentZkTheme)) {
+	org.zkoss.zk.ui.Executions.sendRedirect(null);
+}
+]]>
+</zscript>
 <window use="org.adempiere.webui.AdempiereWebUI"/>
 </zk>

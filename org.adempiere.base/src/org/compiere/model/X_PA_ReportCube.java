@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportCube
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportCube")
 public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_ReportCube (Properties ctx, int PA_ReportCube_ID, String trxName)
@@ -118,6 +118,7 @@ public class X_PA_ReportCube extends PO implements I_PA_ReportCube, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)

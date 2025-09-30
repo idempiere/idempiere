@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_BudgetControl
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_GL_BudgetControl 
 {
@@ -88,6 +88,7 @@ public interface I_GL_BudgetControl
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name CommitmentType */
@@ -167,6 +168,7 @@ public interface I_GL_BudgetControl
 	  */
 	public int getGL_Budget_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException;
 
     /** Column name Help */

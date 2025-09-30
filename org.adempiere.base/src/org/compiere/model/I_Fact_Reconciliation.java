@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Fact_Reconciliation
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_Fact_Reconciliation 
 {
@@ -40,21 +40,6 @@ public interface I_Fact_Reconciliation
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name Account_ID */
-    public static final String COLUMNNAME_Account_ID = "Account_ID";
-
-	/** Set Account.
-	  * Account used
-	  */
-	public void setAccount_ID (int Account_ID);
-
-	/** Get Account.
-	  * Account used
-	  */
-	public int getAccount_ID();
-
-	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -76,6 +61,22 @@ public interface I_Fact_Reconciliation
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name Account_ID */
+    public static final String COLUMNNAME_Account_ID = "Account_ID";
+
+	/** Set Account.
+	  * Account used
+	  */
+	public void setAccount_ID (int Account_ID);
+
+	/** Get Account.
+	  * Account used
+	  */
+	public int getAccount_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
 
     /** Column name AmtAcct */
     public static final String COLUMNNAME_AmtAcct = "AmtAcct";
@@ -103,6 +104,7 @@ public interface I_Fact_Reconciliation
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */
@@ -143,6 +145,7 @@ public interface I_Fact_Reconciliation
 	/** Get Accounting Fact	  */
 	public int getFact_Acct_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException;
 
     /** Column name Fact_Reconciliation_ID */

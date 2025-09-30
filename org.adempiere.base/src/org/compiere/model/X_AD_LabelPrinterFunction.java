@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LabelPrinterFunction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelPrinterFunction")
 public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFunction, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_LabelPrinterFunction (Properties ctx, int AD_LabelPrinterFunction_ID, String trxName)
@@ -150,6 +150,7 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 		return (String)get_Value(COLUMNNAME_AD_LabelPrinterFunction_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_LabelPrinter getAD_LabelPrinter() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_LabelPrinter)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinter.Table_ID)

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ImportTemplate
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_ImportTemplate 
 {
@@ -93,6 +93,7 @@ public interface I_AD_ImportTemplate
 	  */
 	public int getAD_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -108,7 +109,26 @@ public interface I_AD_ImportTemplate
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
+
+    /** Column name CSVAliasHeader */
+    public static final String COLUMNNAME_CSVAliasHeader = "CSVAliasHeader";
+
+	/** Set CSV Alias Header	  */
+	public void setCSVAliasHeader (String CSVAliasHeader);
+
+	/** Get CSV Alias Header	  */
+	public String getCSVAliasHeader();
+
+    /** Column name CSVHeader */
+    public static final String COLUMNNAME_CSVHeader = "CSVHeader";
+
+	/** Set CSV Header	  */
+	public void setCSVHeader (String CSVHeader);
+
+	/** Get CSV Header	  */
+	public String getCSVHeader();
 
     /** Column name CharacterSet */
     public static final String COLUMNNAME_CharacterSet = "CharacterSet";
@@ -135,24 +155,6 @@ public interface I_AD_ImportTemplate
 	  */
 	public int getCreatedBy();
 
-    /** Column name CSVAliasHeader */
-    public static final String COLUMNNAME_CSVAliasHeader = "CSVAliasHeader";
-
-	/** Set CSV Alias Header	  */
-	public void setCSVAliasHeader (String CSVAliasHeader);
-
-	/** Get CSV Alias Header	  */
-	public String getCSVAliasHeader();
-
-    /** Column name CSVHeader */
-    public static final String COLUMNNAME_CSVHeader = "CSVHeader";
-
-	/** Set CSV Header	  */
-	public void setCSVHeader (String CSVHeader);
-
-	/** Get CSV Header	  */
-	public String getCSVHeader();
-
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -165,6 +167,15 @@ public interface I_AD_ImportTemplate
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name ImportTemplateType */
+    public static final String COLUMNNAME_ImportTemplateType = "ImportTemplateType";
+
+	/** Set Import Template Type	  */
+	public void setImportTemplateType (String ImportTemplateType);
+
+	/** Get Import Template Type	  */
+	public String getImportTemplateType();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -191,6 +202,24 @@ public interface I_AD_ImportTemplate
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name QuoteChar */
+    public static final String COLUMNNAME_QuoteChar = "QuoteChar";
+
+	/** Set Quote Char	  */
+	public void setQuoteChar (String QuoteChar);
+
+	/** Get Quote Char	  */
+	public String getQuoteChar();
+
+    /** Column name SeparatorChar */
+    public static final String COLUMNNAME_SeparatorChar = "SeparatorChar";
+
+	/** Set Separator Character	  */
+	public void setSeparatorChar (String SeparatorChar);
+
+	/** Get Separator Character	  */
+	public String getSeparatorChar();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

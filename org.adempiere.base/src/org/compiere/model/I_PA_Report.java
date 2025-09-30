@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Report
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_Report 
 {
@@ -75,6 +75,7 @@ public interface I_PA_Report
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -90,6 +91,7 @@ public interface I_PA_Report
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Calendar_ID */
@@ -105,6 +107,7 @@ public interface I_PA_Report
 	  */
 	public int getC_Calendar_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException;
 
     /** Column name Created */
@@ -171,6 +174,7 @@ public interface I_PA_Report
 	  */
 	public int getJasperProcess_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getJasperProcess() throws RuntimeException;
 
     /** Column name JasperProcessing */
@@ -247,6 +251,7 @@ public interface I_PA_Report
 	  */
 	public int getPA_ReportColumnSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException;
 
     /** Column name PA_ReportCube_ID */
@@ -262,7 +267,20 @@ public interface I_PA_Report
 	  */
 	public int getPA_ReportCube_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException;
+
+    /** Column name PA_ReportLineSet_ID */
+    public static final String COLUMNNAME_PA_ReportLineSet_ID = "PA_ReportLineSet_ID";
+
+	/** Set Report Line Set	  */
+	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID);
+
+	/** Get Report Line Set	  */
+	public int getPA_ReportLineSet_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
 
     /** Column name PA_Report_ID */
     public static final String COLUMNNAME_PA_Report_ID = "PA_Report_ID";
@@ -276,17 +294,6 @@ public interface I_PA_Report
 	  * Financial Report
 	  */
 	public int getPA_Report_ID();
-
-    /** Column name PA_ReportLineSet_ID */
-    public static final String COLUMNNAME_PA_ReportLineSet_ID = "PA_ReportLineSet_ID";
-
-	/** Set Report Line Set	  */
-	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID);
-
-	/** Get Report Line Set	  */
-	public int getPA_ReportLineSet_ID();
-
-	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
 
     /** Column name PA_Report_UU */
     public static final String COLUMNNAME_PA_Report_UU = "PA_Report_UU";

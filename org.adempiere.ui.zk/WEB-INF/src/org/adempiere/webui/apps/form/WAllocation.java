@@ -579,7 +579,7 @@ public class WAllocation extends Allocation
 	}
 
 	/**
-	 *  Table Model Listener for {@link #paymentTable} and {@link #invoiceTable}
+	 *  Table Model Listener for {@link #paymentTable} and {@link #invoiceTable}<br/>
 	 *  - Recalculate Totals
 	 *  @param e event
 	 */

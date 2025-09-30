@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_JournalGeneratorSource
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_GL_JournalGeneratorSource 
 {
@@ -88,6 +88,7 @@ public interface I_GL_JournalGeneratorSource
 	  */
 	public int getC_ElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name Created */
@@ -119,6 +120,7 @@ public interface I_GL_JournalGeneratorSource
 	  */
 	public int getGL_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException;
 
     /** Column name GL_JournalGeneratorLine_ID */
@@ -130,6 +132,7 @@ public interface I_GL_JournalGeneratorSource
 	/** Get Generator Line	  */
 	public int getGL_JournalGeneratorLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalGeneratorLine getGL_JournalGeneratorLine() throws RuntimeException;
 
     /** Column name GL_JournalGeneratorSource_ID */

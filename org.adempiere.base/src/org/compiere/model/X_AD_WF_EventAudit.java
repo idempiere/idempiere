@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_EventAudit
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_EventAudit")
 public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_WF_EventAudit (Properties ctx, int AD_WF_EventAudit_ID, String trxName)
@@ -135,6 +135,7 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -163,6 +164,7 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -236,6 +238,7 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 		return (String)get_Value(COLUMNNAME_AD_WF_EventAudit_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
@@ -264,6 +267,7 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_ID)
@@ -292,6 +296,7 @@ public class X_AD_WF_EventAudit extends PO implements I_AD_WF_EventAudit, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)

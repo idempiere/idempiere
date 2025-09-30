@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctProcessor
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_AcctProcessor 
 {
@@ -71,6 +71,7 @@ public interface I_C_AcctProcessor
 	/** Get Schedule	  */
 	public int getAD_Schedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -86,6 +87,7 @@ public interface I_C_AcctProcessor
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name C_AcctProcessor_ID */
@@ -123,6 +125,7 @@ public interface I_C_AcctProcessor
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
@@ -241,6 +244,7 @@ public interface I_C_AcctProcessor
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */

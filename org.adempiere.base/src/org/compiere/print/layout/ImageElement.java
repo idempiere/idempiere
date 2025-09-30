@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.compiere.model.AttachmentData;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MImage;
 import org.compiere.print.MPrintFormatItem;
@@ -42,19 +43,21 @@ import org.compiere.util.Env;
  * 	@version 	$Id: ImageElement.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
 public class ImageElement extends PrintElement
-{
+{	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 905615948952506059L;
 
 	/**
-	 *	Create Image from URL
+	 *	Create Image element from URL
 	 *	@param imageURLString image url
 	 *	@return image element
 	 */
 	public static ImageElement get (String imageURLString)
 	{
+		if (imageURLString == null)
+			return null;
 		Object key = imageURLString;
 		ImageElement image = (ImageElement)s_cache.get(key);
 		if (image == null)
@@ -66,7 +69,7 @@ public class ImageElement extends PrintElement
 	}	//	get
 	
 	/**
-	 *	Create Image from URL
+	 *	Create Image element from URL
 	 *  @param imageURL image url
 	 *	@return image element
 	 */
@@ -83,7 +86,7 @@ public class ImageElement extends PrintElement
 	}	//	get
 	
 	/**
-	 *	Create Image from Attachment
+	 *	Create Image element from Attachment of a print format item record
 	 * 	@param AD_PrintFormatItem_ID record id
 	 *	@return image element
 	 */
@@ -100,9 +103,9 @@ public class ImageElement extends PrintElement
 	}	//	get
 
 	/**
-	 *	Create Image from database column
-	 *	@param data the printdataelement, containing the reference
-	 *	@param imageURLString image url - containing just the AD_Image_ID reference
+	 *	Create Image element from AD_Image
+	 *	@param data the PrintDataElement, containing the reference to AD_Image
+	 *	@param imageURLString ignore
 	 *	@return image element
 	 */
 	public static ImageElement get(PrintDataElement data, String imageURLString)
@@ -128,7 +131,7 @@ public class ImageElement extends PrintElement
 	private static CCache<Object,ImageElement>	s_cache 
 		= new CCache<Object,ImageElement>(null, "ImageElement", 10, 10, false);
 	
-	/**************************************************************************
+	/**
 	 *	Create from existing Image
 	 *  @param image image
 	 */
@@ -143,27 +146,36 @@ public class ImageElement extends PrintElement
 	}	//	ImageElement
 
 	/**
-	 *	Create Image from URL
+	 *	Create Image element from URL
 	 *	@param imageURLstring image url
 	 */
 	private ImageElement(String imageURLstring)
 	{
-		URL imageURL = getURL(imageURLstring);
-		if (imageURL != null)
+		if (MAttachment.isAttachmentURLPath(imageURLstring))
 		{
-			m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
-			if (m_image != null) {
-				if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
-			} else {
-				log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
-			}
+			AttachmentData imageData = MAttachment.getDataFromAttachmentURLPath(imageURLstring);
+			if (imageData != null && imageData.data() != null)
+				m_image = Toolkit.getDefaultToolkit().createImage(imageData.data());
 		}
 		else
-			log.log(Level.WARNING, "Invalid URL=" + imageURLstring);
+		{
+			URL imageURL = getURL(imageURLstring);
+			if (imageURL != null)
+			{
+				m_image = Toolkit.getDefaultToolkit().createImage(imageURL);
+				if (m_image != null) {
+					if (log.isLoggable(Level.FINE)) log.fine("URL=" + imageURL);
+				} else {
+					log.log(Level.WARNING, "Not loaded - URL=" + imageURL);
+				}
+			}
+			else
+				log.log(Level.WARNING, "Invalid URL=" + imageURLstring);
+		}
 	}	//	ImageElement
 
 	/**
-	 *	Create Image from URL
+	 *	Create Image element from URL
 	 *  @param imageURL image url
 	 */
 	private ImageElement(URL imageURL)
@@ -182,7 +194,7 @@ public class ImageElement extends PrintElement
 	}	//	ImageElement
 
 	/**
-	 *	Create Image from Attachment
+	 *	Create Image element from Attachment of a print format item record
 	 * 	@param AD_PrintFormatItem_ID record id
 	 */
 	private ImageElement(int AD_PrintFormatItem_ID)
@@ -191,9 +203,9 @@ public class ImageElement extends PrintElement
 	}	//	ImageElement
 
 	/**
-	 *	Create Image from Attachment or Column
-	 * 	@param record_ID record id from printformat or column
-	 * 	@param isAttachment flag to indicate if is attachment or is a column from DB
+	 *	Create Image element from print format item Attachment or AD_Image
+	 * 	@param record_ID record id of print format item or AD_Image
+	 * 	@param isAttachment flag to indicate if is print format item attachment or is AD_Image
 	 */
 	public ImageElement(int record_ID, boolean isAttachment)
 	{
@@ -208,14 +220,16 @@ public class ImageElement extends PrintElement
 	/** Scale				*/
 	private double	m_scaleFactor = 1;
 
-	/**************************************************************************
+	/**
 	 * 	Get URL from String
-	 *  @param urlString url or resource
+	 *  @param urlString url of resource
 	 *  @return URL or null
 	 */
 	private URL getURL (String urlString)
 	{
 		URL url = null;
+		if (urlString == null)
+			return null;
 		//	not a URL - may be a resource
 		if (urlString.indexOf("://") == -1)
 		{
@@ -242,7 +256,7 @@ public class ImageElement extends PrintElement
 	}	//	getURL;
 
 	/**
-	 * 	Load from DB
+	 * 	Load from AD_Image
 	 * 	@param record_ID record id
 	 */
 	private void loadFromDB(int record_ID)
@@ -268,12 +282,12 @@ public class ImageElement extends PrintElement
 
 	
 	/**
-	 * 	Load Attachment
+	 * 	Load Attachment (assume first attachment item is image)
 	 * 	@param AD_PrintFormatItem_ID record id
 	 */
 	private void loadAttachment(int AD_PrintFormatItem_ID)
 	{
-		MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, AD_PrintFormatItem_ID, null, null);
+		try (MAttachment attachment = MAttachment.get(Env.getCtx(), MPrintFormatItem.Table_ID, AD_PrintFormatItem_ID, null, null);) {
 		if (attachment == null)
 		{
 			log.log(Level.WARNING, "No Attachment - AD_PrintFormatItem_ID=" + AD_PrintFormatItem_ID);
@@ -293,12 +307,12 @@ public class ImageElement extends PrintElement
 		} else {
 			log.log(Level.WARNING, attachment.getEntryName(0)
 					+ " - not loaded (must be gif or jpg) - AD_PrintFormatItem_ID=" + AD_PrintFormatItem_ID);
-		}
+		}}
 	}	//	loadAttachment
 
-	/**************************************************************************
-	 * 	Calculate Image Size.
-	 * 	Set p_width and p_height
+	/**
+	 * 	Calculate Image Size.<br/>
+	 * 	Set p_width and p_height.
 	 * 	@return true if calculated
 	 */
 	protected boolean calculateSize()
@@ -358,7 +372,6 @@ public class ImageElement extends PrintElement
 	/**
 	 * Get image scale factor.
 	 * 
-	 * author teo_sarca - [ 1673548 ] Image is not scaled in a report table cell
 	 * @return scale factor
 	 */
 	public double getScaleFactor() {
@@ -370,8 +383,8 @@ public class ImageElement extends PrintElement
 	/**
 	 * 	Paint Image
 	 * 	@param g2D Graphics
-	 *  @param pageStart top left Location of page
 	 *  @param pageNo page number for multi page support (0 = header/footer) - ignored
+	 *  @param pageStart top left Location of page
 	 *  @param ctx print context
 	 *  @param isView true if online view (IDs are links)
 	 */

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Sequence_Audit
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Sequence_Audit")
 public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Sequence_Audit (Properties ctx, int AD_Sequence_Audit_ID, String trxName)
@@ -127,6 +127,7 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_Sequence_Audit_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Sequence)MTable.get(getCtx(), org.compiere.model.I_AD_Sequence.Table_ID)
@@ -155,6 +156,7 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

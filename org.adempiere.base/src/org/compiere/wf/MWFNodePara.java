@@ -50,6 +50,7 @@ public class MWFNodePara extends X_AD_WF_Node_Para implements ImmutablePOSupport
 		
 		List<MWFNodePara> list = new Query(ctx, Table_Name, "AD_WF_Node_ID=?", null)
 			.setParameters(new Object[]{AD_WF_Node_ID})
+			.setOnlyActiveRecords(true)
 			.list();
 		MWFNodePara[] retValue = new MWFNodePara[list.size ()];
 		list.toArray (retValue);

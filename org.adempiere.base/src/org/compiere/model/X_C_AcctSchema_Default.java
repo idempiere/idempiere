@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for C_AcctSchema_Default
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema_Default")
 public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Default (Properties ctx, int C_AcctSchema_Default_ID, String trxName)
@@ -40,31 +40,31 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
       /** if (C_AcctSchema_Default_ID == 0)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
-			setCh_Expense_Acct (0);
 			setC_Prepayment_Acct (0);
 			setC_Receivable_Acct (0);
+			setCh_Expense_Acct (0);
 			setNotInvoicedReceipts_Acct (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
 			setP_Asset_Acct (0);
-			setPayDiscount_Exp_Acct (0);
-			setPayDiscount_Rev_Acct (0);
 			setP_COGS_Acct (0);
 			setP_CostAdjustment_Acct (0);
 			setP_Expense_Acct (0);
 			setP_InventoryClearing_Acct (0);
 			setP_InvoicePriceVariance_Acct (0);
-			setPJ_Asset_Acct (0);
-			setPJ_WIP_Acct (0);
 			setP_PurchasePriceVariance_Acct (0);
 			setP_RateVariance_Acct (0);
 			setP_Revenue_Acct (0);
 			setP_TradeDiscountGrant_Acct (0);
 			setP_TradeDiscountRec_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
 			setRealizedGain_Acct (0);
 			setRealizedLoss_Acct (0);
 			setT_Credit_Acct (0);
@@ -86,31 +86,31 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
       /** if (C_AcctSchema_Default_ID == 0)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
-			setCh_Expense_Acct (0);
 			setC_Prepayment_Acct (0);
 			setC_Receivable_Acct (0);
+			setCh_Expense_Acct (0);
 			setNotInvoicedReceipts_Acct (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
 			setP_Asset_Acct (0);
-			setPayDiscount_Exp_Acct (0);
-			setPayDiscount_Rev_Acct (0);
 			setP_COGS_Acct (0);
 			setP_CostAdjustment_Acct (0);
 			setP_Expense_Acct (0);
 			setP_InventoryClearing_Acct (0);
 			setP_InvoicePriceVariance_Acct (0);
-			setPJ_Asset_Acct (0);
-			setPJ_WIP_Acct (0);
 			setP_PurchasePriceVariance_Acct (0);
 			setP_RateVariance_Acct (0);
 			setP_Revenue_Acct (0);
 			setP_TradeDiscountGrant_Acct (0);
 			setP_TradeDiscountRec_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
 			setRealizedGain_Acct (0);
 			setRealizedLoss_Acct (0);
 			setT_Credit_Acct (0);
@@ -132,31 +132,31 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
       /** if (C_AcctSchema_Default_UU == null)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
-			setCh_Expense_Acct (0);
 			setC_Prepayment_Acct (0);
 			setC_Receivable_Acct (0);
+			setCh_Expense_Acct (0);
 			setNotInvoicedReceipts_Acct (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
 			setP_Asset_Acct (0);
-			setPayDiscount_Exp_Acct (0);
-			setPayDiscount_Rev_Acct (0);
 			setP_COGS_Acct (0);
 			setP_CostAdjustment_Acct (0);
 			setP_Expense_Acct (0);
 			setP_InventoryClearing_Acct (0);
 			setP_InvoicePriceVariance_Acct (0);
-			setPJ_Asset_Acct (0);
-			setPJ_WIP_Acct (0);
 			setP_PurchasePriceVariance_Acct (0);
 			setP_RateVariance_Acct (0);
 			setP_Revenue_Acct (0);
 			setP_TradeDiscountGrant_Acct (0);
 			setP_TradeDiscountRec_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
 			setRealizedGain_Acct (0);
 			setRealizedLoss_Acct (0);
 			setT_Credit_Acct (0);
@@ -178,31 +178,31 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
       /** if (C_AcctSchema_Default_UU == null)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
-			setCh_Expense_Acct (0);
 			setC_Prepayment_Acct (0);
 			setC_Receivable_Acct (0);
+			setCh_Expense_Acct (0);
 			setNotInvoicedReceipts_Acct (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
 			setP_Asset_Acct (0);
-			setPayDiscount_Exp_Acct (0);
-			setPayDiscount_Rev_Acct (0);
 			setP_COGS_Acct (0);
 			setP_CostAdjustment_Acct (0);
 			setP_Expense_Acct (0);
 			setP_InventoryClearing_Acct (0);
 			setP_InvoicePriceVariance_Acct (0);
-			setPJ_Asset_Acct (0);
-			setPJ_WIP_Acct (0);
 			setP_PurchasePriceVariance_Acct (0);
 			setP_RateVariance_Acct (0);
 			setP_Revenue_Acct (0);
 			setP_TradeDiscountGrant_Acct (0);
 			setP_TradeDiscountRec_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
 			setRealizedGain_Acct (0);
 			setRealizedLoss_Acct (0);
 			setT_Credit_Acct (0);
@@ -245,6 +245,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -270,56 +271,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getB_InterestExp_Acct(), get_TrxName());
-	}
-
-	/** Set Bank Interest Expense.
-		@param B_InterestExp_Acct Bank Interest Expense Account
-	*/
-	public void setB_InterestExp_Acct (int B_InterestExp_Acct)
-	{
-		set_Value (COLUMNNAME_B_InterestExp_Acct, Integer.valueOf(B_InterestExp_Acct));
-	}
-
-	/** Get Bank Interest Expense.
-		@return Bank Interest Expense Account
-	  */
-	public int getB_InterestExp_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestExp_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getB_InterestRev_Acct(), get_TrxName());
-	}
-
-	/** Set Bank Interest Revenue.
-		@param B_InterestRev_Acct Bank Interest Revenue Account
-	*/
-	public void setB_InterestRev_Acct (int B_InterestRev_Acct)
-	{
-		set_Value (COLUMNNAME_B_InterestRev_Acct, Integer.valueOf(B_InterestRev_Acct));
-	}
-
-	/** Get Bank Interest Revenue.
-		@return Bank Interest Revenue Account
-	  */
-	public int getB_InterestRev_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestRev_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -345,6 +297,59 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestExp_Acct(), get_TrxName());
+	}
+
+	/** Set Bank Interest Expense.
+		@param B_InterestExp_Acct Bank Interest Expense Account
+	*/
+	public void setB_InterestExp_Acct (int B_InterestExp_Acct)
+	{
+		set_Value (COLUMNNAME_B_InterestExp_Acct, Integer.valueOf(B_InterestExp_Acct));
+	}
+
+	/** Get Bank Interest Expense.
+		@return Bank Interest Expense Account
+	  */
+	public int getB_InterestExp_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestExp_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestRev_Acct(), get_TrxName());
+	}
+
+	/** Set Bank Interest Revenue.
+		@param B_InterestRev_Acct Bank Interest Revenue Account
+	*/
+	public void setB_InterestRev_Acct (int B_InterestRev_Acct)
+	{
+		set_Value (COLUMNNAME_B_InterestRev_Acct, Integer.valueOf(B_InterestRev_Acct));
+	}
+
+	/** Get Bank Interest Revenue.
+		@return Bank Interest Revenue Account
+	  */
+	public int getB_InterestRev_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestRev_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -370,6 +375,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -395,6 +401,136 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Asset_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Asset.
+		@param CB_Asset_Acct Cash Book Asset Account
+	*/
+	public void setCB_Asset_Acct (int CB_Asset_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Asset_Acct, Integer.valueOf(CB_Asset_Acct));
+	}
+
+	/** Get Cash Book Asset.
+		@return Cash Book Asset Account
+	  */
+	public int getCB_Asset_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Asset_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_CashTransfer_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Transfer.
+		@param CB_CashTransfer_Acct Cash Transfer Clearing Account
+	*/
+	public void setCB_CashTransfer_Acct (int CB_CashTransfer_Acct)
+	{
+		set_Value (COLUMNNAME_CB_CashTransfer_Acct, Integer.valueOf(CB_CashTransfer_Acct));
+	}
+
+	/** Get Cash Transfer.
+		@return Cash Transfer Clearing Account
+	  */
+	public int getCB_CashTransfer_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_CashTransfer_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Differences_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Differences.
+		@param CB_Differences_Acct Cash Book Differences Account
+	*/
+	public void setCB_Differences_Acct (int CB_Differences_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Differences_Acct, Integer.valueOf(CB_Differences_Acct));
+	}
+
+	/** Get Cash Book Differences.
+		@return Cash Book Differences Account
+	  */
+	public int getCB_Differences_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Differences_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Expense_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Expense.
+		@param CB_Expense_Acct Cash Book Expense Account
+	*/
+	public void setCB_Expense_Acct (int CB_Expense_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Expense_Acct, Integer.valueOf(CB_Expense_Acct));
+	}
+
+	/** Get Cash Book Expense.
+		@return Cash Book Expense Account
+	  */
+	public int getCB_Expense_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Expense_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Receipt_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Receipt.
+		@param CB_Receipt_Acct Cash Book Receipts Account
+	*/
+	public void setCB_Receipt_Acct (int CB_Receipt_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Receipt_Acct, Integer.valueOf(CB_Receipt_Acct));
+	}
+
+	/** Get Cash Book Receipt.
+		@return Cash Book Receipts Account
+	  */
+	public int getCB_Receipt_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Receipt_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set C_AcctSchema_Default_UU.
 		@param C_AcctSchema_Default_UU C_AcctSchema_Default_UU
 	*/
@@ -410,6 +546,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return (String)get_Value(COLUMNNAME_C_AcctSchema_Default_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -446,156 +583,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
         return new ValueNamePair(get_UUID(), String.valueOf(getC_AcctSchema_ID()));
     }
 
-	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Asset_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Asset.
-		@param CB_Asset_Acct Cash Book Asset Account
-	*/
-	public void setCB_Asset_Acct (int CB_Asset_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Asset_Acct, Integer.valueOf(CB_Asset_Acct));
-	}
-
-	/** Get Cash Book Asset.
-		@return Cash Book Asset Account
-	  */
-	public int getCB_Asset_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Asset_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_CashTransfer_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Transfer.
-		@param CB_CashTransfer_Acct Cash Transfer Clearing Account
-	*/
-	public void setCB_CashTransfer_Acct (int CB_CashTransfer_Acct)
-	{
-		set_Value (COLUMNNAME_CB_CashTransfer_Acct, Integer.valueOf(CB_CashTransfer_Acct));
-	}
-
-	/** Get Cash Transfer.
-		@return Cash Transfer Clearing Account
-	  */
-	public int getCB_CashTransfer_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_CashTransfer_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Differences_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Differences.
-		@param CB_Differences_Acct Cash Book Differences Account
-	*/
-	public void setCB_Differences_Acct (int CB_Differences_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Differences_Acct, Integer.valueOf(CB_Differences_Acct));
-	}
-
-	/** Get Cash Book Differences.
-		@return Cash Book Differences Account
-	  */
-	public int getCB_Differences_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Differences_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Expense_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Expense.
-		@param CB_Expense_Acct Cash Book Expense Account
-	*/
-	public void setCB_Expense_Acct (int CB_Expense_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Expense_Acct, Integer.valueOf(CB_Expense_Acct));
-	}
-
-	/** Get Cash Book Expense.
-		@return Cash Book Expense Account
-	  */
-	public int getCB_Expense_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Expense_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Receipt_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Receipt.
-		@param CB_Receipt_Acct Cash Book Receipts Account
-	*/
-	public void setCB_Receipt_Acct (int CB_Receipt_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Receipt_Acct, Integer.valueOf(CB_Receipt_Acct));
-	}
-
-	/** Get Cash Book Receipt.
-		@return Cash Book Receipts Account
-	  */
-	public int getCB_Receipt_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Receipt_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCh_Expense_Acct(), get_TrxName());
-	}
-
-	/** Set Charge Account.
-		@param Ch_Expense_Acct Charge Account
-	*/
-	public void setCh_Expense_Acct (int Ch_Expense_Acct)
-	{
-		set_Value (COLUMNNAME_Ch_Expense_Acct, Integer.valueOf(Ch_Expense_Acct));
-	}
-
-	/** Get Charge Account.
-		@return Charge Account
-	  */
-	public int getCh_Expense_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Ch_Expense_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -621,6 +609,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -646,6 +635,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -671,6 +661,33 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCh_Expense_Acct(), get_TrxName());
+	}
+
+	/** Set Charge Account.
+		@param Ch_Expense_Acct Charge Account
+	*/
+	public void setCh_Expense_Acct (int Ch_Expense_Acct)
+	{
+		set_Value (COLUMNNAME_Ch_Expense_Acct, Integer.valueOf(Ch_Expense_Acct));
+	}
+
+	/** Get Charge Account.
+		@return Charge Account
+	  */
+	public int getCh_Expense_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Ch_Expense_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getNotInvoicedReceipts_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -696,231 +713,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getP_Asset_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_Asset_Acct(), get_TrxName());
-	}
-
-	/** Set Product Asset.
-		@param P_Asset_Acct Account for Product Asset (Inventory)
-	*/
-	public void setP_Asset_Acct (int P_Asset_Acct)
-	{
-		set_Value (COLUMNNAME_P_Asset_Acct, Integer.valueOf(P_Asset_Acct));
-	}
-
-	/** Get Product Asset.
-		@return Account for Product Asset (Inventory)
-	  */
-	public int getP_Asset_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_Asset_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_AverageCostVariance_Acct(), get_TrxName());
-	}
-
-	/** Set Average Cost Variance.
-		@param P_AverageCostVariance_Acct Average Cost Variance
-	*/
-	public void setP_AverageCostVariance_Acct (int P_AverageCostVariance_Acct)
-	{
-		set_Value (COLUMNNAME_P_AverageCostVariance_Acct, Integer.valueOf(P_AverageCostVariance_Acct));
-	}
-
-	/** Get Average Cost Variance.
-		@return Average Cost Variance
-	  */
-	public int getP_AverageCostVariance_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_AverageCostVariance_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getPayDiscount_Exp_Acct(), get_TrxName());
-	}
-
-	/** Set Payment Discount Expense.
-		@param PayDiscount_Exp_Acct Payment Discount Expense Account
-	*/
-	public void setPayDiscount_Exp_Acct (int PayDiscount_Exp_Acct)
-	{
-		set_Value (COLUMNNAME_PayDiscount_Exp_Acct, Integer.valueOf(PayDiscount_Exp_Acct));
-	}
-
-	/** Get Payment Discount Expense.
-		@return Payment Discount Expense Account
-	  */
-	public int getPayDiscount_Exp_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PayDiscount_Exp_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getPayDiscount_Rev_Acct(), get_TrxName());
-	}
-
-	/** Set Payment Discount Revenue.
-		@param PayDiscount_Rev_Acct Payment Discount Revenue Account
-	*/
-	public void setPayDiscount_Rev_Acct (int PayDiscount_Rev_Acct)
-	{
-		set_Value (COLUMNNAME_PayDiscount_Rev_Acct, Integer.valueOf(PayDiscount_Rev_Acct));
-	}
-
-	/** Get Payment Discount Revenue.
-		@return Payment Discount Revenue Account
-	  */
-	public int getPayDiscount_Rev_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PayDiscount_Rev_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_COGS_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_COGS_Acct(), get_TrxName());
-	}
-
-	/** Set Product COGS.
-		@param P_COGS_Acct Account for Cost of Goods Sold
-	*/
-	public void setP_COGS_Acct (int P_COGS_Acct)
-	{
-		set_Value (COLUMNNAME_P_COGS_Acct, Integer.valueOf(P_COGS_Acct));
-	}
-
-	/** Get Product COGS.
-		@return Account for Cost of Goods Sold
-	  */
-	public int getP_COGS_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_COGS_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_CostAdjustment_Acct(), get_TrxName());
-	}
-
-	/** Set Cost Adjustment.
-		@param P_CostAdjustment_Acct Product Cost Adjustment Account
-	*/
-	public void setP_CostAdjustment_Acct (int P_CostAdjustment_Acct)
-	{
-		set_Value (COLUMNNAME_P_CostAdjustment_Acct, Integer.valueOf(P_CostAdjustment_Acct));
-	}
-
-	/** Get Cost Adjustment.
-		@return Product Cost Adjustment Account
-	  */
-	public int getP_CostAdjustment_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_CostAdjustment_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_Expense_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_Expense_Acct(), get_TrxName());
-	}
-
-	/** Set Product Expense.
-		@param P_Expense_Acct Account for Product Expense
-	*/
-	public void setP_Expense_Acct (int P_Expense_Acct)
-	{
-		set_Value (COLUMNNAME_P_Expense_Acct, Integer.valueOf(P_Expense_Acct));
-	}
-
-	/** Get Product Expense.
-		@return Account for Product Expense
-	  */
-	public int getP_Expense_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_Expense_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_InventoryClearing_Acct(), get_TrxName());
-	}
-
-	/** Set Inventory Clearing.
-		@param P_InventoryClearing_Acct Product Inventory Clearing Account
-	*/
-	public void setP_InventoryClearing_Acct (int P_InventoryClearing_Acct)
-	{
-		set_Value (COLUMNNAME_P_InventoryClearing_Acct, Integer.valueOf(P_InventoryClearing_Acct));
-	}
-
-	/** Get Inventory Clearing.
-		@return Product Inventory Clearing Account
-	  */
-	public int getP_InventoryClearing_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_InventoryClearing_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_InvoicePriceVariance_Acct(), get_TrxName());
-	}
-
-	/** Set Invoice Price Variance.
-		@param P_InvoicePriceVariance_Acct Difference between Costs and Invoice Price (IPV)
-	*/
-	public void setP_InvoicePriceVariance_Acct (int P_InvoicePriceVariance_Acct)
-	{
-		set_Value (COLUMNNAME_P_InvoicePriceVariance_Acct, Integer.valueOf(P_InvoicePriceVariance_Acct));
-	}
-
-	/** Get Invoice Price Variance.
-		@return Difference between Costs and Invoice Price (IPV)
-	  */
-	public int getP_InvoicePriceVariance_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_InvoicePriceVariance_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -946,6 +739,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -971,6 +765,189 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_Asset_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Asset_Acct(), get_TrxName());
+	}
+
+	/** Set Product Asset.
+		@param P_Asset_Acct Account for Product Asset (Inventory)
+	*/
+	public void setP_Asset_Acct (int P_Asset_Acct)
+	{
+		set_Value (COLUMNNAME_P_Asset_Acct, Integer.valueOf(P_Asset_Acct));
+	}
+
+	/** Get Product Asset.
+		@return Account for Product Asset (Inventory)
+	  */
+	public int getP_Asset_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_Asset_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_AverageCostVariance_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_AverageCostVariance_Acct(), get_TrxName());
+	}
+
+	/** Set Average Cost Variance.
+		@param P_AverageCostVariance_Acct Average Cost Variance
+	*/
+	public void setP_AverageCostVariance_Acct (int P_AverageCostVariance_Acct)
+	{
+		set_Value (COLUMNNAME_P_AverageCostVariance_Acct, Integer.valueOf(P_AverageCostVariance_Acct));
+	}
+
+	/** Get Average Cost Variance.
+		@return Average Cost Variance
+	  */
+	public int getP_AverageCostVariance_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_AverageCostVariance_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_COGS_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_COGS_Acct(), get_TrxName());
+	}
+
+	/** Set Product COGS.
+		@param P_COGS_Acct Account for Cost of Goods Sold
+	*/
+	public void setP_COGS_Acct (int P_COGS_Acct)
+	{
+		set_Value (COLUMNNAME_P_COGS_Acct, Integer.valueOf(P_COGS_Acct));
+	}
+
+	/** Get Product COGS.
+		@return Account for Cost of Goods Sold
+	  */
+	public int getP_COGS_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_COGS_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_CostAdjustment_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_CostAdjustment_Acct(), get_TrxName());
+	}
+
+	/** Set Cost Adjustment.
+		@param P_CostAdjustment_Acct Product Cost Adjustment Account
+	*/
+	public void setP_CostAdjustment_Acct (int P_CostAdjustment_Acct)
+	{
+		set_Value (COLUMNNAME_P_CostAdjustment_Acct, Integer.valueOf(P_CostAdjustment_Acct));
+	}
+
+	/** Get Cost Adjustment.
+		@return Product Cost Adjustment Account
+	  */
+	public int getP_CostAdjustment_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_CostAdjustment_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_Expense_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_Expense_Acct(), get_TrxName());
+	}
+
+	/** Set Product Expense.
+		@param P_Expense_Acct Account for Product Expense
+	*/
+	public void setP_Expense_Acct (int P_Expense_Acct)
+	{
+		set_Value (COLUMNNAME_P_Expense_Acct, Integer.valueOf(P_Expense_Acct));
+	}
+
+	/** Get Product Expense.
+		@return Account for Product Expense
+	  */
+	public int getP_Expense_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_Expense_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_InventoryClearing_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_InventoryClearing_Acct(), get_TrxName());
+	}
+
+	/** Set Inventory Clearing.
+		@param P_InventoryClearing_Acct Product Inventory Clearing Account
+	*/
+	public void setP_InventoryClearing_Acct (int P_InventoryClearing_Acct)
+	{
+		set_Value (COLUMNNAME_P_InventoryClearing_Acct, Integer.valueOf(P_InventoryClearing_Acct));
+	}
+
+	/** Get Inventory Clearing.
+		@return Product Inventory Clearing Account
+	  */
+	public int getP_InventoryClearing_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_InventoryClearing_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_InvoicePriceVariance_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_InvoicePriceVariance_Acct(), get_TrxName());
+	}
+
+	/** Set Invoice Price Variance.
+		@param P_InvoicePriceVariance_Acct Difference between Costs and Invoice Price (IPV)
+	*/
+	public void setP_InvoicePriceVariance_Acct (int P_InvoicePriceVariance_Acct)
+	{
+		set_Value (COLUMNNAME_P_InvoicePriceVariance_Acct, Integer.valueOf(P_InvoicePriceVariance_Acct));
+	}
+
+	/** Get Invoice Price Variance.
+		@return Difference between Costs and Invoice Price (IPV)
+	  */
+	public int getP_InvoicePriceVariance_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_InvoicePriceVariance_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_LandedCostClearing_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -996,6 +973,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_PurchasePriceVariance_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1021,6 +999,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_RateVariance_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1046,6 +1025,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1066,6 +1046,110 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 	public int getP_Revenue_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_P_Revenue_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_TradeDiscountGrant_Acct(), get_TrxName());
+	}
+
+	/** Set Trade Discount Granted.
+		@param P_TradeDiscountGrant_Acct Trade Discount Granted Account
+	*/
+	public void setP_TradeDiscountGrant_Acct (int P_TradeDiscountGrant_Acct)
+	{
+		set_Value (COLUMNNAME_P_TradeDiscountGrant_Acct, Integer.valueOf(P_TradeDiscountGrant_Acct));
+	}
+
+	/** Get Trade Discount Granted.
+		@return Trade Discount Granted Account
+	  */
+	public int getP_TradeDiscountGrant_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_TradeDiscountGrant_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getP_TradeDiscountRec_Acct(), get_TrxName());
+	}
+
+	/** Set Trade Discount Received.
+		@param P_TradeDiscountRec_Acct Trade Discount Receivable Account
+	*/
+	public void setP_TradeDiscountRec_Acct (int P_TradeDiscountRec_Acct)
+	{
+		set_Value (COLUMNNAME_P_TradeDiscountRec_Acct, Integer.valueOf(P_TradeDiscountRec_Acct));
+	}
+
+	/** Get Trade Discount Received.
+		@return Trade Discount Receivable Account
+	  */
+	public int getP_TradeDiscountRec_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_P_TradeDiscountRec_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getPayDiscount_Exp_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPayDiscount_Exp_Acct(), get_TrxName());
+	}
+
+	/** Set Payment Discount Expense.
+		@param PayDiscount_Exp_Acct Payment Discount Expense Account
+	*/
+	public void setPayDiscount_Exp_Acct (int PayDiscount_Exp_Acct)
+	{
+		set_Value (COLUMNNAME_PayDiscount_Exp_Acct, Integer.valueOf(PayDiscount_Exp_Acct));
+	}
+
+	/** Get Payment Discount Expense.
+		@return Payment Discount Expense Account
+	  */
+	public int getPayDiscount_Exp_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PayDiscount_Exp_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getPayDiscount_Rev_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPayDiscount_Rev_Acct(), get_TrxName());
+	}
+
+	/** Set Payment Discount Revenue.
+		@param PayDiscount_Rev_Acct Payment Discount Revenue Account
+	*/
+	public void setPayDiscount_Rev_Acct (int PayDiscount_Rev_Acct)
+	{
+		set_Value (COLUMNNAME_PayDiscount_Rev_Acct, Integer.valueOf(PayDiscount_Rev_Acct));
+	}
+
+	/** Get Payment Discount Revenue.
+		@return Payment Discount Revenue Account
+	  */
+	public int getPayDiscount_Rev_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PayDiscount_Rev_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -1093,56 +1177,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return false;
 	}
 
-	public I_C_ValidCombination getP_TradeDiscountGrant_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_TradeDiscountGrant_Acct(), get_TrxName());
-	}
-
-	/** Set Trade Discount Granted.
-		@param P_TradeDiscountGrant_Acct Trade Discount Granted Account
-	*/
-	public void setP_TradeDiscountGrant_Acct (int P_TradeDiscountGrant_Acct)
-	{
-		set_Value (COLUMNNAME_P_TradeDiscountGrant_Acct, Integer.valueOf(P_TradeDiscountGrant_Acct));
-	}
-
-	/** Get Trade Discount Granted.
-		@return Trade Discount Granted Account
-	  */
-	public int getP_TradeDiscountGrant_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_TradeDiscountGrant_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getP_TradeDiscountRec_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getP_TradeDiscountRec_Acct(), get_TrxName());
-	}
-
-	/** Set Trade Discount Received.
-		@param P_TradeDiscountRec_Acct Trade Discount Receivable Account
-	*/
-	public void setP_TradeDiscountRec_Acct (int P_TradeDiscountRec_Acct)
-	{
-		set_Value (COLUMNNAME_P_TradeDiscountRec_Acct, Integer.valueOf(P_TradeDiscountRec_Acct));
-	}
-
-	/** Get Trade Discount Received.
-		@return Trade Discount Receivable Account
-	  */
-	public int getP_TradeDiscountRec_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_P_TradeDiscountRec_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getRealizedGain_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1168,6 +1203,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getRealizedLoss_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1193,6 +1229,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Credit_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1218,6 +1255,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Due_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1243,6 +1281,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getT_Expense_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1268,6 +1307,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1293,6 +1333,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnrealizedGain_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1318,6 +1359,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnrealizedLoss_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1343,6 +1385,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1368,6 +1411,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Liability_Services_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1393,6 +1437,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getV_Prepayment_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1418,6 +1463,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getW_Differences_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -1443,6 +1489,7 @@ public class X_C_AcctSchema_Default extends PO implements I_C_AcctSchema_Default
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getWriteOff_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

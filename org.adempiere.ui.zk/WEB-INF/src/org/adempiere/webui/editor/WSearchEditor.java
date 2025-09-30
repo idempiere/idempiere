@@ -45,6 +45,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
@@ -228,7 +229,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, enableDrill, lookup);
 			if (ThemeManager.isUseFontIconForImage())
-				imageUrl = "z-icon-BPartner";
+				imageUrl = Icon.getIconSclass(Icon.BPARTNER);
 			else
 				imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 		}
@@ -236,7 +237,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, enableDrill, lookup);
 			if (ThemeManager.isUseFontIconForImage())
-				imageUrl = "z-icon-Product";
+				imageUrl = Icon.getIconSclass(Icon.PRODUCT);
 			else
 				imageUrl = ThemeManager.getThemeResource("images/Product16.png");
 		}
@@ -244,7 +245,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, enableDrill, lookup);
 			if (ThemeManager.isUseFontIconForImage())
-				imageUrl = "z-icon-More";
+				imageUrl = Icon.getIconSclass(Icon.MORE);
 			else
 				imageUrl = ThemeManager.getThemeResource("images/PickOpen16.png");
 		}
@@ -361,6 +362,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			getComponent().setText("");
 		}
+		popupMenu.showDrillAssistant(value != null);
 	}
 
 	@Override

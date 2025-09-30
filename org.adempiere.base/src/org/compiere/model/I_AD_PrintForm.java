@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintForm
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_PrintForm 
 {
@@ -126,6 +126,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getDistrib_Order_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getDistrib_Order_MailText() throws RuntimeException;
 
     /** Column name Distrib_Order_PrintFormat_ID */
@@ -141,6 +142,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getDistrib_Order_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getDistrib_Order_PrintFormat() throws RuntimeException;
 
     /** Column name Invoice_MailText_ID */
@@ -156,6 +158,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getInvoice_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getInvoice_MailText() throws RuntimeException;
 
     /** Column name Invoice_PrintFormat_ID */
@@ -171,6 +174,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getInvoice_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException;
 
     /** Column name IsActive */
@@ -199,6 +203,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getManuf_Order_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getManuf_Order_MailText() throws RuntimeException;
 
     /** Column name Manuf_Order_PrintFormat_ID */
@@ -214,6 +219,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getManuf_Order_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getManuf_Order_PrintFormat() throws RuntimeException;
 
     /** Column name Name */
@@ -242,6 +248,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getOrder_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getOrder_MailText() throws RuntimeException;
 
     /** Column name Order_PrintFormat_ID */
@@ -257,6 +264,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getOrder_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getOrder_PrintFormat() throws RuntimeException;
 
     /** Column name Project_MailText_ID */
@@ -272,6 +280,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getProject_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getProject_MailText() throws RuntimeException;
 
     /** Column name Project_PrintFormat_ID */
@@ -287,6 +296,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getProject_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getProject_PrintFormat() throws RuntimeException;
 
     /** Column name Remittance_MailText_ID */
@@ -302,6 +312,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getRemittance_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getRemittance_MailText() throws RuntimeException;
 
     /** Column name Remittance_PrintFormat_ID */
@@ -317,6 +328,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getRemittance_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getRemittance_PrintFormat() throws RuntimeException;
 
     /** Column name Shipment_MailText_ID */
@@ -332,6 +344,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getShipment_MailText_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getShipment_MailText() throws RuntimeException;
 
     /** Column name Shipment_PrintFormat_ID */
@@ -347,6 +360,7 @@ public interface I_AD_PrintForm
 	  */
 	public int getShipment_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getShipment_PrintFormat() throws RuntimeException;
 
     /** Column name Updated */

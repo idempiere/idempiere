@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Invoice
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_Invoice")
 public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_I_Invoice (Properties ctx, int I_Invoice_ID, String trxName)
@@ -107,6 +107,57 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
       return sb.toString();
     }
 
+	/** Set Trx Organization.
+		@param AD_OrgTrx_ID Performing or initiating organization
+	*/
+	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
+	{
+		if (AD_OrgTrx_ID < 1)
+			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
+	}
+
+	/** Get Trx Organization.
+		@return Performing or initiating organization
+	  */
+	public int getAD_OrgTrx_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
+
+	/** Set User/Contact.
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID < 1)
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+	}
+
+	/** Get User/Contact.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Activity Key.
 		@param ActivityValue Text key for Activity
 	*/
@@ -155,56 +206,6 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_Address2);
 	}
 
-	/** Set Trx Organization.
-		@param AD_OrgTrx_ID Performing or initiating organization
-	*/
-	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
-	{
-		if (AD_OrgTrx_ID < 1)
-			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
-	}
-
-	/** Get Trx Organization.
-		@return Performing or initiating organization
-	  */
-	public int getAD_OrgTrx_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
-			.getPO(getAD_User_ID(), get_TrxName());
-	}
-
-	/** Set User/Contact.
-		@param AD_User_ID User within the system - Internal or Business Partner Contact
-	*/
-	public void setAD_User_ID (int AD_User_ID)
-	{
-		if (AD_User_ID < 1)
-			set_Value (COLUMNNAME_AD_User_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
-	}
-
-	/** Get User/Contact.
-		@return User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Business Partner Key.
 		@param BPartnerValue Key of the Business Partner
 	*/
@@ -221,6 +222,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_BPartnerValue);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_1099Box getC_1099Box() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_1099Box)MTable.get(getCtx(), org.compiere.model.I_C_1099Box.Table_ID)
@@ -263,6 +265,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_1099Box_Value);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -291,6 +294,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -319,6 +323,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -347,6 +352,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -375,6 +381,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -403,6 +410,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Country)MTable.get(getCtx(), org.compiere.model.I_C_Country.Table_ID)
@@ -431,6 +439,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -459,6 +468,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -487,50 +497,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Charge Name.
-		@param ChargeName Name of the Charge
-	*/
-	public void setChargeName (String ChargeName)
-	{
-		set_Value (COLUMNNAME_ChargeName, ChargeName);
-	}
-
-	/** Get Charge Name.
-		@return Name of the Charge
-	  */
-	public String getChargeName()
-	{
-		return (String)get_Value(COLUMNNAME_ChargeName);
-	}
-
-	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
-			.getPO(getC_Invoice_ID(), get_TrxName());
-	}
-
-	/** Set Invoice.
-		@param C_Invoice_ID Invoice Identifier
-	*/
-	public void setC_Invoice_ID (int C_Invoice_ID)
-	{
-		if (C_Invoice_ID < 1)
-			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
-	}
-
-	/** Get Invoice.
-		@return Invoice Identifier
-	  */
-	public int getC_Invoice_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -559,22 +526,36 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set City.
-		@param City Identifies a City
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
+
+	/** Set Invoice.
+		@param C_Invoice_ID Invoice Identifier
 	*/
-	public void setCity (String City)
+	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		set_Value (COLUMNNAME_City, City);
+		if (C_Invoice_ID < 1)
+			set_Value (COLUMNNAME_C_Invoice_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
-	/** Get City.
-		@return Identifies a City
+	/** Get Invoice.
+		@return Invoice Identifier
 	  */
-	public String getCity()
+	public int getC_Invoice_ID()
 	{
-		return (String)get_Value(COLUMNNAME_City);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Location getC_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
@@ -603,45 +584,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Contact Name.
-		@param ContactName Business Partner Contact Name
-	*/
-	public void setContactName (String ContactName)
-	{
-		set_Value (COLUMNNAME_ContactName, ContactName);
-	}
-
-	/** Get Contact Name.
-		@return Business Partner Contact Name
-	  */
-	public String getContactName()
-	{
-		return (String)get_Value(COLUMNNAME_ContactName);
-	}
-
-	/** Set ISO Country Code.
-		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-	*/
-	public void setCountryCode (boolean CountryCode)
-	{
-		set_Value (COLUMNNAME_CountryCode, Boolean.valueOf(CountryCode));
-	}
-
-	/** Get ISO Country Code.
-		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-	  */
-	public boolean isCountryCode()
-	{
-		Object oo = get_Value(COLUMNNAME_CountryCode);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
@@ -670,6 +613,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -698,6 +642,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Region)MTable.get(getCtx(), org.compiere.model.I_C_Region.Table_ID)
@@ -726,6 +671,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
@@ -752,6 +698,77 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Charge Name.
+		@param ChargeName Name of the Charge
+	*/
+	public void setChargeName (String ChargeName)
+	{
+		set_Value (COLUMNNAME_ChargeName, ChargeName);
+	}
+
+	/** Get Charge Name.
+		@return Name of the Charge
+	  */
+	public String getChargeName()
+	{
+		return (String)get_Value(COLUMNNAME_ChargeName);
+	}
+
+	/** Set City.
+		@param City Identifies a City
+	*/
+	public void setCity (String City)
+	{
+		set_Value (COLUMNNAME_City, City);
+	}
+
+	/** Get City.
+		@return Identifies a City
+	  */
+	public String getCity()
+	{
+		return (String)get_Value(COLUMNNAME_City);
+	}
+
+	/** Set Contact Name.
+		@param ContactName Business Partner Contact Name
+	*/
+	public void setContactName (String ContactName)
+	{
+		set_Value (COLUMNNAME_ContactName, ContactName);
+	}
+
+	/** Get Contact Name.
+		@return Business Partner Contact Name
+	  */
+	public String getContactName()
+	{
+		return (String)get_Value(COLUMNNAME_ContactName);
+	}
+
+	/** Set ISO Country Code.
+		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
+	*/
+	public void setCountryCode (boolean CountryCode)
+	{
+		set_Value (COLUMNNAME_CountryCode, Boolean.valueOf(CountryCode));
+	}
+
+	/** Get ISO Country Code.
+		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
+	  */
+	public boolean isCountryCode()
+	{
+		Object oo = get_Value(COLUMNNAME_CountryCode);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Account Date.
@@ -848,6 +865,22 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
+	}
+
+	/** Set ISO Currency Code.
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
+	public void setISO_Code (String ISO_Code)
+	{
+		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
+	}
+
+	/** Get ISO Currency Code.
+		@return Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code()
+	{
+		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Import Error Message.
@@ -965,6 +998,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_LineDescription);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
@@ -993,6 +1027,7 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -1216,6 +1251,23 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_RegionName);
 	}
 
+	/** Set SKU.
+		@param SKU Stock Keeping Unit
+	*/
+	public void setSKU (String SKU)
+	{
+		set_Value (COLUMNNAME_SKU, SKU);
+	}
+
+	/** Get SKU.
+		@return Stock Keeping Unit
+	  */
+	public String getSKU()
+	{
+		return (String)get_Value(COLUMNNAME_SKU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -1242,22 +1294,6 @@ public class X_I_Invoice extends PO implements I_I_Invoice, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set SKU.
-		@param SKU Stock Keeping Unit
-	*/
-	public void setSKU (String SKU)
-	{
-		set_Value (COLUMNNAME_SKU, SKU);
-	}
-
-	/** Get SKU.
-		@return Stock Keeping Unit
-	  */
-	public String getSKU()
-	{
-		return (String)get_Value(COLUMNNAME_SKU);
 	}
 
 	/** Set Tax Amount.

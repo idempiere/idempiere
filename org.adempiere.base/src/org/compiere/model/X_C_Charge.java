@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Charge
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Charge")
 public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName)
@@ -42,8 +42,10 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
       /** if (C_Charge_ID == 0)
         {
 			setC_Charge_ID (0);
-			setChargeAmt (Env.ZERO);
 			setC_TaxCategory_ID (0);
+			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -59,8 +61,10 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
       /** if (C_Charge_ID == 0)
         {
 			setC_Charge_ID (0);
-			setChargeAmt (Env.ZERO);
 			setC_TaxCategory_ID (0);
+			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -76,8 +80,10 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
       /** if (C_Charge_UU == null)
         {
 			setC_Charge_ID (0);
-			setChargeAmt (Env.ZERO);
 			setC_TaxCategory_ID (0);
+			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -93,8 +99,10 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
       /** if (C_Charge_UU == null)
         {
 			setC_Charge_ID (0);
-			setChargeAmt (Env.ZERO);
 			setC_TaxCategory_ID (0);
+			setChargeAmt (Env.ZERO);
+			setIsExcludedFromDiscount (false);
+// N
 			setIsSameCurrency (false);
 			setIsSameTax (false);
 			setIsTaxIncluded (false);
@@ -131,6 +139,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -159,28 +168,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Charge.
-		@param C_Charge_ID Additional document charges
-	*/
-	public void setC_Charge_ID (int C_Charge_ID)
-	{
-		if (C_Charge_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Charge_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
-	}
-
-	/** Get Charge.
-		@return Additional document charges
-	  */
-	public int getC_Charge_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ChargeType)MTable.get(getCtx(), org.compiere.model.I_C_ChargeType.Table_ID)
@@ -208,6 +196,28 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Charge.
+		@param C_Charge_ID Additional document charges
+	*/
+	public void setC_Charge_ID (int C_Charge_ID)
+	{
+		if (C_Charge_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Charge_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
+	}
+
+	/** Get Charge.
+		@return Additional document charges
+	  */
+	public int getC_Charge_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set C_Charge_UU.
 		@param C_Charge_UU C_Charge_UU
 	*/
@@ -223,25 +233,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_Charge_UU);
 	}
 
-	/** Set Charge amount.
-		@param ChargeAmt Charge Amount
-	*/
-	public void setChargeAmt (BigDecimal ChargeAmt)
-	{
-		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
-	}
-
-	/** Get Charge amount.
-		@return Charge Amount
-	  */
-	public BigDecimal getChargeAmt()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
@@ -270,6 +262,25 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Charge amount.
+		@param ChargeAmt Charge Amount
+	*/
+	public void setChargeAmt (BigDecimal ChargeAmt)
+	{
+		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
+	}
+
+	/** Get Charge amount.
+		@return Charge Amount
+	  */
+	public BigDecimal getChargeAmt()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -284,6 +295,29 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Exclude from Payment Discount.
+		@param IsExcludedFromDiscount If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	*/
+	public void setIsExcludedFromDiscount (boolean IsExcludedFromDiscount)
+	{
+		set_Value (COLUMNNAME_IsExcludedFromDiscount, Boolean.valueOf(IsExcludedFromDiscount));
+	}
+
+	/** Get Exclude from Payment Discount.
+		@return If selected, this charge is excluded from payment discount calculations. Only line amounts will be considered for discount.
+	  */
+	public boolean isExcludedFromDiscount()
+	{
+		Object oo = get_Value(COLUMNNAME_IsExcludedFromDiscount);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Same Currency.

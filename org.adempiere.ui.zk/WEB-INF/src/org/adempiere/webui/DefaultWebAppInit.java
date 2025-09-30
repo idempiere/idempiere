@@ -24,14 +24,15 @@ import org.compiere.model.I_AD_SysConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_SysConfig;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.osgi.service.event.Event;
 import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.util.WebAppInit;
 
 /**
- * Handle web app init event to manage configuration from zk.xml and AD_SysConfig 
+ * Handle web application initialization event to manage configuration from zk.xml and AD_SysConfig 
  * @author hieplq
- *
  */
 public class DefaultWebAppInit implements WebAppInit {
 	/** AD_SysConfig change listener */
@@ -46,18 +47,21 @@ public class DefaultWebAppInit implements WebAppInit {
 		this.webApp = wapp;
 		// save app name get from zk.xml to restore when delete app name in system config value
 		AdempiereWebUI.APP_NAME = this.webApp.getAppName();
-		String appNameConfig = MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE);
+
+		String appNameConfig = Env.getContext(Env.getCtx(), Env.PREFIX_SYSTEM_VARIABLE + MSysConfig.ZK_BROWSER_TITLE);
+
+		if (Util.isEmpty(appNameConfig))
+			appNameConfig = MSysConfig.getValue(MSysConfig.ZK_BROWSER_TITLE);
+
 		if (appNameConfig != null){
 			this.webApp.setAppName(appNameConfig);
 		}
 		
-		createStaticListeners ();
-		
+		createStaticListeners ();		
 	}
 	
 	/**
-	 * register handle model change to event manage
-	 * Current only init handle System config table
+	 * Create model event handler for AD_SysConfig
 	 */
 	private synchronized void createStaticListeners() {
 		if (systemConfigChangeHandler == null) {
@@ -89,49 +93,46 @@ public class DefaultWebAppInit implements WebAppInit {
 		@Override
 		protected void doHandleEvent(Event event) {
 			PO po = getPO(event);
-			// just track change and delete status. 
-			// new, change, rename to = change => isDelete = false
-			// delete, rename from = delete => isDelete = true
 			int nameColumnIndex = po.get_ColumnIndex(I_AD_SysConfig.COLUMNNAME_Name);
 			int valueColumnIndex = po.get_ColumnIndex(I_AD_SysConfig.COLUMNNAME_Value);
 			
 			boolean isChangeValue = po.is_ValueChanged(valueColumnIndex);
 			boolean isChangeName = po.is_ValueChanged(nameColumnIndex);
 			
-			// delete, rename config (rename have same effect delete)
+			// delete, rename config (rename have same effect as delete)
 			if (IEventTopics.PO_BEFORE_DELETE.equals(event.getTopic()) ||
 					(IEventTopics.PO_BEFORE_CHANGE.equals(event.getTopic()) && isChangeName)
 					){
 				beforeDelete (po);
 				
-				// when change one record = delete a record + new a record 
+				// when rename one record = delete a record + create a new record 
 				if (IEventTopics.PO_BEFORE_CHANGE.equals(event.getTopic()) && isChangeName){
 					beforeChange (po);
 				}				
 				return;
 			}
 			
-			// delete, rename config (rename have same effect delete)
+			// delete, rename config (rename have same effect as delete)
 			if (IEventTopics.PO_AFTER_DELETE.equals(event.getTopic()) ||
 					(IEventTopics.PO_AFTER_CHANGE.equals(event.getTopic()) && isChangeName)
 					){
 				afterDelete (po);
 				
-				// when change one record = delete a record + new a record 
+				// when rename one record = delete a record + create a new record 
 				if (IEventTopics.PO_AFTER_CHANGE.equals(event.getTopic()) && isChangeName){
 					afterChange(po);
 				}
 				return;
 			}
 			
-			// new, change value consider as change. change name is process with above not there
+			// new, change value. change name is process above
 			if (IEventTopics.PO_BEFORE_NEW.equals(event.getTopic()) ||
 					(IEventTopics.PO_BEFORE_CHANGE.equals(event.getTopic()) && !isChangeName && isChangeValue)){
 				beforeChange (po);
 				return;
 			}
 			
-			// new, change value consider as change. change name is process with above not there
+			// new, change value. change name is process above
 			if (IEventTopics.PO_AFTER_NEW.equals(event.getTopic()) ||
 					(IEventTopics.PO_AFTER_CHANGE.equals(event.getTopic()) && !isChangeName && isChangeValue)){
 				afterChange (po);
@@ -140,17 +141,16 @@ public class DefaultWebAppInit implements WebAppInit {
 		}
 		
 		protected void beforeDelete(PO po) {
-			//TODO:save flag to file for case when insert data success but before sync with file config has error crash program
 		}
 		
 		/**
-		 * Process when delete a configuration record
+		 * Process after delete of a configuration record
 		 * @param po
 		 */
 		protected void afterDelete (PO po){
 			if (po instanceof X_AD_SysConfig){												
 				// when delete ZK_BROWSER_TITLE, set web config to default value "Idempiere"
-				// user old value of name for correct meaning of record delete, change
+				// use old value of name for correct meaning of record delete, change
 				if (MSysConfig.ZK_BROWSER_TITLE.equals(getOldValueOfName(po))){					
 					webApp.setAppName(AdempiereWebUI.APP_NAME);									
 				}
@@ -158,7 +158,7 @@ public class DefaultWebAppInit implements WebAppInit {
 		}
 		
 		/**
-		 * get old value of column name
+		 * get old value of name
 		 * @param po
 		 * @return
 		 */
@@ -168,7 +168,6 @@ public class DefaultWebAppInit implements WebAppInit {
 		}
 		
 		protected void beforeChange (PO po){
-			//TODO:save flag to file for case when insert data success but before sync with file config has error crash program
 		}
 		
 		/**

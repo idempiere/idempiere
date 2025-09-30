@@ -59,28 +59,25 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7542581302442072662L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_PrintFormat_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PrintFormat_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPrintFormat(Properties ctx, String AD_PrintFormat_UU, String trxName) {
         super(ctx, AD_PrintFormat_UU, trxName);
 		//	Language=[Deutsch,Locale=de_DE,AD_Language=en_US,DatePattern=DD.MM.YYYY,DecimalPoint=false]
 		m_language = Env.getLanguage(ctx);
 		if (Util.isEmpty(AD_PrintFormat_UU))
 			setInitialDefaults();
-		m_items = getItems();
     }
 
 	/**
-	 *	Public Constructor.
-	 * 	Use static get methods
 	 *  @param ctx context
 	 *  @param AD_PrintFormat_ID AD_PrintFormat_ID
 	 *	@param trxName transaction
@@ -92,7 +89,6 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		m_language = Env.getLanguage(ctx);
 		if (AD_PrintFormat_ID == 0)
 			setInitialDefaults();
-		m_items = getItems();
 	}	//	MPrintFormat
 
 	/**
@@ -105,10 +101,14 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		setIsDefault(false);
 	}
 
+	/**
+	 * Reload print format items from DB
+	 */
 	public void reloadItems() {
-		m_items = getItems();
-		if (is_Immutable() && m_items != null && m_items.length > 0)
-			Arrays.stream(m_items).forEach(e -> e.markImmutable());
+		m_items = null;
+		getItems();
+		if (is_Immutable() && getItems() != null && getItems().length > 0)
+			Arrays.stream(getItems()).forEach(e -> e.markImmutable());
 	}
 	
 	/**
@@ -121,11 +121,10 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	{
 		super(ctx, rs, trxName);
 		m_language = Env.getLanguage(ctx);
-		m_items = getItems();
 	}	//	MPrintFormat
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param copy
 	 */
 	public MPrintFormat(MPrintFormat copy) 
@@ -134,7 +133,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -144,7 +143,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 
 	/**
-	 * 
+	 * Copy constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -159,7 +158,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		this.m_tFormat = copy.m_tFormat != null ? new MPrintTableFormat(ctx, copy.m_tFormat, trxName) : null;
 	}
 	
-	/** Items							*/
+	/** Items - do not access directly - always use getItems()	*/
 	private MPrintFormatItem[]		m_items = null;
 	/** Translation View Language		*/
 	private String					m_translationViewLanguage = null;
@@ -194,17 +193,17 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	getLanguage
 
 	/**
-	 * 	Get AD_Column_ID of Order Columns
-	 * 	@return Array of AD_Column_IDs in Sort Order
+	 * 	Get AD_Column_ID of Order By Columns
+	 * 	@return Array of AD_Column_IDs in Sort Columns
 	 */
 	public int[] getOrderAD_Column_IDs()
 	{
 		HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();	//	SortNo - AD_Column_ID
-		for (int i = 0; i < m_items.length; i++)
+		for (int i = 0; i < getItems().length; i++)
 		{
 			//	Sort Order and Column must be > 0
-			if (m_items[i].getSortNo() != 0 && m_items[i].getAD_Column_ID() != 0)
-				map.put(Integer.valueOf(m_items[i].getSortNo()), Integer.valueOf(m_items[i].getAD_Column_ID()));
+			if (getItems()[i].getSortNo() != 0 && getItems()[i].getAD_Column_ID() != 0)
+				map.put(Integer.valueOf(getItems()[i].getSortNo()), Integer.valueOf(getItems()[i].getAD_Column_ID()));
 		}
 		//	Get SortNo and Sort them
 		Integer[] keys = new Integer[map.keySet().size()];
@@ -228,10 +227,10 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	public int[] getAD_Column_IDs()
 	{
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		for (int i = 0; i < m_items.length; i++)
+		for (int i = 0; i < getItems().length; i++)
 		{
-			if (m_items[i].getAD_Column_ID() != 0 && m_items[i].isPrinted())
-				list.add(Integer.valueOf(m_items[i].getAD_Column_ID()));
+			if (getItems()[i].getAD_Column_ID() != 0 && getItems()[i].isPrinted())
+				list.add(Integer.valueOf(getItems()[i].getAD_Column_ID()));
 		}
 		//	Convert
 		int[] retValue = new int[list.size()];
@@ -241,8 +240,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	getAD_Column_IDs
 
 	/**
-	 * 	Set Items
-	 * 	@param items items
+	 * 	Set Print Format Items
+	 * 	@param items
 	 */
 	private void setItems (MPrintFormatItem[] items)
 	{
@@ -251,11 +250,13 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	setItems
 
 	/**
-	 * 	Get active Items
+	 * 	Get active print format items from DB (exclude encrypted and obscure columns)
 	 * 	@return items
 	 */
 	private MPrintFormatItem[] getItems()
 	{
+		if (m_items != null)
+			return m_items;
 		ArrayList<MPrintFormatItem> list = new ArrayList<MPrintFormatItem>();
 		String sql = "SELECT * FROM AD_PrintFormatItem pfi "
 			+ "WHERE pfi.AD_PrintFormat_ID=? AND pfi.IsActive='Y'"
@@ -290,6 +291,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		//
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
+		m_items = retValue;
 		return retValue;
 	}	//	getItems
 
@@ -302,7 +304,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get All Items
+	 * 	Get All Items from DB
 	 *  @param orderBy
 	 * 	@return items
 	 */
@@ -328,7 +330,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	getAllItems
 
 	/**
-	 * 	Get Items Not in A Print Format
+	 * 	Get print format items of this print format that's not part of the "AD_PrintFormat_ID" print format
+	 *  @param AD_PrintFormat_ID
 	 * 	@return items
 	 */
 	private MPrintFormatItem[] getItemsNotIn(int AD_PrintFormat_ID)
@@ -378,25 +381,26 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	public int getItemCount()
 	{
-		if (m_items == null)
+		if (getItems() == null)
 			return -1;
-		return m_items.length;
+		return getItems().length;
 	}	//	getItemCount
 
 	/**
-	 * 	Get Print Format Item
-	 * 	@param index index
+	 * 	Get Print Format Item at index
+	 * 	@param index
 	 * 	@return Print Format Item
+	 *  @throws ArrayIndexOutOfBoundsException if index is invalid
 	 */
 	public MPrintFormatItem getItem (int index)
 	{
-		if (index < 0 || index >= m_items.length)
-			throw new ArrayIndexOutOfBoundsException("Index=" + index + " - Length=" + m_items.length);
-		return m_items[index];
+		if (index < 0 || index >= getItems().length)
+			throw new ArrayIndexOutOfBoundsException("Index=" + index + " - Length=" + getItems().length);
+		return getItems()[index];
 	}	//	getItem
 
 	/**
-	 * 	Set the translation of the Format Items to the original
+	 * 	Set translation of Print Format Items to original value
 	 */
 	public void setTranslation()
 	{
@@ -409,9 +413,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		if (log.isLoggable(Level.FINE)) log.fine("setTranslation #" + no);
 	}	//	setTranslation
 
-
-	/**************************************************************************
-	 * 	Set Standard Header
+	/**
+	 * 	Set Standard Header and Footer
 	 *	@param standardHeaderFooter true if std header
 	 */
 	public void setStandardHeaderFooter (boolean standardHeaderFooter)
@@ -426,7 +429,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 
 	/**
 	 * 	Set Table based.
-	 * 	Reset Form
+	 * 	Reset Form.
 	 * 	@param tableBased true if table based
 	 */
 	public void setIsTableBased (boolean tableBased)
@@ -436,8 +439,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			super.setIsForm(false);
 	}	//	setIsTableBased
 
-
-	/**************************************************************************
+	/**
 	 * 	Set Translation View Language.
 	 * 	@param language language (checked for base language)
 	 */
@@ -457,7 +459,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	setTranslationLanguage
 
 	/**
-	 *  Get Translation View use
+	 *  Is use Translation View
 	 *	@return true if a translation view is used
 	 */
 	public boolean isTranslationView()
@@ -466,8 +468,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	isTranslationView
 
 	/**
-	 *	Update the Query to access the Translation View.
-	 *  Can be called multiple times, adds only if not set already
+	 *	Update Query to access the Translation View (with t postfix, for e.g c_order_header_vt instead of c_order_header_v).<br/>
+	 *  Can be called multiple times, add postfix only if not added already.
 	 *  @param query query to be updated
 	 */
 	public void setTranslationViewQuery (MQuery query)
@@ -480,11 +482,11 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		}
 	}	//	setTranslationViewQuery
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Optional TableFormat
 	 * 	@param AD_PrintTableFormat_ID table format
 	 */
+	@Override
 	public void setAD_PrintTableFormat_ID (int AD_PrintTableFormat_ID)
 	{
 		super.setAD_PrintTableFormat_ID(AD_PrintTableFormat_ID);
@@ -512,6 +514,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 * 	String Representation
 	 * 	@return info
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder ("MPrintFormat[ID=").append(get_ID())
@@ -522,23 +525,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		return sb.toString();
 	}	//	toString
 
-
-	/**************************************************************************
-	 *  Load Special data (images, ..).
-	 *  To be extended by sub-classes
-	 *  @param rs result set
-	 *  @param index zero based index
-	 *  @return value value
-	 *  @throws SQLException
-	 */
-	protected Object loadSpecial (ResultSet rs, int index) throws SQLException
-	{
-		return null;
-	}   //  loadSpecial
-
 	/**
 	 *  Save Special Data.
-	 *  To be extended by sub-classes
 	 *  @param value value
 	 *  @param index index
 	 *  @return SQL code for INSERT VALUES clause
@@ -550,6 +538,13 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		return value.toString();
 	}   //  saveNewSpecial
 	
+	/**
+	 * Create and save new print format from GridTab
+	 * @param ctx
+	 * @param gridTab
+	 * @param allColumns
+	 * @return new print format instance
+	 */
 	static public MPrintFormat createFromGridLayout(Properties ctx, GridTab gridTab, boolean allColumns)
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(ctx);
@@ -686,17 +681,23 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		return pf;
 	}
 
+	/**
+	 * Is print format with name exists
+	 * @param clientID
+	 * @param name
+	 * @return true if exists
+	 */
 	private static boolean exists(int clientID, String name) {
 		final String sql = "SELECT COUNT(*) FROM AD_PrintFormat WHERE AD_Client_ID=? AND Name=?";
 		int cnt = DB.getSQLValue(null, sql, clientID, name);
 		return cnt > 0;
 	}
 
-	/**************************************************************************
-	 * 	Create MPrintFormat for Table
+	/**
+	 * 	Create and save new MPrintFormat instance for Table
 	 *  @param ctx context
 	 * 	@param AD_Table_ID table
-	 * 	@return print format
+	 * 	@return new print format instance
 	 */
 	static public MPrintFormat createFromTable (Properties ctx, int AD_Table_ID)
 	{
@@ -704,12 +705,11 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	createFromTable
 
 	/**
-	 * 
-	 * 	Create MPrintFormat for Table
+	 *  Create and save new MPrintFormat instance for Table
 	 *  @param ctx context
 	 * 	@param AD_Table_ID table
 	 *  @param AD_PrintFormat_ID 0 or existing PrintFormat
-	 * 	@return print format
+	 * 	@return new print format instance
 	 */
 	static public MPrintFormat createFromTable (Properties ctx,
 			int AD_Table_ID, int AD_PrintFormat_ID) {
@@ -717,12 +717,12 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Create MPrintFormat for Table
+	 * 	Create and save new MPrintFormat instance for Table
 	 *  @param ctx context
 	 * 	@param AD_Table_ID table
 	 *  @param AD_PrintFormat_ID 0 or existing PrintFormat
 	 *  @param trxName the transaction
-	 * 	@return print format
+	 * 	@return new print format instance
 	 */
 	static public MPrintFormat createFromTable (Properties ctx,
 		int AD_Table_ID, int AD_PrintFormat_ID, String trxName)
@@ -796,11 +796,11 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	createFromTable
 
 	/**
-	 * 	Create MPrintFormat for ReportView
+	 * 	Create and save new MPrintFormat instance from ReportView
 	 *  @param ctx context
 	 * 	@param AD_ReportView_ID ReportView
 	 *  @param ReportName - optional Report Name
-	 * 	@return print format
+	 * 	@return new print format instance
 	 */
 	static public MPrintFormat createFromReportView (Properties ctx, int AD_ReportView_ID, String ReportName)
 	{
@@ -870,6 +870,12 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		return pf;
 	}	//	createFromReportView
 
+	/**
+	 * Set unique name for print format (starting from basename)
+	 * @param AD_Client_ID
+	 * @param pf
+	 * @param basename
+	 */
 	public static void setUniqueName(int AD_Client_ID, MPrintFormat pf, String basename) {
 		String name = basename;
 		pf.setName(name);
@@ -894,17 +900,16 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		}
 	}
 
-
 	/**
-	 * 	Create Items.
-	 *  Using the display order of Fields in some Tab
+	 * 	Create Print Format Items from table columns.<br/>
+	 *  Using the display order of Fields in some Tab.
 	 *  @param ctx context
 	 *  @param format print format
 	 * 	@return items
 	 */
 	static private MPrintFormatItem[] createItems (Properties ctx, MPrintFormat format)
 	{
-		s_log.fine ("From window Tab ...");
+		if (s_log.isLoggable(Level.FINE)) s_log.fine ("From window Tab ...");
 		ArrayList<MPrintFormatItem> list = new ArrayList<MPrintFormatItem>();
 		//	Get Column List from Tab
 		String sql = "SELECT AD_Column_ID " //, Name, IsDisplayed, SeqNo
@@ -951,7 +956,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		//	No Tab found for Table
 		if (list.size() == 0)
 		{
-			s_log.fine("From Table ...");
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("From Table ...");
 			sql = "SELECT AD_Column_ID "
 				+ "FROM AD_Column "
 				+ "WHERE IsActive='Y' AND AD_Table_ID=? "
@@ -1000,7 +1005,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	createItems
 
 	/**
-	 * 	Copy Items
+	 * 	Copy Items to "toFormat" from "fromFormat"
 	 *  @param fromFormat from print format
 	 *  @param toFormat to print format (client, id)
 	 * 	@return items
@@ -1066,8 +1071,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
         if (s_log.isLoggable(Level.FINEST)) s_log.finest("#" + counter);
     }	//	copyTranslationItems
 
-
-	/**************************************************************************
+	/**
 	 * 	Copy existing Definition To Client
 	 * 	@param ctx context
 	 * 	@param from_AD_PrintFormat_ID format
@@ -1161,8 +1165,10 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		return to;
 	}	//	copyToClient
 
-	/*************************************************************************/
-
+	/**
+	 * Get current date time in "yyyyMMddHHmmss" format.
+	 * @return
+	 */
 	private static String getDateTime() {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -1170,7 +1176,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		return dt;
 	}
 
-	/** Cached Formats						*/
+	/** Cached Print Formats						*/
 	static private ImmutablePOCache<String,MPrintFormat> s_formats = new ImmutablePOCache<String,MPrintFormat>(Table_Name, 30) {
 		private static final long serialVersionUID = 2428566381289874703L;
 
@@ -1211,7 +1217,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	};
 
 	/**
-	 * 	Get Format from cache (immutable)
+	 * 	Get Print Format from cache (immutable)
 	 * 	@param AD_PrintFormat_ID id
 	 * 	@return Format
 	 */
@@ -1221,7 +1227,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get Format from cache (immutable)
+	 * 	Get Print Format from cache (immutable)
 	 * 	@param ctx context
 	 * 	@param AD_PrintFormat_ID id
 	 *  @param readFromDisk refresh from disk
@@ -1250,7 +1256,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * 	Get (default) Printformat for Report View or Table
+	 * 	Get (default) Print format for Report View or Table
 	 *	@param ctx context
 	 *	@param AD_ReportView_ID id or 0
 	 *	@param AD_Table_ID id or 0
@@ -1287,7 +1293,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}	//	get
 
 	/**
-	 * 	Delete Format from Cache
+	 * 	Delete Print Format from Cache
 	 * 	@param AD_PrintFormat_ID id
 	 */
 	static public void deleteFromCache (int AD_PrintFormat_ID)
@@ -1298,10 +1304,9 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		s_formats.put(key.toString(), null);
 	}	//	deleteFromCache
 
-    //begin vpj-cd e-evolution
 	/**
-	 * Get ID of Print Format use Name
-	 * @param formatName
+	 * Get ID of Print Format via Name
+	 * @param formatName print format name
 	 * @param AD_Table_ID
 	 * @param AD_Client_ID
 	 * @return AD_PrintFormat_ID
@@ -1312,14 +1317,14 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 								+ " ORDER BY AD_Client_ID DESC";
 		return DB.getSQLValue(null, sql, formatName, AD_Table_ID, AD_Client_ID);
 	}
-	//end vpj-cd e-evolution
 
 	/**
+	 * Get accessible print formats
 	 * @param AD_Table_ID
 	 * @param AD_Window_ID
 	 * @param trxName
-	 * @param makeNewWhenEmpty
-	 * @return
+	 * @param makeNewWhenEmpty if true, create new print format if no existing print format found for table
+	 * @return accessible print formats
 	 */
 	public static List<KeyNamePair> getAccessiblePrintFormats (int AD_Table_ID, int AD_Window_ID, String trxName, boolean makeNewWhenEmpty)
 	{
@@ -1385,9 +1390,9 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	@Deprecated
 	public MPrintFormat clone() throws CloneNotSupportedException {
 		MPrintFormat clone = (MPrintFormat) super.clone();
-		clone.m_items = m_items == null ? null : new MPrintFormatItem[m_items.length];
-		for(int i = 0; i < m_items.length; i++) {
-			clone.m_items[i] = m_items[i];
+		clone.m_items = getItems() == null ? null : new MPrintFormatItem[getItems().length];
+		for(int i = 0; i < getItems().length; i++) {
+			clone.m_items[i] = getItems()[i];
 		}
 		clone.m_tFormat = m_tFormat;
 		clone.m_language = Env.getLanguage(Env.getCtx());
@@ -1395,6 +1400,11 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		return clone;
 	}
 
+	/**
+	 * Get zoom window id
+	 * @param AD_PrintFormat_ID
+	 * @return zoom AD_Window_ID
+	 */
 	public static int getZoomWindowID(int AD_PrintFormat_ID) {
 		int pfAD_Window_ID = Env.getZoomWindowID(Table_ID, AD_PrintFormat_ID);
 		return pfAD_Window_ID;
@@ -1407,8 +1417,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			return this;
 		
 		makeImmutable();
-		if (m_items != null && m_items.length > 0)
-			Arrays.stream(m_items).forEach(e -> e.markImmutable());
+		if (getItems() != null && getItems().length > 0)
+			Arrays.stream(getItems()).forEach(e -> e.markImmutable());
 		if (m_tFormat != null)
 			m_tFormat.markImmutable();
 		return this;

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_BankAccount_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BankAccount_Acct")
 public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Acct (Properties ctx, int C_BankAccount_Acct_ID, String trxName)
@@ -39,9 +39,9 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
       /** if (C_BankAccount_Acct_ID == 0)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
@@ -56,9 +56,9 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
       /** if (C_BankAccount_Acct_ID == 0)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
@@ -73,9 +73,9 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
       /** if (C_BankAccount_Acct_UU == null)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
@@ -90,9 +90,9 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
       /** if (C_BankAccount_Acct_UU == null)
         {
 			setB_Asset_Acct (0);
+			setB_InTransit_Acct (0);
 			setB_InterestExp_Acct (0);
 			setB_InterestRev_Acct (0);
-			setB_InTransit_Acct (0);
 			setB_PaymentSelect_Acct (0);
 			setB_UnallocatedCash_Acct (0);
 			setC_AcctSchema_ID (0);
@@ -128,6 +128,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_Asset_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -153,56 +154,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getB_InterestExp_Acct(), get_TrxName());
-	}
-
-	/** Set Bank Interest Expense.
-		@param B_InterestExp_Acct Bank Interest Expense Account
-	*/
-	public void setB_InterestExp_Acct (int B_InterestExp_Acct)
-	{
-		set_Value (COLUMNNAME_B_InterestExp_Acct, Integer.valueOf(B_InterestExp_Acct));
-	}
-
-	/** Get Bank Interest Expense.
-		@return Bank Interest Expense Account
-	  */
-	public int getB_InterestExp_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestExp_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getB_InterestRev_Acct(), get_TrxName());
-	}
-
-	/** Set Bank Interest Revenue.
-		@param B_InterestRev_Acct Bank Interest Revenue Account
-	*/
-	public void setB_InterestRev_Acct (int B_InterestRev_Acct)
-	{
-		set_Value (COLUMNNAME_B_InterestRev_Acct, Integer.valueOf(B_InterestRev_Acct));
-	}
-
-	/** Get Bank Interest Revenue.
-		@return Bank Interest Revenue Account
-	  */
-	public int getB_InterestRev_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestRev_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_InTransit_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -228,6 +180,59 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getB_InterestExp_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestExp_Acct(), get_TrxName());
+	}
+
+	/** Set Bank Interest Expense.
+		@param B_InterestExp_Acct Bank Interest Expense Account
+	*/
+	public void setB_InterestExp_Acct (int B_InterestExp_Acct)
+	{
+		set_Value (COLUMNNAME_B_InterestExp_Acct, Integer.valueOf(B_InterestExp_Acct));
+	}
+
+	/** Get Bank Interest Expense.
+		@return Bank Interest Expense Account
+	  */
+	public int getB_InterestExp_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestExp_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getB_InterestRev_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getB_InterestRev_Acct(), get_TrxName());
+	}
+
+	/** Set Bank Interest Revenue.
+		@param B_InterestRev_Acct Bank Interest Revenue Account
+	*/
+	public void setB_InterestRev_Acct (int B_InterestRev_Acct)
+	{
+		set_Value (COLUMNNAME_B_InterestRev_Acct, Integer.valueOf(B_InterestRev_Acct));
+	}
+
+	/** Get Bank Interest Revenue.
+		@return Bank Interest Revenue Account
+	  */
+	public int getB_InterestRev_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_B_InterestRev_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_PaymentSelect_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -253,6 +258,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getB_UnallocatedCash_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -278,6 +284,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -321,6 +328,7 @@ public class X_C_BankAccount_Acct extends PO implements I_C_BankAccount_Acct, I_
 		return (String)get_Value(COLUMNNAME_C_BankAccount_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)

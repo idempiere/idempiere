@@ -252,25 +252,20 @@ public class MRMA extends X_M_RMA implements DocAction
 		return null;
 	}	//	createPDF
 
-	/**
-	 * 	Before Save
-	 *	Set BPartner, Currency
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord)
 			setC_Order_ID(0);
+		// load m_inout
 	    getShipment();
-		//	Set BPartner
+		//	Set BPartner from shipment
 		if (getC_BPartner_ID() == 0)
 		{
 			if (m_inout != null)
 				setC_BPartner_ID(m_inout.getC_BPartner_ID());
 		}
-		//	Set Currency
+		//	Set Currency from order or invoice (through shipment)
 		if (getC_Currency_ID() == 0)
 		{
 			if (m_inout != null)
@@ -288,13 +283,14 @@ public class MRMA extends X_M_RMA implements DocAction
 			}
 		}
 
-		// Verification whether Shipment/Receipt matches RMA for sales transaction
+		// Verification whether Shipment/Receipt matches RMA for IsSOTrx flag
 		if (m_inout != null && m_inout.isSOTrx() != isSOTrx())
 		{
 		    log.saveError("RMA.IsSOTrx <> InOut.IsSOTrx", "");
 		    return false;
 		}
 
+		// Set SalesRep_ID from shipment
         if (getSalesRep_ID() == 0 && m_inout != null && m_inout.getSalesRep_ID() > 0) {
        		setSalesRep_ID(m_inout.getSalesRep_ID());
         }

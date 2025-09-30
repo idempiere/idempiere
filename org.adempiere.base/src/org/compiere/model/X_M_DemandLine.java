@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DemandLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_DemandLine")
 public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_DemandLine (Properties ctx, int M_DemandLine_ID, String trxName)
@@ -42,8 +42,8 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
       /** if (M_DemandLine_ID == 0)
         {
 			setC_Period_ID (0);
-			setM_Demand_ID (0);
 			setM_DemandLine_ID (0);
+			setM_Demand_ID (0);
 			setM_Product_ID (0);
 			setQty (Env.ZERO);
 			setQtyCalculated (Env.ZERO);
@@ -57,8 +57,8 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
       /** if (M_DemandLine_ID == 0)
         {
 			setC_Period_ID (0);
-			setM_Demand_ID (0);
 			setM_DemandLine_ID (0);
+			setM_Demand_ID (0);
 			setM_Product_ID (0);
 			setQty (Env.ZERO);
 			setQtyCalculated (Env.ZERO);
@@ -72,8 +72,8 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
       /** if (M_DemandLine_UU == null)
         {
 			setC_Period_ID (0);
-			setM_Demand_ID (0);
 			setM_DemandLine_ID (0);
+			setM_Demand_ID (0);
 			setM_Product_ID (0);
 			setQty (Env.ZERO);
 			setQtyCalculated (Env.ZERO);
@@ -87,8 +87,8 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
       /** if (M_DemandLine_UU == null)
         {
 			setC_Period_ID (0);
-			setM_Demand_ID (0);
 			setM_DemandLine_ID (0);
+			setM_Demand_ID (0);
 			setM_Product_ID (0);
 			setQty (Env.ZERO);
 			setQtyCalculated (Env.ZERO);
@@ -123,6 +123,7 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
@@ -158,34 +159,6 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Period_ID()));
     }
-
-	public org.compiere.model.I_M_Demand getM_Demand() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Demand)MTable.get(getCtx(), org.compiere.model.I_M_Demand.Table_ID)
-			.getPO(getM_Demand_ID(), get_TrxName());
-	}
-
-	/** Set Demand.
-		@param M_Demand_ID Material Demand
-	*/
-	public void setM_Demand_ID (int M_Demand_ID)
-	{
-		if (M_Demand_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Demand_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Demand_ID, Integer.valueOf(M_Demand_ID));
-	}
-
-	/** Get Demand.
-		@return Material Demand
-	  */
-	public int getM_Demand_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Demand_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Demand Line.
 		@param M_DemandLine_ID Material Demand Line
@@ -224,6 +197,36 @@ public class X_M_DemandLine extends PO implements I_M_DemandLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_DemandLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Demand getM_Demand() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Demand)MTable.get(getCtx(), org.compiere.model.I_M_Demand.Table_ID)
+			.getPO(getM_Demand_ID(), get_TrxName());
+	}
+
+	/** Set Demand.
+		@param M_Demand_ID Material Demand
+	*/
+	public void setM_Demand_ID (int M_Demand_ID)
+	{
+		if (M_Demand_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Demand_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Demand_ID, Integer.valueOf(M_Demand_ID));
+	}
+
+	/** Get Demand.
+		@return Material Demand
+	  */
+	public int getM_Demand_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Demand_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

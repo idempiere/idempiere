@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LdapAccess
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_LdapAccess")
 public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_LdapAccess (Properties ctx, int AD_LdapAccess_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_LdapAccess_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_LdapProcessor getAD_LdapProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_LdapProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_LdapProcessor.Table_ID)
@@ -174,6 +175,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -249,6 +251,7 @@ public class X_AD_LdapAccess extends PO implements I_AD_LdapAccess, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_InterestArea getR_InterestArea() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_InterestArea)MTable.get(getCtx(), org.compiere.model.I_R_InterestArea.Table_ID)

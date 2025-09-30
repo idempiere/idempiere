@@ -44,11 +44,11 @@ public class GridWindowVO implements Serializable
 	
 	private static final CLogger log = CLogger.getCLogger(GridWindowVO.class);
 
-	/**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
-	
-	/**
+  public static final String GRID_WINDOW_VO_CACHE_NAME = I_AD_Window.Table_Name + "|GridWindowVO";
+  /**	Window Cache		*/
+	private static CCache<String,GridWindowVO>	s_windowsvo = new CCache<String,GridWindowVO>(I_AD_Window.Table_Name, GRID_WINDOW_VO_CACHE_NAME, 10);
+
+  /**
 	 * @param AD_Window_ID
 	 * @param windowNo
 	 * @return {@link GridWindowVO}
@@ -66,22 +66,7 @@ public class GridWindowVO implements Serializable
 	 */
 	public static GridWindowVO get(int AD_Window_ID, int windowNo, int AD_Menu_ID) 
 	{
-		GridWindowVO mWindowVO = s_windowsvo.get(AD_Window_ID);
-		if (mWindowVO != null)
-		{
-			mWindowVO = mWindowVO.clone(windowNo);
-			if (log.isLoggable(Level.INFO)) log.info("Cached=" + mWindowVO);
-		}
-		if (mWindowVO == null)
-		{
-			if (log.isLoggable(Level.CONFIG)) log.config("create local");
-			mWindowVO = GridWindowVO.create (Env.getCtx(), windowNo, AD_Window_ID, AD_Menu_ID);
-			if (mWindowVO != null) 
-			{
-				s_windowsvo.put(AD_Window_ID, mWindowVO);
-			}
-		}
-		return mWindowVO;
+		return GridWindowVO.create (Env.getCtx(), windowNo, AD_Window_ID, AD_Menu_ID);
 	}
 	
 	/**
@@ -118,14 +103,12 @@ public class GridWindowVO implements Serializable
 	 */
 	public static GridWindowVO create (Properties ctx, int WindowNo, int AD_Window_ID, int AD_Menu_ID)
 	{
-		if (CLogger.get().isLoggable(Level.CONFIG))
-			CLogger.get().config("#" + WindowNo
+		if (log.isLoggable(Level.CONFIG))
+			log.config("#" + WindowNo
 				+ " - AD_Window_ID=" + AD_Window_ID + "; AD_Menu_ID=" + AD_Menu_ID);
-		GridWindowVO vo = new GridWindowVO (ctx, WindowNo);
-		vo.AD_Window_ID = AD_Window_ID;
-
-		//  Get Window_ID if required	- (used by HTML UI)
-		if (vo.AD_Window_ID == 0 && AD_Menu_ID != 0)
+		String menuIsReadWrite = null;
+		//  Get Window_ID if required
+		if (AD_Window_ID == 0 && AD_Menu_ID != 0)
 		{
 			String sql = "SELECT AD_Window_ID, IsSOTrx, IsReadOnly FROM AD_Menu "
 				+ "WHERE AD_Menu_ID=? AND Action='W'";
@@ -138,20 +121,20 @@ public class GridWindowVO implements Serializable
 				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
-					vo.AD_Window_ID = rs.getInt(1);
+					AD_Window_ID = rs.getInt(1);
 					String IsSOTrx = rs.getString(2);
 					Env.setContext(ctx, WindowNo, "IsSOTrx", (IsSOTrx != null && IsSOTrx.equals("Y")));
 					//
 					String IsReadOnly = rs.getString(3);
 					if (IsReadOnly != null && IsReadOnly.equals("Y"))
-						vo.IsReadWrite = "Y";
+						menuIsReadWrite = "Y";
 					else
-						vo.IsReadWrite = "N";
+						menuIsReadWrite = "N";
 				}
 			}
 			catch (SQLException e)
 			{
-				CLogger.get().log(Level.SEVERE, "Menu", e);
+				log.log(Level.SEVERE, "Menu", e);
 				return null;
 			}
 			finally
@@ -159,39 +142,60 @@ public class GridWindowVO implements Serializable
 				DB.close(rs, pstmt);
 				rs = null; pstmt = null;
 			}
-			if (CLogger.get().isLoggable(Level.CONFIG))
-				CLogger.get().config("AD_Window_ID=" + vo.AD_Window_ID);
+			if (log.isLoggable(Level.CONFIG))
+				log.config("AD_Window_ID=" + AD_Window_ID);
 		}
-
-		//  --  Get Window
-
-		MWindow window = MWindow.get(AD_Window_ID);
-		boolean base = Env.isBaseLanguage(vo.ctx, "AD_Window");
-		if (window != null)
+		
+		String keyCache = AD_Window_ID + "|" + Env.getAD_Language(ctx);
+		GridWindowVO vo = s_windowsvo.get(keyCache);
+		boolean clone = false;
+		if (vo != null)
 		{
-			vo.Name = base ? window.getName() : window.get_Translation(MWindow.COLUMNNAME_Name); 
-			vo.Description = base ? window.getDescription() : window.get_Translation(MWindow.COLUMNNAME_Description);
-			if (vo.Description == null)
-				vo.Description = "";
-			vo.Help = base ? window.getHelp() : window.get_Translation(MWindow.COLUMNNAME_Help);
-			if (vo.Help == null)
-				vo.Help = "";
-			vo.WindowType = window.getWindowType();
-			//
-			vo.AD_Color_ID = window.getAD_Color_ID();
-			vo.AD_Image_ID = window.getAD_Image_ID();
-			//vo.IsReadWrite = rs.getString(7);
-			//
-			vo.WinHeight = window.getWinHeight();
-			vo.WinWidth = window.getWinWidth();
-			//
-			vo.IsSOTrx = window.isSOTrx();
-			Env.setContext(ctx, WindowNo, "IsSOTrx", vo.IsSOTrx);
-			vo.AD_Window_UU = window.getAD_Window_UU();
-		}
+			vo = vo.clone(WindowNo, false);
+			clone = true;
+		} 
 		else
 		{
-			vo = null;
+			vo = new GridWindowVO (ctx, WindowNo);
+			vo.AD_Window_ID = AD_Window_ID;
+		}
+		
+		if (menuIsReadWrite != null)
+			vo.IsReadWrite = menuIsReadWrite;
+		
+		if (!clone)
+		{
+			//  --  Get Window
+			MWindow window = MWindow.get(AD_Window_ID);
+			boolean base = Env.isBaseLanguage(vo.ctx, "AD_Window");
+			if (window != null)
+			{
+				vo.Name = base ? window.getName() : window.get_Translation(MWindow.COLUMNNAME_Name); 
+				vo.Description = base ? window.getDescription() : window.get_Translation(MWindow.COLUMNNAME_Description);
+				if (vo.Description == null)
+					vo.Description = "";
+				vo.Help = base ? window.getHelp() : window.get_Translation(MWindow.COLUMNNAME_Help);
+				if (vo.Help == null)
+					vo.Help = "";
+				vo.WindowType = window.getWindowType();
+				//
+				vo.AD_Color_ID = window.getAD_Color_ID();
+				vo.AD_Image_ID = window.getAD_Image_ID();
+				//vo.IsReadWrite = rs.getString(7);
+				//
+				vo.WinHeight = window.getWinHeight();
+				vo.WinWidth = window.getWinWidth();
+				//
+				vo.IsSOTrx = window.isSOTrx();
+				Env.setContext(ctx, WindowNo, "IsSOTrx", vo.IsSOTrx);
+				vo.AD_Window_UU = window.getAD_Window_UU();
+				vo.EntityType = window.getEntityType();
+			}
+			else
+			{
+				vo = null;
+			}
+			s_windowsvo.put(keyCache, vo.clone(0, false));
 		}
 		
 		// Ensure ASP exceptions
@@ -203,15 +207,15 @@ public class GridWindowVO implements Serializable
 			vo.IsReadWrite = (windowAccess.booleanValue() ? "Y" : "N");
 		if (vo == null)
 		{
-			CLogger.get().log(Level.SEVERE, "No Window - AD_Window_ID=" + AD_Window_ID
+			log.log(Level.SEVERE, "No Window - AD_Window_ID=" + AD_Window_ID
 				+ ", AD_Role_ID=" + role);
-			CLogger.get().saveError("AccessTableNoView", "(Not found)");
+			log.saveError("AccessTableNoView", "(Not found)");
 			return null;
 		}
 		//	Read Write
 		if (vo.IsReadWrite == null)
 		{
-			CLogger.get().saveError("AccessTableNoView", "(found)");
+			log.saveError("AccessTableNoView", "(found)");
 			return null;
 		}
 
@@ -236,6 +240,9 @@ public class GridWindowVO implements Serializable
 		return vo;
 	}   //  create
 
+    public static final String GRID_TAB_VO_CACHE_NAME = "GridTabVOs Cache";
+    private static final CCache<String, ArrayList<GridTabVO>> s_gridTabsCache = new CCache<String, ArrayList<GridTabVO>>(MTab.Table_Name, GRID_TAB_VO_CACHE_NAME, 100, 0, false, 0);
+	
 	/**
 	 *  Create Window Tabs
 	 *  @param mWindowVO Window Value Object
@@ -244,55 +251,109 @@ public class GridWindowVO implements Serializable
 	private static boolean createTabs (GridWindowVO mWindowVO)
 	{
 		mWindowVO.Tabs = new ArrayList<GridTabVO>();
-
+		MRole role = MRole.getDefault(mWindowVO.ctx, false);
+		
 		String sql = GridTabVO.getSQL(mWindowVO.ctx);
-		int TabNo = 0;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			//	create statement
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, mWindowVO.AD_Window_ID);
-			rs = pstmt.executeQuery();
-			boolean firstTab = true;
-			while (rs.next())
+		String cacheKey = sql + "|" + mWindowVO.AD_Window_ID;
+		ArrayList<GridTabVO> cacheTabs = s_gridTabsCache.get(cacheKey);
+		if (cacheTabs != null)
+		{			
+			boolean firstTabIsNull = false;
+			for(GridTabVO cacheTab : cacheTabs)
 			{
-				if (mWindowVO.AD_Table_ID == 0)
-					mWindowVO.AD_Table_ID = rs.getInt("AD_Table_ID");
-				//  Create TabVO
-				GridTabVO mTabVO = GridTabVO.create(mWindowVO, TabNo, rs,
-					mWindowVO.WindowType.equals(WINDOWTYPE_QUERY),  //  isRO
-					mWindowVO.WindowType.equals(WINDOWTYPE_TRX));   //  onlyCurrentRows
-				if (mTabVO == null && firstTab)
-					break;		//	don't continue if first tab is null
-				if (mTabVO != null)
+				GridTabVO tabvo = cacheTab.clone(mWindowVO.ctx, mWindowVO.WindowNo);
+				if (!GridTabVO.checkAccessAndShowPreference(tabvo, role))
 				{
-					if (!mTabVO.IsReadOnly && "N".equals(mWindowVO.IsReadWrite))
-						mTabVO.IsReadOnly = true;
-					mWindowVO.Tabs.add(mTabVO);
-					TabNo++;        //  must be same as mWindow.getTab(x)
-					firstTab = false;
+					//do not update mWindowVO.Tabs if first tab is not visible
+					if (mWindowVO.Tabs.isEmpty())
+						firstTabIsNull = true;
+					
+					continue;
+				}
+				else if (!firstTabIsNull)
+				{
+					GridTabVO.loadUserDefTab(tabvo);
+                    GridTabVO.updateContext(tabvo);
+					if (!tabvo.IsReadOnly && "N".equals(mWindowVO.IsReadWrite))
+						tabvo.IsReadOnly = true;
+					mWindowVO.Tabs.add(tabvo);
+
+					if (mWindowVO.AD_Table_ID == 0)
+						mWindowVO.AD_Table_ID = tabvo.AD_Table_ID;
 				}
 			}
+			//  No Tabs
+			if (mWindowVO.Tabs.size() == 0)
+			{
+				log.log(Level.SEVERE, "No Tabs - AD_Window_ID=" 
+					+ mWindowVO.AD_Window_ID + " - " + sql);
+				return false;
+			}
 		}
-		catch (SQLException e)
+		else
 		{
-			CLogger.get().log(Level.SEVERE, "createTabs", e);
-			return false;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+			cacheTabs = new ArrayList<GridTabVO>();
+			int TabNo = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				//	create statement
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, mWindowVO.AD_Window_ID);
+				rs = pstmt.executeQuery();
+				boolean firstTab = true;
+				boolean firstTabIsNull = false;
+				while (rs.next())
+				{
+					if (mWindowVO.AD_Table_ID == 0)
+						mWindowVO.AD_Table_ID = rs.getInt("AD_Table_ID");
+					//  Create TabVO
+					GridTabVO mTabVO = GridTabVO.create(mWindowVO, TabNo, rs,
+						mWindowVO.WindowType.equals(WINDOWTYPE_QUERY),  //  isRO
+						mWindowVO.WindowType.equals(WINDOWTYPE_TRX));   //  onlyCurrentRows
+					if (mTabVO != null)
+						cacheTabs.add(mTabVO.clone(Env.getCtx(), 0));
+					if (!GridTabVO.checkAccessAndShowPreference(mTabVO, role))
+						mTabVO = null;
+					if (mTabVO != null)
+					{
+						GridTabVO.loadUserDefTab(mTabVO);
+						GridTabVO.updateContext(mTabVO);
+					}
 
-		//  No Tabs
-		if (TabNo == 0 || mWindowVO.Tabs.size() == 0)
-		{
-			CLogger.get().log(Level.SEVERE, "No Tabs - AD_Window_ID=" 
-				+ mWindowVO.AD_Window_ID + " - " + sql);
-			return false;
+					if (mTabVO == null && firstTab)
+						firstTabIsNull = true;	//	don't continue if first tab is null
+					if (mTabVO != null && !firstTabIsNull)
+					{
+						if (!mTabVO.IsReadOnly && "N".equals(mWindowVO.IsReadWrite))
+							mTabVO.IsReadOnly = true;
+						mWindowVO.Tabs.add(mTabVO);
+						TabNo++;        //  must be same as mWindow.getTab(x)
+						firstTab = false;
+					}
+				}
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, "createTabs", e);
+				return false;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}
+	
+			s_gridTabsCache.put(cacheKey, cacheTabs);
+			
+			//  No Tabs
+			if (TabNo == 0 || mWindowVO.Tabs.size() == 0)
+			{
+				log.log(Level.SEVERE, "No Tabs - AD_Window_ID=" 
+					+ mWindowVO.AD_Window_ID + " - " + sql);
+				return false;
+			}
 		}
 
 		//	Put base table of window in ctx (for VDocAction)
@@ -346,6 +407,9 @@ public class GridWindowVO implements Serializable
 	/** Base Table		*/
 	public int 			AD_Table_ID = 0;
 
+	/** Window Entity Type **/
+	public String		EntityType = null;
+
 	/** Qyery				*/
 	public static final String	WINDOWTYPE_QUERY = "Q";
 	/** Transaction			*/
@@ -374,34 +438,52 @@ public class GridWindowVO implements Serializable
 	 */
 	public GridWindowVO clone (int windowNo)
 	{
+		return clone(windowNo, true);
+	}
+	
+	/**
+	 * 	Clone
+	 * 	@param windowNo no
+	 *  @param cloneTabs
+	 *	@return GridWindowVO
+	 */
+	public GridWindowVO clone (int windowNo, boolean cloneTabs)
+	{
 		GridWindowVO clone = null;
 		try
 		{
 			clone = new GridWindowVO(ctx, windowNo);
+			clone.AD_Color_ID = AD_Color_ID;
+			clone.AD_Image_ID = AD_Image_ID;
+			clone.AD_Table_ID = AD_Table_ID;
 			clone.AD_Window_ID = AD_Window_ID;
 			clone.AD_Window_UU = AD_Window_UU;
-			clone.Name = Name;
 			clone.Description = Description;
+			clone.EntityType = EntityType;
 			clone.Help = Help;
-			clone.WindowType = WindowType;
-			clone.AD_Image_ID = AD_Image_ID;
-			clone.AD_Color_ID = AD_Color_ID;
 			clone.IsReadWrite = IsReadWrite;
+			clone.IsSOTrx = IsSOTrx;
+			clone.Name = Name;
+			clone.WindowType = WindowType;
 			clone.WinWidth = WinWidth;
 			clone.WinHeight = WinHeight;
-			clone.IsSOTrx = IsSOTrx;
-			Env.setContext(ctx, windowNo, "IsSOTrx", clone.IsSOTrx);
-			clone.AD_Table_ID = AD_Table_ID;
-			Env.setContext(ctx, windowNo, "BaseTable_ID", clone.AD_Table_ID);
 			//
-			clone.Tabs = new ArrayList<GridTabVO>();
-			for (int i = 0; i < Tabs.size(); i++)
+			clone.Tabs = null;
+			if (cloneTabs)
 			{
-				GridTabVO tab = Tabs.get(i);
-				GridTabVO cloneTab = tab.clone(clone.ctx, windowNo);
-				if (cloneTab == null)
-					return null;
-				clone.Tabs.add(cloneTab);
+				clone.Tabs = new ArrayList<GridTabVO>();
+				for (int i = 0; i < Tabs.size(); i++)
+				{
+					GridTabVO tab = Tabs.get(i);
+					GridTabVO cloneTab = tab.clone(clone.ctx, windowNo);
+					if (cloneTab == null)
+						return null;
+					clone.Tabs.add(cloneTab);
+					GridTabVO.updateContext(cloneTab);
+				}
+				//set context, cloneTabs is usually for web client session cache
+				Env.setContext(ctx, windowNo, "IsSOTrx", clone.IsSOTrx);
+				Env.setContext(ctx, windowNo, "BaseTable_ID", clone.AD_Table_ID);
 			}
 		}
 		catch (Exception e)

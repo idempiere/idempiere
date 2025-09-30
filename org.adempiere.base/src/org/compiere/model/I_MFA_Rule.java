@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for MFA_Rule
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_MFA_Rule 
 {
@@ -117,6 +117,7 @@ public interface I_MFA_Rule
 	  */
 	public int getMFA_Method_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException;
 
     /** Column name MFA_Rule_ID */

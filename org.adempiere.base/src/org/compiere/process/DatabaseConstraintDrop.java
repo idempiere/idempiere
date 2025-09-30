@@ -22,8 +22,9 @@
  * Contributors:                                                       *
  * - Carlos Ruiz - globalqss                                           *
  **********************************************************************/
-
 package org.compiere.process;
+
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MColumn;
@@ -32,6 +33,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
+/**
+ * Process to drop DB constraint
+ */
 @org.adempiere.base.annotation.Process
 public class DatabaseConstraintDrop extends SvrProcess {
 
@@ -45,7 +49,7 @@ public class DatabaseConstraintDrop extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		MColumn column = new MColumn(getCtx(), p_AD_Column_ID, get_TrxName());
-		log.info(column.toString());
+		if (log.isLoggable(Level.INFO)) log.info(column.toString());
 		if (Util.isEmpty(column.getFKConstraintName(), true)) {
 			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NotValid@: @FKConstraintName@"));
 		}

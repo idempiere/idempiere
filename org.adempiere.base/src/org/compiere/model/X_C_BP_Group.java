@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Group
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_Group")
 public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BP_Group (Properties ctx, int C_BP_Group_ID, String trxName)
@@ -123,6 +123,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -188,6 +189,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_BP_Group_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
@@ -297,6 +299,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
@@ -325,6 +328,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
@@ -377,6 +381,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_DiscountSchema)MTable.get(getCtx(), org.compiere.model.I_M_DiscountSchema.Table_ID)
@@ -405,6 +410,7 @@ public class X_C_BP_Group extends PO implements I_C_BP_Group, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)

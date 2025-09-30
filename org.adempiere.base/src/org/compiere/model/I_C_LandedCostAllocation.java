@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_LandedCostAllocation
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_LandedCostAllocation 
 {
@@ -101,6 +101,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_LandedCostAllocation_ID */
@@ -154,6 +155,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_CostElement_ID */
@@ -169,6 +171,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getM_CostElement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
@@ -184,6 +187,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -199,6 +203,7 @@ public interface I_C_LandedCostAllocation
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Qty */

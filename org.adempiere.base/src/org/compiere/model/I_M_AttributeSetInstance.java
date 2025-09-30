@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_AttributeSetInstance
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_AttributeSetInstance 
 {
@@ -130,21 +130,6 @@ public interface I_M_AttributeSetInstance
 	  */
 	public String getLot();
 
-    /** Column name M_AttributeSet_ID */
-    public static final String COLUMNNAME_M_AttributeSet_ID = "M_AttributeSet_ID";
-
-	/** Set Attribute Set.
-	  * Product Attribute Set
-	  */
-	public void setM_AttributeSet_ID (int M_AttributeSet_ID);
-
-	/** Get Attribute Set.
-	  * Product Attribute Set
-	  */
-	public int getM_AttributeSet_ID();
-
-	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
-
     /** Column name M_AttributeSetInstance_ID */
     public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
 
@@ -167,6 +152,22 @@ public interface I_M_AttributeSetInstance
 	/** Get M_AttributeSetInstance_UU	  */
 	public String getM_AttributeSetInstance_UU();
 
+    /** Column name M_AttributeSet_ID */
+    public static final String COLUMNNAME_M_AttributeSet_ID = "M_AttributeSet_ID";
+
+	/** Set Attribute Set.
+	  * Product Attribute Set
+	  */
+	public void setM_AttributeSet_ID (int M_AttributeSet_ID);
+
+	/** Get Attribute Set.
+	  * Product Attribute Set
+	  */
+	public int getM_AttributeSet_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException;
+
     /** Column name M_Lot_ID */
     public static final String COLUMNNAME_M_Lot_ID = "M_Lot_ID";
 
@@ -180,6 +181,7 @@ public interface I_M_AttributeSetInstance
 	  */
 	public int getM_Lot_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Lot getM_Lot() throws RuntimeException;
 
     /** Column name SerNo */

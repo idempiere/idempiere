@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role_Included
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Role_Included 
 {
@@ -75,6 +75,7 @@ public interface I_AD_Role_Included
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_Role_Included_UU */
@@ -111,6 +112,7 @@ public interface I_AD_Role_Included
 	/** Get Included Role	  */
 	public int getIncluded_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getIncluded_Role() throws RuntimeException;
 
     /** Column name IsActive */

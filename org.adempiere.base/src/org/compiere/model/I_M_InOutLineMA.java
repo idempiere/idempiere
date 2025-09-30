@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InOutLineMA
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_InOutLineMA 
 {
@@ -126,7 +126,17 @@ public interface I_M_InOutLineMA
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
+
+    /** Column name M_InOutLineMA_UU */
+    public static final String COLUMNNAME_M_InOutLineMA_UU = "M_InOutLineMA_UU";
+
+	/** Set M_InOutLineMA_UU	  */
+	public void setM_InOutLineMA_UU (String M_InOutLineMA_UU);
+
+	/** Get M_InOutLineMA_UU	  */
+	public String getM_InOutLineMA_UU();
 
     /** Column name M_InOutLine_ID */
     public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
@@ -141,16 +151,8 @@ public interface I_M_InOutLineMA
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
-
-    /** Column name M_InOutLineMA_UU */
-    public static final String COLUMNNAME_M_InOutLineMA_UU = "M_InOutLineMA_UU";
-
-	/** Set M_InOutLineMA_UU	  */
-	public void setM_InOutLineMA_UU (String M_InOutLineMA_UU);
-
-	/** Get M_InOutLineMA_UU	  */
-	public String getM_InOutLineMA_UU();
 
     /** Column name MovementQty */
     public static final String COLUMNNAME_MovementQty = "MovementQty";

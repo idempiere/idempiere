@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_PayrollConcept
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_PayrollConcept 
@@ -73,6 +73,7 @@ public interface I_HR_PayrollConcept
 	/** Get Rule	  */
 	public int getAD_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException;
 
     /** Column name Created */
@@ -100,6 +101,7 @@ public interface I_HR_PayrollConcept
 	/** Get Payroll Concept	  */
 	public int getHR_Concept_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException;
 
     /** Column name HR_PayrollConcept_ID */
@@ -129,6 +131,7 @@ public interface I_HR_PayrollConcept
 	/** Get Payroll	  */
 	public int getHR_Payroll_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException;
 
     /** Column name IsActive */

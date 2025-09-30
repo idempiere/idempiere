@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-
 /**
  *	Withholding Model
  *	
@@ -29,16 +28,16 @@ import java.util.Properties;
 public class MWithholding extends X_C_Withholding
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 6368597644089198711L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param C_Withholding_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_Withholding_UU  UUID key
+     * @param trxName Transaction
+     */
     public MWithholding(Properties ctx, String C_Withholding_UU, String trxName) {
         super(ctx, C_Withholding_UU, trxName);
     }
@@ -65,14 +64,10 @@ public class MWithholding extends X_C_Withholding
 		super(ctx, rs, trxName);
 	}	//	MWithholding
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+		// Create accounting record
 		if (newRecord && success)
 			insert_Accounting("C_Withholding_Acct", "C_AcctSchema_Default", null);
 

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaymentBatch
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_PaymentBatch 
 {
@@ -97,6 +97,7 @@ public interface I_C_PaymentBatch
 	  */
 	public int getC_PaymentProcessor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException;
 
     /** Column name Created */

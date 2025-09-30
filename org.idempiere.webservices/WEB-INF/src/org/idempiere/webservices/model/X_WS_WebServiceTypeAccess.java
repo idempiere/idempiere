@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for WS_WebServiceTypeAccess
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceTypeAccess")
 public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceTypeAccess, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_WS_WebServiceTypeAccess (Properties ctx, int WS_WebServiceTypeAccess_ID, String trxName)
@@ -113,6 +113,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -179,6 +180,7 @@ public class X_WS_WebServiceTypeAccess extends PO implements I_WS_WebServiceType
 		return (String)get_Value(COLUMNNAME_WS_WebServiceTypeAccess_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
 	{
 		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_ID)

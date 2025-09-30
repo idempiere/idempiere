@@ -18,12 +18,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema")
 public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 {
@@ -246,6 +247,25 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return false;
 	}
 
+	/** Set Back-Date Days.
+		@param BackDateDay Number of days to be able to post a back-date transaction (based on system date)
+	*/
+	public void setBackDateDay (int BackDateDay)
+	{
+		set_Value (COLUMNNAME_BackDateDay, Integer.valueOf(BackDateDay));
+	}
+
+	/** Get Back-Date Days.
+		@return Number of days to be able to post a back-date transaction (based on system date)
+	  */
+	public int getBackDateDay()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BackDateDay);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Accounting Schema.
 		@param C_AcctSchema_ID Rules for accounting
 	*/
@@ -283,6 +303,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_AcctSchema_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -306,6 +327,35 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
+
+	/** Set Period.
+		@param C_Period_ID Period of the Calendar
+	*/
+	public void setC_Period_ID (int C_Period_ID)
+	{
+		if (C_Period_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
+	}
+
+	/** Get Period.
+		@return Period of the Calendar
+	  */
+	public int getC_Period_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -373,18 +423,18 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public static final String COSTINGMETHOD_AveragePO = "A";
 	/** Fifo = F */
 	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last Invoice = i */
-	public static final String COSTINGMETHOD_LastInvoice = "i";
 	/** Average Invoice = I */
 	public static final String COSTINGMETHOD_AverageInvoice = "I";
 	/** Lifo = L */
 	public static final String COSTINGMETHOD_Lifo = "L";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** Standard Costing = S */
 	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** User Defined = U */
 	public static final String COSTINGMETHOD_UserDefined = "U";
+	/** Last Invoice = i */
+	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
 	/** _ = x */
 	public static final String COSTINGMETHOD__ = "x";
 	/** Set Costing Method.
@@ -404,34 +454,6 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return (String)get_Value(COLUMNNAME_CostingMethod);
 	}
 
-	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
-			.getPO(getC_Period_ID(), get_TrxName());
-	}
-
-	/** Set Period.
-		@param C_Period_ID Period of the Calendar
-	*/
-	public void setC_Period_ID (int C_Period_ID)
-	{
-		if (C_Period_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
-	}
-
-	/** Get Period.
-		@return Period of the Calendar
-	  */
-	public int getC_Period_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -446,6 +468,22 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set End Date.
+		@param EndDate Last effective date (inclusive)
+	*/
+	public void setEndDate (Timestamp EndDate)
+	{
+		set_Value (COLUMNNAME_EndDate, EndDate);
+	}
+
+	/** Get End Date.
+		@return Last effective date (inclusive)
+	  */
+	public Timestamp getEndDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
 	/** GAAP AD_Reference_ID=123 */
@@ -730,6 +768,7 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_CostType)MTable.get(getCtx(), org.compiere.model.I_M_CostType.Table_ID)
@@ -856,6 +895,22 @@ public class X_C_AcctSchema extends PO implements I_C_AcctSchema, I_Persistent
 	public String getSeparator()
 	{
 		return (String)get_Value(COLUMNNAME_Separator);
+	}
+
+	/** Set Start Date.
+		@param StartDate First effective day (inclusive)
+	*/
+	public void setStartDate (Timestamp StartDate)
+	{
+		set_Value (COLUMNNAME_StartDate, StartDate);
+	}
+
+	/** Get Start Date.
+		@return First effective day (inclusive)
+	  */
+	public Timestamp getStartDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}
 
 	/** TaxCorrectionType AD_Reference_ID=392 */

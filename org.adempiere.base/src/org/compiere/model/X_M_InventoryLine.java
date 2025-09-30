@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InventoryLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_InventoryLine")
 public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_InventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
@@ -44,8 +44,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -63,8 +63,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -82,8 +82,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -101,8 +101,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
-			setM_Inventory_ID (0);
 			setM_InventoryLine_ID (0);
+			setM_Inventory_ID (0);
 			setM_Product_ID (0);
 			setProcessed (false);
 			setQtyBook (Env.ZERO);
@@ -139,6 +139,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -162,6 +163,62 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	public int getC_Charge_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -252,6 +309,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -275,34 +333,6 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_ID)
-			.getPO(getM_Inventory_ID(), get_TrxName());
-	}
-
-	/** Set Phys.Inventory.
-		@param M_Inventory_ID Parameters for a Physical Inventory
-	*/
-	public void setM_Inventory_ID (int M_Inventory_ID)
-	{
-		if (M_Inventory_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, Integer.valueOf(M_Inventory_ID));
-	}
-
-	/** Get Phys.Inventory.
-		@return Parameters for a Physical Inventory
-	  */
-	public int getM_Inventory_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Inventory_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -345,6 +375,36 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 		return (String)get_Value(COLUMNNAME_M_InventoryLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_ID)
+			.getPO(getM_Inventory_ID(), get_TrxName());
+	}
+
+	/** Set Phys.Inventory.
+		@param M_Inventory_ID Parameters for a Physical Inventory
+	*/
+	public void setM_Inventory_ID (int M_Inventory_ID)
+	{
+		if (M_Inventory_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Inventory_ID, Integer.valueOf(M_Inventory_ID));
+	}
+
+	/** Get Phys.Inventory.
+		@return Parameters for a Physical Inventory
+	  */
+	public int getM_Inventory_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Inventory_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -373,6 +433,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -518,6 +579,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getReversalLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)

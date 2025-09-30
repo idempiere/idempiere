@@ -32,7 +32,6 @@ public class ServerPushTemplate {
 	private Desktop desktop;
 
 	/**
-	 *
 	 * @param desktop
 	 */
 	public ServerPushTemplate(Desktop desktop) {
@@ -69,8 +68,9 @@ public class ServerPushTemplate {
 	/**
 	 * Execute synchronous task in UI (event listener) thread. This is implemented
 	 * using Executions.activate/deactivate and will only return after the
-	 * invoked task have ended. For better scalability, if possible, you
-	 * should use executeAsync instead. 
+	 * invoked task have ended.
+	 * <p> 
+	 * For better scalability, if possible, you should use {@link #executeAsync(IServerPushCallback)} instead. 
 	 * @param callback
 	 */
 	public void execute(IServerPushCallback callback) {
@@ -99,7 +99,7 @@ public class ServerPushTemplate {
 	}
 	
 	/**
-	 *
+	 * Get desktop
 	 * @return desktop
 	 */
 	public Desktop getDesktop() {

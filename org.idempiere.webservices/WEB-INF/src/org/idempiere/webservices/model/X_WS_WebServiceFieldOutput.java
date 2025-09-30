@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldOutput
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceFieldOutput")
 public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFieldOutput, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldOutput (Properties ctx, int WS_WebServiceFieldOutput_ID, String trxName)
@@ -106,6 +106,7 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -178,6 +179,7 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
 		return (String)get_Value(COLUMNNAME_WS_WebServiceFieldOutput_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_WS_WebServiceType getWS_WebServiceType() throws RuntimeException
 	{
 		return (I_WS_WebServiceType)MTable.get(getCtx(), I_WS_WebServiceType.Table_ID)

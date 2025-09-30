@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_IndexColumn
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_IndexColumn")
 public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_IndexColumn (Properties ctx, int AD_IndexColumn_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -176,6 +177,7 @@ public class X_AD_IndexColumn extends PO implements I_AD_IndexColumn, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_IndexColumn_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_TableIndex getAD_TableIndex() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_TableIndex)MTable.get(getCtx(), org.compiere.model.I_AD_TableIndex.Table_ID)

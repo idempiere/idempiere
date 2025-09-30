@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_GroupUpdates
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="R_GroupUpdates")
 public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -159,6 +160,22 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 		return false;
 	}
 
+	/** Set R_GroupUpdates_UU.
+		@param R_GroupUpdates_UU R_GroupUpdates_UU
+	*/
+	public void setR_GroupUpdates_UU (String R_GroupUpdates_UU)
+	{
+		set_Value (COLUMNNAME_R_GroupUpdates_UU, R_GroupUpdates_UU);
+	}
+
+	/** Get R_GroupUpdates_UU.
+		@return R_GroupUpdates_UU	  */
+	public String getR_GroupUpdates_UU()
+	{
+		return (String)get_Value(COLUMNNAME_R_GroupUpdates_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Group getR_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_Group)MTable.get(getCtx(), org.compiere.model.I_R_Group.Table_ID)
@@ -185,20 +202,5 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set R_GroupUpdates_UU.
-		@param R_GroupUpdates_UU R_GroupUpdates_UU
-	*/
-	public void setR_GroupUpdates_UU (String R_GroupUpdates_UU)
-	{
-		set_Value (COLUMNNAME_R_GroupUpdates_UU, R_GroupUpdates_UU);
-	}
-
-	/** Get R_GroupUpdates_UU.
-		@return R_GroupUpdates_UU	  */
-	public String getR_GroupUpdates_UU()
-	{
-		return (String)get_Value(COLUMNNAME_R_GroupUpdates_UU);
 	}
 }

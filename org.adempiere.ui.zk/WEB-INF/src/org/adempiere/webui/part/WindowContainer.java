@@ -32,6 +32,7 @@ import org.adempiere.webui.desktop.TabbedDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MSysConfig;
@@ -51,7 +52,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Style;
 
 /**
- * Controller for multiple desktop windows. <br/>
+ * Controller for multiple desktop windows (tabs). <br/>
  * Implemented using {@link Tabbox}. 
  * @author Low Heng Sin
  */
@@ -211,7 +212,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         {
         	ToolBarButton homeButton = new ToolBarButton();
         	if (ThemeManager.isUseFontIconForImage())
-        		homeButton.setIconSclass("z-icon-Home");
+        		homeButton.setIconSclass(Icon.getIconSclass(Icon.HOME));
         	else
         		homeButton.setImage(ThemeManager.getThemeResource("images/Home16.png"));
         	homeButton.setSclass("window-container-toolbar-btn");
@@ -225,7 +226,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         	tabListBtn = new ToolBarButton();
         	if (ThemeManager.isUseFontIconForImage()) 
         	{
-        		tabListBtn.setIconSclass("z-icon-Expand");
+        		tabListBtn.setIconSclass(Icon.getIconSclass(Icon.EXPAND));
         	} 
         	else 
         	{
@@ -258,6 +259,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
     /**
+     * Is show home button
      * @return true if home button should be visible
      */
 	private boolean isShowHomeButton() {
@@ -265,6 +267,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is show home button for desktop browser
 	 * @return true to show home button for desktop browser
 	 */
 	private boolean isDesktopShowHomeButton() {
@@ -272,6 +275,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is show drop down list for tabs
 	 * @return true to show tabs drop down list
 	 */
 	private boolean isShowTabList() {
@@ -279,6 +283,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is show drop down list for tabs for desktop browser
 	 * @return true to show tabs drop down list for desktop browser
 	 */
 	private boolean isDesktopShowTabList() {
@@ -286,6 +291,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is auto shrink tab title to fit in more tabs without scrolling
 	 * @return true to auto shrink title of tab to fit in more tabs without scrolling
 	 */
 	private boolean isDesktopAutoShrinkTabTitle() {
@@ -303,6 +309,15 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			Tab tab = (Tab) list.get(i);
 			Menuitem item = new Menuitem(tab.getLabel().endsWith("...") && !Util.isEmpty(tab.getTooltiptext(), true) ? tab.getTooltiptext() : tab.getLabel());
 			item.setValue(Integer.toString(i));
+			if (ThemeManager.isUseFontIconForImage())
+				item.setIconSclass(tab.getIconSclass());
+			else if(tab.getImageContent()!=null)
+				item.setImageContent(tab.getImageContent());
+			else if(tab.getImage()!=null)
+				item.setImage(tab.getImage());
+			else
+				item.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
+			
 			if (!Util.isEmpty(tab.getTooltiptext(), true) && !(item.getLabel().equals(tab.getTooltiptext())))
 				item.setTooltiptext(tab.getTooltiptext());
 			if (i == tabbox.getSelectedIndex())
@@ -446,7 +461,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 			@Override
 			public void onEvent(SwipeEvent event) throws Exception {
 				Tab tab = (Tab) event.getTarget();
-				if (tab.isClosable() 
+				if (ClientInfo.isMobile() && tab.isClosable() 
 					&& ("right".equals(event.getSwipeDirection()) || "left".equals(event.getSwipeDirection()))) {
 					tab.onClose();
 				}
@@ -676,6 +691,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
     
 	/**
+	 * Get max length of tab title
 	 * @return max length of tab title
 	 */
     private int getMaxTitleLength() {
@@ -752,7 +768,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
 
     /**
-     * Set tab to visible, other tabs to invisible.
+     * Set tab to visible, other tabs to invisible (for mobile browser).
      * @param tab  new selected tab to be set as visible 
      */
 	private void updateMobileTabState(org.zkoss.zul.Tab tab) {
@@ -773,6 +789,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 
 	/**
+	 * Is client is mobile browser
 	 * @return true if browser client is visible
 	 */
     private boolean isMobile() {
@@ -802,6 +819,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
     
     /**
+     * Set title and tooltip of a tab
      * @param tabNo
      * @param title
      * @param tooltip 
@@ -821,6 +839,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     }
 
 	/**
+	 * Get root component
 	 * @return Tabbox
 	 */
 	public Tabbox getComponent() {
@@ -828,6 +847,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	}
 	
 	/**
+	 * Get toolbar
 	 * @return toolbar
 	 */
 	public ToolBar getToobar() {

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Order
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_I_Order 
 {
@@ -48,6 +48,48 @@ public interface I_I_Order
 	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name AD_OrgTrx_ID */
+    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
+
+	/** Set Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
+
+	/** Get Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Address1 */
     public static final String COLUMNNAME_Address1 = "Address1";
@@ -75,46 +117,18 @@ public interface I_I_Order
 	  */
 	public String getAddress2();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+    /** Column name BPartnerValue */
+    public static final String COLUMNNAME_BPartnerValue = "BPartnerValue";
 
-	/** Set Organization.
-	  * Organizational entity within tenant
+	/** Set Business Partner Key.
+	  * Key of the Business Partner
 	  */
-	public void setAD_Org_ID (int AD_Org_ID);
+	public void setBPartnerValue (String BPartnerValue);
 
-	/** Get Organization.
-	  * Organizational entity within tenant
+	/** Get Business Partner Key.
+	  * Key of the Business Partner
 	  */
-	public int getAD_Org_ID();
-
-    /** Column name AD_OrgTrx_ID */
-    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
-
-	/** Set Trx Organization.
-	  * Performing or initiating organization
-	  */
-	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
-
-	/** Get Trx Organization.
-	  * Performing or initiating organization
-	  */
-	public int getAD_OrgTrx_ID();
-
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
-
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public void setAD_User_ID (int AD_User_ID);
-
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID();
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+	public String getBPartnerValue();
 
     /** Column name BillTo_ID */
     public static final String COLUMNNAME_BillTo_ID = "BillTo_ID";
@@ -129,20 +143,8 @@ public interface I_I_Order
 	  */
 	public int getBillTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getBillTo() throws RuntimeException;
-
-    /** Column name BPartnerValue */
-    public static final String COLUMNNAME_BPartnerValue = "BPartnerValue";
-
-	/** Set Business Partner Key.
-	  * Key of the Business Partner
-	  */
-	public void setBPartnerValue (String BPartnerValue);
-
-	/** Get Business Partner Key.
-	  * Key of the Business Partner
-	  */
-	public String getBPartnerValue();
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -157,6 +159,7 @@ public interface I_I_Order
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -172,6 +175,7 @@ public interface I_I_Order
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -187,6 +191,7 @@ public interface I_I_Order
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -202,6 +207,7 @@ public interface I_I_Order
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -217,6 +223,7 @@ public interface I_I_Order
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_Country_ID */
@@ -232,6 +239,7 @@ public interface I_I_Order
 	  */
 	public int getC_Country_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -247,6 +255,7 @@ public interface I_I_Order
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -262,7 +271,157 @@ public interface I_I_Order
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
+
+    /** Column name C_Location_ID */
+    public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
+
+	/** Set Address.
+	  * Location or Address
+	  */
+	public void setC_Location_ID (int C_Location_ID);
+
+	/** Get Address.
+	  * Location or Address
+	  */
+	public int getC_Location_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Location getC_Location() throws RuntimeException;
+
+    /** Column name C_OrderLine_ID */
+    public static final String COLUMNNAME_C_OrderLine_ID = "C_OrderLine_ID";
+
+	/** Set Sales Order Line.
+	  * Sales Order Line
+	  */
+	public void setC_OrderLine_ID (int C_OrderLine_ID);
+
+	/** Get Sales Order Line.
+	  * Sales Order Line
+	  */
+	public int getC_OrderLine_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
+
+    /** Column name C_OrderSourceValue */
+    public static final String COLUMNNAME_C_OrderSourceValue = "C_OrderSourceValue";
+
+	/** Set Order Source Key	  */
+	public void setC_OrderSourceValue (String C_OrderSourceValue);
+
+	/** Get Order Source Key	  */
+	public String getC_OrderSourceValue();
+
+    /** Column name C_OrderSource_ID */
+    public static final String COLUMNNAME_C_OrderSource_ID = "C_OrderSource_ID";
+
+	/** Set Order Source	  */
+	public void setC_OrderSource_ID (int C_OrderSource_ID);
+
+	/** Get Order Source	  */
+	public int getC_OrderSource_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException;
+
+    /** Column name C_Order_ID */
+    public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
+
+	/** Set Order.
+	  * Order
+	  */
+	public void setC_Order_ID (int C_Order_ID);
+
+	/** Get Order.
+	  * Order
+	  */
+	public int getC_Order_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
+
+    /** Column name C_PaymentTerm_ID */
+    public static final String COLUMNNAME_C_PaymentTerm_ID = "C_PaymentTerm_ID";
+
+	/** Set Payment Term.
+	  * The terms of Payment (timing, discount)
+	  */
+	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID);
+
+	/** Get Payment Term.
+	  * The terms of Payment (timing, discount)
+	  */
+	public int getC_PaymentTerm_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
+
+    /** Column name C_Project_ID */
+    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
+
+	/** Set Project.
+	  * Financial Project
+	  */
+	public void setC_Project_ID (int C_Project_ID);
+
+	/** Get Project.
+	  * Financial Project
+	  */
+	public int getC_Project_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name C_Region_ID */
+    public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
+
+	/** Set Region.
+	  * Identifies a geographical Region
+	  */
+	public void setC_Region_ID (int C_Region_ID);
+
+	/** Get Region.
+	  * Identifies a geographical Region
+	  */
+	public int getC_Region_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
+
+    /** Column name C_Tax_ID */
+    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
+
+	/** Set Tax.
+	  * Tax identifier
+	  */
+	public void setC_Tax_ID (int C_Tax_ID);
+
+	/** Get Tax.
+	  * Tax identifier
+	  */
+	public int getC_Tax_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
+
+    /** Column name C_UOM_ID */
+    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
+
+	/** Set UOM.
+	  * Unit of Measure
+	  */
+	public void setC_UOM_ID (int C_UOM_ID);
+
+	/** Get UOM.
+	  * Unit of Measure
+	  */
+	public int getC_UOM_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name ChargeName */
     public static final String COLUMNNAME_ChargeName = "ChargeName";
@@ -290,21 +449,6 @@ public interface I_I_Order
 	  */
 	public String getCity();
 
-    /** Column name C_Location_ID */
-    public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
-
-	/** Set Address.
-	  * Location or Address
-	  */
-	public void setC_Location_ID (int C_Location_ID);
-
-	/** Get Address.
-	  * Location or Address
-	  */
-	public int getC_Location_ID();
-
-	public org.compiere.model.I_C_Location getC_Location() throws RuntimeException;
-
     /** Column name ContactName */
     public static final String COLUMNNAME_ContactName = "ContactName";
 
@@ -318,98 +462,18 @@ public interface I_I_Order
 	  */
 	public String getContactName();
 
-    /** Column name C_Order_ID */
-    public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
-
-	/** Set Order.
-	  * Order
-	  */
-	public void setC_Order_ID (int C_Order_ID);
-
-	/** Get Order.
-	  * Order
-	  */
-	public int getC_Order_ID();
-
-	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
-
-    /** Column name C_OrderLine_ID */
-    public static final String COLUMNNAME_C_OrderLine_ID = "C_OrderLine_ID";
-
-	/** Set Sales Order Line.
-	  * Sales Order Line
-	  */
-	public void setC_OrderLine_ID (int C_OrderLine_ID);
-
-	/** Get Sales Order Line.
-	  * Sales Order Line
-	  */
-	public int getC_OrderLine_ID();
-
-	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
-
-    /** Column name C_OrderSource_ID */
-    public static final String COLUMNNAME_C_OrderSource_ID = "C_OrderSource_ID";
-
-	/** Set Order Source	  */
-	public void setC_OrderSource_ID (int C_OrderSource_ID);
-
-	/** Get Order Source	  */
-	public int getC_OrderSource_ID();
-
-	public org.compiere.model.I_C_OrderSource getC_OrderSource() throws RuntimeException;
-
-    /** Column name C_OrderSourceValue */
-    public static final String COLUMNNAME_C_OrderSourceValue = "C_OrderSourceValue";
-
-	/** Set Order Source Key	  */
-	public void setC_OrderSourceValue (String C_OrderSourceValue);
-
-	/** Get Order Source Key	  */
-	public String getC_OrderSourceValue();
-
     /** Column name CountryCode */
     public static final String COLUMNNAME_CountryCode = "CountryCode";
 
 	/** Set ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public void setCountryCode (String CountryCode);
 
 	/** Get ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode();
-
-    /** Column name C_PaymentTerm_ID */
-    public static final String COLUMNNAME_C_PaymentTerm_ID = "C_PaymentTerm_ID";
-
-	/** Set Payment Term.
-	  * The terms of Payment (timing, discount)
-	  */
-	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID);
-
-	/** Get Payment Term.
-	  * The terms of Payment (timing, discount)
-	  */
-	public int getC_PaymentTerm_ID();
-
-	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
-
-    /** Column name C_Project_ID */
-    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
-
-	/** Set Project.
-	  * Financial Project
-	  */
-	public void setC_Project_ID (int C_Project_ID);
-
-	/** Get Project.
-	  * Financial Project
-	  */
-	public int getC_Project_ID();
-
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -426,51 +490,6 @@ public interface I_I_Order
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_Region_ID */
-    public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
-
-	/** Set Region.
-	  * Identifies a geographical Region
-	  */
-	public void setC_Region_ID (int C_Region_ID);
-
-	/** Get Region.
-	  * Identifies a geographical Region
-	  */
-	public int getC_Region_ID();
-
-	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
-
-    /** Column name C_Tax_ID */
-    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
-
-	/** Set Tax.
-	  * Tax identifier
-	  */
-	public void setC_Tax_ID (int C_Tax_ID);
-
-	/** Get Tax.
-	  * Tax identifier
-	  */
-	public int getC_Tax_ID();
-
-	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
-
-    /** Column name C_UOM_ID */
-    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
-
-	/** Set UOM.
-	  * Unit of Measure
-	  */
-	public void setC_UOM_ID (int C_UOM_ID);
-
-	/** Get UOM.
-	  * Unit of Measure
-	  */
-	public int getC_UOM_ID();
-
-	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
 
     /** Column name DateAcct */
     public static final String COLUMNNAME_DateAcct = "DateAcct";
@@ -676,6 +695,7 @@ public interface I_I_Order
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -691,6 +711,7 @@ public interface I_I_Order
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_Shipper_ID */
@@ -706,6 +727,7 @@ public interface I_I_Order
 	  */
 	public int getM_Shipper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -721,6 +743,7 @@ public interface I_I_Order
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Name */
@@ -849,6 +872,19 @@ public interface I_I_Order
 	  */
 	public String getRegionName();
 
+    /** Column name SKU */
+    public static final String COLUMNNAME_SKU = "SKU";
+
+	/** Set SKU.
+	  * Stock Keeping Unit
+	  */
+	public void setSKU (String SKU);
+
+	/** Get SKU.
+	  * Stock Keeping Unit
+	  */
+	public String getSKU();
+
     /** Column name SalesRep_ID */
     public static final String COLUMNNAME_SalesRep_ID = "SalesRep_ID";
 
@@ -862,20 +898,8 @@ public interface I_I_Order
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
-
-    /** Column name SKU */
-    public static final String COLUMNNAME_SKU = "SKU";
-
-	/** Set SKU.
-	  * Stock Keeping Unit
-	  */
-	public void setSKU (String SKU);
-
-	/** Get SKU.
-	  * Stock Keeping Unit
-	  */
-	public String getSKU();
 
     /** Column name TaxAmt */
     public static final String COLUMNNAME_TaxAmt = "TaxAmt";

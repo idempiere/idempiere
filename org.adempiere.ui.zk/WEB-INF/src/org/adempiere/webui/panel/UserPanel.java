@@ -26,12 +26,15 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.Env;
@@ -48,15 +51,13 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Popup;
-import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
- *
+ * Desktop header panel for user info
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class UserPanel implements EventListener<Event>, Composer<Component>
 {
@@ -127,11 +128,20 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	logout.addEventListener(Events.ON_CLICK, this);
     	
     	feedbackMenu = new Menupopup();
+		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
+    	if (ThemeManager.isUseFontIconForImage())
+		    mi.setIconSclass(Icon.getIconSclass(Icon.COMMENT));
+    	else
+    		mi.setImage(ThemeManager.getThemeResource("images/Request16.png"));
     	mi.setId("CreateRequest");
     	feedbackMenu.appendChild(mi);
     	mi.addEventListener(Events.ON_CLICK, this);
     	mi = new Menuitem(Msg.getMsg(Env.getCtx(), "EMailSupport"));
+    	if (ThemeManager.isUseFontIconForImage())
+    	  mi.setIconSclass(Icon.getIconSclass(Icon.ENVELOPE));
+    	else
+    		mi.setImage(ThemeManager.getThemeResource("images/SendMail16.png"));
     	mi.setId("EmailSupport");
     	mi.addEventListener(Events.ON_CLICK, this);
     	feedbackMenu.appendChild(mi);
@@ -266,7 +276,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		}
 		else if (feedback == event.getTarget())
 		{
-			if (feedbackMenu.getPage() == null)
+			if (isMobile() && userPanelLinksContainer != null)
+			{
+				userPanelLinksContainer.appendChild(feedbackMenu);
+			}
+			else if (feedbackMenu.getPage() == null)
 			{
 				component.appendChild(feedbackMenu);
 			}
@@ -348,7 +362,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		String warehouse = getWarehouseName();
 		if (!Util.isEmpty(warehouse))
 			layout.appendChild(new Label(warehouse));
-		layout.appendChild(new Space());
+		String msgText = "";
+		String msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_HEADER_MESSAGE_VALUE);
+		if (!Util.isEmpty(msgValue, true))
+			msgText = Msg.getMsg(Env.getCtx(), msgValue);
+		layout.appendChild(new Label(msgText));
 		layout.appendChild(userPanelLinksContainer);
 		
 		popup.appendChild(layout);

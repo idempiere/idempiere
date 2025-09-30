@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Group
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Group")
 public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName)
@@ -141,6 +141,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Class)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Class.Table_ID)
@@ -213,6 +214,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 		return (String)get_Value(COLUMNNAME_A_Asset_Group_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_Asset_Type)MTable.get(getCtx(), org.compiere.model.I_A_Asset_Type.Table_ID)

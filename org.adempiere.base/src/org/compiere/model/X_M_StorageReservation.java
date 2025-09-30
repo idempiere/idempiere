@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageReservation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageReservation")
 public class X_M_StorageReservation extends PO implements I_M_StorageReservation, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_StorageReservation (Properties ctx, int M_StorageReservation_ID, String trxName)
@@ -162,6 +162,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -190,6 +191,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -233,6 +235,7 @@ public class X_M_StorageReservation extends PO implements I_M_StorageReservation
 		return (String)get_Value(COLUMNNAME_M_StorageReservation_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)

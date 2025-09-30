@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Attribute
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Attribute 
 {
@@ -93,6 +93,7 @@ public interface I_AD_Attribute
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -108,6 +109,7 @@ public interface I_AD_Attribute
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -123,6 +125,7 @@ public interface I_AD_Attribute
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Val_Rule_ID */
@@ -138,6 +141,7 @@ public interface I_AD_Attribute
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name Callout */
@@ -397,6 +401,25 @@ public interface I_AD_Attribute
 	  */
 	public int getUpdatedBy();
 
+    /** Column name VFormat */
+    public static final String COLUMNNAME_VFormat = "VFormat";
+
+	/** Set Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+, or ~regex
+	  */
+	public void setVFormat (String VFormat);
+
+	/** Get Value Format.
+	  * Format of the value;
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+, or ~regex
+	  */
+	public String getVFormat();
+
     /** Column name ValueMax */
     public static final String COLUMNNAME_ValueMax = "ValueMax";
 
@@ -422,23 +445,4 @@ public interface I_AD_Attribute
 	  * Minimum Value for a field
 	  */
 	public String getValueMin();
-
-    /** Column name VFormat */
-    public static final String COLUMNNAME_VFormat = "VFormat";
-
-	/** Set Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: &quot;
-_lLoOaAcCa09&quot;
-
-	  */
-	public void setVFormat (String VFormat);
-
-	/** Get Value Format.
-	  * Format of the value;
- Can contain fixed format elements, Variables: &quot;
-_lLoOaAcCa09&quot;
-
-	  */
-	public String getVFormat();
 }

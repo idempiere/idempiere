@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_IssueKnown
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_R_IssueKnown 
 {
@@ -165,19 +165,6 @@ public interface I_R_IssueKnown
 	/** Get Process Now	  */
 	public boolean isProcessing();
 
-    /** Column name ReleaseNo */
-    public static final String COLUMNNAME_ReleaseNo = "ReleaseNo";
-
-	/** Set Release No.
-	  * Internal Release Number
-	  */
-	public void setReleaseNo (String ReleaseNo);
-
-	/** Get Release No.
-	  * Internal Release Number
-	  */
-	public String getReleaseNo();
-
     /** Column name R_IssueKnown_ID */
     public static final String COLUMNNAME_R_IssueKnown_ID = "R_IssueKnown_ID";
 
@@ -213,6 +200,7 @@ public interface I_R_IssueKnown
 	  */
 	public int getR_IssueRecommendation_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueRecommendation getR_IssueRecommendation() throws RuntimeException;
 
     /** Column name R_IssueStatus_ID */
@@ -228,6 +216,7 @@ public interface I_R_IssueKnown
 	  */
 	public int getR_IssueStatus_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_IssueStatus getR_IssueStatus() throws RuntimeException;
 
     /** Column name R_Request_ID */
@@ -243,7 +232,21 @@ public interface I_R_IssueKnown
 	  */
 	public int getR_Request_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
+
+    /** Column name ReleaseNo */
+    public static final String COLUMNNAME_ReleaseNo = "ReleaseNo";
+
+	/** Set Release No.
+	  * Internal Release Number
+	  */
+	public void setReleaseNo (String ReleaseNo);
+
+	/** Get Release No.
+	  * Internal Release Number
+	  */
+	public String getReleaseNo();
 
     /** Column name SourceClassName */
     public static final String COLUMNNAME_SourceClassName = "SourceClassName";

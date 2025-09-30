@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_QualityTest
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_QualityTest")
 public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTest, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Product_QualityTest (Properties ctx, int M_Product_QualityTest_ID, String trxName)
@@ -128,6 +128,7 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 		return (String)get_Value(COLUMNNAME_ExpectedResult);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -192,6 +193,7 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 		return (String)get_Value(COLUMNNAME_M_Product_QualityTest_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_ID)

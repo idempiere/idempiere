@@ -40,15 +40,15 @@ import org.compiere.util.Msg;
 public class ParameterElement extends GridElement
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4702399095192668527L;
 
 	/**
 	 * 	Parameter Element.
-	 *  <pre>
+	 *  <p>
 	 *  Parameter fromValue - toValue
-	 *  </pre>
+	 *  
 	 * 	@param query query
 	 *  @param ctx context
 	 *  @param tFormat Table Format
@@ -103,8 +103,8 @@ public class ParameterElement extends GridElement
 	/**
 	 * 	Paint it
 	 * 	@param g2D Graphics
-	 *  @param pageStart top left Location of page
 	 *  @param pageNo page number for multi page support (0 = header/footer) - ignored
+	 *  @param pageStart top left Location of page
 	 *  @param ctx print context
 	 *  @param isView true if online view (IDs are links)
 	 */

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_PaymentTransaction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentTransaction")
 public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_PaymentTransaction (Properties ctx, int C_PaymentTransaction_ID, String trxName)
@@ -183,20 +183,26 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
       return sb.toString();
     }
 
-	/** Set Account No.
-		@param AccountNo Account Number
+	/** Set Trx Organization.
+		@param AD_OrgTrx_ID Performing or initiating organization
 	*/
-	public void setAccountNo (String AccountNo)
+	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
 	{
-		set_Value (COLUMNNAME_AccountNo, AccountNo);
+		if (AD_OrgTrx_ID < 1)
+			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
 	}
 
-	/** Get Account No.
-		@return Account Number
+	/** Get Trx Organization.
+		@return Performing or initiating organization
 	  */
-	public String getAccountNo()
+	public int getAD_OrgTrx_ID()
 	{
-		return (String)get_Value(COLUMNNAME_AccountNo);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Account City.
@@ -229,28 +235,6 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public String getA_Country()
 	{
 		return (String)get_Value(COLUMNNAME_A_Country);
-	}
-
-	/** Set Trx Organization.
-		@param AD_OrgTrx_ID Performing or initiating organization
-	*/
-	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
-	{
-		if (AD_OrgTrx_ID < 1)
-			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
-	}
-
-	/** Get Trx Organization.
-		@return Performing or initiating organization
-	  */
-	public int getAD_OrgTrx_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Account EMail.
@@ -365,6 +349,23 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return (String)get_Value(COLUMNNAME_A_Zip);
 	}
 
+	/** Set Account No.
+		@param AccountNo Account Number
+	*/
+	public void setAccountNo (String AccountNo)
+	{
+		set_Value (COLUMNNAME_AccountNo, AccountNo);
+	}
+
+	/** Get Account No.
+		@return Account Number
+	  */
+	public String getAccountNo()
+	{
+		return (String)get_Value(COLUMNNAME_AccountNo);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -393,62 +394,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
-			.getPO(getC_BankAccount_ID(), get_TrxName());
-	}
-
-	/** Set Bank Account.
-		@param C_BankAccount_ID Account at the Bank
-	*/
-	public void setC_BankAccount_ID (int C_BankAccount_ID)
-	{
-		if (C_BankAccount_ID < 1)
-			set_Value (COLUMNNAME_C_BankAccount_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
-	}
-
-	/** Get Bank Account.
-		@return Account at the Bank
-	  */
-	public int getC_BankAccount_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BP_BankAccount.Table_ID)
@@ -477,6 +423,65 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
+
+	/** Set Bank Account.
+		@param C_BankAccount_ID Account at the Bank
+	*/
+	public void setC_BankAccount_ID (int C_BankAccount_ID)
+	{
+		if (C_BankAccount_ID < 1)
+			set_Value (COLUMNNAME_C_BankAccount_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
+	}
+
+	/** Get Bank Account.
+		@return Account at the Bank
+	  */
+	public int getC_BankAccount_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -505,6 +510,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)
@@ -533,6 +539,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
@@ -561,6 +568,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
@@ -589,6 +597,35 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -617,22 +654,35 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
-	/** Set Check No.
-		@param CheckNo Check Number
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
 	*/
-	public void setCheckNo (String CheckNo)
+	public void setC_Department_ID (int C_Department_ID)
 	{
-		set_Value (COLUMNNAME_CheckNo, CheckNo);
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
 	}
 
-	/** Get Check No.
-		@return Check Number
-	  */
-	public String getCheckNo()
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
 	{
-		return (String)get_Value(COLUMNNAME_CheckNo);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
@@ -661,6 +711,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Order)MTable.get(getCtx(), org.compiere.model.I_C_Order.Table_ID)
@@ -689,6 +740,35 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_ID)
+			.getPO(getC_POSTenderType_ID(), get_TrxName());
+	}
+
+	/** Set POS Tender Type.
+		@param C_POSTenderType_ID POS Tender Type
+	*/
+	public void setC_POSTenderType_ID (int C_POSTenderType_ID)
+	{
+		if (C_POSTenderType_ID < 1)
+			set_Value (COLUMNNAME_C_POSTenderType_ID, null);
+		else
+			set_Value (COLUMNNAME_C_POSTenderType_ID, Integer.valueOf(C_POSTenderType_ID));
+	}
+
+	/** Get POS Tender Type.
+		@return POS Tender Type	  */
+	public int getC_POSTenderType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSTenderType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentBatch getC_PaymentBatch() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_PaymentBatch)MTable.get(getCtx(), org.compiere.model.I_C_PaymentBatch.Table_ID)
@@ -717,34 +797,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
-			.getPO(getC_Payment_ID(), get_TrxName());
-	}
-
-	/** Set Payment.
-		@param C_Payment_ID Payment identifier
-	*/
-	public void setC_Payment_ID (int C_Payment_ID)
-	{
-		if (C_Payment_ID < 1)
-			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
-	}
-
-	/** Get Payment.
-		@return Payment identifier
-	  */
-	public int getC_Payment_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)
@@ -809,33 +862,36 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return (String)get_Value(COLUMNNAME_C_PaymentTransaction_UU);
 	}
 
-	public org.compiere.model.I_C_POSTenderType getC_POSTenderType() throws RuntimeException
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
 	{
-		return (org.compiere.model.I_C_POSTenderType)MTable.get(getCtx(), org.compiere.model.I_C_POSTenderType.Table_ID)
-			.getPO(getC_POSTenderType_ID(), get_TrxName());
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
 	}
 
-	/** Set POS Tender Type.
-		@param C_POSTenderType_ID POS Tender Type
+	/** Set Payment.
+		@param C_Payment_ID Payment identifier
 	*/
-	public void setC_POSTenderType_ID (int C_POSTenderType_ID)
+	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_POSTenderType_ID < 1)
-			set_Value (COLUMNNAME_C_POSTenderType_ID, null);
+		if (C_Payment_ID < 1)
+			set_Value (COLUMNNAME_C_Payment_ID, null);
 		else
-			set_Value (COLUMNNAME_C_POSTenderType_ID, Integer.valueOf(C_POSTenderType_ID));
+			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
-	/** Get POS Tender Type.
-		@return POS Tender Type	  */
-	public int getC_POSTenderType_ID()
+	/** Get Payment.
+		@return Payment identifier
+	  */
+	public int getC_Payment_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSTenderType_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -862,6 +918,22 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Check No.
+		@param CheckNo Check Number
+	*/
+	public void setCheckNo (String CheckNo)
+	{
+		set_Value (COLUMNNAME_CheckNo, CheckNo);
+	}
+
+	/** Get Check No.
+		@return Check Number
+	  */
+	public String getCheckNo()
+	{
+		return (String)get_Value(COLUMNNAME_CheckNo);
 	}
 
 	/** Set Exp. Month.
@@ -1229,6 +1301,22 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return (String)get_Value(COLUMNNAME_Orig_TrxID);
 	}
 
+	/** Set PO Number.
+		@param PONum Purchase Order Number
+	*/
+	public void setPONum (String PONum)
+	{
+		set_Value (COLUMNNAME_PONum, PONum);
+	}
+
+	/** Get PO Number.
+		@return Purchase Order Number
+	  */
+	public String getPONum()
+	{
+		return (String)get_Value(COLUMNNAME_PONum);
+	}
+
 	/** Set Payment amount.
 		@param PayAmt Amount being paid
 	*/
@@ -1246,22 +1334,6 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set PO Number.
-		@param PONum Purchase Order Number
-	*/
-	public void setPONum (String PONum)
-	{
-		set_Value (COLUMNNAME_PONum, PONum);
-	}
-
-	/** Get PO Number.
-		@return Purchase Order Number
-	  */
-	public String getPONum()
-	{
-		return (String)get_Value(COLUMNNAME_PONum);
 	}
 
 	/** Set Processed.
@@ -1376,33 +1448,6 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return false;
 	}
 
-	public org.compiere.model.I_C_PaymentTransaction getRef_PaymentTransaction() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_PaymentTransaction)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTransaction.Table_ID)
-			.getPO(getRef_PaymentTransaction_ID(), get_TrxName());
-	}
-
-	/** Set Referenced Payment Transaction.
-		@param Ref_PaymentTransaction_ID Referenced Payment Transaction
-	*/
-	public void setRef_PaymentTransaction_ID (int Ref_PaymentTransaction_ID)
-	{
-		if (Ref_PaymentTransaction_ID < 1)
-			set_Value (COLUMNNAME_Ref_PaymentTransaction_ID, null);
-		else
-			set_Value (COLUMNNAME_Ref_PaymentTransaction_ID, Integer.valueOf(Ref_PaymentTransaction_ID));
-	}
-
-	/** Get Referenced Payment Transaction.
-		@return Referenced Payment Transaction	  */
-	public int getRef_PaymentTransaction_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Ref_PaymentTransaction_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Info.
 		@param R_Info Response info
 	*/
@@ -1417,22 +1462,6 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public String getR_Info()
 	{
 		return (String)get_Value(COLUMNNAME_R_Info);
-	}
-
-	/** Set Routing No.
-		@param RoutingNo Bank Routing Number
-	*/
-	public void setRoutingNo (String RoutingNo)
-	{
-		set_Value (COLUMNNAME_RoutingNo, RoutingNo);
-	}
-
-	/** Get Routing No.
-		@return Bank Routing Number
-	  */
-	public String getRoutingNo()
-	{
-		return (String)get_Value(COLUMNNAME_RoutingNo);
 	}
 
 	/** Set Reference.
@@ -1496,6 +1525,50 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	public String getR_VoidMsg()
 	{
 		return (String)get_Value(COLUMNNAME_R_VoidMsg);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_PaymentTransaction getRef_PaymentTransaction() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_PaymentTransaction)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTransaction.Table_ID)
+			.getPO(getRef_PaymentTransaction_ID(), get_TrxName());
+	}
+
+	/** Set Referenced Payment Transaction.
+		@param Ref_PaymentTransaction_ID Referenced Payment Transaction
+	*/
+	public void setRef_PaymentTransaction_ID (int Ref_PaymentTransaction_ID)
+	{
+		if (Ref_PaymentTransaction_ID < 1)
+			set_Value (COLUMNNAME_Ref_PaymentTransaction_ID, null);
+		else
+			set_Value (COLUMNNAME_Ref_PaymentTransaction_ID, Integer.valueOf(Ref_PaymentTransaction_ID));
+	}
+
+	/** Get Referenced Payment Transaction.
+		@return Referenced Payment Transaction	  */
+	public int getRef_PaymentTransaction_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Ref_PaymentTransaction_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Routing No.
+		@param RoutingNo Bank Routing Number
+	*/
+	public void setRoutingNo (String RoutingNo)
+	{
+		set_Value (COLUMNNAME_RoutingNo, RoutingNo);
+	}
+
+	/** Get Routing No.
+		@return Bank Routing Number
+	  */
+	public String getRoutingNo()
+	{
+		return (String)get_Value(COLUMNNAME_RoutingNo);
 	}
 
 	/** Set Swift code.
@@ -1595,6 +1668,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return (String)get_Value(COLUMNNAME_TrxType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -1623,6 +1697,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.DetailPane.Tabpanel;
 import org.adempiere.webui.component.ADTabListModel;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
@@ -56,19 +57,18 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Vlayout;
 
 /**
- * Header and detail UI for AD_Tabs.
- * This class manage a list of tabs with the current selected tab as the visible {@link ADTabpanel} instance.
+ * Header and detail controller for AD_Tabs.<br/>
+ * This class manage a list of tabs with the current selected tab as the visible {@link ADTabpanel} instance.<br/>
  * Child tabs of selected tab is shown in {@link DetailPane} using {@link Tabbox}.
  * 
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  */
 public class CompositeADTabbox extends AbstractADTabbox
 {
 	/**
-	 * DetailPane attribute to hold list of child tabs.
+	 * DetailPane attribute to hold list of child tabs.<br/>
 	 * List of Object[] of tabIndex, tabPanel, tabLabel, enable.
 	 */
 	private static final String DETAILPANE_TABLIST_ATTR = "detailpane.tablist";
@@ -88,9 +88,6 @@ public class CompositeADTabbox extends AbstractADTabbox
 	/** List of all tab **/
     private List<ADTabListModel.ADTabLabel> tabLabelList = new ArrayList<ADTabListModel.ADTabLabel>();
     
-    /** List of all tab panel **/
-    private List<IADTabpanel> tabPanelList = new ArrayList<IADTabpanel>();
-
     /** main layout component **/
     private Vlayout layout;
 
@@ -313,7 +310,7 @@ public class CompositeADTabbox extends AbstractADTabbox
     }
     
     /**
-     * defer execution of adTabPanel.focus()
+     * Defer execution of adTabPanel.focus()
      * @param adTabPanel
      */
     private void focusToTabpanel(IADTabpanel adTabPanel ) {
@@ -324,7 +321,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
     
     /**
-     * Edit current row of selected detail tab.
+     * Edit current row of selected detail tab.<br/>
      * Make selected detail tab the new header tab.
      * @param row
      * @param formView
@@ -363,7 +360,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 	}
     
     /**
-     * Create layout and setup listeners for bread crumb.
+     * Create layout and setup listeners for bread crumb.<br/>
      * Vertical layout with {@link ADTabpanel} as the only child component.
      */
     @Override
@@ -423,7 +420,6 @@ public class CompositeADTabbox extends AbstractADTabbox
     	ADTabListModel.ADTabLabel tabLabel = new ADTabListModel.ADTabLabel(gTab.getName(), gTab.getTabLevel(), gTab.getDescription(),
         		gTab.getWindowNo(), gTab.getAD_Tab_ID());
         tabLabelList.add(tabLabel);
-        tabPanelList.add(tabPanel);
         
         tabPanel.setTabNo(tabPanelList.size()-1);
         
@@ -439,7 +435,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (tabPanel != headerTab && headerTab.getDetailPane() != null && tabPanel.getTabLevel() > headerTab.getTabLevel()) {
 					if (b != null && b.booleanValue()) {
 						onActivateDetail(tabPanel);
-						if (headerTab instanceof ADTabpanel) {
+						if (headerTab instanceof ADTabpanel && !ClientInfo.isMobile()) {
 							if (!((ADTabpanel) headerTab).getADWindowContent().focusToLastFocusEditor(true))
 								((ADTabpanel) headerTab).getADWindowContent().focusToActivePanel();
 						}
@@ -1068,7 +1064,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 			if (!tabPanel.getGridTab().isSortTab()) {
 				currentRow = tabPanel.getGridTab().getCurrentRow();
 			}
-			tabPanel.query(false, 0, 0);			
+			tabPanel.query(false, 0, tabPanel.getGridTab().getMaxQueryRecords());
 			if (currentRow >= 0 && currentRow != tabPanel.getGridTab().getCurrentRow() 
 				&& currentRow < tabPanel.getGridTab().getRowCount()) {
 				tabPanel.getGridTab().setCurrentRow(currentRow, false);

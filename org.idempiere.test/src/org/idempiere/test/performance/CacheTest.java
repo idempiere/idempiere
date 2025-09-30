@@ -24,6 +24,7 @@
  **********************************************************************/
 package org.idempiere.test.performance;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -90,10 +91,13 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTaxProvider;
+import org.compiere.model.MTest;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.MZoomCondition;
 import org.compiere.model.ModelValidator;
+import org.compiere.model.PO;
 import org.compiere.model.PaymentProcessor;
+import org.compiere.model.Query;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.model.X_C_AddressValidationCfg;
 import org.compiere.model.X_C_TaxProviderCfg;
@@ -114,10 +118,12 @@ import org.compiere.util.ReplenishInterface;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.eevolution.model.CalloutBOM;
+import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.fa.service.api.DepreciationFactoryLookupDTO;
 import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.TestActivator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -745,6 +751,236 @@ public class CacheTest extends AbstractTestCase {
 			update.load((String)null);
 			update.setDescription(description);
 			update.saveEx();
+		}
+	}
+	
+	private static class MTestCache extends CCache<Integer, MTest> {
+		private static final long serialVersionUID = 1L;
+		private int resetCount = 0;
+		
+		public MTestCache(String name, int capacity) {
+			super(name, capacity);
+		}
+				
+		@Override
+		public int reset() {
+			resetCount++;
+			return super.reset();
+		}
+
+		@Override
+		public int reset(int recordId) {
+			resetCount++;
+			return super.reset(recordId);
+		}
+
+		@Override
+		public void newRecord(int record_ID) {
+			resetCount++;
+			super.newRecord(record_ID);
+		}
+		
+		public int getResetCount() {
+			return resetCount;
+		}
+		
+		public void clearResetCount() {
+			resetCount = 0;
+		}
+	};
+	
+	@Test
+	public void testSuspendCacheReset() {
+		MTest test1 = new MTest(Env.getCtx(), 0, getTrxName());
+		MTest test2 = new MTest(Env.getCtx(), 0, getTrxName());
+		MTest test3 = new MTest(Env.getCtx(), 0, getTrxName());
+		try {
+			MTestCache cache = new MTestCache(MTest.Table_Name, 10);
+			
+			//test insert and cache reset
+			test1.setName("test1");
+			test1.saveEx();
+			test2.setName("test2");
+			test2.saveEx();
+			test3.setName("test3");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}			
+			assertTrue(cache.getResetCount() > 0, "Cache reset count is zero");
+			
+			//test update and cache reset
+			
+			test1.setName("test1.1");
+			test1.saveEx();
+			test2.setName("test2.1");
+			test2.saveEx();
+			test3.setName("test3.1");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}			
+			assertTrue(cache.getResetCount() > 0, "Cache reset count is zero");
+			
+			//test update and cache reset after suspend reset call
+			
+			CacheMgt.get().suspendTableCacheReset(MTest.Table_Name);
+			
+			test1.setName("test1.2");
+			test1.saveEx();
+			test2.setName("test2.2");
+			test2.saveEx();
+			test3.setName("test3.2");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			assertTrue(cache.getResetCount() == 0, "Cache reset count is not zero with suspendTableCacheReset active");
+			
+			//test delete and cache reset after suspend reset call
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+						
+			test1.deleteEx(true);
+			test1 = null;
+			test2.deleteEx(true);
+			test2 = null;
+			test3.deleteEx(true);
+			test3 = null;
+					
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			assertTrue(cache.getResetCount() == 0, "Cache reset count is not zero with suspendTableCacheReset active");
+			
+			//test update and cache reset again after resume reset call
+			
+			CacheMgt.get().resumeTableCacheReset(MTest.Table_Name);
+			
+			test1 = new MTest(Env.getCtx(), 0, getTrxName());
+			test2 = new MTest(Env.getCtx(), 0, getTrxName());
+			test3 = new MTest(Env.getCtx(), 0, getTrxName());
+			
+			test1.setName("test1");
+			test1.saveEx();
+			test2.setName("test2");
+			test2.saveEx();
+			test3.setName("test3");
+			test3.saveEx();
+			
+			cache.put(test1.get_ID(), test1);
+			cache.put(test2.get_ID(), test2);
+			cache.put(test3.get_ID(), test3);
+			
+			cache.clearResetCount();			
+			commit();
+			getTrx().start();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}			
+			assertTrue(cache.getResetCount() > 0, "Cache reset count is zero");
+			
+		} finally {
+			if (test1 != null && test1.get_ID() > 0)
+				test1.deleteEx(true);
+			if (test2 != null && test2.get_ID() > 0)
+				test2.deleteEx(true);
+			if (test3 != null && test3.get_ID() > 0)
+				test3.deleteEx(true);
+			
+			commit();
+		}
+	}
+	
+	@Test
+	public void testExpire() {
+		ImmutableIntPOCache<Integer,MProduct> cache	= new ImmutableIntPOCache<Integer,MProduct>(MProduct.Table_Name, 40, 1);	//1 minutes
+		cache.put(DictionaryIDs.M_Product.AZALEA_BUSH.id, new MProduct(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, null));
+		cache.put(DictionaryIDs.M_Product.P_CHAIR.id, new MProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, null));
+		
+		for(int i = 0; i < 2; i++) {
+			assertNotNull(cache.get(DictionaryIDs.M_Product.P_CHAIR.id), "Unexpected expire of cache item after " + i + " access");
+			try {
+				Thread.sleep(35*1000); //35 seconds
+			} catch (InterruptedException e) {}
+		}
+		
+		assertNotNull(cache.get(DictionaryIDs.M_Product.P_CHAIR.id), "Cache item expire despite being access recently");
+		assertNull(cache.get(DictionaryIDs.M_Product.AZALEA_BUSH.id), "Cache item not expire despite not being access for more than 1 minutes");
+		
+		CacheMgt.get().unregister(cache);
+	}
+
+	@Test
+	public void testNullKey() {
+		CCache<String, String> testCache = new CCache<String, String>(null, "Test_Cache", 10, 60, false);
+		assertThatNoException().isThrownBy(() -> testCache.get(null));
+		assertThatNoException().isThrownBy(() -> testCache.containsKey(null));
+		assertThatNoException().isThrownBy(() -> testCache.containsValue(null));
+		assertFalse(testCache.containsValue(null));
+		testCache.put("TestNull", null);
+		assertFalse(testCache.containsValue(null)); // still false because null is an unknown value
+	}
+
+	@Test
+	public void testTrlCacheReset() {
+		// test cache reset
+		String locale = "es_CO";
+		MProduct p = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, null);
+		String esName = p.get_Translation("Name", locale);
+		Query query = new Query(Env.getCtx(), MProduct.Table_Name+"_Trl", "M_Product_ID=? AND AD_Language=?", null);
+		PO po = query.setParameters(p.get_ID(), locale).firstOnly();
+		assertEquals(esName, po.get_Value("Name"), "Expected translation not found");
+		try {
+			po.set_ValueOfColumn("Name", esName+"1");
+			po.saveEx();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			assertEquals(esName+"1", p.get_Translation("Name", locale), "Translation not refresh in cache");
+		} finally {
+			po.set_ValueOfColumn("Name", esName);
+			po.saveEx();
 		}
 	}
 }

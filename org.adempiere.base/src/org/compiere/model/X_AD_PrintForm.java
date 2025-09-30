@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintForm
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintForm")
 public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_PrintForm (Properties ctx, int AD_PrintForm_ID, String trxName)
@@ -158,6 +158,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getDistrib_Order_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -186,6 +187,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getDistrib_Order_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -214,6 +216,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getInvoice_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -242,6 +245,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -270,6 +274,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getManuf_Order_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -298,6 +303,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getManuf_Order_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -350,6 +356,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getOrder_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -378,6 +385,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getOrder_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -406,6 +414,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getProject_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -434,6 +443,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getProject_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -462,6 +472,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getRemittance_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -490,6 +501,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getRemittance_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -518,6 +530,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getShipment_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -546,6 +559,7 @@ public class X_AD_PrintForm extends PO implements I_AD_PrintForm, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getShipment_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)

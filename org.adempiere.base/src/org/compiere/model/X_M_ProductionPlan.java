@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionPlan
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionPlan")
 public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ProductionPlan (Properties ctx, int M_ProductionPlan_ID, String trxName)
@@ -46,8 +46,8 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 			setM_Locator_ID (0);
 // @M_Locator_ID@
 			setM_Product_ID (0);
-			setM_Production_ID (0);
 			setM_ProductionPlan_ID (0);
+			setM_Production_ID (0);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
 // 1
@@ -65,8 +65,8 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 			setM_Locator_ID (0);
 // @M_Locator_ID@
 			setM_Product_ID (0);
-			setM_Production_ID (0);
 			setM_ProductionPlan_ID (0);
+			setM_Production_ID (0);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
 // 1
@@ -84,8 +84,8 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 			setM_Locator_ID (0);
 // @M_Locator_ID@
 			setM_Product_ID (0);
-			setM_Production_ID (0);
 			setM_ProductionPlan_ID (0);
+			setM_Production_ID (0);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
 // 1
@@ -103,8 +103,8 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 			setM_Locator_ID (0);
 // @M_Locator_ID@
 			setM_Product_ID (0);
-			setM_Production_ID (0);
 			setM_ProductionPlan_ID (0);
+			setM_Production_ID (0);
 			setProcessed (false);
 			setProductionQty (Env.ZERO);
 // 1
@@ -182,6 +182,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getLine()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -210,6 +211,7 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -233,34 +235,6 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_ID)
-			.getPO(getM_Production_ID(), get_TrxName());
-	}
-
-	/** Set Production.
-		@param M_Production_ID Plan for producing a product
-	*/
-	public void setM_Production_ID (int M_Production_ID)
-	{
-		if (M_Production_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_M_Production_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_M_Production_ID, Integer.valueOf(M_Production_ID));
-	}
-
-	/** Get Production.
-		@return Plan for producing a product
-	  */
-	public int getM_Production_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Production_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -301,6 +275,35 @@ public class X_M_ProductionPlan extends PO implements I_M_ProductionPlan, I_Pers
 	public String getM_ProductionPlan_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ProductionPlan_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Production getM_Production() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Production)MTable.get(getCtx(), org.compiere.model.I_M_Production.Table_ID)
+			.getPO(getM_Production_ID(), get_TrxName());
+	}
+
+	/** Set Production.
+		@param M_Production_ID Plan for producing a product
+	*/
+	public void setM_Production_ID (int M_Production_ID)
+	{
+		if (M_Production_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_M_Production_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_M_Production_ID, Integer.valueOf(M_Production_ID));
+	}
+
+	/** Get Production.
+		@return Plan for producing a product
+	  */
+	public int getM_Production_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Production_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Processed.

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_ListVersion
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_ListVersion 
@@ -102,18 +102,8 @@ public interface I_HR_ListVersion
 	/** Get Payroll List Base	  */
 	public int getHR_ListBase_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_List getHR_ListBase() throws RuntimeException;
-
-    /** Column name HR_List_ID */
-    public static final String COLUMNNAME_HR_List_ID = "HR_List_ID";
-
-	/** Set Payroll List	  */
-	public void setHR_List_ID (int HR_List_ID);
-
-	/** Get Payroll List	  */
-	public int getHR_List_ID();
-
-	public org.eevolution.model.I_HR_List getHR_List() throws RuntimeException;
 
     /** Column name HR_ListVersion_ID */
     public static final String COLUMNNAME_HR_ListVersion_ID = "HR_ListVersion_ID";
@@ -132,6 +122,18 @@ public interface I_HR_ListVersion
 
 	/** Get HR_ListVersion_UU	  */
 	public String getHR_ListVersion_UU();
+
+    /** Column name HR_List_ID */
+    public static final String COLUMNNAME_HR_List_ID = "HR_List_ID";
+
+	/** Set Payroll List	  */
+	public void setHR_List_ID (int HR_List_ID);
+
+	/** Get Payroll List	  */
+	public int getHR_List_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.eevolution.model.I_HR_List getHR_List() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.compiere.model.ICostInfo;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
@@ -35,7 +36,6 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
 import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -239,9 +239,10 @@ public class Doc_Inventory extends Doc
 				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 					orgId = 0;
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
-				MCost cost = MCost.get(product, asiId, as, 
-						orgId, ce.getM_CostElement_ID(), getTrxName());					
-				DB.getDatabase().forUpdate(cost, 120);
+				MCostDetail cd = MCostDetail.getInventory(as, product.getM_Product_ID(), asiId, get_ID(), ce.getM_CostElement_ID(), getTrxName());
+				ICostInfo cost = MCost.getCostInfo(product, asiId, as, 
+						orgId, ce.getM_CostElement_ID(), 
+						getDateAcct(), cd, getTrxName());
 				BigDecimal currentQty = cost.getCurrentQty();
 				adjustmentDiff = costs;
 				costs = costs.multiply(currentQty);
@@ -394,11 +395,19 @@ public class Doc_Inventory extends Doc
 									qty = qty.negate();
 								if (maCost.signum() != costDetailAmt.signum())
 									maCost = maCost.negate();
+								int Ref_CostDetail_ID = 0;
+								if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+								{
+									MCostDetail cd = MCostDetail.getInventory(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+											line.getReversalLine_ID(), 0, getTrxName());
+									if (cd != null)
+										Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								}
 								if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
 										maCost, qty,
-										line.getDescription(), getTrxName()))
+										line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 								{
 									p_Error = "Failed to create cost detail record";
 									return null;
@@ -409,11 +418,19 @@ public class Doc_Inventory extends Doc
 					else
 					{
 						BigDecimal amt = costDetailAmt;
+						int Ref_CostDetail_ID = 0;
+						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						{
+							MCostDetail cd = MCostDetail.getInventory(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+									line.getReversalLine_ID(), 0, getTrxName());
+							if (cd != null)
+								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+						}
 						if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
 								amt, line.getQty(),
-								line.getDescription(), getTrxName()))
+								line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
 							return null;
@@ -424,11 +441,19 @@ public class Doc_Inventory extends Doc
 				{
 					//	Cost Detail
 					BigDecimal amt = costDetailAmt;
+					int Ref_CostDetail_ID = 0;
+					if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+					{
+						MCostDetail cd = MCostDetail.getInventory(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+								line.getReversalLine_ID(), 0, getTrxName());
+						if (cd != null)
+							Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+					}
 					if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 						line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						line.get_ID(), 0,
 						amt, line.getQty(),
-						line.getDescription(), getTrxName()))
+						line.getDescription(), line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 					{
 						p_Error = "Failed to create cost detail record";
 						return null;

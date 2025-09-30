@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ASP_Level
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_ASP_Level 
 {
@@ -89,6 +89,7 @@ public interface I_ASP_Level
 	/** Get ASP Module	  */
 	public int getASP_Module_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_ASP_Module getASP_Module() throws RuntimeException;
 
     /** Column name Created */

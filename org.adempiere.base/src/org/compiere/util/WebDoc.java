@@ -23,9 +23,7 @@ import java.util.Properties;
 import org.apache.ecs.AlignType;
 import org.apache.ecs.Element;
 import org.apache.ecs.xhtml.a;
-import org.apache.ecs.xhtml.b;
 import org.apache.ecs.xhtml.body;
-import org.apache.ecs.xhtml.form;
 import org.apache.ecs.xhtml.h1;
 import org.apache.ecs.xhtml.head;
 import org.apache.ecs.xhtml.html;
@@ -41,7 +39,7 @@ import org.apache.ecs.xhtml.tr;
 
 
 /**
- *  XHTML Document.
+ *  XHTML Document. Use to create html help content.
  *
  *  @author Jorg Janke
  *  @version  $Id: WebDoc.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
@@ -76,12 +74,13 @@ public class WebDoc
 	 *  Create styled popup Document with Title
 	 *  @param title header title and h1 
 	 *  @return Document
+	 *  @deprecated
 	 */
+	@Deprecated
 	public static WebDoc createPopup (String title)
 	{
 		WebDoc doc = create (title);
 		doc.getHead().addElement(new script((Element)null, "/adempiere/js/window.js"));
-		//doc.getHead().addElement(new script((Element)null, "/adempiere/js/Calendar-setup.js"));
 		doc.getHead().addElement(new script((Element)null, "/adempiere/js/calendar.js"));
 		doc.getHead().addElement(new script((Element)null, "/adempiere/js/table.js"));
 		doc.getHead().addElement(new script((Element)null, "/adempiere/lang/calendar-en.js"));
@@ -99,13 +98,14 @@ public class WebDoc
 	 *  Create styled window Document with Title
 	 *  @param title header title and h1 
 	 *  @return Document
+	 *  @deprecated
 	 */
+	@Deprecated
 	public static WebDoc createWindow (String title)
 	{
 		WebDoc doc = create (title);
 		
 		doc.getHead().addElement(new script((Element)null, "/adempiere/js/window.js"));
-		//doc.getHead().addElement(new script((Element)null, "/adempiere/js/Calendar-setup.js"));
 		doc.getHead().addElement(new script((Element)null, "/adempiere/js/calendar.js"));
 		doc.getHead().addElement(new script((Element)null, "/adempiere/js/table.js"));
 		doc.getHead().addElement(new script((Element)null, "/adempiere/lang/calendar-en.js"));
@@ -129,9 +129,8 @@ public class WebDoc
 
 	/** Non breaking Space					*/
 	public static final String	NBSP	= "&nbsp;";
-	
-	
-	/**************************************************************************
+		
+	/**
 	 *  Create new XHTML Document structure
 	 */
 	private WebDoc ()
@@ -163,12 +162,7 @@ public class WebDoc
 			return;
 		
 		//	css, js
-		if (javaClient) {
-			m_head.addElement(new StoredHtmlSrc("STYLE", "org/compiere/images/standard.css"));
-		} else {
-			m_head.addElement(new link(WebEnv.getStylesheetURL(), link.REL_STYLESHEET, link.TYPE_CSS));
-			m_head.addElement(new script((Element)null, WebEnv.getBaseDirectory("/js/standard.js")));
-		}
+		m_head.addElement(new link("/resources/css/idempiereMonitor.css", link.REL_STYLESHEET, link.TYPE_CSS));
 		m_head.addElement(new meta().setHttpEquiv("Content-Type", "text/html; charset=UTF-8"));
 		m_head.addElement(new meta().setName("description", "iDempiere HTML UI"));
 
@@ -185,13 +179,8 @@ public class WebDoc
 		//	Logo
 		m_topRight = new td().setAlign("right");
 		
-		if (javaClient) {
-			m_topRight.addElement(new img("res:org/compiere/images/iD10030.png")
+		m_topRight.addElement(new img("/webui/images/header-logo.png")
 			.setAlign(AlignType.RIGHT).setAlt("iDempiere"));
-		} else {
-			m_topRight.addElement(new img("/webui/images/header-logo.png")
-			.setAlign(AlignType.RIGHT).setAlt("iDempiere"));
-		}
 		m_topRow.addElement(m_topRight);
 		m_table.addElement(m_topRow);		
 		//
@@ -212,7 +201,6 @@ public class WebDoc
 		if (m_topRight != null && tdClass != null)
 			m_topRight.setClass(tdClass);
 	}	//	setClasses
-
 	
 	/**
 	 *  Get Body
@@ -271,6 +259,7 @@ public class WebDoc
 	 *  String representation
 	 *  @return String
 	 */
+	@Override
 	public String toString()
 	{
 		return m_html.toString();
@@ -278,7 +267,7 @@ public class WebDoc
 
 	/**
 	 *  Output Document
-	 *  @param out out
+	 *  @param out
 	 */
 	public void output (OutputStream out)
 	{
@@ -287,7 +276,7 @@ public class WebDoc
 
 	/**
 	 *  Output Document
-	 *  @param out out
+	 *  @param out
 	 */
 	public void output (PrintWriter out)
 	{
@@ -314,7 +303,9 @@ public class WebDoc
 	/**
 	 * 	Add Popup Close Footer
 	 *	@return null or array with left/right td
+	 *  @deprecated
 	 */
+	@Deprecated
 	public td[] addPopupClose(Properties ctx)
 	{
 		input button = WebUtil.createClosePopupButton(ctx); 
@@ -332,12 +323,13 @@ public class WebDoc
 		return new td[] {left, right};
 	}	//	addPopupClose
 	
-
 	/**
 	 * 	Add Window Center
 	 * 	@param nowrap set no wrap in td
 	 *	@return empty single center td
+	 *  @deprecated
 	 */
+	@Deprecated
 	public td addWindowCenter(boolean nowrap)
 	{
 		if (m_table == null)
@@ -353,7 +345,9 @@ public class WebDoc
 	/**
 	 * 	Add Window Footer
 	 *	@return null or array with empty left/right td
+	 *  @deprecated
 	 */
+	@Deprecated
 	public td[] addWindowFooters()
 	{
 		if (m_table == null)
@@ -370,7 +364,9 @@ public class WebDoc
 	/**
 	 * 	Add Window Footer
 	 *	@return empty single center td
+	 *  @deprecated
 	 */
+	@Deprecated
 	public td addWindowFooter()
 	{
 		if (m_table == null)
@@ -380,23 +376,5 @@ public class WebDoc
 		m_table.addElement(new tr()
 			.addElement(center));
 		return center;
-	}	//	addWindowFooter
-	
-	/**************************************************************************
-	 *  Test Class
-	 *  @param args args
-	 */
-	public static void main (String[] args)
-	{
-		WebDoc doc = WebDoc.create("Test");
-		doc.getBody().addElement(new b("111 <<< >>> &&& \\\\ \u0100 �"));
-		form f = new form("myaction");
-		f.addElement(new input());
-		doc.getBody().addElement(f);
-		System.out.println(doc.toString());
-		System.out.println("---------");
-		doc.output(System.out);
-		System.out.println("---------");
-	}   //  main
-
+	}	//	addWindowFooter	
 }   //  WDoc

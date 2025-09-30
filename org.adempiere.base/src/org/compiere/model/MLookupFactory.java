@@ -436,7 +436,7 @@ public class MLookupFactory
 				ZoomWindow = rs.getInt(8);
 				ZoomWindowPO = rs.getInt(9);
 				displayColumnSQL = rs.getString(11);
-				if (displayColumnSQL != null && displayColumnSQL.length() > 0 && (displayColumnSQL.startsWith("@SQL=") || displayColumnSQL.startsWith("@SQLFIND=")))
+				if (displayColumnSQL != null && displayColumnSQL.length() > 0 && (displayColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || displayColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX)))
 					displayColumnSQL = "NULL";
 				if (displayColumnSQL != null && displayColumnSQL.contains("@"))
 					displayColumnSQL = Env.parseContext(Env.getCtx(), -1, displayColumnSQL, false, true);
@@ -516,10 +516,13 @@ public class MLookupFactory
 				}
 			}
 			realSQL.append(",").append(TableName).append(".IsActive");
+
+			String realKeyColumn = KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU") ? KeyColumn : (MTable.get(ctx, TableName).isUUIDKeyTable() ? PO.getUUIDColumnName(TableName) : TableName + "_ID");
+
 			realSQL.append(" FROM ").append(TableName)
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
-				.append(TableName).append(".").append(KeyColumn)
-				.append("=").append(TableName).append("_Trl.").append(KeyColumn)
+				.append(TableName).append(".").append(realKeyColumn)
+				.append("=").append(TableName).append("_Trl.").append(realKeyColumn)
 				.append(" AND ").append(TableName).append("_Trl.AD_Language='")
 				.append(language.getAD_Language()).append("')");
 		}

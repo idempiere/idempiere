@@ -30,13 +30,12 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MEntityType;
-import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -98,17 +97,7 @@ public class WFEditor extends ADForm {
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("width: 100%; height: 100%; position: relative;");
 		appendChild(layout);
-		String sql;
-		boolean isBaseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Workflow");
-		if (isBaseLanguage)
-			sql = MRole.getDefault().addAccessSQL(
-				"SELECT AD_Workflow_ID, Name FROM AD_Workflow WHERE IsActive='Y' ORDER BY 2",
-				"AD_Workflow", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
-		else
-			sql = MRole.getDefault().addAccessSQL(
-					"SELECT AD_Workflow.AD_Workflow_ID, AD_Workflow_Trl.Name FROM AD_Workflow INNER JOIN AD_Workflow_Trl ON (AD_Workflow.AD_Workflow_ID=AD_Workflow_Trl.AD_Workflow_ID) "
-					+ " WHERE AD_Workflow.IsActive='Y' AND AD_Workflow_Trl.AD_Language='"+Env.getAD_Language(Env.getCtx())+"' ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
-		KeyNamePair[] pp = DB.getKeyNamePairs(sql, true);
+		KeyNamePair[] pp = MWorkflow.getWorkflowKeyNamePairs(true);
 
 		workflowList = ListboxFactory.newDropdownListbox();
 		for (KeyNamePair knp : pp) {
@@ -124,7 +113,7 @@ public class WFEditor extends ADForm {
 		// Zoom
 		zoomButton = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			zoomButton.setIconSclass("z-icon-Zoom");
+			zoomButton.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
 		else
 			zoomButton.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
 		toolbar.appendChild(zoomButton);
@@ -133,7 +122,7 @@ public class WFEditor extends ADForm {
 		// New Node
 		newButton = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			newButton.setIconSclass("z-icon-New");
+			newButton.setIconSclass(Icon.getIconSclass(Icon.NEW));
 		else
 			newButton.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		toolbar.appendChild(newButton);
@@ -142,7 +131,7 @@ public class WFEditor extends ADForm {
 		// Refresh
 		refreshButton = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			refreshButton.setIconSclass("z-icon-Refresh");
+			refreshButton.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			refreshButton.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
 		toolbar.appendChild(refreshButton);

@@ -21,6 +21,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IServiceHolder;
+import org.adempiere.base.Service;
+import org.adempiere.base.ServiceQuery;
+import org.compiere.model.SystemProperties;
+import org.osgi.framework.Constants;
+
 /**
  *  Secure engine for encryption and decryption
  *	
@@ -30,14 +36,14 @@ import java.util.logging.Level;
 public class SecureEngine
 {
 	/**
-	 * 	Initialize Security
-	 *	@param ctx context with ADEMPIERE_SECURE class name
+	 * 	Initialize SecureEngine with ADEPIERE_SECURE class
+	 *	@param ctx ignore
 	 */
 	public static void init (Properties ctx)
 	{
 		if (s_engine == null)
 		{
-			String className = ctx.getProperty(SecureInterface.ADEMPIERE_SECURE);
+			String className = SystemProperties.getAdempiereSecure();
 			s_engine = new SecureEngine(className);
 		}
 	}	//	init
@@ -73,7 +79,7 @@ public class SecureEngine
 	}	//	getClassName
 	
 	/**
-	 *  Convert String and salt to SHA-512 hash with iterations
+	 *  Convert String and salt to SHA-512 hash with iterations<br/>
 	 *  https://www.owasp.org/index.php/Hashing_Java
 	 *
 	 *  @param value message
@@ -89,12 +95,13 @@ public class SecureEngine
 	}	//	getDigest	
 	
 	/**
-	 *  Perform MD5 Digest of value.
+	 *  Perform MD5 Digest of value.<br/>
 	 *  JavaScript version see - http://pajhome.org.uk/crypt/md5/index.html
 	 *
 	 *  @param value message
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
+	@Deprecated
 	public static String getDigest (String value)
 	{
 		if (s_engine == null)
@@ -103,7 +110,19 @@ public class SecureEngine
 	}	//	getDigest
 	
 	/**
-	 *	Encryption.
+	 * Perform SHA-256 Digest of value.
+	 * @param value
+	 * @return HexString of digested message (length = 64 characters)
+	 */
+	public static String getSHA256Digest (String value)
+	{
+		if (s_engine == null)
+			init(System.getProperties());
+		return s_engine.implementation.getSHA256Digest(value);
+	}	//	getSHA256Digest
+	
+	/**
+	 *	Encryption.<br/>
 	 * 	The methods must recognize clear text values
 	 *  @param value clear value
 	 *  @param AD_Client_ID
@@ -127,7 +146,7 @@ public class SecureEngine
 	}	//	encrypt
 	
 	/**
-	 *	Decryption.
+	 *	Decryption.<br/>
 	 * 	The methods must recognize clear text values
 	 *  @param value encrypted value
 	 *  @param AD_Client_ID
@@ -186,22 +205,41 @@ public class SecureEngine
 		String realClass = className;
 		if (realClass == null || realClass.length() == 0)
 			realClass = SecureInterface.ADEMPIERE_SECURE_DEFAULT;
+		
+		//try OSGi first
+		if (!SecureInterface.ADEMPIERE_SECURE_DEFAULT.equals(realClass)) 
+		{
+			ServiceQuery serviceQuery = new ServiceQuery();
+			serviceQuery.put(Constants.OBJECTCLASS, className);
+			IServiceHolder<SecureInterface> holder = Service.locator().locate(SecureInterface.class, serviceQuery);
+			if (holder != null) 
+			{
+				implementation = holder.getService();
+			}
+		}
+		
 		Exception cause = null;
-		try
-		{
-			Class<?> clazz = Class.forName(realClass);
-			implementation = (SecureInterface)clazz.getDeclaredConstructor().newInstance();
+		if (implementation == null)
+		{			
+			//fallback to Class.forName
+			try
+			{
+				Class<?> clazz = Class.forName(realClass);
+				implementation = (SecureInterface)clazz.getDeclaredConstructor().newInstance();
+			}
+			catch (Exception e)
+			{
+				cause = e;
+			}
 		}
-		catch (Exception e)
-		{
-			cause = e;
-		}
+		
 		if (implementation == null)
 		{
 			String msg = "Could not initialize: " + realClass + " - " + cause.toString()
 				+ "\nCheck start script parameter ADEMPIERE_SECURE"; 
 			log.severe(msg);
 			System.err.println(msg);
+			cause.printStackTrace();
 			System.exit(10);
 		}
 		//	See if it works

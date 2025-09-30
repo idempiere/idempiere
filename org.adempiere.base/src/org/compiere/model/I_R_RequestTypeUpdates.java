@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestTypeUpdates
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_R_RequestTypeUpdates 
 {
@@ -75,6 +75,7 @@ public interface I_R_RequestTypeUpdates
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */
@@ -119,6 +120,15 @@ public interface I_R_RequestTypeUpdates
 	  */
 	public boolean isSelfService();
 
+    /** Column name R_RequestTypeUpdates_UU */
+    public static final String COLUMNNAME_R_RequestTypeUpdates_UU = "R_RequestTypeUpdates_UU";
+
+	/** Set R_RequestTypeUpdates_UU	  */
+	public void setR_RequestTypeUpdates_UU (String R_RequestTypeUpdates_UU);
+
+	/** Get R_RequestTypeUpdates_UU	  */
+	public String getR_RequestTypeUpdates_UU();
+
     /** Column name R_RequestType_ID */
     public static final String COLUMNNAME_R_RequestType_ID = "R_RequestType_ID";
 
@@ -132,16 +142,8 @@ public interface I_R_RequestTypeUpdates
 	  */
 	public int getR_RequestType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException;
-
-    /** Column name R_RequestTypeUpdates_UU */
-    public static final String COLUMNNAME_R_RequestTypeUpdates_UU = "R_RequestTypeUpdates_UU";
-
-	/** Set R_RequestTypeUpdates_UU	  */
-	public void setR_RequestTypeUpdates_UU (String R_RequestTypeUpdates_UU);
-
-	/** Get R_RequestTypeUpdates_UU	  */
-	public String getR_RequestTypeUpdates_UU();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

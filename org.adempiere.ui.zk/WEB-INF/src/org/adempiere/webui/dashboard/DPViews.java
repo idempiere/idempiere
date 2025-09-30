@@ -22,14 +22,18 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.InfoSchedule;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUserDefInfo;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -76,7 +80,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoAccount")));
 			if (ThemeManager.isUseFontIconForImage())
-				btnViewItem.setIconSclass("z-icon-InfoAccount");
+				btnViewItem.setIconSclass(Icon.getIconSclass(Icon.INFO_ACCOUNT));
 			else
 				btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoAccount16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -91,7 +95,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 			btnViewItem.setSclass("link");
 			btnViewItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "InfoSchedule")));
 			if (ThemeManager.isUseFontIconForImage())
-				btnViewItem.setIconSclass("z-icon-InfoSchedule");
+				btnViewItem.setIconSclass(Icon.getIconSclass(Icon.INFO_SCHEDULE));
 			else
 				btnViewItem.setImage(ThemeManager.getThemeResource("images/InfoSchedule16.png"));
 			btnViewItem.addEventListener(Events.ON_CLICK, this);
@@ -150,7 +154,15 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 				btnViewItem.setSclass("link");
 				btnViewItem.setLabel(name);
 
-				if (ThemeManager.isUseFontIconForImage()) 
+				if (MAttachment.isAttachmentURLPath(image))
+				{
+					btnViewItem.setImage(MAttachment.getImageAttachmentURLFromPath(null, image));
+				}
+				else if (image.indexOf("://") > 0)
+				{
+					btnViewItem.setImage(image);
+				}
+				else if (ThemeManager.isUseFontIconForImage()) 
 				{
 					if (image.endsWith("16.png"))
 						image = image.replace("16.png", "");
@@ -158,7 +170,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 						image = image.replace("24.png", "");					
 					else if (image.endsWith(".png"))
 						image = image.replace(".png", "");
-					btnViewItem.setIconSclass("z-icon-"+image);
+					btnViewItem.setIconSclass(Icon.getIconSclass(image));
 				}
 				else
 				{
@@ -189,7 +201,9 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 				if (actionCommand.equals("InfoAccount"))
 				{
-					new org.adempiere.webui.acct.WAcctViewer();
+					ADForm form = ADForm.openForm(SystemIDs.FORM_ACCOUNT_INFO);
+					form.setAttribute(Window.MODE_KEY, form.getWindowMode());
+					AEnv.showWindow(form);
 				}
 				else if (actionCommand.equals("InfoSchedule"))
 				{

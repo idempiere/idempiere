@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for GL_JournalGeneratorSource
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGeneratorSource")
 public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGeneratorSource, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorSource (Properties ctx, int GL_JournalGeneratorSource_ID, String trxName)
@@ -137,6 +137,7 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -165,6 +166,7 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
@@ -193,6 +195,7 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_JournalGeneratorLine getGL_JournalGeneratorLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_JournalGeneratorLine)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGeneratorLine.Table_ID)

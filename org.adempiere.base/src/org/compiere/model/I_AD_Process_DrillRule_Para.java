@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_DrillRule_Para
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Process_DrillRule_Para 
 {
@@ -71,6 +71,7 @@ public interface I_AD_Process_DrillRule_Para
 	/** Get Drill Rule	  */
 	public int getAD_Process_DrillRule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_DrillRule getAD_Process_DrillRule() throws RuntimeException;
 
     /** Column name AD_Process_DrillRule_Para_UU */
@@ -91,6 +92,7 @@ public interface I_AD_Process_DrillRule_Para
 	/** Get Process Parameter	  */
 	public int getAD_Process_Para_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
 
     /** Column name Created */

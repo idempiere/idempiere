@@ -31,7 +31,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Credit Manager for Invoice
+ * Credit Status Management for Invoice
  * 
  * @author Logilite Technologies
  * @since  June 25, 2023
@@ -72,7 +72,7 @@ public class CreditManagerInvoice implements ICreditManager
 				}
 			}
 		}
-		else if (MInvoice.DOCACTION_Complete.equals(docAction))
+		else if (MInvoice.DOCACTION_Complete.equals(docAction) || MInvoice.DOCACTION_Re_Activate.equals(docAction))
 		{
 			// POS supports multiple payments
 			boolean fromPOS = false;
@@ -113,7 +113,12 @@ public class CreditManagerInvoice implements ICreditManager
 															mInvoice.getC_ConversionType_ID(),
 															mInvoice.getDateAcct(),
 															mInvoice.get_TrxName());
+				return new CreditStatus(errorMsg, true);
 			}
+			
+			if (MInvoice.DOCACTION_Re_Activate.equals(docAction))
+				invAmt = invAmt.negate();
+			
 			// Total Balance
 			BigDecimal newBalance = bp.getTotalOpenBalance();
 			if (newBalance == null)

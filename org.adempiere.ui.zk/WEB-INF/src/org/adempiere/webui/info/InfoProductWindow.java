@@ -55,7 +55,6 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.model.GridField;
-import org.compiere.model.Lookup;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProduct;
@@ -181,26 +180,6 @@ public class InfoProductWindow extends InfoWindow {
 			int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
-	}
-
-	/**
-	 * @param WindowNo
-	 * @param tableName
-	 * @param keyColumn
-	 * @param queryValue
-	 * @param multipleSelection
-	 * @param whereClause
-	 * @param AD_InfoWindow_ID
-	 * @param lookup
-	 * @param field
-	 * @param predefinedContextVariables
-	 * @param lookupModel
-	 */
-	public InfoProductWindow(int WindowNo, String tableName, String keyColumn, String queryValue,
-			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field,
-			String predefinedContextVariables, Lookup lookupModel) {
-		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, lookup, field,
-				predefinedContextVariables, lookupModel);
 	}
 
 	@Override
@@ -514,7 +493,7 @@ public class InfoProductWindow extends InfoWindow {
 			return;
 
 		String title = getSelectedWarehouseLabel() + " - " + productName;
-		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");;
+		int C_BPartner_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_BPartner_ID");
 		final InfoPAttributeInstancePanel pai = new InfoPAttributeInstancePanel(this, title,
 			M_Warehouse_ID, 0, productInteger.intValue(), C_BPartner_ID);
 		pai.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {

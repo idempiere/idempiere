@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_CyclePhase
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CyclePhase")
 public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CyclePhase (Properties ctx, int C_CyclePhase_ID, String trxName)
@@ -119,6 +119,7 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_CyclePhase_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CycleStep getC_CycleStep() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CycleStep)MTable.get(getCtx(), org.compiere.model.I_C_CycleStep.Table_ID)
@@ -147,6 +148,7 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Phase getC_Phase() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Phase)MTable.get(getCtx(), org.compiere.model.I_C_Phase.Table_ID)

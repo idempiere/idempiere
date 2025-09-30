@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankAccountDoc
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_BankAccountDoc 
 {
@@ -97,6 +97,7 @@ public interface I_C_BankAccountDoc
 	  */
 	public int getC_BankAccount_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name Check_PrintFormat_ID */
@@ -112,6 +113,7 @@ public interface I_C_BankAccountDoc
 	  */
 	public int getCheck_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getCheck_PrintFormat() throws RuntimeException;
 
     /** Column name Created */

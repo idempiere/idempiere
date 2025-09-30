@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_NetworkDistribution
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_DD_NetworkDistribution 
@@ -176,6 +176,7 @@ public interface I_DD_NetworkDistribution
 	  */
 	public int getM_ChangeNotice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException;
 
     /** Column name Name */

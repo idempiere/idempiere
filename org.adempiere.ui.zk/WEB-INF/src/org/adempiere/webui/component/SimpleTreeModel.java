@@ -82,7 +82,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 	 * @param windowNo
 	 * @param linkColName
 	 * @param linkID
-	 * @return
+	 * @return SimpleTreeModel
 	 */
 	public static SimpleTreeModel initADTree(Tree tree, int AD_Tree_ID, int windowNo, String linkColName, int linkID) {
 		return initADTree(tree, AD_Tree_ID, windowNo, true, null, linkColName, linkID);
@@ -198,7 +198,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 	}
 
 	/**
-	 * 
+	 * Add child nodes from parentNode into stParentNode
 	 * @param stParentNode DefaultTreeNode wrapper for parentNode
 	 * @param parentNode
 	 */
@@ -264,7 +264,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 	}
 
 	/**
-	 * Add to root
+	 * Add new node to root
 	 * @param newNode
 	 */
 	public void addNode(DefaultTreeNode<Object> newNode) {
@@ -278,6 +278,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 	}
 
 	/**
+	 * Remove node from model
 	 * @param treeNode
 	 */
 	public void removeNode(DefaultTreeNode<Object> treeNode) {
@@ -353,6 +354,7 @@ public class SimpleTreeModel extends org.zkoss.zul.DefaultTreeModel<Object> impl
 	}
 
 	/**
+	 * Add newNode as children of newParent
 	 * @param newParent
 	 * @param newNode
 	 * @param index

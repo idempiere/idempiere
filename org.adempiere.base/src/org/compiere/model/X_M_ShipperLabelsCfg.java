@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShipperLabelsCfg
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperLabelsCfg")
 public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_ShipperLabelsCfg (Properties ctx, int M_ShipperLabelsCfg_ID, String trxName)
@@ -204,6 +204,7 @@ public class X_M_ShipperLabelsCfg extends PO implements I_M_ShipperLabelsCfg, I_
 		return (String)get_Value(COLUMNNAME_LabelPrintMethod);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_ID)

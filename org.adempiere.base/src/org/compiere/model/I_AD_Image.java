@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Image
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Image 
 {
@@ -93,6 +93,7 @@ public interface I_AD_Image
 	/** Get Storage Provider	  */
 	public int getAD_StorageProvider_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException;
 
     /** Column name BinaryData */

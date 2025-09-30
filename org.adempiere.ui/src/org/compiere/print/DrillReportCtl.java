@@ -40,6 +40,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MProcessDrillRulePara;
@@ -497,7 +498,7 @@ public class DrillReportCtl {
 			MProcessDrillRulePara keyPara = new MProcessDrillRulePara(Env.getCtx(), 0, null);
 			keyPara.setAD_Process_DrillRule_ID(processDrillRule.getAD_Process_DrillRule_ID());
 			keyPara.setAD_Process_Para_ID(processDrillRule.getAD_Process_Para_ID());
-			MProcessDrillRulePara[] sParamsTmp = Arrays.stream(sParams).toArray(MProcessDrillRulePara[]::new);;
+			MProcessDrillRulePara[] sParamsTmp = Arrays.stream(sParams).toArray(MProcessDrillRulePara[]::new);
 			sParams = new MProcessDrillRulePara[sParamsTmp.length+1];
 			int idx = 0;
 			for(idx = 0; idx < sParamsTmp.length; idx++) {
@@ -513,6 +514,10 @@ public class DrillReportCtl {
 			MProcessDrillRulePara sPara = sParams[p];
 			if(processPara.getColumnName().equals(m_ColumnName))
 			{
+				if(m_Value == null) {
+					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
+					continue;
+				}
 				iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? new BigDecimal(String.valueOf(m_Value)) : String.valueOf(m_Value));
 				iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : String.valueOf(m_Value));
 				iParams.add(iPara);
@@ -660,7 +665,7 @@ public class DrillReportCtl {
 		if (variable == null
 			|| (variable != null && variable.length() == 0))
 			value = null;
-		else if (variable.startsWith("@SQL=")) {
+		else if (variable.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 			String	defStr = "";
 			String sql = variable.substring(5);	//	w/o tag
 			//hengsin, capture unparseable error to avoid subsequent sql exception

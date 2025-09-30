@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Registration
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Registration")
 public class X_AD_Registration extends PO implements I_AD_Registration, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName)
@@ -178,6 +178,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 		return (String)get_Value(COLUMNNAME_AD_Registration_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_System getAD_System() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_System)MTable.get(getCtx(), org.compiere.model.I_AD_System.Table_ID)
@@ -206,6 +207,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -234,6 +236,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)

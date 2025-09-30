@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_IndexColumn
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_IndexColumn 
 {
@@ -62,6 +62,7 @@ public interface I_AD_IndexColumn
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_IndexColumn_ID */
@@ -104,6 +105,7 @@ public interface I_AD_IndexColumn
 	/** Get Table Index	  */
 	public int getAD_TableIndex_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_TableIndex getAD_TableIndex() throws RuntimeException;
 
     /** Column name ColumnSQL */

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Process_Access
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_Access")
 public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Process_Access (Properties ctx, int AD_Process_Access_ID, String trxName)
@@ -123,6 +123,7 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_Process_Access_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -151,6 +152,7 @@ public class X_AD_Process_Access extends PO implements I_AD_Process_Access, I_Pe
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)

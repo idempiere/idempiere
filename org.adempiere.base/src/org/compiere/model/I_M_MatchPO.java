@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_MatchPO
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_MatchPO 
 {
@@ -75,6 +75,7 @@ public interface I_M_MatchPO
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
 
     /** Column name C_OrderLine_ID */
@@ -90,6 +91,7 @@ public interface I_M_MatchPO
 	  */
 	public int getC_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException;
 
     /** Column name Created */
@@ -199,6 +201,7 @@ public interface I_M_MatchPO
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
@@ -214,6 +217,7 @@ public interface I_M_MatchPO
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_MatchPO_ID */
@@ -251,6 +255,7 @@ public interface I_M_MatchPO
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Posted */
@@ -336,6 +341,7 @@ public interface I_M_MatchPO
 	/** Get Referenced Match PO	  */
 	public int getRef_MatchPO_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchPO getRef_MatchPO() throws RuntimeException;
 
     /** Column name Reversal_ID */
@@ -351,6 +357,7 @@ public interface I_M_MatchPO
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchPO getReversal() throws RuntimeException;
 
     /** Column name Updated */

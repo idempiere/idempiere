@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_Training_Class
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="S_Training_Class")
 public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName)
@@ -42,9 +42,9 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
         {
 			setEndDate (new Timestamp( System.currentTimeMillis() ));
 			setM_Product_ID (0);
-			setStartDate (new Timestamp( System.currentTimeMillis() ));
 			setS_Training_Class_ID (0);
 			setS_Training_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
         } */
     }
 
@@ -56,9 +56,9 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
         {
 			setEndDate (new Timestamp( System.currentTimeMillis() ));
 			setM_Product_ID (0);
-			setStartDate (new Timestamp( System.currentTimeMillis() ));
 			setS_Training_Class_ID (0);
 			setS_Training_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
         } */
     }
 
@@ -70,9 +70,9 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
         {
 			setEndDate (new Timestamp( System.currentTimeMillis() ));
 			setM_Product_ID (0);
-			setStartDate (new Timestamp( System.currentTimeMillis() ));
 			setS_Training_Class_ID (0);
 			setS_Training_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
         } */
     }
 
@@ -84,9 +84,9 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
         {
 			setEndDate (new Timestamp( System.currentTimeMillis() ));
 			setM_Product_ID (0);
-			setStartDate (new Timestamp( System.currentTimeMillis() ));
 			setS_Training_Class_ID (0);
 			setS_Training_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
         } */
     }
 
@@ -134,6 +134,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -161,30 +162,6 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 			 return 0;
 		return ii.intValue();
 	}
-
-	/** Set Start Date.
-		@param StartDate First effective day (inclusive)
-	*/
-	public void setStartDate (Timestamp StartDate)
-	{
-		set_Value (COLUMNNAME_StartDate, StartDate);
-	}
-
-	/** Get Start Date.
-		@return First effective day (inclusive)
-	  */
-	public Timestamp getStartDate()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_StartDate);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getStartDate()));
-    }
 
 	/** Set Training Class.
 		@param S_Training_Class_ID The actual training class instance
@@ -223,6 +200,7 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 		return (String)get_Value(COLUMNNAME_S_Training_Class_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Training getS_Training() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_Training)MTable.get(getCtx(), org.compiere.model.I_S_Training.Table_ID)
@@ -250,4 +228,28 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 			 return 0;
 		return ii.intValue();
 	}
+
+	/** Set Start Date.
+		@param StartDate First effective day (inclusive)
+	*/
+	public void setStartDate (Timestamp StartDate)
+	{
+		set_Value (COLUMNNAME_StartDate, StartDate);
+	}
+
+	/** Get Start Date.
+		@return First effective day (inclusive)
+	  */
+	public Timestamp getStartDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_StartDate);
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getStartDate()));
+    }
 }

@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_PriceList
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_PriceList")
 public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_I_PriceList (Properties ctx, int I_PriceList_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -174,6 +175,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -202,6 +204,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
@@ -267,6 +270,22 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set ISO Currency Code.
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
+	public void setISO_Code (String ISO_Code)
+	{
+		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
+	}
+
+	/** Get ISO Currency Code.
+		@return Three letter ISO 4217 Code of the Currency
+	  */
+	public String getISO_Code()
+	{
+		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Import Error Message.
@@ -344,22 +363,6 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return (String)get_Value(COLUMNNAME_I_PriceList_UU);
 	}
 
-	/** Set ISO Currency Code.
-		@param ISO_Code Three letter ISO 4217 Code of the Currency
-	*/
-	public void setISO_Code (String ISO_Code)
-	{
-		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
-	}
-
-	/** Get ISO Currency Code.
-		@return Three letter ISO 4217 Code of the Currency
-	  */
-	public String getISO_Code()
-	{
-		return (String)get_Value(COLUMNNAME_ISO_Code);
-	}
-
 	/** Set Sales Price list.
 		@param IsSOPriceList This is a Sales Price List
 	*/
@@ -406,6 +409,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
@@ -434,6 +438,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
@@ -462,6 +467,7 @@ public class X_I_PriceList extends PO implements I_I_PriceList, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

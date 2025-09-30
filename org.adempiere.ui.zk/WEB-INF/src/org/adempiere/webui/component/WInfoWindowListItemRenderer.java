@@ -34,10 +34,12 @@ import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.GridField;
 import org.compiere.model.InfoColumnVO;
+import org.compiere.model.MColumn;
 import org.compiere.model.MStyle;
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
-import org.compiere.util.Evaluatee;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -153,27 +155,8 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 			if (gridField.getAD_FieldStyle_ID() > 0)
 			{
 				MStyle style = MStyle.get(Env.getCtx(), gridField.getAD_FieldStyle_ID());
-				String styleStr = style.buildStyle(ThemeManager.getTheme(), new Evaluatee() {
-
-					@Override
-					public String get_ValueAsString(String variableName) {
-						String value = null;
-
-						int idx = 0;
-						for (InfoColumnVO ic : gridDisplayedInfoColumns)
-						{
-							if (ic != null && ic.getColumnName().equals(variableName))
-							{
-								value = String.valueOf(table.getValueAt(rowIndex, idx));
-								break;
-							}
-
-							idx++;
-						}
-
-						return value;
-					}
-				});
+				DefaultEvaluatee evaluatee = new DefaultEvaluatee(new TableDataProvider(table, rowIndex));
+				String styleStr = style.buildStyle(ThemeManager.getTheme(), evaluatee);
 				if(style.isWrapWithSpan()) {
 					Span span = new Span();
 					span.appendChild(new Text(listcell.getValue()));
@@ -203,5 +186,57 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 		} else {
 			ZkCssHelper.appendStyle(component, style);
 		}
+	}
+	
+	/**
+	 * Data provider implementation for WListbox
+	 */
+	private class TableDataProvider implements DefaultEvaluatee.DataProvider {
+
+		private WListbox table;
+		private int rowIndex;
+
+		private TableDataProvider(WListbox table, int rowIndex) {
+			this.table = table;
+			this.rowIndex = rowIndex;
+		}
+		
+		@Override
+		public Object getValue(String columnName) {
+			String value = null;
+
+			int idx = 0;
+			for (InfoColumnVO ic : gridDisplayedInfoColumns)
+			{
+				if (ic != null && ic.getColumnName().equals(columnName))
+				{
+					if (table.getValueAt(rowIndex, idx) instanceof NamePair)
+					{
+						value = ((NamePair) table.getValueAt(rowIndex, idx)).getID();
+					}
+					else
+						value = String.valueOf(table.getValueAt(rowIndex, idx));
+					break;
+				}
+				idx++;
+			}
+
+			return value;
+		}
+
+		@Override
+		public Object getProperty(String propertyName) {
+			return null;
+		}
+
+		@Override
+		public MColumn getColumn(String columnName) {
+			return null;
+		}
+
+		@Override
+		public String getTrxName() {
+			return null;
+		}		
 	}
 }

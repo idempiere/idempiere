@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CashBook_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_CashBook_Acct 
 {
@@ -62,21 +62,6 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_AcctSchema_ID */
-    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
-
-	/** Set Accounting Schema.
-	  * Rules for accounting
-	  */
-	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
-
-	/** Get Accounting Schema.
-	  * Rules for accounting
-	  */
-	public int getC_AcctSchema_ID();
-
-	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
-
     /** Column name CB_Asset_Acct */
     public static final String COLUMNNAME_CB_Asset_Acct = "CB_Asset_Acct";
 
@@ -90,6 +75,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Asset_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException;
 
     /** Column name CB_CashTransfer_Acct */
@@ -105,6 +91,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_CashTransfer_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException;
 
     /** Column name CB_Differences_Acct */
@@ -120,6 +107,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Differences_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException;
 
     /** Column name CB_Expense_Acct */
@@ -135,6 +123,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException;
 
     /** Column name CB_Receipt_Acct */
@@ -150,7 +139,24 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getCB_Receipt_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException;
+
+    /** Column name C_AcctSchema_ID */
+    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
+
+	/** Set Accounting Schema.
+	  * Rules for accounting
+	  */
+	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
+
+	/** Get Accounting Schema.
+	  * Rules for accounting
+	  */
+	public int getC_AcctSchema_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_CashBook_Acct_UU */
     public static final String COLUMNNAME_C_CashBook_Acct_UU = "C_CashBook_Acct_UU";
@@ -174,6 +180,7 @@ public interface I_C_CashBook_Acct
 	  */
 	public int getC_CashBook_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException;
 
     /** Column name Created */

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoRelated
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoRelated")
 public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_InfoRelated (Properties ctx, int AD_InfoRelated_ID, String trxName)
@@ -173,6 +173,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_InfoRelated_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
@@ -292,6 +293,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
@@ -320,6 +322,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoColumn)MTable.get(getCtx(), org.compiere.model.I_AD_InfoColumn.Table_ID)
@@ -347,6 +350,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getRelatedInfo() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)

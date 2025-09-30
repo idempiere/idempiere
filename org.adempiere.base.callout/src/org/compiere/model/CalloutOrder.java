@@ -759,7 +759,7 @@ public class CalloutOrder extends CalloutEngine
 			&& Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID") != 0)
 			mTab.setValue("M_AttributeSetInstance_ID", Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID"));
 		else
-			mTab.setValue("M_AttributeSetInstance_ID", null);
+			mTab.setValue("M_AttributeSetInstance_ID", 0);
 
 		/*****	Price Calculation see also qty	****/
 		int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, "C_BPartner_ID");
@@ -802,7 +802,9 @@ public class CalloutOrder extends CalloutEngine
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 
-		if (Env.isSOTrx(ctx, WindowNo))
+		int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
+		MWarehouse warehouse = MWarehouse.get(ctx, M_Warehouse_ID);
+		if (Env.isSOTrx(ctx, WindowNo) && !warehouse.isDisableInventoryPopup())
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
 			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N")
@@ -811,7 +813,7 @@ public class CalloutOrder extends CalloutEngine
 				BigDecimal QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
 				if (QtyOrdered == null)
 					QtyOrdered = Env.ZERO;
-				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
+
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
 					(M_Warehouse_ID, M_Product_ID.intValue(), M_AttributeSetInstance_ID, null);
@@ -972,8 +974,9 @@ public class CalloutOrder extends CalloutEngine
 
 		//
 		String deliveryViaRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_DeliveryViaRule, true);
+		int dropshipLocationId = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_DropShip_Location_ID, true);
 		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
-			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
+			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, dropshipLocationId,
 			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), deliveryViaRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
@@ -1295,16 +1298,18 @@ public class CalloutOrder extends CalloutEngine
 			QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
 		}
 
+		int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
+		MWarehouse warehouse = MWarehouse.get(ctx, M_Warehouse_ID);
 		//	Storage
 		if (M_Product_ID != 0
 			&& Env.isSOTrx(ctx, WindowNo)
-			&& QtyOrdered.signum() > 0)		//	no negative (returns)
+			&& QtyOrdered.signum() > 0		//	no negative (returns)
+			&& !warehouse.isDisableInventoryPopup())
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID);
 			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N")
 				&& !(product.isBOM() && product.isVerified() && product.isAutoProduce()))
 			{
-				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");
 				BigDecimal available = MStorageReservation.getQtyAvailable
 					(M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, null);

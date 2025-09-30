@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RevenueRecognition_Run
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_RevenueRecognition_Run 
 {
@@ -62,21 +62,17 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
+    /** Column name C_RevenueRecog_Service_ID */
+    public static final String COLUMNNAME_C_RevenueRecog_Service_ID = "C_RevenueRecog_Service_ID";
 
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
+	/** Set Revenue Recognition Service	  */
+	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID);
 
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+	/** Get Revenue Recognition Service	  */
+	public int getC_RevenueRecog_Service_ID();
 
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_RevenueRecog_Service getC_RevenueRecog_Service() throws RuntimeException;
 
     /** Column name C_RevenueRecognition_Plan_ID */
     public static final String COLUMNNAME_C_RevenueRecognition_Plan_ID = "C_RevenueRecognition_Plan_ID";
@@ -91,6 +87,7 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getC_RevenueRecognition_Plan_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition_Plan getC_RevenueRecognition_Plan() throws RuntimeException;
 
     /** Column name C_RevenueRecognition_Run_ID */
@@ -115,16 +112,21 @@ public interface I_C_RevenueRecognition_Run
 	/** Get C_RevenueRecognition_Run_UU	  */
 	public String getC_RevenueRecognition_Run_UU();
 
-    /** Column name C_RevenueRecog_Service_ID */
-    public static final String COLUMNNAME_C_RevenueRecog_Service_ID = "C_RevenueRecog_Service_ID";
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
 
-	/** Set Revenue Recognition Service	  */
-	public void setC_RevenueRecog_Service_ID (int C_RevenueRecog_Service_ID);
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
 
-	/** Get Revenue Recognition Service	  */
-	public int getC_RevenueRecog_Service_ID();
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
 
-	public org.compiere.model.I_C_RevenueRecog_Service getC_RevenueRecog_Service() throws RuntimeException;
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name DateRecognized */
     public static final String COLUMNNAME_DateRecognized = "DateRecognized";
@@ -148,6 +150,7 @@ public interface I_C_RevenueRecognition_Run
 	  */
 	public int getGL_Journal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException;
 
     /** Column name IsActive */

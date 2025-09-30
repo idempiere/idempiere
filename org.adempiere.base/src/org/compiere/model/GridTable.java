@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
@@ -95,15 +96,19 @@ public class GridTable extends AbstractTableModel
 	implements Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -5564364545827057092L;
+	private static final long serialVersionUID = 1852095729689900949L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
 	public static final int DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 30;
-	
+	public static final int DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS = 1;
+
 	public static final String LOAD_TIMEOUT_ERROR_MESSAGE = "GridTabLoadTimeoutError";
+	public static final String COUNT_QUERY_TIMEOUT_ERROR_MESSAGE = "CountQueryTimeoutLoadBackground";
+	public static final String FIND_OVER_MAX_ERROR_MESSAGE = "FindOverMax";
+	public static final String BACKGROUND_LOAD_FINISHED_INFO_MESSAGE = "BackgroundLoadFinished";
 
 	public static final String DATA_REFRESH_MESSAGE = "Refreshed";
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
@@ -142,7 +147,7 @@ public class GridTable extends AbstractTableModel
 		boolean withAccessControl, boolean virtual)
 	{
 		super();
-		log.info(TableName);
+		if (log.isLoggable(Level.INFO)) log.info(TableName);
 		m_ctx = ctx;
 		m_AD_Table_ID = AD_Table_ID;
 		setTableName(TableName);
@@ -169,6 +174,8 @@ public class GridTable extends AbstractTableModel
 
 	/**	Rowcount                    */
 	private int				    m_rowCount = 0;
+	private boolean				m_rowCountTimeout = false;
+	private boolean				m_rowLoadTimeout = false;
 	/**	Has Data changed?           */
 	private boolean			    m_changed = false;
 	/** Index of changed row via SetValueAt */
@@ -426,7 +433,8 @@ public class GridTable extends AbstractTableModel
 		//IDEMPIERE-5193 Add Limit to Query
 		if(m_maxRows > 0 && DB.getDatabase().isPagingSupported())
 		{
-			m_SQL = DB.getDatabase().addPagingSQL(m_SQL, 1, m_maxRows);
+			// set to maxRows plus one to trigger FindOverMax on overflow
+			m_SQL = DB.getDatabase().addPagingSQL(m_SQL, 1, m_maxRows+1);
 		}
 		
 		//
@@ -567,7 +575,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 *	Get GridField with ColumnName
 	 *  @param identifier column name
-	 *  @return GridField
+	 *  @return GridField or null
 	 */
 	protected GridField getField (String identifier)
 	{
@@ -645,7 +653,8 @@ public class GridTable extends AbstractTableModel
 			m_buffer = new ArrayList<Object[]>(m_rowCount+10);
 		}
 		m_sort = new ArrayList<MSort>(m_rowCount+10);
-		if (m_rowCount > 0)
+		// actual row count or timeout
+		if (m_rowCount > 0 || m_rowCountTimeout) 
 		{
 			m_loader.setContext(ServerContext.getCurrentInstance());
 			m_loaderFuture = Adempiere.getThreadPoolExecutor().submit(m_loader);
@@ -1134,11 +1143,22 @@ public class GridTable extends AbstractTableModel
 	 * @param row
 	 */
 	public void waitLoadingForRow(int row) {
+		// optimization - this method is called too frequently
+		// avoid processing when the criteria of whiles and if's below is not  met
+		if ( ! (row >= m_sort.size() || m_sort.size() == 0) )
+			return;
 		//	need to wait for data read into buffer
 		int loops = 0;
 		//wait for [timeout] seconds
 		int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
-		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && loops < timeout)
+		if (timeout <= 0) {
+			timeout = 120;
+			log.warning("Setting GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = 0 is not recommended as long queries can keep running in the database and affects performance, "
+					+ " in this case the system assigns a wait of 2 minutes to load records of a window");
+		} else {
+			timeout += 5; /* give 5 seconds extra for the query to timeout first in the database */
+		}
+		while (row >= m_sort.size() && m_loaderFuture != null && !m_loaderFuture.isDone() && !m_rowLoadTimeout && loops < timeout)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Waiting for loader row=" + row + ", size=" + m_sort.size());
 			try
@@ -1155,11 +1175,14 @@ public class GridTable extends AbstractTableModel
 			if (savedEx != null)
 				throw new IllegalStateException(savedEx);
 		}
+		// zero rows found without load timeout
+		if (row == 0 && m_sort.size() == 0 && m_rowCountTimeout && !m_rowLoadTimeout)
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "FindZeroRecords"));
 		if (row >= m_sort.size()) {
 			log.warning("Reached " + timeout + " seconds timeout loading row " + (row+1) + " for SQL=" + m_SQL);
 			//adjust row count
 			m_rowCount = m_sort.size();
-			throw new DBException("GridTabLoadTimeoutError");
+			m_rowLoadTimeout = true; // at this moment this must be set, but just to be sure that the warning is raised at doRun
 		}
 	}
 
@@ -1263,9 +1286,13 @@ public class GridTable extends AbstractTableModel
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		m_rowLoadTimeout = false;
 		try
 		{
 			stmt = DB.prepareStatement(sql.toString(), null);
+			int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+			if (timeout > 0)
+				stmt.setQueryTimeout(timeout);
 			rs = stmt.executeQuery();
 			while(rs.next())
 			{
@@ -1297,6 +1324,8 @@ public class GridTable extends AbstractTableModel
 		}
 		catch (SQLException e)
 		{
+			if (DB.getDatabase().isQueryTimeout(e))
+				m_rowLoadTimeout = true;
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
 		finally
@@ -1486,8 +1515,6 @@ public class GridTable extends AbstractTableModel
 
 		return true;
 	}	//	needSave
-
-	/*************************************************************************/
 
 	/** Save OK - O		*/
 	public static final char	SAVE_OK = 'O';			//	the only OK condition
@@ -1939,8 +1966,6 @@ public class GridTable extends AbstractTableModel
 		return null;
 	}	//	getWhereClause
 	
-	/*************************************************************************/
-
 	/**
 	 *	Get Mandatory empty columns
 	 *  @param rowData row data
@@ -2023,7 +2048,6 @@ public class GridTable extends AbstractTableModel
 		return true;
 	}
 	
-	/*************************************************************************/
 	// IDEMPIERE-454 Easy import
 	private boolean m_importing = false;
 	private String m_trxName = null;
@@ -3009,17 +3033,21 @@ public class GridTable extends AbstractTableModel
 		 */
 		protected int open (int maxRows)
 		{
+			m_rowLoadTimeout = false;
+			m_rowCountTimeout = false;
 			this.maxRows = maxRows;
 
 			//	Get Number of Rows
 			rows = 0;
 			PreparedStatement pstmt = null;
-			ResultSet rs = null;			
+			ResultSet rs = null;		
+			m_rowCountTimeout = false;
 			try
 			{
 				pstmt = DB.prepareStatement(m_SQL_Count, get_TrxName());
 				setParameter (pstmt, true);
-				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+		        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
+		        		DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
 					pstmt.setQueryTimeout(timeout);
 				rs = pstmt.executeQuery();
@@ -3028,7 +3056,14 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (SQLException e0)
 			{
-				throw new DBException(e0);
+				if (DB.getDatabase().isQueryTimeout(e0))
+				{
+					if (log.isLoggable(Level.INFO)) log.info("Count query timed out -> " + m_SQL_Count);
+					m_rowCountTimeout = true;
+					return 0;
+				}
+				else
+					throw new DBException(e0);
 			}
 			finally
 			{
@@ -3051,6 +3086,7 @@ public class GridTable extends AbstractTableModel
 		}	//	open
 
 		private void openResultSet() {
+			m_rowLoadTimeout = false;
 			String trxName = get_TrxName();
 			//postgresql need trx to use cursor based resultset
 			//https://jdbc.postgresql.org/documentation/head/query.html#query-with-cursor
@@ -3064,11 +3100,7 @@ public class GridTable extends AbstractTableModel
 			try
 			{
 				m_pstmt = DB.prepareStatement(m_SQL, trxName);
-				if (this.maxRows > 0 && rows == this.maxRows)
-				{
-					m_pstmt.setMaxRows(this.maxRows);					
-				}
-				//ensure not all row is fectch into memory for virtual table
+				//ensure not all rows are fetch into memory for virtual table
 				if (m_virtual)
 					m_pstmt.setFetchSize(100);
 				setParameter (m_pstmt, false);
@@ -3079,8 +3111,14 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (SQLException e)
 			{
-				log.saveError(e.getLocalizedMessage(), e);
-				throw new DBException(e);
+				if (DB.getDatabase().isQueryTimeout(e)) {
+					m_rowLoadTimeout = true;
+					throw new AdempiereException(Msg.getMsg(Env.getCtx(), LOAD_TIMEOUT_ERROR_MESSAGE), e);
+				} else {
+					log.severe(e.getLocalizedMessage() + " -> " + m_SQL);
+					log.saveError(e.getLocalizedMessage(), e);
+					throw new DBException(e);
+				}
 			}
 		}
 
@@ -3118,6 +3156,8 @@ public class GridTable extends AbstractTableModel
 		 * Fill buffer from result set
 		 */
 		private void doRun() {
+			boolean isFindOverMax = false;
+			boolean backgroundLoad = false;
 			try
 			{
 				openResultSet();
@@ -3126,6 +3166,11 @@ public class GridTable extends AbstractTableModel
 
 				while (m_rs.next())
 				{
+					if (maxRows > 0 && m_sort.size() == maxRows) {
+						isFindOverMax = true;
+			            break;
+					}
+
 					if (Thread.interrupted())
 					{
 						if (log.isLoggable(Level.FINE)) log.fine("Interrupted");
@@ -3149,9 +3194,26 @@ public class GridTable extends AbstractTableModel
 					}
 					m_sort.add(sort);
 
+					// Start with rowCount=0, inform loading of first row
+					if (m_rowCountTimeout)
+					{
+						m_rowCount++;
+						if (m_rowCount == 1)
+						{
+							DataStatusEvent evt = createDSE();
+							evt.setLoading(m_sort.size());
+							evt.setInfo(COUNT_QUERY_TIMEOUT_ERROR_MESSAGE, null, false, false);
+							fireDataStatusChanged(evt);
+						}
+					}
+
 					//	Statement all 1000 rows & sleep
 					if (m_sort.size() % 1000 == 0)
 					{
+						backgroundLoad = true;
+						DataStatusEvent evt = createDSE();
+						evt.setLoading(m_sort.size());
+						fireDataStatusChanged(evt);
 						//	give the other processes a chance
 						try
 						{
@@ -3164,20 +3226,44 @@ public class GridTable extends AbstractTableModel
 							close();
 							return;
 						}
-						DataStatusEvent evt = createDSE();
-						evt.setLoading(m_sort.size());
-						fireDataStatusChanged(evt);
 					}
 				}	//	while(rs.next())
 			}
 			catch (Exception e)
 			{
-				log.log(Level.SEVERE, "run", e);
+				if (! DBException.isTimeout(e))
+					throw new AdempiereException(e);
+				if (log.isLoggable(Level.INFO)) log.info("Query timed out -> " + m_SQL);
 			}
 			finally
 			{
 				close();
 			}
+			
+			// Background loading without initial rowCount, inform final loaded rows
+			if (backgroundLoad && m_sort.size() > 0)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				if (isFindOverMax)
+					evt.setInfo(FIND_OVER_MAX_ERROR_MESSAGE, " > " + m_sort.size(), false, true);
+				else
+					evt.setInfo(BACKGROUND_LOAD_FINISHED_INFO_MESSAGE, null, false, false);
+				fireDataStatusChanged(evt);
+			} else if (m_rowLoadTimeout)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				evt.setInfo(LOAD_TIMEOUT_ERROR_MESSAGE, null, false, true);
+				fireDataStatusChanged(evt);
+			} else if (isFindOverMax)
+			{
+				DataStatusEvent evt = createDSE();
+				evt.setLoading(m_sort.size());
+				evt.setInfo(FIND_OVER_MAX_ERROR_MESSAGE, " > " + m_sort.size(), false, true);
+				fireDataStatusChanged(evt);
+			}
+
 			fireDataStatusIEvent("", "");
 		}
 

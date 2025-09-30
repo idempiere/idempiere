@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Movement
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_I_Movement 
@@ -51,19 +51,6 @@ public interface I_I_Movement
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -76,6 +63,19 @@ public interface I_I_Movement
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -90,6 +90,7 @@ public interface I_I_Movement
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name BPartnerValue */
@@ -105,19 +106,6 @@ public interface I_I_Movement
 	  */
 	public String getBPartnerValue();
 
-    /** Column name CampaignValue */
-    public static final String COLUMNNAME_CampaignValue = "CampaignValue";
-
-	/** Set Campaign Key.
-	  * Text key of the Campaign
-	  */
-	public void setCampaignValue (String CampaignValue);
-
-	/** Get Campaign Key.
-	  * Text key of the Campaign
-	  */
-	public String getCampaignValue();
-
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
@@ -131,6 +119,7 @@ public interface I_I_Movement
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -146,6 +135,7 @@ public interface I_I_Movement
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -161,6 +151,7 @@ public interface I_I_Movement
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -176,7 +167,21 @@ public interface I_I_Movement
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name CampaignValue */
+    public static final String COLUMNNAME_CampaignValue = "CampaignValue";
+
+	/** Set Campaign Key.
+	  * Text key of the Campaign
+	  */
+	public void setCampaignValue (String CampaignValue);
+
+	/** Get Campaign Key.
+	  * Text key of the Campaign
+	  */
+	public String getCampaignValue();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -338,21 +343,6 @@ public interface I_I_Movement
 	  */
 	public String getLocatorValue();
 
-    /** Column name M_Locator_ID */
-    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
-
-	/** Set Locator.
-	  * Warehouse Locator
-	  */
-	public void setM_Locator_ID (int M_Locator_ID);
-
-	/** Get Locator.
-	  * Warehouse Locator
-	  */
-	public int getM_Locator_ID();
-
-	public I_M_Locator getM_Locator() throws RuntimeException;
-
     /** Column name M_LocatorTo_ID */
     public static final String COLUMNNAME_M_LocatorTo_ID = "M_LocatorTo_ID";
 
@@ -366,22 +356,24 @@ public interface I_I_Movement
 	  */
 	public int getM_LocatorTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_LocatorTo() throws RuntimeException;
 
-    /** Column name M_Movement_ID */
-    public static final String COLUMNNAME_M_Movement_ID = "M_Movement_ID";
+    /** Column name M_Locator_ID */
+    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
 
-	/** Set Inventory Move.
-	  * Movement of Inventory
+	/** Set Locator.
+	  * Warehouse Locator
 	  */
-	public void setM_Movement_ID (int M_Movement_ID);
+	public void setM_Locator_ID (int M_Locator_ID);
 
-	/** Get Inventory Move.
-	  * Movement of Inventory
+	/** Get Locator.
+	  * Warehouse Locator
 	  */
-	public int getM_Movement_ID();
+	public int getM_Locator_ID();
 
-	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
     public static final String COLUMNNAME_M_MovementLine_ID = "M_MovementLine_ID";
@@ -396,7 +388,56 @@ public interface I_I_Movement
 	  */
 	public int getM_MovementLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException;
+
+    /** Column name M_Movement_ID */
+    public static final String COLUMNNAME_M_Movement_ID = "M_Movement_ID";
+
+	/** Set Inventory Move.
+	  * Movement of Inventory
+	  */
+	public void setM_Movement_ID (int M_Movement_ID);
+
+	/** Get Inventory Move.
+	  * Movement of Inventory
+	  */
+	public int getM_Movement_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_Shipper_ID */
+    public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
+
+	/** Set Shipper.
+	  * Method or manner of product delivery
+	  */
+	public void setM_Shipper_ID (int M_Shipper_ID);
+
+	/** Get Shipper.
+	  * Method or manner of product delivery
+	  */
+	public int getM_Shipper_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name MovementDate */
     public static final String COLUMNNAME_MovementDate = "MovementDate";
@@ -423,36 +464,6 @@ public interface I_I_Movement
 	  * Quantity of a product moved.
 	  */
 	public BigDecimal getMovementQty();
-
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
-
-    /** Column name M_Shipper_ID */
-    public static final String COLUMNNAME_M_Shipper_ID = "M_Shipper_ID";
-
-	/** Set Shipper.
-	  * Method or manner of product delivery
-	  */
-	public void setM_Shipper_ID (int M_Shipper_ID);
-
-	/** Get Shipper.
-	  * Method or manner of product delivery
-	  */
-	public int getM_Shipper_ID();
-
-	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name OrgTrxValue */
     public static final String COLUMNNAME_OrgTrxValue = "OrgTrxValue";

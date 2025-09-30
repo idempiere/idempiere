@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ToolBarButton
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_ToolBarButton 
 {
@@ -40,6 +40,77 @@ public interface I_AD_ToolBarButton
     BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
+
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
+    /** Column name AD_Tab_ID */
+    public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
+
+	/** Set Tab.
+	  * Tab within a Window
+	  */
+	public void setAD_Tab_ID (int AD_Tab_ID);
+
+	/** Get Tab.
+	  * Tab within a Window
+	  */
+	public int getAD_Tab_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
+
+    /** Column name AD_ToolBarButton_ID */
+    public static final String COLUMNNAME_AD_ToolBarButton_ID = "AD_ToolBarButton_ID";
+
+	/** Set ToolBar Button	  */
+	public void setAD_ToolBarButton_ID (int AD_ToolBarButton_ID);
+
+	/** Get ToolBar Button	  */
+	public int getAD_ToolBarButton_ID();
+
+    /** Column name AD_ToolBarButton_UU */
+    public static final String COLUMNNAME_AD_ToolBarButton_UU = "AD_ToolBarButton_UU";
+
+	/** Set AD_ToolBarButton_UU	  */
+	public void setAD_ToolBarButton_UU (String AD_ToolBarButton_UU);
+
+	/** Get AD_ToolBarButton_UU	  */
+	public String getAD_ToolBarButton_UU();
 
     /** Column name Action */
     public static final String COLUMNNAME_Action = "Action";
@@ -79,75 +150,6 @@ public interface I_AD_ToolBarButton
 	  * Action name on the toolbar
 	  */
 	public String getActionName();
-
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
-    /** Column name AD_Process_ID */
-    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
-
-	/** Set Process.
-	  * Process or Report
-	  */
-	public void setAD_Process_ID (int AD_Process_ID);
-
-	/** Get Process.
-	  * Process or Report
-	  */
-	public int getAD_Process_ID();
-
-	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
-
-    /** Column name AD_Tab_ID */
-    public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
-
-	/** Set Tab.
-	  * Tab within a Window
-	  */
-	public void setAD_Tab_ID (int AD_Tab_ID);
-
-	/** Get Tab.
-	  * Tab within a Window
-	  */
-	public int getAD_Tab_ID();
-
-	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
-
-    /** Column name AD_ToolBarButton_ID */
-    public static final String COLUMNNAME_AD_ToolBarButton_ID = "AD_ToolBarButton_ID";
-
-	/** Set ToolBar Button	  */
-	public void setAD_ToolBarButton_ID (int AD_ToolBarButton_ID);
-
-	/** Get ToolBar Button	  */
-	public int getAD_ToolBarButton_ID();
-
-    /** Column name AD_ToolBarButton_UU */
-    public static final String COLUMNNAME_AD_ToolBarButton_UU = "AD_ToolBarButton_UU";
-
-	/** Set AD_ToolBarButton_UU	  */
-	public void setAD_ToolBarButton_UU (String AD_ToolBarButton_UU);
-
-	/** Get AD_ToolBarButton_UU	  */
-	public String getAD_ToolBarButton_UU();
 
     /** Column name ComponentName */
     public static final String COLUMNNAME_ComponentName = "ComponentName";

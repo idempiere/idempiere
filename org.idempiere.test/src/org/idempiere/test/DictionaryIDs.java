@@ -54,6 +54,17 @@ public final class DictionaryIDs {
 		}
 	}
 
+	public enum AD_Client {
+		GARDEN_WORLD(11),
+		SYSTEM(0);
+		
+		public final int id;
+		
+		private AD_Client(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum AD_Org {
 		GLOBAL(0),
 		HQ(11),
@@ -76,7 +87,8 @@ public final class DictionaryIDs {
 	public enum AD_Role {
 		GARDEN_WORLD_ADMIN(102),
 		GARDEN_WORLD_USER(103),
-		GARDEN_WORLD_ADMIN_NOT_ADVANCED(200001);
+		GARDEN_WORLD_ADMIN_NOT_ADVANCED(200001),
+		SYSTEM_ADMINISTRATOR(0);
 		
 		public final int id;
 
@@ -84,10 +96,21 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum AD_SysConfig {
+		TAX_LOOKUP_SERVICE(200198);
+		
+		public final int id;
+
+		private AD_SysConfig(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum AD_User {
 		GARDEN_ADMIN(101),
-		GARDEN_USER(102);
+		GARDEN_USER(102),
+		SUPER_USER(100);
 		
 		public final int id;
 
@@ -118,6 +141,17 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum C_BankAccount_Processor {
+		MONEYBANK_1234("f4a64026-bf68-4c8c-b238-8cdf006aae04"),
+		MONEYBANK_5678("f8f892f0-36ab-4b4d-9dd3-c3bbe12cf455");
+
+		public final String uuid;
+
+		private C_BankAccount_Processor(String uuid) {
+			this.uuid = uuid;
+		}
+	}
+
 	public enum C_BPartner {
 		STANDARD(112,"dc4962ad-066f-4ebf-88ac-545d12c9f1f0"),
 		TREE_FARM(114,"5c557ed6-c443-4b99-ae77-546ccd46bc1f"),
@@ -274,7 +308,8 @@ public final class DictionaryIDs {
 	}
 
 	public enum C_ElementValue {
-		CHECKING_IN_TRANSFER(509);
+		CHECKING_IN_TRANSFER(509),
+		DEFAULT_ACCOUNT(697);
 		
 		public final int id;
 		
@@ -282,7 +317,17 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum C_Location {
+		ORG_WH_HQ(114);
+
+		public final int id;
+
+		private C_Location(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_PaymentTerm {
 		NET_30(100),
 		NET_30_DAYS(107),
@@ -332,6 +377,16 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum C_Region {
+		CT(102);
+
+		public final int id;
+
+		private C_Region(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_Tax {
 		STANDARD(104),
 		CT_SALES(105),
@@ -406,6 +461,18 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum M_AttributeSetInstance {
+		MEDIUM(100),
+		RED_LARGE(101),
+		GREEN_LARGE(102);
+		
+		public final int id;
+
+		private M_AttributeSetInstance(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum M_CostElement {
 		MATERIAL(100),
 		FREIGHT(101),
@@ -467,7 +534,18 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum M_PriceList_Version {
+		STANDARD_2003(104),
+		IMPORT_2003(200000);
+
+		public final int id;
+
+		private M_PriceList_Version(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum M_Product {
 		STANDARD(122,"c713192a-9ed3-4740-ad32-9583c30d0206"),
 		OAK(123,"220b7a9a-4917-4bb2-b431-1426afacd7b8"),
@@ -529,13 +607,35 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum M_ProductPrice {
+		PATIOSET_STANDARD_2003(200084),
+		PATIOCHAIR_STANDARD_2003(200033),
+		PATIOCHAIR_IMPORT_2003(200095);
+
+		public final int id;
+
+		private M_ProductPrice(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum M_RMAType {
 		DAMAGE_ON_ARRIVAL(100);
 		
 		public final int id;
 
 		private M_RMAType(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum M_SerNoCtl {
+		SERIAL_NO_EXAMPLE(100);
+		
+		public final int id;
+		
+		private M_SerNoCtl(int id) {
 			this.id = id;
 		}
 	}
@@ -583,4 +683,98 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
+	
+	public enum AD_Tree {
+		GARDENWORLD_ACTIVITY(110),
+        GARDENWORLD_BUS_PARTNER(103),
+        GARDENWORLD_CAMPAIGN(109),
+        GARDENWORLD_ELEMENTVALUE(101),
+        GARDENWORLD_ORGANIZATION(104),
+        GARDENWORLD_PRODUCT(102),
+        GARDENWORLD_PROJECT(105),
+        GARDENWORLD_SALES_REGION(108),
+        MENU(10),
+        PRIMARY_ACCOUNT_ELEMENT_VALUE(20),
+        PRIMARY_BUSINESS_PARTNER(40),
+        PRIMARY_ORGANIZATION(50),
+        PRIMARY_PRODUCT(30),
+        PRIMARY_PROJECT(60),
+        PRIMARY_SALES_REGION(100);
+        
+		public final int id;
+		
+		private AD_Tree(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Workflow {
+		ACCOUNTING_SETUP(105),
+        BUSINESS_PARTNER_APPROVAL(131),
+        BUSINESS_PARTNER_SETUP(106),
+        FERTILIZER_PACKING_PROCESS(50017),
+        INITIAL_TENANT_SETUP_REVIEW(104),
+        LANGUAGE_SETUP(103),
+        LAWN_FERTILIZER(50016),
+        PATIO_CHAIR(50015),
+        PATIO_FURNITURE_SET(50018),
+        PERFORMANCE_MEASUREMENT_SETUP(112),
+        PRICE_LIST_SETUP(108),
+        PROCESS_ALLOCATION(125),
+        PROCESS_ASSET_ADITION(50020),
+        PROCESS_ASSET_DEPRECIATION_ENTRY(50024),
+        PROCESS_ASSET_DISPOSED(50021),
+        PROCESS_ASSET_REVAL(50023),
+        PROCESS_ASSET_TRANSFER(50022),
+        PROCESS_BANKSTATEMENT(130),
+        PROCESS_BANKTRANSFER(200005),
+        PROCESS_C_PROJECTISSUE(200007),
+        PROCESS_INOUTCONFIRM(124),
+        PROCESS_INVENTORY(127),
+        PROCESS_INVOICE(118),
+        PROCESS_JOURNAL(121),
+        PROCESS_JOURNALBATCH(122),
+        PROCESS_MOVEMENT(128),
+        PROCESS_MOVEMENTCONFIRM(129),
+        PROCESS_ORDER(116),
+        PROCESS_PAYMENT(120),
+        PROCESS_PRODUCTION(200002),
+        PROCESS_REQUISITION(115),
+        PROCESS_RMA(123),
+        PROCESS_SHIPMENT(117),
+        PROCESS_TIMEEXPENSE(126),
+        PRODUCT_SETUP(107),
+        PROJECT_SETUP_AND_USE(101),
+        REQUEST_SETUP(113),
+        SALES_SETUP(111),
+        SETUP_REPLICATION(50012),
+        TAX_SETUP(110);
+        
+		public final int id;
+		
+		private AD_Workflow(int id) {
+			this.id = id;
+		}
+	}
+
+	public enum C_Element {
+		GardenWorld_Account(105);
+		
+		public final int id;
+
+		private C_Element(int id) {
+			this.id = id;
+		}
+	}
+
+	public enum GL_Category {
+		AR_RECEIPT(110);
+		
+		public final int id;
+
+		private GL_Category(int id) {
+			this.id = id;
+		}
+	}
+
 }

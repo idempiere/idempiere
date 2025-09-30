@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Currency_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_Currency_Acct")
 public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_Currency_Acct (Properties ctx, int C_Currency_Acct_ID, String trxName)
@@ -104,6 +104,7 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -147,6 +148,7 @@ public class X_C_Currency_Acct extends PO implements I_C_Currency_Acct, I_Persis
 		return (String)get_Value(COLUMNNAME_C_Currency_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)

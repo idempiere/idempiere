@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for EXP_FormatLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_EXP_FormatLine 
 {
@@ -62,6 +62,7 @@ public interface I_EXP_FormatLine
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -90,6 +91,7 @@ public interface I_EXP_FormatLine
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name Created */
@@ -143,18 +145,8 @@ public interface I_EXP_FormatLine
 	/** Get Embedded Format	  */
 	public int getEXP_EmbeddedFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_EXP_Format getEXP_EmbeddedFormat() throws RuntimeException;
-
-    /** Column name EXP_Format_ID */
-    public static final String COLUMNNAME_EXP_Format_ID = "EXP_Format_ID";
-
-	/** Set Export Format	  */
-	public void setEXP_Format_ID (int EXP_Format_ID);
-
-	/** Get Export Format	  */
-	public int getEXP_Format_ID();
-
-	public org.compiere.model.I_EXP_Format getEXP_Format() throws RuntimeException;
 
     /** Column name EXP_FormatLine_ID */
     public static final String COLUMNNAME_EXP_FormatLine_ID = "EXP_FormatLine_ID";
@@ -173,6 +165,18 @@ public interface I_EXP_FormatLine
 
 	/** Get EXP_FormatLine_UU	  */
 	public String getEXP_FormatLine_UU();
+
+    /** Column name EXP_Format_ID */
+    public static final String COLUMNNAME_EXP_Format_ID = "EXP_Format_ID";
+
+	/** Set Export Format	  */
+	public void setEXP_Format_ID (int EXP_Format_ID);
+
+	/** Get Export Format	  */
+	public int getEXP_Format_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_EXP_Format getEXP_Format() throws RuntimeException;
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";

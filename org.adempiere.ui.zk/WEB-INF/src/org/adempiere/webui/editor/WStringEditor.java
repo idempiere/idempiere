@@ -35,25 +35,31 @@ import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.I_R_MailText;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.sys.ComponentCtrl;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Default editor for text display type (String, PrinterName, Text, TextLong and Memo).<br/>
  * Implemented with {@link Textbox} or {@link Combobox} (AD_Field.IsAutocomplete=Y) component and {@link WTextEditorDialog} dialog.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
- * @version $Revision: 0.10 $
  */
 public class WStringEditor extends WEditor implements ContextMenuListener
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE, Events.ON_OK};
 
     private String oldValue;
+    private String vFormat = null;
 
 	private AbstractADWindowContent adwindowContent;
 
@@ -93,8 +99,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     {
         super(gridField.isAutocomplete() ? new Combobox() : new Textbox(), gridField, tableEditor, editorConfiguration);
 
-        if (gridField.getVFormat() != null && !gridField.getVFormat().isEmpty())
-        	getComponent().setWidgetListener("onBind", "jq(this).mask('" + gridField.getVFormat() + "');");
+        vFormat = gridField.getVFormat();
 
         init(gridField.getObscureType());
     }
@@ -114,8 +119,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
     {
     	super(new Textbox(), columnName, null, null, mandatory, isReadOnly,isUpdateable);
 
-    	if (wVFormat != null &&  !wVFormat.isEmpty())
-    		getComponent().setWidgetListener("onBind", "jq(this).mask('" + wVFormat + "');");
+        vFormat = wVFormat;
 
     	init(obscureType);
     }
@@ -141,6 +145,9 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	 */
 	private void init(String obscureType)
     {
+        if (!Util.isEmpty(vFormat) && !vFormat.startsWith("~"))
+    		getComponent().setWidgetListener("onBind", "jq(this).mask('" + vFormat + "');");
+
 		setChangeEventWhenEditing (true);
 		if (gridField != null)
 		{
@@ -201,6 +208,37 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	@Override
 	public void onEvent(Event event)
     {
+		if (Events.ON_OK.equals(event.getName())) {
+		    if (event instanceof KeyEvent) {
+		        KeyEvent keyEvent = (KeyEvent) event;
+		        if (keyEvent.isShiftKey() && getComponent().isMultiline() && tableEditor) {
+		            Component target = event.getTarget();
+		            if (target instanceof Textbox) {
+		                String uuid = target.getUuid();
+
+		                String script = String.format(
+		                	    "(function() {" +
+		                	    "  var cmp = zk.Widget.$('#%s');" +
+		                	    "  if (!cmp) return;" +
+		                	    "  var elem = cmp.$n();" +
+		                	    "  if (!elem || typeof elem.selectionStart === 'undefined') return;" +
+		                	    "  var start = elem.selectionStart;" +
+		                	    "  var end = elem.selectionEnd;" +
+		                	    "  var value = elem.value;" +
+		                	    "  elem.value = value.substring(0, start) + '\\n' + value.substring(end);" +
+		                	    "  elem.selectionStart = elem.selectionEnd = start + 1;" +
+		                	    "  cmp.fire('onChanging', {value: elem.value});" +
+		                	    "})();",
+		                	    uuid
+		                	);
+
+		                Clients.evalJavaScript(script);
+		                return; // prevent regular ON_OK handling
+		            }
+		        }
+		    }
+		}
+	    
 		boolean isStartEdit = INIT_EDIT_EVENT.equalsIgnoreCase (event.getName());
     	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()) || isStartEdit)
     	{
@@ -211,6 +249,18 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        if (!isStartEdit && oldValue == null && newValue == null) {
 	        	return;
 	        }
+
+	        // Validate VFormat with regular expression
+			if (!Util.isEmpty(vFormat)) {
+				String regex = vFormatToRegex(vFormat);
+				if (!newValue.matches(regex)) {
+					String msgregex = Msg.getMsg(Env.getCtx(), regex);
+					newValue = oldValue;
+					getComponent().setValue(newValue);
+					throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
+				}
+			}
+
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 	        
 	        changeEvent.setIsInitEdit(isStartEdit);
@@ -364,6 +414,62 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 			parent = parent.getParent();
 		}
 		return null;
+	}
+	
+	/**
+	 * Convert vFormat to regular expression, see jquery.maskedinput.js
+	 * @param vFormat
+	 * @return
+	 */
+	private String vFormatToRegex(String vFormat) {
+		if (vFormat.startsWith("~"))
+			return gridField.getVFormat().substring(1); // remove the initial ~
+		StringBuilder regex = new StringBuilder();
+		for (char c : vFormat.toCharArray()) {
+			switch (c) {
+			case '0':
+				regex.append("[0-9]");
+				break;
+			case '9':
+				regex.append("[ 0-9]");
+				break;
+			case 'a':
+				regex.append("[A-Za-z0-9]");
+				break;
+			case 'A':
+				regex.append("[A-Z0-9]");
+				break;
+			case 'c':
+				regex.append("[ A-Za-z0-9]");
+				break;
+			case 'C':
+				regex.append("[ A-Z0-9]");
+				break;
+			case 'l':
+				regex.append("[A-Za-z]");
+				break;
+			case 'L':
+				regex.append("[A-Z]");
+				break;
+			case 'o':
+				regex.append("[ A-Za-z]");
+				break;
+			case 'O':
+				regex.append("[ A-Z]");
+				break;
+			case 'U':
+				regex.append("[^a-z]");
+				break;
+			default:
+				if ("()[]{}.+*?^$|\\".indexOf(c) != -1) {
+					regex.append("\\").append(c);
+				} else {
+					regex.append(c);
+				}
+				break;
+			}
+		}
+		return regex.toString();
 	}
 
 }

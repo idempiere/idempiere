@@ -22,7 +22,6 @@ import org.compiere.grid.CreateFromPackageShipment;
 import org.compiere.model.GridTab;
 import org.compiere.model.MPackage;
 import org.compiere.model.MPackageMPS;
-import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
@@ -58,9 +57,6 @@ public class WCreateFromPackageShipmentUI extends CreateFromPackageShipment
 		AEnv.showWindow(window);
 	}
 
-	/**	Logger */
-	private static final CLogger log = CLogger.getCLogger(WCreateFromPackageShipmentUI.class);
-	
 	/**
 	 * Load shipments lines
 	 */

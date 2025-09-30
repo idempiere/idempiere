@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
 import org.adempiere.webui.util.TreeUtils;
@@ -36,9 +37,8 @@ import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
 /**
- * 
+ * Add open and new button to {@link TreeSearchPanel}
  * @author hengsin
- *
  */
 public class MenuTreeSearchPanel extends TreeSearchPanel {
 	/**
@@ -100,7 +100,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 	protected void createOpenButton() {
 		openBtn = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			openBtn.setIconSclass("z-icon-Open");
+			openBtn.setIconSclass(Icon.getIconSclass(Icon.OPEN));
 		else
 			openBtn.setImage(ThemeManager.getThemeResource("images/Open16.png"));
 		openBtn.setSclass("menu-search-toggle-on");
@@ -125,7 +125,7 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 	protected void createNewButton() {
 		newBtn = new Toolbarbutton();
 		if (ThemeManager.isUseFontIconForImage())
-			newBtn.setIconSclass("z-icon-New");
+			newBtn.setIconSclass(Icon.getIconSclass(Icon.NEW));
 		else
 			newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		newBtn.setSclass("menu-search-toggle-off");

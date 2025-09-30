@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -208,12 +207,22 @@ public class MArchive extends X_AD_Archive {
 	 * @return input stream or null
 	 */
 	public InputStream getInputStream() {
-		byte[] inflatedData = getBinaryData();
-		if (inflatedData == null)
-			return null;
-		return new ByteArrayInputStream(inflatedData);
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			return prov.loadLOBDataAsStream(this,provider);
+		return null;
 	} // getInputStream
 
+	/**
+	 * Save Binary Data through storage provider from InputStream
+	 * @param inputStream
+	 */
+	public void setInputStream(InputStream inputStream) {
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			prov.save(this, provider, inputStream);
+	}
+	
 	/**
 	 * Save Binary Data through storage provider
 	 * 
@@ -226,7 +235,7 @@ public class MArchive extends X_AD_Archive {
 		if (prov != null)
 			 prov.save(this,provider,inflatedData);
 	}
-
+		
 	/**
 	 * Get Created By (User) Name
 	 * 
@@ -298,19 +307,13 @@ public class MArchive extends X_AD_Archive {
 		super.setBinaryData(BinaryData);
 	}
 
-	/**
-	 * Before Save
-	 * 
-	 * @param newRecord
-	 *            new
-	 * @return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// Binary Data is Mandatory
 		byte[] data = super.getBinaryData();
 		if (data == null || data.length == 0)
 			return false;
+		// Set Record_UU from Record_ID
 		if (getRecord_ID() > 0 && getAD_Table_ID() > 0 && Util.isEmpty(getRecord_UU())) {
 			MTable table = MTable.get(getAD_Table_ID());
 			PO po = table.getPO(getRecord_ID(), get_TrxName());
@@ -394,7 +397,7 @@ public class MArchive extends X_AD_Archive {
 
 		Path path = destArchiveFile.toPath();
 		try {
-			Files.write(path, getBinaryData());
+			Files.copy(getInputStream(), path);
 		} catch (IOException e1) {
 			throw new AdempiereException(e1);
 		}
@@ -428,6 +431,7 @@ public class MArchive extends X_AD_Archive {
 	 * @return int[], [0] = report count and [1] = document count
 	 * @deprecated - use {@link #getReportAndDocumentCountByRecordId(int, int, String, String)} instead
 	 */
+	@Deprecated
 	public static int[] getReportAndDocumentCountByRecordId(int AD_Table_ID, int Record_ID, String trxName) {
 		return getReportAndDocumentCountByRecordId(AD_Table_ID, Record_ID, null, trxName);
 	}

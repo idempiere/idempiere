@@ -28,6 +28,7 @@
 		<module>org.adempiere.server</module>		
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>
+		<module>javax.websocket-api.fragment</module>
 		<module>org.apache.ecs</module>
 		<module>org.compiere.db.oracle.provider</module>
 		<module>org.compiere.db.postgresql.provider</module>
@@ -41,6 +42,8 @@
 		<module>org.idempiere.printformat.editor</module>
 		<module>org.idempiere.zk.billboard</module>
 		<module>org.idempiere.zk.billboard.chart</module>
+		<module>org.idempiere.zk.datatable</module>
+		<module>org.idempiere.zk.pivot</module>
 		<module>org.adempiere.report.jasper-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>
@@ -63,7 +66,10 @@
 		<module>org.idempiere.javadoc</module>
 		<module>org.idempiere.test-feature</module>
 		<module>org.idempiere.test</module>
+		<module>org.idempiere.zk.breeze.theme</module>
+		<module>org.idempiere.zk.iceblue_c.theme</module>
 		<module>org.idempiere.p2.targetplatform</module>		
+                <module>org.idempiere.bouncy.castle-feature</module>
 	</modules>
 
 </project>

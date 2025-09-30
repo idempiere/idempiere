@@ -107,7 +107,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}
 	
 	/**	Cache						*/
-	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50);
+	private static ImmutablePOCache<String,MWFNode>	s_cache	= new ImmutablePOCache<String,MWFNode> (Table_Name, 50, 0, false, 0);
 		
     /**
      * UUID based Constructor
@@ -602,6 +602,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	 * @return workflow
 	 * @deprecated please use {@link #getAD_Workflow()}
 	 */
+	@Deprecated
 	public MWorkflow getWorkflow()
 	{
 		return getAD_Workflow();
@@ -641,14 +642,10 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		return sb.toString ();
 	}	//	toStringX
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
-	{	
+	{
+		// Validate mandatory field for action
 		String action = getAction();
 		if (action.equals(ACTION_WaitSleep))
 			;
@@ -692,7 +689,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 				return false;
 			}
 			if (getAD_Column_ID() > 0) {
-				// validate that just advanced roles can manipulate secure content via workflows
+				// Validate that just advanced roles can manipulate secure/advanced column value via workflows
 				MColumn column = MColumn.get(getCtx(), getAD_Column_ID(), get_TrxName ());
 				if (column.isSecure() || column.isAdvanced()) {
 					if (! MRole.getDefault().isAccessAdvanced()) {
@@ -747,31 +744,6 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	}	//	beforeSave
 	
 	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return saved
-	 */
-	@Override
-	protected boolean afterSave (boolean newRecord, boolean success)
-	{
-		if (!success)
-			return success;
-		return true;
-	}	//	afterSave
-	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return deleted
-	 */
-	@Override
-	protected boolean afterDelete (boolean success)
-	{
-		return success;
-	}	//	afterDelete
-
-	/**
 	 * Check if the workflow node is valid for given date
 	 * @param date
 	 * @return true if node is valid for the given date
@@ -805,4 +777,20 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Get workflow nodes with where clause.
+	 * @param ctx context
+	 * @param whereClause where clause w/o the WHERE keyword
+	 * @param trxName transaction
+	 * @return array of workflow nodes
+	 */
+	public static MWFNode[] getWFNodes (Properties ctx, String whereClause, String trxName)
+	{		
+		List<MWFNode> list = new Query(ctx,Table_Name,whereClause,trxName)
+		.list();
+		MWFNode[] retValue = new MWFNode[list.size()];
+		list.toArray (retValue);
+		return retValue;
+	}	//	getWFNodes
+	
 }

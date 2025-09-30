@@ -257,6 +257,8 @@ public class MInOutLine extends X_M_InOutLine
 		setAD_OrgTrx_ID(oLine.getAD_OrgTrx_ID());
 		setUser1_ID(oLine.getUser1_ID());
 		setUser2_ID(oLine.getUser2_ID());
+		setC_CostCenter_ID(oLine.getC_CostCenter_ID());
+		setC_Department_ID(oLine.getC_Department_ID());
 	}	//	setOrderLine
 
 	/**
@@ -299,6 +301,8 @@ public class MInOutLine extends X_M_InOutLine
 		setAD_OrgTrx_ID(iLine.getAD_OrgTrx_ID());
 		setUser1_ID(iLine.getUser1_ID());
 		setUser2_ID(iLine.getUser2_ID());
+		setC_CostCenter_ID(iLine.getC_CostCenter_ID());
+		setC_Department_ID(iLine.getC_Department_ID());
 	}	//	setInvoiceLine
 
 	/**
@@ -552,11 +556,6 @@ public class MInOutLine extends X_M_InOutLine
 		return ii;
 	}	//	getAD_OrgTrx_ID
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return save
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -565,6 +564,7 @@ public class MInOutLine extends X_M_InOutLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
 		}
+		// Validation for pending confirmations
 		if (getParent().pendingConfirmations()) {
 			if (  newRecord ||
 				(is_ValueChanged(COLUMNNAME_MovementQty) && !is_ValueChanged(COLUMNNAME_TargetQty))) {
@@ -595,7 +595,7 @@ public class MInOutLine extends X_M_InOutLine
 				}
 			}
 		}
-		// Locator is mandatory if no charge is defined - teo_sarca BF [ 2757978 ]
+		// Locator is mandatory if this is item type product line
 		if(getProduct() != null && MProduct.PRODUCTTYPE_Item.equals(getProduct().getProductType()))
 		{
 			if (getM_Locator_ID() <= 0 && getC_Charge_ID() <= 0)
@@ -622,14 +622,14 @@ public class MInOutLine extends X_M_InOutLine
 			}
 		}
 
-		//	Get Line No
+		//	Set Line No
 		if (getLine() == 0)
 		{
 			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM M_InOutLine WHERE M_InOut_ID=?";
 			int ii = DB.getSQLValueEx (get_TrxName(), sql, getM_InOut_ID());
 			setLine (ii);
 		}
-		//	UOM
+		//	Set default UOM
 		if (getC_UOM_ID() == 0)
 			setC_UOM_ID (Env.getContextAsInt(getCtx(), Env.C_UOM_ID));
 		if (getC_UOM_ID() == 0)
@@ -638,13 +638,13 @@ public class MInOutLine extends X_M_InOutLine
 			if (C_UOM_ID > 0)
 				setC_UOM_ID (C_UOM_ID);
 		}
-		//	Qty Precision
+		//	Apply rounding to quantity fields
 		if (newRecord || is_ValueChanged("QtyEntered"))
 			setQtyEntered(getQtyEntered());
 		if (newRecord || is_ValueChanged("MovementQty"))
 			setMovementQty(getMovementQty());
 
-		//	Order/RMA Line
+		// Must fill one of Order Line or RMA Line for sales transaction
 		if (getC_OrderLine_ID() == 0 && getM_RMALine_ID() == 0)
 		{
 			if (getParent().isSOTrx())
@@ -653,10 +653,10 @@ public class MInOutLine extends X_M_InOutLine
 				return false;
 			}
 		}
-
-		// Validate Locator/Warehouse - teo_sarca, BF [ 2784194 ]
+		
 		if (getM_Locator_ID() > 0)
 		{
+			// Validate Locator against document Warehouse
 			MLocator locator = MLocator.get(getCtx(), getM_Locator_ID());
 			if (getM_Warehouse_ID() != locator.getM_Warehouse_ID())
 			{
@@ -666,7 +666,7 @@ public class MInOutLine extends X_M_InOutLine
 						getLine());
 			}
 
-	        // IDEMPIERE-2668
+	        // Validate locator type
 			if (MInOut.MOVEMENTTYPE_CustomerShipment.equals(getParent().getMovementType())) {
 	        	if (locator.getM_LocatorType_ID() > 0) {
 	        		MLocatorType lt = MLocatorType.get(getCtx(), locator.getM_LocatorType_ID());
@@ -678,6 +678,8 @@ public class MInOutLine extends X_M_InOutLine
 	        }
 	        
 		}
+		
+		// Auto generate ASI Lot
 		I_M_AttributeSet attributeset = null;
 		if (getM_Product_ID() > 0)
 			attributeset = MProduct.get(getCtx(), getM_Product_ID()).getM_AttributeSet();
@@ -701,6 +703,7 @@ public class MInOutLine extends X_M_InOutLine
 			}
 		}
 
+		// Validate InOutLine and OrderLine fill with the same M_Product_ID value
 		if (MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT, true, Env.getAD_Client_ID(getCtx()))) {
 			if (getC_OrderLine_ID() > 0) {
 				MOrderLine orderLine = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
@@ -716,22 +719,21 @@ public class MInOutLine extends X_M_InOutLine
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	Before Delete
-	 *	@return true if drafted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
+		// Can't delete line if parent status is not Draft
 		if (! getParent().getDocStatus().equals(MInOut.DOCSTATUS_Drafted)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
 			return false;
 		}
+		// Can't delete line if there are pending confirmations
 		if (getParent().pendingConfirmations()) {
 			log.saveError("DeleteError", Msg.parseTranslation(getCtx(), "@Open@: @M_InOutConfirm_ID@"));
 			return false;
 		}
 		// IDEMPIERE-3391 Not possible to delete a line in the Material Receipt window
+		// Remove reference from invoice line
 		List<MInvoiceLine> ils = new Query(getCtx(), MInvoiceLine.Table_Name, "M_InOutLine_ID=?", get_TrxName())
 				.setParameters(getM_InOutLine_ID())
 				.list();

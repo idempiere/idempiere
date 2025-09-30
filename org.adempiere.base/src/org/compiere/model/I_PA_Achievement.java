@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Achievement
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_Achievement 
 {
@@ -204,6 +204,7 @@ public interface I_PA_Achievement
 	  */
 	public int getPA_Measure_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException;
 
     /** Column name SeqNo */

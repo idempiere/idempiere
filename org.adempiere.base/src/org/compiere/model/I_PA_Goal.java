@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_Goal
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_Goal 
 {
@@ -75,6 +75,7 @@ public interface I_PA_Goal
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -90,6 +91,7 @@ public interface I_PA_Goal
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name ChartType */
@@ -303,20 +305,8 @@ public interface I_PA_Goal
 	  */
 	public int getPA_ColorSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ColorSchema getPA_ColorSchema() throws RuntimeException;
-
-    /** Column name PA_Goal_ID */
-    public static final String COLUMNNAME_PA_Goal_ID = "PA_Goal_ID";
-
-	/** Set Goal.
-	  * Performance Goal
-	  */
-	public void setPA_Goal_ID (int PA_Goal_ID);
-
-	/** Get Goal.
-	  * Performance Goal
-	  */
-	public int getPA_Goal_ID();
 
     /** Column name PA_GoalParent_ID */
     public static final String COLUMNNAME_PA_GoalParent_ID = "PA_GoalParent_ID";
@@ -331,7 +321,21 @@ public interface I_PA_Goal
 	  */
 	public int getPA_GoalParent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Goal getPA_GoalParent() throws RuntimeException;
+
+    /** Column name PA_Goal_ID */
+    public static final String COLUMNNAME_PA_Goal_ID = "PA_Goal_ID";
+
+	/** Set Goal.
+	  * Performance Goal
+	  */
+	public void setPA_Goal_ID (int PA_Goal_ID);
+
+	/** Get Goal.
+	  * Performance Goal
+	  */
+	public int getPA_Goal_ID();
 
     /** Column name PA_Goal_UU */
     public static final String COLUMNNAME_PA_Goal_UU = "PA_Goal_UU";
@@ -355,6 +359,7 @@ public interface I_PA_Goal
 	  */
 	public int getPA_Measure_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException;
 
     /** Column name RelativeWeight */

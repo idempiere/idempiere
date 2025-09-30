@@ -32,6 +32,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.SystemProperties;
@@ -212,13 +213,13 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (ThemeManager.isUseFontIconForImage()) 
 		{
 			if (imgSrc.equals(QUESTION))
-				iconSclass = "z-icon-QuestionMessageBox";
+				iconSclass = Icon.getIconSclass(Icon.QUESTION_MESSAGE_BOX);
 			else if (imgSrc.equals(EXCLAMATION))
-				iconSclass = "z-icon-ExclamationMessageBox";
+				iconSclass = Icon.getIconSclass(Icon.EXCLAMATION_MESSAGE_BOX);
 			else if (imgSrc.equals(INFORMATION))
-				iconSclass = "z-icon-InformationMessageBox";
+				iconSclass = Icon.getIconSclass(Icon.INFORMATION_MESSAGE_BOX);
 			else if (imgSrc.equals(ERROR))
-				iconSclass = "z-icon-ErrorMessageBox";
+				iconSclass = Icon.getIconSclass(Icon.ERROR_MESSAGE_BOX);
 		}
 			
 		if (ThemeManager.isUseFontIconForImage() && iconSclass != null)
@@ -243,7 +244,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		north.appendChild(pnlImage);
 		north.appendChild(pnlText);
 		north.setSclass("dialog-content");
-		north.setWidth("100%");;
+		north.setWidth("100%");
 
 		Hbox pnlButtons = new Hbox();
 		pnlButtons.setAlign("center");
@@ -263,6 +264,8 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		this.setContentStyle("background-color:#ffffff;");
 		this.setPosition("left, top");
+
+		inputField.getComponent().addEventListener(Events.ON_OK, this);
 	}
 
 	/**
@@ -490,7 +493,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (event == null)
 			return;
 
-		if (event.getTarget() == btnOk)
+		if (event.getTarget() == btnOk || (event.getTarget() == inputField.getComponent() && event.getName().equals(Events.ON_OK)))
 		{
 			returnValue = OK;
 		}

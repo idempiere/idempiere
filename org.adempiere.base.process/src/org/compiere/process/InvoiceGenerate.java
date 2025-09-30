@@ -238,7 +238,8 @@ public class InvoiceGenerate extends SvrProcess
 						&& m_bpartnerID != order.getC_BPartner_ID())
 						|| (m_invoice != null 
 						&& (m_invoice.getC_BPartner_Location_ID() != order.getBill_Location_ID() ||
-							m_invoice.getAD_User_ID() != order.getBill_User_ID()) ) )
+							m_invoice.getAD_User_ID() != order.getBill_User_ID() ||
+							m_invoice.getAD_Org_ID() != order.getAD_Org_ID()) ) )
 					completeInvoice();
 				boolean completeOrder = MOrder.INVOICERULE_AfterOrderDelivered.equals(order.getInvoiceRule());
 				
@@ -476,7 +477,24 @@ public class InvoiceGenerate extends SvrProcess
 		MInvoiceLine line = new MInvoiceLine (m_invoice);
 		line.setShipLine(sLine);
 		if (sLine.sameOrderLineUOM())
-			line.setQtyEntered(sLine.getQtyEntered());
+		{
+			MDocType docType = MDocType.get(ship.getC_DocType_ID());
+			if (docType.isShipConfirm() 
+				&& (order.getInvoiceRule().equals(MOrder.INVOICERULE_AfterDelivery) 
+					|| order.getInvoiceRule().equals(MOrder.INVOICERULE_AfterOrderDelivered) 
+					|| order.getInvoiceRule().equals(MOrder.INVOICERULE_CustomerScheduleAfterDelivery)) 
+				&& sLine.getTargetQty() != null && sLine.getTargetQty().signum() != 0)
+			{
+				if (sLine.getQtyEntered().compareTo(sLine.getTargetQty()) == 0)
+					line.setQtyEntered(sLine.getMovementQty());
+				else
+					line.setQtyEntered(sLine.getMovementQty()
+							.multiply(sLine.getQtyEntered())
+							.divide(sLine.getTargetQty(), 12, RoundingMode.HALF_UP));
+			}
+			else
+				line.setQtyEntered(sLine.getQtyEntered());
+		}
 		else
 			line.setQtyEntered(sLine.getMovementQty());
 		line.setQtyInvoiced(sLine.getMovementQty());

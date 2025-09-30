@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_TablePartition
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_TablePartition")
 public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_TablePartition (Properties ctx, int AD_TablePartition_ID, String trxName)
@@ -120,6 +120,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -143,34 +144,6 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
-			.getPO(getAD_Table_ID(), get_TrxName());
-	}
-
-	/** Set Table.
-		@param AD_Table_ID Database Table information
-	*/
-	public void setAD_Table_ID (int AD_Table_ID)
-	{
-		if (AD_Table_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
-	}
-
-	/** Get Table.
-		@return Database Table information
-	  */
-	public int getAD_Table_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -211,6 +184,35 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 	public String getAD_TablePartition_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_TablePartition_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
+
+	/** Set Table.
+		@param AD_Table_ID Database Table information
+	*/
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Expression.
@@ -268,6 +270,7 @@ public class X_AD_TablePartition extends PO implements I_AD_TablePartition, I_Pe
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_TablePartition getParent_TablePartition() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_TablePartition)MTable.get(getCtx(), org.compiere.model.I_AD_TablePartition.Table_ID)

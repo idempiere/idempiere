@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Color
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Color")
 public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Color (Properties ctx, int AD_Color_ID, String trxName)
@@ -172,6 +172,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Color_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)

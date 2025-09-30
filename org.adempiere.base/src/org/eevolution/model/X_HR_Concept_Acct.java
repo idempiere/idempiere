@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for HR_Concept_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_Concept_Acct")
 public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Concept_Acct (Properties ctx, int HR_Concept_Acct_ID, String trxName)
@@ -117,6 +117,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -145,6 +146,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
@@ -209,6 +211,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 		return (String)get_Value(COLUMNNAME_HR_Concept_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_ID)
@@ -236,6 +239,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getHR_Expense_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -260,6 +264,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getHR_Revenue_A() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
@@ -307,6 +312,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -335,6 +341,7 @@ public class X_HR_Concept_Acct extends PO implements I_HR_Concept_Acct, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUser2() throws RuntimeException
 	{
 		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)

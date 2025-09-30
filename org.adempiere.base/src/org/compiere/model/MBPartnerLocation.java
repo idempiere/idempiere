@@ -195,12 +195,14 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	/**
 	 * Get Location/Address
 	 * 
-	 * @param requery get again the location from DB - please note that if used out of transaction the result is get from the cache
+	 * @param requery get again the location from DB
 	 * @return location
 	 */
 	public MLocation getLocation(boolean requery) {
 		if (requery || m_location == null)
 			m_location = MLocation.getCopy(getCtx(), getC_Location_ID(), get_TrxName());
+		if (requery && m_location != null)
+			m_location.load(get_TrxName());
 		return m_location;
 	} // getLocation
 
@@ -218,13 +220,6 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		return sb.toString();
 	} // toString
 
-	/**************************************************************************
-	 * Before Save. - Set Name
-	 * 
-	 * @param newRecord
-	 *            new
-	 * @return save
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if (getC_Location_ID() == 0)
@@ -290,6 +285,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	} // makeUnique
 
 	/**
+	 * Create unique BP location name
 	 * @param address
 	 * @return unique BP location name for address
 	 */

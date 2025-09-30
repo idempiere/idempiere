@@ -27,6 +27,7 @@ import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.form.IQuickForm;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Columns;
@@ -138,8 +139,8 @@ public class QuickGridView extends Vbox
 	private int pageSize = DEFAULT_PAGE_SIZE;
 
 	/**
-	 * list field display in grid mode, in case user customize grid
-	 * this list container only display list.
+	 * List field display in grid mode. If there are user customize grid record,
+	 * this list contain only the customized display list.
 	 */
 	private GridField[] gridFields;
 	
@@ -200,8 +201,8 @@ public class QuickGridView extends Vbox
 	public IQuickForm quickForm;
 
 	/**
-	 * list field display in grid mode, in case user customize grid
-	 * this list container only customize list.
+	 * List field display in grid mode. If there are user customize grid record,
+	 * this list contain only the customized display list.
 	 * @return GridField[]
 	 */
 	public GridField[] getGridField() {
@@ -1149,7 +1150,7 @@ public class QuickGridView extends Vbox
 		{
 			renderer.setCurrentCell(null);
 			renderer.setCurrentCell(0, 1, NAVIGATE_CODE);
-			renderer.getCurrentRow().setStyle(QuickGridTabRowRenderer.CURRENT_ROW_STYLE);
+			LayoutUtils.addSclass("current-row", renderer.getCurrentRow());
 		}
 		else if (event.getName().equals(EVENT_ON_CLICK_TO_NAVIGATE))
 		{
@@ -1158,8 +1159,7 @@ public class QuickGridView extends Vbox
 
 			renderer.setCurrentCell(row, col, NAVIGATE_CODE);
 
-			Row currntRow = renderer.getCurrentRow();
-			currntRow.setStyle(QuickGridTabRowRenderer.CURRENT_ROW_STYLE);
+			LayoutUtils.addSclass("current-row", renderer.getCurrentRow());
 		}
 		else if (event.getName().equals(EVENT_ON_SET_FOCUS_TO_FIRST_CELL))
 		{
@@ -1618,7 +1618,7 @@ public class QuickGridView extends Vbox
 	public void onPageDetached(Page page)
 	{
 		super.onPageDetached(page);
-		keyListener.setCtrlKeys(keyListener.getCtrlKeys().replaceAll(CNTRL_KEYS, ""));
+		keyListener.setCtrlKeys(keyListener.getCtrlKeys().replace(CNTRL_KEYS, ""));
 		keyListener.removeEventListener(Events.ON_CTRL_KEY, this);
 	}
 

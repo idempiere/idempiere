@@ -26,7 +26,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_InOutLineMA
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_InOutLineMA")
 public class X_M_InOutLineMA extends PO implements I_M_InOutLineMA, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_InOutLineMA extends PO implements I_M_InOutLineMA, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_InOutLineMA (Properties ctx, int M_InOutLineMA_ID, String trxName)
@@ -154,6 +154,7 @@ public class X_M_InOutLineMA extends PO implements I_M_InOutLineMA, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -182,6 +183,22 @@ public class X_M_InOutLineMA extends PO implements I_M_InOutLineMA, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set M_InOutLineMA_UU.
+		@param M_InOutLineMA_UU M_InOutLineMA_UU
+	*/
+	public void setM_InOutLineMA_UU (String M_InOutLineMA_UU)
+	{
+		set_Value (COLUMNNAME_M_InOutLineMA_UU, M_InOutLineMA_UU);
+	}
+
+	/** Get M_InOutLineMA_UU.
+		@return M_InOutLineMA_UU	  */
+	public String getM_InOutLineMA_UU()
+	{
+		return (String)get_Value(COLUMNNAME_M_InOutLineMA_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -217,21 +234,6 @@ public class X_M_InOutLineMA extends PO implements I_M_InOutLineMA, I_Persistent
     {
         return new ValueNamePair(get_UUID(), String.valueOf(getM_InOutLine_ID()));
     }
-
-	/** Set M_InOutLineMA_UU.
-		@param M_InOutLineMA_UU M_InOutLineMA_UU
-	*/
-	public void setM_InOutLineMA_UU (String M_InOutLineMA_UU)
-	{
-		set_Value (COLUMNNAME_M_InOutLineMA_UU, M_InOutLineMA_UU);
-	}
-
-	/** Get M_InOutLineMA_UU.
-		@return M_InOutLineMA_UU	  */
-	public String getM_InOutLineMA_UU()
-	{
-		return (String)get_Value(COLUMNNAME_M_InOutLineMA_UU);
-	}
 
 	/** Set Movement Quantity.
 		@param MovementQty Quantity of a product moved.

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentBatch
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentBatch")
 public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_PaymentBatch (Properties ctx, int C_PaymentBatch_ID, String trxName)
@@ -155,6 +155,7 @@ public class X_C_PaymentBatch extends PO implements I_C_PaymentBatch, I_Persiste
 		return (String)get_Value(COLUMNNAME_C_PaymentBatch_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)

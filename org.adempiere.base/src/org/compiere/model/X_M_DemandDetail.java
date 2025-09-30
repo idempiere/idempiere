@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DemandDetail
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_DemandDetail")
 public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_DemandDetail (Properties ctx, int M_DemandDetail_ID, String trxName)
@@ -105,6 +105,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
@@ -178,6 +179,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 		return (String)get_Value(COLUMNNAME_M_DemandDetail_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DemandLine getM_DemandLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_DemandLine)MTable.get(getCtx(), org.compiere.model.I_M_DemandLine.Table_ID)
@@ -206,6 +208,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_ID)
@@ -234,6 +237,7 @@ public class X_M_DemandDetail extends PO implements I_M_DemandDetail, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RequisitionLine getM_RequisitionLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_RequisitionLine)MTable.get(getCtx(), org.compiere.model.I_M_RequisitionLine.Table_ID)

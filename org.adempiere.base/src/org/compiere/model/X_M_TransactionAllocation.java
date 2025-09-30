@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_TransactionAllocation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_TransactionAllocation")
 public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllocation, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_TransactionAllocation (Properties ctx, int M_TransactionAllocation_ID, String trxName)
@@ -203,6 +203,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -231,6 +232,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -259,6 +261,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
@@ -287,6 +290,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -315,6 +319,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)
@@ -358,6 +363,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return (String)get_Value(COLUMNNAME_M_TransactionAllocation_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Transaction getM_Transaction() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Transaction)MTable.get(getCtx(), org.compiere.model.I_M_Transaction.Table_ID)
@@ -385,6 +391,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getOut_M_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -413,6 +420,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getOut_M_InventoryLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
@@ -441,6 +449,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ProductionLine getOut_M_ProductionLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ProductionLine)MTable.get(getCtx(), org.compiere.model.I_M_ProductionLine.Table_ID)
@@ -469,6 +478,7 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Transaction getOut_M_Transaction() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Transaction)MTable.get(getCtx(), org.compiere.model.I_M_Transaction.Table_ID)

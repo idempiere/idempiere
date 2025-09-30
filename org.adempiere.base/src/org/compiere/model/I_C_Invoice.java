@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Invoice
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_Invoice 
 {
@@ -49,19 +49,6 @@ public interface I_C_Invoice
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -74,6 +61,19 @@ public interface I_C_Invoice
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -88,6 +88,7 @@ public interface I_C_Invoice
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_Activity_ID */
@@ -103,6 +104,7 @@ public interface I_C_Invoice
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -118,6 +120,7 @@ public interface I_C_Invoice
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -133,6 +136,7 @@ public interface I_C_Invoice
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -148,6 +152,7 @@ public interface I_C_Invoice
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_CashLine_ID */
@@ -163,6 +168,7 @@ public interface I_C_Invoice
 	  */
 	public int getC_CashLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashLine getC_CashLine() throws RuntimeException;
 
     /** Column name C_CashPlanLine_ID */
@@ -174,6 +180,7 @@ public interface I_C_Invoice
 	/** Get Cash Plan Line	  */
 	public int getC_CashPlanLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashPlanLine getC_CashPlanLine() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -189,6 +196,7 @@ public interface I_C_Invoice
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
@@ -204,7 +212,20 @@ public interface I_C_Invoice
 	  */
 	public int getC_ConversionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
+
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -219,22 +240,20 @@ public interface I_C_Invoice
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
-    /** Column name C_DocType_ID */
-    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
 
-	/** Set Document Type.
-	  * Document type or rules
-	  */
-	public void setC_DocType_ID (int C_DocType_ID);
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
 
-	/** Get Document Type.
-	  * Document type or rules
-	  */
-	public int getC_DocType_ID();
+	/** Get Department	  */
+	public int getC_Department_ID();
 
-	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_DocTypeTarget_ID */
     public static final String COLUMNNAME_C_DocTypeTarget_ID = "C_DocTypeTarget_ID";
@@ -249,7 +268,24 @@ public interface I_C_Invoice
 	  */
 	public int getC_DocTypeTarget_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException;
+
+    /** Column name C_DocType_ID */
+    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
+
+	/** Set Document Type.
+	  * Document type or rules
+	  */
+	public void setC_DocType_ID (int C_DocType_ID);
+
+	/** Get Document Type.
+	  * Document type or rules
+	  */
+	public int getC_DocType_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_DunningLevel_ID */
     public static final String COLUMNNAME_C_DunningLevel_ID = "C_DunningLevel_ID";
@@ -260,20 +296,24 @@ public interface I_C_Invoice
 	/** Get Dunning Level	  */
 	public int getC_DunningLevel_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DunningLevel getC_DunningLevel() throws RuntimeException;
 
-    /** Column name ChargeAmt */
-    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
+    /** Column name C_Employee_ID */
+    public static final String COLUMNNAME_C_Employee_ID = "C_Employee_ID";
 
-	/** Set Charge amount.
-	  * Charge Amount
+	/** Set Employee.
+	  * Identifies a Business Partner
 	  */
-	public void setChargeAmt (BigDecimal ChargeAmt);
+	public void setC_Employee_ID (int C_Employee_ID);
 
-	/** Get Charge amount.
-	  * Charge Amount
+	/** Get Employee.
+	  * Identifies a Business Partner
 	  */
-	public BigDecimal getChargeAmt();
+	public int getC_Employee_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
     public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
@@ -297,19 +337,6 @@ public interface I_C_Invoice
 	/** Get C_Invoice_UU	  */
 	public String getC_Invoice_UU();
 
-    /** Column name CopyFrom */
-    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
-
-	/** Set Copy From.
-	  * Copy From Record
-	  */
-	public void setCopyFrom (String CopyFrom);
-
-	/** Get Copy From.
-	  * Copy From Record
-	  */
-	public String getCopyFrom();
-
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
 
@@ -323,22 +350,8 @@ public interface I_C_Invoice
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
-
-    /** Column name C_Payment_ID */
-    public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
-
-	/** Set Payment.
-	  * Payment identifier
-	  */
-	public void setC_Payment_ID (int C_Payment_ID);
-
-	/** Get Payment.
-	  * Payment identifier
-	  */
-	public int getC_Payment_ID();
-
-	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name C_PaymentTerm_ID */
     public static final String COLUMNNAME_C_PaymentTerm_ID = "C_PaymentTerm_ID";
@@ -353,7 +366,24 @@ public interface I_C_Invoice
 	  */
 	public int getC_PaymentTerm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
+
+    /** Column name C_Payment_ID */
+    public static final String COLUMNNAME_C_Payment_ID = "C_Payment_ID";
+
+	/** Set Payment.
+	  * Payment identifier
+	  */
+	public void setC_Payment_ID (int C_Payment_ID);
+
+	/** Get Payment.
+	  * Payment identifier
+	  */
+	public int getC_Payment_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -368,23 +398,34 @@ public interface I_C_Invoice
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
+    /** Column name ChargeAmt */
+    public static final String COLUMNNAME_ChargeAmt = "ChargeAmt";
 
-	/** Get Created.
-	  * Date this record was created
+	/** Set Charge amount.
+	  * Charge Amount
 	  */
-	public Timestamp getCreated();
+	public void setChargeAmt (BigDecimal ChargeAmt);
 
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
+	/** Get Charge amount.
+	  * Charge Amount
 	  */
-	public int getCreatedBy();
+	public BigDecimal getChargeAmt();
+
+    /** Column name CopyFrom */
+    public static final String COLUMNNAME_CopyFrom = "CopyFrom";
+
+	/** Set Copy From.
+	  * Copy From Record
+	  */
+	public void setCopyFrom (String CopyFrom);
+
+	/** Get Copy From.
+	  * Copy From Record
+	  */
+	public String getCopyFrom();
 
     /** Column name CreateFrom */
     public static final String COLUMNNAME_CreateFrom = "CreateFrom";
@@ -411,6 +452,22 @@ public interface I_C_Invoice
 	  * Process which will generate a new document lines based on an existing document
 	  */
 	public String getCreateLinesFrom();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name CurrencyRate */
     public static final String COLUMNNAME_CurrencyRate = "CurrencyRate";
@@ -703,19 +760,6 @@ public interface I_C_Invoice
 	  */
 	public boolean isPrinted();
 
-    /** Column name IsSelfService */
-    public static final String COLUMNNAME_IsSelfService = "IsSelfService";
-
-	/** Set Self-Service.
-	  * This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
-	public void setIsSelfService (boolean IsSelfService);
-
-	/** Get Self-Service.
-	  * This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
-	public boolean isSelfService();
-
     /** Column name IsSOTrx */
     public static final String COLUMNNAME_IsSOTrx = "IsSOTrx";
 
@@ -728,6 +772,19 @@ public interface I_C_Invoice
 	  * This is a Sales Transaction
 	  */
 	public boolean isSOTrx();
+
+    /** Column name IsSelfService */
+    public static final String COLUMNNAME_IsSelfService = "IsSelfService";
+
+	/** Set Self-Service.
+	  * This is a Self-Service entry or this entry can be changed via Self-Service
+	  */
+	public void setIsSelfService (boolean IsSelfService);
+
+	/** Get Self-Service.
+	  * This is a Self-Service entry or this entry can be changed via Self-Service
+	  */
+	public boolean isSelfService();
 
     /** Column name IsTaxIncluded */
     public static final String COLUMNNAME_IsTaxIncluded = "IsTaxIncluded";
@@ -768,6 +825,7 @@ public interface I_C_Invoice
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_RMA_ID */
@@ -783,20 +841,8 @@ public interface I_C_Invoice
 	  */
 	public int getM_RMA_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
-
-    /** Column name PaymentRule */
-    public static final String COLUMNNAME_PaymentRule = "PaymentRule";
-
-	/** Set Payment Rule.
-	  * How you pay the invoice
-	  */
-	public void setPaymentRule (String PaymentRule);
-
-	/** Get Payment Rule.
-	  * How you pay the invoice
-	  */
-	public String getPaymentRule();
 
     /** Column name POReference */
     public static final String COLUMNNAME_POReference = "POReference";
@@ -810,6 +856,19 @@ public interface I_C_Invoice
 	  * Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
 	  */
 	public String getPOReference();
+
+    /** Column name PaymentRule */
+    public static final String COLUMNNAME_PaymentRule = "PaymentRule";
+
+	/** Set Payment Rule.
+	  * How you pay the invoice
+	  */
+	public void setPaymentRule (String PaymentRule);
+
+	/** Get Payment Rule.
+	  * How you pay the invoice
+	  */
+	public String getPaymentRule();
 
     /** Column name Posted */
     public static final String COLUMNNAME_Posted = "Posted";
@@ -877,6 +936,7 @@ public interface I_C_Invoice
 	/** Get Related Invoice	  */
 	public int getRelatedInvoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getRelatedInvoice() throws RuntimeException;
 
     /** Column name Reversal_ID */
@@ -892,6 +952,7 @@ public interface I_C_Invoice
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getReversal() throws RuntimeException;
 
     /** Column name SalesRep_ID */
@@ -907,6 +968,7 @@ public interface I_C_Invoice
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name SendEMail */
@@ -964,6 +1026,7 @@ public interface I_C_Invoice
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -979,5 +1042,6 @@ public interface I_C_Invoice
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

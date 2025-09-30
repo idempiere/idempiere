@@ -18,13 +18,13 @@ import org.compiere.model.PO;
 
 /**
  * 
- * Interface for payment form for different payment mode (cash, credit card, etc)
+ * Payment form interface for different payment mode (cash, credit card, etc)
  *
  */
 public interface IPaymentForm {
 
 	/**
-	 * dynamic initialization
+	 * Dynamic initialization
 	 * @return false if there are errors, true otherwise
 	 * @throws Exception
 	 */
@@ -36,18 +36,18 @@ public interface IPaymentForm {
 	public void loadData();
 	
 	/**
-	 * mandatory field validations
+	 * Mandatory field validations
 	 * @return true if all mandatory field have been populated
 	 */
 	public boolean checkMandatory();
 	
 	/**
-	 * 
+	 * Is only show payment rule and doesn't save changes to DB
 	 * @return true if only show payment rule and doesn't save changes to DB
 	 */
 	public boolean isOnlyRule();
 	
-	/**************************************************************************
+	/**
 	 *	Save Changes
 	 *	@return true, if Window can exit
 	 */
@@ -62,33 +62,33 @@ public interface IPaymentForm {
 		
 	/**
 	 * 	Need to save the calling window (order, invoice)
-	 *	@return true if changes have been to the calling window
+	 *	@return true if changes have been made to the calling window
 	 */
 	public boolean needSave();
 	
 	/**
-	 * online payment processing (for e.g credit card)
+	 * Online payment processing (for e.g credit card)
 	 */
 	public void processOnline();
 	
 	/**
-	 * 
+	 * Is payment transaction have been approved by payment gateway
 	 * @return true if payment transaction have been approved by payment gateway
 	 */
 	public boolean isApproved();
 	
 	/**
-	 * show form
+	 * Show form
 	 */
 	public void showWindow();
 	
 	/**
-	 * close form
+	 * Close form
 	 */
 	public void closeWindow();
 	
 	/**
-	 * 
+	 * Get instance of UI form
 	 * @return instance of UI form
 	 */
 	public Object getWindow();

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_RegistrationValue
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_RegistrationValue 
 {
@@ -75,7 +75,17 @@ public interface I_A_RegistrationValue
 	  */
 	public int getA_RegistrationAttribute_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException;
+
+    /** Column name A_RegistrationValue_UU */
+    public static final String COLUMNNAME_A_RegistrationValue_UU = "A_RegistrationValue_UU";
+
+	/** Set A_RegistrationValue_UU	  */
+	public void setA_RegistrationValue_UU (String A_RegistrationValue_UU);
+
+	/** Get A_RegistrationValue_UU	  */
+	public String getA_RegistrationValue_UU();
 
     /** Column name A_Registration_ID */
     public static final String COLUMNNAME_A_Registration_ID = "A_Registration_ID";
@@ -90,16 +100,8 @@ public interface I_A_RegistrationValue
 	  */
 	public int getA_Registration_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Registration getA_Registration() throws RuntimeException;
-
-    /** Column name A_RegistrationValue_UU */
-    public static final String COLUMNNAME_A_RegistrationValue_UU = "A_RegistrationValue_UU";
-
-	/** Set A_RegistrationValue_UU	  */
-	public void setA_RegistrationValue_UU (String A_RegistrationValue_UU);
-
-	/** Get A_RegistrationValue_UU	  */
-	public String getA_RegistrationValue_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

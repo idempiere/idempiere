@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "a12e87b3-2ea7-433d-9a8f-ebe41d9e0a4c",
+		"name": "iDempiereWebServices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8597989"
+	},
+	"item": [
+		{
+			"name": "ModelADServiceSoapBinding",
+			"item": [
+				{
+					"name": "createData",
+					"item": [
+						{
+							"name": "Sample Create BP GlobalQSS (GW Working)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:createData>\n         <_0:ModelCRUDRequest>\n            <_0:ModelCRUD>\n               <_0:serviceType>CreateBPartner</_0:serviceType>\n               <_0:TableName>C_BPartner</_0:TableName>\n               <_0:RecordID>0</_0:RecordID>\n               <_0:Action>Create</_0:Action>\n               <_0:DataRow>\n                  <_0:field column=\"Value\">\n                     <_0:val>GlobalQSS</_0:val>\n                  </_0:field>\n                  <_0:field column=\"Name\">\n                     <_0:val><![CDATA[Quality Systems & Solutions]]></_0:val>\n                  </_0:field>\n                  <_0:field column=\"TaxID\">\n                     <_0:val>830.085.359-4</_0:val>\n                  </_0:field>\n                  <_0:field column=\"IsVendor\">\n                     <_0:val>Y</_0:val>\n                  </_0:field>\n                  <_0:field column=\"IsCustomer\">\n                     <_0:val>N</_0:val>\n                  </_0:field>\n                  <_0:field column=\"IsTaxExempt\">\n                     <_0:val>N</_0:val>\n                  </_0:field>\n                  <_0:field column=\"Name2\">\n                     <_0:val><![CDATA[QSS Ltda. - http://www.globalqss.com]]></_0:val>\n                  </_0:field>\n                  <_0:field column=\"C_BP_Group_ID\">\n                     <_0:val>104</_0:val>\n                  </_0:field>\n               </_0:DataRow>\n            </_0:ModelCRUD>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelCRUDRequest>\n      </_0:createData>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "deleteData",
+					"item": [
+						{
+							"name": "Sample Delete BP TreeFarm (must fail)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:deleteData>\n         <_0:ModelCRUDRequest>\n            <_0:ModelCRUD>\n               <_0:serviceType>DeleteBPartner</_0:serviceType>\n               <_0:TableName>C_BPartner</_0:TableName>\n               <_0:RecordID>114</_0:RecordID>\n               <_0:Action>Delete</_0:Action>\n            </_0:ModelCRUD>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelCRUDRequest>\n      </_0:deleteData>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getList",
+					"item": [
+						{
+							"name": "Sample Get List Sales Region",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:getList>\n         <_0:ModelGetListRequest>\n            <_0:ModelGetList>\n               <_0:serviceType>GetListSalesRegions</_0:serviceType>\n               <_0:AD_Reference_ID>144</_0:AD_Reference_ID>\n               <_0:Filter></_0:Filter>\n            </_0:ModelGetList>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelGetListRequest>\n      </_0:getList>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "queryData",
+					"item": [
+						{
+							"name": "Sample get BP Standard > S",
+							"request": {
+								"auth": {
+									"type": "basic"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:queryData>\n         <_0:ModelCRUDRequest>\n            <_0:ModelCRUD>\n               <_0:serviceType>QueryBPartner</_0:serviceType>\n               <_0:TableName>C_BPartner</_0:TableName>\n               <_0:Filter>name>'S'</_0:Filter>\n               <_0:Action>Read</_0:Action>\n               <_0:DataRow>\n                  <_0:field column=\"C_BP_Group_ID\">\n                     <_0:val>103</_0:val>\n                  </_0:field>\n               </_0:DataRow>\n            </_0:ModelCRUD>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelCRUDRequest>\n      </_0:queryData>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "readData",
+					"item": [
+						{
+							"name": "Sample Read TreeFarm",
+							"request": {
+								"auth": {
+									"type": "basic"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:readData>\n         <_0:ModelCRUDRequest>\n            <_0:ModelCRUD>\n               <_0:serviceType>ReadBPartner</_0:serviceType>\n               <_0:TableName>C_BPartner</_0:TableName>\n               <_0:RecordID>114</_0:RecordID>\n               <_0:Action>Read</_0:Action>\n            </_0:ModelCRUD>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelCRUDRequest>\n      </_0:readData>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "runProcess",
+					"item": [
+						{
+							"name": "Run Storage Detail",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:runProcess>\n         <_0:ModelRunProcessRequest>\n            <_0:ModelRunProcess AD_Process_ID=\"236\">\n               <_0:serviceType>RunStorageDetail</_0:serviceType>\n               <_0:ParamValues>\n                  <_0:field column=\"M_Warehouse_ID\">\n                     <_0:val>103</_0:val>\n                  </_0:field>\n               </_0:ParamValues>\n            </_0:ModelRunProcess>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelRunProcessRequest>\n      </_0:runProcess>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								},
+								"description": "Example on how to run report Storage Detail with HQ Warehouse and Patio Chair as parameters You need to define web service security for: Web Service Type: RunStorageDetail Web Service Parameters:    AD_Process_ID Constant 236    AD_Menu_ID Constant 0    AD_Record_ID Constant 0 And allow execution to the WebService role on the report."
+							},
+							"response": []
+						},
+						{
+							"name": "Sample Process Invoice (GW Working)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:runProcess>\n         <_0:ModelRunProcessRequest>\n            <_0:ModelRunProcess AD_Process_ID=\"111\" AD_Menu_ID=\"0\" AD_Record_ID=\"103\" DocAction=\"CO\">\n               <_0:serviceType>ProcessInvoice</_0:serviceType>\n            </_0:ModelRunProcess>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelRunProcessRequest>\n      </_0:runProcess>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "setDocAction",
+					"item": [
+						{
+							"name": "Sample Complete Order",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:setDocAction>\n         <_0:ModelSetDocActionRequest>\n            <_0:ModelSetDocAction>\n               <_0:serviceType>ActionCompleteOrder</_0:serviceType>\n               <_0:tableName>C_Order</_0:tableName>\n               <_0:recordID>102</_0:recordID>\n               <_0:docAction>CO</_0:docAction>\n            </_0:ModelSetDocAction>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelSetDocActionRequest>\n      </_0:setDocAction>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "updateData",
+					"item": [
+						{
+							"name": "Sample Update TreeFarm URL",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:_0=\"http://idempiere.org/ADInterface/1_0\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <_0:updateData>\n         <_0:ModelCRUDRequest>\n            <_0:ModelCRUD>\n               <_0:serviceType>UpdateBPartner</_0:serviceType>\n               <_0:TableName>C_BPartner</_0:TableName>\n               <_0:RecordID>114</_0:RecordID>\n               <_0:Action>Update</_0:Action>\n               <_0:DataRow>\n                  <_0:field column=\"URL\">\n                     <_0:val>http://www.treefarm.com</_0:val>\n                  </_0:field>\n               </_0:DataRow>\n            </_0:ModelCRUD>\n            <_0:ADLoginRequest>\n               <_0:user>WebService</_0:user>\n               <_0:pass>WebService</_0:pass>\n               <_0:lang>en_US</_0:lang>\n               <_0:ClientID>11</_0:ClientID>\n               <_0:RoleID>50004</_0:RoleID>\n               <_0:OrgID>11</_0:OrgID>\n               <_0:WarehouseID>103</_0:WarehouseID>\n               <_0:stage>9</_0:stage>\n            </_0:ADLoginRequest>\n         </_0:ModelCRUDRequest>\n      </_0:updateData>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/ModelADService",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"ModelADService"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "queryData",
+					"item": [
+						{
+							"name": "Sample get BP Standard < S",
+							"request": {
+								"auth": {
+									"type": "basic"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"ModelCRUDRequest\": {\n        \"ModelCRUD\": {\n            \"serviceType\": \"QueryBPartner\",\n            \"TableName\": \"C_BPartner\",\n            \"Filter\": \"name < 'S'\",\n            \"Action\": \"Read\",\n            \"DataRow\": { //optional filter by column values\n                \"field\": [\n                    {\n                        \"@column\": \"C_BP_Group_ID\",\n                        \"val\": \"103\"\n                    }\n                ]\n            }\n        },\n        \"ADLoginRequest\": {\n            \"user\": \"WebService\",\n            \"pass\": \"WebService\",\n            \"lang\": \"en_US\",\n            \"ClientID\": \"11\",\n            \"RoleID\": \"50004\",\n            \"OrgID\": \"11\",\n            \"WarehouseID\": \"103\",\n            \"stage\": \"9\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8443/ADInterface/services/rest/model_adservice/query_data",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8443",
+									"path": [
+										"ADInterface",
+										"services",
+										"rest",
+										"model_adservice",
+										"query_data"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

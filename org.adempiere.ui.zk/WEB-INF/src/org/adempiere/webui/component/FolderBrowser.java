@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MSysConfig;
@@ -52,6 +53,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 
 	private boolean browseForFolder = false;
 	private String path;
+	/** Root folder */
 	private File root;
 
 	/**
@@ -137,7 +139,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 			{
 				ListItem li = new ListItem(dir.getName(), dir.getParent());
 				if (ThemeManager.isUseFontIconForImage())
-					((Listcell)li.getFirstChild()).setIconSclass("z-icon-Undo");
+					((Listcell)li.getFirstChild()).setIconSclass(Icon.getIconSclass(Icon.UNDO));
 				else
 					li.setImage(ThemeManager.getThemeResource("images/Undo16.png"));
 				listDir.appendChild(li);
@@ -152,7 +154,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 				{
 					ListItem li = new ListItem(file.getName(), file.getAbsolutePath());
 					if (ThemeManager.isUseFontIconForImage())
-						((Listcell)li.getFirstChild()).setIconSclass("z-icon-Folder");
+						((Listcell)li.getFirstChild()).setIconSclass(Icon.getIconSclass(Icon.FOLDER));
 					else
 						li.setImage(ThemeManager.getThemeResource("images/Folder16.png"));
 					listDir.appendChild(li);

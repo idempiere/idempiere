@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_InOutLineConfirm
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_I_InOutLineConfirm 
 {
@@ -204,6 +204,7 @@ public interface I_I_InOutLineConfirm
 	  */
 	public int getM_InOutLineConfirm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLineConfirm getM_InOutLineConfirm() throws RuntimeException;
 
     /** Column name Processed */

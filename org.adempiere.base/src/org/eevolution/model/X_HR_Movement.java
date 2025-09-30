@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Movement
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_Movement")
 public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Movement (Properties ctx, int HR_Movement_ID, String trxName)
@@ -117,31 +117,6 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
       return sb.toString();
     }
 
-	/** AccountSign AD_Reference_ID=118 */
-	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
-	/** Credit = C */
-	public static final String ACCOUNTSIGN_Credit = "C";
-	/** Debit = D */
-	public static final String ACCOUNTSIGN_Debit = "D";
-	/** Natural = N */
-	public static final String ACCOUNTSIGN_Natural = "N";
-	/** Set Account Sign.
-		@param AccountSign Indicates the Natural Sign of the Account as a Debit or Credit
-	*/
-	public void setAccountSign (String AccountSign)
-	{
-
-		set_ValueNoCheck (COLUMNNAME_AccountSign, AccountSign);
-	}
-
-	/** Get Account Sign.
-		@return Indicates the Natural Sign of the Account as a Debit or Credit
-	  */
-	public String getAccountSign()
-	{
-		return (String)get_Value(COLUMNNAME_AccountSign);
-	}
-
 	/** Set Trx Organization.
 		@param AD_OrgTrx_ID Performing or initiating organization
 	*/
@@ -164,6 +139,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_ID)
@@ -191,6 +167,31 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	/** AccountSign AD_Reference_ID=118 */
+	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
+	/** Credit = C */
+	public static final String ACCOUNTSIGN_Credit = "C";
+	/** Debit = D */
+	public static final String ACCOUNTSIGN_Debit = "D";
+	/** Natural = N */
+	public static final String ACCOUNTSIGN_Natural = "N";
+	/** Set Account Sign.
+		@param AccountSign Indicates the Natural Sign of the Account as a Debit or Credit
+	*/
+	public void setAccountSign (String AccountSign)
+	{
+
+		set_ValueNoCheck (COLUMNNAME_AccountSign, AccountSign);
+	}
+
+	/** Get Account Sign.
+		@return Indicates the Natural Sign of the Account as a Debit or Credit
+	  */
+	public String getAccountSign()
+	{
+		return (String)get_Value(COLUMNNAME_AccountSign);
+	}
+
 	/** Set Amount.
 		@param Amount Amount in a defined currency
 	*/
@@ -210,6 +211,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -238,34 +240,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_BankAccount getC_BP_BankAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BP_BankAccount.Table_ID)
@@ -294,6 +269,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
@@ -322,6 +298,36 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
+
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner.
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -345,6 +351,93 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
+			.getPO(getC_ProjectPhase_ID(), get_TrxName());
+	}
+
+	/** Set Project Phase.
+		@param C_ProjectPhase_ID Phase of a Project
+	*/
+	public void setC_ProjectPhase_ID (int C_ProjectPhase_ID)
+	{
+		if (C_ProjectPhase_ID < 1)
+			set_Value (COLUMNNAME_C_ProjectPhase_ID, null);
+		else
+			set_Value (COLUMNNAME_C_ProjectPhase_ID, Integer.valueOf(C_ProjectPhase_ID));
+	}
+
+	/** Get Project Phase.
+		@return Phase of a Project
+	  */
+	public int getC_ProjectPhase_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectPhase_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
+			.getPO(getC_ProjectTask_ID(), get_TrxName());
+	}
+
+	/** Set Project Task.
+		@param C_ProjectTask_ID Actual Project Task in a Phase
+	*/
+	public void setC_ProjectTask_ID (int C_ProjectTask_ID)
+	{
+		if (C_ProjectTask_ID < 1)
+			set_Value (COLUMNNAME_C_ProjectTask_ID, null);
+		else
+			set_Value (COLUMNNAME_C_ProjectTask_ID, Integer.valueOf(C_ProjectTask_ID));
+	}
+
+	/** Get Project Task.
+		@return Actual Project Task in a Phase
+	  */
+	public int getC_ProjectTask_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectTask_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
+
+	/** Set Project.
+		@param C_Project_ID Financial Project
+	*/
+	public void setC_Project_ID (int C_Project_ID)
+	{
+		if (C_Project_ID < 1)
+			set_Value (COLUMNNAME_C_Project_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+	}
+
+	/** Get Project.
+		@return Financial Project
+	  */
+	public int getC_Project_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -376,90 +469,6 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_ColumnType);
 	}
 
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
-			.getPO(getC_Project_ID(), get_TrxName());
-	}
-
-	/** Set Project.
-		@param C_Project_ID Financial Project
-	*/
-	public void setC_Project_ID (int C_Project_ID)
-	{
-		if (C_Project_ID < 1)
-			set_Value (COLUMNNAME_C_Project_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
-	}
-
-	/** Get Project.
-		@return Financial Project
-	  */
-	public int getC_Project_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
-			.getPO(getC_ProjectPhase_ID(), get_TrxName());
-	}
-
-	/** Set Project Phase.
-		@param C_ProjectPhase_ID Phase of a Project
-	*/
-	public void setC_ProjectPhase_ID (int C_ProjectPhase_ID)
-	{
-		if (C_ProjectPhase_ID < 1)
-			set_Value (COLUMNNAME_C_ProjectPhase_ID, null);
-		else
-			set_Value (COLUMNNAME_C_ProjectPhase_ID, Integer.valueOf(C_ProjectPhase_ID));
-	}
-
-	/** Get Project Phase.
-		@return Phase of a Project
-	  */
-	public int getC_ProjectPhase_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectPhase_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
-			.getPO(getC_ProjectTask_ID(), get_TrxName());
-	}
-
-	/** Set Project Task.
-		@param C_ProjectTask_ID Actual Project Task in a Phase
-	*/
-	public void setC_ProjectTask_ID (int C_ProjectTask_ID)
-	{
-		if (C_ProjectTask_ID < 1)
-			set_Value (COLUMNNAME_C_ProjectTask_ID, null);
-		else
-			set_Value (COLUMNNAME_C_ProjectTask_ID, Integer.valueOf(C_ProjectTask_ID));
-	}
-
-	/** Get Project Task.
-		@return Actual Project Task in a Phase
-	  */
-	public int getC_ProjectTask_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectTask_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -476,6 +485,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept_Category getHR_Concept_Category() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Concept_Category)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept_Category.Table_ID)
@@ -503,6 +513,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Concept)MTable.get(getCtx(), org.eevolution.model.I_HR_Concept.Table_ID)
@@ -530,6 +541,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
@@ -557,6 +569,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_ID)
@@ -620,6 +633,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_HR_Movement_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Process getHR_Process() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Process)MTable.get(getCtx(), org.eevolution.model.I_HR_Process.Table_ID)
@@ -701,6 +715,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Cost_Collector)MTable.get(getCtx(), org.eevolution.model.I_PP_Cost_Collector.Table_ID)
@@ -802,6 +817,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -830,6 +846,7 @@ public class X_HR_Movement extends PO implements I_HR_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)

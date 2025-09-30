@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InventoryLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_InventoryLine 
 {
@@ -75,7 +75,32 @@ public interface I_M_InventoryLine
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
+
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -171,22 +196,8 @@ public interface I_M_InventoryLine
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
-
-    /** Column name M_Inventory_ID */
-    public static final String COLUMNNAME_M_Inventory_ID = "M_Inventory_ID";
-
-	/** Set Phys.Inventory.
-	  * Parameters for a Physical Inventory
-	  */
-	public void setM_Inventory_ID (int M_Inventory_ID);
-
-	/** Get Phys.Inventory.
-	  * Parameters for a Physical Inventory
-	  */
-	public int getM_Inventory_ID();
-
-	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
     public static final String COLUMNNAME_M_InventoryLine_ID = "M_InventoryLine_ID";
@@ -210,6 +221,22 @@ public interface I_M_InventoryLine
 	/** Get M_InventoryLine_UU	  */
 	public String getM_InventoryLine_UU();
 
+    /** Column name M_Inventory_ID */
+    public static final String COLUMNNAME_M_Inventory_ID = "M_Inventory_ID";
+
+	/** Set Phys.Inventory.
+	  * Parameters for a Physical Inventory
+	  */
+	public void setM_Inventory_ID (int M_Inventory_ID);
+
+	/** Get Phys.Inventory.
+	  * Parameters for a Physical Inventory
+	  */
+	public int getM_Inventory_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException;
+
     /** Column name M_Locator_ID */
     public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
 
@@ -223,6 +250,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -238,6 +266,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name NewCostPrice */
@@ -327,6 +356,7 @@ public interface I_M_InventoryLine
 	  */
 	public int getReversalLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getReversalLine() throws RuntimeException;
 
     /** Column name UPC */

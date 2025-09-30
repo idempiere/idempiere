@@ -25,6 +25,8 @@
 **********************************************************************/
 package org.adempiere.webui.editor;
 
+import java.io.Serializable;
+
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Textbox;
@@ -33,17 +35,14 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
-import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
-import org.compiere.model.MLookupFactory;
-import org.compiere.model.MLookupInfo;
-import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -72,6 +71,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 
 	/** Current tab's AD_Table_ID GridField */
 	protected GridField tableIDGridField;
+	/** Window Number */
+	int windowNo;
+	/** Tab Number */
+	int tabNo;
 
 	// UI components
 	protected Textbox recordTextBox;
@@ -90,7 +93,8 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	 */
 	public WRecordEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		super(new Div(), gridField, tableEditor, editorConfiguration);
-
+		tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
+		windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
 		getComponent().setSclass("recordid-editor");
 		getComponent().addEventListener(Events.ON_RIGHT_CLICK, this);
 
@@ -130,7 +134,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 		editButton = new ToolBarButton();
 		editButton.setStyle("right: 21px;");
 		if (ThemeManager.isUseFontIconForImage())
-			editButton.setIconSclass("z-icon-Edit");
+			editButton.setIconSclass(Icon.getIconSclass(Icon.EDIT));
 		else
 			editButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_EDIT_RECORD_PNG));
 		editButton.setParent(getComponent());
@@ -139,7 +143,7 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 
 		zoomButton = new ToolBarButton();
 		if (ThemeManager.isUseFontIconForImage())
-			zoomButton.setIconSclass("z-icon-Zoom");
+			zoomButton.setIconSclass(Icon.getIconSclass(Icon.ZOOM));
 		else
 			zoomButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_ZOOM_PNG));
 		zoomButton.setParent(getComponent());
@@ -261,9 +265,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			if(value != null && tableIDValue != null) {
 				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
 				if (tableID > 0) {
-					Object recordID = toKeyValue(value);
-					if(recordID != null && tableID > 0)
-						recordTextBox.setValue(getIdentifier(tableID, recordID));
+					Serializable recordID = (Serializable) toKeyValue(value);
+					if(recordID != null && tableID > 0) {
+						recordTextBox.setValue(MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, isUseUUIDKey()));
+					}
 				}
 			}
 		}
@@ -292,14 +297,14 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			return "";
 		if((tableIDValue != null) && (recordIDValue != null)) {
 			int tableID;
-			Object recordID;
+			Serializable recordID;
 			try {
 				tableID = Integer.parseInt(String.valueOf(tableIDValue));
-				recordID = toKeyValue(recordIDValue);
+				recordID = (Serializable) toKeyValue(recordIDValue);
 			} catch (NumberFormatException e) {
 				return recordIDValue.toString();
 			}
-			return getIdentifier(tableID, recordID);
+			return MLookup.getIdentifier(tableID, recordID, tabNo, windowNo, isUseUUIDKey());
 		}
 		else {
 			return recordIDValue.toString();
@@ -314,14 +319,14 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 			String key = gridTab.getWindowNo() + "|AD_Table_ID";
 			Object rowTableIdValue = gridRowCtx.get(key);
 			int rowTableID;
-			Object rowRecordID;
+			Serializable rowRecordID;
 			try {
 				rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
-				rowRecordID = toKeyValue(value);
+				rowRecordID = (Serializable) toKeyValue(value);
 			} catch (NumberFormatException e) {
 				return value.toString();
 			}
-			return getIdentifier(rowTableID, rowRecordID);
+			return MLookup.getIdentifier(rowTableID, rowRecordID, tabNo, windowNo, isUseUUIDKey());
 		} else {
 			return value.toString();
 		}
@@ -361,65 +366,6 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	}
 
 	/**
-	 * Get Lookup
-	 * @param tableID
-	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
-	 */
-	public MLookup getRecordsLookup(int tableID) {
-		return getRecordsLookup(tableID, false);
-	}
-
-	/**
-	 * Get Lookup
-	 * @param tableID
-	 * @param tableBased - if the lookup checks for the UUID Key Column based on the table (true), or on the columnName (false)
-	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
-	 */
-	private MLookup getRecordsLookup(int tableID, boolean tableBased) {
-		if(tableID <= 0)	
-			return null;
-		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
-		String keyColumn = "";
-		if (tableBased) {
-			String[] keyColumns = mTable.getKeyColumns();
-			keyColumn = keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
-		} else {
-			keyColumn = getKeyColumn(mTable);
-		}
-		if (Util.isEmpty(keyColumn))
-			return null;
-
-		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
-
-		int tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
-		int windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
-		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo (Env.getCtx(), windowNo, tabNo, mColumn.getAD_Column_ID(), DisplayType.Search);
-		return new MLookup(lookupInfo, tabNo);
-	}
-
-	/**
-	 * Get Identifier String from AD_Table_ID and Record_ID
-	 * @param tableID
-	 * @param recordID
-	 * @return String
-	 */
-	public String getIdentifier(int tableID, Object recordID) {
-		MLookup lookup = getRecordsLookup(tableID);
-		return lookup != null ? lookup.getDisplay(recordID) : "";
-	}
-
-	/**
-	 * Get Parent Identifier String from AD_Table_ID and Record_ID
-	 * @param tableID
-	 * @param recordID
-	 * @return String
-	 */
-	public String getParentIdentifier(int tableID, Object recordID) {
-		MLookup lookup = getRecordsLookup(tableID, true);
-		return lookup != null ? lookup.getDisplay(recordID) : "";
-	}
-
-	/**
 	 * Get AD_Table_ID
 	 * @return AD_Table_ID value
 	 */
@@ -453,10 +399,10 @@ public abstract class WRecordEditor<T> extends WEditor implements ContextMenuLis
 	}
 
 	/**
-	 * @param mTable Reference table
+	 * Use UUID as key column
 	 * @return Key column name
 	 */
-	protected abstract String getKeyColumn(MTable mTable);
+	public abstract boolean isUseUUIDKey();
 
 	/**
 	 * Convert value to key value type

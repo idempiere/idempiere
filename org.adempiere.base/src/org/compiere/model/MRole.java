@@ -64,10 +64,10 @@ import org.idempiere.cache.POCopyCache;
  */
 public final class MRole extends X_AD_Role implements ImmutablePOSupport
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -8937680640915708588L;
+	private static final long serialVersionUID = -8473945674135719367L;
 
 	/**
 	 * 	Get role for current session/context
@@ -95,7 +95,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		int AD_Role_ID = Env.getContextAsInt(ctx, Env.AD_ROLE_ID);
 		int AD_User_ID = Env.getContextAsInt(ctx, Env.AD_USER_ID);
 
-		MRole defaultRole = getDefaultRole(); 
+		MRole defaultRole = getDefaultRole(ctx, AD_Role_ID, AD_User_ID); 
 		if (reload || defaultRole == null)
 		{
 			defaultRole = get (ctx, AD_Role_ID, AD_User_ID, reload);
@@ -111,6 +111,17 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	getDefault
 	
 	/**
+	 * Get role records readable by current effective role
+	 * @return role records (AD_Role_ID, Name), order by Name
+	 */
+	public static KeyNamePair[] getRoleKeyNamePairs() {
+		String sql = MRole.getDefault().addAccessSQL(
+				"SELECT AD_Role_ID, Name FROM AD_Role WHERE AD_Client_ID=? AND IsActive='Y' ORDER BY 2", 
+				"AD_Role", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+		return DB.getKeyNamePairsEx(sql, false, Env.getAD_Client_ID(Env.getCtx()));
+	}
+	
+	/**
 	 * Set role for current session/context
 	 * @param defaultRole
 	 */
@@ -124,7 +135,24 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 * @return MRole
 	 */
 	private static MRole getDefaultRole() {
-		return (MRole) Env.getCtx().get(ROLE_KEY);
+		return getDefaultRole(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), Env.getAD_User_ID(Env.getCtx()));
+	}
+
+	/**
+	 * Get role for current session/context
+	 * @param ctx
+	 * @param AD_Role_ID
+	 * @param AD_User_ID
+	 * @return MRole
+	 */
+	private static MRole getDefaultRole(Properties ctx, int AD_Role_ID, int AD_User_ID) {
+		MRole role = (MRole) ctx.get(ROLE_KEY);
+		String key = AD_Role_ID + "_" + AD_User_ID;
+		if (! s_roles.containsKey(key)) {
+			ctx.remove(ROLE_KEY);
+			role = null;
+		}
+		return role;
 	}
 
 	/**
@@ -422,11 +450,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return max > 0 && noRecords > max;
 	}	//	isQueryMax
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if it can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
@@ -440,12 +463,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return true;
 	}	//	beforeSave
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -453,10 +470,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return success;
 		if (newRecord && success)
 		{
-			//	Add Role to SuperUser
+			// Assign Role to SuperUser
 			MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
 			su.saveEx();
-			//	Add Role to User
+			// Assign Role to Created By user
 			if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
 			{
 				MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
@@ -467,19 +484,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		//
 		else if (is_ValueChanged("UserLevel"))
 			updateAccessRecords();
-		
-		//	Default Role changed
-		if (getDefaultRole() != null 
-			&& getDefaultRole().get_ID() == get_ID())
-			setDefaultRole(this);
+
 		return success;
 	}	//	afterSave
 	
-	/**
-	 * 	Executed after Delete operation.
-	 * 	@param success true if record deleted
-	 *	@return true if delete is a success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -490,7 +498,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	} 	//	afterDelete
 
 	/**
-	 * 	Create Access Records (delete existing access records prior to that)
+	 * 	Delete existing access records and create new access records
 	 *	@return info
 	 */
 	public String updateAccessRecords ()
@@ -509,9 +517,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (isManual())
 			return "-";
 		
+		int userID = Env.getAD_User_ID(getCtx());
+		
 		String roleClientOrgUser = getAD_Role_ID() + ","
 			+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y', getDate()," 
-			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
+			+ userID + ", getDate()," + userID 
 			+ ",'Y' ";	//	IsReadWrite
 		
 		String sqlWindow = "INSERT INTO AD_Window_Access "
@@ -560,7 +570,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			+ "C_DocType_ID , AD_Ref_List_ID, AD_Role_ID) " 
 			+ "(SELECT "
 			+ getAD_Client_ID() + ",0,'Y', getDate()," 
-			+ getUpdatedBy() + ", getDate()," + getUpdatedBy() 
+			+ userID + ", getDate()," + userID
 			+ ", doctype.C_DocType_ID, action.AD_Ref_List_ID, rol.AD_Role_ID " 
 			+ "FROM AD_Client client " 
 			+ "INNER JOIN C_DocType doctype ON (doctype.AD_Client_ID=client.AD_Client_ID) "
@@ -577,7 +587,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				+ " AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy) "
 				+ "SELECT i.AD_InfoWindow_ID," + getAD_Role_ID() + ","
 				+ getAD_Client_ID() + "," + getAD_Org_ID() + ",'Y',getDate()," 
-				+ getUpdatedBy() + ", getDate()," + getUpdatedBy()
+				+ userID + ", getDate()," + userID
 				+ " FROM AD_InfoWindow i LEFT JOIN AD_InfoWindow_Access ia ON "
 				+ "(ia.AD_Role_ID=" + getAD_Role_ID()
 				+ " AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) "
@@ -843,7 +853,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_User_ID());
-			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
+			pstmt.setInt(2, getAD_Client_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -875,7 +885,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		{
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, getAD_Role_ID());
-			pstmt.setInt(2, Env.getAD_Client_ID(getCtx()));
+			pstmt.setInt(2, getAD_Client_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -1470,14 +1480,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (column.getAD_Process_ID() > 0)
 			{
 				// Verify access to process for buttons
-				Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
+				Boolean access = getProcessAccess(column.getAD_Process_ID());
 				if (access == null)
 					return false;
 			}
 			else if (column.getAD_InfoWindow_ID() > 0)
 			{
 				// Verify access to info window for buttons
-				Boolean access = MRole.getDefault().getInfoAccess(column.getAD_InfoWindow_ID());
+				Boolean access = getInfoAccess(column.getAD_InfoWindow_ID());
 				if (access == null)
 					return false;
 			}
@@ -1660,6 +1670,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (log.isLoggable(Level.FINE)) log.fine("#" + m_windowAccess.size());
 		}	//	reload
 		Boolean retValue = m_windowAccess.get(AD_Window_ID);
+		// User Preference window is excluded - otherwise the user would not be able to reset the read-only session preference
+		if (retValue != null && AD_Window_ID != SystemIDs.WINDOW_USER_PREFERENCE && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		if (log.isLoggable(Level.FINE)) log.fine("getWindowAccess - AD_Window_ID=" + AD_Window_ID + " - " + retValue);
 		return retValue;
 	}	//	getWindowAccess
@@ -1712,7 +1725,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 					+ "             AND ce.AD_Process_ID IS NOT NULL "
 					+ "             AND ce.AD_Process_Para_ID IS NULL "
 					+ "             AND ce.ASP_Status = 'H')"; // Hide
-			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter;
+			String noReportsFilter = "";
+			if (! MRole.getDefault().isCanReport())
+				noReportsFilter = " AND AD_Process_ID NOT IN (SELECT p.AD_Process_ID FROM AD_Process p WHERE IsReport='Y')";
+			String sql = "SELECT AD_Process_ID, IsReadWrite, IsActive FROM AD_Process_Access WHERE AD_Role_ID=?" + ASPFilter + noReportsFilter;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			HashMap<Integer,Boolean> directAccess = new HashMap<Integer,Boolean>(100);
@@ -1752,6 +1768,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getProcessAccess
 
@@ -1841,6 +1859,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getTaskAccess
 
@@ -1907,7 +1927,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 							m_formAccess.remove(formId);
 						}
 					} else {
-						directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
+						if ( ! (formId == SystemIDs.FORM_ARCHIVEVIEWER && !MRole.getDefault().isCanReport()) )
+							directAccess.put(formId, Boolean.valueOf("Y".equals(rs.getString(2))));
 					}
 				}
 			}
@@ -1930,6 +1951,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getFormAccess
 
@@ -2019,6 +2042,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retValue = null;
 			}
 		}
+		if (retValue != null && Env.isReadOnlySession())
+			retValue = Boolean.FALSE;
 		return retValue;
 	}	//	getWorkflowAccess
 	
@@ -2089,7 +2114,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				retSQL.append(" AND ");
 				String orgWhere = getOrgWhere(rw);
 				if (fullyQualified)
-					orgWhere = orgWhere.replaceAll("AD_Org_ID", tableName + ".AD_Org_ID");
+					orgWhere = orgWhere.replace("AD_Org_ID", tableName + ".AD_Org_ID");
 				retSQL.append(orgWhere);
 			}
 		} else {
@@ -2133,7 +2158,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			keyColumnName += getIdColumnName(TableName); 
 	
 			//log.fine("addAccessSQL - " + TableName + "(" + AD_Table_ID + ") " + keyColumnName);
-			String recordWhere = getRecordWhere (AD_Table_ID, keyColumnName, rw);
+			String recordWhere = getRecordWhere (AD_Table_ID, keyColumnName, rw, TableName, ti[i].getSynonym());
 			if (recordWhere.length() > 0)
 			{
 				retSQL.append(" AND ").append(recordWhere);
@@ -2468,9 +2493,11 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@param AD_Table_ID table
 	 *	@param keyColumnName (fully qualified) key column name
 	 *	@param rw true if read write
+	 *  @param tableName 
+	 *  @param alias 
 	 *	@return where clause or ""
 	 */
-	private String getRecordWhere (int AD_Table_ID, String keyColumnName, boolean rw)
+	private String getRecordWhere (int AD_Table_ID, String keyColumnName, boolean rw, String tableName, String alias)
 	{
 		loadRecordAccess(false);
 		//
@@ -2527,6 +2554,16 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				sb.append(keyColumnName).append(lockedIDs).append(") ");
 			}
 		}
+
+		for (MTableValRule tvr : MTableValRule.get(p_ctx, AD_Table_ID, Env.getAD_Client_ID(p_ctx), Env.getAD_Role_ID(p_ctx), Env.getAD_User_ID(p_ctx))) {
+			if (sb.length() > 0)
+				sb.append(" AND ");
+			String wherevr = Env.parseContext(p_ctx, 0, tvr.getCode(), false);
+			if (! Util.isEmpty(alias) && ! alias.equals(tableName))
+				wherevr = wherevr.replaceAll("\\b" + tableName + "\\b", alias);
+			sb.append(" (").append(wherevr).append(") ");
+		}
+
 		//
 		return sb.toString();
 	}	//	getRecordWhere
@@ -3370,6 +3407,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_Client:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_ClientOnly:
@@ -3378,6 +3416,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_Organization:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_Organization:
@@ -3385,6 +3424,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		case USERLEVEL_ClientPlusOrganization:
 			switch (accessLevel) {
 			case MProcess.ACCESSLEVEL_Organization:
@@ -3394,6 +3434,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			case MProcess.ACCESSLEVEL_All:
 				access = true;
 			}
+			break;
 		}
 		return access;
 	}
@@ -3426,6 +3467,52 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
+	}
+
+	/**
+	 * Check record access through {@link #addAccessSQL(String, String, boolean, boolean)} using<br/>
+	 * either record id or record uuid
+	 * @param table
+	 * @param recordId ignore if uuid is use
+	 * @param uuid null to use recordId
+	 * @param rw true for writable, false for readonly
+	 * @return true if role has access to record
+	 */
+	public boolean checkAccessSQL(MTable table, int recordId, String uuid, boolean rw) {
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM ")
+				.append(table.getTableName())
+				.append(" WHERE ")
+				.append(table.getTableName())
+				.append(".");
+		if (!Util.isEmpty(uuid, true) ) {
+			sql.append(PO.getUUIDColumnName(table.getTableName()))
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), uuid) == 1;
+		} else {
+			sql.append(table.getKeyColumns()[0])
+				.append("=?");
+			return DB.getSQLValueEx(null, addAccessSQL(sql.toString(), table.getTableName(), true, rw), recordId) == 1;
+		}
+	}
+
+	/** Get Predefined Context Variables from this role and included roles
+	 * @return Predefined context variables to inject when opening a menu entry or a window
+	 */
+	public String getPredefinedContextVariables() {
+		StringBuilder predefinedContextVariables = new StringBuilder();
+		for (MRole role : getIncludedRoles(false)) {
+			if (role.get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+				if (predefinedContextVariables.length() > 0)
+					predefinedContextVariables.append("\n");
+				predefinedContextVariables.append(role.get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+			}
+		}
+		if (get_Value(COLUMNNAME_PredefinedContextVariables) != null) {
+			if (predefinedContextVariables.length() > 0)
+				predefinedContextVariables.append("\n");
+			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
+		}
+		return predefinedContextVariables.toString();
 	}
 
 }	//	MRole

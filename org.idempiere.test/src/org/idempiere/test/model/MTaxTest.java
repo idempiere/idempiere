@@ -28,9 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+import java.util.Properties;
 
 import org.adempiere.base.Core;
 import org.compiere.model.MAccount;
@@ -44,6 +49,7 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MLocation;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
@@ -51,11 +57,14 @@ import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTax;
 import org.compiere.model.MTaxCategory;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.model.Tax;
+import org.compiere.model.X_C_Order;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -66,12 +75,16 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * 
  * @author hengsin
  *
  */
+@Isolated
 public class MTaxTest extends AbstractTestCase {
 
 	public MTaxTest() {
@@ -95,37 +108,119 @@ public class MTaxTest extends AbstractTestCase {
 	
 	@Test
 	public void testTaxLookup() {
-		int taxExemptId = Tax.getExemptTax(Env.getCtx(), getAD_Org_ID(), getTrxName());
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		int taxExemptId = Tax.getExemptTax(ctx, getAD_Org_ID(), trxName);
 		assertTrue(taxExemptId>0, "Fail to get tax exempt Id");
-		
-		MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
-		bp.setIsTaxExempt(true);
-		bp.saveEx();
-		
-		int id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
-				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
-		assertEquals(taxExemptId, id, "Unexpected tax id");
-		
-		bp.setIsTaxExempt(false);
-		bp.saveEx();
-		
-		id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
-				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
-		assertTrue(id != taxExemptId, "Unexpected tax id: " + id);
-		assertEquals(DictionaryIDs.C_Tax.STANDARD.id, id, "Unexpected tax id");
+
+		MBPartner bpTree = new MBPartner(ctx, DictionaryIDs.C_BPartner.TREE_FARM.id, trxName);
+		MBPartner bpPatio = new MBPartner(ctx, DictionaryIDs.C_BPartner.PATIO.id, trxName);
+		MBPartner bpCW = new MBPartner(ctx, DictionaryIDs.C_BPartner.C_AND_W.id, trxName);
+		MBPartner bpSeed = new MBPartner(ctx, DictionaryIDs.C_BPartner.SEED_FARM.id, trxName);
+		MBPartner bpJoe = new MBPartner(ctx, DictionaryIDs.C_BPartner.JOE_BLOCK.id, trxName);
+		bpJoe.setIsTaxExempt(true);
+		bpJoe.saveEx();
+
+		expectedTaxLookup(DictionaryIDs.M_Product.AZALEA_BUSH.id, 0,
+				getAD_Org_ID(), getM_Warehouse_ID(),
+				bpJoe.getPrimaryC_BPartner_Location_ID(), bpJoe.getPrimaryC_BPartner_Location_ID(), -1,
+				true, null, taxExemptId);
+
+		bpJoe.setIsTaxExempt(false);
+		bpJoe.saveEx();
+
+		expectedTaxLookup(DictionaryIDs.M_Product.AZALEA_BUSH.id, 0,
+				getAD_Org_ID(), getM_Warehouse_ID(),
+				bpJoe.getPrimaryC_BPartner_Location_ID(), bpJoe.getPrimaryC_BPartner_Location_ID(), -1,
+				true, null, DictionaryIDs.C_Tax.STANDARD.id);
+
+		// Sales charge from Germany (Org Fertilizer) to USA (Joe Block) -> expected Exempt
+		expectedTaxLookup(0, DictionaryIDs.C_Charge.FREIGHT.id,
+				DictionaryIDs.AD_Org.FERTILIZER.id, DictionaryIDs.M_Warehouse.FERTILIZER.id,
+				bpJoe.getPrimaryC_BPartner_Location_ID(), bpJoe.getPrimaryC_BPartner_Location_ID(), -1,
+				true, null, taxExemptId);
+
+		// Purchase charge from USA New York (Patio BP) to USA Oregon (HQ Warehouse) -> expected Standard
+		expectedTaxLookup(0, DictionaryIDs.C_Charge.FREIGHT.id,
+				DictionaryIDs.AD_Org.HQ.id, DictionaryIDs.M_Warehouse.HQ.id,
+				bpPatio.getPrimaryC_BPartner_Location_ID(), bpPatio.getPrimaryC_BPartner_Location_ID(), -1,
+				false, null, DictionaryIDs.C_Tax.STANDARD.id);
+
+		// Change location of Org HQ to Connecticut CT
+		MLocation location = new MLocation(ctx, DictionaryIDs.C_Location.ORG_WH_HQ.id, trxName);
+		location.setC_Region_ID(DictionaryIDs.C_Region.CT.id);
+		location.saveEx();
+		// Sales charge from USA Connecticut (Org HQ modified) to USA Connecticut (C&W) -> expected CT Sales
+		expectedTaxLookup(0, DictionaryIDs.C_Charge.FREIGHT.id,
+				DictionaryIDs.AD_Org.HQ.id, DictionaryIDs.M_Warehouse.HQ.id,
+				bpCW.getPrimaryC_BPartner_Location_ID(), bpCW.getPrimaryC_BPartner_Location_ID(), -1,
+				true, null, DictionaryIDs.C_Tax.CT_SALES.id);
+
+		// Sales product from USA Connecticut (Org HQ modified) to USA New Jersey (TreeFarm) -> expected Standard
+		expectedTaxLookup(DictionaryIDs.M_Product.AZALEA_BUSH.id, 0,
+				DictionaryIDs.AD_Org.HQ.id, DictionaryIDs.M_Warehouse.HQ.id,
+				bpTree.getPrimaryC_BPartner_Location_ID(), bpTree.getPrimaryC_BPartner_Location_ID(), -1,
+				true, null, DictionaryIDs.C_Tax.STANDARD.id);
+
+		// Sales product from USA Connecticut (Org HQ modified) to USA New Jersey (TreeFarm) - pick rule -> expected CT Sales
+		expectedTaxLookup(DictionaryIDs.M_Product.AZALEA_BUSH.id, 0,
+				DictionaryIDs.AD_Org.HQ.id, DictionaryIDs.M_Warehouse.HQ.id,
+				bpTree.getPrimaryC_BPartner_Location_ID(), bpTree.getPrimaryC_BPartner_Location_ID(), -1,
+				true, X_C_Order.DELIVERYVIARULE_Pickup, DictionaryIDs.C_Tax.CT_SALES.id);
+
+		// Purchase product from USA New York (Patio BP) to Germany (HQ Fertilizer) -> expected Exempt
+		expectedTaxLookup(DictionaryIDs.M_Product.AZALEA_BUSH.id, 0,
+				DictionaryIDs.AD_Org.FERTILIZER.id, DictionaryIDs.M_Warehouse.FERTILIZER.id,
+				bpPatio.getPrimaryC_BPartner_Location_ID(), bpPatio.getPrimaryC_BPartner_Location_ID(), -1,
+				false, null, taxExemptId);
+
+		// Purchase product from USA Connecticut (Seed Farm BP) to Germany (HQ Fertilizer) drop ship to BP C&W -> expected Exempt (core)
+		expectedTaxLookup(DictionaryIDs.M_Product.AZALEA_BUSH.id, 0,
+				DictionaryIDs.AD_Org.FERTILIZER.id, DictionaryIDs.M_Warehouse.FERTILIZER.id,
+				bpSeed.getPrimaryC_BPartner_Location_ID(), bpSeed.getPrimaryC_BPartner_Location_ID(), bpCW.getPrimaryC_BPartner_Location_ID(),
+				false, null, taxExemptId);
+
+		MSysConfig sysCfgTaxLookup = new MSysConfig(ctx, DictionaryIDs.AD_SysConfig.TAX_LOOKUP_SERVICE.id, null);
+		String oldValue = sysCfgTaxLookup.getValue();
+		try {
+			sysCfgTaxLookup.setValue(MTaxTest_TaxLookup.class.getName());
+			sysCfgTaxLookup.saveCrossTenantSafeEx();
+			CacheMgt.get().reset(MSysConfig.Table_Name);
+
+			// Drop Ship Case with custom tax lookup
+			// Purchase product from USA Connecticut (Seed Farm BP) to Germany (HQ Fertilizer) drop ship to BP C&W -> expected CT Sales (custom tax lookup)
+			expectedTaxLookup(DictionaryIDs.M_Product.AZALEA_BUSH.id, 0,
+					DictionaryIDs.AD_Org.FERTILIZER.id, DictionaryIDs.M_Warehouse.FERTILIZER.id,
+					bpSeed.getPrimaryC_BPartner_Location_ID(), bpSeed.getPrimaryC_BPartner_Location_ID(), bpCW.getPrimaryC_BPartner_Location_ID(),
+					false, null, DictionaryIDs.C_Tax.CT_SALES.id);
+		} finally {
+			sysCfgTaxLookup.setValue(oldValue);
+			sysCfgTaxLookup.saveCrossTenantSafeEx();
+		}
+
 	}
-	
+
+	private void expectedTaxLookup(int prodId, int chargeId, int orgId, int warehouseId, int billLocationId, int shipLocationId, int dropshipLocation, boolean isSOTrx, String deliveryViaRule, int expectedTaxId) {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		int id = Core.getTaxLookup().get(ctx, prodId, chargeId, getLoginDate(), getLoginDate(), orgId, warehouseId, 
+				billLocationId, shipLocationId,
+				dropshipLocation, 
+				isSOTrx, deliveryViaRule, trxName);
+		assertEquals(expectedTaxId, id, "Unexpected tax id");
+	}
+
 	@Test
-	public void testDistributeTaxToProductCost() {
-		MProduct product = null;
+	public void testDistributeTaxToProductCost() {		
 		MTaxCategory category = null;
 		MTax tax = null;
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS)) {
 			category = new MTaxCategory(Env.getCtx(), 0, null);
 			category.setName("testDistributeTaxToProductCost");
 			category.saveEx();
 			
-			//need to create tax without trx as tax is cache
 			tax = new MTax(Env.getCtx(), 0, null);
 			tax.setC_TaxCategory_ID(category.get_ID());
 			tax.setIsDocumentLevel(false);
@@ -137,9 +232,8 @@ public class MTaxTest extends AbstractTestCase {
 			tax.saveEx();
 			CacheMgt.get().reset();
 			
-			//need to create product with trx as order line get product from cache
 			MProduct p = MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id);
-			product = new MProduct(Env.getCtx(), 0, null);
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());
 			product.setIsStocked(true);
@@ -150,6 +244,7 @@ public class MTaxTest extends AbstractTestCase {
 			product.setName("testDistributeTaxToProductCost");
 			product.setC_UOM_ID(p.getC_UOM_ID());
 			product.saveEx();
+			mockProductGet(productMock, product);
 			
 			MPriceList priceList = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id);
 			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
@@ -235,13 +330,10 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
 			MAccount acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + schema.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), schema.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
 			BigDecimal totalDebit = new BigDecimal("0.00");
-			for(int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			for(MFactAcct fa : factAccts) {
 				if (fa.getAccount_ID() == acctAsset.getAccount_ID()) {
 					totalDebit = totalDebit.add(fa.getAmtAcctDr());
 				}
@@ -249,8 +341,6 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, totalDebit.setScale(2, RoundingMode.HALF_EVEN), "Un-expected product asset account posted amount");
 		} finally {
 			rollback();
-			if (product != null && product.get_ID() > 0)
-				product.deleteEx(true);
 			if (tax != null && tax.get_ID() > 0)
 				tax.deleteEx(true);
 			if (category != null && category.get_ID() > 0)
@@ -260,10 +350,9 @@ public class MTaxTest extends AbstractTestCase {
 	
 	@Test
 	public void testSeparateTaxPosting() {
-		MProduct product = null;
 		MTaxCategory category = null;
 		MTax tax = null;
-		try {
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS)) {
 			category = new MTaxCategory(Env.getCtx(), 0, null);
 			category.setName("testSeparateTaxPosting");
 			category.saveEx();
@@ -280,9 +369,8 @@ public class MTaxTest extends AbstractTestCase {
 			tax.saveEx();
 			CacheMgt.get().reset();
 			
-			//need to create product with trx as order line get product from cache
 			MProduct p = MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id);
-			product = new MProduct(Env.getCtx(), 0, null);
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());
 			product.setIsStocked(true);
@@ -293,6 +381,7 @@ public class MTaxTest extends AbstractTestCase {
 			product.setName("testSeparateTaxPosting");
 			product.setC_UOM_ID(p.getC_UOM_ID());
 			product.saveEx();
+			mockProductGet(productMock, product);
 			
 			MPriceList priceList = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id);
 			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
@@ -380,13 +469,10 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
 			MAccount acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
-					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
-					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + schema.getC_AcctSchema_ID();
-			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), schema.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
 			BigDecimal totalDebit = new BigDecimal("0.00");
-			for(int id : ids) {
-				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+			for(MFactAcct fa : factAccts) {
 				if (fa.getAccount_ID() == acctAsset.getAccount_ID()) {
 					totalDebit = totalDebit.add(fa.getAmtAcctDr());
 				}
@@ -394,12 +480,16 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, totalDebit.setScale(2, RoundingMode.HALF_EVEN), "Un-expected product asset account posted amount");
 		} finally {
 			rollback();
-			if (product != null && product.get_ID() > 0)
-				product.deleteEx(true);
 			if (tax != null && tax.get_ID() > 0)
 				tax.deleteEx(true);
 			if (category != null && category.get_ID() > 0)
 				category.deleteEx(true);			
 		}
+	}
+
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
 	}
 }

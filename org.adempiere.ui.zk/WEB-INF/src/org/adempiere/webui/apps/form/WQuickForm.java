@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.QuickGridView;
 import org.adempiere.webui.component.Borderlayout;
@@ -30,7 +31,6 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
@@ -38,7 +38,6 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
-import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -102,6 +101,7 @@ public class WQuickForm extends Window implements IQuickForm
 		super();
 
 		this.setMode(Mode.POPUP);
+		LayoutUtils.addSclass("quick-form", this);
 		windowNo = SessionManager.getAppDesktop().registerWindow(this);
 		adWinContent = winContent;
 		onlyCurrentRows = m_onlyCurrentRows;
@@ -139,16 +139,13 @@ public class WQuickForm extends Window implements IQuickForm
 		// Center
 		Panel Center = new Panel();
 		Center.appendChild(quickGridView);
-		ZkCssHelper.appendStyle(Center, "border: none; width: 100%; height:99%; background: gainsboro;");
 
 		// South
 		Panel south = new Panel();
 
 		// Adding statusBar for Quick Form
 		south.appendChild(adWinContent.getStatusBarQF());
-		ZkCssHelper.appendStyle(adWinContent.getStatusBarQF(), "height: 20px; padding-bottom: 3px background: white");
 		south.appendChild(confirmPanel);
-		ZkCssHelper.appendStyle(confirmPanel, "height: 50px; padding-top: 9px; background: #9c9c9c;");
 
 		bSave.setEnabled(!gridTab.isReadOnly());
 		bDelete.setEnabled(!gridTab.isReadOnly());
@@ -234,6 +231,7 @@ public class WQuickForm extends Window implements IQuickForm
 	/**
 	 * Cancel/Close form.
 	 */
+	@Override
 	public void onCancel( )
 	{
 		if (gridTab.getTableModel().getRowChanged() > -1)
@@ -258,6 +256,7 @@ public class WQuickForm extends Window implements IQuickForm
 	/**
 	 * Reset sort state
 	 */
+	@Override
 	public void onUnSort( )
 	{
 		adWinContent.getActiveGridTab().getTableModel().resetCacheSortState();
@@ -274,6 +273,7 @@ public class WQuickForm extends Window implements IQuickForm
 	/**
 	 * Open {@link CustomizeGridViewDialog} for {@link #quickGridView}.
 	 */
+	@Override
 	public void onCustomize( )
 	{
 		onSave();
@@ -301,6 +301,7 @@ public class WQuickForm extends Window implements IQuickForm
 	/**
 	 * Ignore/Undo changes
 	 */
+	@Override
 	public void onIgnore( )
 	{
 		gridTab.dataIgnore();
@@ -317,6 +318,7 @@ public class WQuickForm extends Window implements IQuickForm
 	/**
 	 * Delete selected rows.
 	 */
+	@Override
 	public void onDelete( )
 	{
 		if (gridTab == null || !quickGridView.isNewLineSaved)
@@ -382,6 +384,7 @@ public class WQuickForm extends Window implements IQuickForm
 	/**
 	 * Save {@link #quickGridView} changes.
 	 */
+	@Override
 	public void onSave( )
 	{
 		if (gridTab.getTableModel().getRowChanged() == gridTab.getCurrentRow())
@@ -402,6 +405,7 @@ public class WQuickForm extends Window implements IQuickForm
 	/**
 	 * Refresh {@link #gridTab} and {@link #quickGridView}.
 	 */
+	@Override
 	public void onRefresh( )
 	{
 		gridTab.dataRefreshAll();
@@ -452,7 +456,7 @@ public class WQuickForm extends Window implements IQuickForm
 		{
 			adWinContent.setCurrQGV(null);
 		}
-		adWinContent.getADTab().getSelectedTabpanel().query(onlyCurrentRows, onlyCurrentDays, MRole.getDefault().getMaxQueryRecords()); // autoSize
+		adWinContent.getADTab().getSelectedTabpanel().query(onlyCurrentRows, onlyCurrentDays, adWinContent.getADTab().getSelectedTabpanel().getGridTab().getMaxQueryRecords()); // autoSize
 
 		if (stayInParent) {
 			adWinContent.onParentRecord();

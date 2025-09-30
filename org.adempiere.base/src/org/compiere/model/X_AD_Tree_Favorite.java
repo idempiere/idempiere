@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tree_Favorite
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tree_Favorite")
 public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Tree_Favorite (Properties ctx, int AD_Tree_Favorite_ID, String trxName)
@@ -140,6 +140,7 @@ public class X_AD_Tree_Favorite extends PO implements I_AD_Tree_Favorite, I_Pers
 		return (String)get_Value(COLUMNNAME_AD_Tree_Favorite_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

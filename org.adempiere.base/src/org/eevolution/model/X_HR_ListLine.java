@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_ListLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_ListLine")
 public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_ListLine (Properties ctx, int HR_ListLine_ID, String trxName)
@@ -292,6 +292,7 @@ public class X_HR_ListLine extends PO implements I_HR_ListLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_HR_ListLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_ListVersion getHR_ListVersion() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_ListVersion)MTable.get(getCtx(), org.eevolution.model.I_HR_ListVersion.Table_ID)

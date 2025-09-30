@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Job
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="HR_Job")
 public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_HR_Job (Properties ctx, int HR_Job_ID, String trxName)
@@ -122,6 +122,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
@@ -250,6 +251,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Job getNext_Job() throws RuntimeException
 	{
 		return (org.eevolution.model.I_HR_Job)MTable.get(getCtx(), org.eevolution.model.I_HR_Job.Table_ID)
@@ -277,6 +279,7 @@ public class X_HR_Job extends PO implements I_HR_Job, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOutConfirm
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_InOutConfirm")
 public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_InOutConfirm (Properties ctx, int M_InOutConfirm_ID, String trxName)
@@ -170,6 +170,7 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
@@ -196,22 +197,6 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Confirmation No.
-		@param ConfirmationNo Confirmation Number
-	*/
-	public void setConfirmationNo (String ConfirmationNo)
-	{
-		set_Value (COLUMNNAME_ConfirmationNo, ConfirmationNo);
-	}
-
-	/** Get Confirmation No.
-		@return Confirmation Number
-	  */
-	public String getConfirmationNo()
-	{
-		return (String)get_Value(COLUMNNAME_ConfirmationNo);
 	}
 
 	/** ConfirmType AD_Reference_ID=320 */
@@ -241,6 +226,22 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 	public String getConfirmType()
 	{
 		return (String)get_Value(COLUMNNAME_ConfirmType);
+	}
+
+	/** Set Confirmation No.
+		@param ConfirmationNo Confirmation Number
+	*/
+	public void setConfirmationNo (String ConfirmationNo)
+	{
+		set_Value (COLUMNNAME_ConfirmationNo, ConfirmationNo);
+	}
+
+	/** Get Confirmation No.
+		@return Confirmation Number
+	  */
+	public String getConfirmationNo()
+	{
+		return (String)get_Value(COLUMNNAME_ConfirmationNo);
 	}
 
 	/** Set Create Package.
@@ -494,6 +495,7 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 		return (String)get_Value(COLUMNNAME_M_InOutConfirm_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOut)MTable.get(getCtx(), org.compiere.model.I_M_InOut.Table_ID)
@@ -522,6 +524,7 @@ public class X_M_InOutConfirm extends PO implements I_M_InOutConfirm, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_ID)

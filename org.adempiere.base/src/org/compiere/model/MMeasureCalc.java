@@ -533,7 +533,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	@Override
 	public String getWhereClause() {
 		String whereClause = super.getWhereClause();
-		if (! whereClause.toLowerCase().startsWith("where "))
+		if (! whereClause.matches("(?si)\\s*where\\s+.*"))
 			whereClause = "WHERE " + whereClause;
 		return whereClause;
 	}

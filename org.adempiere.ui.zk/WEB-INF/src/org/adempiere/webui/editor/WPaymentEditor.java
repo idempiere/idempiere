@@ -28,6 +28,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.grid.IPaymentForm;
 import org.compiere.model.GridField;
@@ -90,7 +91,7 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
         getComponent().getCombobox().setAutodrop(true);
         getComponent().getCombobox().addEventListener(Events.ON_BLUR, this);
         if (ThemeManager.isUseFontIconForImage())
-        	getComponent().getButton().setIconSclass("z-icon-Payment");
+        	getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.PAYMENT));
         else
         	getComponent().setButtonImage(ThemeManager.getThemeResource("images/Payment16.png"));        
         getComponent().getButton().addActionListener(this);
@@ -336,7 +337,7 @@ public class WPaymentEditor extends WEditor implements ListDataListener, Context
     			{
     				final WPaymentFormWindow window = (WPaymentFormWindow) pf.getWindow();
     				
-    				window.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "paymentForm");
+    				window.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "paymentForm");
     				if (window.isInitOK())
     				{
 	    				window.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);

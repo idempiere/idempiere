@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TableIndex
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_TableIndex")
 public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_TableIndex (Properties ctx, int AD_TableIndex_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
       super (ctx, AD_TableIndex_ID, trxName);
       /** if (AD_TableIndex_ID == 0)
         {
-			setAD_Table_ID (0);
 			setAD_TableIndex_ID (0);
+			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCreateConstraint (false);
@@ -59,8 +59,8 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
       super (ctx, AD_TableIndex_ID, trxName, virtualColumns);
       /** if (AD_TableIndex_ID == 0)
         {
-			setAD_Table_ID (0);
 			setAD_TableIndex_ID (0);
+			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCreateConstraint (false);
@@ -79,8 +79,8 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
       super (ctx, AD_TableIndex_UU, trxName);
       /** if (AD_TableIndex_UU == null)
         {
-			setAD_Table_ID (0);
 			setAD_TableIndex_ID (0);
+			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCreateConstraint (false);
@@ -99,8 +99,8 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
       super (ctx, AD_TableIndex_UU, trxName, virtualColumns);
       /** if (AD_TableIndex_UU == null)
         {
-			setAD_Table_ID (0);
 			setAD_TableIndex_ID (0);
+			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCreateConstraint (false);
@@ -141,6 +141,7 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
@@ -164,34 +165,6 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 	public int getAD_Message_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Message_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
-			.getPO(getAD_Table_ID(), get_TrxName());
-	}
-
-	/** Set Table.
-		@param AD_Table_ID Database Table information
-	*/
-	public void setAD_Table_ID (int AD_Table_ID)
-	{
-		if (AD_Table_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
-	}
-
-	/** Get Table.
-		@return Database Table information
-	  */
-	public int getAD_Table_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -231,6 +204,35 @@ public class X_AD_TableIndex extends PO implements I_AD_TableIndex, I_Persistent
 	public String getAD_TableIndex_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_TableIndex_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
+
+	/** Set Table.
+		@param AD_Table_ID Database Table information
+	*/
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

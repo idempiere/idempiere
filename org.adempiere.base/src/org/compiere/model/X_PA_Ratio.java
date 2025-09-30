@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Ratio
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_Ratio")
 public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_Ratio (Properties ctx, int PA_Ratio_ID, String trxName)
@@ -109,6 +109,7 @@ public class X_PA_Ratio extends PO implements I_PA_Ratio, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)

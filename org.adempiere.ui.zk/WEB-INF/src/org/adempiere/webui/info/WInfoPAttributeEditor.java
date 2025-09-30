@@ -20,6 +20,7 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.InfoPAttributePanel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.compiere.model.GridField;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -28,8 +29,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
+ * DisplayType.PAttribute editor for info window selection criteria field
  * @author hengsin
- *
  */
 public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor {
 
@@ -48,7 +49,7 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 		this.windowNo = windowNo;
 		getComponent().addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().setIconSclass("z-icon-PAttribute");
+			getComponent().setIconSclass(Icon.getIconSclass(Icon.PATTRIBUTE));
 		else
 			getComponent().setImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
 		getComponent().setTooltiptext(Msg.getMsg(Env.getCtx(), "PAttribute"));
@@ -120,12 +121,14 @@ public class WInfoPAttributeEditor extends WEditor implements IWhereClauseEditor
 
 	/**
 	 * 	Query per Product Attribute.
-	 *  <code>
+	 *  <pre>
+	 *  {@code
 	 * 	Available synonyms:
 	 *		M_Product p
 	 *		M_ProductPrice pr
 	 *		M_AttributeSet pa
-	 *	</code>
+	 *	}
+	 *  </pre>
 	 */
 	protected void cmd_InfoPAttribute()
 	{

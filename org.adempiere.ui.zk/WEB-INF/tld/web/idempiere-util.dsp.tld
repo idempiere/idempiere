@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE taglib>
 
 <taglib>
 	<uri>http://www.idempiere.org/dsp/web/util</uri>
@@ -50,4 +49,16 @@
 	Returns whether theme has fragment/custom.css.dsp
 		</description>
 	</function>
+
+	<function>
+		<name>sysConfig</name>
+		<function-class>org.compiere.model.MSysConfig</function-class>
+		<function-signature>
+	java.lang.String getValue(java.lang.String, java.lang.String)
+		</function-signature>
+		<description>
+	Returns the SysConfig value
+		</description>
+	</function>
+
 </taglib>

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Client
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Client 
 {
@@ -93,6 +93,7 @@ public interface I_AD_Client
 	/** Get Password Policies	  */
 	public int getAD_PasswordRule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PasswordRule getAD_PasswordRule() throws RuntimeException;
 
     /** Column name AD_ReplicationStrategy_ID */
@@ -108,6 +109,7 @@ public interface I_AD_Client
 	  */
 	public int getAD_ReplicationStrategy_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException;
 
     /** Column name AuthenticationType */

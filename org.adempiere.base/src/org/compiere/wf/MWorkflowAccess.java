@@ -19,8 +19,10 @@ package org.compiere.wf;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.Adempiere;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_Workflow_Access;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Util;
 
 /**
@@ -31,12 +33,12 @@ import org.compiere.util.Util;
  */
 public class MWorkflowAccess extends X_AD_Workflow_Access
 {
-	/**
-	 * generated serial id 
-	 */
-	private static final long serialVersionUID = 2598861248782340850L;
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4496940668011091889L;
+
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Workflow_Access_UU  UUID key
@@ -96,5 +98,21 @@ public class MWorkflowAccess extends X_AD_Workflow_Access
 		setAD_Workflow_ID(parent.getAD_Workflow_ID());
 		setAD_Role_ID (AD_Role_ID);
 	}	//	MWorkflowAccess
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		// Reset role cache
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}	//	afterSave
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		// Reset role cache
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MWorkflowAccess

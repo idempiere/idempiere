@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_OrgType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_OrgType")
 public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_OrgType (Properties ctx, int AD_OrgType_ID, String trxName)
@@ -142,6 +142,7 @@ public class X_AD_OrgType extends PO implements I_AD_OrgType, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_OrgType_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)

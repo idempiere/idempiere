@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Reval_Entry
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Reval_Entry")
 public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval_Entry (Properties ctx, int A_Asset_Reval_Entry_ID, String trxName)
@@ -42,10 +42,10 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
         {
 			setA_Asset_Reval_Entry_ID (0);
 			setA_Effective_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Rev_Code (null);
 			setA_Reval_Cal_Method (null);
 			setA_Reval_Effective_Date (null);
 			setA_Reval_Multiplier (null);
-			setA_Rev_Code (null);
 			setC_Currency_ID (0);
 			setDescription (null);
 			setDocumentNo (null);
@@ -63,10 +63,10 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
         {
 			setA_Asset_Reval_Entry_ID (0);
 			setA_Effective_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Rev_Code (null);
 			setA_Reval_Cal_Method (null);
 			setA_Reval_Effective_Date (null);
 			setA_Reval_Multiplier (null);
-			setA_Rev_Code (null);
 			setC_Currency_ID (0);
 			setDescription (null);
 			setDocumentNo (null);
@@ -84,10 +84,10 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
         {
 			setA_Asset_Reval_Entry_ID (0);
 			setA_Effective_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Rev_Code (null);
 			setA_Reval_Cal_Method (null);
 			setA_Reval_Effective_Date (null);
 			setA_Reval_Multiplier (null);
-			setA_Rev_Code (null);
 			setC_Currency_ID (0);
 			setDescription (null);
 			setDocumentNo (null);
@@ -105,10 +105,10 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
         {
 			setA_Asset_Reval_Entry_ID (0);
 			setA_Effective_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Rev_Code (null);
 			setA_Reval_Cal_Method (null);
 			setA_Reval_Effective_Date (null);
 			setA_Reval_Multiplier (null);
-			setA_Rev_Code (null);
 			setC_Currency_ID (0);
 			setDescription (null);
 			setDocumentNo (null);
@@ -205,6 +205,30 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 		return (Timestamp)get_Value(COLUMNNAME_A_Effective_Date);
 	}
 
+	/** A_Rev_Code AD_Reference_ID=53262 */
+	public static final int A_REV_CODE_AD_Reference_ID=53262;
+	/** Revaluation Code #1 = R01 */
+	public static final String A_REV_CODE_RevaluationCode1 = "R01";
+	/** Revaluation Code #2 = R02 */
+	public static final String A_REV_CODE_RevaluationCode2 = "R02";
+	/** Revaluation Code #3 = R03 */
+	public static final String A_REV_CODE_RevaluationCode3 = "R03";
+	/** Set Rev. Code.
+		@param A_Rev_Code Rev. Code
+	*/
+	public void setA_Rev_Code (String A_Rev_Code)
+	{
+
+		set_Value (COLUMNNAME_A_Rev_Code, A_Rev_Code);
+	}
+
+	/** Get Rev. Code.
+		@return Rev. Code	  */
+	public String getA_Rev_Code()
+	{
+		return (String)get_Value(COLUMNNAME_A_Rev_Code);
+	}
+
 	/** A_Reval_Cal_Method AD_Reference_ID=53259 */
 	public static final int A_REVAL_CAL_METHOD_AD_Reference_ID=53259;
 	/** Default = DFT */
@@ -275,30 +299,7 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 		return (String)get_Value(COLUMNNAME_A_Reval_Multiplier);
 	}
 
-	/** A_Rev_Code AD_Reference_ID=53262 */
-	public static final int A_REV_CODE_AD_Reference_ID=53262;
-	/** Revaluation Code #1 = R01 */
-	public static final String A_REV_CODE_RevaluationCode1 = "R01";
-	/** Revaluation Code #2 = R02 */
-	public static final String A_REV_CODE_RevaluationCode2 = "R02";
-	/** Revaluation Code #3 = R03 */
-	public static final String A_REV_CODE_RevaluationCode3 = "R03";
-	/** Set Rev. Code.
-		@param A_Rev_Code Rev. Code
-	*/
-	public void setA_Rev_Code (String A_Rev_Code)
-	{
-
-		set_Value (COLUMNNAME_A_Rev_Code, A_Rev_Code);
-	}
-
-	/** Get Rev. Code.
-		@return Rev. Code	  */
-	public String getA_Rev_Code()
-	{
-		return (String)get_Value(COLUMNNAME_A_Rev_Code);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -327,6 +328,7 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -355,6 +357,7 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -383,6 +386,7 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
@@ -475,6 +479,7 @@ public class X_A_Asset_Reval_Entry extends PO implements I_A_Asset_Reval_Entry, 
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)

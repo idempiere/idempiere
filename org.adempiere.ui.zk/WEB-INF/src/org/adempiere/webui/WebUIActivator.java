@@ -18,7 +18,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * {@link BundleActivator} for web client.
+ * {@link BundleActivator} for web client.<br/>
  * Start {@link WindowValidatorManager}.
  * @author hengsin
  */

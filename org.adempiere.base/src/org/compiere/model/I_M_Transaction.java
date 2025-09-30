@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Transaction
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_Transaction 
 {
@@ -75,6 +75,7 @@ public interface I_M_Transaction
 	  */
 	public int getC_ProjectIssue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ProjectIssue getC_ProjectIssue() throws RuntimeException;
 
     /** Column name Created */
@@ -119,6 +120,7 @@ public interface I_M_Transaction
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_InOutLine_ID */
@@ -134,6 +136,7 @@ public interface I_M_Transaction
 	  */
 	public int getM_InOutLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
 
     /** Column name M_InventoryLine_ID */
@@ -149,6 +152,7 @@ public interface I_M_Transaction
 	  */
 	public int getM_InventoryLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException;
 
     /** Column name M_Locator_ID */
@@ -164,6 +168,7 @@ public interface I_M_Transaction
 	  */
 	public int getM_Locator_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
@@ -179,7 +184,58 @@ public interface I_M_Transaction
 	  */
 	public int getM_MovementLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name M_ProductionLine_ID */
+    public static final String COLUMNNAME_M_ProductionLine_ID = "M_ProductionLine_ID";
+
+	/** Set Production Line.
+	  * Document Line representing a production
+	  */
+	public void setM_ProductionLine_ID (int M_ProductionLine_ID);
+
+	/** Get Production Line.
+	  * Document Line representing a production
+	  */
+	public int getM_ProductionLine_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
+
+    /** Column name M_Transaction_ID */
+    public static final String COLUMNNAME_M_Transaction_ID = "M_Transaction_ID";
+
+	/** Set Inventory Transaction	  */
+	public void setM_Transaction_ID (int M_Transaction_ID);
+
+	/** Get Inventory Transaction	  */
+	public int getM_Transaction_ID();
+
+    /** Column name M_Transaction_UU */
+    public static final String COLUMNNAME_M_Transaction_UU = "M_Transaction_UU";
+
+	/** Set M_Transaction_UU	  */
+	public void setM_Transaction_UU (String M_Transaction_UU);
+
+	/** Get M_Transaction_UU	  */
+	public String getM_Transaction_UU();
 
     /** Column name MovementDate */
     public static final String COLUMNNAME_MovementDate = "MovementDate";
@@ -220,54 +276,6 @@ public interface I_M_Transaction
 	  */
 	public String getMovementType();
 
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
-
-    /** Column name M_ProductionLine_ID */
-    public static final String COLUMNNAME_M_ProductionLine_ID = "M_ProductionLine_ID";
-
-	/** Set Production Line.
-	  * Document Line representing a production
-	  */
-	public void setM_ProductionLine_ID (int M_ProductionLine_ID);
-
-	/** Get Production Line.
-	  * Document Line representing a production
-	  */
-	public int getM_ProductionLine_ID();
-
-	public org.compiere.model.I_M_ProductionLine getM_ProductionLine() throws RuntimeException;
-
-    /** Column name M_Transaction_ID */
-    public static final String COLUMNNAME_M_Transaction_ID = "M_Transaction_ID";
-
-	/** Set Inventory Transaction	  */
-	public void setM_Transaction_ID (int M_Transaction_ID);
-
-	/** Get Inventory Transaction	  */
-	public int getM_Transaction_ID();
-
-    /** Column name M_Transaction_UU */
-    public static final String COLUMNNAME_M_Transaction_UU = "M_Transaction_UU";
-
-	/** Set M_Transaction_UU	  */
-	public void setM_Transaction_UU (String M_Transaction_UU);
-
-	/** Get M_Transaction_UU	  */
-	public String getM_Transaction_UU();
-
     /** Column name PP_Cost_Collector_ID */
     public static final String COLUMNNAME_PP_Cost_Collector_ID = "PP_Cost_Collector_ID";
 
@@ -277,6 +285,7 @@ public interface I_M_Transaction
 	/** Get Manufacturing Cost Collector	  */
 	public int getPP_Cost_Collector_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Cost_Collector getPP_Cost_Collector() throws RuntimeException;
 
     /** Column name Updated */

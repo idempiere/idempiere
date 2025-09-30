@@ -34,44 +34,54 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- * User overrides for Info Window Related Model
+ * User, role, organization or tenant overrides of Info Window Related Model
  * @author Igor Pojzl, Cloudempiere
  * @version $Id$
  */
 public class MUserDefInfoRelated extends X_AD_UserDef_Info_Related {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2317004482077725245L;
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_UserDef_Info_Related_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_UserDef_Info_Related_UU  UUID key
+     * @param trxName Transaction
+     */
     public MUserDefInfoRelated(Properties ctx, String AD_UserDef_Info_Related_UU, String trxName) {
         super(ctx, AD_UserDef_Info_Related_UU, trxName);
     }
 
+    /**
+     * @param ctx
+     * @param AD_UserDef_Info_Related_ID
+     * @param trxName
+     */
 	public MUserDefInfoRelated(Properties ctx, int AD_UserDef_Info_Related_ID, String trxName) {
 		super(ctx, AD_UserDef_Info_Related_ID, trxName);
 	}
+	
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MUserDefInfoRelated(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 	
 	/**
-	 * Get matching MUserDefInfoRelated related to current Info Column and user definition for Info window
+	 * Get best matching MUserDefInfoRelated for info window and info related
 	 * @param ctx
 	 * @param AD_InfoRelated_ID
 	 * @param AD_InfoWindow_ID
-	 * @return
+	 * @return MUserDefInfoRelated or null
 	 */
 	public static MUserDefInfoRelated get (Properties ctx, int AD_InfoRelated_ID, int AD_InfoWindow_ID )
 	{
-
 		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(ctx, AD_InfoWindow_ID);
 		if (userdefInfo == null)
 			return null;

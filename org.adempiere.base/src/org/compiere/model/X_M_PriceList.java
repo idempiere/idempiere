@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_PriceList")
 public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_PriceList (Properties ctx, int M_PriceList_ID, String trxName)
@@ -133,6 +133,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getBasePriceList() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
@@ -161,6 +162,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -265,28 +267,6 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Is Present For Product.
-		@param isPresentForProduct Is Present For Product
-	*/
-	public void setisPresentForProduct (boolean isPresentForProduct)
-	{
-		set_Value (COLUMNNAME_isPresentForProduct, Boolean.valueOf(isPresentForProduct));
-	}
-
-	/** Get Is Present For Product.
-		@return Is Present For Product	  */
-	public boolean isPresentForProduct()
-	{
-		Object oo = get_Value(COLUMNNAME_isPresentForProduct);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
@@ -420,5 +400,27 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Is Present For Product.
+		@param isPresentForProduct Is Present For Product
+	*/
+	public void setisPresentForProduct (boolean isPresentForProduct)
+	{
+		set_Value (COLUMNNAME_isPresentForProduct, Boolean.valueOf(isPresentForProduct));
+	}
+
+	/** Get Is Present For Product.
+		@return Is Present For Product	  */
+	public boolean isPresentForProduct()
+	{
+		Object oo = get_Value(COLUMNNAME_isPresentForProduct);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

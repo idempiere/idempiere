@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for T_InvoiceGL
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_T_InvoiceGL 
 {
@@ -75,7 +75,21 @@ public interface I_T_InvoiceGL
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
+
+    /** Column name APAR */
+    public static final String COLUMNNAME_APAR = "APAR";
+
+	/** Set AP - AR.
+	  * Include Receivables and/or Payables transactions
+	  */
+	public void setAPAR (String APAR);
+
+	/** Get AP - AR.
+	  * Include Receivables and/or Payables transactions
+	  */
+	public String getAPAR();
 
     /** Column name AmtAcctBalance */
     public static final String COLUMNNAME_AmtAcctBalance = "AmtAcctBalance";
@@ -155,19 +169,6 @@ public interface I_T_InvoiceGL
 	  */
 	public BigDecimal getAmtSourceBalance();
 
-    /** Column name APAR */
-    public static final String COLUMNNAME_APAR = "APAR";
-
-	/** Set AP - AR.
-	  * Include Receivables and/or Payables transactions
-	  */
-	public void setAPAR (String APAR);
-
-	/** Get AP - AR.
-	  * Include Receivables and/or Payables transactions
-	  */
-	public String getAPAR();
-
     /** Column name C_ConversionTypeReval_ID */
     public static final String COLUMNNAME_C_ConversionTypeReval_ID = "C_ConversionTypeReval_ID";
 
@@ -181,6 +182,7 @@ public interface I_T_InvoiceGL
 	  */
 	public int getC_ConversionTypeReval_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionTypeReval() throws RuntimeException;
 
     /** Column name C_DocTypeReval_ID */
@@ -196,6 +198,7 @@ public interface I_T_InvoiceGL
 	  */
 	public int getC_DocTypeReval_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeReval() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -211,6 +214,7 @@ public interface I_T_InvoiceGL
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name Created */

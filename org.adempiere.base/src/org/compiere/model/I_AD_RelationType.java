@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_RelationType
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_RelationType 
 {
@@ -71,6 +71,7 @@ public interface I_AD_RelationType
 	/** Get Source Reference	  */
 	public int getAD_Reference_Source_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Source() throws RuntimeException;
 
     /** Column name AD_Reference_Target_ID */
@@ -82,6 +83,7 @@ public interface I_AD_RelationType
 	/** Get Target Reference	  */
 	public int getAD_Reference_Target_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Target() throws RuntimeException;
 
     /** Column name AD_RelationType_ID */

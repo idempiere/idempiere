@@ -26,6 +26,8 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
+import org.compiere.model.MDepositBatchLine;
+import org.compiere.model.MPayment;
 import org.compiere.util.Env;
 
 /**
@@ -187,9 +189,7 @@ public class Doc_BankStatement extends Doc
 				if (amt_stmt_minus_trx.compareTo(Env.ZERO) != 0) {
 
 					//  BankAsset       DR      CR  (Statement minus Payment)
-					fl = fact.createLine(line,
-						getAccount(Doc.ACCTTYPE_BankAsset, as),
-						line.getC_Currency_ID(), amt_stmt_minus_trx);
+					fl = fact.createLine(line, acct_bank_asset, line.getC_Currency_ID(), amt_stmt_minus_trx);
 					if (fl != null && AD_Org_ID != 0)
 						fl.setAD_Org_ID(AD_Org_ID);
 					if (fl != null && C_BPartner_ID != 0)
@@ -202,26 +202,51 @@ public class Doc_BankStatement extends Doc
 				// Normal Adempiere behavior -- unchanged if using clearing accounts
 
 				//  BankAsset       DR      CR  (Statement)
-				fl = fact.createLine(line,
-					getAccount(Doc.ACCTTYPE_BankAsset, as),
-					line.getC_Currency_ID(), line.getStmtAmt());
+				fl = fact.createLine(line, acct_bank_asset, line.getC_Currency_ID(), line.getStmtAmt());
 				if (fl != null && AD_Org_ID != 0)
 					fl.setAD_Org_ID(AD_Org_ID);
 				if (fl != null && C_BPartner_ID != 0)
 					fl.setC_BPartner_ID(C_BPartner_ID);
 
-				//  BankInTransit   DR      CR              (Payment)
-				fl = fact.createLine(line,
-					getAccount(Doc.ACCTTYPE_BankInTransit, as),
-					line.getC_Currency_ID(), line.getTrxAmt().negate());
-				if (fl != null)
-				{
-					if (C_BPartner_ID != 0)
-						fl.setC_BPartner_ID(C_BPartner_ID);
-					if (AD_Org_ID != 0)
-						fl.setAD_Org_ID(AD_Org_ID);
-					else
-						fl.setAD_Org_ID(line.getAD_Org_ID(true)); // from payment
+				// BankInTransit DR CR (Payment)
+				MBankStatementLine statementLine = (MBankStatementLine) line.getPO();
+
+				if (statementLine.getC_DepositBatch_ID() != 0) {
+
+					// All Deposit Line
+					MDepositBatchLine[] depositBatchLines = statementLine.getC_DepositBatch().getLines();
+
+					for (MDepositBatchLine depositLine : depositBatchLines) {
+
+						MPayment payment = depositLine.getC_Payment();
+						DocLine_DepositBatch docDepositLine = new DocLine_DepositBatch(payment, this,
+								statementLine.isReversal());
+
+						fl = fact.createLine(docDepositLine, getAccount(Doc.ACCTTYPE_BankInTransit, as),
+								payment.getC_Currency_ID(),
+								payment.isReceipt() ? payment.getPayAmt().negate() : payment.getPayAmt());
+						// line id
+						fl.setLine_ID(statementLine.get_ID());
+						if (fl != null) {
+							if (C_BPartner_ID != 0)
+								fl.setC_BPartner_ID(C_BPartner_ID);
+							if (AD_Org_ID != 0)
+								fl.setAD_Org_ID(AD_Org_ID);
+							else
+								fl.setAD_Org_ID(docDepositLine.getAD_Org_ID(true)); // from payment
+						}
+					}
+				} else {
+					fl = fact.createLine(line, getAccount(Doc.ACCTTYPE_BankInTransit, as), line.getC_Currency_ID(), line.getTrxAmt().negate());
+
+					if (fl != null) {
+						if (C_BPartner_ID != 0)
+							fl.setC_BPartner_ID(C_BPartner_ID);
+						if (AD_Org_ID != 0)
+							fl.setAD_Org_ID(AD_Org_ID);
+						else
+							fl.setAD_Org_ID(line.getAD_Org_ID(true)); // from payment
+					}
 				}
 
 			}

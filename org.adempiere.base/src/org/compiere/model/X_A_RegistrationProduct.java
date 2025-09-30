@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for A_RegistrationProduct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationProduct")
 public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProduct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_A_RegistrationProduct (Properties ctx, int A_RegistrationProduct_ID, String trxName)
@@ -104,6 +104,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_RegistrationAttribute getA_RegistrationAttribute() throws RuntimeException
 	{
 		return (org.compiere.model.I_A_RegistrationAttribute)MTable.get(getCtx(), org.compiere.model.I_A_RegistrationAttribute.Table_ID)
@@ -163,6 +164,7 @@ public class X_A_RegistrationProduct extends PO implements I_A_RegistrationProdu
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

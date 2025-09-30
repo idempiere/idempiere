@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PerpetualInv
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_PerpetualInv")
 public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_PerpetualInv (Properties ctx, int M_PerpetualInv_ID, String trxName)
@@ -246,6 +246,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 		return (String)get_Value(COLUMNNAME_M_PerpetualInv_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
@@ -274,6 +275,7 @@ public class X_M_PerpetualInv extends PO implements I_M_PerpetualInv, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)

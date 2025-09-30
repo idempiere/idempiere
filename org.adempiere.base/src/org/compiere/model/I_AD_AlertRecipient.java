@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AlertRecipient
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_AlertRecipient 
 {
@@ -40,21 +40,6 @@ public interface I_AD_AlertRecipient
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
-
-    /** Column name AD_Alert_ID */
-    public static final String COLUMNNAME_AD_Alert_ID = "AD_Alert_ID";
-
-	/** Set Alert.
-	  * iDempiere Alert
-	  */
-	public void setAD_Alert_ID (int AD_Alert_ID);
-
-	/** Get Alert.
-	  * iDempiere Alert
-	  */
-	public int getAD_Alert_ID();
-
-	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException;
 
     /** Column name AD_AlertRecipient_ID */
     public static final String COLUMNNAME_AD_AlertRecipient_ID = "AD_AlertRecipient_ID";
@@ -77,6 +62,22 @@ public interface I_AD_AlertRecipient
 
 	/** Get AD_AlertRecipient_UU	  */
 	public String getAD_AlertRecipient_UU();
+
+    /** Column name AD_Alert_ID */
+    public static final String COLUMNNAME_AD_Alert_ID = "AD_Alert_ID";
+
+	/** Set Alert.
+	  * iDempiere Alert
+	  */
+	public void setAD_Alert_ID (int AD_Alert_ID);
+
+	/** Get Alert.
+	  * iDempiere Alert
+	  */
+	public int getAD_Alert_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -112,6 +113,7 @@ public interface I_AD_AlertRecipient
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -127,6 +129,7 @@ public interface I_AD_AlertRecipient
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Created */

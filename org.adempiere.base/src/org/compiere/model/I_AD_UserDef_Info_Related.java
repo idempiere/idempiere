@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Info_Related
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_UserDef_Info_Related 
 {
@@ -58,6 +58,7 @@ public interface I_AD_UserDef_Info_Related
 	/** Get Info Related	  */
 	public int getAD_InfoRelated_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoRelated getAD_InfoRelated() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -82,6 +83,7 @@ public interface I_AD_UserDef_Info_Related
 	/** Get User defined Info Window	  */
 	public int getAD_UserDef_Info_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException;
 
     /** Column name AD_UserDef_Info_Related_ID */

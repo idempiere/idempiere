@@ -49,7 +49,6 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
 import org.compiere.model.SystemIDs;
-import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -98,9 +97,6 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	
 	/** Window No               */
 	private int p_WindowNo;
-
-	/**	Logger			*/
-	private final static CLogger log = CLogger.getCLogger(WCreateFromStatementUI.class);
 
 	/** Parameter fields for {@link #parameterBankLayout} */
 	
@@ -313,7 +309,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		loadTableOIS(getBankAccountData((Integer)bankAccountField.getValue(), (Integer)bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString()));
+				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString(), null));
 	}
 	
 	/**

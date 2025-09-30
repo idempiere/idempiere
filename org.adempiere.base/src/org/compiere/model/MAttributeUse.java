@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Attribute Use Model
@@ -33,7 +34,13 @@ public class MAttributeUse extends X_M_AttributeUse
 	/**
 	 * generated serial id 
 	 */
-	private static final long serialVersionUID = -9159120094145438975L;
+	private static final long	serialVersionUID				= -9159120094145438975L;
+
+	public static final String	SQL_GET_TA_DUPLICATE_ATTRIBUTE	= """
+					SELECT st.Name FROM M_Attribute a
+					INNER JOIN M_AttributeUse u  ON (u.M_Attribute_ID = a.M_Attribute_ID)
+					INNER JOIN M_AttributeSet st ON (st.M_AttributeSet_ID = u.M_AttributeSet_ID AND st.M_AttributeSet_Type = 'TA' )
+					WHERE a.AD_Client_ID IN (0, ?) AND UPPER(a.Name) = UPPER(?) """;
 
     /**
      * UUID based Constructor
@@ -68,16 +75,11 @@ public class MAttributeUse extends X_M_AttributeUse
 		super(ctx, rs, trxName);
 	}	//	MAttributeUse
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true if can be saved
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		// Not advanced roles cannot assign for use a reference attribute
 		if ((newRecord || is_ValueChanged(COLUMNNAME_M_Attribute_ID))
-				&& ! MRole.getDefault().isAccessAdvanced()) {
-			// not advanced roles cannot assign for use a reference attribute
+				&& ! MRole.getDefault().isAccessAdvanced()) {			
 			MAttribute att = MAttribute.get(getCtx(), getM_Attribute_ID());
 			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(att.getAttributeValueType())) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
@@ -85,28 +87,33 @@ public class MAttributeUse extends X_M_AttributeUse
 			}
 		}
 		
-		// Get Sequence No
+		// Set Sequence No
 		if (getSeqNo() == 0) {
 			String sql = "SELECT COALESCE(MAX(SeqNo),0)+10 FROM M_AttributeUse WHERE M_AttributeSet_ID=?";
 			int seqNo = DB.getSQLValue (get_TrxName(), sql, getM_AttributeSet_ID());
 			setSeqNo(seqNo);
 		}
-			
+
+		if (getM_AttributeSet_ID() > 0
+			&& getM_Attribute_ID() > 0 && is_ValueChanged(COLUMNNAME_M_Attribute_ID)
+			&& MAttributeSet.M_ATTRIBUTESET_TYPE_TableAttribute.equals(getM_AttributeSet().getM_AttributeSet_Type()))
+		{
+			String dupAttribSetName = DB.getSQLValueString(get_TrxName(), SQL_GET_TA_DUPLICATE_ATTRIBUTE, getAD_Client_ID(), getM_Attribute().getName());
+			if (!Util.isEmpty(dupAttribSetName, true))
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "UniqueAttribute", new Object[] { getM_Attribute().getName(), dupAttribSetName }));
+				return false;
+			}
+		}
 		return true;
 	}
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	also used for afterDelete
+		// Update M_AttributeSet IsInstanceAttribute to Y if conditions are met 
 		StringBuilder sql = new StringBuilder("UPDATE M_AttributeSet mas")
 			.append(" SET IsInstanceAttribute='Y' ")
 			.append("WHERE M_AttributeSet_ID=").append(getM_AttributeSet_ID())
@@ -121,7 +128,7 @@ public class MAttributeUse extends X_M_AttributeUse
 		int no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.fine("afterSave - Set Instance Attribute");
-		//
+		// Update M_AttributeSet IsInstanceAttribute to N if conditions are met
 		sql = new StringBuilder("UPDATE M_AttributeSet mas")
 			.append(" SET IsInstanceAttribute='N' ")
 			.append("WHERE M_AttributeSet_ID=").append(getM_AttributeSet_ID())
@@ -139,11 +146,6 @@ public class MAttributeUse extends X_M_AttributeUse
 		return success;
 	}	//	afterSave
 		
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{

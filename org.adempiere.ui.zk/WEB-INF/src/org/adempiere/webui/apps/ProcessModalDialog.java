@@ -41,11 +41,13 @@ import org.zkoss.zk.ui.event.Events;
 
 /**
  *
- *	Modal Dialog to Start process.
- *	Displays information about the process
- *		and lets the user decide to start it
- *  	and displays results (optionally print them).
+ *  Modal Dialog to Start process.
+ *  <pre>
+ *  Displays information about the process
+ *      and lets the user decide to start it
+ *      and displays results (optionally print them).
  *  Calls ProcessCtl to execute.
+ *  </pre>
  *  @author 	Low Heng Sin
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
@@ -244,6 +246,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * @param autoStart
 	 * @deprecated
 	 */
+	@Deprecated
 	public ProcessModalDialog (Window parent, String title,
 			int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)
@@ -251,19 +254,13 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		this(WindowNo, AD_Process_ID, tableId, recordId, autoStart);
 	}	//	ProcessDialog
 
-	/**
-	 * 	Set Visible
-	 * 	(set focus to OK if visible)
-	 * 	@param visible true if visible
-	 */
+	@Override
 	public boolean setVisible (boolean visible)
 	{
 		return super.setVisible(visible);
 	}	//	setVisible
 
-	/**
-	 *	Dispose
-	 */
+	@Override
 	public void dispose()
 	{
 		super.dispose();

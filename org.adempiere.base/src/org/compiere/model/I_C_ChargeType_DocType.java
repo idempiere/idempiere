@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ChargeType_DocType
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_ChargeType_DocType 
 {
@@ -80,6 +80,7 @@ public interface I_C_ChargeType_DocType
 	/** Get Charge Type	  */
 	public int getC_ChargeType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -95,6 +96,7 @@ public interface I_C_ChargeType_DocType
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Created */

@@ -302,18 +302,11 @@ public class MScheduler extends X_AD_Scheduler
 		return list.toArray(new Integer[list.size()]);
 	}	//	getRecipientAD_User_IDs
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord)
-	{
-		
-		// FR [3135351] - Enable Scheduler for buttons
+	{		
 		if (getAD_Table_ID() > 0) {
-			// Validate the table has any button referencing the process
+			// Validate the table has button referencing the scheduler process
 			int colid = new Query(getCtx(), MColumn.Table_Name, "AD_Table_ID=? AND AD_Reference_ID=? AND AD_Process_ID=?", get_TrxName())
 				.setOnlyActiveRecords(true)
 				.setParameters(getAD_Table_ID(), DisplayType.Button, getAD_Process_ID())
@@ -341,6 +334,7 @@ public class MScheduler extends X_AD_Scheduler
 			}
 		}
 		
+		// Calculate DateNextRun for new record or if schedule has change
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
 			String timeZoneId = null;
 			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {

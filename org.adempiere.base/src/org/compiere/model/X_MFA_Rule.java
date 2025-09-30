@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for MFA_Rule
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Rule")
 public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_MFA_Rule (Properties ctx, int MFA_Rule_ID, String trxName)
@@ -120,6 +120,7 @@ public class X_MFA_Rule extends PO implements I_MFA_Rule, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_MFA_Method getMFA_Method() throws RuntimeException
 	{
 		return (org.compiere.model.I_MFA_Method)MTable.get(getCtx(), org.compiere.model.I_MFA_Method.Table_ID)

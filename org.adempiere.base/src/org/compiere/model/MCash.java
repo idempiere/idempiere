@@ -317,11 +317,6 @@ public class MCash extends X_C_Cash implements DocAction
 		return null;
 	}	//	createPDF
 
-	/**
-	 * 	Before Save
-	 *	@param newRecord
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -827,7 +822,7 @@ public class MCash extends X_C_Cash implements DocAction
 		return sb.toString ();
 	}	//	toString
 	
-	/*************************************************************************
+	/**
 	 * 	Get Summary
 	 *	@return Summary of Document
 	 */

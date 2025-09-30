@@ -26,7 +26,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_InventoryLineMA
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_InventoryLineMA")
 public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_InventoryLineMA (Properties ctx, int M_InventoryLineMA_ID, String trxName)
@@ -154,6 +154,7 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -182,6 +183,22 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
 		return ii.intValue();
 	}
 
+	/** Set M_InventoryLineMA_UU.
+		@param M_InventoryLineMA_UU M_InventoryLineMA_UU
+	*/
+	public void setM_InventoryLineMA_UU (String M_InventoryLineMA_UU)
+	{
+		set_Value (COLUMNNAME_M_InventoryLineMA_UU, M_InventoryLineMA_UU);
+	}
+
+	/** Get M_InventoryLineMA_UU.
+		@return M_InventoryLineMA_UU	  */
+	public String getM_InventoryLineMA_UU()
+	{
+		return (String)get_Value(COLUMNNAME_M_InventoryLineMA_UU);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InventoryLine getM_InventoryLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InventoryLine)MTable.get(getCtx(), org.compiere.model.I_M_InventoryLine.Table_ID)
@@ -217,21 +234,6 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
     {
         return new ValueNamePair(get_UUID(), String.valueOf(getM_InventoryLine_ID()));
     }
-
-	/** Set M_InventoryLineMA_UU.
-		@param M_InventoryLineMA_UU M_InventoryLineMA_UU
-	*/
-	public void setM_InventoryLineMA_UU (String M_InventoryLineMA_UU)
-	{
-		set_Value (COLUMNNAME_M_InventoryLineMA_UU, M_InventoryLineMA_UU);
-	}
-
-	/** Get M_InventoryLineMA_UU.
-		@return M_InventoryLineMA_UU	  */
-	public String getM_InventoryLineMA_UU()
-	{
-		return (String)get_Value(COLUMNNAME_M_InventoryLineMA_UU);
-	}
 
 	/** Set Movement Quantity.
 		@param MovementQty Quantity of a product moved.

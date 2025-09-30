@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_UserDef_Tab 
 {
@@ -75,6 +75,7 @@ public interface I_AD_UserDef_Tab
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Tab_ID */
@@ -90,6 +91,7 @@ public interface I_AD_UserDef_Tab
 	  */
 	public int getAD_Tab_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException;
 
     /** Column name AD_UserDef_Tab_ID */
@@ -119,6 +121,7 @@ public interface I_AD_UserDef_Tab
 	/** Get User defined Window	  */
 	public int getAD_UserDef_Win_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Win getAD_UserDef_Win() throws RuntimeException;
 
     /** Column name Created */

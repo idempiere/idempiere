@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MatchInv
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_MatchInv")
 public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_MatchInv (Properties ctx, int M_MatchInv_ID, String trxName)
@@ -136,6 +136,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -236,6 +237,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -264,6 +266,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -329,6 +332,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_MatchInv_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -463,6 +467,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchInv getRef_MatchInv() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_ID)
@@ -490,6 +495,7 @@ public class X_M_MatchInv extends PO implements I_M_MatchInv, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchInv getReversal() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MatchInv)MTable.get(getCtx(), org.compiere.model.I_M_MatchInv.Table_ID)

@@ -17,12 +17,16 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.compiere.acct.Doc;
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -134,6 +138,49 @@ public class MMatchInv extends X_M_MatchInv
 		return list.toArray (new MMatchInv[list.size()]);
 	}	//	getInvoice
 	
+	/**
+	 * 	Get InOut Matches for Invoice by account date
+	 *	@param ctx context
+	 *	@param C_Invoice_ID invoice
+	 *	@param DateAcct account date
+	 *	@param trxName transaction
+	 *	@return array of matches
+	 */
+	public static MMatchInv[] getInvoiceByDateAcct (Properties ctx, int C_Invoice_ID, Timestamp DateAcct, String trxName)
+	{
+		if (C_Invoice_ID == 0)
+			return new MMatchInv[]{};
+		//
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("SELECT mi.* ");
+		selectSql.append("FROM M_MatchInv mi ");
+		selectSql.append("LEFT JOIN M_MatchInv refmi ON (refmi.M_MatchInv_ID=mi.Reversal_ID) ");
+		selectSql.append("WHERE EXISTS (SELECT 1 FROM C_InvoiceLine il"
+				+" WHERE mi.C_InvoiceLine_ID=il.C_InvoiceLine_ID AND il.C_Invoice_ID=?)");
+		selectSql.append("AND mi.DateAcct >= ? ");
+		selectSql.append("ORDER BY mi.DateAcct, ");
+		selectSql.append("CASE WHEN COALESCE(refmi.DateAcct,mi.DateAcct) = mi.DateAcct THEN COALESCE(mi.Reversal_ID,mi.M_MatchInv_ID) ELSE mi.M_MatchInv_ID END, ");
+		selectSql.append("mi.M_MatchInv_ID");
+		List<MMatchInv> list = new ArrayList<MMatchInv>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement(selectSql.toString(), trxName);
+			pstmt.setInt(1, C_Invoice_ID);
+			pstmt.setTimestamp(2, DateAcct);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+				list.add(new MMatchInv(ctx, rs, trxName));
+		} catch (SQLException e) {
+			throw new DBException(e, selectSql.toString());
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		return list.toArray (new MMatchInv[list.size()]);
+	}
+	
 	/**	Static Logger	*/
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MMatchInv.class);
@@ -204,18 +251,13 @@ public class MMatchInv extends X_M_MatchInv
 		setProcessed(true);		//	auto
 	}	//	MMatchInv
 		
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		//	Set Trx Date
+		//	Set DateTrx to today date
 		if (getDateTrx() == null)
 			setDateTrx (new Timestamp(System.currentTimeMillis()));
-		//	Set Acct Date
+		//	Set DateAcct
 		if (getDateAcct() == null)
 		{
 			Timestamp ts = getNewerDateAcct();
@@ -223,6 +265,7 @@ public class MMatchInv extends X_M_MatchInv
 				ts = getDateTrx();
 			setDateAcct (ts);
 		}
+		// Set M_AttributeSetInstance_ID to M_AttributeSetInstance_ID of material receipt line.
 		if (getM_AttributeSetInstance_ID() == 0 && getM_InOutLine_ID() != 0)
 		{
 			MInOutLine iol = new MInOutLine (getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -236,6 +279,7 @@ public class MMatchInv extends X_M_MatchInv
 		if (!success)
 			return false;
 		
+		// Validate total M_MatchInv.Qty for M_InOutLine_ID against M_InOutLine.MovementQty
 		if (getM_InOutLine_ID() > 0)
 		{
 			MInOutLine line = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -252,6 +296,7 @@ public class MMatchInv extends X_M_MatchInv
 			}
 		}
 		
+		// Validate total M_MatchInv.Qty for C_InvoiceLine_ID against M_InOutLine.MovementQty
 		if (getC_InvoiceLine_ID() > 0)
 		{
 			MInvoiceLine line = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
@@ -297,13 +342,10 @@ public class MMatchInv extends X_M_MatchInv
 		return shipDate;
 	}	//	getNewerDateAcct
 		
-	/**
-	 * 	Before Delete
-	 *	@return true if acct was deleted
-	 */
 	@Override
 	protected boolean beforeDelete ()
 	{
+		// Check is period open and delete postings (Fact_Acct)
 		if (isPosted())
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_MatchInvoice, getAD_Org_ID());
@@ -313,11 +355,6 @@ public class MMatchInv extends X_M_MatchInv
 		return true;
 	}	//	beforeDelete
 	
-	/**
-	 * 	After Delete
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterDelete (boolean success)
 	{
@@ -458,4 +495,22 @@ public class MMatchInv extends X_M_MatchInv
 						.get(as.getCtx(), "M_InOutLine_ID=? AND Coalesce(M_CostElement_ID,0)=" + M_CostElement_ID, getM_InOutLine_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(),
 										get_TableName());
 	}
+  
+	/**
+	 * 	String Representation
+	 *	@return info
+	 */
+	@Override
+	public String toString ()
+	{
+		StringBuilder sb = new StringBuilder ("MMatchInv[");
+		sb.append (get_ID())
+			.append (",Qty=").append (getQty())
+			.append (",M_InOutLine_ID=").append (getM_InOutLine_ID())
+			.append (",C_InvoiceLine_ID=").append (getC_InvoiceLine_ID())
+			.append (",Processed=").append(isProcessed())
+			.append (",Posted=").append(isPosted())
+			.append ("]");
+		return sb.toString ();
+	}	//	toString
 }	//	MMatchInv

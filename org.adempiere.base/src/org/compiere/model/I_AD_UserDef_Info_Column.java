@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Info_Column
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_UserDef_Info_Column 
 {
@@ -62,6 +62,7 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public int getAD_FieldStyle_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
 
     /** Column name AD_InfoColumn_ID */
@@ -77,6 +78,7 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public int getAD_InfoColumn_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getAD_InfoColumn() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -105,6 +107,7 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -120,6 +123,7 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name AD_UserDef_Info_Column_ID */
@@ -149,6 +153,7 @@ public interface I_AD_UserDef_Info_Column
 	/** Get User defined Info Window	  */
 	public int getAD_UserDef_Info_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException;
 
     /** Column name AD_Val_Rule_ID */
@@ -164,6 +169,7 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name Created */

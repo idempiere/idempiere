@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Concept
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Concept 
@@ -42,19 +42,6 @@ public interface I_HR_Concept
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
-
-    /** Column name AccountSign */
-    public static final String COLUMNNAME_AccountSign = "AccountSign";
-
-	/** Set Account Sign.
-	  * Indicates the Natural Sign of the Account as a Debit or Credit
-	  */
-	public void setAccountSign (String AccountSign);
-
-	/** Get Account Sign.
-	  * Indicates the Natural Sign of the Account as a Debit or Credit
-	  */
-	public String getAccountSign();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -90,7 +77,21 @@ public interface I_HR_Concept
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
+
+    /** Column name AccountSign */
+    public static final String COLUMNNAME_AccountSign = "AccountSign";
+
+	/** Set Account Sign.
+	  * Indicates the Natural Sign of the Account as a Debit or Credit
+	  */
+	public void setAccountSign (String AccountSign);
+
+	/** Get Account Sign.
+	  * Indicates the Natural Sign of the Account as a Debit or Credit
+	  */
+	public String getAccountSign();
 
     /** Column name ColumnType */
     public static final String COLUMNNAME_ColumnType = "ColumnType";
@@ -139,6 +140,7 @@ public interface I_HR_Concept
 	/** Get Payroll Concept Category	  */
 	public int getHR_Concept_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Concept_Category getHR_Concept_Category() throws RuntimeException;
 
     /** Column name HR_Concept_ID */
@@ -168,6 +170,7 @@ public interface I_HR_Concept
 	/** Get Payroll Department	  */
 	public int getHR_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException;
 
     /** Column name HR_Job_ID */
@@ -179,6 +182,7 @@ public interface I_HR_Concept
 	/** Get Payroll Job	  */
 	public int getHR_Job_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException;
 
     /** Column name HR_Payroll_ID */
@@ -190,6 +194,7 @@ public interface I_HR_Concept
 	/** Get Payroll	  */
 	public int getHR_Payroll_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException;
 
     /** Column name IsActive */

@@ -25,7 +25,7 @@ import java.sql.Timestamp;
  * 	iDempiere interface for enryption, decryption.<br/>
  * 	To enable your own class, you need to set the property ADEMPIERE_SECURE 
  * 	when starting the client or server.<br/>
- *  The setting for the default class would be:
+ *  The setting for the default class would be:<br/>
  *  -DADEMPIERE_SECURE=org.compiere.util.Secure
  *	
  *  @author Jorg Janke
@@ -111,12 +111,13 @@ public interface SecureInterface
 	public Timestamp decrypt (Timestamp value,int AD_Client_ID);
 		
 	/**
-	 *  Digest string value.
+	 *  Digest string value.<br/>
 	 *  JavaScript version see - http://pajhome.org.uk/crypt/md5/index.html
 	 *
 	 *  @param value message
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
+	@Deprecated
 	public String getDigest (String value);
 
 	/**
@@ -124,10 +125,29 @@ public interface SecureInterface
 	 *  @param value digest string
 	 *  @return true if valid digest
 	 */
+	@Deprecated
 	public boolean isDigest (String value);
 	
 	/**
-	 *  Convert String and salt to SHA-512 hash with iterations
+	 * Convert String to SHA-256 digest
+	 * @param value
+	 * @return HexString of digested message (length = 64 characters)
+	 */
+	default String getSHA256Digest(String value) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+	
+	/**
+	 * Check if value is a valid SHA-256 digest
+	 * @param value
+	 * @return true if valid SHA-256 digest
+	 */
+	default boolean isSHA256Digest(String value) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+	
+	/**
+	 *  Convert String and salt to SHA-512 hash with iterations<br/>
 	 *  https://www.owasp.org/index.php/Hashing_Java
 	 *
 	 *  @param value message

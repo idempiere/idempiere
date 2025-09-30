@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Product_Planning
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_Product_Planning")
 public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PP_Product_Planning (Properties ctx, int PP_Product_Planning_ID, String trxName)
@@ -128,6 +128,7 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
@@ -156,6 +157,7 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException
 	{
 		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_ID)
@@ -314,6 +316,7 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -350,6 +353,7 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -495,33 +499,7 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
 		return bd;
 	}
 
-	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
-			.getPO(getPlanner_ID(), get_TrxName());
-	}
-
-	/** Set Planner.
-		@param Planner_ID Planner
-	*/
-	public void setPlanner_ID (int Planner_ID)
-	{
-		if (Planner_ID < 1)
-			set_Value (COLUMNNAME_Planner_ID, null);
-		else
-			set_Value (COLUMNNAME_Planner_ID, Integer.valueOf(Planner_ID));
-	}
-
-	/** Get Planner.
-		@return Planner	  */
-	public int getPlanner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Planner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
@@ -586,25 +564,35 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
 		return (String)get_Value(COLUMNNAME_PP_Product_Planning_UU);
 	}
 
-	/** Set Safety Stock Qty.
-		@param SafetyStock Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getPlanner_ID(), get_TrxName());
+	}
+
+	/** Set Planner.
+		@param Planner_ID Planner
 	*/
-	public void setSafetyStock (BigDecimal SafetyStock)
+	public void setPlanner_ID (int Planner_ID)
 	{
-		set_Value (COLUMNNAME_SafetyStock, SafetyStock);
+		if (Planner_ID < 1)
+			set_Value (COLUMNNAME_Planner_ID, null);
+		else
+			set_Value (COLUMNNAME_Planner_ID, Integer.valueOf(Planner_ID));
 	}
 
-	/** Get Safety Stock Qty.
-		@return Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
-	  */
-	public BigDecimal getSafetyStock()
+	/** Get Planner.
+		@return Planner	  */
+	public int getPlanner_ID()
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SafetyStock);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
+		Integer ii = (Integer)get_Value(COLUMNNAME_Planner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
@@ -631,6 +619,25 @@ public class X_PP_Product_Planning extends PO implements I_PP_Product_Planning, 
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Safety Stock Qty.
+		@param SafetyStock Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	*/
+	public void setSafetyStock (BigDecimal SafetyStock)
+	{
+		set_Value (COLUMNNAME_SafetyStock, SafetyStock);
+	}
+
+	/** Get Safety Stock Qty.
+		@return Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	  */
+	public BigDecimal getSafetyStock()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SafetyStock);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Time Fence.

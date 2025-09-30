@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOMAlternative
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_BOMAlternative")
 public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_BOMAlternative (Properties ctx, int M_BOMAlternative_ID, String trxName)
@@ -162,6 +162,7 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 		return (String)get_Value(COLUMNNAME_M_BOMAlternative_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

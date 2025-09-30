@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCostAllocation
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderLandedCostAllocation")
 public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLandedCostAllocation, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCostAllocation (Properties ctx, int C_OrderLandedCostAllocation_ID, String trxName)
@@ -204,6 +204,7 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 		return (String)get_Value(COLUMNNAME_C_OrderLandedCostAllocation_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLandedCost getC_OrderLandedCost() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_OrderLandedCost)MTable.get(getCtx(), org.compiere.model.I_C_OrderLandedCost.Table_ID)
@@ -231,6 +232,7 @@ public class X_C_OrderLandedCostAllocation extends PO implements I_C_OrderLanded
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)

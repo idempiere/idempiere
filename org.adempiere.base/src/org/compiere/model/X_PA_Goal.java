@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Goal
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_Goal")
 public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_Goal (Properties ctx, int PA_Goal_ID, String trxName)
@@ -152,6 +152,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -180,6 +181,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -485,6 +487,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 		return (String)get_Value(COLUMNNAME_Note);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ColorSchema getPA_ColorSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_ColorSchema)MTable.get(getCtx(), org.compiere.model.I_PA_ColorSchema.Table_ID)
@@ -513,28 +516,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Goal.
-		@param PA_Goal_ID Performance Goal
-	*/
-	public void setPA_Goal_ID (int PA_Goal_ID)
-	{
-		if (PA_Goal_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PA_Goal_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PA_Goal_ID, Integer.valueOf(PA_Goal_ID));
-	}
-
-	/** Get Goal.
-		@return Performance Goal
-	  */
-	public int getPA_Goal_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Goal_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Goal getPA_GoalParent() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_Goal)MTable.get(getCtx(), org.compiere.model.I_PA_Goal.Table_ID)
@@ -563,6 +545,28 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Goal.
+		@param PA_Goal_ID Performance Goal
+	*/
+	public void setPA_Goal_ID (int PA_Goal_ID)
+	{
+		if (PA_Goal_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PA_Goal_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PA_Goal_ID, Integer.valueOf(PA_Goal_ID));
+	}
+
+	/** Get Goal.
+		@return Performance Goal
+	  */
+	public int getPA_Goal_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Goal_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set PA_Goal_UU.
 		@param PA_Goal_UU PA_Goal_UU
 	*/
@@ -578,6 +582,7 @@ public class X_PA_Goal extends PO implements I_PA_Goal, I_Persistent
 		return (String)get_Value(COLUMNNAME_PA_Goal_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Measure getPA_Measure() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_Measure)MTable.get(getCtx(), org.compiere.model.I_PA_Measure.Table_ID)

@@ -36,6 +36,7 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WLocatorDialog;
@@ -100,7 +101,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		setColumnName(columnName);
 		m_mLocator = mLocator;
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-Locator");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.LOCATOR));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator16.png"));
 		getComponent().getTextbox().setReadonly(true);
@@ -128,7 +129,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		m_mLocator = (MLocatorLookup)gridField.getLookup();
 		
 		if (ThemeManager.isUseFontIconForImage())
-			getComponent().getButton().setIconSclass("z-icon-Locator");
+			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.LOCATOR));
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/Locator16.png"));
 		getComponent().getTextbox().setReadonly(true);

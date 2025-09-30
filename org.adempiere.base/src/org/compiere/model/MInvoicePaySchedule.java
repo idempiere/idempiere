@@ -216,28 +216,18 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 		return sb.toString();
 	}	//	toString
 	
-	/**
-	 * 	Before Save
-	 *	@param newRecord new
-	 *	@return true
-	 */
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		// Reset IsValid to false after change of DueAmt.
 		if (is_ValueChanged("DueAmt"))
 		{
-			log.fine("beforeSave");
+			if (log.isLoggable(Level.FINE)) log.fine("beforeSave");
 			setIsValid(false);
 		}
 		return true;
 	}	//	beforeSave
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
@@ -245,7 +235,8 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 			return success;
 		if (newRecord || is_ValueChanged("DueAmt") || is_ValueChanged("IsActive"))
 		{
-			log.fine("afterSave");
+			// Validate pay schedule
+			if (log.isLoggable(Level.FINE)) log.fine("afterSave");
 			getParent();
 			m_parent.validatePaySchedule();
 			m_parent.saveEx();
@@ -257,7 +248,8 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	protected boolean afterDelete(boolean success) {
 		if (!success)
 			return success;
-		log.fine("afterDelete");
+		if (log.isLoggable(Level.FINE)) log.fine("afterDelete");
+		// Load m_parent and validate pay schedule
 		getParent();
 		m_parent.validatePaySchedule();
 		m_parent.saveEx();

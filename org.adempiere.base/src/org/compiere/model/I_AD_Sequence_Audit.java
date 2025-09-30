@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Sequence_Audit
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Sequence_Audit 
 {
@@ -84,6 +84,7 @@ public interface I_AD_Sequence_Audit
 	  */
 	public int getAD_Sequence_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getAD_Sequence() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -99,6 +100,7 @@ public interface I_AD_Sequence_Audit
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name Created */

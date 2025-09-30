@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Charge_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_Charge_Acct 
 {
@@ -75,6 +75,7 @@ public interface I_C_Charge_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Charge_Acct_UU */
@@ -99,6 +100,7 @@ public interface I_C_Charge_Acct
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name Ch_Expense_Acct */
@@ -114,6 +116,7 @@ public interface I_C_Charge_Acct
 	  */
 	public int getCh_Expense_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
 
     /** Column name Created */

@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Properties;
 
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 
@@ -40,11 +40,11 @@ import org.compiere.util.Evaluator;
  * @version $Id$
  */
 public class InfoColumnVO implements Serializable, Cloneable {
-
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 7401407425423442841L;
+	private static final long serialVersionUID = 304775780197602066L;
+
 	/** Properties */
 	private Properties ctx;
 	
@@ -118,6 +118,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	
 	private String ValidationCode;
 	
+	private String EntityType;
+
 	private MInfoColumn infoColumn;
 
 	/**
@@ -162,6 +164,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		isAutocomplete = infoColumn.isAutocomplete();
 		SeqNo = infoColumn.getSeqNo();
 		AD_Val_Rule_ID = infoColumn.getAD_Val_Rule_ID();
+		EntityType = infoColumn.getEntityType();
 		if (infoColumn.getAD_Val_Rule_ID() > 0)
 			ValidationCode  = MValRule.get(ctx, infoColumn.getAD_Val_Rule_ID()).getCode();
 		// Range is supported only for Date and Numeric Reference Types + operator "=" must be selected
@@ -187,6 +190,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		userDef = MUserDefInfoColumn.get(vo.ctx,vo.AD_InfoColumn_ID, vo.AD_InfoWindow_ID);
 		if (userDef != null)
 		{
+			vo.EntityType = vo.EntityType + "**U**";
 			if (userDef.getName() != null)
 				vo.Name = userDef.getName();
 			if (userDef.get_Translation("Name") != null)
@@ -284,12 +288,11 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		if (getDisplayLogic() == null || getDisplayLogic().trim().length() == 0)
 			return true;
 		
-		Evaluatee evaluatee = new Evaluatee() {
-			public String get_ValueAsString(String variableName) {
-				return Env.getContext (ctx, windowNo, variableName, true);
-			}
+		Evaluatee evaluatee = (variableName) -> {
+			DefaultEvaluatee de = new DefaultEvaluatee(null, windowNo, -1, true);
+			return de.get_ValueAsString(ctx, variableName);
 		};
-		
+				
 		boolean retValue = Evaluator.evaluateLogic(evaluatee, getDisplayLogic());
 		return retValue;
 	}
@@ -532,6 +535,15 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		return SeqNo;
 	}
 	
+
+	public String getEntityType() {
+		return EntityType;
+	}
+	
+	public void setEntityType(String entityType) {
+		EntityType = entityType;
+	}
+
 	/**
 	 * @return true if this is a range type column
 	 */

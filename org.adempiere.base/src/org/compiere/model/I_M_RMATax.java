@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_RMATax
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_RMATax 
 {
@@ -62,6 +62,34 @@ public interface I_M_RMATax
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_TaxProvider_ID */
+    public static final String COLUMNNAME_C_TaxProvider_ID = "C_TaxProvider_ID";
+
+	/** Set Tax Provider	  */
+	public void setC_TaxProvider_ID (int C_TaxProvider_ID);
+
+	/** Get Tax Provider	  */
+	public int getC_TaxProvider_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException;
+
+    /** Column name C_Tax_ID */
+    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
+
+	/** Set Tax.
+	  * Tax identifier
+	  */
+	public void setC_Tax_ID (int C_Tax_ID);
+
+	/** Get Tax.
+	  * Tax identifier
+	  */
+	public int getC_Tax_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -77,32 +105,6 @@ public interface I_M_RMATax
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_Tax_ID */
-    public static final String COLUMNNAME_C_Tax_ID = "C_Tax_ID";
-
-	/** Set Tax.
-	  * Tax identifier
-	  */
-	public void setC_Tax_ID (int C_Tax_ID);
-
-	/** Get Tax.
-	  * Tax identifier
-	  */
-	public int getC_Tax_ID();
-
-	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException;
-
-    /** Column name C_TaxProvider_ID */
-    public static final String COLUMNNAME_C_TaxProvider_ID = "C_TaxProvider_ID";
-
-	/** Set Tax Provider	  */
-	public void setC_TaxProvider_ID (int C_TaxProvider_ID);
-
-	/** Get Tax Provider	  */
-	public int getC_TaxProvider_ID();
-
-	public org.compiere.model.I_C_TaxProvider getC_TaxProvider() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -130,6 +132,15 @@ public interface I_M_RMATax
 	  */
 	public boolean isTaxIncluded();
 
+    /** Column name M_RMATax_UU */
+    public static final String COLUMNNAME_M_RMATax_UU = "M_RMATax_UU";
+
+	/** Set M_RMATax_UU	  */
+	public void setM_RMATax_UU (String M_RMATax_UU);
+
+	/** Get M_RMATax_UU	  */
+	public String getM_RMATax_UU();
+
     /** Column name M_RMA_ID */
     public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
 
@@ -143,16 +154,8 @@ public interface I_M_RMATax
 	  */
 	public int getM_RMA_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
-
-    /** Column name M_RMATax_UU */
-    public static final String COLUMNNAME_M_RMATax_UU = "M_RMATax_UU";
-
-	/** Set M_RMATax_UU	  */
-	public void setM_RMATax_UU (String M_RMATax_UU);
-
-	/** Get M_RMATax_UU	  */
-	public String getM_RMATax_UU();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

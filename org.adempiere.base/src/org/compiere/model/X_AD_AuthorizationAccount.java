@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for AD_AuthorizationAccount
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationAccount")
 public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationAccount, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
@@ -119,36 +119,6 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
       return sb.toString();
     }
 
-	/** Set Access Token.
-		@param AccessToken Access Token
-	*/
-	public void setAccessToken (String AccessToken)
-	{
-		set_Value (COLUMNNAME_AccessToken, AccessToken);
-	}
-
-	/** Get Access Token.
-		@return Access Token	  */
-	public String getAccessToken()
-	{
-		return (String)get_Value(COLUMNNAME_AccessToken);
-	}
-
-	/** Set Access Token Timestamp.
-		@param AccessTokenTimestamp Access Token Timestamp
-	*/
-	public void setAccessTokenTimestamp (Timestamp AccessTokenTimestamp)
-	{
-		set_Value (COLUMNNAME_AccessTokenTimestamp, AccessTokenTimestamp);
-	}
-
-	/** Get Access Token Timestamp.
-		@return Access Token Timestamp	  */
-	public Timestamp getAccessTokenTimestamp()
-	{
-		return (Timestamp)get_Value(COLUMNNAME_AccessTokenTimestamp);
-	}
-
 	/** Set Authorization Account.
 		@param AD_AuthorizationAccount_ID Authorization Account
 	*/
@@ -185,6 +155,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationAccount_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AuthorizationCredential getAD_AuthorizationCredential() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AuthorizationCredential)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationCredential.Table_ID)
@@ -240,6 +211,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationScopes);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -266,6 +238,36 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Access Token.
+		@param AccessToken Access Token
+	*/
+	public void setAccessToken (String AccessToken)
+	{
+		set_Value (COLUMNNAME_AccessToken, AccessToken);
+	}
+
+	/** Get Access Token.
+		@return Access Token	  */
+	public String getAccessToken()
+	{
+		return (String)get_Value(COLUMNNAME_AccessToken);
+	}
+
+	/** Set Access Token Timestamp.
+		@param AccessTokenTimestamp Access Token Timestamp
+	*/
+	public void setAccessTokenTimestamp (Timestamp AccessTokenTimestamp)
+	{
+		set_Value (COLUMNNAME_AccessTokenTimestamp, AccessTokenTimestamp);
+	}
+
+	/** Get Access Token Timestamp.
+		@return Access Token Timestamp	  */
+	public Timestamp getAccessTokenTimestamp()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_AccessTokenTimestamp);
 	}
 
 	/** Set EMail Address.

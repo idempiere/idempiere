@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementConfirm
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementConfirm")
 public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_MovementConfirm (Properties ctx, int M_MovementConfirm_ID, String trxName)
@@ -303,6 +303,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Inventory)MTable.get(getCtx(), org.compiere.model.I_M_Inventory.Table_ID)
@@ -368,6 +369,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 		return (String)get_Value(COLUMNNAME_M_MovementConfirm_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Movement)MTable.get(getCtx(), org.compiere.model.I_M_Movement.Table_ID)

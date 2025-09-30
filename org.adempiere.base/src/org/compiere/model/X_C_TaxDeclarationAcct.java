@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationAcct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDeclarationAcct")
 public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationAcct (Properties ctx, int C_TaxDeclarationAcct_ID, String trxName)
@@ -115,6 +115,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -211,6 +212,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -239,6 +241,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -263,6 +266,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -324,6 +328,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 		return (String)get_Value(COLUMNNAME_C_TaxDeclarationAcct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_TaxDeclaration getC_TaxDeclaration() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_TaxDeclaration)MTable.get(getCtx(), org.compiere.model.I_C_TaxDeclaration.Table_ID)
@@ -352,6 +357,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)
@@ -407,6 +413,7 @@ public class X_C_TaxDeclarationAcct extends PO implements I_C_TaxDeclarationAcct
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException
 	{
 		return (org.compiere.model.I_Fact_Acct)MTable.get(getCtx(), org.compiere.model.I_Fact_Acct.Table_ID)

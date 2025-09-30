@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoRelated
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_InfoRelated 
 {
@@ -80,6 +80,7 @@ public interface I_AD_InfoRelated
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -204,6 +205,7 @@ public interface I_AD_InfoRelated
 	  */
 	public int getParentRelatedColumn_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getParentRelatedColumn() throws RuntimeException;
 
     /** Column name RelatedColumn_ID */
@@ -215,6 +217,7 @@ public interface I_AD_InfoRelated
 	/** Get Related Info Column	  */
 	public int getRelatedColumn_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoColumn getRelatedColumn() throws RuntimeException;
 
     /** Column name RelatedInfo_ID */
@@ -226,6 +229,7 @@ public interface I_AD_InfoRelated
 	/** Get Related Info Window	  */
 	public int getRelatedInfo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getRelatedInfo() throws RuntimeException;
 
     /** Column name SeqNo */

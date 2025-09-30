@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.window;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 import static org.compiere.model.SystemIDs.REFERENCE_YESNO;
 
 import java.math.BigDecimal;
@@ -38,6 +39,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -82,6 +84,7 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.part.MultiTabPart;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -131,6 +134,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
@@ -149,18 +153,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -5087378621976257241L;
+	protected static final long serialVersionUID = -5087378621976257241L;
 
-	private static final String FIND_ROW_EDITOR = "find.row.editor";
+	protected static final String FIND_ROW_EDITOR = "find.row.editor";
 
-	private static final String FIND_ROW_EDITOR_TO = "find.row.editor.to";
+	protected static final String FIND_ROW_EDITOR_TO = "find.row.editor.to";
 
 	// values and label for history combo (historyCombo).
-	private static final String HISTORY_DAY_ALL = "All";
-	private static final String HISTORY_DAY_YEAR = "Year";
-	private static final String HISTORY_DAY_MONTH = "Month";
-	private static final String HISTORY_DAY_WEEK = "Week";
-	private static final String HISTORY_DAY_DAY = "Day";	
+	protected static final String HISTORY_DAY_ALL = "All";
+	protected static final String HISTORY_DAY_YEAR = "Year";
+	protected static final String HISTORY_DAY_MONTH = "Month";
+	protected static final String HISTORY_DAY_WEEK = "Week";
+	protected static final String HISTORY_DAY_DAY = "Day";	
 	protected ValueNamePair[] historyItems = new ValueNamePair[] {
 			new ValueNamePair("",                " "),
 			new ValueNamePair(HISTORY_DAY_ALL,   Msg.getMsg(Env.getCtx(), HISTORY_DAY_ALL)),
@@ -169,75 +173,76 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			new ValueNamePair(HISTORY_DAY_WEEK,  Msg.getMsg(Env.getCtx(), HISTORY_DAY_WEEK)),
 			new ValueNamePair(HISTORY_DAY_DAY,   Msg.getMsg(Env.getCtx(), HISTORY_DAY_DAY))
 	};
-	private static final String HISTORY_LABEL= "History";
+	protected static final String HISTORY_LABEL= "History";
 	/** Tabbox for window. Center of find window.   */
-    private MultiTabPart winMain;
+    protected MultiTabPart winMain;
     /**  Simple search Tab  */
-    private Window winLookupRecord;
+    protected Window winLookupRecord;
     /** Advanced search Tab */
-    private Window winAdvanced;
+    protected Window winAdvanced;
     /** Drop down for user query names */
-    private Combobox fQueryName;
+    protected Combobox fQueryName;
     /** Center of {@link #winAdvanced}. List of search criterias. */
-    private Listbox advancedPanel;
+    protected Listbox advancedPanel;
     /** Center of {@link #winLookupRecord}. Grid layout of search fields. */
-    private Grid contentSimple;
+    protected Grid contentSimple;
     /** Target Window No            */
-    private int             m_targetWindowNo;
+    protected int             m_targetWindowNo;
     /** Target Tab No            */
-    private int             m_targetTabNo;
+    protected int             m_targetTabNo;
     /** Table ID                    */
-    private int             m_AD_Table_ID;
+    protected int             m_AD_Table_ID;
     /** Table Name                  */
-    private String          m_tableName;
+    protected String          m_tableName;
     /** Where                       */
-    private String          m_whereExtended;
+    protected String          m_whereExtended;
     /** Search fields of calling tab ({@link #m_AD_Tab_ID}) */
-    private GridField[]     m_findFields;
+    protected GridField[]     m_findFields;
     /** Grid tab for current row of {@link #advancedPanel} */
-	private GridTab m_gridTab = null;
+	protected GridTab m_gridTab = null;
     /** Resulting query             */
-    private MQuery          m_query = null;
+    protected MQuery          m_query = null;
     /** Is cancel ?                 */
-    private boolean         m_isCancel = false; // teo_sarca [ 1708717 ]
+    protected boolean         m_isCancel = false; // teo_sarca [ 1708717 ]
     /** Logger          */
-    private static final CLogger log = CLogger.getCLogger(FindWindow.class);
+    protected static final CLogger log = CLogger.getCLogger(FindWindow.class);
     /** Number of records           */
-    private int             m_total;
+    protected int             m_total;
     /** Set to true if query timeout to get record count  */
-    private boolean         initialSlowQuery = false;
+    protected boolean         initialSlowQuery = false;
     /** target tab ({@link #m_AD_Tab_ID}) and its child tabs */
-    private MTab[] m_tabs;
+    protected MTab[] m_tabs;
     
     /** List of WEditors for simple search tab */
-    private ArrayList<WEditor>          m_sEditors = new ArrayList<WEditor>();
+    protected ArrayList<WEditor>          m_sEditors = new ArrayList<WEditor>();
     /** List of button to toggle visibility of to editor. For date and numeric field in simple search tab. */
-    private ArrayList<ToolBarButton>    m_sEditorsFlag = new ArrayList<ToolBarButton>();
+    protected ArrayList<ToolBarButton>    m_sEditorsFlag = new ArrayList<ToolBarButton>();
     /** List of to editor. For date and numeric field in simple search tab. */
-    private ArrayList<WEditor>          m_sEditorsTo = new ArrayList<WEditor>();
+    protected ArrayList<WEditor>          m_sEditorsTo = new ArrayList<WEditor>();
     /** Tab number for lookup and context */
     public static final int     TABNO = 99;
     /** Max display length of Fields on simple search tab   */
     public static final int     FIELDLENGTH = 20;
     /** AD_Tab_ID of calling tab */
-    private int m_AD_Tab_ID = 0;
+    protected int m_AD_Tab_ID = 0;
     /** AD_Tab_UU of calling tab */
-    private String m_AD_Tab_UU = null;
+    protected String m_AD_Tab_UU = null;
     /** User queries for target tab ({@link #m_AD_Tab_ID}) */
-	private MUserQuery[] userQueries;
+	protected MUserQuery[] userQueries;
 	/** Rows of {@link #contentSimple} */
-	private Rows contentSimpleRows;
+	protected Rows contentSimpleRows;
 	/** true if user click the new record button at simple search tab */
-	private boolean m_createNew = false;
-	private boolean isvalid = true;
-	private int m_minRecords;
-	private String m_title;
+	protected boolean m_createNew = false;
+	protected boolean isvalid = true;
+	protected int m_minRecords;
+	protected String m_title;
 	/** Button to save current user query */
-	private ToolBarButton btnSave;
-	/** Button to share current user query */
-	private ToolBarButton btnShare;
-	/** Message for user query operations */
-	private Label msgLabel;
+	protected ToolBarButton btnSave;
+	/** Elements to show advanced options for saved queries */
+	protected ToolBarButton btnMoreOptions;
+	protected Popup popupOptions;
+	protected Checkbox chkShare;
+	protected Checkbox chkSaveDefault;
 
 	//Column index for advance search listbox (advancedPanel)	
 	/** Index ColumnName = 0		*/
@@ -261,45 +266,45 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	public static final int		INDEX_TABLE = 7;
 	
 	/** Search messages using translation */
-	private String				m_sNew;	
+	protected String				m_sNew;	
 
 	//for user query code
-	private static final String FIELD_SEPARATOR = "<^>";
-	private static final String SEGMENT_SEPARATOR = "<~>";
-	private static final String HISTORY_SEPARATOR = "<#>";
+	protected static final String FIELD_SEPARATOR = "<^>";
+	protected static final String SEGMENT_SEPARATOR = "<~>";
+	protected static final String HISTORY_SEPARATOR = "<#>";
 	
 	/** List of history scope options (all, year, month, etc) */
-	private Combobox historyCombo = new Combobox();
+	protected Combobox historyCombo = new Combobox();
     /** Context for simple search tab */
-	private Properties m_simpleCtx;
+	protected Properties m_simpleCtx;
 	/** Context for advance search tab */
-	private Properties m_advanceCtx;
+	protected Properties m_advanceCtx;
 	/** Row count of {@link #advancedPanel} */
-	private int rowCount;
+	protected int rowCount;
 	
-	private static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
+	protected static final String ON_POST_VISIBLE_ATTR = "onPostVisible.Event.Posted";
 
 	/** {@link #m_total} is set to this constant if get record count hit query timeout exception */
-	private static final int COUNTING_RECORDS_TIMED_OUT = -255;
+	protected static final int COUNTING_RECORDS_TIMED_OUT = -255;
 
 	/** Status bar. Bottom of find window */
-	private StatusBarPanel statusBar = new StatusBarPanel();
+	protected StatusBarPanel statusBar = new StatusBarPanel();
 	
     /** IDEMPIERE-2836  User Query Where */
-    private String          m_whereUserQuery;
+    protected String          m_whereUserQuery;
     /** Toolbar for advance search tab. North of {@link #winAdvanced}. */
-    private ToolBar advancedPanelToolBar;
+    protected ToolBar advancedPanelToolBar;
     
     /**IDEMPIERE-4085*/
-    private int m_AD_UserQuery_ID = 0;    
+    protected int m_AD_UserQuery_ID = 0;    
     /** ADWindow Content part that own this find window instance */
-	private AbstractADWindowContent m_windowPanel;
+	protected AbstractADWindowContent m_windowPanel;
 
 	/** Column name attribute set instance */
-	private static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+	protected static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
 	
 	/* SysConfig USE_ESC_FOR_TAB_CLOSING */
-	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
+	protected boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
     /**
      * FindWindow Constructor
@@ -360,12 +365,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         this.setShadow(false);
         ZKUpdateUtil.setWidth(this, "900px");
         ZKUpdateUtil.setHeight(this, "350px");
-        this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", "") + ": " + title);
+        this.setTitle(Msg.getMsg(Env.getCtx(), "Find").replace("&", "") + ": " + title);
         this.setClosable(false);
         this.setSizable(true);  
         this.setMaximizable(false);
         
-        this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
+        this.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
         this.setId("findWindow_"+targetWindowNo+"_"+targetTabNo);
         LayoutUtils.addSclass("find-window", this);
         
@@ -452,7 +457,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * Layout simple search tab ({@link #winLookupRecord}).
      */
-    private void initSimple()
+    protected void initSimple()
     {
         Button btnNew = ButtonFactory.createNamedButton(ConfirmPanel.A_NEW);
         btnNew.setId("btnNew");
@@ -499,19 +504,27 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         Columns columns = new Columns();
         Column column = new Column();
-        column.setAlign("right");
-        ZKUpdateUtil.setWidth(column, "30%");
+        if (isLabelAboveInputForSmallWidth()) {
+            ZKUpdateUtil.setWidth(column, "100%");
+        } else {
+            column.setAlign("right");
+            ZKUpdateUtil.setWidth(column, "30%");
+        }
         columns.appendChild(column);
-        
-        column = new Column();
-        column.setAlign("left");
-        ZKUpdateUtil.setWidth(column, "50%");
-        columns.appendChild(column);
-        
-        column = new Column();
-        ZKUpdateUtil.setWidth(column, "20%");
-        columns.appendChild(column);
-        
+
+        if (!isLabelAboveInputForSmallWidth()) {
+            column = new Column();
+            column.setAlign("left");
+            ZKUpdateUtil.setWidth(column, "50%");
+            columns.appendChild(column);
+
+            column = new Column();
+            ZKUpdateUtil.setWidth(column, "20%");
+            columns.appendChild(column);
+        } else {
+            contentSimple.setSclass("form-label-above-input");
+        }
+
         contentSimple.appendChild(columns);
 
         contentSimpleRows = new Rows();
@@ -541,11 +554,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * Layout advance search tab ({@link #winAdvanced}). 
      */
-    private void initAdvanced()
+    protected void initAdvanced()
     {
         ToolBarButton btnNew = new ToolBarButton();
         if (ThemeManager.isUseFontIconForImage())
-        	btnNew.setIconSclass("z-icon-New");
+        	btnNew.setIconSclass(Icon.getIconSclass(Icon.NEW));
         else
         	btnNew.setImage(ThemeManager.getThemeResource("images/New24.png"));
         btnNew.setAttribute("name", "btnNewAdv");
@@ -554,7 +567,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         ToolBarButton btnDelete = new ToolBarButton();
         btnDelete.setAttribute("name","btnDeleteAdv");
         if (ThemeManager.isUseFontIconForImage())
-        	btnDelete.setIconSclass("z-icon-Delete");
+        	btnDelete.setIconSclass(Icon.getIconSclass(Icon.DELETE));
         else
         	btnDelete.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
         btnDelete.addEventListener(Events.ON_CLICK, this);
@@ -670,7 +683,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * Layout window
      */
-    private void initPanel()
+    protected void initPanel()
     {
     	setShadow(true);
     	
@@ -686,27 +699,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	btnSave = new ToolBarButton();
         btnSave.setAttribute("name","btnSaveAdv");
         if (ThemeManager.isUseFontIconForImage())
-        	btnSave.setIconSclass("z-icon-Save");
+        	btnSave.setIconSclass(Icon.getIconSclass(Icon.SAVE));
         else
         	btnSave.setImage(ThemeManager.getThemeResource("images/Save24.png"));
         btnSave.addEventListener(Events.ON_CLICK, this);
         btnSave.setId("btnSave");
         btnSave.setStyle("vertical-align: middle;");
         if (ThemeManager.isUseFontIconForImage())
-        	LayoutUtils.addSclass("large-toolbarbutton", btnSave);
-
-        btnShare = new ToolBarButton();
-        btnShare.setAttribute("name","btnShareAdv");
-        btnShare.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShareFilter"));
-        if (ThemeManager.isUseFontIconForImage())
-        	btnShare.setIconSclass("z-icon-Share");
-        else
-        	btnShare.setImage(ThemeManager.getThemeResource("images/Setup24.png"));
-        btnShare.addEventListener(Events.ON_CLICK, this);
-        btnShare.setId("btnShare");
-        btnShare.setStyle("vertical-align: middle;");
-        if (ThemeManager.isUseFontIconForImage())
-        	LayoutUtils.addSclass("large-toolbarbutton", btnShare);
+        	LayoutUtils.addSclass("medium-toolbarbutton", btnSave);
 
         fQueryName = new Combobox();
         fQueryName.setTooltiptext(Msg.getMsg(Env.getCtx(),"QueryName"));
@@ -719,6 +719,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		fQueryName.setValue("");
 		fQueryName.addEventListener(Events.ON_SELECT, this);
 		
+		initSavedQueryMoreOptions();
+		
 		Label label = new Label(Msg.getMsg(Env.getCtx(), "SavedQuery"));
 		if (ClientInfo.maxWidth(639))
 			label.setStyle("vertical-align: middle;display: block; padding-left: 4px; padding-top: 4px;");
@@ -727,18 +729,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		div.appendChild(label);
 		div.appendChild(fQueryName);
         div.appendChild(btnSave);
-        div.appendChild(btnShare);
-        
-        //Show share button only for roles with preference level = Client
-        if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType())) 
-        	btnShare.setVisible(false);
-        	
+        div.appendChild(btnMoreOptions);
+        div.appendChild(popupOptions);
+       	
         fQueryName.setStyle("margin-left: 3px; margin-right: 3px; position: relative; vertical-align: middle;");
         
-        msgLabel = new Label("");
-        msgLabel.setStyle("margin-left: 10px; margin-right: 20px; vertical-align: middle;");
-        div.appendChild(msgLabel);
-
         // adding history combo
         prepareHistoryCombo();
         Label labelHistory = new Label(Msg.getMsg(Env.getCtx(), HISTORY_LABEL));
@@ -761,12 +756,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         tabPanel.setStyle("height: 100%; width: 100%;");
         tabPanel.appendChild(winLookupRecord);
         tabPanel.setId("simpleSearch");
-        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Find").replaceAll("&", ""),false, true);
+        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Find").replace("&", ""),false, true);
         tabPanel = new Tabpanel();
         tabPanel.setStyle("height: 100%; width: 100%");
         tabPanel.appendChild(winAdvanced);
         tabPanel.setId("advancedSearch");
-        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Advanced").replaceAll("&", ""), false, false);
+        winMain.addTab(tabPanel, Msg.getMsg(Env.getCtx(), "Advanced"), false, false);
         initSimple();
         initAdvanced();
 
@@ -781,11 +776,116 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         layout.appendChild(statusBar);
     } // initPanel
     
+    private void initSavedQueryMoreOptions() {
+    	btnMoreOptions = new ToolBarButton();
+		btnMoreOptions.setAttribute("name","btnAdvOptions");
+		btnMoreOptions.setTooltiptext(Msg.getMsg(Env.getCtx(), "AdvancedOptions"));
+		btnMoreOptions.setDisabled(true);
+        if (ThemeManager.isUseFontIconForImage())
+        	btnMoreOptions.setIconSclass("z-icon-ellipsis-v");
+        else
+        	btnMoreOptions.setImage(ThemeManager.getThemeResource("images/ShowMore24.png"));
+        btnMoreOptions.addEventListener(Events.ON_CLICK, this);
+        btnMoreOptions.setId("btnAdvOptions");
+        btnMoreOptions.setStyle("margin-left: 3px;");
+        if (ThemeManager.isUseFontIconForImage())
+        	LayoutUtils.addSclass("medium-toolbarbutton", btnMoreOptions);
+        
+        popupOptions = new Popup();
+        popupOptions.setSclass("modern-popup");
+        
+        Vlayout vlayout = new Vlayout();
+        vlayout.setSclass("modern-popup-container");
+
+        // Save as default
+        chkSaveDefault = new Checkbox();
+        chkSaveDefault.setLabel(Msg.getMsg(Env.getCtx(), "SetDefault"));
+        chkSaveDefault.setSclass("modern-checkbox-item");
+        chkSaveDefault.addEventListener(Events.ON_CHECK, e -> {
+            Checkbox checkbox = (Checkbox) e.getTarget();
+        	boolean isSelected = checkbox.isSelected();
+
+            setAsDefaultQuery(isSelected, (isSuccess) -> {
+            	if (isSuccess) {
+                    Clients.showNotification(isSelected ? Msg.getMsg(Env.getCtx(), "SetSavedQueryDefault") : Msg.getMsg(Env.getCtx(), "RemoveSavedQueryDefault"),
+                            Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
+                } else {
+                    // Operation failed or user cancelled - revert checkbox state
+                    checkbox.setChecked(!isSelected);
+                }
+            });
+        });
+
+        // Share with all users
+        chkShare = new Checkbox();
+        chkShare.setSclass("modern-checkbox-item");
+        chkShare.setLabel(Msg.getMsg(Env.getCtx(), "ShareFilter"));
+        chkShare.addEventListener(Events.ON_CHECK, e -> {
+			Checkbox checkbox = (Checkbox) e.getTarget();
+			boolean isSelected = checkbox.isSelected();
+
+			if (shareSavedQuery(isSelected)) {
+                Clients.showNotification(isSelected ? Msg.getMsg(Env.getCtx(), "SavedQueryShared") : Msg.getMsg(Env.getCtx(), "UnshareSavedQuery"),
+                        Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
+            } 
+        });
+
+        // Horizontal line
+        Separator separator = new Separator();
+        separator.setSclass("modern-separator");
+
+        // Row 4: Delete (as a button)
+        Button btnDelete = new Button(Msg.getMsg(Env.getCtx(), "delete"));
+        btnDelete.setSclass("modern-menu-item modern-menu-delete");
+        btnDelete.addEventListener(Events.ON_CLICK, e -> {
+            deleteSavedQuery((isSuccess) -> {
+            	if (isSuccess) {
+                    Clients.showNotification(Msg.getMsg(Env.getCtx(), "DeleteSavedQuery"),
+                            Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 3000);
+                }
+            });
+        });
+
+        vlayout.appendChild(chkSaveDefault);
+        vlayout.appendChild(chkShare);
+        vlayout.appendChild(separator);
+        vlayout.appendChild(btnDelete);
+
+        popupOptions.appendChild(vlayout);
+        btnMoreOptions.addEventListener(Events.ON_CLICK, e -> {
+            popupOptions.open(btnMoreOptions, "after_start"); // Align bottom-left of the button
+        });
+    }
+    
+	private void enableSavedQueryMoreOptions(MUserQuery userQuery) {
+		if (userQuery == null) {
+            btnMoreOptions.setDisabled(true);
+            btnMoreOptions.setTooltiptext(Msg.getMsg(Env.getCtx(), "NoSavedQuerySelected"));
+            chkShare.setVisible(false);
+            chkSaveDefault.setSelected(false);
+            return;
+        }
+
+		btnMoreOptions.setDisabled(false);
+		btnMoreOptions.setTooltiptext(Msg.getMsg(Env.getCtx(), "AdvancedOptions"));
+		chkSaveDefault.setSelected(userQuery.isDefault());
+		if (userQuery.userCanShare()) {
+			chkShare.setVisible(true);
+			chkShare.setSelected(userQuery.isShared());
+		} else {
+			chkShare.setVisible(false);
+			if (userQuery.isShared()) {
+				// If the query is shared but user cannot share, disable updating
+	            btnMoreOptions.setDisabled(true);
+                btnSave.setDisabled(true);
+			}
+		}
+	}
     
     /**
      * Prepare combo of history scope options
      */
-    private void prepareHistoryCombo()
+    protected void prepareHistoryCombo()
     {
     	historyCombo.setAutodrop(true);
     	historyCombo.setAutocomplete(true);
@@ -801,7 +901,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * Initialize simple search tab 
      */
-    private void initFind()
+    protected void initFind()
     {
         if (log.isLoggable(Level.CONFIG)) log.config("");
         
@@ -949,7 +1049,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         Collections.sort(gridFieldList, new Comparator<GridField>() {
 			@Override
 			public int compare(GridField o1, GridField o2) {
-				return o1.getSeqNoSelection()-o2.getSeqNoSelection();
+				// order by SeqNoSelection, sending the zeroes to the end
+				int sel1 = o1.getSeqNoSelection();
+				if (sel1 == 0)
+					sel1 = Integer.MAX_VALUE;
+				int sel2 = o2.getSeqNoSelection();
+				if (sel2 == 0)
+					sel2 = Integer.MAX_VALUE;
+				return sel1-sel2;
 			}
 		});
         
@@ -1014,7 +1121,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @return true if log in role has access to window for special field (account combination, resource,
      * chat, image, location, locator and attribute set instance)
      */
-    private boolean hasAccessSpecialFields(GridField field) {
+    protected boolean hasAccessSpecialFields(GridField field) {
     	int windowId = 0;
 		switch (field.getAD_Reference_Value_ID()) {
 		case SystemIDs.REFERENCE_ACCOUNT:    windowId = SystemIDs.WINDOW_ACCOUNTCOMBINATION;   break;
@@ -1035,7 +1142,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
      * Initialise advance search tab
      */
-    private void initFindAdvanced()
+    protected void initFindAdvanced()
     {
         if (log.isLoggable(Level.CONFIG)) log.config("");
         createFields();
@@ -1045,7 +1152,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * add new row to {@link #advancedPanel}
      */
-    private void createFields()
+    protected void createFields()
     {
         List<?> rowList = advancedPanel.getChildren();
         int row = rowList.size()-1;
@@ -1057,23 +1164,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param fields
      * @param row current last row index
      */
-    private void createFields(String[] fields, int row)
+    protected void createFields(String[] fields, int row)
     {
     	if (null!=fields && fields.length>=1 && fields[0].contains(HISTORY_SEPARATOR))
     			return;
         ListItem listItem = new ListItem();
         listItem.setId("Row"+ rowCount++);
-
-        int id = 0;
-
-        if(advancedPanel.getItemCount()>0){
-			String previousID = advancedPanel.getItems().get(advancedPanel.getItemCount()-1).getId();
-			previousID = previousID.substring(3, previousID.length());
-			id = Integer.valueOf(previousID);
-			id++;
-        }
-
-        listItem.setId("Row"+id);
 
         Combobox listTable = new Combobox();
         listTable.setId("listTable"+listItem.getId());
@@ -1337,7 +1433,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param editorTo
      * @return Div wrapper with {@link DateRangeButton}
      */
-	private Div createDateRangeWrapper(WEditor editorFrom, WEditor editorTo) {
+	protected Div createDateRangeWrapper(WEditor editorFrom, WEditor editorTo) {
 		Div div = new Div();
 		div.setWidth("100%");
 		div.appendChild(editorTo.getComponent());
@@ -1353,7 +1449,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 * @param listOperator operators combo box
 	 * @param fields values for {@link #advancedPanel} column
 	 */
-    private void setValues(GridField[] findFields, Combobox listTable, Combobox listColumn, Combobox listOperator, String[] fields)
+    protected void setValues(GridField[] findFields, Combobox listTable, Combobox listColumn, Combobox listOperator, String[] fields)
     {
     	ArrayList<ValueNamePair> tables = new ArrayList<ValueNamePair>();
     	String columnName =  "";
@@ -1430,6 +1526,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            if (field == null || field.isVirtualUIColumn()
 	            	|| ! hasAccessSpecialFields(field))
 	            	continue;
+		    WEditor editor = WebEditorFactory.getEditor(field, true);
+        	    if (editor == null || !editor.isSearchable())
+			continue;
 
 				boolean IsLookupOnlySelection = !MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx())).isAccessAdvanced()
 												&& "Y".equals(Env.getContext(Env.getCtx(), m_targetWindowNo, m_targetTabNo, GridTab.CTX_IsLookupOnlySelection));
@@ -1530,11 +1629,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param listColumn
      * @param cols columns
      */
-	private void updateColumnListModel(Combobox listColumn, ValueNamePair[] cols) {
+	protected void updateColumnListModel(Combobox listColumn, ValueNamePair[] cols) {
 		AbstractListModel<ValueNamePair> columnListModel = null;
 		if (isFilterColumnList()) {
 		    columnListModel = new SimpleListModel<ValueNamePair>(cols, true) {
-				private static final long serialVersionUID = -8319240524315831047L;
+				protected static final long serialVersionUID = -8319240524315831047L;
 
 				@Override
 				protected boolean inSubModel(Object key, Object value) {
@@ -1562,7 +1661,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * @return true if columns combo in advance search should filter by user enter text
 	 */
-    private boolean isFilterColumnList() {
+    protected boolean isFilterColumnList() {
 		return MSysConfig.getBooleanValue(MSysConfig.ZK_ADVANCE_FIND_FILTER_COLUMN_LIST, false, Env.getAD_Client_ID(Env.getCtx()));
 	}
 
@@ -1631,6 +1730,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         Row panel = new Row();
         panel.appendChild(label);
+        if (isLabelAboveInputForSmallWidth()) {
+            contentSimpleRows.appendChild(panel);
+            if (group != null)
+                panel.setGroup(group);
+            panel = new Row();
+        }
         Div div = new Div();
         panel.appendChild(div);
         div.appendChild(fieldEditor);
@@ -1668,7 +1773,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	editor.fillHorizontal();
         	editor.updateStyle(false);
         }
-        panel.appendChild(new Space());
+        if (!isLabelAboveInputForSmallWidth())
+            panel.appendChild(new Space());
         if (group != null)
         	panel.setGroup(group);
 
@@ -1679,7 +1785,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         return true;
     }   // addSelectionColumn
     
-    private void setLengthStringField(GridField field, Component fieldEditor) {
+    protected void setLengthStringField(GridField field, Component fieldEditor) {
         if (DisplayType.isText(field.getVO().displayType) && fieldEditor instanceof Textbox) {
         	// for string fields allow searching long strings - useful for like and similar to searches
         	((Textbox) fieldEditor).setMaxlength(32767);  // a conservative max literal string - like oracle extended
@@ -1725,7 +1831,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             		historyCombo.setSelectedItem(null);
             		fQueryName.setReadonly(false); 
             	}
-            	msgLabel.setText("");
             	onSelectedQueryChanged();
     		}
         	else if (event.getTarget() instanceof Combobox)
@@ -1880,17 +1985,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     focusToLastAdvanceRow();
                 }
 
-                else if ("btnSaveAdv".equals(button.getAttribute("name").toString())
-                		|| "btnShareAdv".equals(button.getAttribute("name").toString()))
+                else if ("btnSaveAdv".equals(button.getAttribute("name").toString()))
                 {
-                	boolean shareAllUsers = "btnShareAdv".equals(button.getAttribute("name").toString());
                 	if (winMain.getComponent().getSelectedIndex() == 1) {
-                    	cmd_saveAdvanced(true, shareAllUsers);
+                    	cmd_saveAdvanced(true);
                 	} else {
-                    	cmd_saveSimple(true, shareAllUsers);
+                    	cmd_saveSimple(true);
                 	}
-                	if (shareAllUsers)
-                		btnSave.setDisabled(true);
                 }
             }
             //  Confirm panel actions
@@ -1963,11 +2064,142 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             }
         }
     }   //  onEvent
+    
+    /**
+     * Sets the query as default (asynchronous version).
+     *
+     * @param isDefault Whether to set as default
+     * @param callback Callback to handle the result
+     */
+    private void setAsDefaultQuery(boolean isDefault,  Callback<Boolean> callback) {
+        MUserQuery userQuery = getActiveUserQuery();
+
+        if (!isValidUserQuery(userQuery)) {
+            callback.onCallback(false);
+            return;
+        }
+
+        if (isDefault) {
+            handleDefaultQuery(userQuery, callback);
+        } else {
+            userQuery.setIsDefault(false);
+            userQuery.saveEx();
+            callback.onCallback(true);
+        }
+    }
+    
+    /**
+     * Validates the user query.
+     *
+     * @param userQuery The user query to validate.
+     * @return `true` if the user query is valid, `false` otherwise.
+     */
+    private boolean isValidUserQuery(MUserQuery userQuery) {
+        return userQuery != null && userQuery.getAD_UserQuery_ID() == m_AD_UserQuery_ID;
+    }
+
+    /**
+    * Handles the logic for saving a query as the default
+    *
+    * @param userQuery The user query to save as default.
+    * @param callback Callback to handle the result
+    */
+   private void handleDefaultQuery(MUserQuery userQuery, Callback<Boolean> callback) {
+       MUserQuery existingDefault = userQuery.getDefaultQueryForUserAndTab();
+
+       if (existingDefault == null) {
+           userQuery.setIsDefault(true);
+           userQuery.saveEx();
+           callback.onCallback(true);
+       } else {
+           confirmAndSaveDefaultQuery(userQuery, existingDefault, callback);
+       }
+   }
+
+
+   /**
+    * Confirms and saves the query as default if the user agrees.
+    *
+    * @param userQuery The user query to save.
+    * @param callback Callback to handle the result
+    */
+   private void confirmAndSaveDefaultQuery(MUserQuery userQuery, MUserQuery existingDefault, Callback<Boolean> callback) {
+	   Dialog.ask("", m_targetWindowNo, "ReplaceDefaultQuery", result -> {
+	        if (Boolean.TRUE.equals(result)) {
+	            try {
+	                if (existingDefault != null) {
+	                    existingDefault.setIsDefault(false);
+	                    existingDefault.saveEx();
+	                }
+	                userQuery.setIsDefault(true);
+	                userQuery.saveEx();
+	                callback.onCallback(true);
+	            } catch (Exception e) {
+	                log.severe("Error while saving default query: " + e.getMessage());
+	                callback.onCallback(false);
+	            }
+	        } else {
+	            callback.onCallback(false);
+	        }
+	   }, existingDefault.getName());
+   }
+   
+   private boolean shareSavedQuery(boolean isShared) {
+	   MUserQuery userQuery = getActiveUserQuery();
+
+       if (!isValidUserQuery(userQuery) || !userQuery.userCanShare()) {
+           return false;
+       }
+       
+       int AD_User_ID = isShared ? -1 : Env.getAD_User_ID(Env.getCtx());
+       userQuery.setAD_User_ID(AD_User_ID);
+       userQuery.saveEx();
+       return true;
+   }
+   
+   /**
+    * Deletes the currently active user query after user confirmation.
+    *
+    * @param callback A callback to handle the result of the deletion operation.
+    *                 The callback is invoked with `true` if the query is successfully deleted,
+    *                 and `false` otherwise.
+    *
+    * The method performs the following steps:
+    * 1. Retrieves the active user query using `getActiveUserQuery()`.
+    * 2. Validates the user query using `isValidUserQuery()`. If invalid, the callback is invoked with `false`.
+    * 3. Displays a confirmation dialog using `Dialog.ask()`.
+    *    - If the user confirms, the query is deleted using `userQuery.deleteEx(true)`.
+    *    - If an exception occurs during deletion, logs the error and invokes the callback with `false`.
+    *    - If the user cancels or an error occurs, the callback is invoked with `false`.
+    */
+   private void deleteSavedQuery(Callback<Boolean> callback) {
+	   MUserQuery userQuery = getActiveUserQuery();
+
+       if (!isValidUserQuery(userQuery)) {
+           callback.onCallback(false);
+           return;
+       }
+       
+	   Dialog.ask("", m_targetWindowNo, "DeleteSavedQuery?", result -> {
+		   if (Boolean.TRUE.equals(result)) {
+	            try {
+	                userQuery.deleteEx(true);
+					refreshUserQueries();
+	                callback.onCallback(true);
+	            } catch (Exception e) {
+	                log.severe("Error while deleting query: " + e.getMessage());
+	                callback.onCallback(false);
+	            }
+	        } else {
+	            callback.onCallback(false);
+	        }
+	   });
+   }
 
     /**
      * user cancellation, close dialog
      */
-	private void onCancel() {
+	protected void onCancel() {
 		// do not allow to close tab for Events.ON_CTRL_KEY event
 		if(isUseEscForTabClosing)
 			SessionManager.getAppDesktop().setCloseTabWithShortcut(false);
@@ -1983,18 +2215,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	m_whereUserQuery = null;
 		showAdvanced();
     	btnSave.setDisabled(false);
-    	btnShare.setDisabled(false);
     	int index = fQueryName.getSelectedIndex();
     	if(index < 0) return;
     	if (winMain.getComponent().getSelectedIndex() != 1) 
     	{
     		winMain.getComponent().setSelectedIndex(1);
     		btnSave.setDisabled(m_AD_Tab_ID <= 0);
-    		btnShare.setDisabled(m_AD_Tab_ID <= 0);
     		historyCombo.setSelectedItem(null);
     		fQueryName.setReadonly(false); 
     	}
-    	msgLabel.setText("");
 
     	if(index == 0) 
     	{ // no query - wipe and start over.
@@ -2002,20 +2231,23 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
     			rowList.remove(rowIndex);
     		createFields();
+    		enableSavedQueryMoreOptions(null);
     	}
 		else {
 			MUserQuery uq = userQueries[index-1];
 			btnSave.setDisabled(!uq.userCanSave());
-			btnShare.setDisabled(!uq.userCanShare());
 			parseUserQuery(userQueries[index-1]);
+			enableSavedQueryMoreOptions(uq);
 		}
     }
 
     /**
      * On switch to simple search tab
      */
-	private void onSimpleTabSelected() {
+	protected void onSimpleTabSelected() {
 		historyCombo.setDisabled(false);
+		if (m_findFields != null && m_findFields.length > 0 && m_findFields[0].getGridTab() != m_gridTab)
+        	m_gridTab = m_findFields[0].getGridTab();
 		if (m_sEditors.size() > 0)
 			Clients.response(new AuFocus(m_sEditors.get(0).getComponent()));
 	}
@@ -2023,7 +2255,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * On switch to advance search tab
 	 */
-	private void onAdvanceTabSelected() {
+	protected void onAdvanceTabSelected() {
 		historyCombo.setSelectedItem(null);
 		if (advancedPanel.getItems().size() == 0) {
 			createFields();
@@ -2034,7 +2266,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * Set focus to last row of {@link #advancedPanel}
 	 */
-	private void focusToLastAdvanceRow() {
+	protected void focusToLastAdvanceRow() {
 		if (advancedPanel.getItemCount() > 0) {
 			ListItem li = advancedPanel.getItemAtIndex(advancedPanel.getItemCount()-1);
 			Combobox combo = (Combobox) li.getFellow("listColumn"+li.getId());
@@ -2046,18 +2278,20 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 * Parse user query
 	 * @param userQuery
 	 */
-    private void parseUserQuery(MUserQuery userQuery)
+    protected void parseUserQuery(MUserQuery userQuery)
     {
     	if (userQuery == null) 
     		return;
 
     	String code = userQuery.getCode();
-    	if (code.startsWith("@SQL=")) {
+    	if (code.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
+			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "SQL"));
 			m_whereUserQuery = "(" + code.substring(code.indexOf("=")+1, code.length()) + ")";
 			if (log.isLoggable(Level.INFO))
 				log.log(Level.INFO, m_whereUserQuery);
 			hideAdvanced();
     	} else {
+			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "Advanced"));
         	String[] segments = code.split(Pattern.quote(SEGMENT_SEPARATOR));
 
             List<?> rowList = advancedPanel.getChildren();
@@ -2084,7 +2318,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		winAdvanced.invalidate();
 	}
     
-    private int getHistoryIndex(String value)
+    protected int getHistoryIndex(String value)
     {
     	int myIndex = 0;
     	if(value.equals(HISTORY_DAY_YEAR))
@@ -2106,7 +2340,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 *  @param to
 	 * 	@return WEditor
 	 */
-	private WEditor parseString(GridField field, String in, ListItem listItem, boolean to)
+	protected WEditor parseString(GridField field, String in, ListItem listItem, boolean to)
 	{
 		if (in == null)
 			return null;
@@ -2190,9 +2424,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * Create advance search query
 	 * @param saveQuery true to save as user query
-	 * @param shareAllUsers
 	 */
-    private void cmd_saveAdvanced(boolean saveQuery, boolean shareAllUsers)
+    protected void cmd_saveAdvanced(boolean saveQuery)
 	{
 		//
 		m_query = new MQuery(m_tableName);
@@ -2360,6 +2593,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, tableUID);
 	            	}
 	            	continue;
+	            }else {
+	            	if(MQuery.ILIKE.equals(Operator)) {
+	            		ColumnSQL = "UPPER("+ColumnSQL+")";
+	            	}
 	            }
 	            Object parsedValue = null;
 	            //Parse AttributeValue
@@ -2486,7 +2723,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets, tableUID);
 	        }
 	        
-	        saveQuery(saveQuery, code, shareAllUsers);			
+	        saveQuery(saveQuery, code);			
 		} else {
 			m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereUserQuery, false));
 		}
@@ -2499,7 +2736,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param row
      * @return empty, (, (( or (((
      */
-    private String getLeftBracketValue(ListItem row) {
+    protected String getLeftBracketValue(ListItem row) {
     	Listbox listLeftBracket = (Listbox)row.getFellow("listLeftBracket"+row.getId());
         return listLeftBracket.getSelectedItem().getValue().toString();
     }
@@ -2510,7 +2747,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param row
      * @return empty, ), )) or )))
      */
-    private String getRightBracketValue(ListItem row) {
+    protected String getRightBracketValue(ListItem row) {
         Listbox listRightBracket = (Listbox)row.getFellow("listRightBracket"+row.getId());
         return listRightBracket.getSelectedItem().getValue().toString();
     }
@@ -2527,7 +2764,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param rBrackets
      * @param tableUID
      */
-    private void appendCode(StringBuilder code, String columnName,
+    protected void appendCode(StringBuilder code, String columnName,
 			String operator, String value1, String value2, String andOr,
 			String lBrackets, String rBrackets, String tableUID) {
 		if (code.length() > 0)
@@ -2552,9 +2789,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * @param saveQuery false to save code as user query, false to do nothing
      * @param code
-     * @param shareAllUsers
      */
-	private void saveQuery(boolean saveQuery, StringBuilder code, boolean shareAllUsers) {
+	protected void saveQuery(boolean saveQuery, StringBuilder code) {
         
         String selected = fQueryName.getValue();
 		if (selected != null) {
@@ -2582,8 +2818,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						uq.setAD_Tab_ID(m_AD_Tab_ID); //red1 UserQuery [ 1798539 ] taking in new field from Compiere
 						uq.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 					}
-					if (shareAllUsers)
-						uq.setAD_User_ID(-1); // set to null
 
 				} else	if (code.length() <= 0){ // Delete the query
 					if (uq == null) 
@@ -2605,11 +2839,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				//
 				if (uq.save())
 				{
-					msgLabel.setText(Msg.getMsg(Env.getCtx(), "Saved"));
+                    Clients.showNotification(Msg.getMsg(Env.getCtx(), "Saved"),
+                            Clients.NOTIFICATION_TYPE_INFO, this, "middle_center", 1000);
 					refreshUserQueries();
+		    		enableSavedQueryMoreOptions(uq);
 				}
 				else
-					msgLabel.setText(Msg.getMsg(Env.getCtx(), "SaveError"));
+                    Clients.showNotification(Msg.getMsg(Env.getCtx(), "SaveError"),
+                            Clients.NOTIFICATION_TYPE_ERROR, this, "middle_center", 1000);
 			}
 			//
 
@@ -2619,9 +2856,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * Create simple search query
 	 * @param saveQuery true to save as user query
-	 * @param shareAllUsers
 	 */
-	private void cmd_saveSimple(boolean saveQuery, boolean shareAllUsers)
+	protected void cmd_saveSimple(boolean saveQuery)
 	{
         //  Create Query String
         m_query = new MQuery(m_tableName);
@@ -2698,8 +2934,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     }
                     //
                     if (value.toString().indexOf('%') != -1) {
-                        m_query.addRestriction(ColumnSQL.toString(), MQuery.LIKE, value, ColumnName, wed.getDisplay());
-                        appendCode(code, ColumnName, MQuery.LIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
+                        m_query.addRestriction(ColumnSQL.toString(), MQuery.ILIKE, value, ColumnName, wed.getDisplay());
+                        appendCode(code, ColumnName, MQuery.ILIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     } else if (isProductCategoryField && value instanceof Integer) {
                         m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) value).intValue()));
                         appendCode(code, ColumnName, MQuery.EQUAL, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
@@ -2734,14 +2970,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	addHistoryRestriction(historyCombo.getSelectedItem());
         }
 
-        saveQuery(saveQuery, code, shareAllUsers);
+        saveQuery(saveQuery, code);
 
 	}	//	cmd_saveSimple
 
 	/**
 	 * reload user queries
 	 */
-	private void refreshUserQueries()
+	protected void refreshUserQueries()
 	{
 		String value = m_sNew;
 		if (fQueryName.getItemCount()>0){ // The list is initialized
@@ -2763,14 +2999,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			}
 		}
 
-		if(!selected) fQueryName.setSelectedIndex(0);	}
+		if(!selected) { 
+			fQueryName.setSelectedIndex(0);
+			enableSavedQueryMoreOptions(null);
+		}
+	}
 
     /**
      * retrieve the columnName of the Column item selected
      * @param row
      * @return column name
      */
-    private String getColumnName(ListItem row)
+    protected String getColumnName(ListItem row)
     {
     	Combobox listColumn = (Combobox)row.getFellow("listColumn"+row.getId());
         String columnName = "";
@@ -2789,7 +3029,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param component editor component
      * @param listcell
     **/
-    private void addRowEditor(Component component, ListCell listcell)
+    protected void addRowEditor(Component component, ListCell listcell)
     {
         listcell.setLabel("");
         listcell.getChildren().clear();
@@ -2804,7 +3044,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param column Column field selected
      * @param listOperator
      */
-    private void addOperators(Comboitem column, Combobox listOperator)
+    protected void addOperators(Comboitem column, Combobox listOperator)
     {
     	ValueNamePair pair = column.getValue();
     	String columnName = pair.getValue();
@@ -2858,7 +3098,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param op array of operators
      * @param listOperator
      */
-    private void addOperators(ValueNamePair[] op, Combobox listOperator)
+    protected void addOperators(ValueNamePair[] op, Combobox listOperator)
     {
         List<?> itemList = listOperator.getChildren();
         itemList.clear();
@@ -3010,22 +3250,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * Simple OK Button pressed
      */
-    private void cmd_ok_Simple()
+    protected void cmd_ok_Simple()
     {
         m_isCancel = false; // teo_sarca [ 1708717 ]
         //  save pending
-        cmd_saveSimple(false, false);
+        cmd_saveSimple(false);
         
         //  Test for no records
         if (getNoOfRecords(m_query, true) != 0) {
-        	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
-        	} else {
-                if (advancedPanel != null) {
-                	advancedPanel.getItems().clear();
-                }
-                dispose();
+        	if (advancedPanel != null) {
+        		advancedPanel.getItems().clear();
         	}
+        	dispose();
         }
     }   //  cmd_ok_Simple
     
@@ -3034,7 +3270,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param selectedItem
      * @return number of days
      */
-    private int getHistoryDays(String selectedItem) 
+    protected int getHistoryDays(String selectedItem) 
 	{
     	int retDays = 0;
 		if (selectedItem.equals(HISTORY_DAY_DAY))
@@ -3054,7 +3290,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * Adding where clause from history data
      * @param selectedHistoryItem
      */
-    private void addHistoryRestriction(Comboitem selectedHistoryItem)
+    protected void addHistoryRestriction(Comboitem selectedHistoryItem)
     {
     	String selectedHistoryValue = historyCombo.getSelectedItem().getValue();
     	if (log.isLoggable(Level.INFO))
@@ -3084,11 +3320,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * Advanced OK Button pressed
      */
-    private void cmd_ok_Advanced()
+    protected void cmd_ok_Advanced()
     {
         m_isCancel = false; // teo_sarca [ 1708717 ]
         //  save pending
-        cmd_saveAdvanced(false, false);
+        cmd_saveAdvanced(false);
         
         if(historyCombo.getSelectedItem()!=null)
         {
@@ -3096,11 +3332,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         
         if (getNoOfRecords(m_query, true) != 0) {
-        	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
-        	} else {
-                dispose();
-        	}
+        	dispose();
         }
     }   //  cmd_ok_Advanced
     
@@ -3119,7 +3351,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      *  @return record count;
      *          if the results are more then allowed this method will return 0
      */
-    private int getNoOfRecords (MQuery query, boolean alertRecords)
+    protected int getNoOfRecords (MQuery query, boolean alertRecords)
     {
         if (log.isLoggable(Level.CONFIG)) log.config("" + query);
         if (initialSlowQuery && (query == null || query.getRestrictionCount() == 0))
@@ -3148,8 +3380,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	Env.setContext(Env.getCtx(), m_targetWindowNo, TABNO, GridTab.CTX_FindSQL, finalSQL);
 
         //  Execute Query
-        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, 
-        		GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
+        		GridTable.DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
         m_total = 999999;
         Statement stmt = null;
         ResultSet rs = null;
@@ -3185,12 +3417,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //  No Records
         if (m_total == 0 && alertRecords)
             Dialog.warn(m_targetWindowNo, "FindZeroRecords", null);
-        //  More then allowed
+        //  Load not more than max allow
         if (m_gridTab != null && alertRecords && m_total != COUNTING_RECORDS_TIMED_OUT && m_gridTab.isQueryMax(m_total))
         {
-            Dialog.error(m_targetWindowNo, "FindOverMax",
-                m_total + " > " + m_gridTab.getMaxQueryRecords());
-            m_total = 0; // return 0 if more then allowed - teo_sarca [ 1708717 ]
+        	// no need to show warning here, it will be thrown on GridTable
+            // Dialog.info(m_targetWindowNo, "FindOverMax", m_total + " > " + m_gridTab.getMaxQueryRecords());
+            m_total = m_gridTab.getMaxQueryRecords();
         }
         else
             if (log.isLoggable(Level.CONFIG)) log.config("#" + m_total);
@@ -3203,7 +3435,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param columnName
      * @return true if the column is a product category column
      */
-    private boolean isProductCategoryField(String columnName) {
+    protected boolean isProductCategoryField(String columnName) {
         return MProduct.COLUMNNAME_M_Product_Category_ID.equals(columnName);
     }   //  isProductCategoryField
 
@@ -3214,7 +3446,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param productCategoryId
      * @return sql where clause
      */
-    private String getSubCategoryWhereClause(GridField field, int productCategoryId) {
+    protected String getSubCategoryWhereClause(GridField field, int productCategoryId) {
         //if a node with this id is found later in the search we have a loop in the tree
         int subTreeRootParentId = 0;
         StringBuilder retString = new StringBuilder(field.getSearchColumnSQL()).append(" IN (");
@@ -3257,7 +3489,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @return comma separated list of category ids
      * @throws AdempiereSystemError if a loop is detected
      */
-    private String getSubCategoriesString(int productCategoryId, Vector<SimpleTreeNode> categories, int loopIndicatorId) throws AdempiereSystemError {
+    protected String getSubCategoriesString(int productCategoryId, Vector<SimpleTreeNode> categories, int loopIndicatorId) throws AdempiereSystemError {
         StringBuilder ret = new StringBuilder();
         final Iterator<SimpleTreeNode> iter = categories.iterator();
         while (iter.hasNext()) {
@@ -3278,11 +3510,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * Simple tree node class for product category tree search.
      * @author Karsten Thiemann, kthiemann@adempiere.org
      */
-    private static class SimpleTreeNode {
+    protected static class SimpleTreeNode {
 
-        private int nodeId;
+        protected int nodeId;
 
-        private int parentId;
+        protected int parentId;
 
         public SimpleTreeNode(int nodeId, int parentId) {
             this.nodeId = nodeId;
@@ -3304,7 +3536,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      *  @param in input value
      *  @return in converted to appropriate type for field
      */
-    private Object parseValue (GridField field, Object in)
+    protected Object parseValue (GridField field, Object in)
     {
         if (in == null)
             return null;
@@ -3458,7 +3690,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param editor
      * @param listcell
      */
-	private void dynamicDisplay(WEditor editor, ListCell listcell) {
+	protected void dynamicDisplay(WEditor editor, ListCell listcell) {
 		if (winMain.getComponent().getSelectedIndex() == 1)
 		{
 			 List<?> rowList = advancedPanel.getChildren();
@@ -3550,7 +3782,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 * @param field
 	 * @return true to use Like, false otherwise
 	 */
-	private boolean isSearchLike(GridField field)
+	protected boolean isSearchLike(GridField field)
 	{
 		return DisplayType.isText(field.getDisplayType()) && !field.isVirtualColumn()
 		&& (field.isSelectionColumn() || MColumn.isSuggestSelectionColumn(field.getColumnName(), true));
@@ -3568,7 +3800,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 *	Display current count
 	 *  @param currentCount String representation of current/total
 	 */
-	private void setStatusDB (int currentCount)
+	protected void setStatusDB (int currentCount)
 	{
 		StringBuilder text = new StringBuilder(" ").append(Msg.getMsg(Env.getCtx(), "Records")).append(" = ").append(m_total == COUNTING_RECORDS_TIMED_OUT ? "?" : m_total).append(" ");
 		statusBar.setStatusDB(text.toString());
@@ -3577,7 +3809,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * Hide advance search
 	 */
-	private void hideAdvanced() {
+	protected void hideAdvanced() {
 		advancedPanelToolBar.setVisible(false);
 		advancedPanel.setVisible(false);
 	}
@@ -3585,10 +3817,26 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
 	 * Show advance search
 	 */
-	private void showAdvanced() {
+	protected void showAdvanced() {
 		advancedPanelToolBar.setVisible(true);
 		advancedPanel.setVisible(true);
 		winAdvanced.invalidate();
+	}
+	
+	/**
+	 * Retrieves the currently active user query based on the selected item in the `fQueryName` combobox.
+	 *
+	 * <p>This method checks if a valid user query is selected in the `fQueryName` combobox and returns
+	 * the corresponding `MUserQuery` object. If no valid selection is made or the user queries list is empty,
+	 * it returns `null`.</p>
+	 *
+	 * @return The active `MUserQuery` object corresponding to the selected item in the `fQueryName` combobox,
+	 *         or `null` if no valid selection exists.
+	 */
+	private MUserQuery getActiveUserQuery() {
+		if (getAD_UserQuery_ID() <= 0 || userQueries == null || userQueries.length == 0)
+			return null;
+		return userQueries[fQueryName.getSelectedIndex()-1];
 	}
 	
 	/**
@@ -3620,7 +3868,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param M_Attribute_ID 
      * @return sql clause for attribute value
      */
-    private String getAttributeSQL(Integer M_Attribute_ID) {
+    protected String getAttributeSQL(Integer M_Attribute_ID) {
     	StringBuilder attributeSQL = new StringBuilder();
 
 		MAttribute attribute = new MAttribute(Env.getCtx(), M_Attribute_ID, null);
@@ -3670,7 +3918,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 *  @param isValueTo
 	 * 	@return Component of created editor
 	 */
-	private Component parseAttributeString(int M_Attribute_ID, String value, ListItem listItem, boolean isValueTo)
+	protected Component parseAttributeString(int M_Attribute_ID, String value, ListItem listItem, boolean isValueTo)
 	{
 		if (value == null)
 			return null;
@@ -3747,7 +3995,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param listOperator
 	 * @param fields value for {@link #advancedPanel} columns
      */
-	private void setAttributes(Combobox listColumn, Combobox listOperator, String[] fields) {
+	protected void setAttributes(Combobox listColumn, Combobox listOperator, String[] fields) {
 		String columnName = null;
 		String operator = null;
 		if(fields != null) {
@@ -3824,7 +4072,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param column
      * @param listOperator
      */
-    private void addOperatorsAttribute(Comboitem column, Combobox listOperator) {
+    protected void addOperatorsAttribute(Comboitem column, Combobox listOperator) {
     	ValueNamePair pair = column.getValue();
     	MAttribute attribute = new MAttribute(Env.getCtx(), Integer.valueOf(pair.getID()), null);
 
@@ -3903,7 +4151,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param value
      * @return converted value to desire type
      */
-    private Object parseAttributeValue (int M_Attribute_ID, Object value)
+    protected Object parseAttributeValue (int M_Attribute_ID, Object value)
     {
     	MAttribute attribute = new MAttribute(Env.getCtx(), M_Attribute_ID, null);
         if (value == null)
@@ -3969,7 +4217,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	/**
      * Get target tab ({@link #m_AD_Tab_ID}) and its child tabs into {@link #m_tabs}
      */
-	private void initTabs ()
+	protected void initTabs ()
 	{
 		MTab tab= new MTab(Env.getCtx(), m_AD_Tab_ID, null);
 		String whereClause = I_AD_Tab.COLUMNNAME_AD_Window_ID+"=?";
@@ -3999,7 +4247,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /**
      * @return true if target tab/table contains column M_AttributeSetInstance_ID
      */
-	 private boolean isAttributeTable() {	        
+	 protected boolean isAttributeTable() {	        
 	   	MTable table = new MTable(Env.getCtx(), m_AD_Table_ID, null);
     	return table.getColumnIndex(COLUMNNAME_M_AttributeSetInstance_ID) > 0? true:false; 
 	}	// isAttributeTable

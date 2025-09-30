@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_RequestAction
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_R_RequestAction 
 {
@@ -40,21 +40,6 @@ public interface I_R_RequestAction
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 
     /** Load Meta Data */
-
-    /** Column name A_Asset_ID */
-    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
-
-	/** Set Asset.
-	  * Asset used internally or by customers
-	  */
-	public void setA_Asset_ID (int A_Asset_ID);
-
-	/** Get Asset.
-	  * Asset used internally or by customers
-	  */
-	public int getA_Asset_ID();
-
-	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -90,6 +75,7 @@ public interface I_R_RequestAction
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -105,7 +91,24 @@ public interface I_R_RequestAction
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
+    /** Column name A_Asset_ID */
+    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+
+	/** Set Asset.
+	  * Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID);
+
+	/** Get Asset.
+	  * Asset used internally or by customers
+	  */
+	public int getA_Asset_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException;
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -120,6 +123,7 @@ public interface I_R_RequestAction
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -135,6 +139,7 @@ public interface I_R_RequestAction
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -150,20 +155,8 @@ public interface I_R_RequestAction
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
-
-    /** Column name ConfidentialType */
-    public static final String COLUMNNAME_ConfidentialType = "ConfidentialType";
-
-	/** Set Confidentiality.
-	  * Type of Confidentiality
-	  */
-	public void setConfidentialType (String ConfidentialType);
-
-	/** Get Confidentiality.
-	  * Type of Confidentiality
-	  */
-	public String getConfidentialType();
 
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
@@ -178,6 +171,7 @@ public interface I_R_RequestAction
 	  */
 	public int getC_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
 
     /** Column name C_Payment_ID */
@@ -193,6 +187,7 @@ public interface I_R_RequestAction
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -208,7 +203,21 @@ public interface I_R_RequestAction
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name ConfidentialType */
+    public static final String COLUMNNAME_ConfidentialType = "ConfidentialType";
+
+	/** Set Confidentiality.
+	  * Type of Confidentiality
+	  */
+	public void setConfidentialType (String ConfidentialType);
+
+	/** Get Confidentiality.
+	  * Type of Confidentiality
+	  */
+	public String getConfidentialType();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -343,22 +352,8 @@ public interface I_R_RequestAction
 	  */
 	public int getM_InOut_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOut getM_InOut() throws RuntimeException;
-
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_ProductSpent_ID */
     public static final String COLUMNNAME_M_ProductSpent_ID = "M_ProductSpent_ID";
@@ -373,7 +368,24 @@ public interface I_R_RequestAction
 	  */
 	public int getM_ProductSpent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_ProductSpent() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name M_RMA_ID */
     public static final String COLUMNNAME_M_RMA_ID = "M_RMA_ID";
@@ -388,6 +400,7 @@ public interface I_R_RequestAction
 	  */
 	public int getM_RMA_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_RMA getM_RMA() throws RuntimeException;
 
     /** Column name NullColumns */
@@ -481,6 +494,7 @@ public interface I_R_RequestAction
 	  */
 	public int getR_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Category getR_Category() throws RuntimeException;
 
     /** Column name R_Group_ID */
@@ -496,6 +510,7 @@ public interface I_R_RequestAction
 	  */
 	public int getR_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Group getR_Group() throws RuntimeException;
 
     /** Column name R_RequestAction_ID */
@@ -520,21 +535,6 @@ public interface I_R_RequestAction
 	/** Get R_RequestAction_UU	  */
 	public String getR_RequestAction_UU();
 
-    /** Column name R_Request_ID */
-    public static final String COLUMNNAME_R_Request_ID = "R_Request_ID";
-
-	/** Set Request.
-	  * Request from a Business Partner or Prospect
-	  */
-	public void setR_Request_ID (int R_Request_ID);
-
-	/** Get Request.
-	  * Request from a Business Partner or Prospect
-	  */
-	public int getR_Request_ID();
-
-	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
-
     /** Column name R_RequestType_ID */
     public static final String COLUMNNAME_R_RequestType_ID = "R_RequestType_ID";
 
@@ -548,7 +548,24 @@ public interface I_R_RequestAction
 	  */
 	public int getR_RequestType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_RequestType getR_RequestType() throws RuntimeException;
+
+    /** Column name R_Request_ID */
+    public static final String COLUMNNAME_R_Request_ID = "R_Request_ID";
+
+	/** Set Request.
+	  * Request from a Business Partner or Prospect
+	  */
+	public void setR_Request_ID (int R_Request_ID);
+
+	/** Get Request.
+	  * Request from a Business Partner or Prospect
+	  */
+	public int getR_Request_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
 
     /** Column name R_Resolution_ID */
     public static final String COLUMNNAME_R_Resolution_ID = "R_Resolution_ID";
@@ -563,6 +580,7 @@ public interface I_R_RequestAction
 	  */
 	public int getR_Resolution_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Resolution getR_Resolution() throws RuntimeException;
 
     /** Column name R_Status_ID */
@@ -578,6 +596,7 @@ public interface I_R_RequestAction
 	  */
 	public int getR_Status_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Status getR_Status() throws RuntimeException;
 
     /** Column name SalesRep_ID */
@@ -593,6 +612,7 @@ public interface I_R_RequestAction
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name StartDate */

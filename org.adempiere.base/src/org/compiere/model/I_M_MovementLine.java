@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_MovementLine
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_MovementLine 
 {
@@ -62,6 +62,46 @@ public interface I_M_MovementLine
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
+
+    /** Column name C_UOM_ID */
+    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
+
+	/** Set UOM.
+	  * Unit of Measure
+	  */
+	public void setC_UOM_ID (int C_UOM_ID);
+
+	/** Get UOM.
+	  * Unit of Measure
+	  */
+	public int getC_UOM_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
+
     /** Column name ConfirmedQty */
     public static final String COLUMNNAME_ConfirmedQty = "ConfirmedQty";
 
@@ -100,6 +140,7 @@ public interface I_M_MovementLine
 	/** Get Distribution Order Line	  */
 	public int getDD_OrderLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_OrderLine getDD_OrderLine() throws RuntimeException;
 
     /** Column name Description */
@@ -141,21 +182,6 @@ public interface I_M_MovementLine
 	  */
 	public int getLine();
 
-    /** Column name M_AttributeSetInstance_ID */
-    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
-
-	/** Set Attribute Set Instance.
-	  * Product Attribute Set Instance
-	  */
-	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
-
-	/** Get Attribute Set Instance.
-	  * Product Attribute Set Instance
-	  */
-	public int getM_AttributeSetInstance_ID();
-
-	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
-
     /** Column name M_AttributeSetInstanceTo_ID */
     public static final String COLUMNNAME_M_AttributeSetInstanceTo_ID = "M_AttributeSetInstanceTo_ID";
 
@@ -169,22 +195,24 @@ public interface I_M_MovementLine
 	  */
 	public int getM_AttributeSetInstanceTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstanceTo() throws RuntimeException;
 
-    /** Column name M_Locator_ID */
-    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
+    /** Column name M_AttributeSetInstance_ID */
+    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
 
-	/** Set Locator.
-	  * Warehouse Locator
+	/** Set Attribute Set Instance.
+	  * Product Attribute Set Instance
 	  */
-	public void setM_Locator_ID (int M_Locator_ID);
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
 
-	/** Get Locator.
-	  * Warehouse Locator
+	/** Get Attribute Set Instance.
+	  * Product Attribute Set Instance
 	  */
-	public int getM_Locator_ID();
+	public int getM_AttributeSetInstance_ID();
 
-	public I_M_Locator getM_Locator() throws RuntimeException;
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_LocatorTo_ID */
     public static final String COLUMNNAME_M_LocatorTo_ID = "M_LocatorTo_ID";
@@ -199,22 +227,24 @@ public interface I_M_MovementLine
 	  */
 	public int getM_LocatorTo_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_LocatorTo() throws RuntimeException;
 
-    /** Column name M_Movement_ID */
-    public static final String COLUMNNAME_M_Movement_ID = "M_Movement_ID";
+    /** Column name M_Locator_ID */
+    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
 
-	/** Set Inventory Move.
-	  * Movement of Inventory
+	/** Set Locator.
+	  * Warehouse Locator
 	  */
-	public void setM_Movement_ID (int M_Movement_ID);
+	public void setM_Locator_ID (int M_Locator_ID);
 
-	/** Get Inventory Move.
-	  * Movement of Inventory
+	/** Get Locator.
+	  * Warehouse Locator
 	  */
-	public int getM_Movement_ID();
+	public int getM_Locator_ID();
 
-	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_Locator getM_Locator() throws RuntimeException;
 
     /** Column name M_MovementLine_ID */
     public static final String COLUMNNAME_M_MovementLine_ID = "M_MovementLine_ID";
@@ -238,18 +268,21 @@ public interface I_M_MovementLine
 	/** Get M_MovementLine_UU	  */
 	public String getM_MovementLine_UU();
 
-    /** Column name MovementQty */
-    public static final String COLUMNNAME_MovementQty = "MovementQty";
+    /** Column name M_Movement_ID */
+    public static final String COLUMNNAME_M_Movement_ID = "M_Movement_ID";
 
-	/** Set Movement Quantity.
-	  * Quantity of a product moved.
+	/** Set Inventory Move.
+	  * Movement of Inventory
 	  */
-	public void setMovementQty (BigDecimal MovementQty);
+	public void setM_Movement_ID (int M_Movement_ID);
 
-	/** Get Movement Quantity.
-	  * Quantity of a product moved.
+	/** Get Inventory Move.
+	  * Movement of Inventory
 	  */
-	public BigDecimal getMovementQty();
+	public int getM_Movement_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
 
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
@@ -264,7 +297,21 @@ public interface I_M_MovementLine
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name MovementQty */
+    public static final String COLUMNNAME_MovementQty = "MovementQty";
+
+	/** Set Movement Quantity.
+	  * Quantity of a product moved.
+	  */
+	public void setMovementQty (BigDecimal MovementQty);
+
+	/** Get Movement Quantity.
+	  * Quantity of a product moved.
+	  */
+	public BigDecimal getMovementQty();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
@@ -279,6 +326,19 @@ public interface I_M_MovementLine
 	  */
 	public boolean isProcessed();
 
+    /** Column name QtyEntered */
+    public static final String COLUMNNAME_QtyEntered = "QtyEntered";
+
+	/** Set Quantity.
+	  * The Quantity Entered is based on the selected UoM
+	  */
+	public void setQtyEntered (BigDecimal QtyEntered);
+
+	/** Get Quantity.
+	  * The Quantity Entered is based on the selected UoM
+	  */
+	public BigDecimal getQtyEntered();
+
     /** Column name ReversalLine_ID */
     public static final String COLUMNNAME_ReversalLine_ID = "ReversalLine_ID";
 
@@ -292,6 +352,7 @@ public interface I_M_MovementLine
 	  */
 	public int getReversalLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getReversalLine() throws RuntimeException;
 
     /** Column name ScrappedQty */

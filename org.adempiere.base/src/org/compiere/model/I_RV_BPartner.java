@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for RV_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_RV_BPartner 
 {
@@ -40,6 +40,139 @@ public interface I_RV_BPartner
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
+
+    /** Column name AD_Client_ID */
+    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
+
+	/** Get Tenant.
+	  * Tenant for this installation.
+	  */
+	public int getAD_Client_ID();
+
+    /** Column name AD_Language */
+    public static final String COLUMNNAME_AD_Language = "AD_Language";
+
+	/** Set Language.
+	  * Language for this entity
+	  */
+	public void setAD_Language (String AD_Language);
+
+	/** Get Language.
+	  * Language for this entity
+	  */
+	public String getAD_Language();
+
+    /** Column name AD_OrgBP_ID */
+    public static final String COLUMNNAME_AD_OrgBP_ID = "AD_OrgBP_ID";
+
+	/** Set Linked Organization.
+	  * The Business Partner is another Organization for explicit Inter-Org transactions
+	  */
+	public void setAD_OrgBP_ID (int AD_OrgBP_ID);
+
+	/** Get Linked Organization.
+	  * The Business Partner is another Organization for explicit Inter-Org transactions
+	  */
+	public int getAD_OrgBP_ID();
+
+    /** Column name AD_OrgTrx_ID */
+    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
+
+	/** Set Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
+
+	/** Get Trx Organization.
+	  * Performing or initiating organization
+	  */
+	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
+
+    /** Column name AD_User_AD_Org_ID */
+    public static final String COLUMNNAME_AD_User_AD_Org_ID = "AD_User_AD_Org_ID";
+
+	/** Set AD_User_AD_Org_ID	  */
+	public void setAD_User_AD_Org_ID (int AD_User_AD_Org_ID);
+
+	/** Get AD_User_AD_Org_ID	  */
+	public int getAD_User_AD_Org_ID();
+
+    /** Column name AD_User_C_BPartner_ID */
+    public static final String COLUMNNAME_AD_User_C_BPartner_ID = "AD_User_C_BPartner_ID";
+
+	/** Set AD_User_C_BPartner_ID	  */
+	public void setAD_User_C_BPartner_ID (int AD_User_C_BPartner_ID);
+
+	/** Get AD_User_C_BPartner_ID	  */
+	public int getAD_User_C_BPartner_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getAD_User_C_BPartner() throws RuntimeException;
+
+    /** Column name AD_User_C_BPartner_Location_ID */
+    public static final String COLUMNNAME_AD_User_C_BPartner_Location_ID = "AD_User_C_BPartner_Location_ID";
+
+	/** Set AD_User_C_BPartner_Location_ID	  */
+	public void setAD_User_C_BPartner_Location_ID (int AD_User_C_BPartner_Location_ID);
+
+	/** Get AD_User_C_BPartner_Location_ID	  */
+	public int getAD_User_C_BPartner_Location_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner_Location getAD_User_C_BPartner_Location() throws RuntimeException;
+
+    /** Column name AD_User_CreatedBy */
+    public static final String COLUMNNAME_AD_User_CreatedBy = "AD_User_CreatedBy";
+
+	/** Set ad_user_createdby	  */
+	public void setAD_User_CreatedBy (int AD_User_CreatedBy);
+
+	/** Get ad_user_createdby	  */
+	public int getAD_User_CreatedBy();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getAD_User_Create() throws RuntimeException;
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
+    /** Column name AD_User_UpdatedBy */
+    public static final String COLUMNNAME_AD_User_UpdatedBy = "AD_User_UpdatedBy";
+
+	/** Set ad_user_updatedby	  */
+	public void setAD_User_UpdatedBy (int AD_User_UpdatedBy);
+
+	/** Get ad_user_updatedby	  */
+	public int getAD_User_UpdatedBy();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getAD_User_Update() throws RuntimeException;
 
     /** Column name AcqusitionCost */
     public static final String COLUMNNAME_AcqusitionCost = "AcqusitionCost";
@@ -66,14 +199,6 @@ public interface I_RV_BPartner
 	  * Actual Life Time Revenue
 	  */
 	public BigDecimal getActualLifeTimeValue();
-
-    /** Column name AD_Client_ID */
-    public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
-
-	/** Get Tenant.
-	  * Tenant for this installation.
-	  */
-	public int getAD_Client_ID();
 
     /** Column name Address1 */
     public static final String COLUMNNAME_Address1 = "Address1";
@@ -127,174 +252,21 @@ public interface I_RV_BPartner
 	  */
 	public String getAddress4();
 
-    /** Column name AD_Language */
-    public static final String COLUMNNAME_AD_Language = "AD_Language";
+    /** Column name BPContactGreeting */
+    public static final String COLUMNNAME_BPContactGreeting = "BPContactGreeting";
 
-	/** Set Language.
-	  * Language for this entity
+	/** Set BP Contact Greeting.
+	  * Greeting for Business Partner Contact
 	  */
-	public void setAD_Language (String AD_Language);
+	public void setBPContactGreeting (int BPContactGreeting);
 
-	/** Get Language.
-	  * Language for this entity
+	/** Get BP Contact Greeting.
+	  * Greeting for Business Partner Contact
 	  */
-	public String getAD_Language();
+	public int getBPContactGreeting();
 
-    /** Column name AD_OrgBP_ID */
-    public static final String COLUMNNAME_AD_OrgBP_ID = "AD_OrgBP_ID";
-
-	/** Set Linked Organization.
-	  * The Business Partner is another Organization for explicit Inter-Org transactions
-	  */
-	public void setAD_OrgBP_ID (int AD_OrgBP_ID);
-
-	/** Get Linked Organization.
-	  * The Business Partner is another Organization for explicit Inter-Org transactions
-	  */
-	public int getAD_OrgBP_ID();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
-    /** Column name AD_OrgTrx_ID */
-    public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
-
-	/** Set Trx Organization.
-	  * Performing or initiating organization
-	  */
-	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID);
-
-	/** Get Trx Organization.
-	  * Performing or initiating organization
-	  */
-	public int getAD_OrgTrx_ID();
-
-    /** Column name AD_User_AD_Org_ID */
-    public static final String COLUMNNAME_AD_User_AD_Org_ID = "AD_User_AD_Org_ID";
-
-	/** Set AD_User_AD_Org_ID	  */
-	public void setAD_User_AD_Org_ID (int AD_User_AD_Org_ID);
-
-	/** Get AD_User_AD_Org_ID	  */
-	public int getAD_User_AD_Org_ID();
-
-    /** Column name AD_User_C_BPartner_ID */
-    public static final String COLUMNNAME_AD_User_C_BPartner_ID = "AD_User_C_BPartner_ID";
-
-	/** Set AD_User_C_BPartner_ID	  */
-	public void setAD_User_C_BPartner_ID (int AD_User_C_BPartner_ID);
-
-	/** Get AD_User_C_BPartner_ID	  */
-	public int getAD_User_C_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getAD_User_C_BPartner() throws RuntimeException;
-
-    /** Column name AD_User_C_BPartner_Location_ID */
-    public static final String COLUMNNAME_AD_User_C_BPartner_Location_ID = "AD_User_C_BPartner_Location_ID";
-
-	/** Set AD_User_C_BPartner_Location_ID	  */
-	public void setAD_User_C_BPartner_Location_ID (int AD_User_C_BPartner_Location_ID);
-
-	/** Get AD_User_C_BPartner_Location_ID	  */
-	public int getAD_User_C_BPartner_Location_ID();
-
-	public org.compiere.model.I_C_BPartner_Location getAD_User_C_BPartner_Location() throws RuntimeException;
-
-    /** Column name ad_user_created */
-    public static final String COLUMNNAME_ad_user_created = "ad_user_created";
-
-	/** Set ad_user_created	  */
-	public void setad_user_created (Timestamp ad_user_created);
-
-	/** Get ad_user_created	  */
-	public Timestamp getad_user_created();
-
-    /** Column name AD_User_CreatedBy */
-    public static final String COLUMNNAME_AD_User_CreatedBy = "AD_User_CreatedBy";
-
-	/** Set ad_user_createdby	  */
-	public void setAD_User_CreatedBy (int AD_User_CreatedBy);
-
-	/** Get ad_user_createdby	  */
-	public int getAD_User_CreatedBy();
-
-	public org.compiere.model.I_AD_User getAD_User_Create() throws RuntimeException;
-
-    /** Column name AD_User_ID */
-    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
-
-	/** Set User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public void setAD_User_ID (int AD_User_ID);
-
-	/** Get User/Contact.
-	  * User within the system - Internal or Business Partner Contact
-	  */
-	public int getAD_User_ID();
-
-	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
-
-    /** Column name ad_user_isactive */
-    public static final String COLUMNNAME_ad_user_isactive = "ad_user_isactive";
-
-	/** Set ad_user_isactive	  */
-	public void setad_user_isactive (boolean ad_user_isactive);
-
-	/** Get ad_user_isactive	  */
-	public boolean isad_user_isactive();
-
-    /** Column name ad_user_updated */
-    public static final String COLUMNNAME_ad_user_updated = "ad_user_updated";
-
-	/** Set ad_user_updated	  */
-	public void setad_user_updated (Timestamp ad_user_updated);
-
-	/** Get ad_user_updated	  */
-	public Timestamp getad_user_updated();
-
-    /** Column name AD_User_UpdatedBy */
-    public static final String COLUMNNAME_AD_User_UpdatedBy = "AD_User_UpdatedBy";
-
-	/** Set ad_user_updatedby	  */
-	public void setAD_User_UpdatedBy (int AD_User_UpdatedBy);
-
-	/** Get ad_user_updatedby	  */
-	public int getAD_User_UpdatedBy();
-
-	public org.compiere.model.I_AD_User getAD_User_Update() throws RuntimeException;
-
-    /** Column name ad_user_value */
-    public static final String COLUMNNAME_ad_user_value = "ad_user_value";
-
-	/** Set ad_user_value	  */
-	public void setad_user_value (String ad_user_value);
-
-	/** Get ad_user_value	  */
-	public String getad_user_value();
-
-    /** Column name Birthday */
-    public static final String COLUMNNAME_Birthday = "Birthday";
-
-	/** Set Birthday.
-	  * Birthday or Anniversary day
-	  */
-	public void setBirthday (Timestamp Birthday);
-
-	/** Get Birthday.
-	  * Birthday or Anniversary day
-	  */
-	public Timestamp getBirthday();
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Greeting getBPContactGreet() throws RuntimeException;
 
     /** Column name BPartner_Parent_ID */
     public static final String COLUMNNAME_BPartner_Parent_ID = "BPartner_Parent_ID";
@@ -309,22 +281,127 @@ public interface I_RV_BPartner
 	  */
 	public int getBPartner_Parent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getBPartner_Parent() throws RuntimeException;
 
-    /** Column name BPContactGreeting */
-    public static final String COLUMNNAME_BPContactGreeting = "BPContactGreeting";
+    /** Column name Birthday */
+    public static final String COLUMNNAME_Birthday = "Birthday";
 
-	/** Set BP Contact Greeting.
-	  * Greeting for Business Partner Contact
+	/** Set Birthday.
+	  * Birthday or Anniversary day
 	  */
-	public void setBPContactGreeting (int BPContactGreeting);
+	public void setBirthday (Timestamp Birthday);
 
-	/** Get BP Contact Greeting.
-	  * Greeting for Business Partner Contact
+	/** Get Birthday.
+	  * Birthday or Anniversary day
 	  */
-	public int getBPContactGreeting();
+	public Timestamp getBirthday();
 
-	public org.compiere.model.I_C_Greeting getBPContactGreet() throws RuntimeException;
+    /** Column name C_BP_C_TaxGroup_ID */
+    public static final String COLUMNNAME_C_BP_C_TaxGroup_ID = "C_BP_C_TaxGroup_ID";
+
+	/** Set c_bp_c_taxgroup_id	  */
+	public void setC_BP_C_TaxGroup_ID (int C_BP_C_TaxGroup_ID);
+
+	/** Get c_bp_c_taxgroup_id	  */
+	public int getC_BP_C_TaxGroup_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.eevolution.model.I_C_TaxGroup getC_BP_C_TaxGroup() throws RuntimeException;
+
+    /** Column name C_BP_Group_ID */
+    public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
+
+	/** Set Business Partner Group.
+	  * Business Partner Group
+	  */
+	public void setC_BP_Group_ID (int C_BP_Group_ID);
+
+	/** Get Business Partner Group.
+	  * Business Partner Group
+	  */
+	public int getC_BP_Group_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
+
+    /** Column name C_BP_Location_AD_Org_ID */
+    public static final String COLUMNNAME_C_BP_Location_AD_Org_ID = "C_BP_Location_AD_Org_ID";
+
+	/** Set c_bp_location_ad_org_id	  */
+	public void setC_BP_Location_AD_Org_ID (int C_BP_Location_AD_Org_ID);
+
+	/** Get c_bp_location_ad_org_id	  */
+	public int getC_BP_Location_AD_Org_ID();
+
+    /** Column name C_BP_Location_C_BPartner_ID */
+    public static final String COLUMNNAME_C_BP_Location_C_BPartner_ID = "C_BP_Location_C_BPartner_ID";
+
+	/** Set c_bpartner_location_c_bpartner_id	  */
+	public void setC_BP_Location_C_BPartner_ID (int C_BP_Location_C_BPartner_ID);
+
+	/** Get c_bpartner_location_c_bpartner_id	  */
+	public int getC_BP_Location_C_BPartner_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BP_Location_C_BPartner() throws RuntimeException;
+
+    /** Column name C_BP_Location_C_Location_ID */
+    public static final String COLUMNNAME_C_BP_Location_C_Location_ID = "C_BP_Location_C_Location_ID";
+
+	/** Set c_bp_location_c_location_id	  */
+	public void setC_BP_Location_C_Location_ID (int C_BP_Location_C_Location_ID);
+
+	/** Get c_bp_location_c_location_id	  */
+	public int getC_BP_Location_C_Location_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_Location getC_BP_Location_C_Location() throws RuntimeException;
+
+    /** Column name C_BP_Location_CreatedBy */
+    public static final String COLUMNNAME_C_BP_Location_CreatedBy = "C_BP_Location_CreatedBy";
+
+	/** Set c_bp_location_createdby	  */
+	public void setC_BP_Location_CreatedBy (int C_BP_Location_CreatedBy);
+
+	/** Get c_bp_location_createdby	  */
+	public int getC_BP_Location_CreatedBy();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getC_BP_Location_Create() throws RuntimeException;
+
+    /** Column name C_BP_Location_SalesRegion_ID */
+    public static final String COLUMNNAME_C_BP_Location_SalesRegion_ID = "C_BP_Location_SalesRegion_ID";
+
+	/** Set c_bp_location_salesregion_id	  */
+	public void setC_BP_Location_SalesRegion_ID (int C_BP_Location_SalesRegion_ID);
+
+	/** Get c_bp_location_salesregion_id	  */
+	public int getC_BP_Location_SalesRegion_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SalesRegion getC_BP_Location_SalesRegion() throws RuntimeException;
+
+    /** Column name C_BP_Location_UpdatedBy */
+    public static final String COLUMNNAME_C_BP_Location_UpdatedBy = "C_BP_Location_UpdatedBy";
+
+	/** Set c_bp_location_updatedby	  */
+	public void setC_BP_Location_UpdatedBy (int C_BP_Location_UpdatedBy);
+
+	/** Get c_bp_location_updatedby	  */
+	public int getC_BP_Location_UpdatedBy();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getC_BP_Location_Update() throws RuntimeException;
+
+    /** Column name C_BP_Logo_ID */
+    public static final String COLUMNNAME_C_BP_Logo_ID = "C_BP_Logo_ID";
+
+	/** Set c_bp_logo_id	  */
+	public void setC_BP_Logo_ID (int C_BP_Logo_ID);
+
+	/** Get c_bp_logo_id	  */
+	public int getC_BP_Logo_ID();
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -352,241 +429,8 @@ public interface I_RV_BPartner
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
-
-    /** Column name C_BP_C_TaxGroup_ID */
-    public static final String COLUMNNAME_C_BP_C_TaxGroup_ID = "C_BP_C_TaxGroup_ID";
-
-	/** Set c_bp_c_taxgroup_id	  */
-	public void setC_BP_C_TaxGroup_ID (int C_BP_C_TaxGroup_ID);
-
-	/** Get c_bp_c_taxgroup_id	  */
-	public int getC_BP_C_TaxGroup_ID();
-
-	public org.eevolution.model.I_C_TaxGroup getC_BP_C_TaxGroup() throws RuntimeException;
-
-    /** Column name c_bp_dunninggrace */
-    public static final String COLUMNNAME_c_bp_dunninggrace = "c_bp_dunninggrace";
-
-	/** Set c_bp_dunninggrace	  */
-	public void setc_bp_dunninggrace (Timestamp c_bp_dunninggrace);
-
-	/** Get c_bp_dunninggrace	  */
-	public Timestamp getc_bp_dunninggrace();
-
-    /** Column name C_BP_Group_ID */
-    public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
-
-	/** Set Business Partner Group.
-	  * Business Partner Group
-	  */
-	public void setC_BP_Group_ID (int C_BP_Group_ID);
-
-	/** Get Business Partner Group.
-	  * Business Partner Group
-	  */
-	public int getC_BP_Group_ID();
-
-	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
-
-    /** Column name c_bp_ismanufacturer */
-    public static final String COLUMNNAME_c_bp_ismanufacturer = "c_bp_ismanufacturer";
-
-	/** Set c_bp_ismanufacturer	  */
-	public void setc_bp_ismanufacturer (boolean c_bp_ismanufacturer);
-
-	/** Get c_bp_ismanufacturer	  */
-	public boolean isc_bp_ismanufacturer();
-
-    /** Column name c_bp_ispotaxexempt */
-    public static final String COLUMNNAME_c_bp_ispotaxexempt = "c_bp_ispotaxexempt";
-
-	/** Set c_bp_ispotaxexempt	  */
-	public void setc_bp_ispotaxexempt (boolean c_bp_ispotaxexempt);
-
-	/** Get c_bp_ispotaxexempt	  */
-	public boolean isc_bp_ispotaxexempt();
-
-    /** Column name C_BP_Location_AD_Org_ID */
-    public static final String COLUMNNAME_C_BP_Location_AD_Org_ID = "C_BP_Location_AD_Org_ID";
-
-	/** Set c_bp_location_ad_org_id	  */
-	public void setC_BP_Location_AD_Org_ID (int C_BP_Location_AD_Org_ID);
-
-	/** Get c_bp_location_ad_org_id	  */
-	public int getC_BP_Location_AD_Org_ID();
-
-    /** Column name C_BP_Location_C_BPartner_ID */
-    public static final String COLUMNNAME_C_BP_Location_C_BPartner_ID = "C_BP_Location_C_BPartner_ID";
-
-	/** Set c_bpartner_location_c_bpartner_id	  */
-	public void setC_BP_Location_C_BPartner_ID (int C_BP_Location_C_BPartner_ID);
-
-	/** Get c_bpartner_location_c_bpartner_id	  */
-	public int getC_BP_Location_C_BPartner_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BP_Location_C_BPartner() throws RuntimeException;
-
-    /** Column name C_BP_Location_C_Location_ID */
-    public static final String COLUMNNAME_C_BP_Location_C_Location_ID = "C_BP_Location_C_Location_ID";
-
-	/** Set c_bp_location_c_location_id	  */
-	public void setC_BP_Location_C_Location_ID (int C_BP_Location_C_Location_ID);
-
-	/** Get c_bp_location_c_location_id	  */
-	public int getC_BP_Location_C_Location_ID();
-
-	public I_C_Location getC_BP_Location_C_Location() throws RuntimeException;
-
-    /** Column name c_bp_location_created */
-    public static final String COLUMNNAME_c_bp_location_created = "c_bp_location_created";
-
-	/** Set c_bp_location_created	  */
-	public void setc_bp_location_created (Timestamp c_bp_location_created);
-
-	/** Get c_bp_location_created	  */
-	public Timestamp getc_bp_location_created();
-
-    /** Column name C_BP_Location_CreatedBy */
-    public static final String COLUMNNAME_C_BP_Location_CreatedBy = "C_BP_Location_CreatedBy";
-
-	/** Set c_bp_location_createdby	  */
-	public void setC_BP_Location_CreatedBy (int C_BP_Location_CreatedBy);
-
-	/** Get c_bp_location_createdby	  */
-	public int getC_BP_Location_CreatedBy();
-
-	public org.compiere.model.I_AD_User getC_BP_Location_Create() throws RuntimeException;
-
-    /** Column name c_bp_location_fax */
-    public static final String COLUMNNAME_c_bp_location_fax = "c_bp_location_fax";
-
-	/** Set c_bp_location_fax	  */
-	public void setc_bp_location_fax (String c_bp_location_fax);
-
-	/** Get c_bp_location_fax	  */
-	public String getc_bp_location_fax();
-
-    /** Column name c_bp_location_isactive */
-    public static final String COLUMNNAME_c_bp_location_isactive = "c_bp_location_isactive";
-
-	/** Set c_bp_location_isactive	  */
-	public void setc_bp_location_isactive (boolean c_bp_location_isactive);
-
-	/** Get c_bp_location_isactive	  */
-	public boolean isc_bp_location_isactive();
-
-    /** Column name c_bp_location_isbillto */
-    public static final String COLUMNNAME_c_bp_location_isbillto = "c_bp_location_isbillto";
-
-	/** Set c_bp_location_isbillto	  */
-	public void setc_bp_location_isbillto (boolean c_bp_location_isbillto);
-
-	/** Get c_bp_location_isbillto	  */
-	public boolean isc_bp_location_isbillto();
-
-    /** Column name c_bp_location_isdn */
-    public static final String COLUMNNAME_c_bp_location_isdn = "c_bp_location_isdn";
-
-	/** Set c_bp_location_isdn	  */
-	public void setc_bp_location_isdn (String c_bp_location_isdn);
-
-	/** Get c_bp_location_isdn	  */
-	public String getc_bp_location_isdn();
-
-    /** Column name c_bp_location_ispayfrom */
-    public static final String COLUMNNAME_c_bp_location_ispayfrom = "c_bp_location_ispayfrom";
-
-	/** Set c_bp_location_ispayfrom	  */
-	public void setc_bp_location_ispayfrom (boolean c_bp_location_ispayfrom);
-
-	/** Get c_bp_location_ispayfrom	  */
-	public boolean isc_bp_location_ispayfrom();
-
-    /** Column name c_bp_location_isremitto */
-    public static final String COLUMNNAME_c_bp_location_isremitto = "c_bp_location_isremitto";
-
-	/** Set c_bp_location_isremitto	  */
-	public void setc_bp_location_isremitto (boolean c_bp_location_isremitto);
-
-	/** Get c_bp_location_isremitto	  */
-	public boolean isc_bp_location_isremitto();
-
-    /** Column name c_bp_location_isshipto */
-    public static final String COLUMNNAME_c_bp_location_isshipto = "c_bp_location_isshipto";
-
-	/** Set c_bp_location_isshipto	  */
-	public void setc_bp_location_isshipto (boolean c_bp_location_isshipto);
-
-	/** Get c_bp_location_isshipto	  */
-	public boolean isc_bp_location_isshipto();
-
-    /** Column name c_bp_location_name */
-    public static final String COLUMNNAME_c_bp_location_name = "c_bp_location_name";
-
-	/** Set c_bp_location_name	  */
-	public void setc_bp_location_name (String c_bp_location_name);
-
-	/** Get c_bp_location_name	  */
-	public String getc_bp_location_name();
-
-    /** Column name c_bp_location_phone */
-    public static final String COLUMNNAME_c_bp_location_phone = "c_bp_location_phone";
-
-	/** Set c_bp_location_phone	  */
-	public void setc_bp_location_phone (String c_bp_location_phone);
-
-	/** Get c_bp_location_phone	  */
-	public String getc_bp_location_phone();
-
-    /** Column name c_bp_location_phone2 */
-    public static final String COLUMNNAME_c_bp_location_phone2 = "c_bp_location_phone2";
-
-	/** Set c_bp_location_phone2	  */
-	public void setc_bp_location_phone2 (String c_bp_location_phone2);
-
-	/** Get c_bp_location_phone2	  */
-	public String getc_bp_location_phone2();
-
-    /** Column name C_BP_Location_SalesRegion_ID */
-    public static final String COLUMNNAME_C_BP_Location_SalesRegion_ID = "C_BP_Location_SalesRegion_ID";
-
-	/** Set c_bp_location_salesregion_id	  */
-	public void setC_BP_Location_SalesRegion_ID (int C_BP_Location_SalesRegion_ID);
-
-	/** Get c_bp_location_salesregion_id	  */
-	public int getC_BP_Location_SalesRegion_ID();
-
-	public org.compiere.model.I_C_SalesRegion getC_BP_Location_SalesRegion() throws RuntimeException;
-
-    /** Column name c_bp_location_updated */
-    public static final String COLUMNNAME_c_bp_location_updated = "c_bp_location_updated";
-
-	/** Set c_bp_location_updated	  */
-	public void setc_bp_location_updated (Timestamp c_bp_location_updated);
-
-	/** Get c_bp_location_updated	  */
-	public Timestamp getc_bp_location_updated();
-
-    /** Column name C_BP_Location_UpdatedBy */
-    public static final String COLUMNNAME_C_BP_Location_UpdatedBy = "C_BP_Location_UpdatedBy";
-
-	/** Set c_bp_location_updatedby	  */
-	public void setC_BP_Location_UpdatedBy (int C_BP_Location_UpdatedBy);
-
-	/** Get c_bp_location_updatedby	  */
-	public int getC_BP_Location_UpdatedBy();
-
-	public org.compiere.model.I_AD_User getC_BP_Location_Update() throws RuntimeException;
-
-    /** Column name C_BP_Logo_ID */
-    public static final String COLUMNNAME_C_BP_Logo_ID = "C_BP_Logo_ID";
-
-	/** Set c_bp_logo_id	  */
-	public void setC_BP_Logo_ID (int C_BP_Logo_ID);
-
-	/** Get c_bp_logo_id	  */
-	public int getC_BP_Logo_ID();
 
     /** Column name C_City_ID */
     public static final String COLUMNNAME_C_City_ID = "C_City_ID";
@@ -601,16 +445,8 @@ public interface I_RV_BPartner
 	  */
 	public int getC_City_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
-
-    /** Column name c_country_ad_language */
-    public static final String COLUMNNAME_c_country_ad_language = "c_country_ad_language";
-
-	/** Set c_country_ad_language	  */
-	public void setc_country_ad_language (String c_country_ad_language);
-
-	/** Get c_country_ad_language	  */
-	public String getc_country_ad_language();
 
     /** Column name C_Country_C_Currency_ID */
     public static final String COLUMNNAME_C_Country_C_Currency_ID = "C_Country_C_Currency_ID";
@@ -621,16 +457,8 @@ public interface I_RV_BPartner
 	/** Get c_country_c_currency_id	  */
 	public int getC_Country_C_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Country_C_Currency() throws RuntimeException;
-
-    /** Column name c_country_description */
-    public static final String COLUMNNAME_c_country_description = "c_country_description";
-
-	/** Set c_country_description	  */
-	public void setc_country_description (String c_country_description);
-
-	/** Get c_country_description	  */
-	public String getc_country_description();
 
     /** Column name C_Country_ID */
     public static final String COLUMNNAME_C_Country_ID = "C_Country_ID";
@@ -645,16 +473,8 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Country_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
-
-    /** Column name c_country_isactive */
-    public static final String COLUMNNAME_c_country_isactive = "c_country_isactive";
-
-	/** Set c_country_isactive	  */
-	public void setc_country_isactive (boolean c_country_isactive);
-
-	/** Get c_country_isactive	  */
-	public boolean isc_country_isactive();
 
     /** Column name C_Dunning_ID */
     public static final String COLUMNNAME_C_Dunning_ID = "C_Dunning_ID";
@@ -669,6 +489,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Dunning_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
 
     /** Column name C_Greeting_ID */
@@ -684,6 +505,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Greeting_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException;
 
     /** Column name C_InvoiceSchedule_ID */
@@ -699,20 +521,8 @@ public interface I_RV_BPartner
 	  */
 	public int getC_InvoiceSchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceSchedule getC_InvoiceSchedule() throws RuntimeException;
-
-    /** Column name City */
-    public static final String COLUMNNAME_City = "City";
-
-	/** Set City.
-	  * Identifies a City
-	  */
-	public void setCity (String City);
-
-	/** Get City.
-	  * Identifies a City
-	  */
-	public String getCity();
 
     /** Column name C_Location_AD_Org_ID */
     public static final String COLUMNNAME_C_Location_AD_Org_ID = "C_Location_AD_Org_ID";
@@ -723,15 +533,6 @@ public interface I_RV_BPartner
 	/** Get c_location_ad_org_id	  */
 	public int getC_Location_AD_Org_ID();
 
-    /** Column name c_location_created */
-    public static final String COLUMNNAME_c_location_created = "c_location_created";
-
-	/** Set c_location_created	  */
-	public void setc_location_created (Timestamp c_location_created);
-
-	/** Get c_location_created	  */
-	public Timestamp getc_location_created();
-
     /** Column name C_Location_CreatedBy */
     public static final String COLUMNNAME_C_Location_CreatedBy = "C_Location_CreatedBy";
 
@@ -741,6 +542,7 @@ public interface I_RV_BPartner
 	/** Get c_location_createdby	  */
 	public int getC_Location_CreatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getC_Location_Create() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -756,25 +558,8 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
-
-    /** Column name c_location_isactive */
-    public static final String COLUMNNAME_c_location_isactive = "c_location_isactive";
-
-	/** Set c_location_isactive	  */
-	public void setc_location_isactive (boolean c_location_isactive);
-
-	/** Get c_location_isactive	  */
-	public boolean isc_location_isactive();
-
-    /** Column name c_location_updated */
-    public static final String COLUMNNAME_c_location_updated = "c_location_updated";
-
-	/** Set c_location_updated	  */
-	public void setc_location_updated (Timestamp c_location_updated);
-
-	/** Get c_location_updated	  */
-	public Timestamp getc_location_updated();
 
     /** Column name C_Location_UpdatedBy */
     public static final String COLUMNNAME_C_Location_UpdatedBy = "C_Location_UpdatedBy";
@@ -785,7 +570,71 @@ public interface I_RV_BPartner
 	/** Get c_location_updatedby	  */
 	public int getC_Location_UpdatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getC_Location_Update() throws RuntimeException;
+
+    /** Column name C_PaymentTerm_ID */
+    public static final String COLUMNNAME_C_PaymentTerm_ID = "C_PaymentTerm_ID";
+
+	/** Set Payment Term.
+	  * The terms of Payment (timing, discount)
+	  */
+	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID);
+
+	/** Get Payment Term.
+	  * The terms of Payment (timing, discount)
+	  */
+	public int getC_PaymentTerm_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
+
+    /** Column name C_Region_AD_Org_ID */
+    public static final String COLUMNNAME_C_Region_AD_Org_ID = "C_Region_AD_Org_ID";
+
+	/** Set c_region_ad_org_id	  */
+	public void setC_Region_AD_Org_ID (int C_Region_AD_Org_ID);
+
+	/** Get c_region_ad_org_id	  */
+	public int getC_Region_AD_Org_ID();
+
+    /** Column name C_Region_C_Country_ID */
+    public static final String COLUMNNAME_C_Region_C_Country_ID = "C_Region_C_Country_ID";
+
+	/** Set c_region_c_country_id	  */
+	public void setC_Region_C_Country_ID (int C_Region_C_Country_ID);
+
+	/** Get c_region_c_country_id	  */
+	public int getC_Region_C_Country_ID();
+
+    /** Column name C_Region_ID */
+    public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
+
+	/** Set Region.
+	  * Identifies a geographical Region
+	  */
+	public void setC_Region_ID (int C_Region_ID);
+
+	/** Get Region.
+	  * Identifies a geographical Region
+	  */
+	public int getC_Region_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
+
+    /** Column name City */
+    public static final String COLUMNNAME_City = "City";
+
+	/** Set City.
+	  * Identifies a City
+	  */
+	public void setCity (String City);
+
+	/** Get City.
+	  * Identifies a City
+	  */
+	public String getCity();
 
     /** Column name Comments */
     public static final String COLUMNNAME_Comments = "Comments";
@@ -830,12 +679,12 @@ public interface I_RV_BPartner
     public static final String COLUMNNAME_CountryCode = "CountryCode";
 
 	/** Set ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public void setCountryCode (String CountryCode);
 
 	/** Get ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode();
 
@@ -851,21 +700,6 @@ public interface I_RV_BPartner
 	  * Country Name
 	  */
 	public String getCountryName();
-
-    /** Column name C_PaymentTerm_ID */
-    public static final String COLUMNNAME_C_PaymentTerm_ID = "C_PaymentTerm_ID";
-
-	/** Set Payment Term.
-	  * The terms of Payment (timing, discount)
-	  */
-	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID);
-
-	/** Get Payment Term.
-	  * The terms of Payment (timing, discount)
-	  */
-	public int getC_PaymentTerm_ID();
-
-	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -883,56 +717,20 @@ public interface I_RV_BPartner
 	  */
 	public int getCreatedBy();
 
-    /** Column name C_Region_AD_Org_ID */
-    public static final String COLUMNNAME_C_Region_AD_Org_ID = "C_Region_AD_Org_ID";
+    /** Column name DUNS */
+    public static final String COLUMNNAME_DUNS = "DUNS";
 
-	/** Set c_region_ad_org_id	  */
-	public void setC_Region_AD_Org_ID (int C_Region_AD_Org_ID);
-
-	/** Get c_region_ad_org_id	  */
-	public int getC_Region_AD_Org_ID();
-
-    /** Column name C_Region_C_Country_ID */
-    public static final String COLUMNNAME_C_Region_C_Country_ID = "C_Region_C_Country_ID";
-
-	/** Set c_region_c_country_id	  */
-	public void setC_Region_C_Country_ID (int C_Region_C_Country_ID);
-
-	/** Get c_region_c_country_id	  */
-	public int getC_Region_C_Country_ID();
-
-    /** Column name c_region_description */
-    public static final String COLUMNNAME_c_region_description = "c_region_description";
-
-	/** Set c_region_description	  */
-	public void setc_region_description (String c_region_description);
-
-	/** Get c_region_description	  */
-	public String getc_region_description();
-
-    /** Column name C_Region_ID */
-    public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
-
-	/** Set Region.
-	  * Identifies a geographical Region
+	/** Set D-U-N-S.
+	  * Dun &amp;
+ Bradstreet Number
 	  */
-	public void setC_Region_ID (int C_Region_ID);
+	public void setDUNS (String DUNS);
 
-	/** Get Region.
-	  * Identifies a geographical Region
+	/** Get D-U-N-S.
+	  * Dun &amp;
+ Bradstreet Number
 	  */
-	public int getC_Region_ID();
-
-	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
-
-    /** Column name c_region_isactive */
-    public static final String COLUMNNAME_c_region_isactive = "c_region_isactive";
-
-	/** Set c_region_isactive	  */
-	public void setc_region_isactive (boolean c_region_isactive);
-
-	/** Get c_region_isactive	  */
-	public boolean isc_region_isactive();
+	public String getDUNS();
 
     /** Column name DeliveryRule */
     public static final String COLUMNNAME_DeliveryRule = "DeliveryRule";
@@ -985,21 +783,6 @@ public interface I_RV_BPartner
 	  * Number of copies to be printed
 	  */
 	public int getDocumentCopies();
-
-    /** Column name DUNS */
-    public static final String COLUMNNAME_DUNS = "DUNS";
-
-	/** Set D-U-N-S.
-	  * Dun &amp;
- Bradstreet Number
-	  */
-	public void setDUNS (String DUNS);
-
-	/** Get D-U-N-S.
-	  * Dun &amp;
- Bradstreet Number
-	  */
-	public String getDUNS();
 
     /** Column name EMail */
     public static final String COLUMNNAME_EMail = "EMail";
@@ -1105,6 +888,19 @@ public interface I_RV_BPartner
 	  */
 	public String getFreightCostRule();
 
+    /** Column name InvoiceRule */
+    public static final String COLUMNNAME_InvoiceRule = "InvoiceRule";
+
+	/** Set Invoice Rule.
+	  * Frequency and method of invoicing 
+	  */
+	public void setInvoiceRule (String InvoiceRule);
+
+	/** Get Invoice Rule.
+	  * Frequency and method of invoicing 
+	  */
+	public String getInvoiceRule();
+
     /** Column name Invoice_PrintFormat_ID */
     public static final String COLUMNNAME_Invoice_PrintFormat_ID = "Invoice_PrintFormat_ID";
 
@@ -1118,20 +914,8 @@ public interface I_RV_BPartner
 	  */
 	public int getInvoice_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException;
-
-    /** Column name InvoiceRule */
-    public static final String COLUMNNAME_InvoiceRule = "InvoiceRule";
-
-	/** Set Invoice Rule.
-	  * Frequency and method of invoicing 
-	  */
-	public void setInvoiceRule (String InvoiceRule);
-
-	/** Get Invoice Rule.
-	  * Frequency and method of invoicing 
-	  */
-	public String getInvoiceRule();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -1272,6 +1056,19 @@ public interface I_RV_BPartner
 	  */
 	public boolean isVendor();
 
+    /** Column name LDAPUser */
+    public static final String COLUMNNAME_LDAPUser = "LDAPUser";
+
+	/** Set LDAP User Name.
+	  * User Name used for authorization via LDAP (directory) services
+	  */
+	public void setLDAPUser (boolean LDAPUser);
+
+	/** Get LDAP User Name.
+	  * User Name used for authorization via LDAP (directory) services
+	  */
+	public boolean isLDAPUser();
+
     /** Column name LastContact */
     public static final String COLUMNNAME_LastContact = "LastContact";
 
@@ -1298,19 +1095,6 @@ public interface I_RV_BPartner
 	  */
 	public String getLastResult();
 
-    /** Column name LDAPUser */
-    public static final String COLUMNNAME_LDAPUser = "LDAPUser";
-
-	/** Set LDAP User Name.
-	  * User Name used for authorization via LDAP (directory) services
-	  */
-	public void setLDAPUser (boolean LDAPUser);
-
-	/** Get LDAP User Name.
-	  * User Name used for authorization via LDAP (directory) services
-	  */
-	public boolean isLDAPUser();
-
     /** Column name M_DiscountSchema_ID */
     public static final String COLUMNNAME_M_DiscountSchema_ID = "M_DiscountSchema_ID";
 
@@ -1324,6 +1108,7 @@ public interface I_RV_BPartner
 	  */
 	public int getM_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_PriceList_ID */
@@ -1339,6 +1124,7 @@ public interface I_RV_BPartner
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name NAICS */
@@ -1406,6 +1192,67 @@ public interface I_RV_BPartner
 	  */
 	public int getNumberEmployees();
 
+    /** Column name POReference */
+    public static final String COLUMNNAME_POReference = "POReference";
+
+	/** Set Order Reference.
+	  * Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	  */
+	public void setPOReference (String POReference);
+
+	/** Get Order Reference.
+	  * Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
+	  */
+	public String getPOReference();
+
+    /** Column name PO_DiscountSchema_ID */
+    public static final String COLUMNNAME_PO_DiscountSchema_ID = "PO_DiscountSchema_ID";
+
+	/** Set PO Discount Schema.
+	  * Schema to calculate the purchase trade discount percentage
+	  */
+	public void setPO_DiscountSchema_ID (int PO_DiscountSchema_ID);
+
+	/** Get PO Discount Schema.
+	  * Schema to calculate the purchase trade discount percentage
+	  */
+	public int getPO_DiscountSchema_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException;
+
+    /** Column name PO_PaymentTerm_ID */
+    public static final String COLUMNNAME_PO_PaymentTerm_ID = "PO_PaymentTerm_ID";
+
+	/** Set PO Payment Term.
+	  * Payment rules for a purchase order
+	  */
+	public void setPO_PaymentTerm_ID (int PO_PaymentTerm_ID);
+
+	/** Get PO Payment Term.
+	  * Payment rules for a purchase order
+	  */
+	public int getPO_PaymentTerm_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_PaymentTerm getPO_PaymentTerm() throws RuntimeException;
+
+    /** Column name PO_PriceList_ID */
+    public static final String COLUMNNAME_PO_PriceList_ID = "PO_PriceList_ID";
+
+	/** Set Purchase Price List.
+	  * Price List used by this Business Partner
+	  */
+	public void setPO_PriceList_ID (int PO_PriceList_ID);
+
+	/** Get Purchase Price List.
+	  * Price List used by this Business Partner
+	  */
+	public int getPO_PriceList_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException;
+
     /** Column name PaymentRule */
     public static final String COLUMNNAME_PaymentRule = "PaymentRule";
 
@@ -1457,64 +1304,6 @@ public interface I_RV_BPartner
 	  * Identifies an alternate telephone number.
 	  */
 	public String getPhone2();
-
-    /** Column name PO_DiscountSchema_ID */
-    public static final String COLUMNNAME_PO_DiscountSchema_ID = "PO_DiscountSchema_ID";
-
-	/** Set PO Discount Schema.
-	  * Schema to calculate the purchase trade discount percentage
-	  */
-	public void setPO_DiscountSchema_ID (int PO_DiscountSchema_ID);
-
-	/** Get PO Discount Schema.
-	  * Schema to calculate the purchase trade discount percentage
-	  */
-	public int getPO_DiscountSchema_ID();
-
-	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException;
-
-    /** Column name PO_PaymentTerm_ID */
-    public static final String COLUMNNAME_PO_PaymentTerm_ID = "PO_PaymentTerm_ID";
-
-	/** Set PO Payment Term.
-	  * Payment rules for a purchase order
-	  */
-	public void setPO_PaymentTerm_ID (int PO_PaymentTerm_ID);
-
-	/** Get PO Payment Term.
-	  * Payment rules for a purchase order
-	  */
-	public int getPO_PaymentTerm_ID();
-
-	public org.compiere.model.I_C_PaymentTerm getPO_PaymentTerm() throws RuntimeException;
-
-    /** Column name PO_PriceList_ID */
-    public static final String COLUMNNAME_PO_PriceList_ID = "PO_PriceList_ID";
-
-	/** Set Purchase Price List.
-	  * Price List used by this Business Partner
-	  */
-	public void setPO_PriceList_ID (int PO_PriceList_ID);
-
-	/** Get Purchase Price List.
-	  * Price List used by this Business Partner
-	  */
-	public int getPO_PriceList_ID();
-
-	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException;
-
-    /** Column name POReference */
-    public static final String COLUMNNAME_POReference = "POReference";
-
-	/** Set Order Reference.
-	  * Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	  */
-	public void setPOReference (String POReference);
-
-	/** Get Order Reference.
-	  * Transaction Reference Number (Sales Order, Purchase Order) of your Business Partner
-	  */
-	public String getPOReference();
 
     /** Column name Postal */
     public static final String COLUMNNAME_Postal = "Postal";
@@ -1596,6 +1385,71 @@ s site
 	  */
 	public String getRegionName();
 
+    /** Column name SOCreditStatus */
+    public static final String COLUMNNAME_SOCreditStatus = "SOCreditStatus";
+
+	/** Set Credit Status.
+	  * Business Partner Credit Status
+	  */
+	public void setSOCreditStatus (String SOCreditStatus);
+
+	/** Get Credit Status.
+	  * Business Partner Credit Status
+	  */
+	public String getSOCreditStatus();
+
+    /** Column name SO_CreditAvailable */
+    public static final String COLUMNNAME_SO_CreditAvailable = "SO_CreditAvailable";
+
+	/** Set Credit Available.
+	  * Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
+	  */
+	public void setSO_CreditAvailable (BigDecimal SO_CreditAvailable);
+
+	/** Get Credit Available.
+	  * Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
+	  */
+	public BigDecimal getSO_CreditAvailable();
+
+    /** Column name SO_CreditLimit */
+    public static final String COLUMNNAME_SO_CreditLimit = "SO_CreditLimit";
+
+	/** Set Credit Limit.
+	  * Total outstanding invoice amounts allowed
+	  */
+	public void setSO_CreditLimit (BigDecimal SO_CreditLimit);
+
+	/** Get Credit Limit.
+	  * Total outstanding invoice amounts allowed
+	  */
+	public BigDecimal getSO_CreditLimit();
+
+    /** Column name SO_CreditUsed */
+    public static final String COLUMNNAME_SO_CreditUsed = "SO_CreditUsed";
+
+	/** Set Credit Used.
+	  * Current open balance
+	  */
+	public void setSO_CreditUsed (BigDecimal SO_CreditUsed);
+
+	/** Get Credit Used.
+	  * Current open balance
+	  */
+	public BigDecimal getSO_CreditUsed();
+
+    /** Column name SO_Description */
+    public static final String COLUMNNAME_SO_Description = "SO_Description";
+
+	/** Set Order Description.
+	  * Description to be used on orders
+	  */
+	public void setSO_Description (String SO_Description);
+
+	/** Get Order Description.
+	  * Description to be used on orders
+	  */
+	public String getSO_Description();
+
     /** Column name SalesRep_ID */
     public static final String COLUMNNAME_SalesRep_ID = "SalesRep_ID";
 
@@ -1609,6 +1463,7 @@ s site
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name SalesVolume */
@@ -1665,71 +1520,6 @@ s business as a percentage
 	  */
 	public int getShelfLifeMinPct();
 
-    /** Column name SO_CreditAvailable */
-    public static final String COLUMNNAME_SO_CreditAvailable = "SO_CreditAvailable";
-
-	/** Set Credit Available.
-	  * Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
-	  */
-	public void setSO_CreditAvailable (BigDecimal SO_CreditAvailable);
-
-	/** Get Credit Available.
-	  * Available Credit based on Credit Limit (not Total Open Balance) and Credit Used
-	  */
-	public BigDecimal getSO_CreditAvailable();
-
-    /** Column name SO_CreditLimit */
-    public static final String COLUMNNAME_SO_CreditLimit = "SO_CreditLimit";
-
-	/** Set Credit Limit.
-	  * Total outstanding invoice amounts allowed
-	  */
-	public void setSO_CreditLimit (BigDecimal SO_CreditLimit);
-
-	/** Get Credit Limit.
-	  * Total outstanding invoice amounts allowed
-	  */
-	public BigDecimal getSO_CreditLimit();
-
-    /** Column name SOCreditStatus */
-    public static final String COLUMNNAME_SOCreditStatus = "SOCreditStatus";
-
-	/** Set Credit Status.
-	  * Business Partner Credit Status
-	  */
-	public void setSOCreditStatus (String SOCreditStatus);
-
-	/** Get Credit Status.
-	  * Business Partner Credit Status
-	  */
-	public String getSOCreditStatus();
-
-    /** Column name SO_CreditUsed */
-    public static final String COLUMNNAME_SO_CreditUsed = "SO_CreditUsed";
-
-	/** Set Credit Used.
-	  * Current open balance
-	  */
-	public void setSO_CreditUsed (BigDecimal SO_CreditUsed);
-
-	/** Get Credit Used.
-	  * Current open balance
-	  */
-	public BigDecimal getSO_CreditUsed();
-
-    /** Column name SO_Description */
-    public static final String COLUMNNAME_SO_Description = "SO_Description";
-
-	/** Set Order Description.
-	  * Description to be used on orders
-	  */
-	public void setSO_Description (String SO_Description);
-
-	/** Get Order Description.
-	  * Description to be used on orders
-	  */
-	public String getSO_Description();
-
     /** Column name Supervisor_ID */
     public static final String COLUMNNAME_Supervisor_ID = "Supervisor_ID";
 
@@ -1743,6 +1533,7 @@ s business as a percentage
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name TaxID */
@@ -1784,6 +1575,19 @@ s business as a percentage
 	  */
 	public BigDecimal getTotalOpenBalance();
 
+    /** Column name URL */
+    public static final String COLUMNNAME_URL = "URL";
+
+	/** Set URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public void setURL (String URL);
+
+	/** Get URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public String getURL();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -1800,19 +1604,6 @@ s business as a percentage
 	  */
 	public int getUpdatedBy();
 
-    /** Column name URL */
-    public static final String COLUMNNAME_URL = "URL";
-
-	/** Set URL.
-	  * Full URL address - e.g. http://www.idempiere.org
-	  */
-	public void setURL (String URL);
-
-	/** Get URL.
-	  * Full URL address - e.g. http://www.idempiere.org
-	  */
-	public String getURL();
-
     /** Column name Value */
     public static final String COLUMNNAME_Value = "Value";
 
@@ -1825,4 +1616,247 @@ s business as a percentage
 	  * Search key for the record in the format required - must be unique
 	  */
 	public String getValue();
+
+    /** Column name ad_user_created */
+    public static final String COLUMNNAME_ad_user_created = "ad_user_created";
+
+	/** Set ad_user_created	  */
+	public void setad_user_created (Timestamp ad_user_created);
+
+	/** Get ad_user_created	  */
+	public Timestamp getad_user_created();
+
+    /** Column name ad_user_isactive */
+    public static final String COLUMNNAME_ad_user_isactive = "ad_user_isactive";
+
+	/** Set ad_user_isactive	  */
+	public void setad_user_isactive (boolean ad_user_isactive);
+
+	/** Get ad_user_isactive	  */
+	public boolean isad_user_isactive();
+
+    /** Column name ad_user_updated */
+    public static final String COLUMNNAME_ad_user_updated = "ad_user_updated";
+
+	/** Set ad_user_updated	  */
+	public void setad_user_updated (Timestamp ad_user_updated);
+
+	/** Get ad_user_updated	  */
+	public Timestamp getad_user_updated();
+
+    /** Column name ad_user_value */
+    public static final String COLUMNNAME_ad_user_value = "ad_user_value";
+
+	/** Set ad_user_value	  */
+	public void setad_user_value (String ad_user_value);
+
+	/** Get ad_user_value	  */
+	public String getad_user_value();
+
+    /** Column name c_bp_dunninggrace */
+    public static final String COLUMNNAME_c_bp_dunninggrace = "c_bp_dunninggrace";
+
+	/** Set c_bp_dunninggrace	  */
+	public void setc_bp_dunninggrace (Timestamp c_bp_dunninggrace);
+
+	/** Get c_bp_dunninggrace	  */
+	public Timestamp getc_bp_dunninggrace();
+
+    /** Column name c_bp_ismanufacturer */
+    public static final String COLUMNNAME_c_bp_ismanufacturer = "c_bp_ismanufacturer";
+
+	/** Set c_bp_ismanufacturer	  */
+	public void setc_bp_ismanufacturer (boolean c_bp_ismanufacturer);
+
+	/** Get c_bp_ismanufacturer	  */
+	public boolean isc_bp_ismanufacturer();
+
+    /** Column name c_bp_ispotaxexempt */
+    public static final String COLUMNNAME_c_bp_ispotaxexempt = "c_bp_ispotaxexempt";
+
+	/** Set c_bp_ispotaxexempt	  */
+	public void setc_bp_ispotaxexempt (boolean c_bp_ispotaxexempt);
+
+	/** Get c_bp_ispotaxexempt	  */
+	public boolean isc_bp_ispotaxexempt();
+
+    /** Column name c_bp_location_created */
+    public static final String COLUMNNAME_c_bp_location_created = "c_bp_location_created";
+
+	/** Set c_bp_location_created	  */
+	public void setc_bp_location_created (Timestamp c_bp_location_created);
+
+	/** Get c_bp_location_created	  */
+	public Timestamp getc_bp_location_created();
+
+    /** Column name c_bp_location_fax */
+    public static final String COLUMNNAME_c_bp_location_fax = "c_bp_location_fax";
+
+	/** Set c_bp_location_fax	  */
+	public void setc_bp_location_fax (String c_bp_location_fax);
+
+	/** Get c_bp_location_fax	  */
+	public String getc_bp_location_fax();
+
+    /** Column name c_bp_location_isactive */
+    public static final String COLUMNNAME_c_bp_location_isactive = "c_bp_location_isactive";
+
+	/** Set c_bp_location_isactive	  */
+	public void setc_bp_location_isactive (boolean c_bp_location_isactive);
+
+	/** Get c_bp_location_isactive	  */
+	public boolean isc_bp_location_isactive();
+
+    /** Column name c_bp_location_isbillto */
+    public static final String COLUMNNAME_c_bp_location_isbillto = "c_bp_location_isbillto";
+
+	/** Set c_bp_location_isbillto	  */
+	public void setc_bp_location_isbillto (boolean c_bp_location_isbillto);
+
+	/** Get c_bp_location_isbillto	  */
+	public boolean isc_bp_location_isbillto();
+
+    /** Column name c_bp_location_isdn */
+    public static final String COLUMNNAME_c_bp_location_isdn = "c_bp_location_isdn";
+
+	/** Set c_bp_location_isdn	  */
+	public void setc_bp_location_isdn (String c_bp_location_isdn);
+
+	/** Get c_bp_location_isdn	  */
+	public String getc_bp_location_isdn();
+
+    /** Column name c_bp_location_ispayfrom */
+    public static final String COLUMNNAME_c_bp_location_ispayfrom = "c_bp_location_ispayfrom";
+
+	/** Set c_bp_location_ispayfrom	  */
+	public void setc_bp_location_ispayfrom (boolean c_bp_location_ispayfrom);
+
+	/** Get c_bp_location_ispayfrom	  */
+	public boolean isc_bp_location_ispayfrom();
+
+    /** Column name c_bp_location_isremitto */
+    public static final String COLUMNNAME_c_bp_location_isremitto = "c_bp_location_isremitto";
+
+	/** Set c_bp_location_isremitto	  */
+	public void setc_bp_location_isremitto (boolean c_bp_location_isremitto);
+
+	/** Get c_bp_location_isremitto	  */
+	public boolean isc_bp_location_isremitto();
+
+    /** Column name c_bp_location_isshipto */
+    public static final String COLUMNNAME_c_bp_location_isshipto = "c_bp_location_isshipto";
+
+	/** Set c_bp_location_isshipto	  */
+	public void setc_bp_location_isshipto (boolean c_bp_location_isshipto);
+
+	/** Get c_bp_location_isshipto	  */
+	public boolean isc_bp_location_isshipto();
+
+    /** Column name c_bp_location_name */
+    public static final String COLUMNNAME_c_bp_location_name = "c_bp_location_name";
+
+	/** Set c_bp_location_name	  */
+	public void setc_bp_location_name (String c_bp_location_name);
+
+	/** Get c_bp_location_name	  */
+	public String getc_bp_location_name();
+
+    /** Column name c_bp_location_phone */
+    public static final String COLUMNNAME_c_bp_location_phone = "c_bp_location_phone";
+
+	/** Set c_bp_location_phone	  */
+	public void setc_bp_location_phone (String c_bp_location_phone);
+
+	/** Get c_bp_location_phone	  */
+	public String getc_bp_location_phone();
+
+    /** Column name c_bp_location_phone2 */
+    public static final String COLUMNNAME_c_bp_location_phone2 = "c_bp_location_phone2";
+
+	/** Set c_bp_location_phone2	  */
+	public void setc_bp_location_phone2 (String c_bp_location_phone2);
+
+	/** Get c_bp_location_phone2	  */
+	public String getc_bp_location_phone2();
+
+    /** Column name c_bp_location_updated */
+    public static final String COLUMNNAME_c_bp_location_updated = "c_bp_location_updated";
+
+	/** Set c_bp_location_updated	  */
+	public void setc_bp_location_updated (Timestamp c_bp_location_updated);
+
+	/** Get c_bp_location_updated	  */
+	public Timestamp getc_bp_location_updated();
+
+    /** Column name c_country_ad_language */
+    public static final String COLUMNNAME_c_country_ad_language = "c_country_ad_language";
+
+	/** Set c_country_ad_language	  */
+	public void setc_country_ad_language (String c_country_ad_language);
+
+	/** Get c_country_ad_language	  */
+	public String getc_country_ad_language();
+
+    /** Column name c_country_description */
+    public static final String COLUMNNAME_c_country_description = "c_country_description";
+
+	/** Set c_country_description	  */
+	public void setc_country_description (String c_country_description);
+
+	/** Get c_country_description	  */
+	public String getc_country_description();
+
+    /** Column name c_country_isactive */
+    public static final String COLUMNNAME_c_country_isactive = "c_country_isactive";
+
+	/** Set c_country_isactive	  */
+	public void setc_country_isactive (boolean c_country_isactive);
+
+	/** Get c_country_isactive	  */
+	public boolean isc_country_isactive();
+
+    /** Column name c_location_created */
+    public static final String COLUMNNAME_c_location_created = "c_location_created";
+
+	/** Set c_location_created	  */
+	public void setc_location_created (Timestamp c_location_created);
+
+	/** Get c_location_created	  */
+	public Timestamp getc_location_created();
+
+    /** Column name c_location_isactive */
+    public static final String COLUMNNAME_c_location_isactive = "c_location_isactive";
+
+	/** Set c_location_isactive	  */
+	public void setc_location_isactive (boolean c_location_isactive);
+
+	/** Get c_location_isactive	  */
+	public boolean isc_location_isactive();
+
+    /** Column name c_location_updated */
+    public static final String COLUMNNAME_c_location_updated = "c_location_updated";
+
+	/** Set c_location_updated	  */
+	public void setc_location_updated (Timestamp c_location_updated);
+
+	/** Get c_location_updated	  */
+	public Timestamp getc_location_updated();
+
+    /** Column name c_region_description */
+    public static final String COLUMNNAME_c_region_description = "c_region_description";
+
+	/** Set c_region_description	  */
+	public void setc_region_description (String c_region_description);
+
+	/** Get c_region_description	  */
+	public String getc_region_description();
+
+    /** Column name c_region_isactive */
+    public static final String COLUMNNAME_c_region_isactive = "c_region_isactive";
+
+	/** Set c_region_isactive	  */
+	public void setc_region_isactive (boolean c_region_isactive);
+
+	/** Get c_region_isactive	  */
+	public boolean isc_region_isactive();
 }

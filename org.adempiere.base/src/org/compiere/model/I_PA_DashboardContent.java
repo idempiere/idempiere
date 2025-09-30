@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_PA_DashboardContent 
 {
@@ -50,6 +50,7 @@ public interface I_PA_DashboardContent
 	/** Get Chart	  */
 	public int getAD_Chart_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -86,6 +87,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
@@ -101,6 +103,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Role_ID */
@@ -116,6 +119,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_StatusLine_ID */
@@ -127,6 +131,7 @@ public interface I_PA_DashboardContent
 	/** Get Status Line	  */
 	public int getAD_StatusLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -142,6 +147,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_Window_ID */
@@ -157,6 +163,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getAD_Window_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
     /** Column name ColumnNo */
@@ -222,6 +229,19 @@ public interface I_PA_DashboardContent
 
 	/** Get HTML	  */
 	public String getHTML();
+
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -297,15 +317,6 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isShowInDashboard();
 
-    /** Column name IsShowinLogin */
-    public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
-
-	/** Set Show on Login	  */
-	public void setIsShowinLogin (boolean IsShowinLogin);
-
-	/** Get Show on Login	  */
-	public boolean isShowinLogin();
-
     /** Column name IsShowTitle */
     public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
 
@@ -314,6 +325,15 @@ public interface I_PA_DashboardContent
 
 	/** Get Show Title	  */
 	public boolean isShowTitle();
+
+    /** Column name IsShowinLogin */
+    public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
+
+	/** Set Show on Login	  */
+	public void setIsShowinLogin (boolean IsShowinLogin);
+
+	/** Get Show on Login	  */
+	public boolean isShowinLogin();
 
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";
@@ -372,6 +392,7 @@ public interface I_PA_DashboardContent
 	  */
 	public int getPA_Goal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_Goal getPA_Goal() throws RuntimeException;
 
     /** Column name ProcessParameters */

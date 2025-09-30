@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Activity
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Activity")
 public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_WF_Activity (Properties ctx, int AD_WF_Activity_ID, String trxName)
@@ -130,6 +130,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Message getAD_Message() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Message)MTable.get(getCtx(), org.compiere.model.I_AD_Message.Table_ID)
@@ -158,6 +159,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -186,6 +188,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -251,6 +254,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_WF_Activity_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
@@ -287,6 +291,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
         return new KeyNamePair(get_ID(), String.valueOf(getAD_WF_Node_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Process getAD_WF_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Process)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Process.Table_ID)
@@ -315,6 +320,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
@@ -343,6 +349,7 @@ public class X_AD_WF_Activity extends PO implements I_AD_WF_Activity, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)

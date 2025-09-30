@@ -47,7 +47,7 @@ public class AmtInWords_MS implements AmtInWords
 	public AmtInWords_MS ()
 	{
 		super ();
-	}	//	AmtInWords_MY
+	}	//	AmtInWords_MS
 
 	/** Thousands plus				*/
 	private static final String[]	majorNames	= {
@@ -158,14 +158,14 @@ public class AmtInWords_MS implements AmtInWords
 		while (number > 0);
 		return (prefix + soFar).trim ();
 	}	//	convert
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words (three*five*two 80/100)
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null)
@@ -178,7 +178,7 @@ public class AmtInWords_MS implements AmtInWords
 		if (pos2 > pos)
 			pos = pos2;
 		String oldamt = amount;
-		amount = amount.replaceAll (",", "");
+		amount = amount.replace(",", "");
 		int newpos = amount.lastIndexOf ('.');
 		long dollars = Long.parseLong(amount.substring (0, newpos));
 		sb.append (convert (dollars));
@@ -219,7 +219,6 @@ public class AmtInWords_MS implements AmtInWords
 	public static void main (String[] args)
 	{
 		AmtInWords_MS aiw = new AmtInWords_MS();
-	//	aiw.print (".23");	Error
 		aiw.print ("0.23");
 		aiw.print ("1.23");
 		aiw.print ("12.34");
@@ -231,4 +230,4 @@ public class AmtInWords_MS implements AmtInWords
 		aiw.print ("100.00");
 	}	//	main
 	
-}	//	AmtInWords_MY
+}	//	AmtInWords_MS

@@ -15,6 +15,7 @@ package org.adempiere.webui.window;
 import java.io.InputStream;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
@@ -58,6 +59,10 @@ public class SimplePDFViewer extends Window {
 		height = height - 30;
 		ZKUpdateUtil.setHeight(iframe, height + "px");
 		ZKUpdateUtil.setWidth(iframe, "100%");
+		if (title != null && title.trim().length() > 0)
+			this.setTitle(title);
+		else
+			this.setTitle(Msg.translate(Env.getCtx(), "PDF"));
 		media = new AMedia(getTitle(), "pdf", "application/pdf", pdfInput);
 		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
 			if (getPage() != null) {
@@ -73,10 +78,6 @@ public class SimplePDFViewer extends Window {
 		this.appendChild(iframe);
 		this.setClosable(true);
 		this.setMaximizable(true);
-		if (title != null && title.trim().length() > 0)
-			this.setTitle(title);
-		else
-			this.setTitle(Msg.translate(Env.getCtx(), "PDF"));
 		
 		int width = 0;
 		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
@@ -94,7 +95,7 @@ public class SimplePDFViewer extends Window {
 	protected void showMobileViewer(Iframe iframe) {
 		mediaVersion++;
 		String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
-		String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+		String pdfJsUrl = AEnv.toPdfJsUrl(url);
 		iframe.setSrc(pdfJsUrl);
 	}
 	

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Language
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Language")
 public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Language (Properties ctx, int AD_Language_ID, String trxName)
@@ -181,6 +181,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Language_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintPaper getAD_PrintPaper() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintPaper)MTable.get(getCtx(), org.compiere.model.I_AD_PrintPaper.Table_ID)
@@ -210,7 +211,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set ISO Country Code.
-		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	*/
 	public void setCountryCode (String CountryCode)
 	{
@@ -218,7 +219,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Get ISO Country Code.
-		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode()
 	{

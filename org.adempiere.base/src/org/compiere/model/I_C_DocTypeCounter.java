@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocTypeCounter
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_DocTypeCounter 
 {
@@ -97,6 +97,7 @@ public interface I_C_DocTypeCounter
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name Counter_C_DocType_ID */
@@ -112,6 +113,7 @@ public interface I_C_DocTypeCounter
 	  */
 	public int getCounter_C_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getCounter_C_DocType() throws RuntimeException;
 
     /** Column name Created */

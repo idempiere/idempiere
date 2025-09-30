@@ -50,14 +50,9 @@ import net.sourceforge.barbecue.linear.ean.UCCEAN128Barcode;
 public class BarcodeElement extends PrintElement
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6825913765885213717L;
-
-	/**
-	 * 
-	 */
-
 
 	/**
 	 * 	Barcode Element Constructor
@@ -221,8 +216,8 @@ public class BarcodeElement extends PrintElement
 	}	//	isValid
 	
 	/**
-	 * 	Layout and Calculate Size
-	 * 	Set p_width and p_height
+	 * 	Layout and Calculate Size.<br/>
+	 * 	Set p_width and p_height.
 	 * 	@return true if calculated
 	 */
 	protected boolean calculateSize ()
@@ -272,6 +267,10 @@ public class BarcodeElement extends PrintElement
 		return true;
 	}	//	calculateSize
 
+	/**
+	 * Get scale factor
+	 * @return scale factor
+	 */
 	public float getScaleFactor() {
 		if (!p_sizeCalculated)
 			p_sizeCalculated = calculateSize();
@@ -279,7 +278,7 @@ public class BarcodeElement extends PrintElement
 	}
 
 	/**
-	 * author teo_sarca - [ 1673590 ] report table - barcode overflows over next fields
+	 * Is barcode allow to overflows over next fields
 	 * @return can this element overflow over the next fields
 	 */
 	public boolean isAllowOverflow() { // 
@@ -294,6 +293,7 @@ public class BarcodeElement extends PrintElement
 	 *	@param ctx context
 	 *	@param isView view
 	 */
+	@Override
 	public void paint (Graphics2D g2D, int pageNo, Point2D pageStart,
 		Properties ctx, boolean isView)
 	{
@@ -312,6 +312,12 @@ public class BarcodeElement extends PrintElement
 		paint(g2D, x, y); 
 	}	//	paint
 
+	/**
+	 * Paint element
+	 * @param g2D
+	 * @param x
+	 * @param y
+	 */
 	public void paint(Graphics2D g2D, int x, int y) {
 		try {
 			
@@ -348,6 +354,7 @@ public class BarcodeElement extends PrintElement
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		if (m_barcode == null)

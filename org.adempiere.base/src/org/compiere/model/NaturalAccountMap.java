@@ -57,13 +57,13 @@ import org.compiere.util.Util;
 public final class NaturalAccountMap<K,V> extends CCache<K,V>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2193338049120937392L;
 
 	/**
 	 *  Constructor.
-	 *  Parse File does the processing
+	 *  Parse File does the processing.
 	 *  @param ctx context
 	 *	@param trxName transaction
 	 */
@@ -92,10 +92,9 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(file.getAbsolutePath());
 		String line = null;
-		try
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), Ini.getCharset()), 10240))
 		{
-			//  see FileImport
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), Ini.getCharset()), 10240);
+			//  see FileImport			
 			//	not safe see p108 Network pgm
 			String errMsg = "";
 
@@ -106,7 +105,6 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 				lineNo++;
 			}
 			line = null;
-			in.close();
 
 			//  Error
 			if (errMsg.length() != 0)
@@ -135,7 +133,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	 *   7	G   [Summary Account]
 	 * 	 8	H   [Default_Account]
 	 * 	 9	I   [Parent Value] - ignored
-	 *
+	 *  @param lineNo
 	 *  @return error message or "" if OK
 	 *  @throws Exception
 	 */
@@ -271,7 +269,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	 * 	@param AD_Org_ID org
 	 * 	@param C_Element_ID element
 	 *  @param isActive 
-	 * 	@return true if created
+	 * 	@return true if success
 	 */
 	public boolean saveAccounts (int AD_Client_ID, int AD_Org_ID, int C_Element_ID, boolean isActive)
 	{
@@ -291,9 +289,9 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	}   //  saveAccounts
 
 	/**
-	 *  Get ElementValue
-	 * 	@param key key
-	 *  @return 0 if error
+	 *  Get C_ElementValue_ID
+	 * 	@param key search key
+	 *  @return C_ElementValue_ID or 0 if not found
 	 */
 	public int getC_ElementValue_ID (String key)
 	{

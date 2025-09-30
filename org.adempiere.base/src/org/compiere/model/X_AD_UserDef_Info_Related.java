@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Related
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info_Related")
 public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_Related, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Related (Properties ctx, int AD_UserDef_Info_Related_ID, String trxName)
@@ -112,6 +112,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoRelated getAD_InfoRelated() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoRelated)MTable.get(getCtx(), org.compiere.model.I_AD_InfoRelated.Table_ID)
@@ -139,6 +140,7 @@ public class X_AD_UserDef_Info_Related extends PO implements I_AD_UserDef_Info_R
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_UserDef_Info getAD_UserDef_Info() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_UserDef_Info)MTable.get(getCtx(), org.compiere.model.I_AD_UserDef_Info.Table_ID)

@@ -48,6 +48,51 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.mockito</groupId>
+    								<artifactId>mockito-core</artifactId>
+    								<version>5.16.1</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.objenesis</groupId>
+								    <artifactId>objenesis</artifactId>
+								    <version>3.3</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>net.bytebuddy</groupId>
+								    <artifactId>byte-buddy</artifactId>
+								    <version>1.15.11</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>net.bytebuddy</groupId>
+								    <artifactId>byte-buddy-agent</artifactId>
+								    <version>1.15.11</version>
+								</artifactItem>
+								<artifactItem>
+                                    <groupId>org.mockito</groupId>
+    								<artifactId>mockito-junit-jupiter</artifactId>
+    								<version>5.16.1</version>
+    							</artifactItem>
+							</artifactItems>
+							<outputDirectory>lib</outputDirectory>
+							<stripVersion>true</stripVersion>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
@@ -58,6 +103,14 @@
 					<skipTests>${skipTests}</skipTests>
 					<providerHint>junit59</providerHint>
 				</configuration>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -117,10 +170,15 @@
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>
-                                                                <type>eclipse-plugin</type>
-                                                                <id>org.idempiere.tablepartition</id>
-                                                                <versionRange>0.0.0</versionRange>
-                                                        </requirement>
+								<type>eclipse-plugin</type>
+								<id>org.idempiere.tablepartition</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>wrapped.org.apache.xmlbeans.xmlbeans</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>

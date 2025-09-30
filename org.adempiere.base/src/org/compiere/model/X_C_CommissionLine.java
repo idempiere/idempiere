@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionLine")
 public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CommissionLine (Properties ctx, int C_CommissionLine_ID, String trxName)
@@ -43,8 +43,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
         {
 			setAmtMultiplier (Env.ZERO);
 			setAmtSubtract (Env.ZERO);
-			setC_Commission_ID (0);
 			setC_CommissionLine_ID (0);
+			setC_Commission_ID (0);
 			setCommissionOrders (false);
 			setIsPositiveOnly (false);
 			setLine (0);
@@ -62,8 +62,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
         {
 			setAmtMultiplier (Env.ZERO);
 			setAmtSubtract (Env.ZERO);
-			setC_Commission_ID (0);
 			setC_CommissionLine_ID (0);
+			setC_Commission_ID (0);
 			setCommissionOrders (false);
 			setIsPositiveOnly (false);
 			setLine (0);
@@ -81,8 +81,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
         {
 			setAmtMultiplier (Env.ZERO);
 			setAmtSubtract (Env.ZERO);
-			setC_Commission_ID (0);
 			setC_CommissionLine_ID (0);
+			setC_Commission_ID (0);
 			setCommissionOrders (false);
 			setIsPositiveOnly (false);
 			setLine (0);
@@ -100,8 +100,8 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
         {
 			setAmtMultiplier (Env.ZERO);
 			setAmtSubtract (Env.ZERO);
-			setC_Commission_ID (0);
 			setC_CommissionLine_ID (0);
+			setC_Commission_ID (0);
 			setCommissionOrders (false);
 			setIsPositiveOnly (false);
 			setLine (0);
@@ -177,34 +177,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 		return bd;
 	}
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
-			.getPO(getC_BPartner_ID(), get_TrxName());
-	}
-
-	/** Set Business Partner.
-		@param C_BPartner_ID Identifies a Business Partner
-	*/
-	public void setC_BPartner_ID (int C_BPartner_ID)
-	{
-		if (C_BPartner_ID < 1)
-			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else
-			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
-	}
-
-	/** Get Business Partner.
-		@return Identifies a Business Partner
-	  */
-	public int getC_BPartner_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
@@ -233,41 +206,34 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Commission getC_Commission() throws RuntimeException
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
-		return (org.compiere.model.I_C_Commission)MTable.get(getCtx(), org.compiere.model.I_C_Commission.Table_ID)
-			.getPO(getC_Commission_ID(), get_TrxName());
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Commission.
-		@param C_Commission_ID Commission
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
 	*/
-	public void setC_Commission_ID (int C_Commission_ID)
+	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_Commission_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, null);
+		if (C_BPartner_ID < 1)
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, Integer.valueOf(C_Commission_ID));
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Commission.
-		@return Commission
+	/** Get Business Partner.
+		@return Identifies a Business Partner
 	  */
-	public int getC_Commission_ID()
+	public int getC_BPartner_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Commission_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair()
-    {
-        return new KeyNamePair(get_ID(), String.valueOf(getC_Commission_ID()));
-    }
 
 	/** Set Commission Line.
 		@param C_CommissionLine_ID Commission Line
@@ -306,29 +272,44 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 		return (String)get_Value(COLUMNNAME_C_CommissionLine_UU);
 	}
 
-	/** Set Commission only specified Orders.
-		@param CommissionOrders Commission only Orders or Invoices, where this Sales Rep is entered
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Commission getC_Commission() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Commission)MTable.get(getCtx(), org.compiere.model.I_C_Commission.Table_ID)
+			.getPO(getC_Commission_ID(), get_TrxName());
+	}
+
+	/** Set Commission.
+		@param C_Commission_ID Commission
 	*/
-	public void setCommissionOrders (boolean CommissionOrders)
+	public void setC_Commission_ID (int C_Commission_ID)
 	{
-		set_Value (COLUMNNAME_CommissionOrders, Boolean.valueOf(CommissionOrders));
+		if (C_Commission_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Commission_ID, Integer.valueOf(C_Commission_ID));
 	}
 
-	/** Get Commission only specified Orders.
-		@return Commission only Orders or Invoices, where this Sales Rep is entered
+	/** Get Commission.
+		@return Commission
 	  */
-	public boolean isCommissionOrders()
+	public int getC_Commission_ID()
 	{
-		Object oo = get_Value(COLUMNNAME_CommissionOrders);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Commission_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_Commission_ID()));
+    }
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
@@ -355,6 +336,29 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Commission only specified Orders.
+		@param CommissionOrders Commission only Orders or Invoices, where this Sales Rep is entered
+	*/
+	public void setCommissionOrders (boolean CommissionOrders)
+	{
+		set_Value (COLUMNNAME_CommissionOrders, Boolean.valueOf(CommissionOrders));
+	}
+
+	/** Get Commission only specified Orders.
+		@return Commission only Orders or Invoices, where this Sales Rep is entered
+	  */
+	public boolean isCommissionOrders()
+	{
+		Object oo = get_Value(COLUMNNAME_CommissionOrders);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Description.
@@ -415,6 +419,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
@@ -443,6 +448,7 @@ public class X_C_CommissionLine extends PO implements I_C_CommissionLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

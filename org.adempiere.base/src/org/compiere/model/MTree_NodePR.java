@@ -25,7 +25,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
 /**
- *	(Disk) Tree Node Model Product
+ *	Tree Node Model for Product
  *	
  *  @author Jorg Janke
  *  @version $Id: MTree_NodePR.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
@@ -33,7 +33,7 @@ import org.compiere.util.DB;
 public class MTree_NodePR extends X_AD_TreeNodePR
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7949499593365182416L;
 
@@ -75,11 +75,11 @@ public class MTree_NodePR extends X_AD_TreeNodePR
 	private static CLogger	s_log	= CLogger.getCLogger (MTree_NodePR.class);
 	
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_TreeNodePR_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_TreeNodePR_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTree_NodePR(Properties ctx, String AD_TreeNodePR_UU, String trxName) {
         super(ctx, AD_TreeNodePR_UU, trxName);
     }

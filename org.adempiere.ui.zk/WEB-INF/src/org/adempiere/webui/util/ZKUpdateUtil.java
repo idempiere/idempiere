@@ -24,10 +24,10 @@ import org.zkoss.zul.Tree;
 /**
  * Helper method to set width and height of component.
  * @author hieplq
- *
  */
 public class ZKUpdateUtil {
 	/**
+	 * Ensure vflex is null and set height of comp
 	 * @param comp
 	 * @param value
 	 */
@@ -38,6 +38,7 @@ public class ZKUpdateUtil {
 	}
 	
 	/**
+	 * Ensure hflex is null and set width of comp
 	 * @param comp
 	 * @param value
 	 */
@@ -48,6 +49,7 @@ public class ZKUpdateUtil {
 	}
 
 	/**
+	 * Ensure width is null and set hflex of comp
 	 * @param comp
 	 * @param value
 	 */
@@ -58,6 +60,7 @@ public class ZKUpdateUtil {
 	}
 
 	/**
+	 * Ensure height is null and set vflex of comp
 	 * @param comp
 	 * @param value
 	 */
@@ -78,6 +81,7 @@ public class ZKUpdateUtil {
 	}
 	
 	/**
+	 * Ensure height is null and set vflex of comp
 	 * @param comp
 	 * @param value
 	 */
@@ -88,6 +92,7 @@ public class ZKUpdateUtil {
 	}
 	
 	/**
+	 * Ensure height is null and set vflex of comp
 	 * @param comp
 	 * @param value
 	 */

@@ -46,6 +46,7 @@ public class LookupDisplayColumn implements Serializable
 	 * 	@param ad_Reference_Value_ID table/list reference id
 	 * @deprecated Please use {@link #LookupDisplayColumn(String, String, boolean, int, int)}
 	 */
+	@Deprecated
 	public LookupDisplayColumn(String columnName, boolean isTranslated,
 		int ad_Reference_ID, int ad_Reference_Value_ID)
 	{
@@ -66,7 +67,7 @@ public class LookupDisplayColumn implements Serializable
 		IsTranslated = isTranslated;
 		DisplayType = ad_Reference_ID;
 		AD_Reference_ID = ad_Reference_Value_ID;
-		if (columnSQL != null && columnSQL.length() > 0 && (columnSQL.startsWith("@SQL=") || columnSQL.startsWith("@SQLFIND=")))
+		if (columnSQL != null && columnSQL.length() > 0 && (columnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) || columnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX)))
 			ColumnSQL = "NULL";
 		else
 			ColumnSQL = columnSQL;

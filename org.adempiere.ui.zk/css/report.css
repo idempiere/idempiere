@@ -1,3 +1,8 @@
+html,body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+	font-size: 14px;
+}
+
 .rp-href {
 	color: #000000;
 }
@@ -79,6 +84,10 @@ div.rp-flex-container {
 	flex-grow: 0;
 }
 
+#rp-para-table-wrap summary {
+	font-weight: bold;
+}
+
 div.rp-table-wrap {
 	flex-grow: 1;
 	overflow: auto;
@@ -103,12 +112,16 @@ div.rp-table-wrap > table > thead > tr > th {
 
 .z-icon-Report::before {
 	content: "\f1ea";
+	font-family: FontAwesome;
 }
 .z-icon-Window::before {
 	content: "\f022";
+	font-family: FontAwesome;
 }
 .z-icon-Zoom::before {
 	content: "\f14c";
+	font-weight: 900;
+	font-family: FontAwesome;
 }
 [class^="z-icon-"], [class*=" z-icon-"] {
   box-sizing: border-box;

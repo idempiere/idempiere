@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?component name="divarrow" macro-uri="~./theme/iceblue_c/zul/calendar/divarrow.zul"?>
+<zk>
+<zscript><![CDATA[
+	var calendarIcon = org.adempiere.webui.theme.ThemeManager.getThemeResource("images/Calendar16.png");
+	import org.compiere.util.Msg;
+	import org.compiere.util.Env;
+    import org.compiere.util.Util;
+    import org.adempiere.webui.theme.ThemeManager;
+
+	var today = Msg.getMsg(Env.getCtx(),"Today");
+	var refresh = Util.cleanAmp(Msg.getMsg(Env.getCtx(),"Refresh"));
+	var isFontIcon = ThemeManager.isUseFontIconForImage();
+	var leftBtn = isFontIcon ? "z-icon-PreviousRecord" : "arrow-left";
+	var rightBtn = isFontIcon ? "z-icon-NextRecord" : "arrow-right";
+	var fontClass = isFontIcon ? "z-font-Calendar" : "";
+	var calIconClass = isFontIcon ? "z-icon-Calendar" : "";
+	var calendarClass = isFontIcon ? "z-cal-font-theme" : "";
+	calendarIcon = isFontIcon ? "" : calendarIcon;
+	
+]]></zscript>
+<style src="~./theme/iceblue_c/zul/calendar/calendar.css"/>
+<calendars sclass="${calendarClass}" firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
+	<toolbar sclass="calendar-toolbar">
+		<div class="float-left">
+			<hbox align="center">
+				<divarrow id="divArrowLeft" type="${leftBtn}" fontClass="${fontClass}"/>
+				<divarrow id="divArrowRight" type="${rightBtn}" fontClass="${fontClass}"/>
+				<div>
+					<button id="btnCurrentDate" label="${today}" sclass="btn-small"/>
+				    <separator orient="vertical" spacing="2px"/>
+					<label id="lblDate"/>
+					<button id="btnRefresh" label="${refresh}" sclass="btn-small"/>
+					<toolbarbutton id="btnCal" image="${calendarIcon}" iconSclass="${calIconClass}"/>
+				</div>
+			</hbox>
+		</div>
+	</toolbar>
+</calendars>
+</zk>

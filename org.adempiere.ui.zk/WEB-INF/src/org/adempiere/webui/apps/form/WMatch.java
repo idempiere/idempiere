@@ -52,6 +52,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
@@ -65,9 +66,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 
@@ -75,7 +77,6 @@ import org.zkoss.zul.Vlayout;
  *  Form to perform Matching between Purchase Order, Vendor Invoice and Material Receipt.
  *
  *  @author     Jorg Janke
- *  @version    $Id: VMatch.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VMatch")
 public class WMatch extends Match
@@ -342,7 +343,11 @@ public class WMatch extends Match
 		row.appendChild(dateFromLabel.rightAlign());		
 		row.appendChild(dateFrom.getComponent());
 		row.appendChild(dateToLabel.rightAlign());
-		row.appendChild(dateTo.getComponent());
+		Hbox boxTo = new Hbox();
+		boxTo.appendChild(dateTo.getComponent());
+		DateRangeButton drb = (new DateRangeButton(dateFrom, dateTo));
+		boxTo.appendChild(drb);
+		row.appendChild(boxTo);
 		bSearch.setStyle("float: right");
 		int r = row.getChildren().size() % noOfColumn;
 		row.appendCellChild(bSearch, noOfColumn-r);

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Menu
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Menu")
 public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName)
@@ -133,43 +133,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
       return sb.toString();
     }
 
-	/** Action AD_Reference_ID=104 */
-	public static final int ACTION_AD_Reference_ID=104;
-	/** Workbench = B */
-	public static final String ACTION_Workbench = "B";
-	/** Detail = D */
-	public static final String ACTION_Detail = "D";
-	/** WorkFlow = F */
-	public static final String ACTION_WorkFlow = "F";
-	/** Info = I */
-	public static final String ACTION_Info = "I";
-	/** Process = P */
-	public static final String ACTION_Process = "P";
-	/** Report = R */
-	public static final String ACTION_Report = "R";
-	/** Task = T */
-	public static final String ACTION_Task = "T";
-	/** Window = W */
-	public static final String ACTION_Window = "W";
-	/** Form = X */
-	public static final String ACTION_Form = "X";
-	/** Set Action.
-		@param Action Indicates the Action to be performed
-	*/
-	public void setAction (String Action)
-	{
-
-		set_Value (COLUMNNAME_Action, Action);
-	}
-
-	/** Get Action.
-		@return Indicates the Action to be performed
-	  */
-	public String getAction()
-	{
-		return (String)get_Value(COLUMNNAME_Action);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
@@ -198,6 +162,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
@@ -263,6 +228,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Menu_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -291,6 +257,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
@@ -319,6 +286,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -347,6 +315,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
@@ -373,6 +342,43 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Action AD_Reference_ID=104 */
+	public static final int ACTION_AD_Reference_ID=104;
+	/** Workbench = B */
+	public static final String ACTION_Workbench = "B";
+	/** Detail = D */
+	public static final String ACTION_Detail = "D";
+	/** WorkFlow = F */
+	public static final String ACTION_WorkFlow = "F";
+	/** Info = I */
+	public static final String ACTION_Info = "I";
+	/** Process = P */
+	public static final String ACTION_Process = "P";
+	/** Report = R */
+	public static final String ACTION_Report = "R";
+	/** Task = T */
+	public static final String ACTION_Task = "T";
+	/** Window = W */
+	public static final String ACTION_Window = "W";
+	/** Form = X */
+	public static final String ACTION_Form = "X";
+	/** Set Action.
+		@param Action Indicates the Action to be performed
+	*/
+	public void setAction (String Action)
+	{
+
+		set_Value (COLUMNNAME_Action, Action);
+	}
+
+	/** Get Action.
+		@return Indicates the Action to be performed
+	  */
+	public String getAction()
+	{
+		return (String)get_Value(COLUMNNAME_Action);
 	}
 
 	/** Set Description.

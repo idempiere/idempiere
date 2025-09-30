@@ -1,3 +1,24 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.compiere.process;
 
 import java.util.logging.Level;
@@ -15,6 +36,9 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFProcess;
 
+/**
+ * Controller for running of process
+ */
 public class ServerProcessCtl implements Runnable {
 	
 	/**	Static Logger	*/
@@ -25,7 +49,7 @@ public class ServerProcessCtl implements Runnable {
 	private Trx				m_trx;
 	private boolean managedTrxForJavaProcess = true;
 	
-	/**************************************************************************
+	/**
 	 *  Constructor
 	 *  @param pi Process info
 	 *  @param trx Transaction
@@ -37,21 +61,16 @@ public class ServerProcessCtl implements Runnable {
 	}   //  ProcessCtl
 	
 	/**
-	 *	Process Control
-	 *  <code>
-	 *	- Get Instance ID
-	 *	- Get Parameters
-	 *	- execute (lock - start process - unlock)
-	 *  </code>
-	 *  Creates a ProcessCtl instance, which calls
-	 *  lockUI and unlockUI if parent is a ASyncProcess
+	 *	Run a process
+	 *  <br/>
+	 *	<ol>- Get Instance ID</ol>
+	 *	<ol>- Get Parameters</ol>
+	 *	<ol>- execute (lock - start process - unlock)</ol>
 	 *  <br>
-	 *	Called from APanel.cmd_print, APanel.actionButton and
-	 *  VPaySelect.cmd_generate
 	 *
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
-	 *  @return worker started ProcessCtl instance or null for workflow
+	 *  @return worker started ServerProcessCtl instance
 	 */
 	public static ServerProcessCtl process (ProcessInfo pi, Trx trx)
 	{
@@ -59,22 +78,17 @@ public class ServerProcessCtl implements Runnable {
 	}
 	
 	/**
-	 *	Process Control
-	 *  <code>
-	 *	- Get Instance ID
-	 *	- Get Parameters
-	 *	- execute (lock - start process - unlock)
-	 *  </code>
-	 *  Creates a ProcessCtl instance, which calls
-	 *  lockUI and unlockUI if parent is a ASyncProcess
+	 *	Run a process
+	 *  <br/>
+	 *	<ol>- Get Instance ID</ol>
+	 *	<ol>- Get Parameters</ol>
+	 *	<ol>- execute (lock - start process - unlock)</ol>
 	 *  <br>
-	 *	Called from APanel.cmd_print, APanel.actionButton and
-	 *  VPaySelect.cmd_generate
 	 *
-	 *  @param pi ProcessInfo process info
+	 *  @param pi process info
 	 *  @param trx Transaction
-	 *  @param managedTrxForJavaProcess
-	 *  @return worker started ProcessCtl instance or null for workflow
+	 *  @param managedTrxForJavaProcess true to perform rollback/commit of transaction
+	 *  @return worker started ServerProcessCtl instance
 	 */
 	public static ServerProcessCtl process (ProcessInfo pi, Trx trx, boolean managedTrxForJavaProcess)
 	{
@@ -131,7 +145,9 @@ public class ServerProcessCtl implements Runnable {
 	
 	/**
 	 * Run this process in a new thread
+	 * @deprecated
 	 */
+	@Deprecated
 	public void start()
 	{
 		Thread thread = new Thread(this);
@@ -143,13 +159,11 @@ public class ServerProcessCtl implements Runnable {
 
 	/**
 	 *	Execute Process Instance and Lock UI.
-	 *  Calls lockUI and unlockUI if parent is a ASyncProcess
-	 *  <pre>
-	 *		- Get Process Information
-	 *      - Call Class
-	 *		- Submit SQL Procedure
-	 *		- Run SQL Procedure
-	 *	</pre>
+	 *  <p>
+	 *	<ol>- Get Process Information</ol>
+	 *  <ol>- Call Class</ol>
+	 *	<ol>- Submit SQL Procedure</ol>
+	 *	<ol>- Run SQL Procedure</ol>
 	 */
 	public void run ()
 	{
@@ -200,7 +214,6 @@ public class ServerProcessCtl implements Runnable {
 		if (ProcedureName == null)
 			ProcedureName = "";
 
-		
 		/**********************************************************************
 		 *	Workflow
 		 */
@@ -220,7 +233,7 @@ public class ServerProcessCtl implements Runnable {
 		}
 		
 		/**********************************************************************
-		 *	Start Optional Class
+		 *	Start Java Process Class
 		 */
 		if (m_pi.getClassName() != null)
 		{
@@ -241,7 +254,7 @@ public class ServerProcessCtl implements Runnable {
 				return;
 			}
 			//  No Optional Report ... done
-			if (IsReport && AD_ReportView_ID == 0 && ! isJasper)
+			if (IsReport && AD_ReportView_ID == 0 && !isJasper)
 			{
 				return;
 			}
@@ -250,7 +263,7 @@ public class ServerProcessCtl implements Runnable {
 		/**********************************************************************
 		 *	Report submission
 		 */
-		//	Optional Pre-Report Process
+		//	Optional Pre-Report DB Process
 		if (IsReport && ProcedureName.length() > 0)
 		{
 			m_pi.setReportingProcess(true);
@@ -265,6 +278,12 @@ public class ServerProcessCtl implements Runnable {
 			m_pi.setReportingProcess(true);
 			m_pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
 			startProcess();
+			if (m_pi.isError()) {
+				MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
+				pinstance.setErrorMsg(m_pi.getSummary());
+				pinstance.setJsonData(m_pi.getJsonData());
+				pinstance.saveEx();
+			}
 			return;
 		}
 		
@@ -277,7 +296,7 @@ public class ServerProcessCtl implements Runnable {
 			m_pi.setSummary(summ, !ok);
 		}
 		/**********************************************************************
-		 * 	Process submission
+		 * 	Start DB Process
 		 */
 		else
 		{
@@ -288,14 +307,13 @@ public class ServerProcessCtl implements Runnable {
 			//	Success - getResult
 			ProcessInfoUtil.setSummaryFromDB(m_pi);
 		}			//	*** Process submission ***
-	//	log.fine(Log.l3_Util, "ProcessCtl.run - done");
 	}   //  run
 	
-	/**************************************************************************
+	/**
 	 *  Start Workflow.
 	 *
-	 *  @param AD_Workflow_ID workflow
-	 *  @return     true if started
+	 *  @param AD_Workflow_ID workflow id
+	 *  @return true if started
 	 */
 	protected boolean startWorkflow (int AD_Workflow_ID)
 	{
@@ -308,14 +326,10 @@ public class ServerProcessCtl implements Runnable {
 		return started;
 	}   //  startWorkflow
 
-	/**************************************************************************
-	 *  Start Java Process Class.
-	 *      instantiate the class implementing the interface ProcessCall.
-	 *  The class can be a Server/Client class (when in Package
-	 *  org adempiere.process or org.compiere.model) or a client only class
-	 *  (e.g. in org.compiere.report)
+	/**
+	 *  Start Java or Script Process.<br/>
 	 *
-	 *  @return     true if success
+	 *  @return true if success
 	 */
 	protected boolean startProcess ()
 	{
@@ -327,8 +341,7 @@ public class ServerProcessCtl implements Runnable {
 		}
 	}   //  startProcess
 
-
-	/**************************************************************************
+	/**
 	 *  Start Database Process
 	 *  @param ProcedureName PL/SQL procedure name
 	 *  @return true if success
@@ -350,7 +363,7 @@ public class ServerProcessCtl implements Runnable {
 	}
 	
 	/**
-	 * 
+	 * Is java process call will commit/rollback trx
 	 * @return true if java process call will commit/rollback trx
 	 */
 	public boolean isManagedTrxForJavaProcess()

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Cost
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_Order_Cost 
@@ -77,6 +77,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name C_AcctSchema_ID */
@@ -92,6 +93,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name CostingMethod */
@@ -232,6 +234,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getM_AttributeSetInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
 
     /** Column name M_CostElement_ID */
@@ -247,6 +250,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getM_CostElement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostElement getM_CostElement() throws RuntimeException;
 
     /** Column name M_CostType_ID */
@@ -262,6 +266,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getM_CostType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException;
 
     /** Column name M_Product_ID */
@@ -277,6 +282,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name PP_Order_Cost_ID */
@@ -310,6 +316,7 @@ public interface I_PP_Order_Cost
 	  */
 	public int getPP_Order_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException;
 
     /** Column name Updated */

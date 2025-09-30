@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_A_Asset 
 {
@@ -40,110 +40,6 @@ public interface I_A_Asset
     BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
-
-    /** Column name A_Asset_Action */
-    public static final String COLUMNNAME_A_Asset_Action = "A_Asset_Action";
-
-	/** Set Asset Action	  */
-	public void setA_Asset_Action (String A_Asset_Action);
-
-	/** Get Asset Action	  */
-	public String getA_Asset_Action();
-
-    /** Column name A_Asset_Class_ID */
-    public static final String COLUMNNAME_A_Asset_Class_ID = "A_Asset_Class_ID";
-
-	/** Set Asset class	  */
-	public void setA_Asset_Class_ID (int A_Asset_Class_ID);
-
-	/** Get Asset class	  */
-	public int getA_Asset_Class_ID();
-
-	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException;
-
-    /** Column name A_Asset_CreateDate */
-    public static final String COLUMNNAME_A_Asset_CreateDate = "A_Asset_CreateDate";
-
-	/** Set Create Date	  */
-	public void setA_Asset_CreateDate (Timestamp A_Asset_CreateDate);
-
-	/** Get Create Date	  */
-	public Timestamp getA_Asset_CreateDate();
-
-    /** Column name A_Asset_Group_ID */
-    public static final String COLUMNNAME_A_Asset_Group_ID = "A_Asset_Group_ID";
-
-	/** Set Asset Group.
-	  * Group of Assets
-	  */
-	public void setA_Asset_Group_ID (int A_Asset_Group_ID);
-
-	/** Get Asset Group.
-	  * Group of Assets
-	  */
-	public int getA_Asset_Group_ID();
-
-	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
-
-    /** Column name A_Asset_ID */
-    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
-
-	/** Set Asset.
-	  * Asset used internally or by customers
-	  */
-	public void setA_Asset_ID (int A_Asset_ID);
-
-	/** Get Asset.
-	  * Asset used internally or by customers
-	  */
-	public int getA_Asset_ID();
-
-    /** Column name A_Asset_RevalDate */
-    public static final String COLUMNNAME_A_Asset_RevalDate = "A_Asset_RevalDate";
-
-	/** Set Revaluation Date	  */
-	public void setA_Asset_RevalDate (Timestamp A_Asset_RevalDate);
-
-	/** Get Revaluation Date	  */
-	public Timestamp getA_Asset_RevalDate();
-
-    /** Column name A_Asset_Status */
-    public static final String COLUMNNAME_A_Asset_Status = "A_Asset_Status";
-
-	/** Set Asset Status	  */
-	public void setA_Asset_Status (String A_Asset_Status);
-
-	/** Get Asset Status	  */
-	public String getA_Asset_Status();
-
-    /** Column name A_AssetType */
-    public static final String COLUMNNAME_A_AssetType = "A_AssetType";
-
-	/** Set Asset Type	  */
-	public void setA_AssetType (String A_AssetType);
-
-	/** Get Asset Type	  */
-	public String getA_AssetType();
-
-    /** Column name A_Asset_Type_ID */
-    public static final String COLUMNNAME_A_Asset_Type_ID = "A_Asset_Type_ID";
-
-	/** Set Asset Type	  */
-	public void setA_Asset_Type_ID (int A_Asset_Type_ID);
-
-	/** Get Asset Type	  */
-	public int getA_Asset_Type_ID();
-
-	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException;
-
-    /** Column name A_Asset_UU */
-    public static final String COLUMNNAME_A_Asset_UU = "A_Asset_UU";
-
-	/** Set A_Asset_UU	  */
-	public void setA_Asset_UU (String A_Asset_UU);
-
-	/** Get A_Asset_UU	  */
-	public String getA_Asset_UU();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
@@ -179,7 +75,115 @@ public interface I_A_Asset
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
+
+    /** Column name A_AssetType */
+    public static final String COLUMNNAME_A_AssetType = "A_AssetType";
+
+	/** Set Asset Type	  */
+	public void setA_AssetType (String A_AssetType);
+
+	/** Get Asset Type	  */
+	public String getA_AssetType();
+
+    /** Column name A_Asset_Action */
+    public static final String COLUMNNAME_A_Asset_Action = "A_Asset_Action";
+
+	/** Set Asset Action	  */
+	public void setA_Asset_Action (String A_Asset_Action);
+
+	/** Get Asset Action	  */
+	public String getA_Asset_Action();
+
+    /** Column name A_Asset_Class_ID */
+    public static final String COLUMNNAME_A_Asset_Class_ID = "A_Asset_Class_ID";
+
+	/** Set Asset class	  */
+	public void setA_Asset_Class_ID (int A_Asset_Class_ID);
+
+	/** Get Asset class	  */
+	public int getA_Asset_Class_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException;
+
+    /** Column name A_Asset_CreateDate */
+    public static final String COLUMNNAME_A_Asset_CreateDate = "A_Asset_CreateDate";
+
+	/** Set Create Date	  */
+	public void setA_Asset_CreateDate (Timestamp A_Asset_CreateDate);
+
+	/** Get Create Date	  */
+	public Timestamp getA_Asset_CreateDate();
+
+    /** Column name A_Asset_Group_ID */
+    public static final String COLUMNNAME_A_Asset_Group_ID = "A_Asset_Group_ID";
+
+	/** Set Asset Group.
+	  * Group of Assets
+	  */
+	public void setA_Asset_Group_ID (int A_Asset_Group_ID);
+
+	/** Get Asset Group.
+	  * Group of Assets
+	  */
+	public int getA_Asset_Group_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset_Group getA_Asset_Group() throws RuntimeException;
+
+    /** Column name A_Asset_ID */
+    public static final String COLUMNNAME_A_Asset_ID = "A_Asset_ID";
+
+	/** Set Asset.
+	  * Asset used internally or by customers
+	  */
+	public void setA_Asset_ID (int A_Asset_ID);
+
+	/** Get Asset.
+	  * Asset used internally or by customers
+	  */
+	public int getA_Asset_ID();
+
+    /** Column name A_Asset_RevalDate */
+    public static final String COLUMNNAME_A_Asset_RevalDate = "A_Asset_RevalDate";
+
+	/** Set Revaluation Date	  */
+	public void setA_Asset_RevalDate (Timestamp A_Asset_RevalDate);
+
+	/** Get Revaluation Date	  */
+	public Timestamp getA_Asset_RevalDate();
+
+    /** Column name A_Asset_Status */
+    public static final String COLUMNNAME_A_Asset_Status = "A_Asset_Status";
+
+	/** Set Asset Status	  */
+	public void setA_Asset_Status (String A_Asset_Status);
+
+	/** Get Asset Status	  */
+	public String getA_Asset_Status();
+
+    /** Column name A_Asset_Type_ID */
+    public static final String COLUMNNAME_A_Asset_Type_ID = "A_Asset_Type_ID";
+
+	/** Set Asset Type	  */
+	public void setA_Asset_Type_ID (int A_Asset_Type_ID);
+
+	/** Get Asset Type	  */
+	public int getA_Asset_Type_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException;
+
+    /** Column name A_Asset_UU */
+    public static final String COLUMNNAME_A_Asset_UU = "A_Asset_UU";
+
+	/** Set A_Asset_UU	  */
+	public void setA_Asset_UU (String A_Asset_UU);
+
+	/** Get A_Asset_UU	  */
+	public String getA_Asset_UU();
 
     /** Column name A_Parent_Asset_ID */
     public static final String COLUMNNAME_A_Parent_Asset_ID = "A_Parent_Asset_ID";
@@ -190,6 +194,7 @@ public interface I_A_Asset
 	/** Get Parent Asset	  */
 	public int getA_Parent_Asset_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset getA_Parent_Asset() throws RuntimeException;
 
     /** Column name A_QTY_Current */
@@ -271,7 +276,24 @@ public interface I_A_Asset
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
+
+    /** Column name C_BPartnerSR_ID */
+    public static final String COLUMNNAME_C_BPartnerSR_ID = "C_BPartnerSR_ID";
+
+	/** Set BPartner (Agent).
+	  * Business Partner (Agent or Sales Rep)
+	  */
+	public void setC_BPartnerSR_ID (int C_BPartnerSR_ID);
+
+	/** Get BPartner (Agent).
+	  * Business Partner (Agent or Sales Rep)
+	  */
+	public int getC_BPartnerSR_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -286,6 +308,7 @@ public interface I_A_Asset
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_BPartner_Location_ID */
@@ -301,22 +324,8 @@ public interface I_A_Asset
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
-
-    /** Column name C_BPartnerSR_ID */
-    public static final String COLUMNNAME_C_BPartnerSR_ID = "C_BPartnerSR_ID";
-
-	/** Set BPartner (Agent).
-	  * Business Partner (Agent or Sales Rep)
-	  */
-	public void setC_BPartnerSR_ID (int C_BPartnerSR_ID);
-
-	/** Get BPartner (Agent).
-	  * Business Partner (Agent or Sales Rep)
-	  */
-	public int getC_BPartnerSR_ID();
-
-	public org.compiere.model.I_C_BPartner getC_BPartnerSR() throws RuntimeException;
 
     /** Column name C_Location_ID */
     public static final String COLUMNNAME_C_Location_ID = "C_Location_ID";
@@ -331,6 +340,7 @@ public interface I_A_Asset
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name C_Project_ID */
@@ -346,6 +356,7 @@ public interface I_A_Asset
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
 
     /** Column name Created */
@@ -529,6 +540,19 @@ public interface I_A_Asset
 	  */
 	public int getLastMaintenanceUnit();
 
+    /** Column name LeaseTerminationDate */
+    public static final String COLUMNNAME_LeaseTerminationDate = "LeaseTerminationDate";
+
+	/** Set Lease Termination.
+	  * Lease Termination Date
+	  */
+	public void setLeaseTerminationDate (Timestamp LeaseTerminationDate);
+
+	/** Get Lease Termination.
+	  * Lease Termination Date
+	  */
+	public Timestamp getLeaseTerminationDate();
+
     /** Column name Lease_BPartner_ID */
     public static final String COLUMNNAME_Lease_BPartner_ID = "Lease_BPartner_ID";
 
@@ -542,20 +566,8 @@ public interface I_A_Asset
 	  */
 	public int getLease_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getLease_BPartner() throws RuntimeException;
-
-    /** Column name LeaseTerminationDate */
-    public static final String COLUMNNAME_LeaseTerminationDate = "LeaseTerminationDate";
-
-	/** Set Lease Termination.
-	  * Lease Termination Date
-	  */
-	public void setLeaseTerminationDate (Timestamp LeaseTerminationDate);
-
-	/** Get Lease Termination.
-	  * Lease Termination Date
-	  */
-	public Timestamp getLeaseTerminationDate();
 
     /** Column name LifeUseUnits */
     public static final String COLUMNNAME_LifeUseUnits = "LifeUseUnits";
@@ -596,6 +608,70 @@ public interface I_A_Asset
 	  */
 	public String getLot();
 
+    /** Column name M_AttributeSetInstance_ID */
+    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
+
+	/** Set Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
+
+	/** Get Attribute Set Instance.
+	  * Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
+
+    /** Column name M_InOutLine_ID */
+    public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
+
+	/** Set Shipment/Receipt Line.
+	  * Line on Shipment or Receipt document
+	  */
+	public void setM_InOutLine_ID (int M_InOutLine_ID);
+
+	/** Get Shipment/Receipt Line.
+	  * Line on Shipment or Receipt document
+	  */
+	public int getM_InOutLine_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
+
+    /** Column name M_Locator_ID */
+    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
+
+	/** Set Locator.
+	  * Warehouse Locator
+	  */
+	public void setM_Locator_ID (int M_Locator_ID);
+
+	/** Get Locator.
+	  * Warehouse Locator
+	  */
+	public int getM_Locator_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_Locator getM_Locator() throws RuntimeException;
+
+    /** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
     /** Column name ManufacturedYear */
     public static final String COLUMNNAME_ManufacturedYear = "ManufacturedYear";
 
@@ -617,66 +693,6 @@ public interface I_A_Asset
 	  * Manufacturer of the Product
 	  */
 	public String getManufacturer();
-
-    /** Column name M_AttributeSetInstance_ID */
-    public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
-
-	/** Set Attribute Set Instance.
-	  * Product Attribute Set Instance
-	  */
-	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID);
-
-	/** Get Attribute Set Instance.
-	  * Product Attribute Set Instance
-	  */
-	public int getM_AttributeSetInstance_ID();
-
-	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException;
-
-    /** Column name M_InOutLine_ID */
-    public static final String COLUMNNAME_M_InOutLine_ID = "M_InOutLine_ID";
-
-	/** Set Shipment/Receipt Line.
-	  * Line on Shipment or Receipt document
-	  */
-	public void setM_InOutLine_ID (int M_InOutLine_ID);
-
-	/** Get Shipment/Receipt Line.
-	  * Line on Shipment or Receipt document
-	  */
-	public int getM_InOutLine_ID();
-
-	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException;
-
-    /** Column name M_Locator_ID */
-    public static final String COLUMNNAME_M_Locator_ID = "M_Locator_ID";
-
-	/** Set Locator.
-	  * Warehouse Locator
-	  */
-	public void setM_Locator_ID (int M_Locator_ID);
-
-	/** Get Locator.
-	  * Warehouse Locator
-	  */
-	public int getM_Locator_ID();
-
-	public I_M_Locator getM_Locator() throws RuntimeException;
-
-    /** Column name M_Product_ID */
-    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
-
-	/** Set Product.
-	  * Product, Service, Item
-	  */
-	public void setM_Product_ID (int M_Product_ID);
-
-	/** Get Product.
-	  * Product, Service, Item
-	  */
-	public int getM_Product_ID();
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

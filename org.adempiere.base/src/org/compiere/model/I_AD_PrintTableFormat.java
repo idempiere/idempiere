@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintTableFormat
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_PrintTableFormat 
 {
@@ -62,6 +62,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getAD_Image_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -180,6 +181,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunctBG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getFunctBG_PrintColor() throws RuntimeException;
 
     /** Column name FunctFG_PrintColor_ID */
@@ -195,6 +197,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunctFG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getFunctFG_PrintColor() throws RuntimeException;
 
     /** Column name Funct_PrintFont_ID */
@@ -210,6 +213,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getFunct_PrintFont_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getFunct_PrintFont() throws RuntimeException;
 
     /** Column name HdrLine_PrintColor_ID */
@@ -225,22 +229,8 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrLine_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrLine_PrintColor() throws RuntimeException;
-
-    /** Column name Hdr_PrintFont_ID */
-    public static final String COLUMNNAME_Hdr_PrintFont_ID = "Hdr_PrintFont_ID";
-
-	/** Set Header Row Font.
-	  * Header row Font
-	  */
-	public void setHdr_PrintFont_ID (int Hdr_PrintFont_ID);
-
-	/** Get Header Row Font.
-	  * Header row Font
-	  */
-	public int getHdr_PrintFont_ID();
-
-	public org.compiere.model.I_AD_PrintFont getHdr_PrintFont() throws RuntimeException;
 
     /** Column name HdrStroke */
     public static final String COLUMNNAME_HdrStroke = "HdrStroke";
@@ -281,6 +271,7 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrTextBG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrTextBG_PrintColor() throws RuntimeException;
 
     /** Column name HdrTextFG_PrintColor_ID */
@@ -296,7 +287,24 @@ public interface I_AD_PrintTableFormat
 	  */
 	public int getHdrTextFG_PrintColor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getHdrTextFG_PrintColor() throws RuntimeException;
+
+    /** Column name Hdr_PrintFont_ID */
+    public static final String COLUMNNAME_Hdr_PrintFont_ID = "Hdr_PrintFont_ID";
+
+	/** Set Header Row Font.
+	  * Header row Font
+	  */
+	public void setHdr_PrintFont_ID (int Hdr_PrintFont_ID);
+
+	/** Get Header Row Font.
+	  * Header row Font
+	  */
+	public int getHdr_PrintFont_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_PrintFont getHdr_PrintFont() throws RuntimeException;
 
     /** Column name HeaderCenter */
     public static final String COLUMNNAME_HeaderCenter = "HeaderCenter";
@@ -415,19 +423,6 @@ public interface I_AD_PrintTableFormat
 	  */
 	public boolean isPaintBoundaryLines();
 
-    /** Column name IsPaintHeaderLines */
-    public static final String COLUMNNAME_IsPaintHeaderLines = "IsPaintHeaderLines";
-
-	/** Set Paint Header Lines.
-	  * Paint Lines over/under the Header Line 
-	  */
-	public void setIsPaintHeaderLines (boolean IsPaintHeaderLines);
-
-	/** Get Paint Header Lines.
-	  * Paint Lines over/under the Header Line 
-	  */
-	public boolean isPaintHeaderLines();
-
     /** Column name IsPaintHLines */
     public static final String COLUMNNAME_IsPaintHLines = "IsPaintHLines";
 
@@ -440,6 +435,19 @@ public interface I_AD_PrintTableFormat
 	  * Paint horizontal lines
 	  */
 	public boolean isPaintHLines();
+
+    /** Column name IsPaintHeaderLines */
+    public static final String COLUMNNAME_IsPaintHeaderLines = "IsPaintHeaderLines";
+
+	/** Set Paint Header Lines.
+	  * Paint Lines over/under the Header Line 
+	  */
+	public void setIsPaintHeaderLines (boolean IsPaintHeaderLines);
+
+	/** Get Paint Header Lines.
+	  * Paint Lines over/under the Header Line 
+	  */
+	public boolean isPaintHeaderLines();
 
     /** Column name IsPaintVLines */
     public static final String COLUMNNAME_IsPaintVLines = "IsPaintVLines";
@@ -467,21 +475,6 @@ public interface I_AD_PrintTableFormat
 	  */
 	public boolean isPrintFunctionSymbols();
 
-    /** Column name Line_PrintColor_ID */
-    public static final String COLUMNNAME_Line_PrintColor_ID = "Line_PrintColor_ID";
-
-	/** Set Line Color.
-	  * Table line color
-	  */
-	public void setLine_PrintColor_ID (int Line_PrintColor_ID);
-
-	/** Get Line Color.
-	  * Table line color
-	  */
-	public int getLine_PrintColor_ID();
-
-	public org.compiere.model.I_AD_PrintColor getLine_PrintColor() throws RuntimeException;
-
     /** Column name LineStroke */
     public static final String COLUMNNAME_LineStroke = "LineStroke";
 
@@ -507,6 +500,22 @@ public interface I_AD_PrintTableFormat
 	  * Type of the Line Stroke
 	  */
 	public String getLineStrokeType();
+
+    /** Column name Line_PrintColor_ID */
+    public static final String COLUMNNAME_Line_PrintColor_ID = "Line_PrintColor_ID";
+
+	/** Set Line Color.
+	  * Table line color
+	  */
+	public void setLine_PrintColor_ID (int Line_PrintColor_ID);
+
+	/** Get Line Color.
+	  * Table line color
+	  */
+	public int getLine_PrintColor_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_PrintColor getLine_PrintColor() throws RuntimeException;
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

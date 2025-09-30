@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressTransaction
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AddressTransaction")
 public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AddressTransaction (Properties ctx, int C_AddressTransaction_ID, String trxName)
@@ -237,6 +237,7 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 		return (String)get_Value(COLUMNNAME_C_AddressTransaction_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AddressValidation getC_AddressValidation() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AddressValidation)MTable.get(getCtx(), org.compiere.model.I_C_AddressValidation.Table_ID)
@@ -259,6 +260,35 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
 	public int getC_AddressValidation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AddressValidation_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_Location getC_Location() throws RuntimeException
+	{
+		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
+			.getPO(getC_Location_ID(), get_TrxName());
+	}
+
+	/** Set Address.
+		@param C_Location_ID Location or Address
+	*/
+	public void setC_Location_ID (int C_Location_ID)
+	{
+		if (C_Location_ID < 1)
+			set_Value (COLUMNNAME_C_Location_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
+	}
+
+	/** Get Address.
+		@return Location or Address
+	  */
+	public int getC_Location_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -287,34 +317,6 @@ public class X_C_AddressTransaction extends PO implements I_C_AddressTransaction
     {
         return new KeyNamePair(get_ID(), getCity());
     }
-
-	public I_C_Location getC_Location() throws RuntimeException
-	{
-		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
-			.getPO(getC_Location_ID(), get_TrxName());
-	}
-
-	/** Set Address.
-		@param C_Location_ID Location or Address
-	*/
-	public void setC_Location_ID (int C_Location_ID)
-	{
-		if (C_Location_ID < 1)
-			set_Value (COLUMNNAME_C_Location_ID, null);
-		else
-			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
-	}
-
-	/** Get Address.
-		@return Location or Address
-	  */
-	public int getC_Location_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Comments.
 		@param Comments Comments or additional information

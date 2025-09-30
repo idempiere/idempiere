@@ -13,10 +13,14 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.util.logging.Level;
 
 import org.compiere.model.MTableIndex;
 import org.compiere.util.DB;
 
+/**
+ * Process to drop a table index from DB.
+ */
 @org.adempiere.base.annotation.Process
 public class TableIndexDrop extends SvrProcess {
 
@@ -28,10 +32,11 @@ public class TableIndexDrop extends SvrProcess {
 		p_AD_TableIndex_ID = getRecord_ID();
 	}
 
+	@Override
 	protected String doIt() throws Exception 
 	{
 		MTableIndex index = new MTableIndex(getCtx(), p_AD_TableIndex_ID, get_TrxName());
-		log.info(index.toString());
+		if (log.isLoggable(Level.INFO)) log.info(index.toString());
 
 		String sql = index.getDropDDL();
 		int rvalue = DB.executeUpdateEx(sql, get_TrxName());

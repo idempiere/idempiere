@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_BOMLine
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_BOMLine")
 public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Persistent
 {
@@ -35,7 +35,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20240116;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName)
@@ -49,11 +49,11 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
 			setM_Product_ID (0);
 			setM_Warehouse_ID (0);
-			setPP_Order_BOM_ID (0);
 			setPP_Order_BOMLine_ID (0);
+			setPP_Order_BOM_ID (0);
 			setPP_Order_ID (0);
-			setQtyBatch (Env.ZERO);
 			setQtyBOM (Env.ZERO);
+			setQtyBatch (Env.ZERO);
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
@@ -77,11 +77,11 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
 			setM_Product_ID (0);
 			setM_Warehouse_ID (0);
-			setPP_Order_BOM_ID (0);
 			setPP_Order_BOMLine_ID (0);
+			setPP_Order_BOM_ID (0);
 			setPP_Order_ID (0);
-			setQtyBatch (Env.ZERO);
 			setQtyBOM (Env.ZERO);
+			setQtyBatch (Env.ZERO);
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
@@ -105,11 +105,11 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
 			setM_Product_ID (0);
 			setM_Warehouse_ID (0);
-			setPP_Order_BOM_ID (0);
 			setPP_Order_BOMLine_ID (0);
+			setPP_Order_BOM_ID (0);
 			setPP_Order_ID (0);
-			setQtyBatch (Env.ZERO);
 			setQtyBOM (Env.ZERO);
+			setQtyBatch (Env.ZERO);
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
@@ -133,11 +133,11 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 // @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
 			setM_Product_ID (0);
 			setM_Warehouse_ID (0);
-			setPP_Order_BOM_ID (0);
 			setPP_Order_BOMLine_ID (0);
+			setPP_Order_BOM_ID (0);
 			setPP_Order_ID (0);
-			setQtyBatch (Env.ZERO);
 			setQtyBOM (Env.ZERO);
+			setQtyBatch (Env.ZERO);
 			setQtyDelivered (Env.ZERO);
 			setQtyPost (Env.ZERO);
 			setQtyReject (Env.ZERO);
@@ -177,6 +177,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -240,6 +241,35 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return (String)get_Value(COLUMNNAME_BackflushGroup);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
+
+	/** Set UOM.
+		@param C_UOM_ID Unit of Measure
+	*/
+	public void setC_UOM_ID (int C_UOM_ID)
+	{
+		if (C_UOM_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
+	}
+
+	/** Get UOM.
+		@return Unit of Measure
+	  */
+	public int getC_UOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** ComponentType AD_Reference_ID=53225 */
 	public static final int COMPONENTTYPE_AD_Reference_ID=53225;
 	/** By-Product = BY */
@@ -294,34 +324,6 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
-			.getPO(getC_UOM_ID(), get_TrxName());
-	}
-
-	/** Set UOM.
-		@param C_UOM_ID Unit of Measure
-	*/
-	public void setC_UOM_ID (int C_UOM_ID)
-	{
-		if (C_UOM_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
-	}
-
-	/** Get UOM.
-		@return Unit of Measure
-	  */
-	public int getC_UOM_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Date Delivered.
@@ -516,6 +518,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -544,6 +547,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
@@ -572,6 +576,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -600,6 +605,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -636,6 +642,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
         return new KeyNamePair(get_ID(), String.valueOf(getM_Product_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -659,33 +666,6 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.eevolution.model.I_PP_Order_BOM getPP_Order_BOM() throws RuntimeException
-	{
-		return (org.eevolution.model.I_PP_Order_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_BOM.Table_ID)
-			.getPO(getPP_Order_BOM_ID(), get_TrxName());
-	}
-
-	/** Set Manufacturing Order BOM.
-		@param PP_Order_BOM_ID Manufacturing Order BOM
-	*/
-	public void setPP_Order_BOM_ID (int PP_Order_BOM_ID)
-	{
-		if (PP_Order_BOM_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PP_Order_BOM_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PP_Order_BOM_ID, Integer.valueOf(PP_Order_BOM_ID));
-	}
-
-	/** Get Manufacturing Order BOM.
-		@return Manufacturing Order BOM	  */
-	public int getPP_Order_BOM_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_BOM_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -727,6 +707,35 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return (String)get_Value(COLUMNNAME_PP_Order_BOMLine_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.eevolution.model.I_PP_Order_BOM getPP_Order_BOM() throws RuntimeException
+	{
+		return (org.eevolution.model.I_PP_Order_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_BOM.Table_ID)
+			.getPO(getPP_Order_BOM_ID(), get_TrxName());
+	}
+
+	/** Set Manufacturing Order BOM.
+		@param PP_Order_BOM_ID Manufacturing Order BOM
+	*/
+	public void setPP_Order_BOM_ID (int PP_Order_BOM_ID)
+	{
+		if (PP_Order_BOM_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PP_Order_BOM_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PP_Order_BOM_ID, Integer.valueOf(PP_Order_BOM_ID));
+	}
+
+	/** Get Manufacturing Order BOM.
+		@return Manufacturing Order BOM	  */
+	public int getPP_Order_BOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_BOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
 	{
 		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
@@ -755,25 +764,6 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 		return ii.intValue();
 	}
 
-	/** Set Quantity in %.
-		@param QtyBatch Indicate the Quantity % use in this Formula
-	*/
-	public void setQtyBatch (BigDecimal QtyBatch)
-	{
-		set_ValueNoCheck (COLUMNNAME_QtyBatch, QtyBatch);
-	}
-
-	/** Get Quantity in %.
-		@return Indicate the Quantity % use in this Formula
-	  */
-	public BigDecimal getQtyBatch()
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatch);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	/** Set Quantity.
 		@param QtyBOM Indicate the Quantity use in this BOM
 	*/
@@ -788,6 +778,25 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	public BigDecimal getQtyBOM()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBOM);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Quantity in %.
+		@param QtyBatch Indicate the Quantity % use in this Formula
+	*/
+	public void setQtyBatch (BigDecimal QtyBatch)
+	{
+		set_ValueNoCheck (COLUMNNAME_QtyBatch, QtyBatch);
+	}
+
+	/** Get Quantity in %.
+		@return Indicate the Quantity % use in this Formula
+	  */
+	public BigDecimal getQtyBatch()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatch);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

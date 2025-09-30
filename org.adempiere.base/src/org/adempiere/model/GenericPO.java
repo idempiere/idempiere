@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.util.ServerContextPropertiesWrapper;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
@@ -41,10 +42,10 @@ import org.compiere.process.DocAction;
  */
 public class GenericPO extends PO implements DocAction {	
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3180937588404433030L;
-	
+	private static final long serialVersionUID = -5727439960128102430L;
+
 	private DocActionDelegate<GenericPO> docActionDelegate = new DocActionDelegate<>(this);
 	
 	/**
@@ -54,6 +55,15 @@ public class GenericPO extends PO implements DocAction {
 	 */
 	public GenericPO(String tableName, Properties ctx, int ID) {
 		super(new PropertiesWrapper(ctx, tableName), ID, null, (String[]) null);
+	}
+
+	/**
+	 * @param tableName
+	 * @param ctx
+	 * @param ID
+	 */
+	public GenericPO(String tableName, Properties ctx, String UUID) {
+		super(new PropertiesWrapper(ctx, tableName), UUID, null, (String[]) null);
 	}
 
 	/**
@@ -73,6 +83,16 @@ public class GenericPO extends PO implements DocAction {
 	 */
 	public GenericPO(String tableName, Properties ctx, int ID, String trxName) {
 		super(new PropertiesWrapper(ctx, tableName), ID, trxName, (String[]) null);
+	}
+
+	/**
+	 * @param tableName
+	 * @param ctx
+	 * @param ID
+	 * @param trxName
+	 */
+	public GenericPO(String tableName, Properties ctx, String UUID, String trxName) {
+		super(new PropertiesWrapper(ctx, tableName), UUID, trxName, (String[]) null);
 	}
 
 	/**
@@ -346,7 +366,7 @@ public class GenericPO extends PO implements DocAction {
  * @author Low Heng Sin
  *
  */
-class PropertiesWrapper extends Properties {
+class PropertiesWrapper extends ServerContextPropertiesWrapper {
 	/**
 	 * generated serial id
 	 */

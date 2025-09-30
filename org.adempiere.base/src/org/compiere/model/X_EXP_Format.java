@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for EXP_Format
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="EXP_Format")
 public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_EXP_Format (Properties ctx, int EXP_Format_ID, String trxName)
@@ -116,6 +116,7 @@ public class X_EXP_Format extends PO implements I_EXP_Format, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)

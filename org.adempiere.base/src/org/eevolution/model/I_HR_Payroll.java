@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Payroll
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Payroll 
@@ -77,6 +77,7 @@ public interface I_HR_Payroll
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -92,6 +93,7 @@ public interface I_HR_Payroll
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name Created */
@@ -132,6 +134,7 @@ public interface I_HR_Payroll
 	/** Get Payroll Contract	  */
 	public int getHR_Contract_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Contract getHR_Contract() throws RuntimeException;
 
     /** Column name HR_Payroll_ID */

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_CashBook_Acct
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_CashBook_Acct")
 public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_CashBook_Acct (Properties ctx, int C_CashBook_Acct_ID, String trxName)
@@ -104,6 +104,137 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Asset_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Asset.
+		@param CB_Asset_Acct Cash Book Asset Account
+	*/
+	public void setCB_Asset_Acct (int CB_Asset_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Asset_Acct, Integer.valueOf(CB_Asset_Acct));
+	}
+
+	/** Get Cash Book Asset.
+		@return Cash Book Asset Account
+	  */
+	public int getCB_Asset_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Asset_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_CashTransfer_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Transfer.
+		@param CB_CashTransfer_Acct Cash Transfer Clearing Account
+	*/
+	public void setCB_CashTransfer_Acct (int CB_CashTransfer_Acct)
+	{
+		set_Value (COLUMNNAME_CB_CashTransfer_Acct, Integer.valueOf(CB_CashTransfer_Acct));
+	}
+
+	/** Get Cash Transfer.
+		@return Cash Transfer Clearing Account
+	  */
+	public int getCB_CashTransfer_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_CashTransfer_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Differences_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Differences.
+		@param CB_Differences_Acct Cash Book Differences Account
+	*/
+	public void setCB_Differences_Acct (int CB_Differences_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Differences_Acct, Integer.valueOf(CB_Differences_Acct));
+	}
+
+	/** Get Cash Book Differences.
+		@return Cash Book Differences Account
+	  */
+	public int getCB_Differences_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Differences_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Expense_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Expense.
+		@param CB_Expense_Acct Cash Book Expense Account
+	*/
+	public void setCB_Expense_Acct (int CB_Expense_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Expense_Acct, Integer.valueOf(CB_Expense_Acct));
+	}
+
+	/** Get Cash Book Expense.
+		@return Cash Book Expense Account
+	  */
+	public int getCB_Expense_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Expense_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCB_Receipt_Acct(), get_TrxName());
+	}
+
+	/** Set Cash Book Receipt.
+		@param CB_Receipt_Acct Cash Book Receipts Account
+	*/
+	public void setCB_Receipt_Acct (int CB_Receipt_Acct)
+	{
+		set_Value (COLUMNNAME_CB_Receipt_Acct, Integer.valueOf(CB_Receipt_Acct));
+	}
+
+	/** Get Cash Book Receipt.
+		@return Cash Book Receipts Account
+	  */
+	public int getCB_Receipt_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Receipt_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -132,131 +263,6 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return ii.intValue();
 	}
 
-	public I_C_ValidCombination getCB_Asset_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Asset_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Asset.
-		@param CB_Asset_Acct Cash Book Asset Account
-	*/
-	public void setCB_Asset_Acct (int CB_Asset_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Asset_Acct, Integer.valueOf(CB_Asset_Acct));
-	}
-
-	/** Get Cash Book Asset.
-		@return Cash Book Asset Account
-	  */
-	public int getCB_Asset_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Asset_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_CashTransfer_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_CashTransfer_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Transfer.
-		@param CB_CashTransfer_Acct Cash Transfer Clearing Account
-	*/
-	public void setCB_CashTransfer_Acct (int CB_CashTransfer_Acct)
-	{
-		set_Value (COLUMNNAME_CB_CashTransfer_Acct, Integer.valueOf(CB_CashTransfer_Acct));
-	}
-
-	/** Get Cash Transfer.
-		@return Cash Transfer Clearing Account
-	  */
-	public int getCB_CashTransfer_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_CashTransfer_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_Differences_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Differences_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Differences.
-		@param CB_Differences_Acct Cash Book Differences Account
-	*/
-	public void setCB_Differences_Acct (int CB_Differences_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Differences_Acct, Integer.valueOf(CB_Differences_Acct));
-	}
-
-	/** Get Cash Book Differences.
-		@return Cash Book Differences Account
-	  */
-	public int getCB_Differences_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Differences_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_Expense_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Expense_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Expense.
-		@param CB_Expense_Acct Cash Book Expense Account
-	*/
-	public void setCB_Expense_Acct (int CB_Expense_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Expense_Acct, Integer.valueOf(CB_Expense_Acct));
-	}
-
-	/** Get Cash Book Expense.
-		@return Cash Book Expense Account
-	  */
-	public int getCB_Expense_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Expense_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_C_ValidCombination getCB_Receipt_A() throws RuntimeException
-	{
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
-			.getPO(getCB_Receipt_Acct(), get_TrxName());
-	}
-
-	/** Set Cash Book Receipt.
-		@param CB_Receipt_Acct Cash Book Receipts Account
-	*/
-	public void setCB_Receipt_Acct (int CB_Receipt_Acct)
-	{
-		set_Value (COLUMNNAME_CB_Receipt_Acct, Integer.valueOf(CB_Receipt_Acct));
-	}
-
-	/** Get Cash Book Receipt.
-		@return Cash Book Receipts Account
-	  */
-	public int getCB_Receipt_Acct()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_CB_Receipt_Acct);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set C_CashBook_Acct_UU.
 		@param C_CashBook_Acct_UU C_CashBook_Acct_UU
 	*/
@@ -272,6 +278,7 @@ public class X_C_CashBook_Acct extends PO implements I_C_CashBook_Acct, I_Persis
 		return (String)get_Value(COLUMNNAME_C_CashBook_Acct_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_CashBook getC_CashBook() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_CashBook)MTable.get(getCtx(), org.compiere.model.I_C_CashBook.Table_ID)

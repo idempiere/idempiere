@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BankAccount_Processor
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_BankAccount_Processor")
 public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Processor, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName)
@@ -432,6 +432,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
@@ -475,6 +476,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 		return (String)get_Value(COLUMNNAME_C_BankAccount_Processor_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
@@ -503,6 +505,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)

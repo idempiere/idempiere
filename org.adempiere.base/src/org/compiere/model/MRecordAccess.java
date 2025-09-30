@@ -34,12 +34,12 @@ import org.compiere.util.Msg;
  */
 public class MRecordAccess extends X_AD_Record_Access
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -3608241027957009608L;
+	private static final long serialVersionUID = -6463810251202651132L;
 
-    /**
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param AD_Record_Access_UU  UUID key
@@ -290,20 +290,20 @@ public class MRecordAccess extends X_AD_Record_Access
 		return m_tableName;
 	}	//	getTableName
 	
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
-		if (!success)
-			return success;
-
-		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
-
+		// Reset role cache
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
 		return success;
 	}	//	afterSave
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		// Reset role cache
+		if (success)
+			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MRole.Table_Name, getAD_Role_ID()));
+		return success;
+	}
 
 }	//	MRecordAccess

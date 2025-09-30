@@ -53,8 +53,6 @@ public abstract class CreateFromShipment extends CreateFrom
 {
 	/**  Loaded Invoice             */
 	protected MInvoice		m_invoice = null;
-	/**  Loaded RMA             */
-	protected MRMA            m_rma = null;
 	private int defaultLocator_ID=0;
 
 	/**

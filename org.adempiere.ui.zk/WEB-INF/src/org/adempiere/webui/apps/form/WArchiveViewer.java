@@ -41,7 +41,6 @@ import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -57,13 +56,16 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
 import org.compiere.apps.form.Archive;
@@ -78,6 +80,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.io.RepeatableInputStream;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Page;
@@ -136,7 +139,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 					if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
 						if (media != null && iframe.getSrc() == null) {
 							String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-							String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+							String pdfJsUrl = AEnv.toPdfJsUrl(url);
 							iframe.setSrc(pdfJsUrl);
 						}
 					}
@@ -178,9 +181,9 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	private Listbox createdByQField = new Listbox();
 	private Label createdQLabel = new Label(Msg.translate(Env.getCtx(), "Created"));
 	/** Created date from field of query tab */
-	private Datebox createdQFrom = new Datebox();
+	private WDateEditor createdQFrom = new WDateEditor();
 	/** Created date to field of query tab */
-	private Datebox createdQTo = new Datebox();
+	private WDateEditor createdQTo = new WDateEditor();
 	
 	//Viewer Tab
 	/** Prior button of viewer tab */
@@ -270,11 +273,11 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	/**
 	 * Show archive content in {@link #iframe}.
 	 * @param name
-	 * @param data
+	 * @param inputStream
 	 */
-	private void reportViewer(String name, byte[] data)
+	private void reportViewer(String name, InputStream inputStream)
 	{	
-		media = new AMedia(name + ".pdf", "pdf", "application/pdf", data);
+		media = new AMedia(name + ".pdf", "pdf", "application/pdf", RepeatableInputStream.getInstance(inputStream));
 		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())))
 		{
 			mediaVersion ++;
@@ -286,7 +289,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			else
 			{
 				String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-				String pdfJsUrl = "pdf.js/web/viewer.html?file="+url;
+				String pdfJsUrl = AEnv.toPdfJsUrl(url);
 				iframe.setContent(null);
 				iframe.setSrc(pdfJsUrl);
 			}
@@ -320,35 +323,35 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		createdByQField.setRows(1);
 		
 		if (ThemeManager.isUseFontIconForImage())
-			updateArchive.setIconSclass("z-icon-Ok");
+			updateArchive.setIconSclass(Icon.getIconSclass(Icon.OK));
 		else
 			updateArchive.setImage(ThemeManager.getThemeResource("images/Ok24.png"));
 		updateArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
 		updateArchive.addEventListener(Events.ON_CLICK, this);
 		
 		if (ThemeManager.isUseFontIconForImage())
-			deleteArchive.setIconSclass("z-icon-Delete");
+			deleteArchive.setIconSclass(Icon.getIconSclass(Icon.DELETE));
 		else
 			deleteArchive.setImage(ThemeManager.getThemeResource("images/Delete24.png"));
 		deleteArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 		deleteArchive.addEventListener(Events.ON_CLICK, this);
 		
 		if (ThemeManager.isUseFontIconForImage())
-			bRefresh.setIconSclass("z-icon-Refresh");
+			bRefresh.setIconSclass(Icon.getIconSclass(Icon.REFRESH));
 		else
 			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh24.png"));
 		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		
 		if (ThemeManager.isUseFontIconForImage())
-			bEmail.setIconSclass("z-icon-SendMail");
+			bEmail.setIconSclass(Icon.getIconSclass(Icon.SEND_MAIL));
 		else
 			bEmail.setImage(ThemeManager.getThemeResource("images/SendMail24.png"));
 		bEmail.setTooltiptext(Msg.getMsg(Env.getCtx(), "EMail"));
 		bEmail.addEventListener(Events.ON_CLICK, this);
 
 		if (ThemeManager.isUseFontIconForImage())
-			bBack.setIconSclass("z-icon-Previous");
+			bBack.setIconSclass(Icon.getIconSclass(Icon.PREVIOUS));
 		else
 			bBack.setImage(ThemeManager.getThemeResource("images/wfBack24.png"));
 		bBack.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
@@ -356,7 +359,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		LayoutUtils.addSclass("btn-medium", bBack);
 		
 		if (ThemeManager.isUseFontIconForImage())
-			bNext.setIconSclass("z-icon-Next");
+			bNext.setIconSclass(Icon.getIconSclass(Icon.NEXT));
 		else
 			bNext.setImage(ThemeManager.getThemeResource("images/wfNext24.png"));
 		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
@@ -457,8 +460,10 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			rows.appendChild(row);
 			row.appendChild(createdQLabel);
 			Hbox hbox = new Hbox();
-			hbox.appendChild(createdQFrom);
-			hbox.appendChild(createdQTo);
+			hbox.appendChild(createdQFrom.getComponent());
+			hbox.appendChild(createdQTo.getComponent());
+			DateRangeButton drb = (new DateRangeButton(createdQFrom, createdQTo));
+			hbox.appendChild(drb);
 			row.appendChild(hbox);
 			row.appendChild(new Space());
 			
@@ -589,7 +594,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			ZKUpdateUtil.setHflex(cell, "min");
 			ToolBarButton more = new ToolBarButton();
 			if (ThemeManager.isUseFontIconForImage())
-				more.setIconSclass("z-icon-Expand");
+				more.setIconSclass(Icon.getIconSclass(Icon.EXPAND));
 			else
 				more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
 			cell.appendChild(more);
@@ -735,7 +740,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
 		File attachment = new File(FileUtil.getTempMailName(ar.getName(), ".pdf"));
 		try {
-			Files.write(attachment.toPath(), ar.getBinaryData());
+			Files.copy(ar.getInputStream(), attachment.toPath());
 		} catch (IOException e) {
 			throw new AdempiereException(e);
 		}
@@ -784,6 +789,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			descriptionField.setText("");
 			helpField.setText("");
 			iframe.getChildren().clear();
+			iframe.setSrc(null);
 			return;
 		}
 		
@@ -795,30 +801,21 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		descriptionField.setText(ar.getDescription());
 		helpField.setText(ar.getHelp());
 		
-		InputStream in = null;
 		try
 		{
-			in = ar.getInputStream();
+			InputStream in = ar.getInputStream();
 			if (in != null)
-				reportViewer(ar.getName(), ar.getBinaryData());
-			else
+				reportViewer(ar.getName(), in);
+			else {
 				iframe.getChildren().clear();
+				iframe.setSrc(null);
+			}
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, e.getMessage(), e);
 			iframe.getChildren().clear();
-		}
-		finally
-		{
-			if (in != null)
-			{
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			iframe.setSrc(null);
 		}
 	}	//	updateVDisplay
 

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_MovementConfirm
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_MovementConfirm 
 {
@@ -182,6 +182,7 @@ public interface I_M_MovementConfirm
 	  */
 	public int getM_Inventory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Inventory getM_Inventory() throws RuntimeException;
 
     /** Column name M_MovementConfirm_ID */
@@ -219,6 +220,7 @@ public interface I_M_MovementConfirm
 	  */
 	public int getM_Movement_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException;
 
     /** Column name Processed */

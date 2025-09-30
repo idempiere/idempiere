@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_NonBusinessDay
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_NonBusinessDay 
 {
@@ -75,6 +75,7 @@ public interface I_C_NonBusinessDay
 	  */
 	public int getC_Calendar_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException;
 
     /** Column name C_Country_ID */
@@ -90,6 +91,7 @@ public interface I_C_NonBusinessDay
 	  */
 	public int getC_Country_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name C_NonBusinessDay_ID */

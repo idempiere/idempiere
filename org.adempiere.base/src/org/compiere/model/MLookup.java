@@ -38,6 +38,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -57,9 +58,9 @@ import org.compiere.util.ValueNamePair;
 public final class MLookup extends Lookup implements Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 2288661955135689187L;
+	private static final long serialVersionUID = 3339750658316918418L;
 
 	/**
 	 *  MLookup Constructor
@@ -996,14 +997,95 @@ public final class MLookup extends Lookup implements Serializable
 	}
 	
 	/**
+	 * Get Lookup
+	 * @param tableID
+	 * @param windowNo
+	 * @param tabNo
+	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
+	 */
+	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo) {
+		return getRecordsLookup(tableID, windowNo, tabNo, false);
+	}
+	
+	/**
+	 * Get Lookup
+	 * @param tableID
+	 * @param windowNo
+	 * @param tabNo
+	 * @param useUUIDKey - default false
+	 * @return null if tableID &lt;= 0 or the table doesn't have any key column, else {@link MLookup}
+	 */
+	public static MLookup getRecordsLookup(int tableID, int windowNo, int tabNo, boolean useUUIDKey) {
+		if(tableID <= 0)	
+			return null;
+		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
+		
+		// load key column
+		String keyColumn = "";
+		if(!useUUIDKey) {
+			String[] keyColumns = mTable.getKeyColumns();
+			// the table has a single key column
+			if(keyColumns != null && keyColumns.length == 1) 
+				keyColumn = keyColumns[0];
+		}
+		if(Util.isEmpty(keyColumn)) {
+			keyColumn = PO.getUUIDColumnName(mTable.getTableName());
+		}
+		
+		if(Util.isEmpty(keyColumn))
+			return null;
+
+		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
+
+		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo (Env.getCtx(), windowNo, tabNo, mColumn.getAD_Column_ID(), DisplayType.Search);
+		return new MLookup(lookupInfo, tabNo);
+	}
+
+	/**
+	 * Get Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @return String
+	 */
+	public static String getIdentifier(int tableID, Serializable recordID) {
+		return getIdentifier(tableID, recordID, 0, 0);
+	}
+	
+	/**
+	 * Get Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @param windowNo
+	 * @param tabNo
+	 * @return String
+	 */
+	public static String getIdentifier(int tableID, Serializable recordID, int windowNo, int tabNo) {
+		return getIdentifier(tableID, recordID, windowNo, tabNo, false);
+	}
+	
+	/**
+	 * Get Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @param windowNo
+	 * @param tabNo
+	 * @param useUUIDKey - default false
+	 * @return String
+	 */
+	public static String getIdentifier(int tableID, Serializable recordID, int windowNo, int tabNo, boolean useUUIDKey) {
+		MLookup lookup = getRecordsLookup(tableID, windowNo, tabNo, useUUIDKey);
+		return lookup != null ? lookup.getDisplay(recordID) : "";
+	}
+	
+	/**
 	 *	Background Data Loader
 	 */
 	protected class MLoader extends ContextRunnable implements Serializable
 	{
 		/**
-		 * generated serial id
+		 * 
 		 */
-		private static final long serialVersionUID = -7868426685745727939L;
+		private static final long serialVersionUID = -5752931726580011885L;
 
 		/**
 		 * 	MLoader Constructor
@@ -1146,7 +1228,13 @@ public final class MLookup extends Lookup implements Serializable
 			try
 			{
 				//	SELECT Key, Value, Name, IsActive FROM ...
-				pstmt = DB.prepareStatement(sql.toString(), null);
+				String sqlFirstRows = DB.getDatabase().addPagingSQL(sql.toString(), 1, MAX_ROWS+1);
+				pstmt = DB.prepareStatement(sqlFirstRows, null);
+				if (! DB.getDatabase().isPagingSupported())
+					pstmt.setMaxRows(MAX_ROWS+1);
+				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
+				if (timeout > 0)
+					pstmt.setQueryTimeout(timeout);
 				rs = pstmt.executeQuery();
 
 				//	Get first ... rows
@@ -1155,19 +1243,10 @@ public final class MLookup extends Lookup implements Serializable
 				{
 					if (rows++ > MAX_ROWS)
 					{
-						StringBuilder s = new StringBuilder().append(m_info.KeyColumn).append(": Loader - Too many records");
-						if (m_info.Column_ID > 0) 
-						{
-							MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
-							String column = mColumn.getColumnName();
-							s.append(", Column=").append(column);
-							String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
-							s.append(", Table=").append(tableName);
-						}
-						log.warning(s.toString());
+						logLookup(Level.WARNING, "Too many records");
 						break;
 					}
-					//  check for interrupted every 10 rows
+					//  check for interrupted every 20 rows
 					if (rows % 20 == 0 && Thread.interrupted())
 						break;
 
@@ -1212,8 +1291,11 @@ public final class MLookup extends Lookup implements Serializable
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, m_info.KeyColumn + ", " + m_info.Column_ID + " : Loader - " + sql, e);
 				m_allLoaded = false;
+				if (DB.getDatabase().isQueryTimeout(e))
+					logLookup(Level.WARNING, "Too slow query");
+				else
+					logLookup(Level.SEVERE, e.getLocalizedMessage());
 			}
 			finally {
 				DB.close(rs, pstmt);
@@ -1225,6 +1307,25 @@ public final class MLookup extends Lookup implements Serializable
 					+ " - ms=" + String.valueOf(System.currentTimeMillis()-m_startTime)
 					+ " (" + String.valueOf(System.currentTimeMillis()-startTime) + ")");
 		}	//	run
+
+		/**
+		 * Log a warning for the lookup problem found
+		 * @param problem
+		 */
+		private void logLookup(Level level, String problem) {
+			if (log.isLoggable(level)) {
+				StringBuilder msg = new StringBuilder().append(m_info.KeyColumn).append(": Loader - ").append(problem);
+				if (m_info.Column_ID > 0) {
+					MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
+					String column = mColumn.getColumnName();
+					msg.append(", Column=").append(column);
+					String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
+					msg.append(", Table=").append(tableName);
+				}
+				log.log(level, msg.toString());
+			}
+		}
+
 	}	//	Loader
 
 }	//	MLookup

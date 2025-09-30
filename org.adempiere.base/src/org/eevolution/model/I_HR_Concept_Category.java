@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Concept_Category
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Concept_Category 
@@ -102,6 +102,7 @@ public interface I_HR_Concept_Category
 	/** Get Payroll Concept Account	  */
 	public int getHR_Concept_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getHR_Concept_A() throws RuntimeException;
 
     /** Column name HR_Concept_Category_ID */

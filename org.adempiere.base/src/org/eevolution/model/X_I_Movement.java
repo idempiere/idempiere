@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Movement
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="I_Movement")
 public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -190,22 +191,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_BPartnerValue);
 	}
 
-	/** Set Campaign Key.
-		@param CampaignValue Text key of the Campaign
-	*/
-	public void setCampaignValue (String CampaignValue)
-	{
-		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
-	}
-
-	/** Get Campaign Key.
-		@return Text key of the Campaign
-	  */
-	public String getCampaignValue()
-	{
-		return (String)get_Value(COLUMNNAME_CampaignValue);
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -234,6 +220,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -262,6 +249,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
@@ -290,6 +278,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -316,6 +305,22 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Campaign Key.
+		@param CampaignValue Text key of the Campaign
+	*/
+	public void setCampaignValue (String CampaignValue)
+	{
+		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
+	}
+
+	/** Get Campaign Key.
+		@return Text key of the Campaign
+	  */
+	public String getCampaignValue()
+	{
+		return (String)get_Value(COLUMNNAME_CampaignValue);
 	}
 
 	/** Set Delivery Rule.
@@ -504,34 +509,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_LocatorValue);
 	}
 
-	public I_M_Locator getM_Locator() throws RuntimeException
-	{
-		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
-			.getPO(getM_Locator_ID(), get_TrxName());
-	}
-
-	/** Set Locator.
-		@param M_Locator_ID Warehouse Locator
-	*/
-	public void setM_Locator_ID (int M_Locator_ID)
-	{
-		if (M_Locator_ID < 1)
-			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else
-			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
-	}
-
-	/** Get Locator.
-		@return Warehouse Locator
-	  */
-	public int getM_Locator_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_LocatorTo() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -560,6 +538,65 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public I_M_Locator getM_Locator() throws RuntimeException
+	{
+		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
+			.getPO(getM_Locator_ID(), get_TrxName());
+	}
+
+	/** Set Locator.
+		@param M_Locator_ID Warehouse Locator
+	*/
+	public void setM_Locator_ID (int M_Locator_ID)
+	{
+		if (M_Locator_ID < 1)
+			set_Value (COLUMNNAME_M_Locator_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
+	}
+
+	/** Get Locator.
+		@return Warehouse Locator
+	  */
+	public int getM_Locator_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)
+			.getPO(getM_MovementLine_ID(), get_TrxName());
+	}
+
+	/** Set Move Line.
+		@param M_MovementLine_ID Inventory Move document Line
+	*/
+	public void setM_MovementLine_ID (int M_MovementLine_ID)
+	{
+		if (M_MovementLine_ID < 1)
+			set_Value (COLUMNNAME_M_MovementLine_ID, null);
+		else
+			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
+	}
+
+	/** Get Move Line.
+		@return Inventory Move document Line
+	  */
+	public int getM_MovementLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Movement getM_Movement() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Movement)MTable.get(getCtx(), org.compiere.model.I_M_Movement.Table_ID)
@@ -588,29 +625,59 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
-		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)
-			.getPO(getM_MovementLine_ID(), get_TrxName());
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
 	}
 
-	/** Set Move Line.
-		@param M_MovementLine_ID Inventory Move document Line
+	/** Set Product.
+		@param M_Product_ID Product, Service, Item
 	*/
-	public void setM_MovementLine_ID (int M_MovementLine_ID)
+	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_MovementLine_ID < 1)
-			set_Value (COLUMNNAME_M_MovementLine_ID, null);
+		if (M_Product_ID < 1)
+			set_Value (COLUMNNAME_M_Product_ID, null);
 		else
-			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
+			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
-	/** Get Move Line.
-		@return Inventory Move document Line
+	/** Get Product.
+		@return Product, Service, Item
 	  */
-	public int getM_MovementLine_ID()
+	public int getM_Product_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
+			.getPO(getM_Shipper_ID(), get_TrxName());
+	}
+
+	/** Set Shipper.
+		@param M_Shipper_ID Method or manner of product delivery
+	*/
+	public void setM_Shipper_ID (int M_Shipper_ID)
+	{
+		if (M_Shipper_ID < 1)
+			set_Value (COLUMNNAME_M_Shipper_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
+	}
+
+	/** Get Shipper.
+		@return Method or manner of product delivery
+	  */
+	public int getM_Shipper_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -649,62 +716,6 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
-			.getPO(getM_Product_ID(), get_TrxName());
-	}
-
-	/** Set Product.
-		@param M_Product_ID Product, Service, Item
-	*/
-	public void setM_Product_ID (int M_Product_ID)
-	{
-		if (M_Product_ID < 1)
-			set_Value (COLUMNNAME_M_Product_ID, null);
-		else
-			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
-	}
-
-	/** Get Product.
-		@return Product, Service, Item
-	  */
-	public int getM_Product_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_Shipper)MTable.get(getCtx(), org.compiere.model.I_M_Shipper.Table_ID)
-			.getPO(getM_Shipper_ID(), get_TrxName());
-	}
-
-	/** Set Shipper.
-		@param M_Shipper_ID Method or manner of product delivery
-	*/
-	public void setM_Shipper_ID (int M_Shipper_ID)
-	{
-		if (M_Shipper_ID < 1)
-			set_Value (COLUMNNAME_M_Shipper_ID, null);
-		else
-			set_Value (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
-	}
-
-	/** Get Shipper.
-		@return Method or manner of product delivery
-	  */
-	public int getM_Shipper_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Trx Org Key.

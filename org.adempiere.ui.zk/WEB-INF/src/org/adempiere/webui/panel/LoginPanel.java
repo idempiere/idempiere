@@ -24,12 +24,17 @@
 package org.adempiere.webui.panel;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.util.LogAuthFailure;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
@@ -52,9 +57,12 @@ import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -93,10 +101,9 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Image;
 
 /**
- *
+ * Login panel of {@link LoginWindow}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
- * @version $Revision: 0.10 $
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
@@ -112,6 +119,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	private static final String ON_LOAD_TOKEN = "onLoadToken";
+	private static final String ON_LOGIN_AS = "onLoginAs";
     private static final CLogger logger = CLogger.getCLogger(LoginPanel.class);
 
     protected Properties ctx;
@@ -145,12 +153,16 @@ public class LoginPanel extends Window implements EventListener<Event>
         init();
         this.setId("loginPanel");
         this.setSclass("login-box");
+		if (isLabelAboveInput())
+			LayoutUtils.addSclass("form-label-above-input", this);
 
         txtUserId.setEnabled(false);
         txtPassword.setEnabled(false);
         lstLanguage.setEnabled(false);
         Events.echoEvent(ON_LOAD_TOKEN, this, null);
         this.addEventListener(ON_LOAD_TOKEN, this);
+        if (Adempiere.isLoginInfoShown())
+        	this.addEventListener(ON_LOGIN_AS, this);
     }
 
     /**
@@ -245,15 +257,20 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtPassword.removeEventListener(Events.ON_FOCUS, txtPassword);
     }
 
+	private boolean isLabelAboveInput() {
+		return LayoutUtils.isLabelAboveInputForSmallWidth();
+	}
+
     /**
      * Layout panel
      */
 	protected void createUI() {
+
 		Form form = new Form();
 
 		Div div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_HEADER_CLASS);
-    	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "Login"));
+    	lblLogin = new Label(Msg.getMsg(Env.getCtx(), "LoginHeader"));
     	lblLogin.setSclass(ITheme.LOGIN_BOX_HEADER_TXT_CLASS);
     	div.appendChild(lblLogin);
     	form.appendChild(div);
@@ -283,6 +300,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblUserId);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -295,6 +317,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblPassword);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -307,6 +334,11 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(lblLanguage);
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td.setSclass(td.getSclass() + " form-label-above-input");
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -319,6 +351,10 @@ public class LoginPanel extends Window implements EventListener<Event>
     	tr.appendChild(td);
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
     	td.appendChild(new Label(""));
+		if (isLabelAboveInput()) {
+			tr = new Tr();
+			table.appendChild(tr);
+		}
     	td = new Td();
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
@@ -332,6 +368,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         	tr.appendChild(td);
         	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
         	td.appendChild(new Label(""));
+			if (isLabelAboveInput()) {
+				tr = new Tr();
+				table.appendChild(tr);
+			}
         	td = new Td();
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
@@ -346,29 +386,77 @@ public class LoginPanel extends Window implements EventListener<Event>
         	tr.appendChild(td);
         	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
         	td.appendChild(new Label(""));
+			if (isLabelAboveInput()) {
+				tr = new Tr();
+				table.appendChild(tr);
+			}
         	td = new Td();
         	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
         	tr.appendChild(td);
         	td.appendChild(btnResetPassword);
         	btnResetPassword.addEventListener(Events.ON_CLICK, this);
     	}
+    	
+		boolean isShowOKButton = true;
+		boolean isShowLoginPage = MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, true);
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		if (isSSOEnable)
+		{
+			List<MSSOPrincipalConfig> configs = MSSOPrincipalConfig.getAllSSOPrincipalConfig();
+			if (configs != null && !configs.isEmpty())
+			{
+				tr = null;
+				for (int i = 0; i < configs.size(); i++)
+				{
+					MSSOPrincipalConfig config = configs.get(i);
+
+					tr = new Tr();
+					table.appendChild(tr);
+					td = new Td();
+					tr.appendChild(td);
+					td = new Td();
+					tr.appendChild(td);
+					// Apply styles and add button
+					td.setStyle("display: flex; align-items: center;");
+					Button loginButton = createSSOLoginButton(config);
+					td.appendChild(loginButton);
+
+					td = new Td();
+					tr.appendChild(td);
+				}
+				
+				// Toggle visibility of user credentials and language selection fields based on configuration
+				lblUserId.setVisible(isShowLoginPage);
+				lblPassword.setVisible(isShowLoginPage);
+				lblLanguage.setVisible(isShowLoginPage);
+				lblLogin.setVisible(isShowLoginPage);
+				txtUserId.setVisible(isShowLoginPage);
+				txtPassword.setVisible(isShowLoginPage);
+				lstLanguage.setVisible(isShowLoginPage);
+				chkRememberMe.setVisible(isShowLoginPage);
+				chkSelectRole.setVisible(isShowLoginPage);
+				// Display the OK button only when the traditional login form is visible
+				isShowOKButton = isShowLoginPage;
+			}
+		}
 
     	div = new Div();
     	div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
         pnlButtons = new ConfirmPanel(false, false, false, false, false, false, true);
         pnlButtons.addActionListener(this);
         Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
+        okBtn.setVisible(isShowOKButton);
         okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
         okBtn.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> ((AbstractComponent)t).setWidgetListener("onClick", null));
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
-		helpButton.setSclass(ITheme.LOGIN_BUTTON_CLASS);
+		helpButton.addSclass(ITheme.LOGIN_BUTTON_CLASS);
 		pnlButtons.addComponentsRight(helpButton);
         
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         ZKUpdateUtil.setWidth(pnlButtons, null);
-        pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
+        pnlButtons.getButton(ConfirmPanel.A_OK).addSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         form.appendChild(div);
         this.appendChild(form);
@@ -394,15 +482,20 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
-        txtUserId.setMaxlength(40);
-        ZKUpdateUtil.setWidth(txtUserId, "220px");
+
+        MTable userTable = MTable.get(ctx, MUser.Table_Name);
+        MColumn userNameOrEMailColumn = userTable.getColumn(email_login ? MUser.COLUMNNAME_EMail : MUser.COLUMNNAME_Name);
+        MColumn ldapColumn = userTable.getColumn(MUser.COLUMNNAME_LDAPUser);
+        int maxLengthTxtUserId = ldapColumn.getFieldLength();
+        if (userNameOrEMailColumn.getFieldLength() > maxLengthTxtUserId)
+        	maxLengthTxtUserId = userNameOrEMailColumn.getFieldLength();
+        txtUserId.setMaxlength(maxLengthTxtUserId);
         txtUserId.setClientAttribute("autocomplete", "username");
 
         txtPassword = new Textbox();
         txtPassword.setId("txtPassword");
         txtPassword.setType("password");
         txtPassword.setCols(25);
-        ZKUpdateUtil.setWidth(txtPassword, "220px");
         if (MSysConfig.getBooleanValue(MSysConfig.ZK_LOGIN_ALLOW_CHROME_SAVE_PASSWORD, true))
         	txtPassword.setClientAttribute("autocomplete", "current-password");
 
@@ -411,7 +504,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         lstLanguage.setAutodrop(true);
         lstLanguage.setId("lstLanguage");
         lstLanguage.addEventListener(Events.ON_SELECT, this);
-        ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
         // Update Language List
         lstLanguage.getItems().clear();
@@ -477,6 +569,13 @@ public class LoginPanel extends Window implements EventListener<Event>
             
         	AuFocus auf = new AuFocus(txtUserId);
             Clients.response(auf);
+        }
+        else if (event.getName().equals(ON_LOGIN_AS))
+        {
+        	@SuppressWarnings("unchecked")
+			Map<String, String> data = (Map<String, String>) event.getData();
+        	txtUserId.setValue(data.get("username"));
+        	txtPassword.setValue(data.get("password"));
         }
         //
     }
@@ -555,7 +654,7 @@ public class LoginPanel extends Window implements EventListener<Event>
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
     	btnResetPassword.setLabel(Msg.getMsg(language, "ForgotMyPassword"));
-    	lblLogin.setValue(Msg.getMsg(language, "Login"));
+    	lblLogin.setValue(Msg.getMsg(language, "LoginHeader"));
     	pnlButtons.getButton(ConfirmPanel.A_OK).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_OK)));
     	pnlButtons.getButton(ConfirmPanel.A_HELP).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
     }
@@ -714,7 +813,6 @@ public class LoginPanel extends Window implements EventListener<Event>
 		if (Util.isEmpty(userId))
     		throw new IllegalArgumentException(Msg.getMsg(ctx, "FillMandatory") + " " + lblUserId.getValue());
 		
-		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
     	StringBuilder whereClause = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
 			whereClause.append("EMail=?");
@@ -776,5 +874,47 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 		return arrstr;
 	}
+	
+	/**
+	 * Creates a styled login button for SSO (Single Sign-On) functionality.
+	 * The button includes configuration details such as name and image, and sets up a click event
+	 * listener to handle redirection.
+	 *
+	 * @param  config the SSO principle configuration used to customize the button and generate the
+	 *                redirect URL
+	 * @return        a configured {@link Button} object for SSO login
+	 */
+	private Button createSSOLoginButton(MSSOPrincipalConfig config)
+	{
+		String name = config.getName();
+		String shortName = (!Util.isEmpty(name) && name.length() > 25) ? name.substring(0, 22) + "..." : name;
+		Button button = new Button(shortName);
+		button.setTooltip(name);
+		button.setSclass("sso-login-btn");
+		button.setStyle("display: flex; align-items: center; ");
+		button.addEventListener("onClick", event -> {
 
+			String referrerUrl = null;
+			if (Executions.getCurrent().getNativeRequest() != null && Executions.getCurrent().getNativeRequest() instanceof HttpServletRequest)
+			{
+				// Pass the current request param along with the selected provider so it can passed
+				// in the redirected URL after login
+				HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+				referrerUrl = request.getHeader("Referer");
+				if (!Util.isEmpty(referrerUrl) && referrerUrl.indexOf("?") > 0)
+					referrerUrl = referrerUrl.substring(referrerUrl.indexOf("?") + 1);
+				else
+					referrerUrl = null;
+			}
+
+			StringBuffer ssoURL = new StringBuffer("?").append(ISSOPrincipalService.SSO_SELECTED_PROVIDER).append("=").append(URLEncoder.encode(config.getSSO_PrincipalConfig_UU(), "UTF-8"));
+			if (referrerUrl != null)
+				ssoURL.append("&").append(ISSOPrincipalService.SSO_QUERY_STRING).append("=").append(URLEncoder.encode(referrerUrl, "UTF-8"));
+			Executions.sendRedirect(ssoURL.toString());
+		});
+
+		button.setImage(config.getBase64Src());
+
+		return button;
+	}// createSSOLoginButton
 }

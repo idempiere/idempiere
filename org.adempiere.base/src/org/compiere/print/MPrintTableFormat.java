@@ -52,16 +52,16 @@ import org.idempiere.cache.IntPOCopyCache;
 public class MPrintTableFormat extends X_AD_PrintTableFormat implements ImmutablePOSupport
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1608017405401341288L;
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_PrintTableFormat_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_PrintTableFormat_UU  UUID key
+     * @param trxName Transaction
+     */
     public MPrintTableFormat(Properties ctx, String AD_PrintTableFormat_UU, String trxName) {
         super(ctx, AD_PrintTableFormat_UU, trxName);
 		if (Util.isEmpty(AD_PrintTableFormat_UU))
@@ -105,7 +105,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	MPrintTableFormat
 	
 	/**
-	 * 
+	 * Copy Constructor
 	 * @param copy
 	 */
 	public MPrintTableFormat(MPrintTableFormat copy) 
@@ -114,7 +114,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}
 
 	/**
-	 * 
+	 * Copy Constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -124,7 +124,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}
 
 	/**
-	 * 
+	 * Copy Constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName
@@ -158,8 +158,6 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		this.parameter_Font = copy.parameter_Font;
 	}
 	
-	/*************************************************************************/
-
 	private Font 	standard_Font = new Font(null);
 
 	private Font 	pageHeader_Font;
@@ -190,7 +188,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	private Image 	m_image = null;
 	private Image 	m_image_water_mark = null;
 
-	/**************************************************************************
+	/**
 	 * 	Set Standard Font to derive other fonts if not defined
 	 * 	@param standardFont standard font
 	 */
@@ -208,11 +206,10 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	{
 		return standard_Font;
 	}	//	getStandard_Font
-
 	
-	/**************************************************************************
+	/**
 	 * 	Get Table Header Font
-	 * 	@return table header font or Bold standard font
+	 * 	@return set table header font or fall back to the default of bold standard font
 	 */
 	public Font getHeader_Font()
 	{
@@ -228,7 +225,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 * 	Get Header Foreground
-	 * 	@return color or blue black
+	 * 	@return set header foreground color or fallback to the default of black blue.
 	 */
 	public Color getHeaderFG_Color()
 	{
@@ -244,7 +241,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 *  Get Header BG Color
-	 *  @return color or cyan
+	 *  @return set header background color or fallback to the default of cyan
 	 */
 	public Color getHeaderBG_Color()
 	{
@@ -260,7 +257,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 *  Get Header Line Color
-	 *  @return color or blue black
+	 *  @return set header line color or fall back to the default of black blue
 	 */
 	public Color getHeaderLine_Color()
 	{
@@ -314,11 +311,9 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		return retValue;
 	}	//	getHdrStroke
 
-
-
-	/**************************************************************************
+	/**
 	 * 	Get Function Font
-	 * 	@return function font or BoldItalic standard font
+	 * 	@return set function font or fall back to the default of BoldItalic standard font
 	 */
 	public Font getFunct_Font()
 	{
@@ -334,7 +329,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 *  Get Function BG Color
-	 *  @return color or white
+	 *  @return set function background color or fallback to the default of white
 	 */
 	public Color getFunctBG_Color()
 	{
@@ -350,7 +345,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 *  Get Function FG Color
-	 *  @return color or green dark
+	 *  @return set function foreground color or fallback to the default of dark green
 	 */
 	public Color getFunctFG_Color()
 	{
@@ -364,10 +359,9 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		return functFG_Color;
 	}	//	getFunctFG_Color
 
-	
-	/**************************************************************************
+	/**
 	 * 	Get Parameter Font
-	 *	@return Italic standard font
+	 *	@return set parameter font of fallback to the default of Italic standard font
 	 */
 	public Font getParameter_Font()
 	{
@@ -378,7 +372,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 * 	Get Parameter Color
-	 *	@return dark gray
+	 *	@return set parameter color or fallback to the default of dark gray
 	 */
 	public Color getParameter_Color()
 	{
@@ -387,10 +381,9 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		return parameter_Color;
 	}	//	getParameter_Color
 
-
-	/**************************************************************************
+	/**
 	 * 	Get Top Page Header Font
-	 *	@return Bold standard font
+	 *	@return set page header font or fallback to the default of Bold standard font
 	 */
 	public Font getPageHeader_Font()
 	{
@@ -401,7 +394,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 * 	Get Page Header FG_Color
-	 *	@return color or blue black
+	 *	@return set page header foreground color or fallback to the default of blue black
 	 */
 	public Color getPageHeaderFG_Color()
 	{
@@ -412,7 +405,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	
 	/**
 	 * 	Get Page Header BG_Color
-	 *	@return color or white
+	 *	@return set page header background color or fallback to the default of white
 	 */
 	public Color getPageHeaderBG_Color()
 	{
@@ -423,7 +416,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 
 	/**
 	 * 	Get Page Footer Font
-	 *	@return 2pt smaller standard font
+	 *	@return set page footer font or fallback to the default of 2pt smaller standard font
 	 */
 	public Font getPageFooter_Font()
 	{
@@ -434,7 +427,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	
 	/**
 	 * 	Get PageFooter FG_Color
-	 *	@return blue black
+	 *	@return set page footer foreground color or fallback to the default of black blue
 	 */
 	public Color getPageFooterFG_Color()
 	{
@@ -445,7 +438,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	
 	/**
 	 * 	Get Page Footer BG_Color
-	 *	@return white
+	 *	@return set page footer background color or fallback to the default of white
 	 */
 	public Color getPageFooterBG_Color()
 	{
@@ -454,11 +447,9 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		return pageFooterBG_Color;
 	}	//	getPageFooterBG_Color
 
-
-	/**************************************************************************
+	/**
 	 *  Get Horizontal Line Color.
-	 * 	(one db attribute for line color)
-	 *  @return color or gray light
+	 *  @return set horizontal line color or fallback to the default of light gray
 	 */
 	public Color getHLine_Color()
 	{
@@ -474,8 +465,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	
 	/**
 	 *  Get Vertical Line Color.
-	 * 	(one db attribute for line color)
-	 *  @return color or gray light
+	 *  @return set vertical line color or fallback to the default of light gray
 	 */
 	public Color getVLine_Color()
 	{
@@ -488,7 +478,6 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 			lineV_Color = Color.lightGray;
 		return lineV_Color;
 	}	//	getVLine_Color
-
 
 	/**
 	 * 	Get Horizontal Line Stroke -
@@ -603,21 +592,18 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	{
 		return new float[] {10*width, 2*width, 2*width, 2*width};
 	}	//	getPatternDash_Dotted
-	
-	
-	/*************************************************************************/
-
+		
 	private static IntPOCopyCache<Integer,MPrintTableFormat>	s_cache
 		= new IntPOCopyCache<Integer,MPrintTableFormat>(Table_Name, 3);
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MPrintTableFormat.class);
 
 	/**
-	 * 	Get Table Format.
+	 * 	Get Print Table Format.
 	 * 	@param ctx context
-	 * 	@param AD_PrintTableFormat_ID table format
+	 * 	@param AD_PrintTableFormat_ID print table format id, 0 to get default print table format
 	 *  @param standard_font standard font
-	 * 	@return Table Format
+	 * 	@return Print Table Format
 	 */
 	static public MPrintTableFormat get (Properties ctx, int AD_PrintTableFormat_ID, Font standard_font)
 	{
@@ -642,11 +628,11 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	get
 
 	/**
-	 * 	Get Table Format
+	 * 	Get Print Table Format
 	 * 	@param ctx context
-	 * 	@param AD_PrintTableFormat_ID table format
+	 * 	@param AD_PrintTableFormat_ID print table format id, 0 to get default print table format
 	 *  @param AD_PrintFont_ID standard font
-	 * 	@return Table Format
+	 * 	@return Print Table Format
 	 */
 	static public MPrintTableFormat get (Properties ctx, int AD_PrintTableFormat_ID, int AD_PrintFont_ID)
 	{
@@ -654,9 +640,9 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	get
 
 	/**
-	 * 	Get Default Table Format.
+	 * 	Get Default Print Table Format.
 	 * 	@param ctx context
-	 * 	@return Default Table Format (need to set standard font) 
+	 * 	@return Default Print Table Format (need to set standard font) 
 	 */
 	static public MPrintTableFormat getDefault (Properties ctx)
 	{
@@ -689,7 +675,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	
 	/**
 	 * 	Get the Image
-	 *	@return image
+	 *	@return image or null
 	 */
 	public Image getImage()
 	{
@@ -700,7 +686,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		//
 		if(isImageIsAttached())
 		{	
-			MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID(), get_UUID(), null);
+			try (MAttachment attachment = MAttachment.get(getCtx(), Table_ID, get_ID(), get_UUID(), null);) {
 			if (attachment == null)
 			{
 				log.log(Level.WARNING, "No Attachment - ID=" + get_ID());
@@ -723,7 +709,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 			else
 			{
 				log.log(Level.WARNING, attachment.getEntryName(0) + " - not loaded (must be gif or jpg) - ID=" + get_ID());
-			}
+			}}
 		}
 		else if (getImageURL() != null)
 		{		
@@ -744,7 +730,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	
 	/**
 	 * 	Get the Image
-	 *	@return image
+	 *	@return image or null
 	 */
 	public Image getImageWaterMark()
 	{

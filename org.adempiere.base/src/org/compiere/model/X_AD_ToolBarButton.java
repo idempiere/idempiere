@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ToolBarButton
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_ToolBarButton")
 public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -39,9 +39,9 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
       super (ctx, AD_ToolBarButton_ID, trxName);
       /** if (AD_ToolBarButton_ID == 0)
         {
+			setAD_ToolBarButton_ID (0);
 			setAction (null);
 // W
-			setAD_ToolBarButton_ID (0);
 			setComponentName (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
@@ -61,9 +61,9 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
       super (ctx, AD_ToolBarButton_ID, trxName, virtualColumns);
       /** if (AD_ToolBarButton_ID == 0)
         {
+			setAD_ToolBarButton_ID (0);
 			setAction (null);
 // W
-			setAD_ToolBarButton_ID (0);
 			setComponentName (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
@@ -83,9 +83,9 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
       super (ctx, AD_ToolBarButton_UU, trxName);
       /** if (AD_ToolBarButton_UU == null)
         {
+			setAD_ToolBarButton_ID (0);
 			setAction (null);
 // W
-			setAD_ToolBarButton_ID (0);
 			setComponentName (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
@@ -105,9 +105,9 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
       super (ctx, AD_ToolBarButton_UU, trxName, virtualColumns);
       /** if (AD_ToolBarButton_UU == null)
         {
+			setAD_ToolBarButton_ID (0);
 			setAction (null);
 // W
-			setAD_ToolBarButton_ID (0);
 			setComponentName (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
@@ -148,6 +148,100 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
+
+	/** Set Process.
+		@param AD_Process_ID Process or Report
+	*/
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1)
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
+			.getPO(getAD_Tab_ID(), get_TrxName());
+	}
+
+	/** Set Tab.
+		@param AD_Tab_ID Tab within a Window
+	*/
+	public void setAD_Tab_ID (int AD_Tab_ID)
+	{
+		if (AD_Tab_ID < 1)
+			set_Value (COLUMNNAME_AD_Tab_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
+	}
+
+	/** Get Tab.
+		@return Tab within a Window
+	  */
+	public int getAD_Tab_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set ToolBar Button.
+		@param AD_ToolBarButton_ID ToolBar Button
+	*/
+	public void setAD_ToolBarButton_ID (int AD_ToolBarButton_ID)
+	{
+		if (AD_ToolBarButton_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_ToolBarButton_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_ToolBarButton_ID, Integer.valueOf(AD_ToolBarButton_ID));
+	}
+
+	/** Get ToolBar Button.
+		@return ToolBar Button	  */
+	public int getAD_ToolBarButton_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ToolBarButton_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set AD_ToolBarButton_UU.
+		@param AD_ToolBarButton_UU AD_ToolBarButton_UU
+	*/
+	public void setAD_ToolBarButton_UU (String AD_ToolBarButton_UU)
+	{
+		set_Value (COLUMNNAME_AD_ToolBarButton_UU, AD_ToolBarButton_UU);
+	}
+
+	/** Get AD_ToolBarButton_UU.
+		@return AD_ToolBarButton_UU	  */
+	public String getAD_ToolBarButton_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_ToolBarButton_UU);
+	}
 
 	/** Action AD_Reference_ID=104 */
 	public static final int ACTION_AD_Reference_ID=104;
@@ -216,98 +310,6 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	public String getActionName()
 	{
 		return (String)get_Value(COLUMNNAME_ActionName);
-	}
-
-	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
-			.getPO(getAD_Process_ID(), get_TrxName());
-	}
-
-	/** Set Process.
-		@param AD_Process_ID Process or Report
-	*/
-	public void setAD_Process_ID (int AD_Process_ID)
-	{
-		if (AD_Process_ID < 1)
-			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
-	}
-
-	/** Get Process.
-		@return Process or Report
-	  */
-	public int getAD_Process_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_Tab getAD_Tab() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Tab)MTable.get(getCtx(), org.compiere.model.I_AD_Tab.Table_ID)
-			.getPO(getAD_Tab_ID(), get_TrxName());
-	}
-
-	/** Set Tab.
-		@param AD_Tab_ID Tab within a Window
-	*/
-	public void setAD_Tab_ID (int AD_Tab_ID)
-	{
-		if (AD_Tab_ID < 1)
-			set_Value (COLUMNNAME_AD_Tab_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_Tab_ID, Integer.valueOf(AD_Tab_ID));
-	}
-
-	/** Get Tab.
-		@return Tab within a Window
-	  */
-	public int getAD_Tab_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set ToolBar Button.
-		@param AD_ToolBarButton_ID ToolBar Button
-	*/
-	public void setAD_ToolBarButton_ID (int AD_ToolBarButton_ID)
-	{
-		if (AD_ToolBarButton_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_ToolBarButton_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_ToolBarButton_ID, Integer.valueOf(AD_ToolBarButton_ID));
-	}
-
-	/** Get ToolBar Button.
-		@return ToolBar Button	  */
-	public int getAD_ToolBarButton_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ToolBarButton_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set AD_ToolBarButton_UU.
-		@param AD_ToolBarButton_UU AD_ToolBarButton_UU
-	*/
-	public void setAD_ToolBarButton_UU (String AD_ToolBarButton_UU)
-	{
-		set_Value (COLUMNNAME_AD_ToolBarButton_UU, AD_ToolBarButton_UU);
-	}
-
-	/** Get AD_ToolBarButton_UU.
-		@return AD_ToolBarButton_UU	  */
-	public String getAD_ToolBarButton_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_ToolBarButton_UU);
 	}
 
 	/** Set Component Name.

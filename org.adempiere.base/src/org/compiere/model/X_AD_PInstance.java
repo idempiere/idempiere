@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_PInstance")
 public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -121,6 +121,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Language getAD_Language() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Language)MTable.get(getCtx(), org.compiere.model.I_AD_Language.Table_ID)
@@ -193,6 +194,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_PInstance_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
@@ -221,6 +223,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -249,6 +252,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Session getAD_Session() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Session)MTable.get(getCtx(), org.compiere.model.I_AD_Session.Table_ID)
@@ -277,6 +281,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -305,6 +310,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -413,6 +419,22 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set JSON Data.
+		@param JsonData The json field stores json data.
+	*/
+	public void setJsonData (String JsonData)
+	{
+		set_Value (COLUMNNAME_JsonData, JsonData);
+	}
+
+	/** Get JSON Data.
+		@return The json field stores json data.
+	  */
+	public String getJsonData()
+	{
+		return (String)get_Value(COLUMNNAME_JsonData);
 	}
 
 	/** Set Name.

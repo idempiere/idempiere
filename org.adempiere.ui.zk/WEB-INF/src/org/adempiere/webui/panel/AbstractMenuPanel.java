@@ -20,18 +20,13 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.adempiere.util.Callback;
-import org.adempiere.webui.adwindow.ADTabpanel;
-import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.MenuSearchController;
-import org.adempiere.webui.desktop.AbstractDesktop;
-import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MMenu;
-import org.compiere.model.MQuery;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
@@ -57,7 +52,8 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
- * Abstract base class for Menu Panel
+ * Abstract base class for Menu Tree Panel.<br/>
+ * Menu tree component is loaded and created but not added to panel.
  * @author Elaine
  * @date July 31, 2012
  */
@@ -202,7 +198,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 if (mChildNode.isReport())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Report");
+                		link.setIconSclass(Icon.getIconSclass(Icon.REPORT));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mReport.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "report");
@@ -210,7 +206,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isProcess() || mChildNode.isTask())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Process");
+                		link.setIconSclass(Icon.getIconSclass(Icon.PROCESS));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "process");
@@ -218,7 +214,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isWorkFlow())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Workflow");
+                		link.setIconSclass(Icon.getIconSclass(Icon.WORKFLOW));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "workflow");
@@ -226,7 +222,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isForm())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Form");
+                		link.setIconSclass(Icon.getIconSclass(Icon.FORM));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mForm.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "form");
@@ -234,7 +230,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else if (mChildNode.isInfo())
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Info");
+                		link.setIconSclass(Icon.getIconSclass(Icon.INFO));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mInfo.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "info");
@@ -242,7 +238,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 else // Window
                 {
                 	if (ThemeManager.isUseFontIconForImage())
-                		link.setIconSclass("z-icon-Window");
+                		link.setIconSclass(Icon.getIconSclass(Icon.WINDOW));
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
                 	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "window");
@@ -269,12 +265,14 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
      */
     public Toolbarbutton createNewButton()
     {
-    	Toolbarbutton newBtn = new Toolbarbutton(null, ThemeManager.getThemeResource("images/New10.png"));
+    	Toolbarbutton newBtn = new Toolbarbutton(null);
     	if (ThemeManager.isUseFontIconForImage())
 		{
-			newBtn.setImage(null);
-			newBtn.setIconSclass("z-icon-New");
+			newBtn.setIconSclass(Icon.getIconSclass(Icon.NEW));
 		}
+    	else {
+    		newBtn.setImage(ThemeManager.getThemeResource("images/New10.png"));
+    	}
     	newBtn.setSclass("menu-href-newbtn");
     	return newBtn;
     }
@@ -291,7 +289,8 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     }
     
     /**
-     * Handle onClick and onOk event
+     * Handle onClick and onOk event for menu tree item.<br/>
+     * The event from global search and application menu tree will be routed to here.
      * @param comp
      * @param eventData
      */
@@ -361,31 +360,11 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
     private void onNewRecord(Treeitem selectedItem) {
     	try
         {
+    		if (getParent() instanceof Popup) {
+    			((Popup)getParent()).close();
+    		}
 			int menuId = Integer.parseInt((String)selectedItem.getValue());
-			MMenu menu = new MMenu(Env.getCtx(), menuId, null);
-			IDesktop desktop = SessionManager.getAppDesktop();
-			if (desktop instanceof AbstractDesktop)
-				((AbstractDesktop)desktop).setPredefinedContextVariables(menu.getPredefinedContextVariables());
-			
-    		MQuery query = new MQuery("");
-    		query.addRestriction("1=2");
-			query.setRecordCount(0);
-
-			if (getParent() instanceof Popup) {
-				((Popup)getParent()).close();
-			}
-			
-			SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {				
-				@Override
-				public void onCallback(ADWindow result) {
-					if(result == null)
-						return;
-		    					
-					result.getADWindowContent().onNew();
-					ADTabpanel adtabpanel = (ADTabpanel) result.getADWindowContent().getADTab().getSelectedTabpanel();
-					adtabpanel.focusToFirstEditor(false);					
-				}
-			});			
+			SessionManager.getAppDesktop().onNewRecord(menuId);			
         }
         catch (Exception e)
         {
@@ -415,7 +394,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
 	}
 
 	/**
-	 * @return Tree
+	 * @return Menu Tree
 	 */
 	public Tree getMenuTree() 
 	{

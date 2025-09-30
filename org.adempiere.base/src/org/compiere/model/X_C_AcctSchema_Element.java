@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_Element
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema_Element")
 public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Element (Properties ctx, int C_AcctSchema_Element_ID, String trxName)
@@ -137,6 +137,36 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Column getAD_Column2() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column2_ID(), get_TrxName());
+	}
+
+	/** Set Column 2.
+		@param AD_Column2_ID Column in the table
+	*/
+	public void setAD_Column2_ID (int AD_Column2_ID)
+	{
+		if (AD_Column2_ID < 1)
+			set_Value (COLUMNNAME_AD_Column2_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Column2_ID, Integer.valueOf(AD_Column2_ID));
+	}
+
+	/** Get Column 2.
+		@return Column in the table
+	  */
+	public int getAD_Column2_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column2_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -160,6 +190,35 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
+
+	/** Set Asset.
+		@param A_Asset_ID Asset used internally or by customers
+	*/
+	public void setA_Asset_ID (int A_Asset_ID)
+	{
+		if (A_Asset_ID < 1)
+			set_Value (COLUMNNAME_A_Asset_ID, null);
+		else
+			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
+	}
+
+	/** Get Asset.
+		@return Asset used internally or by customers
+	  */
+	public int getA_Asset_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -201,6 +260,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return (String)get_Value(COLUMNNAME_C_AcctSchema_Element_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
@@ -229,6 +289,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
@@ -257,6 +318,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -285,6 +347,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -313,34 +376,92 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
 	{
-		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
-			.getPO(getC_Element_ID(), get_TrxName());
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
 	}
 
-	/** Set Element.
-		@param C_Element_ID Accounting Element
+	/** Set Charge.
+		@param C_Charge_ID Additional document charges
 	*/
-	public void setC_Element_ID (int C_Element_ID)
+	public void setC_Charge_ID (int C_Charge_ID)
 	{
-		if (C_Element_ID < 1)
-			set_Value (COLUMNNAME_C_Element_ID, null);
+		if (C_Charge_ID < 1)
+			set_Value (COLUMNNAME_C_Charge_ID, null);
 		else
-			set_Value (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
+			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
 	}
 
-	/** Get Element.
-		@return Accounting Element
+	/** Get Charge.
+		@return Additional document charges
 	  */
-	public int getC_Element_ID()
+	public int getC_Charge_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_CostCenter)MTable.get(getCtx(), org.compiere.model.I_C_CostCenter.Table_ID)
+			.getPO(getC_CostCenter_ID(), get_TrxName());
+	}
+
+	/** Set Cost Center.
+		@param C_CostCenter_ID Cost Center
+	*/
+	public void setC_CostCenter_ID (int C_CostCenter_ID)
+	{
+		if (C_CostCenter_ID < 1)
+			set_Value (COLUMNNAME_C_CostCenter_ID, null);
+		else
+			set_Value (COLUMNNAME_C_CostCenter_ID, Integer.valueOf(C_CostCenter_ID));
+	}
+
+	/** Get Cost Center.
+		@return Cost Center	  */
+	public int getC_CostCenter_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_CostCenter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Department)MTable.get(getCtx(), org.compiere.model.I_C_Department.Table_ID)
+			.getPO(getC_Department_ID(), get_TrxName());
+	}
+
+	/** Set Department.
+		@param C_Department_ID Department
+	*/
+	public void setC_Department_ID (int C_Department_ID)
+	{
+		if (C_Department_ID < 1)
+			set_Value (COLUMNNAME_C_Department_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Department_ID, Integer.valueOf(C_Department_ID));
+	}
+
+	/** Get Department.
+		@return Department	  */
+	public int getC_Department_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
@@ -369,6 +490,65 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
+			.getPO(getC_Element_ID(), get_TrxName());
+	}
+
+	/** Set Element.
+		@param C_Element_ID Accounting Element
+	*/
+	public void setC_Element_ID (int C_Element_ID)
+	{
+		if (C_Element_ID < 1)
+			set_Value (COLUMNNAME_C_Element_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
+	}
+
+	/** Get Element.
+		@return Accounting Element
+	  */
+	public int getC_Element_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_BPartner getC_Employee() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_Employee_ID(), get_TrxName());
+	}
+
+	/** Set Employee.
+		@param C_Employee_ID Identifies a Business Partner
+	*/
+	public void setC_Employee_ID (int C_Employee_ID)
+	{
+		if (C_Employee_ID < 1)
+			set_Value (COLUMNNAME_C_Employee_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Employee_ID, Integer.valueOf(C_Employee_ID));
+	}
+
+	/** Get Employee.
+		@return Identifies a Business Partner
+	  */
+	public int getC_Employee_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Employee_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
@@ -397,6 +577,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
@@ -425,6 +606,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
@@ -457,10 +639,30 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public static final int ELEMENTTYPE_AD_Reference_ID=181;
 	/** Account = AC */
 	public static final String ELEMENTTYPE_Account = "AC";
+	/** Attribute Set Instance = AI */
+	public static final String ELEMENTTYPE_AttributeSetInstance = "AI";
+	/** Asset = AS */
+	public static final String ELEMENTTYPE_Asset = "AS";
 	/** Activity = AY */
 	public static final String ELEMENTTYPE_Activity = "AY";
 	/** BPartner = BP */
 	public static final String ELEMENTTYPE_BPartner = "BP";
+	/** Cost Center = CC */
+	public static final String ELEMENTTYPE_CostCenter = "CC";
+	/** Charge = CH */
+	public static final String ELEMENTTYPE_Charge = "CH";
+	/** Department = DP */
+	public static final String ELEMENTTYPE_Department = "DP";
+	/** Employee = EP */
+	public static final String ELEMENTTYPE_Employee = "EP";
+	/** Custom Field 1 = F1 */
+	public static final String ELEMENTTYPE_CustomField1 = "F1";
+	/** Custom Field 2 = F2 */
+	public static final String ELEMENTTYPE_CustomField2 = "F2";
+	/** Custom Field 3 = F3 */
+	public static final String ELEMENTTYPE_CustomField3 = "F3";
+	/** Custom Field 4 = F4 */
+	public static final String ELEMENTTYPE_CustomField4 = "F4";
 	/** Location From = LF */
 	public static final String ELEMENTTYPE_LocationFrom = "LF";
 	/** Location To = LT */
@@ -483,6 +685,8 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public static final String ELEMENTTYPE_UserElementList1 = "U1";
 	/** User Element List 2 = U2 */
 	public static final String ELEMENTTYPE_UserElementList2 = "U2";
+	/** Warehouse = WH */
+	public static final String ELEMENTTYPE_Warehouse = "WH";
 	/** User Column 1 = X1 */
 	public static final String ELEMENTTYPE_UserColumn1 = "X1";
 	/** User Column 2 = X2 */
@@ -549,6 +753,36 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_AttributeSetInstance)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSetInstance.Table_ID)
+			.getPO(getM_AttributeSetInstance_ID(), get_TrxName());
+	}
+
+	/** Set Attribute Set Instance.
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
+	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
+	{
+		if (M_AttributeSetInstance_ID < 0)
+			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
+		else
+			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
+	}
+
+	/** Get Attribute Set Instance.
+		@return Product Attribute Set Instance
+	  */
+	public int getM_AttributeSetInstance_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -572,6 +806,35 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
+
+	/** Set Warehouse.
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
+	public void setM_Warehouse_ID (int M_Warehouse_ID)
+	{
+		if (M_Warehouse_ID < 1)
+			set_Value (COLUMNNAME_M_Warehouse_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
+	}
+
+	/** Get Warehouse.
+		@return Storage Warehouse and Service Point
+	  */
+	public int getM_Warehouse_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

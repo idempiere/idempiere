@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_Product")
 public class X_M_Product extends PO implements I_M_Product, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -260,6 +260,122 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
+			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
+	}
+
+	/** Set Revenue Recognition.
+		@param C_RevenueRecognition_ID Method for recording revenue
+	*/
+	public void setC_RevenueRecognition_ID (int C_RevenueRecognition_ID)
+	{
+		if (C_RevenueRecognition_ID < 1)
+			set_Value (COLUMNNAME_C_RevenueRecognition_ID, null);
+		else
+			set_Value (COLUMNNAME_C_RevenueRecognition_ID, Integer.valueOf(C_RevenueRecognition_ID));
+	}
+
+	/** Get Revenue Recognition.
+		@return Method for recording revenue
+	  */
+	public int getC_RevenueRecognition_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_SubscriptionType)MTable.get(getCtx(), org.compiere.model.I_C_SubscriptionType.Table_ID)
+			.getPO(getC_SubscriptionType_ID(), get_TrxName());
+	}
+
+	/** Set Subscription Type.
+		@param C_SubscriptionType_ID Type of subscription
+	*/
+	public void setC_SubscriptionType_ID (int C_SubscriptionType_ID)
+	{
+		if (C_SubscriptionType_ID < 1)
+			set_Value (COLUMNNAME_C_SubscriptionType_ID, null);
+		else
+			set_Value (COLUMNNAME_C_SubscriptionType_ID, Integer.valueOf(C_SubscriptionType_ID));
+	}
+
+	/** Get Subscription Type.
+		@return Type of subscription
+	  */
+	public int getC_SubscriptionType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_SubscriptionType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
+			.getPO(getC_TaxCategory_ID(), get_TrxName());
+	}
+
+	/** Set Tax Category.
+		@param C_TaxCategory_ID Tax Category
+	*/
+	public void setC_TaxCategory_ID (int C_TaxCategory_ID)
+	{
+		if (C_TaxCategory_ID < 1)
+			set_Value (COLUMNNAME_C_TaxCategory_ID, null);
+		else
+			set_Value (COLUMNNAME_C_TaxCategory_ID, Integer.valueOf(C_TaxCategory_ID));
+	}
+
+	/** Get Tax Category.
+		@return Tax Category
+	  */
+	public int getC_TaxCategory_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxCategory_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
+
+	/** Set UOM.
+		@param C_UOM_ID Unit of Measure
+	*/
+	public void setC_UOM_ID (int C_UOM_ID)
+	{
+		if (C_UOM_ID < 1)
+			set_Value (COLUMNNAME_C_UOM_ID, null);
+		else
+			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
+	}
+
+	/** Get UOM.
+		@return Unit of Measure
+	  */
+	public int getC_UOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Classification.
 		@param Classification Classification for grouping
 	*/
@@ -290,118 +406,6 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public String getCopyFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CopyFrom);
-	}
-
-	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_RevenueRecognition)MTable.get(getCtx(), org.compiere.model.I_C_RevenueRecognition.Table_ID)
-			.getPO(getC_RevenueRecognition_ID(), get_TrxName());
-	}
-
-	/** Set Revenue Recognition.
-		@param C_RevenueRecognition_ID Method for recording revenue
-	*/
-	public void setC_RevenueRecognition_ID (int C_RevenueRecognition_ID)
-	{
-		if (C_RevenueRecognition_ID < 1)
-			set_Value (COLUMNNAME_C_RevenueRecognition_ID, null);
-		else
-			set_Value (COLUMNNAME_C_RevenueRecognition_ID, Integer.valueOf(C_RevenueRecognition_ID));
-	}
-
-	/** Get Revenue Recognition.
-		@return Method for recording revenue
-	  */
-	public int getC_RevenueRecognition_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_SubscriptionType)MTable.get(getCtx(), org.compiere.model.I_C_SubscriptionType.Table_ID)
-			.getPO(getC_SubscriptionType_ID(), get_TrxName());
-	}
-
-	/** Set Subscription Type.
-		@param C_SubscriptionType_ID Type of subscription
-	*/
-	public void setC_SubscriptionType_ID (int C_SubscriptionType_ID)
-	{
-		if (C_SubscriptionType_ID < 1)
-			set_Value (COLUMNNAME_C_SubscriptionType_ID, null);
-		else
-			set_Value (COLUMNNAME_C_SubscriptionType_ID, Integer.valueOf(C_SubscriptionType_ID));
-	}
-
-	/** Get Subscription Type.
-		@return Type of subscription
-	  */
-	public int getC_SubscriptionType_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_SubscriptionType_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
-			.getPO(getC_TaxCategory_ID(), get_TrxName());
-	}
-
-	/** Set Tax Category.
-		@param C_TaxCategory_ID Tax Category
-	*/
-	public void setC_TaxCategory_ID (int C_TaxCategory_ID)
-	{
-		if (C_TaxCategory_ID < 1)
-			set_Value (COLUMNNAME_C_TaxCategory_ID, null);
-		else
-			set_Value (COLUMNNAME_C_TaxCategory_ID, Integer.valueOf(C_TaxCategory_ID));
-	}
-
-	/** Get Tax Category.
-		@return Tax Category
-	  */
-	public int getC_TaxCategory_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxCategory_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
-			.getPO(getC_UOM_ID(), get_TrxName());
-	}
-
-	/** Set UOM.
-		@param C_UOM_ID Unit of Measure
-	*/
-	public void setC_UOM_ID (int C_UOM_ID)
-	{
-		if (C_UOM_ID < 1)
-			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else
-			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
-	}
-
-	/** Get UOM.
-		@return Unit of Measure
-	  */
-	public int getC_UOM_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set Customs Tariff Number.
@@ -1016,34 +1020,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
-	{
-		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)
-			.getPO(getM_AttributeSet_ID(), get_TrxName());
-	}
-
-	/** Set Attribute Set.
-		@param M_AttributeSet_ID Product Attribute Set
-	*/
-	public void setM_AttributeSet_ID (int M_AttributeSet_ID)
-	{
-		if (M_AttributeSet_ID < 0)
-			set_Value (COLUMNNAME_M_AttributeSet_ID, null);
-		else
-			set_Value (COLUMNNAME_M_AttributeSet_ID, Integer.valueOf(M_AttributeSet_ID));
-	}
-
-	/** Get Attribute Set.
-		@return Product Attribute Set
-	  */
-	public int getM_AttributeSet_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSet_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -1072,6 +1049,36 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_M_AttributeSet getM_AttributeSet() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_AttributeSet)MTable.get(getCtx(), org.compiere.model.I_M_AttributeSet.Table_ID)
+			.getPO(getM_AttributeSet_ID(), get_TrxName());
+	}
+
+	/** Set Attribute Set.
+		@param M_AttributeSet_ID Product Attribute Set
+	*/
+	public void setM_AttributeSet_ID (int M_AttributeSet_ID)
+	{
+		if (M_AttributeSet_ID < 0)
+			set_Value (COLUMNNAME_M_AttributeSet_ID, null);
+		else
+			set_Value (COLUMNNAME_M_AttributeSet_ID, Integer.valueOf(M_AttributeSet_ID));
+	}
+
+	/** Get Attribute Set.
+		@return Product Attribute Set
+	  */
+	public int getM_AttributeSet_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSet_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_FreightCategory getM_FreightCategory() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_FreightCategory)MTable.get(getCtx(), org.compiere.model.I_M_FreightCategory.Table_ID)
@@ -1100,6 +1107,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -1128,6 +1136,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PartType getM_PartType() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_PartType)MTable.get(getCtx(), org.compiere.model.I_M_PartType.Table_ID)
@@ -1155,6 +1164,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
@@ -1289,6 +1299,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return (String)get_Value(COLUMNNAME_ProductType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -1317,34 +1328,23 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
-			.getPO(getSalesRep_ID(), get_TrxName());
-	}
-
-	/** Set Sales Representative.
-		@param SalesRep_ID Sales Representative or Company Agent
+	/** Set SKU.
+		@param SKU Stock Keeping Unit
 	*/
-	public void setSalesRep_ID (int SalesRep_ID)
+	public void setSKU (String SKU)
 	{
-		if (SalesRep_ID < 1)
-			set_Value (COLUMNNAME_SalesRep_ID, null);
-		else
-			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
+		set_Value (COLUMNNAME_SKU, SKU);
 	}
 
-	/** Get Sales Representative.
-		@return Sales Representative or Company Agent
+	/** Get SKU.
+		@return Stock Keeping Unit
 	  */
-	public int getSalesRep_ID()
+	public String getSKU()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_SKU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_S_ExpenseType getS_ExpenseType() throws RuntimeException
 	{
 		return (org.compiere.model.I_S_ExpenseType)MTable.get(getCtx(), org.compiere.model.I_S_ExpenseType.Table_ID)
@@ -1368,6 +1368,64 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public int getS_ExpenseType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_ExpenseType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
+
+	/** Set Resource.
+		@param S_Resource_ID Resource
+	*/
+	public void setS_Resource_ID (int S_Resource_ID)
+	{
+		if (S_Resource_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
+	}
+
+	/** Get Resource.
+		@return Resource
+	  */
+	public int getS_Resource_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
+
+	/** Set Sales Representative.
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
+	public void setSalesRep_ID (int SalesRep_ID)
+	{
+		if (SalesRep_ID < 1)
+			set_Value (COLUMNNAME_SalesRep_ID, null);
+		else
+			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
+	}
+
+	/** Get Sales Representative.
+		@return Sales Representative or Company Agent
+	  */
+	public int getSalesRep_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -1430,48 +1488,20 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set SKU.
-		@param SKU Stock Keeping Unit
+	/** Set UPC/EAN.
+		@param UPC Bar Code (Universal Product Code or its superset European Article Number)
 	*/
-	public void setSKU (String SKU)
+	public void setUPC (String UPC)
 	{
-		set_Value (COLUMNNAME_SKU, SKU);
+		set_Value (COLUMNNAME_UPC, UPC);
 	}
 
-	/** Get SKU.
-		@return Stock Keeping Unit
+	/** Get UPC/EAN.
+		@return Bar Code (Universal Product Code or its superset European Article Number)
 	  */
-	public String getSKU()
+	public String getUPC()
 	{
-		return (String)get_Value(COLUMNNAME_SKU);
-	}
-
-	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-	{
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
-			.getPO(getS_Resource_ID(), get_TrxName());
-	}
-
-	/** Set Resource.
-		@param S_Resource_ID Resource
-	*/
-	public void setS_Resource_ID (int S_Resource_ID)
-	{
-		if (S_Resource_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
-	}
-
-	/** Get Resource.
-		@return Resource
-	  */
-	public int getS_Resource_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_UPC);
 	}
 
 	/** Set Units Per Pack.
@@ -1510,22 +1540,6 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set UPC/EAN.
-		@param UPC Bar Code (Universal Product Code or its superset European Article Number)
-	*/
-	public void setUPC (String UPC)
-	{
-		set_Value (COLUMNNAME_UPC, UPC);
-	}
-
-	/** Get UPC/EAN.
-		@return Bar Code (Universal Product Code or its superset European Article Number)
-	  */
-	public String getUPC()
-	{
-		return (String)get_Value(COLUMNNAME_UPC);
 	}
 
 	/** Set Search Key.

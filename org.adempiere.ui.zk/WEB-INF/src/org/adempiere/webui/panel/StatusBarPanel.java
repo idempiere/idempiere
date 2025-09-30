@@ -45,9 +45,9 @@ import org.zkoss.zul.West;
 import org.zkoss.zul.Borderlayout;
 
 /**
+ * Status bar of window and form.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
- * @version $Revision: 0.10 $
  */
 public class StatusBarPanel extends Panel implements EventListener<Event>, IStatusBar
 {
@@ -93,7 +93,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 	 */
     private void init()
     {
-    	setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "statusBar");
+    	setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "statusBar");
         statusDB = new Label("  ");
         statusLine = new Label();
         selectedLine = new Label();

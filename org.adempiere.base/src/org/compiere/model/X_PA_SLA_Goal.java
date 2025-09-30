@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Goal
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="PA_SLA_Goal")
 public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_PA_SLA_Goal (Properties ctx, int PA_SLA_Goal_ID, String trxName)
@@ -128,6 +128,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -266,6 +267,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_SLA_Criteria getPA_SLA_Criteria() throws RuntimeException
 	{
 		return (org.compiere.model.I_PA_SLA_Criteria)MTable.get(getCtx(), org.compiere.model.I_PA_SLA_Criteria.Table_ID)

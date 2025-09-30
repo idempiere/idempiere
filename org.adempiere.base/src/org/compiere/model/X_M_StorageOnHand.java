@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_StorageOnHand
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageOnHand")
 public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_StorageOnHand (Properties ctx, int M_StorageOnHand_ID, String trxName)
@@ -151,6 +151,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 		return (Timestamp)get_Value(COLUMNNAME_DateMaterialPolicy);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -179,6 +180,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_Locator getM_Locator() throws RuntimeException
 	{
 		return (I_M_Locator)MTable.get(getCtx(), I_M_Locator.Table_ID)
@@ -207,6 +209,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)

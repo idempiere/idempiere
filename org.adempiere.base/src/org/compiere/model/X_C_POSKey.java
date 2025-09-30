@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_POSKey
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_POSKey")
 public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_POSKey (Properties ctx, int C_POSKey_ID, String trxName)
@@ -41,8 +41,8 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
       super (ctx, C_POSKey_ID, trxName);
       /** if (C_POSKey_ID == 0)
         {
-			setC_POSKey_ID (0);
 			setC_POSKeyLayout_ID (0);
+			setC_POSKey_ID (0);
 			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_POSKey WHERE C_POSKeyLayout_ID=@C_POSKeyLayout_ID@
@@ -55,8 +55,8 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
       super (ctx, C_POSKey_ID, trxName, virtualColumns);
       /** if (C_POSKey_ID == 0)
         {
-			setC_POSKey_ID (0);
 			setC_POSKeyLayout_ID (0);
+			setC_POSKey_ID (0);
 			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_POSKey WHERE C_POSKeyLayout_ID=@C_POSKeyLayout_ID@
@@ -69,8 +69,8 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
       super (ctx, C_POSKey_UU, trxName);
       /** if (C_POSKey_UU == null)
         {
-			setC_POSKey_ID (0);
 			setC_POSKeyLayout_ID (0);
+			setC_POSKey_ID (0);
 			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_POSKey WHERE C_POSKeyLayout_ID=@C_POSKeyLayout_ID@
@@ -83,8 +83,8 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
       super (ctx, C_POSKey_UU, trxName, virtualColumns);
       /** if (C_POSKey_UU == null)
         {
-			setC_POSKey_ID (0);
 			setC_POSKeyLayout_ID (0);
+			setC_POSKey_ID (0);
 			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM C_POSKey WHERE C_POSKeyLayout_ID=@C_POSKeyLayout_ID@
@@ -141,6 +141,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
@@ -169,6 +170,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)
@@ -197,28 +199,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set POS Key.
-		@param C_POSKey_ID POS Function Key
-	*/
-	public void setC_POSKey_ID (int C_POSKey_ID)
-	{
-		if (C_POSKey_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_POSKey_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_POSKey_ID, Integer.valueOf(C_POSKey_ID));
-	}
-
-	/** Get POS Key.
-		@return POS Function Key
-	  */
-	public int getC_POSKey_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSKey_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getC_POSKeyLayout() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_ID)
@@ -242,6 +223,28 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 	public int getC_POSKeyLayout_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSKeyLayout_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set POS Key.
+		@param C_POSKey_ID POS Function Key
+	*/
+	public void setC_POSKey_ID (int C_POSKey_ID)
+	{
+		if (C_POSKey_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_POSKey_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_POSKey_ID, Integer.valueOf(C_POSKey_ID));
+	}
+
+	/** Get POS Key.
+		@return POS Function Key
+	  */
+	public int getC_POSKey_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_POSKey_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -278,6 +281,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -406,6 +410,7 @@ public class X_C_POSKey extends PO implements I_C_POSKey, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_POSKeyLayout getSubKeyLayout() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_POSKeyLayout)MTable.get(getCtx(), org.compiere.model.I_C_POSKeyLayout.Table_ID)

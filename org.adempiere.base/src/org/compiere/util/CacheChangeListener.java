@@ -29,7 +29,6 @@ package org.compiere.util;
  * Note that this is ignore by CacheMgt if CCache implementation that implement this interface
  * doesn't return null for getTableName().
  * @author hengsin
- *
  */
 public interface CacheChangeListener {
 	/**
@@ -44,4 +43,11 @@ public interface CacheChangeListener {
 	 *  @param recordId
 	 */
 	public void reset(String tableName, int recordId);
+	
+	/**
+	 * Reset Cache by table name and key
+	 * @param tableName
+	 * @param key
+	 */
+	public void reset(String tableName, String key);
 }

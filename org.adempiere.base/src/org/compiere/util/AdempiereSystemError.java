@@ -16,9 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
-
 /**
- * 	iDempiere System Error.
+ * 	iDempiere System Error. <br/>
  * 	Error caused by invalid configurations, etc.
  * 	(Not recoverable)
  *	
@@ -66,7 +65,8 @@ public class AdempiereSystemError extends Exception
 	private Object	m_detail = null;
 	
 	/**
-	 * @return Returns the detail.
+	 * Get detail
+	 * @return detail.
 	 */
 	public Object getDetail ()
 	{
@@ -74,6 +74,7 @@ public class AdempiereSystemError extends Exception
 	}
 	
 	/**
+	 * Set detail
 	 * @param detail The detail to set.
 	 */
 	public void setDetail (Object detail)
@@ -85,6 +86,7 @@ public class AdempiereSystemError extends Exception
 	 * 	String Representation
 	 *	@return info
 	 */
+	@Override
 	public String toString ()
 	{
 		super.toString();

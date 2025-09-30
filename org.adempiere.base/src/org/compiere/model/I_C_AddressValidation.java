@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AddressValidation
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_AddressValidation 
 {
@@ -71,6 +71,7 @@ public interface I_C_AddressValidation
 	/** Get Address Validation Configuration	  */
 	public int getC_AddressValidationCfg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AddressValidationCfg getC_AddressValidationCfg() throws RuntimeException;
 
     /** Column name C_AddressValidation_ID */

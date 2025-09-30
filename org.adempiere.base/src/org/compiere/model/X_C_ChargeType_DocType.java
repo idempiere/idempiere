@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_ChargeType_DocType
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_ChargeType_DocType")
 public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_ChargeType_DocType (Properties ctx, int C_ChargeType_DocType_ID, String trxName)
@@ -135,6 +135,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 		return (String)get_Value(COLUMNNAME_C_ChargeType_DocType_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ChargeType getC_ChargeType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_ChargeType)MTable.get(getCtx(), org.compiere.model.I_C_ChargeType.Table_ID)
@@ -162,6 +163,7 @@ public class X_C_ChargeType_DocType extends PO implements I_C_ChargeType_DocType
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)

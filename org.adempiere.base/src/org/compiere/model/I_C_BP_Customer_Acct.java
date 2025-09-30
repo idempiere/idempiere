@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BP_Customer_Acct
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_BP_Customer_Acct 
 {
@@ -75,7 +75,17 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
+
+    /** Column name C_BP_Customer_Acct_UU */
+    public static final String COLUMNNAME_C_BP_Customer_Acct_UU = "C_BP_Customer_Acct_UU";
+
+	/** Set C_BP_Customer_Acct_UU	  */
+	public void setC_BP_Customer_Acct_UU (String C_BP_Customer_Acct_UU);
+
+	/** Get C_BP_Customer_Acct_UU	  */
+	public String getC_BP_Customer_Acct_UU();
 
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
@@ -90,16 +100,8 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
-
-    /** Column name C_BP_Customer_Acct_UU */
-    public static final String COLUMNNAME_C_BP_Customer_Acct_UU = "C_BP_Customer_Acct_UU";
-
-	/** Set C_BP_Customer_Acct_UU	  */
-	public void setC_BP_Customer_Acct_UU (String C_BP_Customer_Acct_UU);
-
-	/** Get C_BP_Customer_Acct_UU	  */
-	public String getC_BP_Customer_Acct_UU();
 
     /** Column name C_Prepayment_Acct */
     public static final String COLUMNNAME_C_Prepayment_Acct = "C_Prepayment_Acct";
@@ -114,7 +116,40 @@ public interface I_C_BP_Customer_Acct
 	  */
 	public int getC_Prepayment_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getC_Prepayment_A() throws RuntimeException;
+
+    /** Column name C_Receivable_Acct */
+    public static final String COLUMNNAME_C_Receivable_Acct = "C_Receivable_Acct";
+
+	/** Set Customer Receivables.
+	  * Account for Customer Receivables
+	  */
+	public void setC_Receivable_Acct (int C_Receivable_Acct);
+
+	/** Get Customer Receivables.
+	  * Account for Customer Receivables
+	  */
+	public int getC_Receivable_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException;
+
+    /** Column name C_Receivable_Services_Acct */
+    public static final String COLUMNNAME_C_Receivable_Services_Acct = "C_Receivable_Services_Acct";
+
+	/** Set Receivable Services.
+	  * Customer Accounts Receivables Services Account
+	  */
+	public void setC_Receivable_Services_Acct (int C_Receivable_Services_Acct);
+
+	/** Get Receivable Services.
+	  * Customer Accounts Receivables Services Account
+	  */
+	public int getC_Receivable_Services_Acct();
+
+	@Deprecated(since="13") // use better methods with cache
+	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -131,36 +166,6 @@ public interface I_C_BP_Customer_Acct
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name C_Receivable_Acct */
-    public static final String COLUMNNAME_C_Receivable_Acct = "C_Receivable_Acct";
-
-	/** Set Customer Receivables.
-	  * Account for Customer Receivables
-	  */
-	public void setC_Receivable_Acct (int C_Receivable_Acct);
-
-	/** Get Customer Receivables.
-	  * Account for Customer Receivables
-	  */
-	public int getC_Receivable_Acct();
-
-	public I_C_ValidCombination getC_Receivable_A() throws RuntimeException;
-
-    /** Column name C_Receivable_Services_Acct */
-    public static final String COLUMNNAME_C_Receivable_Services_Acct = "C_Receivable_Services_Acct";
-
-	/** Set Receivable Services.
-	  * Customer Accounts Receivables Services Account
-	  */
-	public void setC_Receivable_Services_Acct (int C_Receivable_Services_Acct);
-
-	/** Get Receivable Services.
-	  * Customer Accounts Receivables Services Account
-	  */
-	public int getC_Receivable_Services_Acct();
-
-	public I_C_ValidCombination getC_Receivable_Services_A() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

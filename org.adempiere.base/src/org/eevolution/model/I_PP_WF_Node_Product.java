@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_WF_Node_Product
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_PP_WF_Node_Product 
@@ -77,6 +77,7 @@ public interface I_PP_WF_Node_Product
 	  */
 	public int getAD_WF_Node_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException;
 
     /** Column name ConfigurationLevel */
@@ -158,6 +159,7 @@ public interface I_PP_WF_Node_Product
 	  */
 	public int getM_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
     /** Column name PP_WF_Node_Product_ID */

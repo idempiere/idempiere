@@ -183,12 +183,9 @@ public class M_Element extends X_AD_Element
 		setEntityType (EntityType);	// U
 	}	//	M_Element
 	
-	/* (non-Javadoc)
-	 * @see org.compiere.model.PO#beforeSave(boolean)
-	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		// Column AD_Element.ColumnName should be unique - teo_sarca [ 1613107 ]
+		// Validate AD_Element.ColumnName is unique
 		if (newRecord || is_ValueChanged(COLUMNNAME_ColumnName)) {
 			String columnName = getColumnName().trim();
 			if (getColumnName().length() != columnName.length())
@@ -203,6 +200,8 @@ public class M_Element extends X_AD_Element
 				return false;
 			}
 		}
+		
+		//Validate column name is valid DB identifier
 		String error = Database.isValidIdentifier(getColumnName());
 		if (!Util.isEmpty(error)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), error) + " [ColumnName]");
@@ -212,17 +211,12 @@ public class M_Element extends X_AD_Element
 		return true;
 	}
 
-	/**
-	 * 	After Save
-	 *	@param newRecord new
-	 *	@param success success
-	 *	@return success
-	 */
+	@Override
 	protected boolean afterSave (boolean newRecord, boolean success)
 	{
 		if (!success)
 			return success;
-		//	Update Columns, Fields, Parameters, Print Info
+		//	Update Columns, Fields, Process Parameters, Info Column and Print Format Item
 		if (!newRecord)
 		{
 			StringBuilder sql = new StringBuilder();
@@ -245,7 +239,7 @@ public class M_Element extends X_AD_Element
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
 				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Columns updated #" + no);
 
-				//	Parameter 
+				//	Process Parameter 
 				sql = new StringBuilder("UPDATE AD_Process_Para SET ColumnName=")
 					.append(DB.TO_STRING(getColumnName()))
 					.append(", Name=").append(DB.TO_STRING(getName()))
@@ -303,7 +297,7 @@ public class M_Element extends X_AD_Element
 			if (   is_ValueChanged(M_Element.COLUMNNAME_PrintName)
 				|| is_ValueChanged(M_Element.COLUMNNAME_Name)
 				) {
-				//	Print Info
+				//	Print Format Item
 				sql = new StringBuilder("UPDATE AD_PrintFormatItem SET PrintName=")
 					.append(DB.TO_STRING(getPrintName()))
 					.append(", Name=").append(DB.TO_STRING(getName()))

@@ -292,7 +292,6 @@ public class TimeUtil
 		return false;
 	}	//	inRange
 
-
 	/**
 	 * 	Is it the same day
 	 * 	@param one day

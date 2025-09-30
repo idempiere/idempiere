@@ -70,7 +70,6 @@ import java.math.RoundingMode;
  * 1.222,33	\u9519\u8bef	\uff08\u6d4b\u8bd5\uff1a\u975e\u6cd5\u5b57\u7b26\uff09
  * 
  */
-
 public class AmtInWords_ZH implements AmtInWords
 {
 	/**
@@ -101,6 +100,7 @@ public class AmtInWords_ZH implements AmtInWords
 		"\u5146",		// 14	1000000000000	\uff0810^12\uff09	\u4e07\u4ebf\u4e3a\u5146
 
 	};
+	
 	/** numbers 0 to 9				*/
 	private static final String[]	numNames = 
 	{ 
@@ -187,7 +187,7 @@ public class AmtInWords_ZH implements AmtInWords
 				zeroSize = 0;
 			} else {											//	Character = 0, insert (scale + 0 )
 				++zeroSize;										
-				if (!(getZero) & numIndex != 2) {				//	separated zero and option of "YUAN" suffix
+				if (!(getZero) && numIndex != 2) {				//	separated zero and option of "YUAN" suffix
 					sb.insert(0, numNames[numUnit]);			//	first insert 0 to Chinese
 				}												//	
 				if (numIndex == 2) {							//	option1: "YUAN"=0
@@ -216,12 +216,13 @@ public class AmtInWords_ZH implements AmtInWords
 		return sb.toString();									//	return amt string completed
 	}	//	convert
 
-	/**************************************************************************
+	/**
 	 * 	Get Amount in Words
 	 * 	@param amount numeric amount (352.80)
 	 * 	@return amount in words
 	 * 	@throws Exception
 	 */
+	@Override
 	public String getAmtInWords (String amount) throws Exception
 	{
 		if (amount == null || amount.length() <= 0)				//	null string
@@ -229,7 +230,7 @@ public class AmtInWords_ZH implements AmtInWords
 
 		//TODO: Check string illegal character
 		
-		amount = amount.replaceAll (",", "");					//	fire period ","
+		amount = amount.replace(",", "");					//	fire period ","
 		//TODO: 1.234,56 as comma replace period 
 		
 		StringBuilder sb = new StringBuilder ();
@@ -294,6 +295,5 @@ public class AmtInWords_ZH implements AmtInWords
 		aiw.print ("1,932,110,345,780");
 		aiw.print ("10,000,000,000,000");
 		aiw.print ("-1220.354");
-//		aiw.print ("1.234,56"); ERROR		
 	}	//	main
 }

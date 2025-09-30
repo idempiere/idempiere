@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Process_DrillRule_Para
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_DrillRule_Para")
 public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_DrillRule_Para, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule_Para (Properties ctx, int AD_Process_DrillRule_Para_ID, String trxName)
@@ -104,6 +104,7 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_DrillRule getAD_Process_DrillRule() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process_DrillRule)MTable.get(getCtx(), org.compiere.model.I_AD_Process_DrillRule.Table_ID)
@@ -146,6 +147,7 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
 		return (String)get_Value(COLUMNNAME_AD_Process_DrillRule_Para_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)

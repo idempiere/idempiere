@@ -24,17 +24,20 @@ import org.apache.ecs.xhtml.body;
 public interface IHTMLExtension {
 
 	/**
-	 * @return css class prefix for report element
+	 * Get CSS class prefix for HTML report element
+	 * @return CSS class prefix for HTML report element
 	 */
 	public String getClassPrefix();
 	
 	/**
-	 * @return url to report css
+	 * Get URL to report CSS
+	 * @return URL to report CSS
 	 */
 	public String getStyleURL();
 	
 	/**
-	 * @return url to report js
+	 * Get URL to report javascript
+	 * @return URL to report javascript
 	 */
 	public String getScriptURL();
 	
@@ -61,11 +64,13 @@ public interface IHTMLExtension {
 	public void setWebAttribute (body reportBody);
 	
 	/**
-	 * @return absolute path to css style file
+	 * Get absolute local file path to CSS file (typically for embedding the file content to HTML report)
+	 * @return absolute local file path to CSS file
 	 */
 	public String getFullPathStyle ();
 
 	/**
+	 * Get one or more links (&lt;link ... &gt;) to web font
 	 * @return one or more links for web font
 	 */
 	String getWebFontLinks();

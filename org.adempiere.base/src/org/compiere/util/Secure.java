@@ -18,13 +18,17 @@ package org.compiere.util;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.sql.Timestamp;
+import java.util.HexFormat;
 import java.util.logging.Level;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IKeyStore;
@@ -70,23 +74,7 @@ public class Secure implements SecureInterface
 	 */
 	public static String convertToHexString (byte[] bytes)
 	{
-		//	see also Util.toHex
-		int size = bytes.length;
-		StringBuilder buffer = new StringBuilder(size*2);
-		for(int i=0; i<size; i++)
-		{
-			// convert byte to an int
-			int x = bytes[i];
-			// account for int being a signed type and byte being unsigned
-			if (x < 0)
-				x += 256;
-			String tmp = Integer.toHexString(x);
-			// pad out "1" to "01" etc.
-			if (tmp.length() == 1)
-				buffer.append("0");
-			buffer.append(tmp);
-		}
-		return buffer.toString();
+		return HexFormat.of().formatHex(bytes);
 	}   //  convertToHexString
 
 	/**
@@ -98,19 +86,9 @@ public class Secure implements SecureInterface
 	{
 		if (hexString == null || hexString.length() == 0)
 			return null;
-		int size = hexString.length()/2;
-		byte[] retValue = new byte[size];
-		String inString = hexString.toLowerCase();
-
 		try
 		{
-			for (int i = 0; i < size; i++)
-			{
-				int index = i*2;
-				int ii = Integer.parseInt(inString.substring(index, index+2), 16);
-				retValue[i] = (byte)ii;
-			}
-			return retValue;
+			return HexFormat.of().parseHex(hexString);
 		}
 		catch (Exception e)
 		{
@@ -124,20 +102,22 @@ public class Secure implements SecureInterface
 	 */
 	public Secure()
 	{
-		initCipher();
+		createKeyStore();
 	}	//	Secure
 	
 	/** Message Digest				*/
 	private MessageDigest	m_md = null;
+	
+	private MessageDigest	m_sha256 = null;
 
 	private IKeyStore m_keyStore = null;
 	/**	Logger						*/
 	private static CLogger	log	= CLogger.getCLogger (Secure.class.getName());
 
 	/**
-	 * 	Initialize Cipher & Key
+	 * 	Create Key Store if not yet done
 	 */
-	private synchronized void initCipher()
+	private synchronized void createKeyStore()
 	{
 		if(m_keyStore==null){
 			m_keyStore = getKeyStore();
@@ -152,17 +132,17 @@ public class Secure implements SecureInterface
 	 *  @return encrypted String
 	 */
 	public String encrypt (String value,int AD_Client_ID)
- {
+	{
 		String clearText = value;
 		if (clearText == null)
 			clearText = "";
 		// Init
 		if (m_keyStore == null)
-			initCipher();
+			createKeyStore();
 
 		// Encrypt
 		try {
-			Cipher cipher = Cipher.getInstance(m_keyStore.getAlgorithm());
+			Cipher cipher = getCipherInstance();
 
 			cipher.init(Cipher.ENCRYPT_MODE, m_keyStore.getKey(AD_Client_ID));
 			byte[] encBytes = cipher.doFinal(clearText.getBytes("UTF8"));
@@ -172,14 +152,36 @@ public class Secure implements SecureInterface
 			// log.log (Level.ALL, value + " => " + encString);
 			return encString;
 		} catch (Exception ex) {
-			// log.log(Level.INFO, value, ex);
-			if (log.isLoggable(Level.INFO))log.log(Level.INFO, "Problem encrypting string", ex);
+			log.log(Level.SEVERE, "Problem encrypting string", ex);
 		}
 
 		// Fallback
 		return CLEARVALUE_START + value + CLEARVALUE_END;
 	}	//	encrypt
 
+	/**
+	 * Get Cipher Instance
+	 * @return cipher
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws NoSuchProviderException
+	 */
+	protected Cipher getCipherInstance() throws NoSuchAlgorithmException, NoSuchPaddingException, NoSuchProviderException {
+		String provider = getCipherProvider();
+		Cipher cipher = Util.isEmpty(provider, true) 
+							? Cipher.getInstance(m_keyStore.getAlgorithm())
+							: Cipher.getInstance(m_keyStore.getAlgorithm(), provider);
+		return cipher;
+	}
+
+	/**
+	 * Get Cipher Provider 
+	 * @return cipher provider or null if default provider should be used
+	 */
+	protected String getCipherProvider() {
+		return m_keyStore.getProvider();
+	}
+	
 	/**
 	 *	Decryption.
 	 * 	The methods must recognize clear text values
@@ -209,14 +211,14 @@ public class Secure implements SecureInterface
 		}
 		//	Init
 		if (m_keyStore == null)
-			initCipher();
+			createKeyStore();
 
 		//	Encrypt
 		if (value != null && value.length() > 0)
 		{
 			try
 			{
-				Cipher cipher = Cipher.getInstance(m_keyStore.getAlgorithm());
+				Cipher cipher = getCipherInstance();
 				AlgorithmParameters ap = cipher.getParameters();
 				cipher.init(Cipher.DECRYPT_MODE, m_keyStore.getKey(AD_Client_ID), ap);
 				byte[] out = cipher.doFinal(data);
@@ -227,8 +229,7 @@ public class Secure implements SecureInterface
 			}
 			catch (Exception ex)
 			{
-				// log.info("Failed: " + value + " - " + ex.toString());
-				if (log.isLoggable(Level.INFO)) log.info("Failed decrypting " + ex.toString());
+				log.log(Level.SEVERE, "Failed decrypting", ex);
 			}
 		}
 		return null;
@@ -345,6 +346,44 @@ public class Secure implements SecureInterface
 		//	needs to be a hex string, so try to convert it
 		return (convertHexString(value) != null);
 	}	//	isDigest
+
+	
+	@Override
+	public String getSHA256Digest(String value) {
+		if (m_sha256 == null)
+		{
+			try
+			{
+				m_sha256 = MessageDigest.getInstance("SHA-256");
+			}
+			catch (NoSuchAlgorithmException nsae)
+			{
+				nsae.printStackTrace();
+			}
+		}
+        //	Convert String to array of bytes
+		byte[] input = value.getBytes(StandardCharsets.UTF_8);
+		byte[] output = null;
+		//	Reset MessageDigest object
+		if (m_sha256 != null) {
+			m_sha256.reset();		
+			//	feed this array of bytes to the MessageDigest object
+			m_sha256.update(input);
+			//	 Get the resulting bytes after the encryption process
+			output = m_sha256.digest();
+			m_sha256.reset();
+			//
+		}
+		return convertToHexString(output);
+	}
+
+	@Override
+	public boolean isSHA256Digest(String value) {
+		if (value == null || value.length() != 64)
+			return false;
+		//	needs to be a hex string, so try to convert it
+		return (convertHexString(value) != null);
+	}
 
 	/**
 	 *  Convert String and salt to SHA-512 hash with iterations

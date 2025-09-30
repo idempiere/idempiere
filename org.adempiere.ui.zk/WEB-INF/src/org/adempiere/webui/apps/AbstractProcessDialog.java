@@ -11,8 +11,9 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-
 package org.adempiere.webui.apps;
+
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,12 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.util.IProcessUI;
-import org.adempiere.util.ServerContext;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -37,7 +36,6 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
-import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
@@ -55,15 +53,12 @@ import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
 import org.compiere.model.Lookup;
-import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
-import org.compiere.model.MNote;
 import org.compiere.model.MPInstance;
-import org.compiere.model.MPInstanceLog;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MReportView;
@@ -76,8 +71,6 @@ import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_PInstance;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
-import org.compiere.process.ProcessInfoUtil;
-import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -189,7 +182,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 
 	/**
-	 * layout dialog
+	 * Layout dialog
 	 * 
 	 * @param  ctx
 	 * @param  WindowNo
@@ -234,9 +227,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				m_Help = userDef.getHelp();
 		}
 
-		buildMsg.append("<b>");
+		buildMsg.append("<p><b>");
 		buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
-		buildMsg.append("</b>");
+		buildMsg.append("</b></p>");
 
 		if (!Util.isEmpty(m_Help))
 			buildMsg.append("<p>").append(m_Help).append("</p>");
@@ -298,7 +291,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected HtmlBasedComponent mainParameterLayout;
 	protected WTableDirEditor fPrintFormat;
 	private WEditor fLanguageType;
-	protected Listbox freportType;
+	protected Combobox freportType;
 	private Checkbox chbIsSummary;
 	/** ok button to run process/report **/
 	protected Button bOK;
@@ -343,7 +336,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Layout content of {@link #topParameterLayout}
+	 * Layout content of {@link #topParameterLayout} (process message and parameters)
 	 * @param topParameterLayout
 	 */
 	protected void topLayout(HtmlBasedComponent topParameterLayout) {
@@ -352,7 +345,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		// input component
 		HtmlBasedComponent inputParameterLayout = new Div();
-		inputParameterLayout.setSclass("input-paramenter-layout"); 
+		inputParameterLayout.setSclass("input-paramenter-layout");
+		if (isLabelAboveInputForSmallWidth())
+			LayoutUtils.addSclass("form-label-above-input", inputParameterLayout);
 		topParameterLayout.appendChild(inputParameterLayout);
 		
 		// input parameter content
@@ -378,7 +373,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			content.setContent(contentMsg);
 		}
 		messageDiv.appendChild(content);
-		messageDiv.setSclass("message-paramenter");
+		messageDiv.setSclass("message-parameter");
 		messageParameterLayout.appendChild(messageDiv);
 		
 		return content;
@@ -461,7 +456,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Layout content of {@link #bottomParameterLayout}.
+	 * Layout content of {@link #bottomParameterLayout}.<br/>
 	 * Report option, save parameter and action buttons.
 	 * @param bottomParameterLayout
 	 */
@@ -481,7 +476,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Render report option part of {@link #bottomParameterLayout}.
+	 * Render report option part of {@link #bottomParameterLayout} (output type, IsSummary and print format)
 	 * @param bottomParameterLayout
 	 */
 	protected void reportOptionLayout(HtmlBasedComponent bottomParameterLayout) {
@@ -489,18 +484,28 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			return;//if not a report not need show this panel
 
 		// option control
-		Hlayout reportOptionLayout = new Hlayout();
+		Hlayout reportOptionLayout =  new Hlayout();
 		reportOptionLayout.setSclass("report-option-container");
 		reportOptionLayout.setValign("middle");
-		bottomParameterLayout.appendChild(reportOptionLayout);
+		if (!isLabelAboveInputForSmallWidth())
+			bottomParameterLayout.appendChild(reportOptionLayout);
 
 		//output type: html, pdf, etc
 		Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
-		lreportType.setSclass("option-input-parameter view-report-label");
-		freportType = new Listbox();
+		if (!isLabelAboveInputForSmallWidth())
+			lreportType.setSclass("option-input-parameter view-report-label");
+		freportType = new Combobox();
 		freportType.setSclass("option-input-parameter view-report-list");
-		reportOptionLayout.appendChild(lreportType);
-		reportOptionLayout.appendChild(freportType);	
+		if (isLabelAboveInputForSmallWidth()) {
+			freportType.setHflex("1");
+			freportType.setPlaceholder(lreportType.getValue());
+		}
+		if (isLabelAboveInputForSmallWidth()) {
+			bottomParameterLayout.appendChild(freportType);
+		} else {
+			reportOptionLayout.appendChild(lreportType);
+			reportOptionLayout.appendChild(freportType);
+		}
 
 		if (isJasperReport())
 			listReportTypeJasper();
@@ -511,31 +516,47 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		//summary option
 		chbIsSummary = new Checkbox();
 		chbIsSummary.setSclass("option-input-parameter");
+		chbIsSummary.setLabel(Msg.translate(Env.getCtx(), "Summary"));
 		Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
-		lPrintFormat.setSclass("option-input-parameter print-format-label");
-		Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
-		lIsSummary.setSclass("option-input-parameter");
+		if (!isLabelAboveInputForSmallWidth())
+			lPrintFormat.setSclass("option-input-parameter print-format-label");
 
 		//print formats
 		MClient client = MClient.get(m_ctx);
 		listPrintFormat(client);
 
-		reportOptionLayout.appendChild(lPrintFormat);
-		reportOptionLayout.appendChild(fPrintFormat.getComponent());
+		if (isLabelAboveInputForSmallWidth()) {
+			bottomParameterLayout.appendChild(fPrintFormat.getComponent());
+			fPrintFormat.getComponent().setWidth(null);
+			fPrintFormat.getComponent().setHflex("1");
+		} else {
+			reportOptionLayout.appendChild(lPrintFormat);
+			reportOptionLayout.appendChild(fPrintFormat.getComponent());
+		}
 		//selection of language
 		if (client.isMultiLingualDocument()){
 			Label lLanguageType = new Label(Msg.translate(Env.getCtx(), MLanguage.COLUMNNAME_AD_Language_ID));
-			reportOptionLayout.appendChild(lLanguageType);
-			reportOptionLayout.appendChild(fLanguageType.getComponent());
+			if (isLabelAboveInputForSmallWidth()) {
+				bottomParameterLayout.appendChild(fLanguageType.getComponent());
+				((Combobox)fLanguageType.getComponent()).setPlaceholder(lLanguageType.getValue());
+				((Combobox) fLanguageType.getComponent()).setWidth(null);
+				((Combobox) fLanguageType.getComponent()).setHflex("1");
+			} else {
+				reportOptionLayout.appendChild(lLanguageType);
+				reportOptionLayout.appendChild(fLanguageType.getComponent());
+			}
 			((Combobox)fLanguageType.getComponent()).setSclass("option-input-parameter");
 		}
 		fPrintFormat.getComponent().setSclass("option-input-parameter print-format-list");
 		fPrintFormat.getComponent().setPlaceholder(lPrintFormat.getValue());
-		reportOptionLayout.appendChild(lIsSummary);
-		reportOptionLayout.appendChild(chbIsSummary);
+		if (isLabelAboveInputForSmallWidth())
+			bottomParameterLayout.appendChild(chbIsSummary);
+		else
+			reportOptionLayout.appendChild(chbIsSummary);
 	}
 
 	/**
+	 * Is current process with IsReport=Y AND JasperReport Is NULL.
 	 * @return true if current process is with IsReport=Y AND JasperReport Is NULL.
 	 */
 	protected boolean isReport () {
@@ -544,6 +565,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
+	 * Is current process with IsReport=Y AND JasperReport Is Not NULL.
 	 * @return true if current process is with IsReport=Y AND JasperReport Is Not NULL.
 	 */
 	protected boolean isJasperReport () {
@@ -711,7 +733,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 */
 	private void fillReportType(boolean m_isCanExport) {
 		freportType.removeAllItems();
-		freportType.setMold("select");
 		freportType.appendItem("", "");
 		freportType.appendItem("PDF", "PDF");
 		freportType.appendItem("HTML", "HTML");
@@ -780,7 +801,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Auto start process upon instantiation of process dialog.
+	 * Auto start process upon instantiation of process dialog.<br/>
 	 * Delegate to {@link #startProcess0()}.
 	 */
 	protected void autoStart()
@@ -824,7 +845,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Save process parameters and report options.
+	 * Save process parameters and report options.<br/>
 	 * Set MPInstance.Name = saveName.
 	 * @param saveName
 	 */
@@ -971,7 +992,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Run process.
+	 * Run process.<pr/>
 	 * Delegate to {@link #startProcess0()}.
 	 */
 	protected void startProcess()
@@ -1059,69 +1080,26 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 */
 	public void runBackgroundJob() 
 	{
-		Properties m_ctx = getCtx();
-		ProcessInfo m_pi = getProcessInfo();
-		MPInstance instance = null;
+		Properties context = getCtx();
+		ProcessInfo processInfo = getProcessInfo();
+		
+		Callback<Integer> createInstanceParaCallback = id -> {
+			if (id > 0)
+				getParameterPanel().saveParameters();
+		};
 		
 		try 
 		{
-			int AD_Client_ID = Env.getAD_Client_ID(m_ctx);
-			int AD_User_ID = Env.getAD_User_ID(m_ctx);
-			
-			int count = new Query(m_ctx, MPInstance.Table_Name, "Coalesce(AD_User_ID,0)=? AND IsProcessing='Y' AND IsRunAsJob='Y' ", null)
-			.setOnlyActiveRecords(true)
-			.setClient_ID()
-			.setParameters(AD_User_ID)
-			.count();
-			if (count >= MSysConfig.getIntValue(MSysConfig.BACKGROUND_JOB_MAX_PER_USER, 5, AD_Client_ID))
-				throw new IllegalStateException(Msg.getMsg(m_ctx, "BackgroundJobExceedMaxPerUser"));
-			
-			count = new Query(m_ctx, MPInstance.Table_Name, "IsProcessing='Y' AND IsRunAsJob='Y' ", null)
-			.setOnlyActiveRecords(true)
-			.setClient_ID()
-			.count();
-			if (count >= MSysConfig.getIntValue(MSysConfig.BACKGROUND_JOB_MAX_PER_CLIENT, 10, AD_Client_ID))
-				throw new IllegalStateException(Msg.getMsg(m_ctx, "BackgroundJobExceedMaxPerClient"));
-			
-			count = new Query(m_ctx, MPInstance.Table_Name, "IsProcessing='Y' AND IsRunAsJob='Y' ", null)
-			.setOnlyActiveRecords(true)
-			.count();
-			if (count >= MSysConfig.getIntValue(MSysConfig.BACKGROUND_JOB_MAX_IN_SYSTEM, 20))
-				throw new IllegalStateException(Msg.getMsg(m_ctx, "BackgroundJobExceedMaxInSystem"));
-			
-			instance = new MPInstance(m_ctx, m_pi.getAD_Process_ID(), m_pi.getTable_ID(), m_pi.getRecord_ID(), m_pi.getRecord_UU());
-			instance.setIsRunAsJob(true);
-			instance.setIsProcessing(true);
-			instance.setNotificationType(getNotificationType());
-			if (instance.getNotificationType() == null)
-				instance.setNotificationType(MPInstance.NOTIFICATIONTYPE_Notice);
-			instance.setReportType(m_pi.getReportType());
-			instance.setIsSummary(m_pi.isSummary());
-			instance.setAD_Language_ID(m_pi.getLanguageID());
-			if (m_pi.getSerializableObject() != null && m_pi.getSerializableObject() instanceof MPrintFormat) {
-				instance.setAD_PrintFormat_ID(((MPrintFormat)m_pi.getSerializableObject()).getAD_PrintFormat_ID());
-			}
-			instance.saveEx();
-			
-			m_pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
-			getParameterPanel().saveParameters();
-			
-			MPInstance.publishChangedEvent(AD_User_ID);
-			Adempiere.getThreadPoolExecutor().schedule(new BackgroundJobRunnable(getCtx()), 1000, TimeUnit.MILLISECONDS);
-			
-			m_pi.setSummary(Msg.getMsg(m_ctx, "BackgroundJobScheduled"));
-		} catch (Exception e) {
-			m_pi.setSummary(e.getLocalizedMessage());
-			m_pi.setError(true);
-
-			if (instance != null)
-			{
-				instance.setIsProcessing(false);
-				instance.saveEx();
-			}
+			BackgroundJob.create(processInfo)
+				.withContext(context)
+				.withNotificationType(getNotificationType())
+				.withProcessUI(this)
+				.withInitialDelay(1000)
+				.run(createInstanceParaCallback);			
 		}
-		finally {
-			unlockUI(m_pi);
+		finally 
+		{
+			unlockUI(processInfo);
 			
 			if (m_disposeOnComplete)
 				dispose();
@@ -1368,7 +1346,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 	
 	/**
-	 * Runnable to run process in background thread.
+	 * Runnable to run process in background thread.<br/>
 	 * Notify process dialog with {@link AbstractProcessDialog#ON_COMPLETE_EVENT} event. 
 	 */
 	private class ProcessDialogRunnable extends ZkContextRunnable
@@ -1398,129 +1376,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			} finally {
 				Executions.schedule(getDesktop(), AbstractProcessDialog.this, new Event(ON_COMPLETE_EVENT, AbstractProcessDialog.this, null));
 			}		
-		}
-	}
-	
-	/**
-	 * Runnable to run process as background job.
-	 * Send email or notice notification to user upon completion of job. 
-	 */
-	private class BackgroundJobRunnable implements Runnable
-	{
-		private Properties m_ctx;
-		
-		private BackgroundJobRunnable(Properties ctx) 
-		{
-			super();
-			
-			m_ctx = new Properties();
-			Env.setContext(m_ctx, Env.AD_CLIENT_ID, ctx.getProperty(Env.AD_CLIENT_ID));
-			Env.setContext(m_ctx, Env.AD_ORG_ID, ctx.getProperty(Env.AD_ORG_ID));
-			Env.setContext(m_ctx, Env.AD_ROLE_ID, ctx.getProperty(Env.AD_ROLE_ID));
-			Env.setContext(m_ctx, Env.M_WAREHOUSE_ID, ctx.getProperty(Env.M_WAREHOUSE_ID));
-			Env.setContext(m_ctx, Env.LANGUAGE, ctx.getProperty(Env.LANGUAGE));
-			Env.setContext(m_ctx, Env.AD_USER_ID, ctx.getProperty(Env.AD_USER_ID));
-			Env.setContext(m_ctx, Env.DATE, ctx.getProperty(Env.DATE));
-		}
-		
-		@Override
-		public void run() {
-			try {
-				ServerContext.setCurrentInstance(m_ctx);
-				doRun();
-			} finally {
-				ServerContext.dispose();
-			}
-		}
-		
-		private void doRun()
-		{			
-			ProcessInfo m_pi = getProcessInfo();
-			m_pi.setIsBatch(true);
-			m_pi.setPrintPreview(true);
-			
-			MPInstance instance = new MPInstance(m_ctx, m_pi.getAD_PInstance_ID(), null);
-			String notificationType = instance.getNotificationType();
-			if (notificationType == null)
-				notificationType = MPInstance.NOTIFICATIONTYPE_Notice;
-			boolean sendEmail = notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMail) || notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMailPlusNotice);
-			boolean createNotice = notificationType.equals(MPInstance.NOTIFICATIONTYPE_Notice) || notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMailPlusNotice);
-			
-			int AD_Client_ID = Env.getAD_Client_ID(m_ctx);
-			int AD_User_ID = Env.getAD_User_ID(m_ctx);
-			
-			try {
-				MProcess process = new MProcess(m_ctx, m_pi.getAD_Process_ID(), null);	
-				if (process.isReport() && process.getJasperReport() != null) {
-					if (!Util.isEmpty(process.getJasperReport())) 
-					{
-						m_pi.setExport(true);
-						if ("HTML".equals(m_pi.getReportType())) 
-							m_pi.setExportFileExtension("html");
-						else if ("CSV".equals(m_pi.getReportType()))
-							m_pi.setExportFileExtension("csv");
-						else if ("XLS".equals(m_pi.getReportType()))
-							m_pi.setExportFileExtension("xls");
-						else if ("XLSX".equals(m_pi.getReportType()))
-							m_pi.setExportFileExtension("xlsx");
-						else
-							m_pi.setExportFileExtension("pdf");
-					}
-				}
-				ServerProcessCtl.process(m_pi, null);
-				ProcessInfoUtil.setLogFromDB(m_pi);
-				if (!m_pi.isError())
-				{					
-					boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
-					if (isReport && m_pi.getPDFReport() != null)
-					{
-						download(m_pi.getPDFReport());
-					}
-					
-					if (m_pi.isExport() && m_pi.getExportFile() != null)
-						download(m_pi.getExportFile());										
-				}
-				
-				if (sendEmail)
-				{
-					MClient client = MClient.get(m_ctx, AD_Client_ID);
-					client.sendEMailAttachments(AD_User_ID, process.get_Translation("Name", Env.getAD_Language(Env.getCtx())), m_pi.getSummary() + " " + m_pi.getLogInfo(), getDownloadFiles());
-				}
-				
-				if (createNotice)
-				{
-					MNote note = new MNote(m_ctx, "BackgroundJob", AD_User_ID, null);
-					note.setTextMsg(process.get_Translation("Name", Env.getAD_Language(Env.getCtx())) + "\n" + m_pi.getSummary());
-					note.setRecord(MPInstance.Table_ID, m_pi.getAD_PInstance_ID());
-					note.saveEx();
-					
-					MAttachment attachment = null;
-					if (getDownloadFiles().size() > 0)
-					{
-						attachment = note.createAttachment();
-						for (File downloadFile : getDownloadFiles())
-							attachment.addEntry(downloadFile);						
-					}
-					String log = m_pi.getLogInfo(true);
-					if (log != null && log.trim().length() > 0) {
-						if (attachment == null)
-							attachment = note.createAttachment();
-						attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
-					}
-					if (attachment != null)
-						attachment.saveEx();
-					MPInstanceLog il = instance.addLog(null, 0, null, Msg.parseTranslation(m_ctx, "@Created@ @AD_Note_ID@ " + note.getAD_Note_ID()),
-							MNote.Table_ID, note.getAD_Note_ID());
-					il.saveEx();
-				}
-			} catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage());				
-			} finally {
-				instance.setIsProcessing(false);
-				instance.saveEx();
-				
-				MPInstance.publishChangedEvent(AD_User_ID);
-			}
 		}
 	}
 	

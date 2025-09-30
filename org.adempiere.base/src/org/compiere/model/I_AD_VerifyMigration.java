@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_VerifyMigration
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_VerifyMigration 
 {
@@ -54,6 +54,7 @@ public interface I_AD_VerifyMigration
 	  */
 	public int getAD_ChangeLog_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_ChangeLog getAD_ChangeLog() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -77,6 +78,7 @@ public interface I_AD_VerifyMigration
 	  */
 	public int getAD_Column_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -105,6 +107,7 @@ public interface I_AD_VerifyMigration
 	  */
 	public int getAD_PInstance_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -120,6 +123,7 @@ public interface I_AD_VerifyMigration
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_VerifyMigration_ID */

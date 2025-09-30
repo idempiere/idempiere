@@ -16,14 +16,14 @@ package org.adempiere.webui.apps;
 import org.adempiere.webui.editor.WEditor;
 
 /**
- * Listener interface for process parameter panel.
+ * Listener interface for process parameter panel.<br/>
  * Implementation must be thread safe.
  * @author hengsin
  *
  */
 public interface IProcessParameterListener {
 	/**
-	 * on value change of parameter field editor
+	 * On value change of parameter field editor
 	 * @param parameterPanel
 	 * @param columnName - for range parameter the To columnname is suffixed with _2
 	 * @param editor
@@ -31,11 +31,19 @@ public interface IProcessParameterListener {
 	public void onChange(ProcessParameterPanel parameterPanel, String columnName, WEditor editor);
 	
 	/**
-	 * validate process parameter form
+	 * Validate process parameter form
 	 * @param parameterPanel
 	 * @return error message (if any)
 	 */
 	public default String validate(ProcessParameterPanel parameterPanel) {
 		return null;
 	}	
+
+	/**
+	 * Initialization of process parameter form
+	 * @param parameterPanel
+	 */
+	public default void onInit(ProcessParameterPanel parameterPanel) {
+	}
+
 }

@@ -552,7 +552,10 @@ public class TablePartitionService implements ITablePartitionService {
 					name.append(partitionNamePrefix).append("_");
 				String s = rs.getString(partitionKeyColumn.getColumnName());
 				name.append(s);
-				if (DisplayType.isText(partitionKeyColumn.getAD_Reference_ID()))
+				if (DisplayType.isText(partitionKeyColumn.getAD_Reference_ID()) || partitionKeyColumn.getAD_Reference_ID() == DisplayType.YesNo
+					|| DisplayType.isList(partitionKeyColumn.getAD_Reference_ID())
+					|| "EntityType".equals(partitionKeyColumn.getColumnName())
+					|| "AD_Language".equals(partitionKeyColumn.getColumnName()))
 					expression.append(DB.TO_STRING(s));
 				else if (partitionKeyColumn.getAD_Reference_ID() == DisplayType.Date)
 					expression.append(DB.TO_DATE(rs.getTimestamp(partitionKeyColumn.getColumnName())));

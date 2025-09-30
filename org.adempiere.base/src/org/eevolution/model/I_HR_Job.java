@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Job
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Job 
@@ -102,6 +102,7 @@ public interface I_HR_Job
 	/** Get Payroll Department	  */
 	public int getHR_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException;
 
     /** Column name HR_Job_ID */
@@ -179,6 +180,7 @@ public interface I_HR_Job
 	/** Get Next Job	  */
 	public int getNext_Job_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Job getNext_Job() throws RuntimeException;
 
     /** Column name Supervisor_ID */
@@ -194,6 +196,7 @@ public interface I_HR_Job
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name Updated */

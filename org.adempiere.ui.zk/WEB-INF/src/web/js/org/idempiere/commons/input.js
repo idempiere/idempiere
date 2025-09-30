@@ -45,6 +45,61 @@ zk.afterLoad(function() {
     });
 });
 
+zk.afterLoad('zk', function() {
+	// https://www.zkoss.org/wiki/ZK_Client-side_Reference/General_Control/Widget_Customization#Override_a_Default_Widget_Method_in_JavaScript_File
+	let exWidget = {};
+	// https://www.zkoss.org/javadoc/latest/jsdoc/functions/zk.html#override
+	zk.override(zk.Widget.prototype, exWidget, {
+		bind_: function(dt, skipper, after){
+			exWidget.bind_.apply(this, arguments);
+			// Override the widget so that all components can act as drop areas
+			if (this._id_isFileDragDropArea){
+				jq(this).on("drop", this._id_onFileDrop.bind(this));
+				jq(this).on("dragover", this._id_onFileDragOver.bind(this));
+				jq(this).on("dragenter", this._id_onFileDragEnter.bind(this));
+				jq(this).on("dragleave", this._id_onDragLeave.bind(this));
+			}
+		},
+		_id_onFileDrop: function(ev){
+			ev.preventDefault();
+			// clean border to indicate the drop area
+			jq(this).removeClass(this._id_cssDragEnter);
+			let dt = ev.originalEvent.dataTransfer;
+			if (dt.files && dt.files.length > 0){
+				// get upload component widget (component setup follow https://www.zkoss.org/wiki/ZK_Developer's_Reference/UI_Patterns/File_Upload_and_Download)
+				let wgUploadBt = zk.Widget.$(this._id_uploadButtonId);
+				// get reference to file input
+				let inp = wgUploadBt._uplder._inp;
+				// set FileList from drop to file input
+				inp.files = ev.originalEvent.dataTransfer.files;
+				// fire up change event to do upload
+				jq(inp).trigger("change");
+			}
+			
+			return false;
+		},
+		_id_onFileDragOver: function(ev){
+			ev.preventDefault();
+			return false;
+		},
+		_id_onFileDragEnter:function(ev) {
+			ev.preventDefault();
+			// highlight border to indicate the drop area
+			jq(this).addClass(this._id_cssDragEnter);
+			return false;
+		},
+		_id_onDragLeave: function (ev){
+			ev.preventDefault();
+			if (ev.delegateTarget == ev.target){
+				// clean border to indicate the drop area
+				jq(this).removeClass(this._id_cssDragEnter);
+			}
+			return false;
+		},
+		_id_cssDragEnter:"attachment-drag-entered",
+	});
+});
+
 zk.afterLoad('zul.inp', function() {
 
     // should filter out for only component inside standard window or component wish fire this event,

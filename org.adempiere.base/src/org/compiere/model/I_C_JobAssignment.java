@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_JobAssignment
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_JobAssignment 
 {
@@ -75,6 +75,7 @@ public interface I_C_JobAssignment
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_JobAssignment_ID */
@@ -112,6 +113,7 @@ public interface I_C_JobAssignment
 	  */
 	public int getC_Job_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException;
 
     /** Column name Created */

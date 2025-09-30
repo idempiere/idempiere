@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MatchPO
  *  @author iDempiere (generated)
- *  @version Release 11 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_MatchPO")
 public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_MatchPO (Properties ctx, int M_MatchPO_ID, String trxName)
@@ -140,6 +140,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_InvoiceLine)MTable.get(getCtx(), org.compiere.model.I_C_InvoiceLine.Table_ID)
@@ -168,6 +169,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_OrderLine getC_OrderLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_OrderLine)MTable.get(getCtx(), org.compiere.model.I_C_OrderLine.Table_ID)
@@ -291,6 +293,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -319,6 +322,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_InOutLine getM_InOutLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_InOutLine)MTable.get(getCtx(), org.compiere.model.I_M_InOutLine.Table_ID)
@@ -384,6 +388,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 		return (String)get_Value(COLUMNNAME_M_MatchPO_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
@@ -537,6 +542,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 		return bd;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchPO getRef_MatchPO() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MatchPO)MTable.get(getCtx(), org.compiere.model.I_M_MatchPO.Table_ID)
@@ -564,6 +570,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MatchPO getReversal() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MatchPO)MTable.get(getCtx(), org.compiere.model.I_M_MatchPO.Table_ID)

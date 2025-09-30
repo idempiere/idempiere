@@ -27,6 +27,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.KeyNamePair;
@@ -42,7 +43,7 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Vbox;
 
 /**
- * Panel to edit order of printed print format items
+ * Wizard panel to edit order of printed print format items
  */
 public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Event> {
 	/**
@@ -150,8 +151,8 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		};
 
     	if (ThemeManager.isUseFontIconForImage()) {
-    		bUp.setIconSclass("z-icon-Parent");
-    		bDown.setIconSclass("z-icon-Detail");
+    		bUp.setIconSclass(Icon.getIconSclass(Icon.PARENT));
+    		bDown.setIconSclass(Icon.getIconSclass(Icon.DETAIL));
     	} else {
     		bUp.setImage(ThemeManager.getThemeResource("images/Parent24.png"));
     		bDown.setImage(ThemeManager.getThemeResource("images/Detail24.png"));

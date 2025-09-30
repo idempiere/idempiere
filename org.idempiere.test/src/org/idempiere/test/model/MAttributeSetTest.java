@@ -26,13 +26,19 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeSet;
+import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MAttributeUse;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
+import org.compiere.util.TrxRunnable;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -115,4 +121,110 @@ public class MAttributeSetTest extends AbstractTestCase {
 		as.load(getTrxName());
 		assertTrue(as.isInstanceAttribute());
 	}
+	
+	@Test
+	public void testGenerateUniqueSerial() {
+		MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id, null);
+		mas.setM_SerNoCtl_ID(DictionaryIDs.M_SerNoCtl.SERIAL_NO_EXAMPLE.id);
+		try {
+			mas.saveEx();
+			Trx trx1 = Trx.get(Trx.createTrxName(), true);
+			Trx trx2 = Trx.get(Trx.createTrxName(), true);
+			AtomicReference<String>atomic1 = new AtomicReference<String>(null);
+			AtomicReference<String>atomic2 = new AtomicReference<String>(null);
+			try {
+				TrxRunnable runnable1 = (trxName -> {
+					MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trxName);
+					String serno1 = asi1.getSerNo(true);
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+					Trx.get(trxName, false).commit();
+					atomic1.set(serno1);					
+				});
+				TrxRunnable runnable2 = (trxName -> {
+					MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trx2.getTrxName());
+					String serno2 = asi2.getSerNo(true);
+					Trx.get(trxName, false).commit();
+					atomic2.set(serno2);
+				});
+				Thread t1 = new Thread(() -> {
+					Trx.run(trx1.getTrxName(), runnable1);
+				}) ;
+				Thread t2 = new Thread(() -> {
+					Trx.run(trx2.getTrxName(), runnable2);
+				});
+				t1.start();
+				t2.start();
+				try {
+					t1.join();
+				} catch (InterruptedException e) {
+				}
+				try {
+					t2.join();
+				} catch (InterruptedException e) {
+				}
+				assertNotNull(atomic1.get(), "Serial number 1 not generated");
+				assertNotNull(atomic2.get(), "Serial number 2 not generated");
+				assertNotEquals(atomic1.get(), atomic2.get(), "Duplicate serial number generated");
+			} finally {
+				trx1.close();
+				trx2.close();
+			}			
+		} finally {
+			mas.setM_SerNoCtl_ID(0);
+			mas.saveEx();
+		}
+	}
+
+	@Test
+	public void testGenerateLot() {
+		MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, null);
+		Trx trx1 = Trx.get(Trx.createTrxName(), true);
+		Trx trx2 = Trx.get(Trx.createTrxName(), true);
+		AtomicReference<String>atomic1 = new AtomicReference<String>(null);
+		AtomicReference<String>atomic2 = new AtomicReference<String>(null);
+		try {
+			TrxRunnable runnable1 = (trxName -> {
+				MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trxName);
+				String lot1 = asi1.getLot(true, DictionaryIDs.M_Product.FERTILIZER_50.id);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				Trx.get(trxName, false).commit();
+				atomic1.set(lot1);					
+			});
+			TrxRunnable runnable2 = (trxName -> {
+				MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trx2.getTrxName());
+				String lot2 = asi2.getLot(true, DictionaryIDs.M_Product.FERTILIZER_50.id);
+				Trx.get(trxName, false).commit();
+				atomic2.set(lot2);
+			});
+			Thread t1 = new Thread(() -> {
+				Trx.run(trx1.getTrxName(), runnable1);
+			}) ;
+			Thread t2 = new Thread(() -> {
+				Trx.run(trx2.getTrxName(), runnable2);
+			});
+			t1.start();
+			t2.start();
+			try {
+				t1.join();
+			} catch (InterruptedException e) {
+			}
+			try {
+				t2.join();
+			} catch (InterruptedException e) {
+			}
+			assertNotNull(atomic1.get(), "Lot 1 not generated");
+			assertNotNull(atomic2.get(), "Lot 2 not generated");
+			assertNotEquals(atomic1.get(), atomic2.get(), "Duplicate lot generated");
+		} finally {
+			trx1.close();
+			trx2.close();
+		}			
+	}
+
 }

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_RevenueRecognition_Plan
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_RevenueRecognition_Plan 
 {
@@ -75,6 +75,7 @@ public interface I_C_RevenueRecognition_Plan
 	  */
 	public int getC_AcctSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Currency_ID */
@@ -90,6 +91,7 @@ public interface I_C_RevenueRecognition_Plan
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_InvoiceLine_ID */
@@ -105,23 +107,8 @@ public interface I_C_RevenueRecognition_Plan
 	  */
 	public int getC_InvoiceLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceLine getC_InvoiceLine() throws RuntimeException;
-
-    /** Column name Created */
-    public static final String COLUMNNAME_Created = "Created";
-
-	/** Get Created.
-	  * Date this record was created
-	  */
-	public Timestamp getCreated();
-
-    /** Column name CreatedBy */
-    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
-
-	/** Get Created By.
-	  * User who created this records
-	  */
-	public int getCreatedBy();
 
     /** Column name C_RevenueRecognition_ID */
     public static final String COLUMNNAME_C_RevenueRecognition_ID = "C_RevenueRecognition_ID";
@@ -136,6 +123,7 @@ public interface I_C_RevenueRecognition_Plan
 	  */
 	public int getC_RevenueRecognition_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException;
 
     /** Column name C_RevenueRecognition_Plan_ID */
@@ -159,6 +147,22 @@ public interface I_C_RevenueRecognition_Plan
 
 	/** Get C_RevenueRecognition_Plan_UU	  */
 	public String getC_RevenueRecognition_Plan_UU();
+
+    /** Column name Created */
+    public static final String COLUMNNAME_Created = "Created";
+
+	/** Get Created.
+	  * Date this record was created
+	  */
+	public Timestamp getCreated();
+
+    /** Column name CreatedBy */
+    public static final String COLUMNNAME_CreatedBy = "CreatedBy";
+
+	/** Get Created By.
+	  * User who created this records
+	  */
+	public int getCreatedBy();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -186,6 +190,7 @@ public interface I_C_RevenueRecognition_Plan
 	  */
 	public int getP_Revenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getP_Revenue_A() throws RuntimeException;
 
     /** Column name RecognizedAmt */
@@ -223,6 +228,7 @@ public interface I_C_RevenueRecognition_Plan
 	  */
 	public int getUnEarnedRevenue_Acct();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_ValidCombination getUnEarnedRevenue_A() throws RuntimeException;
 
     /** Column name Updated */

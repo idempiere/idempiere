@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Window
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_AD_Window 
 {
@@ -62,6 +62,7 @@ public interface I_AD_Window
 	  */
 	public int getAD_Color_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Color getAD_Color() throws RuntimeException;
 
     /** Column name AD_Image_ID */
@@ -77,6 +78,7 @@ public interface I_AD_Window
 	  */
 	public int getAD_Image_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -287,19 +289,6 @@ public interface I_AD_Window
 	  */
 	public int getUpdatedBy();
 
-    /** Column name WindowType */
-    public static final String COLUMNNAME_WindowType = "WindowType";
-
-	/** Set Window Type.
-	  * Type or classification of a Window
-	  */
-	public void setWindowType (String WindowType);
-
-	/** Get Window Type.
-	  * Type or classification of a Window
-	  */
-	public String getWindowType();
-
     /** Column name WinHeight */
     public static final String COLUMNNAME_WinHeight = "WinHeight";
 
@@ -317,4 +306,17 @@ public interface I_AD_Window
 
 	/** Get Window Width	  */
 	public int getWinWidth();
+
+    /** Column name WindowType */
+    public static final String COLUMNNAME_WindowType = "WindowType";
+
+	/** Set Window Type.
+	  * Type or classification of a Window
+	  */
+	public void setWindowType (String WindowType);
+
+	/** Get Window Type.
+	  * Type or classification of a Window
+	  */
+	public String getWindowType();
 }

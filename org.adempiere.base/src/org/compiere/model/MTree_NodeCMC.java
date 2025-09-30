@@ -25,9 +25,8 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
-
 /**
- *	(Disk) Tree Node Model CM Container
+ *	Tree Node Model CM Container
  *	
  *  @author Jorg Janke
  *  @version $Id: MTree_NodeCMC.java,v 1.3 2006/09/16 07:28:53 comdivision Exp $
@@ -35,7 +34,7 @@ import org.compiere.util.DB;
 public class MTree_NodeCMC extends X_AD_TreeNodeCMC
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -1641160984037417838L;
 
@@ -76,8 +75,7 @@ public class MTree_NodeCMC extends X_AD_TreeNodeCMC
 		list.toArray (retValue);
 		return retValue;
 	}	//	getTree
-	
-	
+		
 	/**
 	 * 	Get Tree Node
 	 *	@param tree tree
@@ -116,11 +114,11 @@ public class MTree_NodeCMC extends X_AD_TreeNodeCMC
 	private static CLogger	s_log	= CLogger.getCLogger (MTree_NodeCMC.class);
 
     /**
-    * UUID based Constructor
-    * @param ctx  Context
-    * @param AD_TreeNodeCMC_UU  UUID key
-    * @param trxName Transaction
-    */
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param AD_TreeNodeCMC_UU  UUID key
+     * @param trxName Transaction
+     */
     public MTree_NodeCMC(Properties ctx, String AD_TreeNodeCMC_UU, String trxName) {
         super(ctx, AD_TreeNodeCMC_UU, trxName);
     }
@@ -157,6 +155,7 @@ public class MTree_NodeCMC extends X_AD_TreeNodeCMC
 	 *	@see org.compiere.model.X_AD_TreeNodeCMC#setParent_ID(int)
 	 *	@param Parent_ID
 	 */
+	@Override
 	public void setParent_ID (int Parent_ID)
 	{
 		set_Value ("Parent_ID", Integer.valueOf(Parent_ID));

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Inventory
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_M_Inventory 
 {
@@ -49,19 +49,6 @@ public interface I_M_Inventory
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within tenant
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within tenant
-	  */
-	public int getAD_Org_ID();
-
     /** Column name AD_OrgTrx_ID */
     public static final String COLUMNNAME_AD_OrgTrx_ID = "AD_OrgTrx_ID";
 
@@ -74,6 +61,19 @@ public interface I_M_Inventory
 	  * Performing or initiating organization
 	  */
 	public int getAD_OrgTrx_ID();
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name ApprovalAmt */
     public static final String COLUMNNAME_ApprovalAmt = "ApprovalAmt";
@@ -101,6 +101,7 @@ public interface I_M_Inventory
 	  */
 	public int getC_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
     /** Column name C_Campaign_ID */
@@ -116,6 +117,7 @@ public interface I_M_Inventory
 	  */
 	public int getC_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException;
 
     /** Column name C_ConversionType_ID */
@@ -131,7 +133,20 @@ public interface I_M_Inventory
 	  */
 	public int getC_ConversionType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
+
+    /** Column name C_CostCenter_ID */
+    public static final String COLUMNNAME_C_CostCenter_ID = "C_CostCenter_ID";
+
+	/** Set Cost Center	  */
+	public void setC_CostCenter_ID (int C_CostCenter_ID);
+
+	/** Get Cost Center	  */
+	public int getC_CostCenter_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_CostCenter getC_CostCenter() throws RuntimeException;
 
     /** Column name C_Currency_ID */
     public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
@@ -146,7 +161,20 @@ public interface I_M_Inventory
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
+    /** Column name C_Department_ID */
+    public static final String COLUMNNAME_C_Department_ID = "C_Department_ID";
+
+	/** Set Department	  */
+	public void setC_Department_ID (int C_Department_ID);
+
+	/** Get Department	  */
+	public int getC_Department_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -161,20 +189,8 @@ public interface I_M_Inventory
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
-
-    /** Column name CostingMethod */
-    public static final String COLUMNNAME_CostingMethod = "CostingMethod";
-
-	/** Set Costing Method.
-	  * Indicates how Costs will be calculated
-	  */
-	public void setCostingMethod (String CostingMethod);
-
-	/** Get Costing Method.
-	  * Indicates how Costs will be calculated
-	  */
-	public String getCostingMethod();
 
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
@@ -189,7 +205,21 @@ public interface I_M_Inventory
 	  */
 	public int getC_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
+    /** Column name CostingMethod */
+    public static final String COLUMNNAME_CostingMethod = "CostingMethod";
+
+	/** Set Costing Method.
+	  * Indicates how Costs will be calculated
+	  */
+	public void setCostingMethod (String CostingMethod);
+
+	/** Get Costing Method.
+	  * Indicates how Costs will be calculated
+	  */
+	public String getCostingMethod();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -320,19 +350,6 @@ public interface I_M_Inventory
 	/** Get M_Inventory_UU	  */
 	public String getM_Inventory_UU();
 
-    /** Column name MovementDate */
-    public static final String COLUMNNAME_MovementDate = "MovementDate";
-
-	/** Set Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public void setMovementDate (Timestamp MovementDate);
-
-	/** Get Movement Date.
-	  * Date a product was moved in or out of inventory
-	  */
-	public Timestamp getMovementDate();
-
     /** Column name M_PerpetualInv_ID */
     public static final String COLUMNNAME_M_PerpetualInv_ID = "M_PerpetualInv_ID";
 
@@ -346,6 +363,7 @@ public interface I_M_Inventory
 	  */
 	public int getM_PerpetualInv_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PerpetualInv getM_PerpetualInv() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -361,7 +379,21 @@ public interface I_M_Inventory
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
+
+    /** Column name MovementDate */
+    public static final String COLUMNNAME_MovementDate = "MovementDate";
+
+	/** Set Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public void setMovementDate (Timestamp MovementDate);
+
+	/** Get Movement Date.
+	  * Date a product was moved in or out of inventory
+	  */
+	public Timestamp getMovementDate();
 
     /** Column name Posted */
     public static final String COLUMNNAME_Posted = "Posted";
@@ -424,7 +456,17 @@ public interface I_M_Inventory
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Inventory getReversal() throws RuntimeException;
+
+    /** Column name UpdateQty */
+    public static final String COLUMNNAME_UpdateQty = "UpdateQty";
+
+	/** Set Update Quantities	  */
+	public void setUpdateQty (String UpdateQty);
+
+	/** Get Update Quantities	  */
+	public String getUpdateQty();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -442,15 +484,6 @@ public interface I_M_Inventory
 	  */
 	public int getUpdatedBy();
 
-    /** Column name UpdateQty */
-    public static final String COLUMNNAME_UpdateQty = "UpdateQty";
-
-	/** Set Update Quantities	  */
-	public void setUpdateQty (String UpdateQty);
-
-	/** Get Update Quantities	  */
-	public String getUpdateQty();
-
     /** Column name User1_ID */
     public static final String COLUMNNAME_User1_ID = "User1_ID";
 
@@ -464,6 +497,7 @@ public interface I_M_Inventory
 	  */
 	public int getUser1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 
     /** Column name User2_ID */
@@ -479,5 +513,6 @@ public interface I_M_Inventory
 	  */
 	public int getUser2_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

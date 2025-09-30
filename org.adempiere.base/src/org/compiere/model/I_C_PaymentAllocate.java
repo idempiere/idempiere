@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_PaymentAllocate
  *  @author iDempiere (generated) 
- *  @version Release 11
+ *  @version Release 13
  */
 public interface I_C_PaymentAllocate 
 {
@@ -88,6 +88,7 @@ public interface I_C_PaymentAllocate
 	  */
 	public int getC_AllocationLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AllocationLine getC_AllocationLine() throws RuntimeException;
 
     /** Column name C_Invoice_ID */
@@ -103,6 +104,7 @@ public interface I_C_PaymentAllocate
 	  */
 	public int getC_Invoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name C_PaymentAllocate_ID */
@@ -140,6 +142,7 @@ public interface I_C_PaymentAllocate
 	  */
 	public int getC_Payment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException;
 
     /** Column name Created */
