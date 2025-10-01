@@ -30,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,6 +42,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
@@ -102,6 +106,7 @@ import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.api.parallel.ResourceLock;
+import org.mockito.MockedStatic;
 
 @Isolated
 public class AveragePOCostingTest extends AbstractTestCase {
@@ -2255,6 +2260,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				product.deleteEx(true);
 			}
 		}
+	}
+
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
 	}
 	
 	@Test
