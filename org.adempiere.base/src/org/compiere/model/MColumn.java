@@ -879,6 +879,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
 		} else if (DisplayType.Table == refid || DisplayType.TableUU == refid || DisplayType.Search == refid || DisplayType.SearchUU == refid) {
 			foreignTable = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameReference, getAD_Column_ID());
+		} else if (DisplayType.isMultiID(refid)) {
+			foreignTable = getMultiReferenceTableName();
 		} else if (DisplayType.Button == refid) {
 			// C_BPartner.AD_OrgBP_ID and C_Project.C_ProjectType_ID are defined as buttons
 			if ("AD_OrgBP_ID".equalsIgnoreCase(getColumnName()))
