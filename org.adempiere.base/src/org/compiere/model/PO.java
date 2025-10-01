@@ -6289,8 +6289,8 @@ public abstract class PO
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++) {
 			int dt = p_info.getColumnDisplayType(i);
-			if (   (dt != DisplayType.ID   && DisplayType.isID(dt)  )
-				|| (dt != DisplayType.UUID && DisplayType.isUUID(dt)) ) {
+			if (   (dt != DisplayType.ID	&& dt != DisplayType.RecordID	&& DisplayType.isID(dt)  )
+				|| (dt != DisplayType.UUID	&& dt != DisplayType.RecordUU	&& DisplayType.isUUID(dt)) ) {
 				MColumn col = MColumn.get(p_info.getColumn(i).AD_Column_ID);
 				if ("AD_Client_ID".equals(col.getColumnName())) {
 					// ad_client_id is verified with checkValidClient
