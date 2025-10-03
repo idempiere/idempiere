@@ -17,11 +17,15 @@
 package org.compiere.report;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.X_PA_ReportColumn;
+import org.compiere.util.DB;
 import org.compiere.util.Util;
 
 /**
@@ -60,6 +64,10 @@ public class MReportColumn extends X_PA_ReportColumn
 		super (ctx, PA_ReportColumn_ID, trxName);
 		if (PA_ReportColumn_ID == 0)
 			setInitialDefaults();
+		else
+		{
+			loadSources();
+		}
 	}	//	MReportColumn
 
 	/**
@@ -70,6 +78,11 @@ public class MReportColumn extends X_PA_ReportColumn
 		setSeqNo (0);
 	}
 
+	/**	Contained Sources				*/
+	private MReportSource[]		m_sources = null;
+	/** Cache result					*/
+	private String				m_whereClause = null;
+
 	/**
 	 * 	Constructor
 	 * 	@param ctx context
@@ -79,9 +92,110 @@ public class MReportColumn extends X_PA_ReportColumn
 	public MReportColumn (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
+		loadSources();
 	}	//	MReportColumn
 
 	/**
+	 * Load contained Sources
+	 */
+	private void loadSources()
+	{
+		ArrayList<MReportSource> list = new ArrayList<MReportSource>();
+		String sql = "SELECT * FROM PA_ReportSource WHERE PA_ReportColumn_ID = ? AND IsActive = 'Y' ";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, get_TrxName());
+			pstmt.setInt(1, getPA_ReportColumn_ID());
+			rs = pstmt.executeQuery();
+			while (rs.next())
+				list.add(new MReportSource(getCtx(), rs, null));
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "Failed while loading ReportColumn Sources, Error: " + e.getLocalizedMessage(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+
+		//
+		m_sources = new MReportSource[list.size()];
+		list.toArray(m_sources);
+		log.finest("ID=" + getPA_ReportColumn_ID() + " - Size=" + list.size());
+	} // loadSources
+
+	/**
+	 * Get Sources
+	 * 
+	 * @return sources
+	 */
+	public MReportSource[] getSources()
+	{
+		return m_sources;
+	} // getSources
+
+	/**
+	 * has Sources
+	 * 
+	 * @return true if has sources
+	 */
+	public boolean isWithSources()
+	{
+		return m_sources.length > 0;
+	}
+
+	/**
+	 * List Info
+	 */
+	public void list()
+	{
+		System.out.println("- " + toString());
+		if (m_sources == null)
+			return;
+		for (int i = 0; i < m_sources.length; i++)
+			System.out.println("  - " + m_sources[i].toString());
+	} // list
+
+	/**
+	 * Get Source Column Name
+	 * 
+	 * @return Source ColumnName
+	 */
+	public String getSourceColumnName()
+	{
+		String ColumnName = null;
+		for (int i = 0; i < m_sources.length; i++)
+		{
+			String col = MAcctSchemaElement.getColumnName(m_sources[i].getElementType());
+			if (ColumnName == null || ColumnName.length() == 0)
+				ColumnName = col;
+			else if (!ColumnName.equals(col))
+			{
+				log.config("More than one: " + ColumnName + " - " + col);
+				return null;
+			}
+		}
+		return ColumnName;
+	} // getColumnName
+
+	/**
+	 * Get Value Query for Segment Type
+	 * 
+	 * @return Query for first source element or null
+	 */
+	public String getSourceValueQuery()
+	{
+		if (m_sources != null && m_sources.length > 0)
+			return MAcctSchemaElement.getValueQuery(m_sources[0].getElementType());
+		return null;
+	} // getSourceValueQuery
+
+	/**************************************************************************
 	 * 	Get Column SQL Select Clause.
 	 * 	@param withSum with SUM() function
 	 * 	@return column clause for select - AmtAcctCR+AmtAcctDR/etc or "null" if not defined
@@ -169,56 +283,83 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public String getWhereClause(int PA_Hierarchy_ID)
 	{
-		if (!isColumnTypeSegmentValue())
+		if (m_sources == null && !isColumnTypeSegmentValue())
 			return "";
-		
-		String et = getElementType();
-		//	ID for Tree Leaf Value
-		int ID = 0;
-		//
-		if (MReportColumn.ELEMENTTYPE_Account.equals(et))
-			ID = getC_ElementValue_ID();
-		else if (MReportColumn.ELEMENTTYPE_Activity.equals(et))
-			ID = getC_Activity_ID();
-		else if (MReportColumn.ELEMENTTYPE_BPartner.equals(et))
-			ID = getC_BPartner_ID();
-		else if (MReportColumn.ELEMENTTYPE_Campaign.equals(et))
-			ID = getC_Campaign_ID();
-		else if (MReportColumn.ELEMENTTYPE_LocationFrom.equals(et))
-			ID = getC_Location_ID();
-		else if (MReportColumn.ELEMENTTYPE_LocationTo.equals(et))
-			ID = getC_Location_ID();
-		else if (MReportColumn.ELEMENTTYPE_Organization.equals(et))
-			ID = getOrg_ID();
-		else if (MReportColumn.ELEMENTTYPE_Product.equals(et))
-			ID = getM_Product_ID();
-		else if (MReportColumn.ELEMENTTYPE_Project.equals(et))
-			ID = getC_Project_ID();
-		else if (MReportColumn.ELEMENTTYPE_SalesRegion.equals(et))
-			ID = getC_SalesRegion_ID();
-		else if (MReportColumn.ELEMENTTYPE_OrgTrx.equals(et))
-			ID = getOrg_ID();	//	(re)uses Org_ID
-		else if (MReportColumn.ELEMENTTYPE_UserElementList1.equals(et))
-			ID = getC_ElementValue_ID();
-		else if (MReportColumn.ELEMENTTYPE_UserElementList2.equals(et))
-			ID = getC_ElementValue_ID();
-		else if (MReportColumn.ELEMENTTYPE_UserColumn1.equals(et))
-			return " AND UserElement1_ID="+getUserElement1_ID(); // Not Tree
-		else if (MReportColumn.ELEMENTTYPE_UserColumn2.equals(et))
-			return " AND UserElement2_ID="+getUserElement2_ID(); // Not Tree
-		// Financial Report Source with Type Combination
-		else if (MReportColumn.ELEMENTTYPE_Combination.equals(et))
-			return getWhereCombination(PA_Hierarchy_ID);
-		else
-			log.warning("Unsupported Element Type=" + et);
 
-		if (ID == 0)
+		if (m_whereClause == null)
 		{
-			if (log.isLoggable(Level.FINE)) log.fine("No Restrictions - No ID for EntityType=" + et);
-			return "";
+			// Only one
+			if (m_sources.length == 0)
+				m_whereClause = "";
+			else if (m_sources.length == 1)
+				m_whereClause = " AND " + m_sources[0].getWhereClause(PA_Hierarchy_ID);
+			else
+			{
+				// Multiple
+				StringBuffer sb = new StringBuffer(" AND (");
+				for (int i = 0; i < m_sources.length; i++)
+				{
+					if (i > 0)
+						sb.append(" OR ");
+					sb.append(m_sources[i].getWhereClause(PA_Hierarchy_ID));
+				}
+				sb.append(")");
+				m_whereClause = sb.toString();
+			}
 		}
-				
-		return " AND " + MReportTree.getWhereClause (getCtx(), PA_Hierarchy_ID, et, ID);
+
+		if (isColumnTypeSegmentValue())
+		{
+			String et = getElementType();
+			//	ID for Tree Leaf Value
+			int ID = 0;
+			//
+			if (MReportColumn.ELEMENTTYPE_Account.equals(et))
+				ID = getC_ElementValue_ID();
+			else if (MReportColumn.ELEMENTTYPE_Activity.equals(et))
+				ID = getC_Activity_ID();
+			else if (MReportColumn.ELEMENTTYPE_BPartner.equals(et))
+				ID = getC_BPartner_ID();
+			else if (MReportColumn.ELEMENTTYPE_Campaign.equals(et))
+				ID = getC_Campaign_ID();
+			else if (MReportColumn.ELEMENTTYPE_LocationFrom.equals(et))
+				ID = getC_Location_ID();
+			else if (MReportColumn.ELEMENTTYPE_LocationTo.equals(et))
+				ID = getC_Location_ID();
+			else if (MReportColumn.ELEMENTTYPE_Organization.equals(et))
+				ID = getOrg_ID();
+			else if (MReportColumn.ELEMENTTYPE_Product.equals(et))
+				ID = getM_Product_ID();
+			else if (MReportColumn.ELEMENTTYPE_Project.equals(et))
+				ID = getC_Project_ID();
+			else if (MReportColumn.ELEMENTTYPE_SalesRegion.equals(et))
+				ID = getC_SalesRegion_ID();
+			else if (MReportColumn.ELEMENTTYPE_OrgTrx.equals(et))
+				ID = getOrg_ID();	//	(re)uses Org_ID
+			else if (MReportColumn.ELEMENTTYPE_UserElementList1.equals(et))
+				ID = getC_ElementValue_ID();
+			else if (MReportColumn.ELEMENTTYPE_UserElementList2.equals(et))
+				ID = getC_ElementValue_ID();
+			else if (MReportColumn.ELEMENTTYPE_UserColumn1.equals(et))
+				return " AND UserElement1_ID="+getUserElement1_ID(); // Not Tree
+			else if (MReportColumn.ELEMENTTYPE_UserColumn2.equals(et))
+				return " AND UserElement2_ID="+getUserElement2_ID(); // Not Tree
+			// Financial Report Source with Type Combination
+			else if (MReportColumn.ELEMENTTYPE_Combination.equals(et))
+				return getWhereCombination(PA_Hierarchy_ID);
+			else
+				log.warning("Unsupported Element Type=" + et);
+
+			if (ID == 0)
+			{
+				if (log.isLoggable(Level.FINE)) log.fine("No Restrictions - No ID for EntityType=" + et);
+				return m_whereClause;
+			}
+
+			m_whereClause += " AND " + MReportTree.getWhereClause(getCtx(), PA_Hierarchy_ID, et, ID);
+		}
+
+		return m_whereClause;
 	}	//	getWhereClause
 	
 	/**
