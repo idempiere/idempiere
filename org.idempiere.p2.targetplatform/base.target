@@ -31,7 +31,7 @@
       <unit id="org.eclipse.equinox.p2.repository" version="2.7.100.v20230710-0621-bcfips"/>
       <unit id="org.apache.pdfbox" version="2.0.22.bcfips"/>
       <unit id="com.github.librepdf.openpdf" version="1.3.39.bcfips"/>
-      <repository id="repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/12.0.0"/>
+      <repository id="repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/12.0.1"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.eclipse.osgi" version="3.18.500.v20230801-1826"/>
