@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
@@ -109,12 +111,31 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 {
 	private static final String ONCLOSE_TIMESTAMP_ATTR = "onclose.timestamp";
 
+	private static List<String> autoPreviewList;
+
+	// same as in WAttachment and WImageDialog
+	static {
+		autoPreviewList = new ArrayList<String>();
+        autoPreviewList.add("application/json");
+        autoPreviewList.add("application/pdf");
+        autoPreviewList.add("image/bmp");
+        autoPreviewList.add("image/gif");
+        autoPreviewList.add("image/jpeg");
+        autoPreviewList.add("image/png");
+        autoPreviewList.add("image/tiff");
+        autoPreviewList.add("image/x-icon");
+        // autoPreviewList.add("text/html"); IDEMPIERE-3980
+        autoPreviewList.add("text/plain");
+        autoPreviewList.add("text/xml");
+	}
+
 	private class WArchiveViewerForm extends CustomForm
 	{
 		/**
 		 * generated serial id
 		 */
-		private static final long serialVersionUID = 4919349386488325L;
+		private static final long serialVersionUID = 6001246387640733031L;
+
 		//-- ComponentCtrl --//
 		public Object getExtraCtrl() {
 			return new ExtraCtrl();
@@ -287,26 +308,31 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			if (Util.isEmpty(mimeType))
 				mimeType = "application/octet-stream";
 		}
-		media = new AMedia(name + suffix, extension, mimeType, RepeatableInputStream.getInstance(inputStream));
-		if (extension.equalsIgnoreCase("pdf") && (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))))
-		{
-			mediaVersion ++;
-			if (form.getDesktop() == null)
+		if (autoPreviewList.contains(mimeType)) {
+			media = new AMedia(name + suffix, extension, mimeType, RepeatableInputStream.getInstance(inputStream));
+			if (extension.equalsIgnoreCase("pdf") && (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))))
 			{
-				iframe.setContent(null);
-				iframe.setSrc(null);
+				mediaVersion ++;
+				if (form.getDesktop() == null)
+				{
+					iframe.setContent(null);
+					iframe.setSrc(null);
+				}
+				else
+				{
+					String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
+					String pdfJsUrl = AEnv.toPdfJsUrl(url);
+					iframe.setContent(null);
+					iframe.setSrc(pdfJsUrl);
+				}
 			}
 			else
 			{
-				String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-				String pdfJsUrl = AEnv.toPdfJsUrl(url);
-				iframe.setContent(null);
-				iframe.setSrc(pdfJsUrl);
+				iframe.setContent(media);
 			}
-		}
-		else
-		{			
-			iframe.setContent(media);
+		} else {
+			iframe.setContent(null);
+			iframe.setSrc(null);
 		}
 		iframe.invalidate();
 	}
