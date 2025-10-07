@@ -204,6 +204,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		if (!product.isStocked())
 		{
 			setProcessed(true);
+			updateBalanceAmt();
 			saveEx();
 			return null;
 		}
@@ -230,7 +231,9 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			{
 				String MMPolicy = product.getMMPolicy();
 				Timestamp minGuaranteeDate = getMovementDate();
-				int M_Warehouse_ID = getM_Locator_ID() > 0 ? getM_Locator().getM_Warehouse_ID() : getC_Project().getM_Warehouse_ID();
+				MLocator locator = new MLocator(getCtx(), getM_Locator_ID(), get_TrxName());
+				MProject proj = new MProject(getCtx(), getC_Project_ID(), get_TrxName());
+				int M_Warehouse_ID = getM_Locator_ID() > 0 ? locator.getM_Warehouse_ID() : proj.getM_Warehouse_ID();
 				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), M_Warehouse_ID, getM_Product_ID(), getM_AttributeSetInstance_ID(),
 						minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, getM_Locator_ID(), get_TrxName(), true);
 				BigDecimal qtyToIssue = getMovementQty();
@@ -276,6 +279,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		if (ok)
 		{
 			mTrx.saveEx(get_TrxName());
+			updateBalanceAmt();
 		}
 		else
 		{
@@ -546,4 +550,47 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		return true;
 	}
+	
+	/**
+	 * Update Project Balance on Project issue posted
+	 * 
+	 * @param isCreaditAmt true than Reduce Project Balance Amt otherwise Project Balance Amt is Add
+	 *                     cost of Project Issue
+	 */
+	private BigDecimal updateBalanceAmt()
+	{
+		BigDecimal cost = null;
+		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
+		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
+		if (getM_InOutLine_ID() > 0)
+		{
+			MInOutLine inOutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+			cost = inOutLine.getPOCost(as, getMovementQty());
+		}
+		else if (getS_TimeExpenseLine_ID() > 0)
+		{
+			MTimeExpenseLine expenseLine = new MTimeExpenseLine(getCtx(), getS_TimeExpenseLine_ID(), get_TrxName());
+			cost = expenseLine.getLaborCost(as);
+		}
+		else
+		{
+ 			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
+									false, get_TrxName());
+		}
+		if (cost != null)
+		{
+			MProject proj = new MProject(getCtx(), getC_Project_ID(), get_TrxName());
+			proj.setProjectBalanceAmt(proj.getProjectBalanceAmt().add(cost));
+			proj.saveEx(get_TrxName());
+		}
+		if (getReversal_ID() < 0 && (cost == null || cost.signum() <= 0))
+		{
+			MLocator locator = new MLocator(getCtx(), getM_Locator_ID(), get_TrxName());
+			MWarehouse warehouse = new MWarehouse(getCtx(), locator.getM_Warehouse_ID(), get_TrxName());
+			MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
+			throw new IllegalArgumentException(	"Product: ("	+ product.getName() + ") is not present at Locator: (" + warehouse.getValue() + ") for ASI: ("
+												+ asi.getDescription() + ")");
+		}
+		return cost;
+	} // updateBalanceAmt
 }	//	MProjectIssue
