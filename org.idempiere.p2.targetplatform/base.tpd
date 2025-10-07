@@ -16,7 +16,7 @@ location zk "https://idempiere.github.io/binary.file/p2.zk/10.0.1" {
 }
 
 //location repackaged "http://localhost:8083/p2.repackaged" {
-location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.0" {
+location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.1" {
 	// 2.3.3.v2021090100, dependency of com.sun.xml.ws.jaxws-rt_2.3.5, org.idempiere.webservices, 
 	// wrapped.org.apache.cxf.cxf-rt-ws-transfer_3.6.3
 	jakarta.xml.ws-api
