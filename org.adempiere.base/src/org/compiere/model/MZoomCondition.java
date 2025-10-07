@@ -267,8 +267,17 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 						// no parent link -- search in context of window
 						String parentctxid = Env.getContext(Env.getCtx(), windowNo, parentTab.getKeyColumnName());
 						if (! Util.isEmpty(parentctxid)) {
-							parentId = DB.getSQLValue(null, "SELECT " + parentTab.getKeyColumnName() + " FROM " + parentTab.getTableName() 
-									+ " WHERE " + parentTab.getKeyColumnName() + "=" + parentctxid);
+							StringBuilder sql = new StringBuilder("SELECT ").append(parentTab.getKeyColumnName())
+									.append(" FROM ").append(parentTab.getTableName())
+									.append(" WHERE ").append(parentTab.getKeyColumnName()).append("=");
+							if (parentTab.getKeyColumnName().endsWith("_UU"))
+								sql.append(DB.TO_STRING(parentctxid));
+							else
+								sql.append(parentctxid);
+							if (parentTab.getKeyColumnName().endsWith("_UU"))
+								parentId = DB.getSQLValueString(null, sql.toString());
+							else
+								parentId = DB.getSQLValue(null, sql.toString());
 						}
 						if (parentId == null)
 							return 0;
