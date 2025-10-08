@@ -270,14 +270,13 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 							StringBuilder sql = new StringBuilder("SELECT ").append(parentTab.getKeyColumnName())
 									.append(" FROM ").append(parentTab.getTableName())
 									.append(" WHERE ").append(parentTab.getKeyColumnName()).append("=");
-							if (parentTab.getKeyColumnName().endsWith("_UU"))
+							if (parentTab.getKeyColumnName().endsWith("_UU")) {
 								sql.append(DB.TO_STRING(parentctxid));
-							else
+								parentId = DB.getSQLValueStringEx(null, sql.toString());
+							} else {
 								sql.append(parentctxid);
-							if (parentTab.getKeyColumnName().endsWith("_UU"))
-								parentId = DB.getSQLValueString(null, sql.toString());
-							else
-								parentId = DB.getSQLValue(null, sql.toString());
+								parentId = DB.getSQLValueEx(null, sql.toString());
+							}
 						}
 						if (parentId == null)
 							return 0;
