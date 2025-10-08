@@ -2984,6 +2984,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     public void zoom()
     {    	
     	Object recordId = contentPanel.getSelectedRowKey();
+	
     	// prevent NPE when double click is raise but no recore is selected
     	if (recordId == null)
     		return;
@@ -3004,6 +3005,22 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     				AD_Table_ID = MTable.getTable_ID(p_keyColumn.substring(0, p_keyColumn.length() - 3));
     			}
     		}
+    		//search if AD_Table_ID is in grid
+        	int indexOfTableID = getIndexOfTableID();
+        	if(indexOfTableID!=-1) {
+        		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
+        			AD_Table_ID = (int)rowInfo.getValue().get(indexOfTableID);
+        		}
+        	
+        	}
+        	//search if Record_ID is in grid
+        	int indexOfRecordID = getIndexOfRecordID();       	
+        	if(indexOfRecordID!=-1) {
+        		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
+        			recordId = (int)rowInfo.getValue().get(indexOfRecordID);
+        		}
+        	
+        	}
     		if (AD_Table_ID > 0) {
     			if (recordId instanceof String)
     	    		AEnv.zoomUU(AD_Table_ID, (String) recordId);
@@ -3011,6 +3028,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         			AEnv.zoom(AD_Table_ID, (Integer) recordId);
     		}
     	}
+    }
+    private int getIndexOfTableID() {
+    	for(int i=0; i<p_layout.length; i++) {
+    		if(p_layout[i].getColumnName().compareTo("AD_Table_ID")==0)
+    			return i;
+    	}
+    	return -1;
+    }
+    private int getIndexOfRecordID() {
+    	for(int i=0; i<p_layout.length; i++) {
+    		if(p_layout[i].getColumnName().compareTo("Record_ID")==0)
+    			return i;
+    	}
+    	return -1;
     }
 
 	/**
