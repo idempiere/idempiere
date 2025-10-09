@@ -92,6 +92,7 @@ import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTaxProvider;
 import org.compiere.model.MTest;
+import org.compiere.model.MTestUU;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.MZoomCondition;
 import org.compiere.model.ModelValidator;
@@ -978,6 +979,25 @@ public class CacheTest extends AbstractTestCase {
 			} catch (InterruptedException e) {
 			}
 			assertEquals(esName+"1", p.get_Translation("Name", locale), "Translation not refresh in cache");
+		} finally {
+			po.set_ValueOfColumn("Name", esName);
+			po.saveEx();
+		}
+		
+		//test translation reset for uuid key table
+		MTestUU uu = new MTestUU(Env.getCtx(), "8858ecc2-cf1d-405f-987f-793536037e76", null);
+		esName = uu.get_Translation("Name", locale);
+		query = new Query(Env.getCtx(), MTestUU.Table_Name+"_Trl", "TestUU_UU=? AND AD_Language=?", null);
+		po = query.setParameters(uu.get_UUID(), locale).firstOnly();
+		assertEquals(esName, po.get_Value("Name"), "Expected translation not found");
+		try {
+			po.set_ValueOfColumn("Name", esName+"1");
+			po.saveEx();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			assertEquals(esName+"1", uu.get_Translation("Name", locale), "Translation not refresh in cache");
 		} finally {
 			po.set_ValueOfColumn("Name", esName);
 			po.saveEx();
