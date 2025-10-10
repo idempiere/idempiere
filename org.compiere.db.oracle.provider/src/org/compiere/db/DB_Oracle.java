@@ -1061,6 +1061,13 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
+	public String getUUIDDataType() {
+		// The comment /*UUID*/ is necessary for the ConvertMap_PostgreSQL to work
+		// this is still necessary because when generating migration scripts the convert layer is used
+		return "VARCHAR2/*UUID*/(36)";
+	}
+
+	@Override
 	public String getSQLDDL(MColumn column) {				
 		StringBuilder sql = new StringBuilder ().append(column.getColumnName())
 			.append(" ").append(column.getSQLDataType());
