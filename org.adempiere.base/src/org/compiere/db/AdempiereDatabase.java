@@ -451,6 +451,11 @@ public interface AdempiereDatabase
 	public String getTimestampWithTimezoneDataType();
 	
 	/**
+	 * @return UUID type name
+	 */
+	public String getUUIDDataType();
+	
+	/**
 	 * Get create table SQL statement 
 	 * @param table
 	 * @return create table DDL
