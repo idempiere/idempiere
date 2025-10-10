@@ -398,6 +398,32 @@ public interface I_PA_ReportSource
 	  */
 	public boolean isIncludeNullsUserElement2();
 
+    /** Column name IsIncludeNullsUserList1 */
+    public static final String COLUMNNAME_IsIncludeNullsUserList1 = "IsIncludeNullsUserList1";
+
+	/** Set Include Nulls in User List 1.
+	  * Include nulls in the selection of the User List 1
+	  */
+	public void setIsIncludeNullsUserList1 (boolean IsIncludeNullsUserList1);
+
+	/** Get Include Nulls in User List 1.
+	  * Include nulls in the selection of the User List 1
+	  */
+	public boolean isIncludeNullsUserList1();
+
+    /** Column name IsIncludeNullsUserList2 */
+    public static final String COLUMNNAME_IsIncludeNullsUserList2 = "IsIncludeNullsUserList2";
+
+	/** Set Include Nulls in User List 2.
+	  * Include nulls in the selection of the User List 2
+	  */
+	public void setIsIncludeNullsUserList2 (boolean IsIncludeNullsUserList2);
+
+	/** Get Include Nulls in User List 2.
+	  * Include nulls in the selection of the User List 2
+	  */
+	public boolean isIncludeNullsUserList2();
+
     /** Column name M_Product_ID */
     public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
 
@@ -426,6 +452,21 @@ public interface I_PA_ReportSource
 	  * Organizational entity within tenant
 	  */
 	public int getOrg_ID();
+
+    /** Column name PA_ReportColumn_ID */
+    public static final String COLUMNNAME_PA_ReportColumn_ID = "PA_ReportColumn_ID";
+
+	/** Set Report Column.
+	  * Column in Report
+	  */
+	public void setPA_ReportColumn_ID (int PA_ReportColumn_ID);
+
+	/** Get Report Column.
+	  * Column in Report
+	  */
+	public int getPA_ReportColumn_ID();
+
+	public org.compiere.model.I_PA_ReportColumn getPA_ReportColumn() throws RuntimeException;
 
     /** Column name PA_ReportLine_ID */
     public static final String COLUMNNAME_PA_ReportLine_ID = "PA_ReportLine_ID";
@@ -476,6 +517,36 @@ public interface I_PA_ReportSource
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name User1_ID */
+    public static final String COLUMNNAME_User1_ID = "User1_ID";
+
+	/** Set User Element List 1.
+	  * User defined list element #1
+	  */
+	public void setUser1_ID (int User1_ID);
+
+	/** Get User Element List 1.
+	  * User defined list element #1
+	  */
+	public int getUser1_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
+
+    /** Column name User2_ID */
+    public static final String COLUMNNAME_User2_ID = "User2_ID";
+
+	/** Set User Element List 2.
+	  * User defined list element #2
+	  */
+	public void setUser2_ID (int User2_ID);
+
+	/** Get User Element List 2.
+	  * User defined list element #2
+	  */
+	public int getUser2_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 
     /** Column name UserElement1_ID */
     public static final String COLUMNNAME_UserElement1_ID = "UserElement1_ID";
