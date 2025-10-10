@@ -372,5 +372,5 @@ UPDATE AD_Ref_Table SET OrderByClause='C_Period.StartDate DESC',Updated=TO_DATE(
 -- Indenting financial report detail rows, DisplaySQL for T_Report.Name Column
 
 -- Nov 1, 2019 7:30:56 PM IST
-UPDATE AD_Column SET Help='The name of an entity (record) is used as an default search option in addition to the search key. The name is up to 60 characters in length.length.(repeat(''....''::text, abs(levelno)::int) || name)', ColumnSQL='(repeat(''....''::text, abs(levelno)::int) || name)', IsAllowCopy='N',Updated=TO_DATE('2019-11-01 19:30:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8179
+UPDATE AD_Column SET Help='Displays the report name with hierarchical indentation based on the report level. The name is left-padded with dots (...) according to the level number to visually represent the report structure. The name can be up to 60 characters in length.', ColumnSQL='LPAD('' '', ABS(levelno) * 3, ''...'') || name', IsAllowCopy='N',Updated=TO_DATE('2019-11-01 19:30:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8179
 ;
