@@ -265,12 +265,12 @@ public class DBTest extends AbstractTestCase
 		assertEquals(2, objects.size());
 		X_Test test = new X_Test(Env.getCtx(), TEST_RECORD_ID, getTrxName());
 		assertEquals(test.get_ID(), ((Number)objects.get(0)).intValue());
-		assertEquals(test.getTest_UU(), objects.get(1));
+		assertEquals(test.getTest_UU().toString(), objects.get(1).toString());
 		
 		objects = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(), TEST_RECORD_ID);
 		assertEquals(2, objects.size());
 		assertEquals(test.get_ID(), ((Number)objects.get(0)).intValue());
-		assertEquals(test.getTest_UU(), objects.get(1));
+		assertEquals(test.getTest_UU().toString(), objects.get(1).toString());
 	}
 	
 	@Test
