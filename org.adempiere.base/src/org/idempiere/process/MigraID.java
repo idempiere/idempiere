@@ -28,7 +28,6 @@ package org.idempiere.process;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MSequence;
@@ -100,7 +99,7 @@ public class MigraID extends SvrProcess {
 		if (! Util.isEmpty(p_UUID_From)) {
 			String uuidCol = PO.getUUIDColumnName(l_tableName);
 			if (Util.isEmpty(p_UUID_To)) {
-				p_UUID_To = UUID.randomUUID().toString();
+				p_UUID_To = Util.generateUUIDv7().toString();
 			}
 			// convert UUID
 			StringBuilder updUUIDSB = new StringBuilder()

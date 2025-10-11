@@ -14,7 +14,6 @@
 package org.adempiere.pipo2;
 
 import java.util.Properties;
-import java.util.UUID;
 
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -99,7 +98,7 @@ public class POFinder {
     	   		}
     			if (po != null && po.getAD_Client_ID() > 0) {
     				if (po.getAD_Client_ID() > 0 && po.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
-    					targetUUID = UUID.randomUUID().toString();
+    					targetUUID = Util.generateUUIDv7().toString();
     					updateUUIDMap(ctx, tableName, uuid, targetUUID);
     					return null;
     				}

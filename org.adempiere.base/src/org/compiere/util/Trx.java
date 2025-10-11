@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -146,7 +145,7 @@ public class Trx
 				displayName = (stackName.orElse(null));
 			}
 		}
-		prefix += "_" + UUID.randomUUID(); //System.currentTimeMillis();
+		prefix += "_" + Util.generateUUIDv7(); //System.currentTimeMillis();
 		//create transaction entry
 		Trx trx = Trx.get(prefix, true);
 		if (displayName != null)
@@ -885,7 +884,7 @@ public class Trx
 	 * @return
 	 */
 	public static String registerNullTrx() {
-		String nullTrxName = "NullTrx_" + UUID.randomUUID().toString();
+		String nullTrxName = "NullTrx_" + Util.generateUUIDv7().toString();
 		Trx nullTrx = new Trx(nullTrxName);
 		nullTrx.trace = new Exception();
 		nullTrx.m_startTime = System.currentTimeMillis();
