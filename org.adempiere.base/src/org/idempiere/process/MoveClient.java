@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -574,7 +575,7 @@ public class MoveClient extends SvrProcess {
 		// when the column is a foreign key
 		String foreignTableName = localColumn.getReferenceTableName();
 		if (   foreignTableName != null 
-			&& (foreignTableName.equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName))) {
+			&& (DisplayType.isMultiID(refID) || foreignTableName.equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName))) {
 			foreignTableName = "";
 		}
 		if (! Util.isEmpty(foreignTableName)) {
@@ -839,7 +840,7 @@ public class MoveClient extends SvrProcess {
 					}
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
 						DB.executeUpdateEx(insertConversionId,
-								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key, target_Key, null},
+								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null},
 								get_TrxName());
 					}
 				}
@@ -1088,7 +1089,7 @@ public class MoveClient extends SvrProcess {
 							if (p_IsCopyClient) {
 								String uuidCol = PO.getUUIDColumnName(tableName);
 								if (columnName.equals(uuidCol)) {
-									String oldUUID = (String) parameters[i];
+									String oldUUID = parameters[i] == null ? null : parameters[i].toString();
 									// it is possible that the UUID has been resolved before because of a foreign key Record_UU, so search in T_MoveClient first
 									String newUUID = DB.getSQLValueStringEx(get_TrxName(), queryT_MoveClient, getAD_PInstance_ID(), tableName.toUpperCase(), oldUUID);
 									if (newUUID == null) {
@@ -1227,10 +1228,10 @@ public class MoveClient extends SvrProcess {
 			if (! p_IsCopyClient)
 				return key;
 			MTable cTable = MTable.get(getCtx(), convertTable);
-			if (key instanceof String && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
+			if ((key instanceof String || key instanceof UUID) && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
 				convertedId = Util.generateUUIDv7().toString();
 				DB.executeUpdateEx(insertConversionId,
-						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key, convertedId, null},
+						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key.toString(), convertedId.toString(), null},
 						get_TrxName());
 			} else {
 				// not found in the T_MoveClient table - try to get it again - could be missed in first pass
