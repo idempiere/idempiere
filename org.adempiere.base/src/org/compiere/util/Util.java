@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -35,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -806,5 +808,52 @@ public class Util
 	    }
 	}
 
+	private static final SecureRandom RANDOM = new SecureRandom();
+
+	/**
+	 * Generate a UUIDv7 based on current timestamp
+	 * @return
+	 */
+	public static UUID generateUUIDv7() {
+		return generateUUIDv7(new Timestamp(System.currentTimeMillis()));
+	}
+
+	/**
+	 * Generate a UUIDv7 based on given timestamp
+	 * @param timestamp
+	 * @return
+	 */
+	public static UUID generateUUIDv7(Timestamp timestamp) {
+		// Get timestamp in milliseconds since Unix epoch
+		long timestampMillis = timestamp.getTime();
+
+		// Generate random bytes for the rest of the UUID
+		byte[] randomBytes = new byte[10];
+		RANDOM.nextBytes(randomBytes);
+
+		// Build the most significant bits (MSB)
+		// 48 bits: timestamp in milliseconds
+		// 4 bits: version (0111 for v7)
+		// 12 bits: random data
+		long msb = (timestampMillis << 16) | 
+				((long) (randomBytes[0] & 0x0F) << 8) | 
+				(randomBytes[1] & 0xFFL);
+
+		// Set version to 7 (clear the version bits and set to 0111)
+		msb = (msb & 0xFFFFFFFFFFFF0FFFL) | 0x7000L;
+
+		// Build the least significant bits (LSB)
+		// 2 bits: variant (10)
+		// 62 bits: random data
+		long lsb = 0L;
+		for (int i = 2; i < 10; i++) {
+			lsb = (lsb << 8) | (randomBytes[i] & 0xFFL);
+		}
+
+		// Set variant to RFC 4122 (10xx xxxx)
+		lsb = (lsb & 0x3FFFFFFFFFFFFFFFL) | 0x8000000000000000L;
+
+		return new UUID(msb, lsb);
+	}
 
 }   //  Util

@@ -21,7 +21,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -444,7 +443,7 @@ public class MPInstanceLog
 	 */
 	public String getAD_PInstance_Log_UU() {
 		if(Util.isEmpty(m_AD_PInstance_Log_UU))
-			m_AD_PInstance_Log_UU = UUID.randomUUID().toString();
+			m_AD_PInstance_Log_UU = Util.generateUUIDv7().toString();
 		return m_AD_PInstance_Log_UU;
 	}
 	

@@ -33,7 +33,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -829,7 +828,7 @@ public class MoveClient extends SvrProcess {
 							}
 						} else {
 							if (table.isUUIDKeyTable())
-								target_Key = UUID.randomUUID().toString();
+								target_Key = Util.generateUUIDv7().toString();
 							else {
 								if (source_Key instanceof Number && ((Number)source_Key).intValue() <= MTable.MAX_OFFICIAL_ID && !p_IsCopyClient)
 									target_Key = source_Key;
@@ -1093,7 +1092,7 @@ public class MoveClient extends SvrProcess {
 									// it is possible that the UUID has been resolved before because of a foreign key Record_UU, so search in T_MoveClient first
 									String newUUID = DB.getSQLValueStringEx(get_TrxName(), queryT_MoveClient, getAD_PInstance_ID(), tableName.toUpperCase(), oldUUID);
 									if (newUUID == null) {
-										newUUID = UUID.randomUUID().toString();
+										newUUID = Util.generateUUIDv7().toString();
 									}
 									parameters[i] = newUUID;
 									if (! Util.isEmpty(oldUUID)) {
@@ -1229,7 +1228,7 @@ public class MoveClient extends SvrProcess {
 				return key;
 			MTable cTable = MTable.get(getCtx(), convertTable);
 			if (key instanceof String && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
-				convertedId = UUID.randomUUID().toString();
+				convertedId = Util.generateUUIDv7().toString();
 				DB.executeUpdateEx(insertConversionId,
 						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key, convertedId, null},
 						get_TrxName());
