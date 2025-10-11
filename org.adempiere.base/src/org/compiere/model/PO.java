@@ -3070,7 +3070,7 @@ public abstract class PO
 			String value = (String)get_Value(uuidIndex);
 			if (p_info.getColumn(uuidIndex).FieldLength == 36 && (value == null || value.length() == 0))
 			{
-				UUID uuid = UUID.randomUUID();
+				UUID uuid = Util.generateUUIDv7();
 				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
 			}
 		}
@@ -3534,7 +3534,7 @@ public abstract class PO
 			String value = (String)get_Value(uuidIndex);
 			if (p_info.getColumn(uuidIndex).FieldLength == 36 && (value == null || value.length() == 0))
 			{
-				UUID uuid = UUID.randomUUID();
+				UUID uuid = Util.generateUUIDv7();
 				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
 			}
 		}
