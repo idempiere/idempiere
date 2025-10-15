@@ -1687,7 +1687,7 @@ public class GridTable extends AbstractTableModel
 				String uuidFromZeroID = table.getUUIDFromZeroID();
 				po = table.getPOByUU(uuidFromZeroID, m_trxName);
 			} else {
-				if (m_indexKeyColumn == -1 && m_indexUUIDColumn >= 0)
+				if (m_indexKeyColumn == -1 && m_indexUUIDColumn >= 0 && table.isUUIDKeyTable())
 					po = table.getPOByUU(PO.UUID_NEW_RECORD, m_trxName);
 				else
 					po = table.getPO(Record_ID, m_trxName);
