@@ -92,7 +92,7 @@ public class ReportLineSet_Copy extends SvrProcess
 			{
 				for (int ii = 0; ii < rss.length; ii++)
 				{
-					MReportSource rs = MReportSource.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), rl.get_ID(), rss[ii], get_TrxName());
+					MReportSource rs = MReportSource.copy(getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), rl.get_ID(), rss[ii], get_TrxName(), true);
 					rs.saveEx();
 				}
 			}
