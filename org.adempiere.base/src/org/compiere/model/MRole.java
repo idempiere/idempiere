@@ -453,12 +453,23 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
-		if (getAD_Client_ID() == 0)
+		//Validate User Level
+		if (isMasterRole())
+			return true;
+		else if (getAD_Client_ID() == 0)
 			setUserLevel(USERLEVEL_System);
-		else if (getUserLevel().equals(USERLEVEL_System))
+		else if (USERLEVEL_System.equals(getUserLevel()))
 		{
 			log.saveError("AccessTableNoUpdate", Msg.getElement(getCtx(), "UserLevel"));
 			return false;
+		}
+		else
+		{
+			if (Util.isEmpty(getUserLevel(), true))
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), "UserLevel"));
+				return false;
+			}
 		}
 		return true;
 	}	//	beforeSave
