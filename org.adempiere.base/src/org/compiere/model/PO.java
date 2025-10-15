@@ -3686,14 +3686,16 @@ public abstract class PO
 	 */
 	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
 			int AD_ChangeLog_ID, boolean generateScriptOnly, String database) {
+		String tableName = p_info.getTableName();
 		sqlInsert.append("INSERT INTO ");
-		sqlInsert.append(p_info.getTableName()).append(" (");
+		sqlInsert.append(tableName).append(" (");
 		StringBuilder sqlValues = new StringBuilder(") VALUES (");
 		int size = get_ColumnCount();
 		boolean doComma = false;
 		Map<String, String> oracleBlobSQL = new HashMap<String, String>();
 		for (int i = 0; i < size; i++)
 		{
+			String columnName = p_info.getColumnName(i);
 			Object value = get_Value(i);
 			//	Don't insert NULL values (allows Database defaults)
 			if (value == null
@@ -3710,7 +3712,7 @@ public abstract class PO
 			//do not export secure column
 			if (generateScriptOnly)
 			{
-				if (p_info.isEncrypted(i) || p_info.isSecure(i) || "Password".equalsIgnoreCase(p_info.getColumnName(i)))
+				if (p_info.isEncrypted(i) || p_info.isSecure(i) || "Password".equalsIgnoreCase(columnName))
 					continue;
 			}
 			
@@ -3722,7 +3724,7 @@ public abstract class PO
 			}
 			else
 				doComma = true;
-			sqlInsert.append(DB.getDatabase().quoteColumnName(p_info.getColumnName(i)));
+			sqlInsert.append(DB.getDatabase().quoteColumnName(columnName));
 			//
 			//  Based on class of definition, not class of value
 			Class<?> c = p_info.getColumnClass(i);
@@ -3731,7 +3733,7 @@ public abstract class PO
 				try
 				{
 					if (m_IDs.length == 1 && p_info.hasKeyColumn()
-							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)) && (generateScriptOnly || !Env.isUseCentralizedId(p_info.getTableName())))
+							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(columnName) && (generateScriptOnly || !Env.isUseCentralizedId(tableName)))
 					{
 						if (generateScriptOnly && get_ID() > 0 && get_ID() <= MTable.MAX_OFFICIAL_ID)
 						{
@@ -3739,7 +3741,7 @@ public abstract class PO
 						}
 						else
 						{
-							MSequence sequence = MSequence.get(Env.getCtx(), p_info.getTableName(), get_TrxName(), true);
+							MSequence sequence = MSequence.get(Env.getCtx(), tableName, get_TrxName(), true);
 							sqlValues.append("nextidfunc("+sequence.getAD_Sequence_ID()+",'N')");
 						}
 					}
@@ -3777,7 +3779,7 @@ public abstract class PO
 							sqlValues.append(value);
 						}
 					}
-					else if (value instanceof Integer && p_info.isColumnLookup(i))
+					else if (value instanceof Integer && ("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName)))
 					{
 						Integer idValue = (Integer) value;
 						if (idValue <= MTable.MAX_OFFICIAL_ID) 
@@ -3786,7 +3788,61 @@ public abstract class PO
 						}
 						else
 						{
-							MColumn col = MColumn.get(p_info.getAD_Column_ID(p_info.getColumnName(i)));
+							String refTableName = null;
+							if ("AD_Tree_Favorite_Node".equalsIgnoreCase(tableName))
+								refTableName = "AD_Tree_Favorite_Node";
+							else if ("AD_TreeBar".equalsIgnoreCase(tableName)
+									|| "AD_TreeNodeMM".equalsIgnoreCase(tableName))
+								refTableName = "AD_Menu";
+							else if ("AD_TreeNodeBP".equalsIgnoreCase(tableName))
+								refTableName = "C_BPartner";
+							else if ("AD_TreeNodeCMC".equalsIgnoreCase(tableName))
+								refTableName = "CM_Container";
+							else if ("AD_TreeNodeCMM".equalsIgnoreCase(tableName))
+								refTableName = "CM_Media";
+							else if ("AD_TreeNodeCMS".equalsIgnoreCase(tableName))
+								refTableName = "CM_CStage";
+							else if ("AD_TreeNodeCMT".equalsIgnoreCase(tableName))
+								refTableName = "CM_Template";
+							else if ("AD_TreeNodePR".equalsIgnoreCase(tableName))
+								refTableName = "M_Product";
+							else if ("AD_TreeNodeU1".equalsIgnoreCase(tableName)
+									|| "AD_TreeNodeU2".equalsIgnoreCase(tableName) 
+									|| "AD_TreeNodeU3".equalsIgnoreCase(tableName)
+									|| "AD_TreeNodeU4".equalsIgnoreCase(tableName))
+								refTableName = "C_ElementValue";
+							else if ("AD_TreeNode".equalsIgnoreCase(tableName))
+							{
+								int treeId = get_ValueAsInt("AD_Tree_ID");
+								refTableName = MTree.getRefTableFromTree(treeId);
+							}
+							if (refTableName != null)
+							{
+								MTable refTable = MTable.get(Env.getCtx(), refTableName);
+								String refKeyColumnName = refTable.getKeyColumns()[0];
+								String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+								String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+										+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+								sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+							}
+							else
+							{
+								sqlValues.append(value);
+							}
+						}
+					}
+					else if (value instanceof Integer && (p_info.isColumnLookup(i) || dt == DisplayType.Location
+							|| dt == DisplayType.Locator || dt == DisplayType.Account || dt == DisplayType.Assignment
+							|| dt == DisplayType.PAttribute || dt == DisplayType.Image || dt == DisplayType.Chart))
+					{
+						Integer idValue = (Integer) value;
+						if (idValue <= MTable.MAX_OFFICIAL_ID) 
+						{
+							sqlValues.append(value);
+						}
+						else
+						{
+							MColumn col = MColumn.get(p_info.getAD_Column_ID(columnName));
 							String refTableName = col.getReferenceTableName();
 							MTable refTable = MTable.get(Env.getCtx(), refTableName);
 							String refKeyColumnName = refTable.getKeyColumns()[0];
@@ -3819,7 +3875,7 @@ public abstract class PO
 							// Oracle size limit for one SQL statement
 							if (blobSQL != null && database.equals(Database.DB_ORACLE) && blobSQL.length() > 2048)
 							{
-								oracleBlobSQL.put(p_info.getColumnName(i), blobSQL);
+								oracleBlobSQL.put(columnName, blobSQL);
 								blobSQL = p_info.isColumnMandatory(i) ? "'0'" : null;
 							}
 							sqlValues.append (blobSQL);
@@ -3901,7 +3957,7 @@ public abstract class PO
 				}
 			}
 
-			if (session != null && (!withValues || Env.isUseCentralizedId(p_info.getTableName())))
+			if (session != null && (!withValues || Env.isUseCentralizedId(tableName)))
 			{
 				//	Change Log	- Only
 				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID());
@@ -3909,12 +3965,12 @@ public abstract class PO
 					&& p_info.isAllowLogging(i)		//	logging allowed
 					&& !p_info.isEncrypted(i)		//	not encrypted
 					&& !p_info.isVirtualColumn(i)	//	no virtual column
-					&& !"Password".equals(p_info.getColumnName(i))
+					&& !"Password".equals(columnName)
 					&& (insertLog.equalsIgnoreCase("Y")
 							|| (insertLog.equalsIgnoreCase("K")
 								&& (   p_info.getColumn(i).IsKey
 									|| (   !p_info.hasKeyColumn()
-										&& p_info.getColumn(i).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName()))))))
+										&& p_info.getColumn(i).ColumnName.equals(PO.getUUIDColumnName(tableName))))))
 					)
 				{
 					// change log on new
@@ -3986,12 +4042,12 @@ public abstract class PO
 				sqlInsert.append("DECLARE\n")
 					.append("   lob_out blob;\n")
 					.append("BEGIN\n")
-					.append("   UPDATE ").append(p_info.getTableName())
+					.append("   UPDATE ").append(tableName)
 					.append(" SET ").append(column).append("=EMPTY_BLOB()\n")
 					.append("   WHERE ").append(getUUIDColumnName()).append("=")
 					.append("'").append(get_UUID()).append("';\n")
 					.append("   SELECT ").append(column).append(" INTO lob_out\n")
-					.append("   FROM ").append(p_info.getTableName()).append("\n")
+					.append("   FROM ").append(tableName).append("\n")
 					.append("   WHERE ").append(getUUIDColumnName()).append("=")
 					.append("'").append(get_UUID()).append("'\n")
 					.append("   FOR UPDATE;\n");
