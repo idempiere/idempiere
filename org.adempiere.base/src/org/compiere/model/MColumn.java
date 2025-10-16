@@ -618,6 +618,10 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (getAD_Reference_ID() == DisplayType.Payment)
 			setAD_Reference_Value_ID(SystemIDs.REFERENCE_PAYMENTRULE);
 
+		// Fix references for old tables created for example with 2Packs defining the reference as String
+		if (getColumnName().equals(PO.getUUIDColumnName(tableName)) && getAD_Reference_ID() != DisplayType.UUID)
+			setAD_Reference_ID(DisplayType.UUID);
+
 		return true;
 	}	//	beforeSave
 	
