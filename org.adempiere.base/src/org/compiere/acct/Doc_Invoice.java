@@ -630,7 +630,7 @@ public class Doc_Invoice extends Doc
 			for (int i = 0; i < p_lines.length; i++)
 			{
 				DocLine line = p_lines[i];
-				boolean landedCost = landedCost(as, fact, line, true);
+				boolean landedCost = landedCost(as, fact, line, true, false);
 				if (landedCost && as.isExplicitCostAdjustment())
 				{
 					fact.createLine (line, line.getAccount(ProductCost.ACCTTYPE_P_Expense, as),
@@ -790,7 +790,7 @@ public class Doc_Invoice extends Doc
 			for (int i = 0; i < p_lines.length; i++)
 			{
 				DocLine line = p_lines[i];
-				boolean landedCost = landedCost(as, fact, line, false);
+				boolean landedCost = landedCost(as, fact, line, false, true);
 				if (landedCost && as.isExplicitCostAdjustment())
 				{
 					fact.createLine (line, line.getAccount(ProductCost.ACCTTYPE_P_Expense, as),
@@ -916,7 +916,7 @@ public class Doc_Invoice extends Doc
 			DocLine line = p_lines[i];
 			boolean landedCost = false;
 			if  (payables)
-				landedCost = landedCost(as, fact, line, false);
+				landedCost = landedCost(as, fact, line, false, creditMemo);
 			if (landedCost && as.isExplicitCostAdjustment())
 			{
 				fact.createLine (line, line.getAccount(ProductCost.ACCTTYPE_P_Expense, as),
@@ -1006,9 +1006,10 @@ public class Doc_Invoice extends Doc
 	 *	@param fact fact
 	 *	@param line document line
 	 *	@param dr true for DR side, false otherwise
+	 *  @param creditMemo true if credit memo, false otherwise 
 	 *	@return true if landed costs were created
 	 */
-	protected boolean landedCost (MAcctSchema as, Fact fact, DocLine line, boolean dr)
+	protected boolean landedCost (MAcctSchema as, Fact fact, DocLine line, boolean dr, boolean creditMemo)
 	{
 		int C_InvoiceLine_ID = line.get_ID();
 		MLandedCostAllocation[] lcas = MLandedCostAllocation.getOfInvoiceLine(
@@ -1391,10 +1392,11 @@ public class Doc_Invoice extends Doc
 					}
 					if (allocationAmt.compareTo(estimatedAmt)!=0)
 					{
-						if (estimatedAmt.signum() != 0)
+						BigDecimal estimatedAmtPosting = creditMemo ? estimatedAmt.negate() : estimatedAmt;
+						if (estimatedAmtPosting.signum() != 0)
 						{
-							drAmt = dr ? (reversal ? null : estimatedAmt): (reversal ? estimatedAmt : null);
-							crAmt = dr ? (reversal ? estimatedAmt : null): (reversal ? null : estimatedAmt);						
+							drAmt = dr ? (reversal ? null : estimatedAmtPosting): (reversal ? estimatedAmtPosting : null);
+							crAmt = dr ? (reversal ? estimatedAmtPosting : null): (reversal ? null : estimatedAmtPosting);						
 							account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
 							FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
 							fl.setDescription(desc);
@@ -1402,12 +1404,13 @@ public class Doc_Invoice extends Doc
 							fl.setQty(line.getQty());
 						}
 						
-						if (amtVariance.signum() != 0) {
-							if (amtVariance.signum() > 0) {
-								drAmt = dr ? amtVariance : null;
-								crAmt = dr ? null : amtVariance;
+						BigDecimal amtVariancePosting = creditMemo ? amtVariance.negate() : amtVariance;
+						if (amtVariancePosting.signum() != 0) {
+							if (amtVariancePosting.signum() > 0) {
+								drAmt = dr ? amtVariancePosting : null;
+								crAmt = dr ? null : amtVariancePosting;
 							} else {
-								BigDecimal underAmt = amtVariance.negate();
+								BigDecimal underAmt = amtVariancePosting.negate();
 								drAmt = dr ? null : underAmt;
 								crAmt = dr ? underAmt : null;
 							}
@@ -1419,12 +1422,13 @@ public class Doc_Invoice extends Doc
 							fl.setQty(line.getQty());
 						}
 
-						if (amtAsset.signum() != 0) {
-							if (amtAsset.signum() > 0) {
-								drAmt = dr ? amtAsset : null;
-								crAmt = dr ? null : amtAsset;
+						BigDecimal amtAssetPosting = creditMemo ? amtAsset.negate() : amtAsset;
+						if (amtAssetPosting.signum() != 0) {
+							if (amtAssetPosting.signum() > 0) {
+								drAmt = dr ? amtAssetPosting : null;
+								crAmt = dr ? null : amtAssetPosting;
 							} else {
-								BigDecimal underAmt = amtAsset.negate();
+								BigDecimal underAmt = amtAssetPosting.negate();
 								drAmt = dr ? null : underAmt;
 								crAmt = dr ? underAmt : null;
 							}
@@ -1437,8 +1441,9 @@ public class Doc_Invoice extends Doc
 					}
 					else if (allocationAmt.signum() != 0)
 					{
-						drAmt = dr ? (reversal ? null : allocationAmt) : (reversal ? allocationAmt : null);
-						crAmt = dr ? (reversal ? allocationAmt : null) : (reversal ? null : allocationAmt);
+						BigDecimal allocationAmtPosting = creditMemo ? allocationAmt.negate() : allocationAmt;
+						drAmt = dr ? (reversal ? null : allocationAmtPosting) : (reversal ? allocationAmtPosting : null);
+						crAmt = dr ? (reversal ? allocationAmtPosting : null) : (reversal ? null : allocationAmtPosting);
 						account = pc.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
 						FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
 						fl.setDescription(desc);
@@ -1452,12 +1457,13 @@ public class Doc_Invoice extends Doc
 					if (fl.getAmtAcctCr().signum() == 0 && fl.getAmtAcctDr().signum() == 0)
 						fact.remove(fl);
 					
-					if (amtVariance.signum() != 0) {
-						if (amtVariance.signum() > 0) {
-							drAmt = dr ? null : amtVariance;
-							crAmt = dr ? amtVariance : null;
+					BigDecimal amtVariancePosting = creditMemo ? amtVariance.negate() : amtVariance;
+					if (amtVariancePosting.signum() != 0) {
+						if (amtVariancePosting.signum() > 0) {
+							drAmt = dr ? null : amtVariancePosting;
+							crAmt = dr ? amtVariancePosting : null;
 						} else {
-							BigDecimal underAmt = amtVariance.negate();
+							BigDecimal underAmt = amtVariancePosting.negate();
 							drAmt = dr ? underAmt : null;
 							crAmt = dr ? null : underAmt;
 						}
@@ -1469,12 +1475,13 @@ public class Doc_Invoice extends Doc
 						fl.setQty(line.getQty());
 					}
 
-					if (amtAsset.signum() != 0) {
-						if (amtAsset.signum() > 0) {
-							drAmt = dr ? null : amtAsset;
-							crAmt = dr ? amtAsset : null;
+					BigDecimal amtAssetPosting = creditMemo ? amtAsset.negate() : amtAsset;
+					if (amtAssetPosting.signum() != 0) {
+						if (amtAssetPosting.signum() > 0) {
+							drAmt = dr ? null : amtAssetPosting;
+							crAmt = dr ? amtAssetPosting : null;
 						} else {
-							BigDecimal underAmt = amtAsset.negate();
+							BigDecimal underAmt = amtAssetPosting.negate();
 							drAmt = dr ? underAmt : null;
 							crAmt = dr ? null : underAmt;
 						}
@@ -1491,9 +1498,19 @@ public class Doc_Invoice extends Doc
 			else 
 			{
 				if (dr)
-					drAmt = lca.getAmt();
+				{
+					if (creditMemo)
+						crAmt = lca.getAmt();
+					else
+						drAmt = lca.getAmt();
+				}
 				else
-					crAmt = lca.getAmt();
+				{
+					if (creditMemo)
+						drAmt = lca.getAmt();
+					else
+						crAmt = lca.getAmt();
+				}
 				account = pc.getAccount(ProductCost.ACCTTYPE_P_CostAdjustment, as);
 				FactLine fl = fact.createLine (line, account, getC_Currency_ID(), drAmt, crAmt);
 				fl.setDescription(desc);
