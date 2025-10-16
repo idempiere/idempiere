@@ -42,8 +42,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
+import org.adempiere.util.ProcessUtil;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
@@ -85,9 +87,11 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -1934,7 +1938,36 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						PrintInfo printInfo = viewer.m_reportEngine.getPrintInfo();
 						ProcessInfo jasperProcessInfo = new ProcessInfo (viewer.getTitle(), format.getJasperProcess_ID());
 						jasperProcessInfo.setRecord_ID (printInfo.getRecord_ID());
+						jasperProcessInfo.setRecord_UU ( printInfo.getRecord_UU() );
 						jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
+						// if there's process, need to run it before preview
+						MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
+						jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
+						if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
+							if (!ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())) {
+								jasperProcessInfo.setClassName (jasperProcess.getClassname());
+								MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
+										jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
+										jasperProcessInfo.getRecord_UU());
+								jasperInstance.saveEx();
+								jasperProcessInfo.setAD_PInstance_ID (jasperInstance.getAD_PInstance_ID());
+								boolean runOk = false;
+								if (jasperProcess.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+									runOk = ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
+								} else {
+									runOk = ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
+								}
+								if (!runOk || jasperProcessInfo.isError()) {
+									String msg = jasperProcessInfo.getSummary();
+									if (Util.isEmpty(msg, true)) {
+										msg = Msg.getMsg(Env.getCtx(), "ProcessRunError");
+									}
+									msg = msg + " (" + jasperProcessInfo.getTitle() + ")";
+									throw new AdempiereException(msg);
+								}
+							}							
+						}
+																		
 						jasperProcessInfo.setSerializableObject(format);
 						ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 						ProcessInfoParameter pip = new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_FORMAT, format, null, null, null);
