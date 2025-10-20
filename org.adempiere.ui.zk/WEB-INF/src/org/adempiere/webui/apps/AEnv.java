@@ -32,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ISupportMask;
@@ -1011,4 +1013,22 @@ public final class AEnv
 		url.append(pdfUrl);
 		return url.toString();
 	}
+
+	/**
+	 * Get a cookie by name
+	 * @param name
+	 * @return
+	 */
+	public static String getCookie(String name) {
+		Cookie[] cookies = ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals(name)) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
 }	//	AEnv
