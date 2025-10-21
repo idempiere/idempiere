@@ -1665,13 +1665,15 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	public void add (BigDecimal amt, BigDecimal qty)
 	{
-		MCostElement costElement = (MCostElement) getM_CostElement();
-		if (costElement.isAveragePO() || costElement.isAverageInvoice()) 
-		{
-			if (getCurrentQty().add(qty).signum() < 0)
+		if (!isSkipAverageCostingQtyCheck) {
+			MCostElement costElement = (MCostElement) getM_CostElement();
+			if (costElement.isAveragePO() || costElement.isAverageInvoice()) 
 			{
-				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-						+ ", CostElement="+costElement.getName()+", Schema="+getC_AcctSchema().getName());
+				if (getCurrentQty().add(qty).signum() < 0)
+				{
+					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
+							+ ", CostElement="+costElement.getName()+", Schema="+getC_AcctSchema().getName());
+				}
 			}
 		}
 		setCumulatedAmt(getCumulatedAmt().add(amt));
@@ -1704,10 +1706,12 @@ public class MCost extends X_M_Cost implements ICostInfo
 					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
 		}
 		
-		if (getCurrentQty().add(qty).signum() < 0)
-		{
-			throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+		if (!isSkipAverageCostingQtyCheck) {
+			if (getCurrentQty().add(qty).signum() < 0)
+			{
+				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
+						+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+			}
 		}
 				
 		BigDecimal sumQty = getCurrentQty().add(qty);
@@ -1883,13 +1887,15 @@ public class MCost extends X_M_Cost implements ICostInfo
 				setCumulatedQty(Env.ZERO);
 		}
 		
-		//Throw exception if CurrentQty have been updated to negative and cost element is average costing
-		if (ce!=null && (ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
-		{
-			if (getCurrentQty().signum() < 0)
+		if (!isSkipAverageCostingQtyCheck) {
+			//Throw exception if CurrentQty have been updated to negative and cost element is average costing
+			if (ce!=null && (ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
 			{
-				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
-						+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+				if (getCurrentQty().signum() < 0)
+				{
+					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
+							+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+				}
 			}
 		}
 		
@@ -1902,15 +1908,28 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	@Override
 	public void setCurrentQty(BigDecimal CurrentQty) {
-		MCostElement ce = (MCostElement)getM_CostElement();
-		if (ce.isAveragePO() || ce.isAverageInvoice()) 
-		{
-			if (CurrentQty.signum() < 0)
+		if (!isSkipAverageCostingQtyCheck) {
+			MCostElement ce = (MCostElement)getM_CostElement();
+			if (ce.isAveragePO() || ce.isAverageInvoice()) 
 			{
-				throw new AverageCostingNegativeQtyException("Product="+getM_Product().getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
-						+", CostElement="+ce.getName()+", Schema="+getC_AcctSchema().getName());
+				if (CurrentQty.signum() < 0)
+				{
+					throw new AverageCostingNegativeQtyException("Product="+getM_Product().getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
+							+", CostElement="+ce.getName()+", Schema="+getC_AcctSchema().getName());
+				}
 			}
 		}
 		super.setCurrentQty(CurrentQty);
 	}
+	
+	private boolean isSkipAverageCostingQtyCheck = false;
+
+	protected boolean isSkipAverageCostingQtyCheck() {
+		return isSkipAverageCostingQtyCheck;
+	}
+
+	protected void setSkipAverageCostingQtyCheck(boolean isSkipAverageCostingQtyCheck) {
+		this.isSkipAverageCostingQtyCheck = isSkipAverageCostingQtyCheck;
+	}
+	
 }	//	MCost
