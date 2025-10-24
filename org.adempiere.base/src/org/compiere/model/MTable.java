@@ -667,7 +667,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		if (cache != null)
 		{
 			IModelFactory service = cache.getService();
-			if (service != null)
+			if (service != null && service.getClass(tableName) != null)
 			{
 				po = service.getPO(tableName, uuid, trxName);
 				if (po != null)
@@ -686,7 +686,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			for(IServiceReferenceHolder<IModelFactory> factory : factoryList)
 			{
 				IModelFactory service = factory.getService();
-				if (service != null)
+				if (service != null && service.getClass(tableName) != null)
 				{
 					po = service.getPO(tableName, uuid, trxName);
 					if (po != null)
