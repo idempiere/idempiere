@@ -72,6 +72,7 @@ public class FactReconcile {
 	public int 			selectedColIndex = 2;
 	public int 			idColIndex = 8;
 	public int 			amtColIndex = 0;
+	public int 			dateAcctColIndex = 4;
 	
 	static protected int 			col_C_AcctSchema_ID = COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID;     //  Fact_Acct.C_AcctSchema_ID
 	static protected int 			col_AD_Org_ID = COLUMN_C_PERIOD_AD_ORG_ID; 			//	C_Period.AD_Org_ID (needed to allow org 0)
@@ -295,6 +296,16 @@ public class FactReconcile {
 	 * @param generatedIndexes list of rows that {@link MFactReconciliation} have been successfully created from
 	 */
 	public void generate(IMiniTable miniTable, List<Integer> generatedIndexes) {
+		generate(miniTable, generatedIndexes, -1);
+	}
+
+	/**
+	 * Generate {@link MFactReconciliation} record from selected row in miniTable
+	 * @param miniTable
+	 * @param generatedIndexes list of rows that {@link MFactReconciliation} have been successfully created from
+	 * @param balanceFactAcctID the fact acct that is used to balance selected posting
+	 */
+	public void generate(IMiniTable miniTable, List<Integer> generatedIndexes, int balanceFactAcctID) {
 		String format = "yyyy-MM-dd HH:mm:ss.SSS";
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -318,6 +329,9 @@ public class FactReconcile {
 					generatedIndexes.add(r);
 			}
 		}
+
+		if (balanceFactAcctID > 0)
+			generate(balanceFactAcctID, time);
 	}
 	
 	/**
