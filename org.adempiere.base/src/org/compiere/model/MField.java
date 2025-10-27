@@ -207,7 +207,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		}
 		// Reset IsAllowCopy to null if column is key, UUID, virtual or one of the 8 standard column (except AD_Org_ID)
 		if (getIsAllowCopy() != null) {
-			MColumn column = (MColumn) getAD_Column();
+			MColumn column = MColumn.get(getAD_Column_ID());
 			if (   column.isKey()
 				|| column.isVirtualColumn()
 				|| column.isUUIDColumn()
@@ -217,7 +217,8 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		}
 		if (getIsAllowCopy() == null) { // IDEMPIERE-67
 			// By default allow copy of AD_Org_ID overwriting value
-			if (getAD_Column().getColumnName().equals("AD_Org_ID")) // AD_Org_ID can be copied
+			MColumn column = MColumn.get(getAD_Column_ID());
+			if (column.getColumnName().equals("AD_Org_ID")) // AD_Org_ID can be copied
 				setIsAllowCopy("Y");
 		}
 		// Reset AD_Reference_Value_ID, AD_Val_Rule_ID and IsToolbarButton if AD_Reference_ID is not fill
@@ -232,7 +233,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		
 		//If the column is a virtual search column - set displayed to false 
 		if (isDisplayed()) {
-			MColumn column = (MColumn) getAD_Column();
+			MColumn column = MColumn.get(getAD_Column_ID());
 			if (column.isVirtualSearchColumn()) {
 				setIsDisplayed(false);
 				setIsDisplayedGrid(false);

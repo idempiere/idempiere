@@ -2091,7 +2091,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 				if (receipt.isProcessed()){
 
-					BigDecimal movementQty = receiptLine.getM_InOut().getMovementType().charAt(1) == '-' ? receiptLine.getMovementQty().negate() : receiptLine.getMovementQty();
+					BigDecimal movementQty = receiptLine.getParent().getMovementType().charAt(1) == '-' ? receiptLine.getMovementQty().negate() : receiptLine.getMovementQty();
 					BigDecimal matchQty = isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced();
 
 					if (movementQty.compareTo(matchQty) < 0)

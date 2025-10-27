@@ -39,6 +39,7 @@ import org.compiere.model.MAttribute;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableAttribute;
 import org.compiere.model.MTableAttributeSet;
+import org.compiere.model.MValRule;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -217,7 +218,8 @@ public class WTableAttribute extends Window implements EventListener<Event>
 
 		if (attribute.isAttributeValueTypeReference() && DisplayType.isLookup(attribute.getAD_Reference_ID()) && attribute.getAD_Val_Rule_ID() > 0)
 		{
-			vo.ValidationCode = attribute.getAD_Val_Rule().getCode();
+			MValRule valRule = MValRule.get(Env.getCtx(), attribute.getAD_Val_Rule_ID());
+			vo.ValidationCode = valRule.getCode();
 			if (vo.lookupInfo != null)
 			{
 				vo.lookupInfo.ValidationCode = vo.ValidationCode;
