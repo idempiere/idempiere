@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 
 import org.compiere.model.I_C_Invoice;
 import org.compiere.model.I_C_InvoiceLine;
-import org.compiere.model.I_C_Order;
 import org.compiere.model.I_C_OrderLine;
 import org.compiere.model.I_C_Project;
 import org.compiere.model.I_C_ProjectLine;
@@ -26,6 +25,7 @@ import org.compiere.model.I_M_RMA;
 import org.compiere.model.I_M_RMALine;
 import org.compiere.model.I_M_RequisitionLine;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProjectLine;
 import org.compiere.model.MRMALine;
@@ -98,7 +98,14 @@ public abstract class AbstractProductPricing implements IProductPricing {
 	public void setOrderLine(I_C_OrderLine orderLine, String trxName) {
 		m_M_Product_ID = orderLine.getM_Product_ID();
 		if (orderLine.getC_Order_ID() > 0) {
-			I_C_Order order = ((MOrderLine)orderLine).getParent();
+			MOrder order;
+			if (orderLine instanceof MOrderLine oLine) {
+				order = oLine.getParent();
+			} else {
+				// Fallback without cache
+				order = new MOrder(Env.getCtx(), orderLine.getC_Order_ID(), trxName);
+				m_isSOTrx = order.isSOTrx();
+			}
 			m_isSOTrx = order.isSOTrx();
 		}
 		m_C_BPartner_ID = orderLine.getC_BPartner_ID();
