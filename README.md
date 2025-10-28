@@ -6,8 +6,7 @@
 [![Forum](https://img.shields.io/badge/forum-Google%20Groups-orange)](https://groups.google.com/group/idempiere)
 [![License](https://img.shields.io/badge/license-GPL--2.0-brightgreen.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
-**iDempiere** is an open-source **Enterprise Resource Planning (ERP)**, **Customer Relationship Management (CRM)**, and **Supply Chain Management (SCM)** solution —  
-built *by the community, for the community*.
+**iDempiere** is an open-source **Enterprise Resource Planning (ERP)**, **Customer Relationship Management (CRM)**, and **Supply Chain Management (SCM)** solution built *by the community, for the community*.
 
 > Empowering organizations through open collaboration, proven business logic, and enterprise-grade technology.
 
@@ -15,10 +14,10 @@ built *by the community, for the community*.
 
 ## 🚀 Try iDempiere
 
-Experience iDempiere instantly — no installation required!  
+Experience iDempiere instantly. No installation required! 
 👉 **[Live Cloud Test Sites](https://www.idempiere.org/test-sites)**
 
-Want to install it locally?  
+Want to install it locally?
 📘 Follow our official [Installation Guide](https://wiki.idempiere.org/en/Installing_iDempiere) for step-by-step setup instructions.
 
 ---
@@ -28,7 +27,7 @@ Want to install it locally?
 - 💡 **Truly community-driven:** Developed by SMEs, implementors, and end-users worldwide.
 - ⚙️ **Modular Architecture:** Flexible plugin system powered by OSGi.
 - 🧱 **Stable & Scalable:** Java + PostgreSQL/Oracle foundation built for enterprise reliability.  
-- 🕰️ **Decades of business logic:** evolved from ADempiere and Compiere — refined by years of real-world use.
+- 🕰️ **Decades of business logic:** evolved from ADempiere and Compiere refined by years of real-world use.
 
 ---
 
