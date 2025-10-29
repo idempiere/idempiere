@@ -480,7 +480,8 @@ implements DocAction
 		{
 			BigDecimal disposalAmt = Env.ZERO;
 			BigDecimal accumDeprAmt = Env.ZERO;
-			if (assetwk.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+			MAcctSchema acctSchema = MAcctSchema.get(assetwk.getC_AcctSchema_ID());
+			if (acctSchema.getC_Currency_ID() != getC_Currency_ID()) 
 			{
 				disposalAmt  =  assetwk.getA_Asset_Cost();
 				accumDeprAmt = assetwk.getA_Accumulated_Depr();

@@ -947,7 +947,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			/* Carlos Ruiz - globalqss
 			 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
 			 */
-			if (getParent().getC_DocTypeTarget().isChargeOrProductMandatory()) {
+			MDocType dt = MDocType.get(getParent().getC_DocTypeTarget_ID());
+			if (dt.isChargeOrProductMandatory()) {
 				if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && (getPriceEntered().signum() != 0 || getQtyEntered().signum() != 0)) {
 					log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 					return false;
@@ -1132,7 +1133,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					{
 						double result = getLineNetAmt().multiply(base).doubleValue();
 						result /= total.doubleValue();
-						lca.setAmt(result, getParent().getC_Currency().getStdPrecision());
+						MCurrency currency = MCurrency.get(getParent().getC_Currency_ID());
+						lca.setAmt(result, currency.getStdPrecision());
 					}
 					if (!lca.save()){
 						msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
@@ -1269,7 +1271,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			{
 				double result = getLineNetAmt().multiply(base).doubleValue();
 				result /= total.doubleValue();
-				lca.setAmt(result, getParent().getC_Currency().getStdPrecision());
+				MCurrency currency = MCurrency.get(getParent().getC_Currency_ID());
+				lca.setAmt(result, currency.getStdPrecision());
 			}
 			if (!lca.save()){
 				msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);

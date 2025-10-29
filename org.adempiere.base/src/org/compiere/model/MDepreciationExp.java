@@ -182,7 +182,8 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 			, "@AssetDepreciationAmt@"
 			, assetwk);
 		if(depexp != null) {
-			depexp.setAD_Org_ID(assetwk.getA_Asset().getAD_Org_ID()); // added by zuhri
+			MAsset asset = new MAsset(assetwk.getCtx(), assetwk.getA_Asset_ID(), assetwk.get_TrxName());
+			depexp.setAD_Org_ID(asset.getAD_Org_ID()); // added by zuhri
 			if (accumAmt != null)
 				depexp.setA_Accumulated_Depr(accumAmt);
 			if (accumAmt_F != null)

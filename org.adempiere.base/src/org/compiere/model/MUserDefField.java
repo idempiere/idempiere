@@ -189,7 +189,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 		// Disallow change of reference for encrypted and obscure field 
 		if (is_ValueChanged("AD_Reference_ID")) {
 			MField field = new MField(getCtx(), getAD_Field_ID(), get_TrxName());
-			MColumn column = (MColumn) field.getAD_Column();
+			MColumn column = MColumn.get(field.getAD_Column_ID());
 			if (column.isEncrypted() || field.isEncrypted() || field.getObscureType() != null) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "NotChangeReference"));
 				return false;

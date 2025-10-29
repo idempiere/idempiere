@@ -41,8 +41,12 @@ import org.compiere.util.Util;
  * Asset Model
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-@SuppressWarnings("serial")
 public class MAsset extends X_A_Asset {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2767231786593351344L;
+
 	/** ChangeType - Asset Group changed */
 	public static final int CHANGETYPE_setAssetGroup = Table_ID * 100 + 1;
 	
@@ -54,7 +58,7 @@ public class MAsset extends X_A_Asset {
 	 */
 	public static MAsset get (Properties ctx, int A_Asset_ID, String trxName)
 	{
-		return (MAsset)MTable.get(ctx, MAsset.Table_Name).getPO(A_Asset_ID, trxName);
+		return new MAsset(ctx, A_Asset_ID, trxName);
 	}	//	get
 	
 	/**

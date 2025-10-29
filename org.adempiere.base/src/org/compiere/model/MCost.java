@@ -1670,8 +1670,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 		{
 			if (getCurrentQty().add(qty).signum() < 0)
 			{
+				MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-						+ ", CostElement="+costElement.getName()+", Schema="+getC_AcctSchema().getName());
+						+ ", CostElement="+costElement.getName()+", Schema="+as.getName());
 			}
 		}
 		setCumulatedAmt(getCumulatedAmt().add(amt));
@@ -1700,14 +1701,16 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//can't do cost adjustment if there's no stock left
 		if (qty.signum() == 0 && getCurrentQty().signum() <= 0)
 		{
+			MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 			throw new AverageCostingZeroQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+					+", CostElement="+getM_CostElement().getName()+", Schema="+as.getName());
 		}
 		
 		if (getCurrentQty().add(qty).signum() < 0)
 		{
+			MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 			throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+					+", CostElement="+getM_CostElement().getName()+", Schema="+as.getName());
 		}
 				
 		BigDecimal sumQty = getCurrentQty().add(qty);
@@ -1888,8 +1891,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 		{
 			if (getCurrentQty().signum() < 0)
 			{
+				MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
-						+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+						+", CostElement="+getM_CostElement().getName()+", Schema="+as.getName());
 			}
 		}
 		
@@ -1907,8 +1911,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 		{
 			if (CurrentQty.signum() < 0)
 			{
+				MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 				throw new AverageCostingNegativeQtyException("Product="+getM_Product().getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
-						+", CostElement="+ce.getName()+", Schema="+getC_AcctSchema().getName());
+						+", CostElement="+ce.getName()+", Schema="+as.getName());
 			}
 		}
 		super.setCurrentQty(CurrentQty);

@@ -59,7 +59,7 @@ public class CreditManagerInvoice implements ICreditManager
 		String errorMsg = null;
 		if (MInvoice.DOCACTION_Prepare.equals(docAction) && mInvoice.isSOTrx())
 		{
-			MDocType doc = (MDocType) mInvoice.getC_DocTypeTarget();
+			MDocType doc = MDocType.get(mInvoice.getC_DocTypeTarget_ID());
 			// IDEMPIERE-365 - just check credit if is going to increase the debt
 			if ((doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARCreditMemo) && mInvoice.getGrandTotal().signum() < 0)
 				|| (doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARInvoice) && mInvoice.getGrandTotal().signum() > 0))

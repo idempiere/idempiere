@@ -34,6 +34,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MField;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefTable;
+import org.compiere.model.MReference;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
@@ -131,7 +132,8 @@ public class DatabaseTableRename extends SvrProcess {
 			}
 			if (changed) {
 				reft.saveEx();
-				addLog(0, null, null, "@Updated@ @AD_Reference_ID@ " + reft.getAD_Reference().getName(), MRefTable.Table_ID, reft.getAD_Reference_ID());
+				MReference ref = MReference.get(reft.getAD_Reference_ID());
+				addLog(0, null, null, "@Updated@ @AD_Reference_ID@ " + ref.getName(), MRefTable.Table_ID, reft.getAD_Reference_ID());
 			}
 		}
 		

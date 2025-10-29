@@ -697,7 +697,8 @@ public class MInOutLine extends X_M_InOutLine
 		/* Carlos Ruiz - globalqss
 		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
 		 */
-		if (getParent().getC_DocType().isChargeOrProductMandatory()) {
+		MDocType dt = MDocType.get(getParent().getC_DocType_ID());
+		if (dt.isChargeOrProductMandatory()) {
 			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0) {
 				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 				return false;

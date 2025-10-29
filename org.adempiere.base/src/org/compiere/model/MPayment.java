@@ -2573,10 +2573,13 @@ public class MPayment extends X_C_Payment
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());		
-		
-		if (getC_DepositBatch_ID() > 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
-			return false;
+
+		if (getC_DepositBatch_ID() > 0) {
+			MDepositBatch db = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+			if (db.isProcessed()) {
+				m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + db;
+				return false;
+			}
 		}
 		
 		if (DOCSTATUS_Closed.equals(getDocStatus())
@@ -2675,9 +2678,12 @@ public class MPayment extends X_C_Payment
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
-		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed" )+ getC_DepositBatch();
-			return false;
+		if (getC_DepositBatch_ID() > 0) {
+			MDepositBatch db = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+			if (db.isProcessed()) {
+				m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + db;
+				return false;
+			}
 		}
 		
 		// Before reverseCorrect
@@ -2857,12 +2863,15 @@ public class MPayment extends X_C_Payment
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
-		
-		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
-			return false;
+
+		if (getC_DepositBatch_ID() > 0) {
+			MDepositBatch db = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+			if (db.isProcessed()) {
+				m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + db;
+				return false;
+			}
 		}
-		
+
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)

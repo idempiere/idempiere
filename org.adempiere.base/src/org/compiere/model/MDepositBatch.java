@@ -497,7 +497,8 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 		int currencyCount = DB.getSQLValueEx(get_TrxName(), sql, getC_DepositBatch_ID());
 		if (currencyCount > 1)
 		{
-			m_processMsg = Msg.getMsg(getCtx(), "ErrorMultipleCurrencyPaymentsRestricted", new Object[] { getC_Currency().getISO_Code()} ); 
+			MCurrency currency = MCurrency.get(getC_Currency_ID());
+			m_processMsg = Msg.getMsg(getCtx(), "ErrorMultipleCurrencyPaymentsRestricted", new Object[] { currency.getISO_Code()} ); 
 			return DocAction.STATUS_Invalid;
 		}
 		

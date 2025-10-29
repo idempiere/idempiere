@@ -41,6 +41,7 @@ import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MCurrency;
+import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
@@ -187,7 +188,8 @@ public class Doc_MatchInv extends Doc
 				return createCreditMemoFacts(as);
 		}
 		
-		if (m_receiptLine.getParent().getC_DocType().getDocBaseType().equals(DOCTYPE_MatShipment))
+		MDocType dt = MDocType.get(m_receiptLine.getParent().getC_DocType_ID());
+		if (dt.getDocBaseType().equals(DOCTYPE_MatShipment))
 			return createMatShipmentFacts(as);
 					
 		//  create Fact Header

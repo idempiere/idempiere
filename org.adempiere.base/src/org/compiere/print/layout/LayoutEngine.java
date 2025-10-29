@@ -49,6 +49,7 @@ import javax.print.DocFlavor;
 import javax.print.attribute.DocAttributeSet;
 
 import org.adempiere.base.Core;
+import org.compiere.model.MPrintHeaderFooter;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
@@ -293,7 +294,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					headerFooter.getHeaderHeight(), headerFooter.getFooterHeight());
 		}
 		else if (m_format.getAD_PrintHeaderFooter_ID() > 0) {
-			IPrintHeaderFooter printHeaderFooter = Core.getPrintHeaderFooter(m_format.getAD_PrintHeaderFooter());
+			MPrintHeaderFooter phf = new MPrintHeaderFooter(m_format.getCtx(), m_format.getAD_PrintHeaderFooter_ID(), m_format.get_TrxName());
+			IPrintHeaderFooter printHeaderFooter = Core.getPrintHeaderFooter(phf);
 			if (printHeaderFooter != null) {
 				setPaper(mPaper.getCPaper(), 
 						printHeaderFooter.getHeaderHeight(), printHeaderFooter.getFooterHeight());
@@ -487,7 +489,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 				StandardHeaderFooter headerFooter = new StandardHeaderFooter();
 				headerFooter.createHeaderFooter(m_format, m_headerFooter, m_header, m_footer, m_query);
 			} else if (m_format.getAD_PrintHeaderFooter_ID() > 0) {
-				IPrintHeaderFooter printHeaderFooter = Core.getPrintHeaderFooter(m_format.getAD_PrintHeaderFooter());
+				MPrintHeaderFooter phf = new MPrintHeaderFooter(m_format.getCtx(), m_format.getAD_PrintHeaderFooter_ID(), m_format.get_TrxName());
+				IPrintHeaderFooter printHeaderFooter = Core.getPrintHeaderFooter(phf);
 				if (printHeaderFooter != null) {
 					printHeaderFooter.createHeaderFooter(m_format, m_headerFooter, m_header, m_footer, m_query);
 				} else {
