@@ -49,6 +49,7 @@ public class GridTab2PackExporter implements IGridTabExporter {
 		PackOut packOut = new PackOut();
 		packOut.setCtx(Env.getCtx());
 		packOut.setExportDictionaryEntity(false);
+		packOut.setIncludeOrganizationId(true);
 		Map properties = new HashMap();
 		properties.putAll(Env.getCtx());
 		List<PackoutItem> packoutItems = new ArrayList<PackoutItem>();
