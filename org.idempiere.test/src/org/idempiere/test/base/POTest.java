@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
 import org.compiere.model.I_AD_UserPreference;
@@ -626,4 +627,91 @@ public class POTest extends AbstractTestCase
 			product.saveEx();
 		}
 	}
+	
+	@Test
+	public void test_New() 
+	{
+		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+        assertTrue(testPO.is_new());
+        
+		testPO = new MTest(Env.getCtx(), 103, getTrxName());
+        assertFalse(testPO.is_new());
+	}
+	
+    @Test
+    void testSetGet_Value() {
+		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+        testPO.set_ValueNoCheck(MTest.COLUMNNAME_Name, "TestName");
+        assertEquals("TestName", testPO.get_Value("Name"));
+        
+		testPO.set_ValueOfColumn(MTest.COLUMNNAME_Name, "New Name");
+        assertEquals("New Name", testPO.get_Value("Name"));
+        
+		testPO.set_ValueOfColumn(326, "Newest Name");
+        assertEquals("Newest Name", testPO.get_Value("Name"));
+        assertEquals("Newest Name", testPO.get_ValueOfColumn(326));
+        
+        assertTrue(testPO.set_ValueOfColumnReturningBoolean("Name", "String name"));
+        
+        // Test setting boolean value on a String column
+        assertFalse(testPO.set_ValueOfColumnReturningBoolean("Name", true));
+        assertFalse(testPO.set_ValueOfColumnReturningBoolean(326, true));
+    }
+    
+    @Test
+    void testGet_ValueOld() {
+    	
+    	//Valid column Name
+    	MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+        testPO.setName("InitialName");
+        testPO.setHelp(null);
+
+	    // For new record, old value should be null before save
+	    assertNull(testPO.get_ValueOld(MTest.COLUMNNAME_Name));
+        
+	    // Verify old value is set after save
+        testPO.saveEx();
+        assertEquals("InitialName", testPO.get_ValueOld(MTest.COLUMNNAME_Name));
+        
+        // Change the value
+        testPO.setName("NewName");
+        
+        // Old value should still be the initial one
+        assertEquals("InitialName", testPO.get_ValueOld(MTest.COLUMNNAME_Name));
+        assertEquals("NewName", testPO.get_Value(MTest.COLUMNNAME_Name));
+        
+        // Old value for null field should be null
+        assertNull(testPO.get_ValueOld(MTest.COLUMNNAME_Help));
+        testPO.setHelp("NewHelp");
+        assertNull(testPO.get_ValueOld(MTest.COLUMNNAME_Help));
+        
+        testPO.setName("Name2");
+        // Old value should still be "InitialName" (from last save)
+        assertEquals("InitialName", testPO.get_ValueOld(MTest.COLUMNNAME_Name));
+        assertEquals("Name2", testPO.get_Value(MTest.COLUMNNAME_Name));
+
+        // Test with non-existent column
+        Object result = testPO.get_ValueOld("NonExistentColumn");
+        assertNull(result);
+
+		// Finally, delete the testPO
+		testPO.delete(true, getTrxName());
+    }
+    
+    @Test
+    void testColumnExists() {
+    	MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+        assertTrue(testPO.columnExists("Name"));
+        assertFalse(testPO.columnExists("NonExistentColumn"));
+    }
+
+    @Test
+    void testColumnExistsWithException() {
+    	MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+        assertThrows(AdempiereException.class, () -> 
+            testPO.columnExists("NonExistentColumn", true)
+        );
+    }
+    
+
 }
