@@ -255,15 +255,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 				LogicEvaluator.validate(getMandatoryLogic());
 			}
 		}
-		
-		if (isReadOnly() || !Util.isEmpty(getReadOnlyLogic(), true)) {
-			MColumn column = MColumn.get(getCtx(), getAD_Column_ID());
-			if (column.isAlwaysUpdateable() && !ISALWAYSUPDATEABLE_No.equals(getIsAlwaysUpdateable())) {
-				log.saveError("Error", Msg.getMsg(getCtx(), "UpdateReadOnlyConflict"));
-				return false;
-			}
-		}
-		
+
 		return true;
 	}	//	beforeSave
 	
