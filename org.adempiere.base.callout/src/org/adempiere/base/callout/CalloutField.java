@@ -46,6 +46,11 @@ public class CalloutField implements IColumnCallout {
 	}
 
 	private static String isAlwaysUpdatableFieldColumn(Properties ctx, int windowNo, GridTab mTab, GridField mField, Object value) {
+		
+		if (mTab.getValue(MField.COLUMNNAME_AD_Column_ID) == null) {
+			return "";
+		}
+		
 		String readOnlyLogic = (String) mTab.getValue(MField.COLUMNNAME_ReadOnlyLogic);
 		MColumn column = MColumn.get(ctx, (Integer) mTab.getValue(MField.COLUMNNAME_AD_Column_ID));
 		String isFieldAlwaysUpdateable = (String) mTab.getValue(MField.COLUMNNAME_IsAlwaysUpdateable);
