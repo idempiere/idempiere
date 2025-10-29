@@ -464,8 +464,8 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		}
 
 		if (windowId == 0) {
-			MReference ref = MReference.get(getAD_Reference_Target_ID());
-			PORelationException.throwMissingWindowId(po, ref.getName(), table.getName(), Env.isSOTrx(po.getCtx()));
+			MReference refTarget = MReference.get(getAD_Reference_Target_ID());
+			PORelationException.throwMissingWindowId(po, refTarget.getName(), table.getName(), Env.isSOTrx(po.getCtx()));
 		}
 		return windowId;
 

@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.parallel.ResourceAccessMode.READ_WRITE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -91,9 +92,12 @@ import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 import org.mockito.MockedStatic;
 
 @Isolated
+@ResourceLock(value = Resources.GLOBAL, mode = READ_WRITE) // ensure no other tests running at the same time as this changes AcctSchema
 public class BackDateAveragePOCostingTest extends AbstractTestCase {
 
 	public BackDateAveragePOCostingTest() {
