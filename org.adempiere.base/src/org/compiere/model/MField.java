@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -252,6 +253,13 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		if (newRecord || is_ValueChanged(COLUMNNAME_MandatoryLogic)) {
 			if (isActive() && !Util.isEmpty(getMandatoryLogic(), true) && !getMandatoryLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
 				LogicEvaluator.validate(getMandatoryLogic());
+			}
+		}
+		
+		if (!Util.isEmpty(getReadOnlyLogic(), true)) {
+			MColumn column = MColumn.get(getCtx(), getAD_Column_ID(), get_TrxName());
+			if (column.isAlwaysUpdateable() && !ISALWAYSUPDATEABLE_No.equals(getIsAlwaysUpdateable())) {
+				log.saveWarning("Error", Msg.getMsg(getCtx(), "UpdateReadOnlyConflict"));
 			}
 		}
 		
