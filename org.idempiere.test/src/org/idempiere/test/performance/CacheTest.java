@@ -92,6 +92,7 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTaxProvider;
+import org.compiere.model.MTaxProviderCfg;
 import org.compiere.model.MTest;
 import org.compiere.model.MTestUU;
 import org.compiere.model.MWarehouse;
@@ -101,7 +102,6 @@ import org.compiere.model.PO;
 import org.compiere.model.PaymentProcessor;
 import org.compiere.model.Query;
 import org.compiere.model.StandardTaxProvider;
-import org.compiere.model.X_C_TaxProviderCfg;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.BPartnerValidate;
 import org.compiere.process.DocAction;
@@ -425,7 +425,7 @@ public class CacheTest extends AbstractTestCase {
 		assertTrue(cache.getHit() > hit, "Hit for " + cacheName + " doesn't increase as expected");
 		
 		//ITaxProviderFactory
-		X_C_TaxProviderCfg taxProviderCfg = new X_C_TaxProviderCfg(Env.getCtx(), 0, getTrxName());
+		MTaxProviderCfg taxProviderCfg = new MTaxProviderCfg(Env.getCtx(), 0, getTrxName());
 		taxProviderCfg.setName("Standard Provider Configuration");
 		taxProviderCfg.setTaxProviderClass(StandardTaxProvider.class.getName());
 		taxProviderCfg.saveEx();

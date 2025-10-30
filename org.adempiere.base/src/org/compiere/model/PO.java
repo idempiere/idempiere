@@ -5186,9 +5186,10 @@ public abstract class PO
 			parameters = new Object[]{treeType, this.get_Table_ID()};
 		} else {
 			sourceTableName = MTree_Base.getSourceTableName(treeType);
-			if (MTree_Base.TREETYPE_ElementValue.equals(treeType) && this instanceof I_C_ElementValue) {
+			if (MTree_Base.TREETYPE_ElementValue.equals(treeType) && this instanceof I_C_ElementValue ev) {
 				whereTree = "TreeType=? AND AD_Tree_ID=?";
-				parameters = new Object[]{treeType, ((I_C_ElementValue)this).getC_Element().getAD_Tree_ID()};
+				MElement element = new MElement(getCtx(), ev.getC_Element_ID(), get_TrxName());
+				parameters = new Object[]{treeType, element.getAD_Tree_ID()};
 			} else {
 				whereTree = "TreeType=?";
 				parameters = new Object[]{treeType};
@@ -5208,8 +5209,8 @@ public abstract class PO
 		for (MTree_Base tree : trees) {
 			if (tree.isTreeDrivenByValue()) {
 				int newParentID = -1;
-				if (I_C_ElementValue.Table_Name.equals(sourceTableName)) {
-					newParentID = retrieveIdOfElementValue(value, getAD_Client_ID(), ((I_C_ElementValue)this).getC_Element().getC_Element_ID(), get_TrxName());
+				if (I_C_ElementValue.Table_Name.equals(sourceTableName) && this instanceof I_C_ElementValue ev) {
+					newParentID = retrieveIdOfElementValue(value, getAD_Client_ID(), ev.getC_Element_ID(), get_TrxName());
 				} else {
 					int linkColId = tree.getParent_Column_ID();
 					String linkColName = null;

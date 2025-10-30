@@ -71,8 +71,8 @@ public class MOpportunity extends X_C_Opportunity {
 		// Set OpportunityAmt to GrandTotal of order.
 		if ( getC_Order_ID() > 0 )
 		{
-			I_C_Order order = getC_Order();
-			if ( order != null )
+			MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			if ( order.getC_Order_ID() == getC_Order_ID() )
 				setOpportunityAmt(order.getGrandTotal());
 		}
 		return true;
