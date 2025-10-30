@@ -222,7 +222,8 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 		if (!Util.isEmpty(getReadOnlyLogic(), true)) {
 			MField field = MField.get(getCtx(), getAD_Field_ID());
 			MColumn column = MColumn.get(getCtx(), field.getAD_Column_ID());
-			if (column.isAlwaysUpdateable() && !ISALWAYSUPDATEABLE_No.equals(getIsAlwaysUpdateable())) {
+			if (column.isAlwaysUpdateable() && !ISALWAYSUPDATEABLE_No.equals(field.getIsAlwaysUpdateable()) 
+					&& !ISALWAYSUPDATEABLE_No.equals(getIsAlwaysUpdateable())) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "UpdateReadOnlyConflict"));
 				return false;
 			}

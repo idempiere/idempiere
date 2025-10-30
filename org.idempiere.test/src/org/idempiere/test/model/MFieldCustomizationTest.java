@@ -31,21 +31,24 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MUserDefField;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 public class MFieldCustomizationTest extends AbstractTestCase {
+	
+	private static final int Dummy_AD_UserDef_Tab_ID = 1000;
 
 	@Test
 	void testBeforeSave_ReadOnlyLogicWithAlwaysUpdateableYes() {
 		// Test field column with IsAlwaysUpdateable = true
 		MUserDefField field = new MUserDefField(Env.getCtx(), 0, getTrxName());
-		field.setAD_UserDef_Tab_ID(1000);
-		field.setAD_Field_ID(9624); // Payment Rule field
+		field.setAD_UserDef_Tab_ID(Dummy_AD_UserDef_Tab_ID);
+		field.setAD_Field_ID(DictionaryIDs.AD_Field.BPartner_PaymentRule.id);
 		field.setReadOnlyLogic("1=1");
 
 		// Execute
 		AdempiereException exception = assertThrows(AdempiereException.class, () -> field.saveEx());
-		assertTrue(exception.getMessage().contains("Always Updatable cannot be Read Only"));
+		assertTrue(exception.getMessage().contains("Always Updatable cannot have Read Only Logic"));
 		
 		//Set always updateable to false explicitely in field to allow saving
 		field.setIsAlwaysUpdateable(MUserDefField.ISALWAYSUPDATEABLE_No);
@@ -59,8 +62,8 @@ public class MFieldCustomizationTest extends AbstractTestCase {
 	void testBeforeSave_ReadOnlyLogicWithAlwaysUpdateableNo() {
 		// Test field column with IsAlwaysUpdateable = false
 		MUserDefField field = new MUserDefField(Env.getCtx(), 0, getTrxName());
-		field.setAD_UserDef_Tab_ID(1000); 
-		field.setAD_Field_ID(2133); // Description field
+		field.setAD_UserDef_Tab_ID(Dummy_AD_UserDef_Tab_ID); 
+		field.setAD_Field_ID(DictionaryIDs.AD_Field.BPartner_Description.id); // Description field
 		field.setReadOnlyLogic("1=1");
 
 		// Execute
