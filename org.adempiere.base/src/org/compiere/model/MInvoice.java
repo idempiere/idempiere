@@ -2001,7 +2001,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		boolean fromPOS = false;
 		if ( getC_Order_ID() > 0 )
 		{
-			fromPOS = getC_Order().getC_POS_ID() > 0;
+			MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			fromPOS = order.getC_POS_ID() > 0;
 		}
 
   		//	Create Cash Payment
@@ -3445,9 +3446,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		MInvoiceLine[] lines = getLines();
 		for(MInvoiceLine line : lines) {
-			if (line.getC_OrderLine_ID() > 0)
-			     orderIDSet.add(line.getC_OrderLine().getC_Order_ID());
-		   }
+			if (line.getC_OrderLine_ID() > 0) {
+				MOrderLine orderLine = new MOrderLine(getCtx(), line.getC_OrderLine_ID(), get_TrxName());
+				orderIDSet.add(orderLine.getC_Order_ID());
+			}
+		}
 
 		if(orderIDSet.isEmpty())
 			return false;

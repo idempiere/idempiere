@@ -902,7 +902,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					&&  Env.ZERO.compareTo(getPriceList()) == 0)
 					setPrice();
 				// Enforce PriceLimit
-				boolean enforce = m_IsSOTrx && getParent().getM_PriceList().isEnforcePriceLimit();
+				MPriceList pl = MPriceList.get(getCtx(), getParent().getM_PriceList_ID(), get_TrxName());
+				boolean enforce = m_IsSOTrx && pl.isEnforcePriceLimit();
 				if (enforce && MRole.getDefault().isOverwritePriceLimit())
 					enforce = false;
 				if (enforce && getPriceLimit() != Env.ZERO

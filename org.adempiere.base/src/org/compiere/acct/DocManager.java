@@ -36,6 +36,7 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MTable;
@@ -822,7 +823,8 @@ public class DocManager {
 
 				if (tableID == MMatchInv.Table_ID) {
 					MMatchInv mi = new MMatchInv(Env.getCtx(), recordID, trxName);
-					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + mi.getC_InvoiceLine().getC_Invoice_ID()))
+					MInvoiceLine il = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), trxName);	
+					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + il.getC_Invoice_ID()))
 						continue;
 				}
 				

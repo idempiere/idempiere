@@ -305,7 +305,8 @@ public class MPayment extends X_C_Payment
 		setAccountNo(ba.getAccountNo());
 		setIBAN(ba.getIBAN());
 		setSwiftCode(ba.getSwiftCode()) ;
-		setDescription(preparedPayment.getC_PaySelection().getName());
+		MPaySelection ps = new MPaySelection (preparedPayment.getCtx(), preparedPayment.getC_PaySelection_ID(), preparedPayment.get_TrxName());
+		setDescription(ps.getName());
 		setIsReceipt (X_C_Order.PAYMENTRULE_DirectDebit.equals	//	AR only
 				(preparedPayment.getPaymentRule()));
 		if ( MPaySelectionCheck.PAYMENTRULE_DirectDebit.equals(preparedPayment.getPaymentRule()) )
@@ -733,7 +734,8 @@ public class MPayment extends X_C_Payment
 		{
 			if (getReversal_ID() > 0)
 			{
-				setIsPrepayment(getReversal().isPrepayment());
+				MPayment reversal = new MPayment(getCtx(), getReversal_ID(), get_TrxName());
+				setIsPrepayment(reversal.isPrepayment());
 			}
 			else
 			{
