@@ -776,6 +776,18 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
+  
+  public enum AD_Field {
+		BPartner_PaymentRule(9624),
+		BPartner_Description(2133),
+		PackageInstallation_PackageVersion(203844);
+		
+		public final int id;
+
+		private AD_Field(int id) {
+			this.id = id;
+		}
+	}
 	
 	public enum AD_Column {
 		VIRTUALCOLUMN_UPCEAN(14102),
