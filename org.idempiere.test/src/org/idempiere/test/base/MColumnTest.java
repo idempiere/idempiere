@@ -296,6 +296,9 @@ public class MColumnTest extends AbstractTestCase {
 	public void testGetWithInvalidTable() {
 		MColumn column = MColumn.get(Env.getCtx(), "INVALID_TABLE_NAME", "ColumnName");
 		assertNull(column, "Column should be null for invalid table name");
+		
+		column = MColumn.get(Env.getCtx(), "INVALID_TABLE_NAME", "ColumnName", getTrxName());
+		assertNull(column, "Column should be null for invalid table name");
 	}
 	
 	/**
