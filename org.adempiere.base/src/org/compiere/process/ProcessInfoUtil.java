@@ -49,20 +49,21 @@ public class ProcessInfoUtil
 	public static void setSummaryFromDB (ProcessInfo pi)
 	{
 		//
-		int sleepTime = 2000;	//	2 secomds
+		int sleepTime = 2000;	//	2 seconds
 		int noRetry = 5;        //  10 seconds total
 		//
 		String sql = "SELECT Result, ErrorMsg FROM AD_PInstance "
 			+ "WHERE AD_PInstance_ID=?"
 			+ " AND Result IS NOT NULL";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
+
+		for (int noTry = 0; noTry < noRetry; noTry++)
 		{
-			pstmt = DB.prepareStatement (sql, 
-				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
-			for (int noTry = 0; noTry < noRetry; noTry++)
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
 			{
+				pstmt = DB.prepareStatement (sql,
+					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
 				pstmt.setInt(1, pi.getAD_PInstance_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
@@ -83,9 +84,22 @@ public class ProcessInfoUtil
 						pi.addSummary ("  (" +  Msg.parseTranslation(Env.getCtx(), Message)  + ")");
 					return;
 				}
-				DB.close(rs);
-				rs = null;
-				//	sleep
+			}
+			catch (SQLException e)
+			{
+				s_log.log(Level.SEVERE, sql, e);
+				pi.setSummary (e.getLocalizedMessage(), true);
+				return;
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}
+
+			//	sleep after closing connection (not before)
+			if (noTry < noRetry - 1)  // Don't sleep on last iteration
+			{
 				try
 				{
 					if (s_log.isLoggable(Level.FINE)) s_log.fine("sleeping");
@@ -96,17 +110,6 @@ public class ProcessInfoUtil
 					s_log.log(Level.SEVERE, "Sleep Thread", ie);
 				}
 			}
-		}
-		catch (SQLException e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-			pi.setSummary (e.getLocalizedMessage(), true);
-			return;
-		}
-		finally
-		{
-			DB.close(rs,pstmt);
-			rs = null;pstmt = null;
 		}
 		pi.setSummary (Msg.getMsg(Env.getCtx(), "Timeout"), true);
 	}	//	setSummaryFromDB

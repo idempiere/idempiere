@@ -152,7 +152,8 @@ public final class ProcessUtil {
 	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx, IProcessUI processMonitor) {
 		String className = pi.getClassName();
 		if (className == null) {
-			MProcess proc = new MProcess(ctx, pi.getAD_Process_ID(), trx.getTrxName());
+			String trxName = trx != null ? trx.getTrxName() : null;
+			MProcess proc = new MProcess(ctx, pi.getAD_Process_ID(), trxName);
 			if (proc.getJasperReport() != null)
 				className = JASPER_STARTER_CLASS;
 		}
@@ -210,6 +211,7 @@ public final class ProcessUtil {
 	public static boolean startScriptProcess(Properties ctx, ProcessInfo pi, Trx trx) {
 		String msg = null;
 		boolean success = true;
+		boolean localTrx = false;  // Track if we created the transaction
 		try
 		{
 			String cmd = pi.getClassName();
@@ -241,6 +243,7 @@ public final class ProcessUtil {
 			if (trx == null) {
 				trx = Trx.get(Trx.createTrxName(pi.getTitle()+"_"+pi.getAD_PInstance_ID()), true);
 				trx.setDisplayName(ProcessUtil.class.getName()+"_startScriptProcess");
+				localTrx = true;  // Mark that we created this transaction
 			}
 			engine.put(MRule.ARGUMENTS_PREFIX + "Trx", trx);
 			engine.put(MRule.ARGUMENTS_PREFIX + "TrxName", trx.getTrxName());
@@ -298,9 +301,9 @@ public final class ProcessUtil {
 			log.log(Level.SEVERE, pi.getClassName(), e);
 			success = false;
 		}
-		if (success) {
-			if (trx != null)
-			{
+		// Only commit/rollback/close if we created the transaction
+		if (localTrx && trx != null) {
+			if (success) {
 				try
 				{
 					trx.commit(true);
@@ -312,10 +315,7 @@ public final class ProcessUtil {
 					success = false;
 				}
 				trx.close();
-			}
-		} else {
-			if (trx != null)
-			{
+			} else {
 				trx.rollback();
 				trx.close();
 			}

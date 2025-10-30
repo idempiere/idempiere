@@ -1168,7 +1168,12 @@ public class ProcessInfo implements Serializable
 	 */
 	public boolean isProcessRunning(MPInstancePara[] params) {
 		MProcess process = MProcess.get(Env.getCtx(), getAD_Process_ID());
-		
+
+		if (process == null) {
+			logger.warning("Process not found: " + getAD_Process_ID());
+			return false;
+		}
+
 		String multipleExecutions = process.getAllowMultipleExecution();
 		if (multipleExecutions == null || multipleExecutions.isEmpty())
 			return false;
@@ -1183,8 +1188,13 @@ public class ProcessInfo implements Serializable
 
 		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUser.equals(multipleExecutions)
 			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters.equals(multipleExecutions)) {
+			Integer userId = getAD_User_ID();
+			if (userId == null) {
+				logger.warning("User ID is null for process instance: " + getAD_PInstance_ID());
+				return false;
+			}
 			whereClause.append(" AND AD_User_ID = ? ");
-			queryParams.add(getAD_User_ID());
+			queryParams.add(userId);
 		}
 
 		List<MPInstance> processInstanceList = new Query(Env.getCtx(), MPInstance.Table_Name, whereClause.toString(), null)
