@@ -776,5 +776,18 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
+	
+	public enum AD_Column {
+		VIRTUALCOLUMN_UPCEAN(14102),
+		REPORT_VIEW_ORDERBYCLAUSE(4396),
+		MULTISELECTCOLUMN_SCOPELIST(214414);
+		
+		
+		public final int id;
+
+		private AD_Column(int id) {
+			this.id = id;
+		}
+	}
 
 }

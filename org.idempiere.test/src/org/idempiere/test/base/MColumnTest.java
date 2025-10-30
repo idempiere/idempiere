@@ -24,6 +24,7 @@ package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,7 +33,9 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -137,7 +140,7 @@ public class MColumnTest extends AbstractTestCase {
 		assertFalse(normalColumn.isVirtualColumn(), "Name column should not be virtual");
 		
 		// Virtual columns have ColumnSQL defined
-		MColumn column = MColumn.get(14102); // UPC/EAN
+		MColumn column = MColumn.get(DictionaryIDs.AD_Column.VIRTUALCOLUMN_UPCEAN.id);
 		assertTrue(column.isVirtualColumn(), "Column with ColumnSQL should be virtual");
 	}
 	
@@ -361,6 +364,202 @@ public class MColumnTest extends AbstractTestCase {
 		
 		assertTrue(fieldLength > 0, "Field length should be greater than 0");
 		assertTrue(fieldLength <= 2000, "Field length should be reasonable");
+	}
+
+	/**
+	 * Test constructor with parent table
+	 */
+	@Test
+	public void testConstructorWithParent() {
+		MTable parentTable = MTable.get(Env.getCtx(), "AD_Client");
+		MColumn column = new MColumn(parentTable);
+		
+		assertNotNull(column, "Column should not be null");
+		assertEquals(parentTable.getAD_Table_ID(), column.getAD_Table_ID(), "Table ID should match parent");
+		assertEquals(parentTable.getAD_Client_ID(), column.getAD_Client_ID(), "Client ID should match parent");
+		assertEquals(parentTable.getAD_Org_ID(), column.getAD_Org_ID(), "Org ID should match parent");
+		assertEquals(parentTable.getEntityType(), column.getEntityType(), "Entity Type should match parent");
+	}
+
+	/**
+	 * Test virtual column types
+	 */
+	@Test
+	public void testVirtualColumnTypes() {
+		// Get a virtual column for testing
+		MColumn virtualColumn = new MColumn(Env.getCtx(), DictionaryIDs.AD_Column.VIRTUALCOLUMN_UPCEAN.id, getTrxName());
+		assertTrue(virtualColumn.isVirtualColumn(), "Column with ColumnSQL should be virtual");
+		
+		// Test database virtual column
+		virtualColumn.setColumnSQL("(SELECT something FROM somewhere)");
+		assertTrue(virtualColumn.isVirtualDBColumn(), "Column with DB SQL should be virtual DB column");
+		assertFalse(virtualColumn.isVirtualUIColumn(), "DB virtual column should not be UI virtual");
+		
+		// Test UI virtual column
+		virtualColumn.setColumnSQL("@SQL=UI Formula");
+		assertTrue(virtualColumn.isVirtualUIColumn(), "Column with @SQL= prefix should be UI virtual");
+		assertFalse(virtualColumn.isVirtualDBColumn(), "UI virtual column should not be DB virtual");
+		
+		// Test search virtual column
+		virtualColumn.setColumnSQL("@SQLFIND=SearchFormula");
+		assertTrue(virtualColumn.isVirtualSearchColumn(), "Column with @SEARCH= prefix should be search virtual");
+		assertFalse(virtualColumn.isVirtualDBColumn(), "Search virtual column should not be DB virtual");
+	}
+
+	/**
+	 * Test SQL DDL generation
+	 */
+	@Test
+	public void testSQLDDL() {
+		MColumn column = MColumn.get(Env.getCtx(), "AD_Client", "Name");
+		String ddl = column.getSQLDDL();
+		
+		assertNotNull(ddl, "DDL should not be null");
+		assertTrue(ddl.contains("Name"), "DDL should contain column name");
+		assertTrue(ddl.contains("VARCHAR") || ddl.contains("NVARCHAR"), "DDL should contain correct data type");
+		
+		column = MColumn.get(Env.getCtx(), DictionaryIDs.AD_Column.VIRTUALCOLUMN_UPCEAN.id);
+		assertNull(column.getSQLDDL(), "DDL should be null for virtual columns");
+	}
+
+	/**
+	 * Test SQL ADD statement generation
+	 */
+	@Test
+	public void testSQLAdd() {
+		MColumn column = MColumn.get(Env.getCtx(), "AD_Client", "Name");
+		MTable table = MTable.get(Env.getCtx(), "AD_Client");
+		String addSql = column.getSQLAdd(table);
+		
+		assertNotNull(addSql, "ADD SQL should not be null");
+		assertTrue(addSql.contains("ALTER TABLE"), "ADD SQL should be ALTER TABLE statement");
+		assertTrue(addSql.contains("ADD"), "ADD SQL should contain ADD keyword");
+		assertTrue(addSql.contains("Name"), "ADD SQL should contain column name");
+	}
+
+	/**
+	 * Test constraint generation with table name
+	 */
+	@Test
+	public void testGetConstraintWithTableName() {
+		MColumn column = MColumn.get(Env.getCtx(), "AD_Client", "AD_Client_ID");
+		String constraint = column.getConstraint("AD_Client");
+		
+		assertNotNull(constraint, "Constraint should not be null");
+		assertTrue(constraint.contains("PRIMARY KEY"), "Constraint should be primary key");
+		assertTrue(constraint.contains("AD_Client"), "Constraint should contain table name");
+	}
+
+	/**
+	 * Test getting table ID from column ID
+	 */
+	@Test
+	public void testGetTableID() {
+		int columnId = MColumn.getColumn_ID("AD_Client", "AD_Client_ID");
+		int tableId = MColumn.getTable_ID(Env.getCtx(), columnId, getTrxName());
+		
+		assertTrue(tableId > 0, "Table ID should be valid");
+		MTable table = MTable.get(Env.getCtx(), tableId);
+		assertEquals("AD_Client", table.getTableName(), "Table name should match");
+	}
+
+	/**
+	 * Test suggestion selection column detection
+	 */
+	@Test
+	public void testIsSuggestSelectionColumn() {
+		// Test common suggestion columns
+		assertTrue(MColumn.isSuggestSelectionColumn("Name", true), "Name should be suggestion column");
+		assertTrue(MColumn.isSuggestSelectionColumn("Value", true), "Value should be suggestion column");
+		assertTrue(MColumn.isSuggestSelectionColumn("DocumentNo", true), "DocumentNo should be suggestion column");
+		
+		// Test case sensitivity
+		assertTrue(MColumn.isSuggestSelectionColumn("NAME", false), "NAME should match with case insensitive");
+		assertFalse(MColumn.isSuggestSelectionColumn("NAME", true), "NAME should not match with case sensitive");
+	}
+
+	/**
+	 * Test multi-reference table name retrieval
+	 */
+	@Test
+	public void testGetMultiReferenceTableName() {
+		// Find a column with AD_Reference_Value_ID set
+		MColumn column = MColumn.get(Env.getCtx(), DictionaryIDs.AD_Column.MULTISELECTCOLUMN_SCOPELIST.id);
+		String tableName = column.getMultiReferenceTableName();
+		
+		assertNotNull(tableName, "Multi-reference table name should not be null");
+		assertTrue(tableName.length() > 0, "Multi-reference table name should not be empty");
+	}
+
+	/**
+	 * Test setting smart defaults
+	 */
+	@Test
+	public void testSetSmartDefaults() {
+		MTable table = MTable.get(Env.getCtx(), "AD_Client");
+		MColumn column = new MColumn(table);
+		column.setColumnName("Description");
+		column.setSmartDefaults();
+		
+		assertTrue(column.getFieldLength() > 0, "Field length should be set");
+		assertEquals(DisplayType.String, column.getAD_Reference_ID(), "Default reference should be String");
+	}
+
+	/**
+	 * Test advanced column flag
+	 */
+	@Test
+	public void testIsAdvanced() {
+		MColumn column = MColumn.get(Env.getCtx(), "AD_Client", "AD_Client_ID");
+		assertFalse(column.isAdvanced(), "Standard columns should not be advanced by default");
+		
+		// Test a column that is used in an advanced field
+		column = MColumn.get(Env.getCtx(), DictionaryIDs.AD_Column.REPORT_VIEW_ORDERBYCLAUSE.id);
+		assertTrue(column.isAdvanced(), "Column should be advanced when field is advanced");
+	}
+
+	/**
+	 * Test column SQL generation with different conditions
+	 */
+	@Test
+	public void testGetColumnSQL() {
+		MColumn column = new MColumn(Env.getCtx(), 0, getTrxName());
+		
+		// Test null SQL
+		assertNull(column.getColumnSQL(true, true), "Null SQL should return null");
+		assertNull(column.getColumnSQL(false, false), "Null SQL should return null");
+		
+		// Test empty SQL
+		column.setColumnSQL("");
+		assertTrue(Util.isEmpty(column.getColumnSQL(true, true)), "Empty SQL should return null");
+		assertTrue(Util.isEmpty(column.getColumnSQL(true, true)), "Empty SQL should return null");
+		
+		// Test regular SQL (not starting with @SQL= or @SQLFIND=)
+		String regularSQL = "(SELECT something FROM somewhere)";
+		column.setColumnSQL(regularSQL);
+		assertEquals(regularSQL, column.getColumnSQL(true, true), "Regular SQL should return as is");
+		assertEquals(regularSQL, column.getColumnSQL(false, false), "Regular SQL should return as is");
+		
+		// Test UI virtual column (@SQL=)
+		String uiSQL = "@SQL=UI Formula";
+		column.setColumnSQL(uiSQL);
+		assertEquals("NULL", column.getColumnSQL(true, true), "UI SQL with nullForUI=true should return NULL");
+		assertEquals("UI Formula", column.getColumnSQL(false, true), "UI SQL with nullForUI=false should return formula");
+		
+		// Test search virtual column (@SQLFIND=)
+		String searchSQL = "@SQLFIND=Search Formula";
+		column.setColumnSQL(searchSQL);
+		assertEquals("NULL", column.getColumnSQL(true, true), "Search SQL with nullForSearch=true should return NULL");
+		assertEquals("Search Formula", column.getColumnSQL(true, false), "Search SQL with nullForSearch=false should return formula");
+		
+		// Test edge cases
+		column.setColumnSQL("@SQL=");
+		assertEquals("NULL", column.getColumnSQL(true, true), "Empty UI SQL with nullForUI=true should return NULL");
+		assertEquals("", column.getColumnSQL(false, true), "Empty UI SQL with nullForUI=false should return empty string");
+		
+		column.setColumnSQL("@SQLFIND=");
+		assertEquals("NULL", column.getColumnSQL(true, true), "Empty search SQL with nullForSearch=true should return NULL");
+		assertEquals("", column.getColumnSQL(true, false), "Empty search SQL with nullForSearch=false should return empty string");
 	}
 
 }
