@@ -73,4 +73,31 @@ public class MFieldCustomizationTest extends AbstractTestCase {
 		field.deleteEx(true);
 	}
 	
+	@Test
+	void testBeforeSave_ReadOnlyLogicWithUserFieldAlwaysUpdateableYes() {
+	    // Test field with IsAlwaysUpdateable = Yes at field level
+	    MUserDefField field = new MUserDefField(Env.getCtx(), 0, getTrxName());
+	    field.setAD_UserDef_Tab_ID(Dummy_AD_UserDef_Tab_ID);
+	    field.setAD_Field_ID(DictionaryIDs.AD_Field.BPartner_Description.id);
+	    field.setIsAlwaysUpdateable(MUserDefField.ISALWAYSUPDATEABLE_Yes);
+	    field.setReadOnlyLogic("1=1");
+
+	    // Execute - should fail because field is set to always updateable
+	    AdempiereException exception = assertThrows(AdempiereException.class, () -> field.saveEx());
+	    assertTrue(exception.getMessage().contains("Always Updatable cannot have Read Only Logic"));
+	}
+	
+	@Test
+	void testBeforeSave_ReadOnlyLogicWithFieldAlwaysUpdateableYes() {
+	    // Test field with IsAlwaysUpdateable = Yes at field level and N at column level
+	    MUserDefField field = new MUserDefField(Env.getCtx(), 0, getTrxName());
+	    field.setAD_UserDef_Tab_ID(Dummy_AD_UserDef_Tab_ID);
+	    field.setAD_Field_ID(DictionaryIDs.AD_Field.PackageInstallation_PackageVersion.id);
+	    field.setReadOnlyLogic("1=1");
+
+	    // Execute - should fail because field is set to always updateable
+	    AdempiereException exception = assertThrows(AdempiereException.class, () -> field.saveEx());
+	    assertTrue(exception.getMessage().contains("Always Updatable cannot have Read Only Logic"));
+	}
+	
 }

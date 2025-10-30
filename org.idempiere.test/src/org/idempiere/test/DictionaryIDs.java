@@ -779,7 +779,8 @@ public final class DictionaryIDs {
 	
 	public enum AD_Field {
 		BPartner_PaymentRule(9624),
-		BPartner_Description(2133);
+		BPartner_Description(2133),
+		PackageInstallation_PackageVersion(203844);
 		
 		public final int id;
 
