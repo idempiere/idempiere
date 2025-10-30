@@ -211,7 +211,6 @@ public final class ProcessUtil {
 	public static boolean startScriptProcess(Properties ctx, ProcessInfo pi, Trx trx) {
 		String msg = null;
 		boolean success = true;
-		boolean localTrx = false;  // Track if we created the transaction
 		try
 		{
 			String cmd = pi.getClassName();
@@ -243,7 +242,6 @@ public final class ProcessUtil {
 			if (trx == null) {
 				trx = Trx.get(Trx.createTrxName(pi.getTitle()+"_"+pi.getAD_PInstance_ID()), true);
 				trx.setDisplayName(ProcessUtil.class.getName()+"_startScriptProcess");
-				localTrx = true;  // Mark that we created this transaction
 			}
 			engine.put(MRule.ARGUMENTS_PREFIX + "Trx", trx);
 			engine.put(MRule.ARGUMENTS_PREFIX + "TrxName", trx.getTrxName());
@@ -285,7 +283,8 @@ public final class ProcessUtil {
 			}
 			engine.put(MRule.ARGUMENTS_PREFIX + "ProcessInfo", pi);
 
-			msg = engine.eval(rule.getScript()).toString();
+			Object result = engine.eval(rule.getScript());
+			msg = (result != null) ? result.toString() : "";
 			//transaction should rollback if there are error in process
 			if (msg != null && msg.startsWith("@Error@"))
 				success = false;
@@ -301,23 +300,30 @@ public final class ProcessUtil {
 			log.log(Level.SEVERE, pi.getClassName(), e);
 			success = false;
 		}
-		// Only commit/rollback/close if we created the transaction
-		if (localTrx && trx != null) {
-			if (success) {
-				try
+		finally
+		{
+			if (trx != null)
+			{
+				if (success)
 				{
-					trx.commit(true);
-				} catch (Exception e)
-				{
-					log.log(Level.SEVERE, "Commit failed.", e);
-					pi.addSummary("Commit Failed.");
-					pi.setError(true);
-					success = false;
+					try
+					{
+						trx.commit(true);
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, "Commit failed.", e);
+						pi.addSummary("Commit Failed.");
+						pi.setError(true);
+						success = false;
+					}
+					trx.close();
 				}
-				trx.close();
-			} else {
-				trx.rollback();
-				trx.close();
+				else
+				{
+					trx.rollback();
+					trx.close();
+				}
 			}
 		}
 		return success;
