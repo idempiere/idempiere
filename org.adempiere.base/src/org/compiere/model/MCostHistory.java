@@ -233,7 +233,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 			sql.append(" AND c.M_CostElement_ID=? ");
 		sql.append("ORDER BY c.DateAcct ASC, ");
 		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END ASC, ");
-		sql.append("c.M_CostHistory_ID DESC ");
+		sql.append("c.M_CostHistory_ID ASC");
 		sql = new StringBuilder(DB.getDatabase().addPagingSQL(sql.toString(), 1, 1));
 		
 		sql.append(")");
