@@ -170,7 +170,7 @@ public abstract class SvrProcess implements ProcessCall
 				{
 					if (success)
 					{
-						try
+						try 
 						{
 							m_trx.commit(true);
 						} catch (Exception e)
@@ -297,9 +297,8 @@ public abstract class SvrProcess implements ProcessCall
 				
 				@Override
 				public void afterCommit(Trx trx, boolean success) {
-					if (success) {
-						flushBufferLog();  // This also sets listEntryLog = null
-					}
+					if (success)
+						flushBufferLog();
 				}
 				
 				@Override
