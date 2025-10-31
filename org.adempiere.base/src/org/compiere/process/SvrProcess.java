@@ -297,14 +297,20 @@ public abstract class SvrProcess implements ProcessCall
 				
 				@Override
 				public void afterCommit(Trx trx, boolean success) {
-					// Always flush buffer, regardless of success to prevent memory leak
-					flushBufferLog();
+					if (success) {
+						flushBufferLog();  // This also sets listEntryLog = null
+					}
 				}
 				
 				@Override
 				public void afterClose(Trx trx) {
+					// Clear buffer to prevent memory leak - afterClose always called last
+					listEntryLog = null;
 				}
 			});
+		} else {
+			// Clear buffer to prevent memory leak when process failed
+			listEntryLog = null;
 		}
 
 		//	Parse Variables

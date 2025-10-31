@@ -150,10 +150,13 @@ public final class ProcessUtil {
 	 * @return true if process completed successfully
 	 */
 	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx, IProcessUI processMonitor) {
+		if (trx == null) {
+			throw new IllegalArgumentException("Transaction (trx) must not be null");
+		}
+
 		String className = pi.getClassName();
 		if (className == null) {
-			String trxName = trx != null ? trx.getTrxName() : null;
-			MProcess proc = new MProcess(ctx, pi.getAD_Process_ID(), trxName);
+			MProcess proc = new MProcess(ctx, pi.getAD_Process_ID(), trx.getTrxName());
 			if (proc.getJasperReport() != null)
 				className = JASPER_STARTER_CLASS;
 		}
@@ -170,11 +173,11 @@ public final class ProcessUtil {
 		boolean success = false;
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		try
-		{			
+		{
 			Thread.currentThread().setContextClassLoader(process.getClass().getClassLoader());
 			process.setProcessUI(processMonitor);
 			success = process.startProcess(ctx, pi, trx);
-			if (success && trx != null && managedTrx)
+			if (success && managedTrx)
 			{
 				trx.commit(true);
 			}
@@ -188,13 +191,12 @@ public final class ProcessUtil {
 		}
 		finally
 		{
-			if (trx != null && managedTrx)
+			if (managedTrx)
 			{
 				if (!success) {
 					trx.rollback();
 				}
 				trx.close();
-				trx = null;
 			}
 			Thread.currentThread().setContextClassLoader(cl);
 		}

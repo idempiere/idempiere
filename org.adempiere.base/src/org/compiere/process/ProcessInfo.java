@@ -1165,13 +1165,13 @@ public class ProcessInfo implements Serializable
 	/**
 	 * Validates to inform a user running again a process that is already in execution.
 	 * @return true if the same process is already running
+	 * @throws IllegalStateException if the process record is not found for the AD_Process_ID
 	 */
 	public boolean isProcessRunning(MPInstancePara[] params) {
 		MProcess process = MProcess.get(Env.getCtx(), getAD_Process_ID());
 
 		if (process == null) {
-			logger.warning("Process not found: " + getAD_Process_ID());
-			return false;
+			throw new IllegalStateException("Process not found for AD_Process_ID: " + getAD_Process_ID());
 		}
 
 		String multipleExecutions = process.getAllowMultipleExecution();
