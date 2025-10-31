@@ -1636,6 +1636,7 @@ public class Login
 		String currentHashAlgo = MSysConfig.getValue(MSysConfig.USER_PASSWORD_HASH_ALGORITHM, Secure.LEGACY_PASSWORD_HASH_ALGORITHM);
 		if (!currentHashAlgo.equals(user.getPasswordHashAlgorithm()) || !SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM.equals(user.getSaltAlgorithm())) {
 			user.setPasswordHashAlgorithm(currentHashAlgo);
+			user.setSaltAlgorithm(SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM);
 			user.setPassword(app_pwd);
 		}
 	}

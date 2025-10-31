@@ -170,6 +170,12 @@ public interface SecureInterface
 	 * @throws NoSuchProviderException
 	 * @throws InvalidKeySpecException
 	 */
-	public String getPassowrdHash(String password, byte[] salt, String algorithm) throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchProviderException, InvalidKeySpecException;
+	public String getPasswordHash(String password, byte[] salt, String algorithm) throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchProviderException, InvalidKeySpecException;
 	
+	/**
+	 * Check if the given password hash algorithm is supported
+	 * @param algorithm
+	 * @return true if supported, false otherwise
+	 */
+	public boolean isSupportedPaswordHashAlgorithm(String algorithm);
 }	//	SecureInterface

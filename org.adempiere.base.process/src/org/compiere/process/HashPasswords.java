@@ -55,6 +55,15 @@ public class HashPasswords extends SvrProcess
 		if (hash_password)
 			throw new AdempiereException("Passwords already hashed");
 		
+		if (hashAlgorithm == null || hashAlgorithm.trim().isEmpty()) {
+			throw new AdempiereException("PasswordHashAlgorithm parameter is required");
+		}
+		
+		// Validate that the algorithm is supported
+		if (!SecureEngine.isSupportedPaswordHashAlgorithm(hashAlgorithm)) {
+			throw new AdempiereException("Unsupported hash algorithm: " + hashAlgorithm);
+		}
+		
 		String where = " Password IS NOT NULL AND Salt IS NULL ";
 		
 		// update the sysconfig key to Y out of trx and reset the cache

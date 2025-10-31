@@ -52,6 +52,10 @@ import org.bouncycastle.crypto.params.Argon2Parameters;
  */
 public class Secure implements SecureInterface
 {
+	private static final String ARGON2 = "Argon2";
+
+	private static final String PASSWORD_BASED_KEY_DERIVATION_FUNCTION_2 = "PBKDF2";
+
 	public static final String LEGACY_PASSWORD_HASH_ALGORITHM = "SHA-512";
 
 	/**
@@ -441,22 +445,30 @@ public class Secure implements SecureInterface
 		return keyStore;
 	}
 
+	
 	@Override
-	public String getPassowrdHash(String password, byte[] salt, String algorithm)
+	public boolean isSupportedPaswordHashAlgorithm(String algorithm) {
+		return LEGACY_PASSWORD_HASH_ALGORITHM.equalsIgnoreCase(algorithm)
+				|| PASSWORD_BASED_KEY_DERIVATION_FUNCTION_2.equalsIgnoreCase(algorithm)
+				|| ARGON2.equalsIgnoreCase(algorithm);
+	}
+
+	@Override
+	public String getPasswordHash(String password, byte[] salt, String algorithm)
 			throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchProviderException, InvalidKeySpecException {
 		if (LEGACY_PASSWORD_HASH_ALGORITHM.equalsIgnoreCase(algorithm))
 		{
 			//SHA-512 hash with salt * 310000 iterations https://web.archive.org/web/20120507203007/https://www.owasp.org/index.php/Hashing_Java
 			return getSHA512Hash(310000, password, salt);
 		}
-		else if ("PBKDF2".equalsIgnoreCase(algorithm))
+		else if (PASSWORD_BASED_KEY_DERIVATION_FUNCTION_2.equalsIgnoreCase(algorithm))
 		{
 			KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 600000, 128);
 			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 			byte[] hash = factory.generateSecret(spec).getEncoded();
 			return convertToHexString(hash);
 		}
-		else if ("Argon2".equalsIgnoreCase(algorithm))
+		else if (ARGON2.equalsIgnoreCase(algorithm))
 		{
 			int iterations = 2;
 		    int memLimit = 66536;

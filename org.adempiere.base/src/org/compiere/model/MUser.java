@@ -558,6 +558,8 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			super.setPassword(password);
 		} catch (InvalidKeySpecException e) {
 			super.setPassword(password);
+		} finally {
+			being_hashed = false;
 		}
 	}
 	

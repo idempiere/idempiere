@@ -117,8 +117,19 @@ public class SecureEngine
 	{
 		if (s_engine == null)
 			init(System.getProperties());
-		return s_engine.implementation.getPassowrdHash(value, salt, algorithm);
+		return s_engine.implementation.getPasswordHash(value, salt, algorithm);
 	}	//	getHash
+	
+	/**
+	 * Check if the given password hash algorithm is supported
+	 * @param hashAlgorithm
+	 * @return true if supported, false otherwise
+	 */
+	public static boolean isSupportedPaswordHashAlgorithm(String hashAlgorithm) {
+		if (s_engine == null)
+			init(System.getProperties());
+		return s_engine.implementation.isSupportedPaswordHashAlgorithm(hashAlgorithm);
+	}
 	
 	/**
 	 *  Perform MD5 Digest of value.<br/>
@@ -347,6 +358,6 @@ public class SecureEngine
 	/** The real Engine				*/
 	private	SecureInterface		implementation = null;
 	/**	Logger						*/
-	private static CLogger		log	= CLogger.getCLogger (SecureEngine.class.getName());
+	private static CLogger		log	= CLogger.getCLogger (SecureEngine.class.getName());	
 			
 }	//	SecureEngine
