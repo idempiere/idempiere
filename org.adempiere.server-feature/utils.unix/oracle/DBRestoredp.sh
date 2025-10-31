@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # $Id: DBRestore.sh,v 1.8 2005/12/20 07:12:17 jjanke Exp $
 echo	iDempiere Database Restore 	"$Revision": 1.8 $
@@ -46,12 +46,18 @@ fi
 echo -------------------------------------
 echo Re-Create DB user
 echo -------------------------------------
-$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$CREATE_USER_SCRIPT" "$1" "$2"
+if [ "${ADEMPIERE_DB_NAME:0:1}" = "@" ]
+  then
+    DB_CONNECTION="${ADEMPIERE_DB_NAME:1}"
+  else
+    DB_CONNECTION="$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME"
+fi
+$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$DB_CONNECTION" @"$CREATE_USER_SCRIPT" "$1" "$2"
 
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATAPUMP_HOME"/data
+$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATA_ENDPOINT" "$DATAPUMP_HOME"/data
 
 if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
   # Note the user running this script must be member of dba group:  usermod -G dba idempiere
@@ -64,10 +70,10 @@ fi
 echo -------------------------------------
 echo Import ExpDat
 echo -------------------------------------
-$DOCKER_EXEC impdp "$1"/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat.dmp SCHEMAS="$1" TRANSFORM=OID:N
+$DOCKER_EXEC impdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$DATA_ENDPOINT"ExpDat.dmp SCHEMAS="$1" TRANSFORM=OID:N
 
 echo -------------------------------------
 echo Check System
 echo Import may show some warnings. This is OK as long as the following does not show errors
 echo -------------------------------------
-$DOCKER_EXEC sqlplus -S "$1"/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$AFTER_IMPORT_SCRIPT"
+$DOCKER_EXEC sqlplus -S "$1"/"$2"@"$DB_CONNECTION" @"$AFTER_IMPORT_SCRIPT"
