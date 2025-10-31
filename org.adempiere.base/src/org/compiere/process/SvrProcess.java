@@ -178,6 +178,13 @@ public abstract class SvrProcess implements ProcessCall
 							log.log(Level.SEVERE, "Commit failed.", e);
 							m_pi.addSummary("Commit Failed.");
 							m_pi.setError(true);
+							success = false;
+							// Attempt rollback after commit failure
+							try {
+								m_trx.rollback();
+							} catch (Exception re) {
+								log.log(Level.SEVERE, "Rollback after commit failure also failed.", re);
+							}
 						}
 					}
 					else
@@ -296,8 +303,13 @@ public abstract class SvrProcess implements ProcessCall
 				
 				@Override
 				public void afterClose(Trx trx) {
+					// Clear buffer to prevent memory leak - afterClose always called last
+					listEntryLog = null;
 				}
 			});
+		} else {
+			// Clear buffer to prevent memory leak when process failed
+			listEntryLog = null;
 		}
 
 		//	Parse Variables
@@ -432,7 +444,7 @@ public abstract class SvrProcess implements ProcessCall
 	protected boolean unlockObject()
 	{
 		boolean success = true;
-		if (m_locked || m_lockedObject != null)
+		if (m_lockedObject != null)
 		{
 			success = m_lockedObject.unlock(null);
 		}
@@ -555,9 +567,10 @@ public abstract class SvrProcess implements ProcessCall
 				rs = null; pstmt = null;
 			}
 		}
-		if (m_pi.getAD_User_ID() == null)
+		Integer userId = m_pi.getAD_User_ID();
+		if (userId == null)
 			return -1;
-		return m_pi.getAD_User_ID().intValue();
+		return userId.intValue();
 	}   //  getAD_User_ID
 
 	/**
