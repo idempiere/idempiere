@@ -691,7 +691,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			depreciationDTO.useFullLife = new BigDecimal(this.getA_Life_Period());// at the moment, int is ok for Thai, but for other country BigDecima is suitable, need to change AD
 			depreciationDTO.useFullLifeUnit = Calendar.MONTH;
 			depreciationDTO.depreciationId = this.get_ID();
-			depreciationDTO.inServiceDate = this.getA_Asset().getAssetServiceDate();
+			MAsset asset = new MAsset(getCtx(), getA_Asset_ID(), get_TrxName());
+			depreciationDTO.inServiceDate = asset.getAssetServiceDate();
 			depreciationDTO.accountDate = this.getDateAcct();
 			depreciationDTO.startPeriodDepreciation = this.getA_Current_Period();
 			lifePeriods = (int)depreciationMethod.getCountPeriod(depreciationDTO);

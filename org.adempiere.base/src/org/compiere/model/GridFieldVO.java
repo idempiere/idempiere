@@ -191,8 +191,9 @@ public class GridFieldVO implements Serializable, Cloneable
 
 			if (userDef.getAD_FieldGroup_ID() > 0)
 			{
-				vo.FieldGroup = ((X_AD_FieldGroup)userDef.getAD_FieldGroup()).get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
-				vo.FieldGroupType = userDef.getAD_FieldGroup().getFieldGroupType();
+				MFieldGroup fg = new MFieldGroup(userDef.getCtx(), userDef.getAD_FieldGroup_ID(), userDef.get_TrxName());
+				vo.FieldGroup = fg.get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
+				vo.FieldGroupType = fg.getFieldGroupType();
 			}
 
 			if (userDef.getIsAutocomplete() != null)
@@ -441,8 +442,8 @@ public class GridFieldVO implements Serializable, Cloneable
 				if (userDef.getIsMandatory()!= null)
 					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
 				if (userDef.getAD_FieldGroup_ID() > 0) {
-					X_AD_FieldGroup fg = new X_AD_FieldGroup(Env.getCtx(), userDef.getAD_FieldGroup_ID(), null);
-					vo.FieldGroup = fg.get_Translation(X_AD_FieldGroup.COLUMNNAME_Name);
+					MFieldGroup fg = new MFieldGroup(userDef.getCtx(), userDef.getAD_FieldGroup_ID(), userDef.get_TrxName());
+					vo.FieldGroup = fg.get_Translation(MFieldGroup.COLUMNNAME_Name);
 					vo.FieldGroupType = fg.getFieldGroupType();
 				}
 			}

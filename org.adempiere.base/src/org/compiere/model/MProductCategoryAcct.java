@@ -208,7 +208,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) {
 			String newCostingLevel = getCostingLevel();
 			String oldCostingLevel = (String) get_ValueOld(COLUMNNAME_CostingLevel);
-			I_C_AcctSchema schema = getC_AcctSchema();
+			MAcctSchema schema = MAcctSchema.get(getC_AcctSchema_ID());
 			if (newCostingLevel == null)
 				newCostingLevel = schema.getCostingLevel();
 			if (oldCostingLevel == null)

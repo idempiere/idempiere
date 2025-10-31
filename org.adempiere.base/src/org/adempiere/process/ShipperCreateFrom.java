@@ -25,9 +25,9 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MShipperLabels;
 import org.compiere.model.MShipperPackaging;
 import org.compiere.model.MShipperPickupTypes;
+import org.compiere.model.MShipperPickupTypesCfg;
 import org.compiere.model.X_M_ShipperLabelsCfg;
 import org.compiere.model.X_M_ShipperPackagingCfg;
-import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.SvrProcess;
 
 /**
@@ -121,10 +121,10 @@ public class ShipperCreateFrom extends SvrProcess
 		whereClause.append("FROM M_ShipperPickupTypes ");
 		whereClause.append("WHERE M_Shipper_ID=" + m_shipper.getM_Shipper_ID() + ")");
 		
-		int[] xsptIds = X_M_ShipperPickupTypesCfg.getAllIDs(X_M_ShipperPickupTypesCfg.Table_Name, whereClause.toString(), get_TrxName());		
+		int[] xsptIds = MShipperPickupTypesCfg.getAllIDs(MShipperPickupTypesCfg.Table_Name, whereClause.toString(), get_TrxName());		
 		for (int xsptId : xsptIds)
 		{
-			X_M_ShipperPickupTypesCfg xspt = new X_M_ShipperPickupTypesCfg(getCtx(), xsptId, get_TrxName());
+			MShipperPickupTypesCfg xspt = new MShipperPickupTypesCfg(getCtx(), xsptId, get_TrxName());
 			MShipperPickupTypes spt = new MShipperPickupTypes(getCtx(), 0, null);
 			spt.setM_Shipper_ID(m_shipper.getM_Shipper_ID());
 			spt.setM_ShipperPickupTypesCfg_ID(xspt.getM_ShipperPickupTypesCfg_ID());

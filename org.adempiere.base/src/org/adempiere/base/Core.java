@@ -46,6 +46,8 @@ import org.compiere.model.Callout;
 import org.compiere.model.I_AD_PrintHeaderFooter;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MAuthorizationAccount;
+import org.compiere.model.MAuthorizationCredential;
+import org.compiere.model.MAuthorizationProvider;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MSysConfig;
@@ -1031,7 +1033,9 @@ public class Core {
 	 * @return {@link IUploadService}
 	 */
 	public static IUploadService getUploadService(MAuthorizationAccount account) {
-		String provider = account.getAD_AuthorizationCredential().getAD_AuthorizationProvider().getName();
+		MAuthorizationCredential credential = new MAuthorizationCredential(account.getCtx(), account.getAD_AuthorizationCredential_ID(), account.get_TrxName());
+		MAuthorizationProvider authProvider = new MAuthorizationProvider(account.getCtx(), credential.getAD_AuthorizationProvider_ID(), account.get_TrxName());
+		String provider = authProvider.getName();
 		ServiceQuery query = new ServiceQuery();
 		query.put("provider", provider);
 		IServiceHolder<IUploadService> holder = Service.locator().locate(IUploadService.class, query);

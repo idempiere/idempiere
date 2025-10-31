@@ -683,21 +683,23 @@ public class MInOutLine extends X_M_InOutLine
 		// Auto generate ASI Lot
 		I_M_AttributeSet attributeset = null;
 		if (getM_Product_ID() > 0)
-			attributeset = MProduct.get(getCtx(), getM_Product_ID()).getM_AttributeSet();
+			attributeset = MAttributeSet.get(MProduct.get(getCtx(), getM_Product_ID()).getM_AttributeSet_ID());
 		boolean isAutoGenerateLot = false;
 		if (attributeset != null)
 			isAutoGenerateLot = attributeset.isAutoGenerateLot();
 		if (getReversalLine_ID() == 0 && !getParent().isSOTrx() && !getParent().getMovementType().equals(MInOut.MOVEMENTTYPE_VendorReturns) && isAutoGenerateLot
 				&& getM_AttributeSetInstance_ID() == 0)
 		{
-			MAttributeSetInstance asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
+			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+			MAttributeSetInstance asi = MAttributeSetInstance.generateLot(getCtx(), product, get_TrxName());
 			setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 		}
 
 		/* Carlos Ruiz - globalqss
 		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
 		 */
-		if (getParent().getC_DocType().isChargeOrProductMandatory()) {
+		MDocType dt = MDocType.get(getParent().getC_DocType_ID());
+		if (dt.isChargeOrProductMandatory()) {
 			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0) {
 				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 				return false;

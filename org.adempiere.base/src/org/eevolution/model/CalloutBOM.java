@@ -57,7 +57,7 @@ public class CalloutBOM extends CalloutEngine
 			return "";
 		
 		I_PP_Product_BOMLine bomLine = GridTabWrapper.create(mTab, I_PP_Product_BOMLine.class);
-        I_PP_Product_BOM bom = bomLine.getPP_Product_BOM();
+		MPPProductBOM bom = MPPProductBOM.get(bomLine.getPP_Product_BOM_ID());
         if (bom.getM_Product_ID() ==  bomLine.getM_Product_ID())
         {                                                                               
              throw new AdempiereException("@ValidComponent@ - Error Parent not be Component");				

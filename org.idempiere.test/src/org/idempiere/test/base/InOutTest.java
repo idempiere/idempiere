@@ -158,12 +158,12 @@ public class InOutTest extends AbstractTestCase {
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
-						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
-						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> factAccts = query.list();
-				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getC_Currency().getStdPrecision(), false, receiptLine.get_ID()));
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getCurrency().getStdPrecision(), false, receiptLine.get_ID()));
 				assertFactAcctEntries(factAccts, expected);
 			}
 			
@@ -188,12 +188,12 @@ public class InOutTest extends AbstractTestCase {
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
-									.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+									.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
-						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> factAccts = query.list();
-				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getC_Currency().getStdPrecision(), false, receiptLine.get_ID()));
+				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getCurrency().getStdPrecision(), false, receiptLine.get_ID()));
 				assertFactAcctEntries(factAccts, expected);
 			}
 		}		
@@ -263,9 +263,9 @@ public class InOutTest extends AbstractTestCase {
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
-						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
-						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> fas = query.list();
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, false, receiptLine.get_ID()));
@@ -324,9 +324,9 @@ public class InOutTest extends AbstractTestCase {
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(deliveryLine.getMovementQty())
-						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
-						.setScale(as.getC_Currency().getStdPrecision(), RoundingMode.HALF_UP);
+						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, delivery.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
 				List<MFactAcct> fas = query.list();
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, null, 2, true, deliveryLine.get_ID()));
