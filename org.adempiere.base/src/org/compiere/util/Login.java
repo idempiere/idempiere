@@ -1556,6 +1556,7 @@ public class Login
 				user.setFailedLoginCount(0);
 				user.setDateLastLogin(new Timestamp(now));
 				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
+				migrateUserPasswordIfNeeded(user, app_pwd);
 				if (!user.save())
 					log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
 			}
@@ -1623,6 +1624,20 @@ public class Login
 			Env.setContext(Env.getCtx(), Env.IS_SSO_LOGIN, false);
 		
 		return retValue;
+	}
+
+	private void migrateUserPasswordIfNeeded(MUser user, String app_pwd) {
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
+		if (!hash_password || app_pwd == null || app_pwd.isEmpty()) {
+			return;
+		}
+
+		// re-hash password if current hash algo or salt algo is different from the one configured
+		String currentHashAlgo = MSysConfig.getValue(MSysConfig.USER_PASSWORD_HASH_ALGORITHM, Secure.LEGACY_PASSWORD_HASH_ALGORITHM);
+		if (!currentHashAlgo.equals(user.getPasswordHashAlgorithm()) || !SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM.equals(user.getSaltAlgorithm())) {
+			user.setPasswordHashAlgorithm(currentHashAlgo);
+			user.setPassword(app_pwd);
+		}
 	}
 
 	/**

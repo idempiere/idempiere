@@ -18,7 +18,9 @@ package org.compiere.model;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -513,7 +515,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	}	//	cleanValue
 	
 	/**
-	 * Convert Password to SHA-512 hash with salt * 1000 iterations https://www.owasp.org/index.php/Hashing_Java
+	 * Convert password to hashed value if USER_PASSWORD_HASH is true
 	 * @param password -- plain text password
 	 */
 	@Override
@@ -536,15 +538,14 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		being_hashed = true;   // prevents double call from beforeSave
 		
 		// Uses a secure Random not a simple Random
-		SecureRandom random;
 		try {
-			random = SecureRandom.getInstance("SHA1PRNG");
-			// Salt generation 64 bits long
-			byte[] bSalt = new byte[8];
+			SecureRandom random = SecureEngine.getSecureRandom();
+			// Salt generation 128 bits long
+			byte[] bSalt = new byte[16];
 			random.nextBytes(bSalt);
 			// Digest computation
 			String hash;
-			hash = SecureEngine.getSHA512Hash(1000,password,bSalt);
+			hash = SecureEngine.getPasswordHash(getPasswordHashAlgorithm(), password,bSalt);
 
 	        String sSalt = Secure.convertToHexString(bSalt);
 			super.setPassword(hash);
@@ -553,6 +554,10 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			super.setPassword(password);
 		} catch (UnsupportedEncodingException e) {
 			super.setPassword(password);
+		} catch (NoSuchProviderException e) {
+			super.setPassword(password);
+		} catch (InvalidKeySpecException e) {
+			super.setPassword(password);
 		}
 	}
 	
@@ -560,7 +565,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 * check if hashed password matches
 	 */
 	public boolean authenticateHash (String password)  {
-		return SecureEngine.isMatchHash (getPassword(), getSalt(), password);
+		return SecureEngine.isMatchHash (getPasswordHashAlgorithm(), getPassword(), getSalt(), password);
 	}	
 	
 	/**

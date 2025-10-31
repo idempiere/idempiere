@@ -240,6 +240,7 @@ public class SystemIDs
 	public final static int TAB_TAB = 106;
 
 	public final static int SYSCONFIG_USER_HASH_PASSWORD = 200013;
+	public final static int SYSCONFIG_USER_HASH_PASSWORD_ALGORITHM = 200285;
 	public final static int SYSCONFIG_SYSTEM_NATIVE_SEQUENCE = 50016;	
 	
 	public final static int SCHEDULE_10_MINUTES = 200002;

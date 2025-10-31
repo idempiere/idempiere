@@ -18,12 +18,14 @@ package org.compiere.process;
 
 import java.util.List;
 
+import org.adempiere.base.annotation.Parameter;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.SecureEngine;
 
 /**
  *	Hash existing passwords
@@ -32,6 +34,9 @@ import org.compiere.util.CacheMgt;
 @org.adempiere.base.annotation.Process
 public class HashPasswords extends SvrProcess
 {
+	@Parameter(name = "PasswordHashAlgorithm")
+	private String hashAlgorithm = null;
+	
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -56,6 +61,11 @@ public class HashPasswords extends SvrProcess
 		MSysConfig conf = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_USER_HASH_PASSWORD, null);
 		conf.setValue("Y");
 		conf.saveEx();
+		
+		MSysConfig algorithmConfig = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_USER_HASH_PASSWORD_ALGORITHM, null);
+		algorithmConfig.setValue(hashAlgorithm);
+		algorithmConfig.saveEx();
+		
 		CacheMgt.get().reset(MSysConfig.Table_Name);
 
 		int count = 0;
@@ -63,6 +73,8 @@ public class HashPasswords extends SvrProcess
 			List<MUser> users = MTable.get(getCtx(), MUser.Table_ID).createQuery( where, get_TrxName()).list();
 			for ( MUser user : users )
 			{
+				user.setPasswordHashAlgorithm(hashAlgorithm);
+				user.setSaltAlgorithm(SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM);
 				user.setPassword(user.getPassword());
 				count++;
 				user.saveEx();

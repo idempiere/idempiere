@@ -19,6 +19,8 @@ package org.compiere.util;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 
 /**
@@ -156,5 +158,18 @@ public interface SecureInterface
 	 *  @throws UnsupportedEncodingException 
 	 */
 	public String getSHA512Hash (int iterations, String value, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException;
+
+	/**
+	 * Hash the password with the given salt and algorithm
+	 * @param password
+	 * @param salt
+	 * @param algorithm
+	 * @return HexString of hashed password
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchProviderException
+	 * @throws InvalidKeySpecException
+	 */
+	public String getPassowrdHash(String password, byte[] salt, String algorithm) throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchProviderException, InvalidKeySpecException;
 	
 }	//	SecureInterface
