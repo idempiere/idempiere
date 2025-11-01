@@ -145,7 +145,7 @@ public class Scheduler extends AdempiereServer
 			//Create new Session and set #AD_Session_ID to context
 			
 			// Examples : @#Date@ / Forever / @AD_Scheduler_ID@
-			String sessionIdFormat = "@AD_Scheduler_ID@"; // TODO add column on AD_Scheduler
+			String sessionIdFormat = "@AD_Scheduler_ID@/@#Date@"; // TODO add column on AD_Scheduler
 			String parsedSessionId = "";
 			if (!Util.isEmpty(sessionIdFormat)) {
 
@@ -153,15 +153,18 @@ public class Scheduler extends AdempiereServer
 
 				parsedSessionId = Env.parseVariable(sessionIdFormat, new DefaultEvaluatee(), true, false);
 
-				StringBuilder whereClause = new StringBuilder("CreatedBy = ? AND ServerName = ? AND WebSession = ?");
+				StringBuilder whereClause = new StringBuilder("CreatedBy = ? AND AD_Org_ID = ? AND AD_Role_ID = ? AND ServerName = ? AND WebSession = ?");
 				ArrayList<Object> params = new ArrayList<Object>();
 				params.add(getAD_User_ID());
+				params.add(Env.getAD_Org_ID(getCtx()));
+				params.add(Env.getAD_Role_ID(getCtx()));
 				params.add(WebUtil.getServerName());
-				params.add(parsedSessionId);
+				params.add(getWebSessionLabel(parsedSessionId));
 
 				Query query = new Query(Env.getCtx(), MSession.Table_Name, whereClause.toString(), null)
 						.setParameters(params)
-						.setClient_ID();
+						.setClient_ID()
+						.setOrderBy("Updated DESC");
 
 				int oldSessionID = query.firstId();
 				if (oldSessionID > 0)
@@ -171,15 +174,15 @@ public class Scheduler extends AdempiereServer
 			MSession session = MSession.get(Env.getCtx());
 			if(session == null) {
 				session = MSession.create(Env.getCtx());
-				if (!Util.isEmpty(parsedSessionId)) {
-					session.setWebSession(parsedSessionId);
-					session.saveEx();
-				}
+				session.setWebSession(getWebSessionLabel(parsedSessionId)); // TODO increase WebSession column to 255
+				session.saveEx();
 			} else {
 				session = new MSession(Env.getCtx(), session.getAD_Session_ID(), null);
 				
 				if (!Util.isEmpty(parsedSessionId)) {
 					session.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
+					if (session.isProcessed())
+						session.setProcessed(false); // in case session was processed because of a reboot
 					session.saveEx();
 				}
 				
@@ -204,8 +207,10 @@ public class Scheduler extends AdempiereServer
 				if (m_trx != null)
 					m_trx.close();
 				m_trx = null;
-				session.logout(); // TODO only if there is no other schedulers running in parallel ?
-				getCtx().remove(Env.AD_SESSION_ID);
+				if (Util.isEmpty(parsedSessionId)) {
+					session.logout(); // TODO only if there is no other schedulers running in parallel ?
+					getCtx().remove(Env.AD_SESSION_ID);	
+				}
 			}
 		} else {
 			log.log(Level.WARNING, errorMessage);
@@ -223,6 +228,13 @@ public class Scheduler extends AdempiereServer
 		pi = null;
 		pLog.saveEx();
 	}	//	doWork
+
+	private String getWebSessionLabel(String parsedSessionId) {
+		if (Util.isEmpty(parsedSessionId))
+			return "Scheduler-[" + AD_Scheduler_ID + "]";
+		else
+			return "Scheduler-[" + AD_Scheduler_ID + "]-" + parsedSessionId;
+	}
 
 	/**
 	 * 	Run Process or Report
