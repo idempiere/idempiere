@@ -179,12 +179,6 @@ public abstract class SvrProcess implements ProcessCall
 							m_pi.addSummary("Commit Failed.");
 							m_pi.setError(true);
 							success = false;
-							// Attempt rollback after commit failure
-							try {
-								m_trx.rollback();
-							} catch (Exception re) {
-								log.log(Level.SEVERE, "Rollback after commit failure also failed.", re);
-							}
 						}
 					}
 					else

@@ -1190,8 +1190,7 @@ public class ProcessInfo implements Serializable
 			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters.equals(multipleExecutions)) {
 			Integer userId = getAD_User_ID();
 			if (userId == null) {
-				logger.warning("User ID is null for process instance: " + getAD_PInstance_ID());
-				return false;
+				throw new IllegalStateException("User ID cannot be null when checking user-based concurrency restrictions for process instance: " + getAD_PInstance_ID());
 			}
 			whereClause.append(" AND AD_User_ID = ? ");
 			queryParams.add(userId);
