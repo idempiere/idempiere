@@ -86,7 +86,7 @@ public class CalloutShipper extends CalloutEngine
 		if (M_ShipperPickupTypesCfg_ID == null || M_ShipperPickupTypesCfg_ID.intValue() == 0)
 			return "";
 		
-		X_M_ShipperPickupTypesCfg spt = new X_M_ShipperPickupTypesCfg(ctx, M_ShipperPickupTypesCfg_ID, null);
+		MShipperPickupTypesCfg spt = new MShipperPickupTypesCfg(ctx, M_ShipperPickupTypesCfg_ID, null);
 		mTab.setValue(MShipperLabels.COLUMNNAME_Name, spt.getName());
 		mTab.setValue(MShipperLabels.COLUMNNAME_IsDefault, spt.isDefault());
 		

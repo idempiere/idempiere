@@ -31,7 +31,6 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
 import org.compiere.model.ICostInfo;
-import org.compiere.model.I_M_InOutLine;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
@@ -41,10 +40,13 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLandedCostAllocation;
+import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLandedCostAllocation;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
@@ -1082,15 +1084,17 @@ public class Doc_Invoice extends Doc
 					Timestamp oDateAcct = getDateAcct();
 					if (lca.getM_InOutLine_ID() > 0)
 					{
-						I_M_InOutLine iol = lca.getM_InOutLine();
+						MInOutLine iol = new MInOutLine(getCtx(),  lca.getM_InOutLine_ID(), getTrxName());
 						if (iol.getC_OrderLine_ID() > 0)
 						{
-							oCurrencyId =  iol.getC_OrderLine().getC_Currency_ID();
-							oDateAcct = iol.getC_OrderLine().getC_Order().getDateAcct();
+							MOrderLine orderLine = new MOrderLine(getCtx(), iol.getC_OrderLine_ID(), getTrxName());
+							oCurrencyId =  orderLine.getC_Currency_ID();
+							oDateAcct = orderLine.getParent().getDateAcct();
 							MOrderLandedCostAllocation[] allocations = MOrderLandedCostAllocation.getOfOrderLine(iol.getC_OrderLine_ID(), getTrxName());
 							for(MOrderLandedCostAllocation allocation : allocations)
 							{
-								if (allocation.getC_OrderLandedCost().getM_CostElement_ID() != lca.getM_CostElement_ID())
+								MOrderLandedCost lcost = new MOrderLandedCost(getCtx(), allocation.getC_OrderLandedCost_ID(), getTrxName());
+								if (lcost.getM_CostElement_ID() != lca.getM_CostElement_ID())
 									continue;
 								
 								BigDecimal amt = allocation.getAmt();

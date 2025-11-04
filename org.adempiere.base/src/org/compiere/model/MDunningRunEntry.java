@@ -279,9 +279,9 @@ public class MDunningRunEntry extends X_C_DunningRunEntry
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		I_C_DunningLevel level = getC_DunningLevel();
 		if (isProcessed ())
 		{
+			MDunningLevel level = new MDunningLevel (getCtx(), getC_DunningLevel_ID(), get_TrxName());
 			// Propagate Processed to Lines
 			MDunningRunLine[] theseLines = getLines();
 			for (int i=0;i<theseLines.length;i++) 

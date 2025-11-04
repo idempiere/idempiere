@@ -189,7 +189,7 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 		// Disallow change of reference for encrypted and obscure field 
 		if (is_ValueChanged("AD_Reference_ID")) {
 			MField field = new MField(getCtx(), getAD_Field_ID(), get_TrxName());
-			MColumn column = (MColumn) field.getAD_Column();
+			MColumn column = MColumn.get(field.getAD_Column_ID());
 			if (column.isEncrypted() || field.isEncrypted() || field.getObscureType() != null) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "NotChangeReference"));
 				return false;
@@ -218,7 +218,25 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 				LogicEvaluator.validate(getMandatoryLogic());
 			}
 		}
-				
+		
+		if (!Util.isEmpty(getReadOnlyLogic(), true)) {
+			MField field = MField.get(getCtx(), getAD_Field_ID());
+			MColumn column = MColumn.get(getCtx(), field.getAD_Column_ID());
+		    
+			boolean isAlwaysUpdateableAtColumn = column.isAlwaysUpdateable();
+		    boolean isAlwaysUpdateableAtField = ISALWAYSUPDATEABLE_Yes.equals(field.getIsAlwaysUpdateable());
+		    boolean isAlwaysUpdateableAtUserDefField = ISALWAYSUPDATEABLE_Yes.equals(getIsAlwaysUpdateable());
+		    boolean notExplicitlyDisabledAtField = !ISALWAYSUPDATEABLE_No.equals(field.getIsAlwaysUpdateable());
+		    boolean notExplicitlyDisabledAtUserDefField = !ISALWAYSUPDATEABLE_No.equals(getIsAlwaysUpdateable());
+		   
+		    if ((isAlwaysUpdateableAtColumn && notExplicitlyDisabledAtField && notExplicitlyDisabledAtUserDefField)
+		            || (isAlwaysUpdateableAtField && notExplicitlyDisabledAtUserDefField)
+		            || isAlwaysUpdateableAtUserDefField) {
+		        log.saveError("Error", Msg.getMsg(getCtx(), "UpdateReadOnlyConflict"));
+		        return false;
+		    }
+		}
+
 		return true;
 	}
 

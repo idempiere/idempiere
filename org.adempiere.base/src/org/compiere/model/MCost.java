@@ -1671,13 +1671,14 @@ public class MCost extends X_M_Cost implements ICostInfo
 	public void add (BigDecimal amt, BigDecimal qty)
 	{
 		if (!isSkipAverageCostingQtyCheck) {
-			MCostElement costElement = (MCostElement) getM_CostElement();
+			MCostElement costElement = new MCostElement(getCtx(), getM_CostElement_ID(), get_TrxName());
 			if (costElement.isAveragePO() || costElement.isAverageInvoice()) 
 			{
 				if (getCurrentQty().add(qty).signum() < 0)
 				{
+					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-							+ ", CostElement="+costElement.getName()+", Schema="+getC_AcctSchema().getName());
+							+ ", CostElement="+costElement.getName()+", Schema="+as.getName());
 				}
 			}
 		}
@@ -1707,15 +1708,17 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//can't do cost adjustment if there's no stock left
 		if (qty.signum() == 0 && getCurrentQty().signum() <= 0)
 		{
+			MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 			throw new AverageCostingZeroQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+					+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getName());
 		}
 		
 		if (!isSkipAverageCostingQtyCheck) {
 			if (getCurrentQty().add(qty).signum() < 0)
 			{
+				MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-						+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+						+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getName());
 			}
 		}
 				
@@ -1834,7 +1837,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	protected boolean beforeSave (boolean newRecord)
 	{
 		//The method getCostElement() not should be cached because is a transaction
-		MCostElement ce = (MCostElement)getM_CostElement();
+		MCostElement ce = new MCostElement(getCtx(), getM_CostElement_ID(), get_TrxName());
 		//	Check if data entry makes sense
 		if (m_manual)
 		{
@@ -1898,8 +1901,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				if (getCurrentQty().signum() < 0)
 				{
+					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
-							+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+							+", CostElement="+ce.getName()+", Schema="+as.getName());
 				}
 			}
 		}
@@ -1914,13 +1918,14 @@ public class MCost extends X_M_Cost implements ICostInfo
 	@Override
 	public void setCurrentQty(BigDecimal CurrentQty) {
 		if (!isSkipAverageCostingQtyCheck) {
-			MCostElement ce = (MCostElement)getM_CostElement();
+			MCostElement ce = new MCostElement(getCtx(), getM_CostElement_ID(), get_TrxName());
 			if (ce.isAveragePO() || ce.isAverageInvoice()) 
 			{
 				if (CurrentQty.signum() < 0)
 				{
-					throw new AverageCostingNegativeQtyException("Product="+getM_Product().getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
-							+", CostElement="+ce.getName()+", Schema="+getC_AcctSchema().getName());
+					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+					throw new AverageCostingNegativeQtyException("Product="+MProduct.get(getM_Product_ID()).getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
+							+", CostElement="+ce.getName()+", Schema="+as.getName());
 				}
 			}
 		}

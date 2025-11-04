@@ -85,7 +85,6 @@
         <setEntry value="org.apache.servicemix.bundles.xerces@default:default"/>
         <setEntry value="org.apache.xml.resolver@default:default"/>
         <setEntry value="org.apache.xml.serializer@default:default"/>
-        <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
         <setEntry value="org.eclipse.core.contenttype@default:default"/>
         <setEntry value="org.eclipse.core.jobs@default:default"/>
@@ -133,7 +132,7 @@
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.postgresql.jdbc@default:default"/>
-        <setEntry value="slf4j.api@3:true"/>
+        <setEntry value="slf4j.api*2.0.17@3:true"/>
         <setEntry value="slf4j.jdk14@3:true"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>

@@ -155,7 +155,10 @@ public class MAssetType extends X_A_Asset_Type implements ImmutablePOSupport
 	 */
 	public static boolean isFixedAsset(MAsset asset)
 	{
-		return asset != null && A_ASSET_TYPE_MFX.equals(asset.getA_Asset_Type().getValue());
+		if (asset == null)
+			return false;
+		MAssetType at = MAssetType.get(Env.getCtx(), asset.getA_Asset_Type_ID());
+		return at != null && A_ASSET_TYPE_MFX.equals(at.getValue());
 	}
 	
 	/**

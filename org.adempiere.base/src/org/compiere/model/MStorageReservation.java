@@ -269,7 +269,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 
 		/* Do NOT use FIFO ASI for reservation */
 		MProduct prd = MProduct.get(ctx, M_Product_ID);
-		if (prd.getM_AttributeSet_ID() == 0 || ! prd.getM_AttributeSet().isInstanceAttribute()) {
+		if (prd.getM_AttributeSet_ID() == 0 || ! MAttributeSet.get(prd.getM_AttributeSet_ID()).isInstanceAttribute()) {
 			// Product doesn't manage attribute set, always reserved with 0
 			M_AttributeSetInstance_ID = 0;
 		}

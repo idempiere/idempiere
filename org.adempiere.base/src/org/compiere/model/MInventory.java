@@ -798,7 +798,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				if(qtyDiff.compareTo(Env.ZERO)>0)
 				{
 					//AttributeSetInstance enable
-					I_M_AttributeSet as = line.getM_Product().getM_AttributeSet();
+					I_M_AttributeSet as = line.getProduct().getAttributeSet();
 					if (as != null && as.isInstanceAttribute())
 					{
 						//add quantity to last attributesetinstance

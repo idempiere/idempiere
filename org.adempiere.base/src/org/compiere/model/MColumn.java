@@ -129,7 +129,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public static MColumn get (Properties ctx, String tableName, String columnName)
 	{
 		MTable table = MTable.get(ctx, tableName);
-		return  table.getColumn(columnName);
+		return  table != null ? table.getColumn(columnName) : null;
 	}	//	get
 
 	/**
@@ -143,7 +143,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public static MColumn get (Properties ctx, String tableName, String columnName, String trxName)
 	{
 		MTable table = MTable.get(ctx, tableName, trxName);
-		return table.getColumn(columnName);
+		return table != null ? table.getColumn(columnName) : null;
 	}	//	get
 
 	/**
