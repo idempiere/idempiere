@@ -7346,7 +7346,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 				} else
 					cost.load(getTrxName());
 				assertEquals(new BigDecimal("35").setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
-				assertEquals(new BigDecimal(5*(i+1)).setScale(2, RoundingMode.HALF_UP), cost.getCumulatedQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				assertEquals(new BigDecimal("5").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				assertEquals(new BigDecimal(5*(i+1)).setScale(2, RoundingMode.HALF_UP), cost.getCumulatedQty().setScale(2, RoundingMode.HALF_UP), "Unexpected cumulated quantity");
 				validateProductCostQty(ass, product);
 				
 				if (i >= 8)
@@ -7368,7 +7369,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 				
 				cost.load(getTrxName());
 				assertEquals(new BigDecimal("35").setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
-				assertEquals(new BigDecimal(5*(i+1)).setScale(2, RoundingMode.HALF_UP), cost.getCumulatedQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				assertEquals(new BigDecimal(5*(i+1)).setScale(2, RoundingMode.HALF_UP), cost.getCumulatedQty().setScale(2, RoundingMode.HALF_UP), "Unexpected cumulated quantity");
 				validateProductCostQty(ass, product);
 			}
 			
@@ -7383,6 +7385,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 					}
 				}
 				cost.load(getTrxName());
+				assertEquals(new BigDecimal("35").setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+				assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				assertEquals(new BigDecimal("50").setScale(2, RoundingMode.HALF_UP), cost.getCumulatedQty().setScale(2, RoundingMode.HALF_UP), "Unexpected cumulated quantity");
 				validateProductCostQty(ass, product);
 			}
 		} finally {
@@ -7406,7 +7411,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			backDateDays = configureAcctSchema(ass);
-			MProduct product = createProduct("testMRWithMultiPurchaseInvoice2", new BigDecimal(40.5));
+			MProduct product = createProduct("testPurchaseInvoiceAfterInternalUseInventory", new BigDecimal(40.5));
 			mockProductGet(productMock, product);
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -7455,7 +7460,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			backDateDays = configureAcctSchema(ass);
-			MProduct product = createProduct("testMRWithMultiPurchaseInvoice2", new BigDecimal(40.5));
+			MProduct product = createProduct("testPurchaseInvoiceAfterShipment", new BigDecimal(40.5));
 			mockProductGet(productMock, product);
 
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
