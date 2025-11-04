@@ -23,15 +23,21 @@ import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.sql.Timestamp;
 import java.util.HexFormat;
 import java.util.logging.Level;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IKeyStore;
+import org.bouncycastle.crypto.generators.Argon2BytesGenerator;
+import org.bouncycastle.crypto.params.Argon2Parameters;
 
 /**
  * Default implementation of {@link SecureInterface} for encryption and decryption.
@@ -46,6 +52,12 @@ import org.adempiere.base.IKeyStore;
  */
 public class Secure implements SecureInterface
 {
+	private static final String ARGON2 = "Argon2";
+
+	private static final String PASSWORD_BASED_KEY_DERIVATION_FUNCTION_2 = "PBKDF2";
+
+	public static final String LEGACY_PASSWORD_HASH_ALGORITHM = "SHA-512";
+
 	/**
 	 *	Hash checksum number
 	 *  @param key key
@@ -396,7 +408,7 @@ public class Secure implements SecureInterface
 	 */
 	public String getSHA512Hash (int iterations, String value, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException
 	{
-		MessageDigest digest = MessageDigest.getInstance("SHA-512");
+		MessageDigest digest = MessageDigest.getInstance(LEGACY_PASSWORD_HASH_ALGORITHM);
 		digest.reset();
 		digest.update(salt);
 		byte[] input = digest.digest(value.getBytes("UTF-8"));
@@ -432,4 +444,60 @@ public class Secure implements SecureInterface
 		
 		return keyStore;
 	}
+
+	
+	@Override
+	public boolean isSupportedPaswordHashAlgorithm(String algorithm) {
+		return LEGACY_PASSWORD_HASH_ALGORITHM.equalsIgnoreCase(algorithm)
+				|| PASSWORD_BASED_KEY_DERIVATION_FUNCTION_2.equalsIgnoreCase(algorithm)
+				|| ARGON2.equalsIgnoreCase(algorithm);
+	}
+
+	@Override
+	public String getPasswordHash(String password, byte[] salt, String algorithm)
+			throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchProviderException, InvalidKeySpecException {
+		if (algorithm == null)
+		{
+			// SHA-512 hash with salt * 1000 iterations - backward compatibility, legacy default
+			return getSHA512Hash(1000, password, salt);
+		}
+		else if (LEGACY_PASSWORD_HASH_ALGORITHM.equalsIgnoreCase(algorithm))
+		{
+			//SHA-512 hash with salt * 310000 iterations https://web.archive.org/web/20120507203007/https://www.owasp.org/index.php/Hashing_Java
+			return getSHA512Hash(310000, password, salt);
+		}
+		else if (PASSWORD_BASED_KEY_DERIVATION_FUNCTION_2.equalsIgnoreCase(algorithm))
+		{
+			KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 600000, 128);
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+			byte[] hash = factory.generateSecret(spec).getEncoded();
+			return convertToHexString(hash);
+		}
+		else if (ARGON2.equalsIgnoreCase(algorithm))
+		{
+			int iterations = 2;
+		    int memLimit = 66536;
+		    int hashLength = 32;
+		    int parallelism = 1;
+		        
+		    Argon2Parameters.Builder builder = new Argon2Parameters.Builder(Argon2Parameters.ARGON2_id)
+		      .withVersion(Argon2Parameters.ARGON2_VERSION_13)
+		      .withIterations(iterations)
+		      .withMemoryAsKB(memLimit)
+		      .withParallelism(parallelism)
+		      .withSalt(salt);
+		        
+		    Argon2BytesGenerator generate = new Argon2BytesGenerator();
+		    generate.init(builder.build());
+		    byte[] hash = new byte[hashLength];
+		    generate.generateBytes(password.getBytes(StandardCharsets.UTF_8), hash, 0, hash.length);
+		    return convertToHexString(hash);		    		        
+		}
+		else
+		{
+			throw new NoSuchAlgorithmException("Hash algorithm not supported: " + algorithm);
+		}
+	}
+
+	
 }   //  Secure
