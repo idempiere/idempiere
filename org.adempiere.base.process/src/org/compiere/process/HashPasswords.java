@@ -86,7 +86,12 @@ public class HashPasswords extends SvrProcess
 				user.setSaltAlgorithm(SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM);
 				user.setPassword(user.getPassword());
 				count++;
-				user.saveEx();
+				user.set_Attribute(MUser.SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED, "Y");
+				try {
+					user.saveEx();
+				} finally {
+					user.set_Attribute(MUser.SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED, null);
+				}
 			}
 		} catch (Exception e) {
 			// reset to N on exception

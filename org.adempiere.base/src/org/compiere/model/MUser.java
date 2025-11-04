@@ -61,9 +61,11 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MUser extends X_AD_User implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 1351277092193923708L;
+	private static final long serialVersionUID = 9139076628293770170L;
+
+	public static final String SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED = "SavingMigrateUserPasswordIfNeeded";
 
 	/**
 	 * Get active Users of BPartner
@@ -440,8 +442,6 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	private Boolean				m_isAdministrator = null;
 	/** User Access Rights				*/
 	private MUserBPAccess[]	m_bpAccess = null;
-	/** Password Hashed **/
-	private boolean being_hashed = false;
 			
 	/**
 	 * 	Get Value
@@ -531,12 +531,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			super.setPassword(password);
 			return;
 		}
-		
-		if ( being_hashed  )
-			return;
-		
-		being_hashed = true;   // prevents double call from beforeSave
-		
+
 		// Uses a secure Random not a simple Random
 		try {
 			SecureRandom random = SecureEngine.getSecureRandom();
@@ -545,6 +540,8 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			random.nextBytes(bSalt);
 			// Digest computation
 			String hash;
+			setPasswordHashAlgorithm(MSysConfig.getValue(MSysConfig.USER_PASSWORD_HASH_ALGORITHM));
+			setSaltAlgorithm(SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM);
 			hash = SecureEngine.getPasswordHash(getPasswordHashAlgorithm(), password,bSalt);
 
 	        String sSalt = Secure.convertToHexString(bSalt);
@@ -558,8 +555,6 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			super.setPassword(password);
 		} catch (InvalidKeySpecException e) {
 			super.setPassword(password);
-		} finally {
-			being_hashed = false;
 		}
 	}
 	
@@ -1024,7 +1019,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		}
 
 		boolean hasPassword = ! Util.isEmpty(getPassword());
-		if (hasPassword && (newRecord || is_ValueChanged("Password"))) {
+		if (   hasPassword
+			&& ! "Y".equals(get_Attribute(SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED))
+			&& (newRecord || is_ValueChanged("Password"))) {
 			// Validate password policies / IDEMPIERE-221
 			if (! (get_ValueOld("Salt") == null && get_Value("Salt") != null)) { // not being hashed
 				MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
@@ -1039,6 +1036,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		if (   hasPassword
 			&& is_ValueChanged("Password")
+			&& ! "Y".equals(get_Attribute(SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED))
 			&& (!newRecord || (hash_password && getSalt() == null))) {
 			// Hash password - IDEMPIERE-347
 			if (hash_password)

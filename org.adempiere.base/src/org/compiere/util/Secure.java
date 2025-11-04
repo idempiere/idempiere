@@ -456,7 +456,12 @@ public class Secure implements SecureInterface
 	@Override
 	public String getPasswordHash(String password, byte[] salt, String algorithm)
 			throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchProviderException, InvalidKeySpecException {
-		if (LEGACY_PASSWORD_HASH_ALGORITHM.equalsIgnoreCase(algorithm))
+		if (algorithm == null)
+		{
+			// SHA-512 hash with salt * 1000 iterations - backward compatibility, legacy default
+			return getSHA512Hash(1000, password, salt);
+		}
+		else if (LEGACY_PASSWORD_HASH_ALGORITHM.equalsIgnoreCase(algorithm))
 		{
 			//SHA-512 hash with salt * 310000 iterations https://web.archive.org/web/20120507203007/https://www.owasp.org/index.php/Hashing_Java
 			return getSHA512Hash(310000, password, salt);

@@ -41,7 +41,7 @@ public class SecureEngine
 {
 	public static final String DEFAULT_SECURE_RANDOM_ALGORITHM = "DRBG";
 	/**
-	 * 	Initialize SecureEngine with ADEPIERE_SECURE class
+	 * 	Initialize SecureEngine with ADEMPIERE_SECURE class
 	 *	@param ctx ignore
 	 */
 	public static void init (Properties ctx)
@@ -319,18 +319,11 @@ public class SecureEngine
 			hashedText = "0000000000000000";
 		if ( hexSalt == null )
 			hexSalt = "0000000000000000";
-		if (algorithm == null )
-			algorithm = Secure.LEGACY_PASSWORD_HASH_ALGORITHM;
 
 		try {
-			valid= SecureEngine.getPasswordHash(algorithm, plainText, Secure.convertHexString(hexSalt)).equals(hashedText);
-		} catch (NoSuchAlgorithmException ignored) {
-			log.log(Level.WARNING, "Password hashing not supported by JVM");
-		} catch (UnsupportedEncodingException ignored) {
-			log.log(Level.WARNING, "Password hashing not supported by JVM");
-		} catch (NoSuchProviderException e) {
-			log.log(Level.WARNING, "Password hashing not supported by JVM");
-		} catch (InvalidKeySpecException e) {
+			String calculatedHash = SecureEngine.getPasswordHash(algorithm, plainText, Secure.convertHexString(hexSalt));
+			valid= calculatedHash.equals(hashedText);
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException | NoSuchProviderException | InvalidKeySpecException ignored) {
 			log.log(Level.WARNING, "Password hashing not supported by JVM");
 		}
 				

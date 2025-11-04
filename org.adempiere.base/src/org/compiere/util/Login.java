@@ -1557,8 +1557,13 @@ public class Login
 				user.setDateLastLogin(new Timestamp(now));
 				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
 				migrateUserPasswordIfNeeded(user, app_pwd);
-				if (!user.save())
-					log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
+				user.set_Attribute(MUser.SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED, "Y");
+				try {
+					if (!user.save())
+						log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
+				} finally {
+					user.set_Attribute(MUser.SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED, null);
+				}
 			}
 		}
 		else if (validButLocked)
