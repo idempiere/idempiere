@@ -1564,6 +1564,10 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (history != null && MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
 			cost.setCurrentQty(history.getCurrentQty());
 			cost.setCumulatedQty(history.getCumulatedQty());
+			if (costDetail != null && history.getCurrentCostPrice().compareTo(Env.ZERO) != 0)
+				cost.setCurrentCostPrice(history.getCurrentCostPrice());
+			if (costDetail != null && history.getCumulatedAmt().compareTo(Env.ZERO) != 0)
+				cost.setCumulatedAmt(history.getCumulatedAmt());
 		}
 		return cost;
 	}	//	get

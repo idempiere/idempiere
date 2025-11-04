@@ -40,9 +40,9 @@ import org.compiere.util.Util;
 public class MInventoryLine extends X_M_InventoryLine
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3973418005721380194L;
+	private static final long serialVersionUID = 5791199734970832880L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -423,9 +423,8 @@ public class MInventoryLine extends X_M_InventoryLine
 			
 			// Set current cost price
 			String costingMethod = getParent().getCostingMethod();
-			int AD_Org_ID = getAD_Org_ID();
-			ICostInfo cost = product.getCostInfo(as, AD_Org_ID, M_ASI_ID, costingMethod, getParent().getMovementDate());					
-			if (cost == null) {
+			BigDecimal currentCostPrice = getCurrentCostPriceForCostAdjustment();
+			if (currentCostPrice == null) {
 				// Error if no costing record (except standard costing)
 				if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
 					log.saveError("NoCostingRecord", "");
@@ -433,7 +432,7 @@ public class MInventoryLine extends X_M_InventoryLine
 				}
 			} else {
 				if (is_new() || is_ValueChanged(COLUMNNAME_M_Product_ID) || is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID))
-					setCurrentCostPrice(cost.getCurrentCostPrice());
+					setCurrentCostPrice(currentCostPrice);
 			}
 			setM_Locator_ID(0);
 		} else {
@@ -482,4 +481,52 @@ public class MInventoryLine extends X_M_InventoryLine
 		return getMovementQty().signum() < 0;
 	}
 	
+	public BigDecimal getCurrentCostPriceForCostAdjustment() {
+		MInventory inventory = getParent();
+		MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
+		MAcctSchema as = client.getAcctSchema();
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(inventory.getCtx(), client.get_ID());
+		if (as.getC_Currency_ID() != inventory.getC_Currency_ID()) {
+			for (MAcctSchema a : ass) {
+				if (a.getC_Currency_ID() == inventory.getC_Currency_ID()) 
+					as = a ; 
+			}
+		}
+		int AD_Org_ID = getAD_Org_ID();
+		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+		{
+			AD_Org_ID = 0;
+			M_AttributeSetInstance_ID = 0;
+		}
+		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+			M_AttributeSetInstance_ID = 0;
+		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+			AD_Org_ID = 0;
+		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), inventory.getCostingMethod(), AD_Org_ID);
+		
+		MCostHistory history = null;
+		int M_InventoryLine_ID = getM_InventoryLine_ID();
+		if (getReversalLine_ID() > 0 && get_ID() > getReversalLine_ID())
+			M_InventoryLine_ID = getReversalLine_ID();
+		MCostDetail cd = MCostDetail.getInventory(as, getM_Product_ID(), M_AttributeSetInstance_ID, 
+				M_InventoryLine_ID, 0, get_TrxName());
+		if (cd != null)
+ 			history = MCostHistory.get(getCtx(), AD_Org_ID, 
+ 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(), 
+ 					M_AttributeSetInstance_ID, cd, get_TrxName());
+		if (history == null)
+			history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+					M_AttributeSetInstance_ID, inventory.getMovementDate(), get_TrxName());
+		if (history != null)
+			return history.getCurrentCostPrice();
+		
+		MCost cost = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), 
+				M_AttributeSetInstance_ID, get_TrxName());
+		if (cost != null)
+			return cost.getCurrentCostPrice();
+		return null;
+	}
 }	//	MInventoryLine
