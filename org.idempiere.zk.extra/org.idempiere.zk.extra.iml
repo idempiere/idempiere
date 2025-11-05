@@ -80,7 +80,7 @@
     <orderEntry type="library" name="Partial: com.sun.xml.stream.buffer.streambuffer-1.5.10" level="project" />
     <orderEntry type="library" name="Partial: com.sun.xml.ws.jaxws-rt-2.3.5" level="project" />
     <orderEntry type="library" name="Partial: com.sun.xml.ws.policy-2.7.10" level="project" />
-    <orderEntry type="library" name="Partial: com.zaxxer.HikariCP-5.1.0" level="project" />
+    <orderEntry type="library" name="Partial: com.zaxxer.HikariCP-7.0.2" level="project" />
     <orderEntry type="library" name="Partial: groovy-3.0.8" level="project" />
     <orderEntry type="library" name="Partial: groovy-console-3.0.8" level="project" />
     <orderEntry type="library" name="Partial: groovy-datetime-3.0.8" level="project" />
@@ -377,7 +377,7 @@
     <orderEntry type="library" name="Partial: org.osgi.util.tracker-1.5.4.202109301733" level="project" />
     <orderEntry type="library" name="Partial: org.osgi.util.xml-1.0.2.202109301733" level="project" />
     <orderEntry type="library" name="Partial: org.passay-1.6.1" level="project" />
-    <orderEntry type="library" name="Partial: org.postgresql.jdbc-42.7.3" level="project" />
+    <orderEntry type="library" name="Partial: org.postgresql.jdbc-42.7.8" level="project" />
     <orderEntry type="library" name="Partial: org.sat4j.core-2.3.6.v20201214" level="project" />
     <orderEntry type="library" name="Partial: org.sat4j.pb-2.3.6.v20201214" level="project" />
     <orderEntry type="library" name="Partial: org.tukaani.xz-1.9.0" level="project" />
@@ -394,7 +394,7 @@
     <orderEntry type="library" name="Partial: wrapped.com.google.http-client.google-http-client-gson-1.39.2.sp1" level="project" />
     <orderEntry type="library" name="Partial: wrapped.com.google.j2objc.j2objc-annotations-1.3.0" level="project" />
     <orderEntry type="library" name="Partial: wrapped.com.google.zxing.javase-3.4.1" level="project" />
-    <orderEntry type="library" name="Partial: wrapped.com.oracle.database.jdbc.ojdbc10-19.21.0.0" level="project" />
+    <orderEntry type="library" name="Partial: wrapped.com.oracle.database.jdbc.ojdbc17-23.26.0.0" level="project" />
     <orderEntry type="library" name="Partial: wrapped.com.sun.net.httpserver.http-20070405.0.0" level="project" />
     <orderEntry type="library" name="Partial: wrapped.com.sun.org.apache.xml.internal.resolver-20050927.0.0" level="project" />
     <orderEntry type="library" name="Partial: wrapped.com.zaxxer.SparseBitSet-1.2.0" level="project" />

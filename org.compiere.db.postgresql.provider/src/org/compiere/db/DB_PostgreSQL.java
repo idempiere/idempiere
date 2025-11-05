@@ -207,11 +207,12 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getConnectionURL (CConnection connection)
 	{
 		//  jdbc:postgresql://hostname:portnumber/databasename?encoding=UNICODE
+		// tcpKeepAlive=true recommended by HikariCP https://github.com/brettwooldridge/HikariCP
 		StringBuilder sb = new StringBuilder("jdbc:postgresql://")
 			.append(connection.getDbHost())
 			.append(":").append(connection.getDbPort())
 			.append("/").append(connection.getDbName())
-			.append("?encoding=UNICODE&ApplicationName=iDempiere&stringtype=unspecified");
+			.append("?encoding=UNICODE&ApplicationName=iDempiere&stringtype=unspecified&tcpKeepAlive=true");
 
 		String urlParameters = SystemProperties.getPostgresqlURLParameters();
 	    if (!Util.isEmpty(urlParameters)) {
