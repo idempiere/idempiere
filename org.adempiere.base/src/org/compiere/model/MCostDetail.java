@@ -1459,7 +1459,10 @@ public class MCostDetail extends X_M_CostDetail
 			if (!i.isSOTrx()) {
 				MMatchPO[] mpoList = MMatchPO.getInvoice(Env.getCtx(), i.getC_Invoice_ID(), get_TrxName());
 				for (MMatchPO mpo : mpoList) {
-					if (mpo.getC_InvoiceLine_ID() == getC_InvoiceLine_ID() && mpo.getDateAcct().compareTo(getDateAcct()) == 0) {
+					if (mpo.getC_InvoiceLine_ID() == getC_InvoiceLine_ID() 
+							&& mpo.getDateAcct().compareTo(getDateAcct()) == 0
+							&& mpo.getQty().compareTo(il.getQtyInvoiced()) != 0) { 
+						// partial MR, get the cost info from previous order
 						StringBuilder whereClause = new StringBuilder();
 						whereClause.append("C_OrderLine_ID = ? ");
 						whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
