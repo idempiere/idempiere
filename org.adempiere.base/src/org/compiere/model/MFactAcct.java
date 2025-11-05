@@ -176,5 +176,5 @@ public class MFactAcct extends X_Fact_Acct
 		Query query = new Query(Env.getCtx(), Table_Name, recordIdWhereClause, trxName);
 		return query.setParameters(AD_Table_ID, Record_ID, C_AcctSchema_ID);
 	}
-
 }	//	MFactAcct
+
