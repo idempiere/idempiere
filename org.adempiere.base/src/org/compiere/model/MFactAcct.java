@@ -75,9 +75,6 @@ public class MFactAcct extends X_Fact_Acct
 	public static int deleteEx(int AD_Table_ID, int Record_ID, String trxName)
 	throws DBException
 	{
-		if (isPostingReconciled(AD_Table_ID, Record_ID, trxName))
-			throw new DBException("Posting is reconciled");
-		
 		// backup the posting records before delete them
 		final String sqlInsert = "INSERT INTO T_Fact_Acct_History SELECT * FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?";
 		int no = DB.executeUpdateEx(sqlInsert, new Object[]{AD_Table_ID, Record_ID}, trxName);
@@ -180,7 +177,4 @@ public class MFactAcct extends X_Fact_Acct
 		return query.setParameters(AD_Table_ID, Record_ID, C_AcctSchema_ID);
 	}
 
-	public static boolean isPostingReconciled(int AD_Table_ID, int Record_ID, String trxName) {
-		return DB.getSQLValueEx(trxName, "SELECT 1 FROM Fact_Reconciliation WHERE Fact_Acct_ID IN (SELECT FAct_Acct_ID FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?)", AD_Table_ID, Record_ID) == 1;
-	}
 }	//	MFactAcct
