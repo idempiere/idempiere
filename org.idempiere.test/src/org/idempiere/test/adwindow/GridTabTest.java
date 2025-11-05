@@ -217,6 +217,8 @@ public class GridTabTest extends AbstractTestCase {
 		MField field = MField.get(FIELD_ORDERLINE_SHIPPER);
 		boolean displayOri = field.isDisplayed();
 		boolean displayGridOri = field.isDisplayed();
+		int createdOrderId = -1;
+		
 		try {
 			/* IDEMPIERE-5560 */
 			// must not use trx here for the test case below to get the update
@@ -283,6 +285,8 @@ public class GridTabTest extends AbstractTestCase {
 			// gTab0.setValue(MOrder.COLUMNNAME_SalesRep_ID, DictionaryIDs.AD_User.GARDEN_USER.id);
 			assertTrue(gTab0.dataSave(true), CLogger.retrieveWarningString("Could not save order"));
 
+	        createdOrderId = ((Integer) gTab0.getValue(MOrder.COLUMNNAME_C_Order_ID)).intValue();
+			
 			GridTab gTab1 = gridWindow.getTab(1);
 			if (!gTab1.getTableModel().isOpen())
 				gTab1.getTableModel().open(0);
@@ -295,6 +299,15 @@ public class GridTabTest extends AbstractTestCase {
 			assertTrue(gTab1.dataSave(true));
 
 		} finally {
+			// Clean up the created records
+	        if (createdOrderId > 0) {
+	            String deleteLines = "DELETE FROM C_OrderLine WHERE C_Order_ID=?";
+	            String deleteOrder = "DELETE FROM C_Order WHERE C_Order_ID=?";
+	            
+	            DB.executeUpdateEx(deleteLines, new Object[]{createdOrderId}, null);
+	            DB.executeUpdateEx(deleteOrder, new Object[]{createdOrderId}, null);
+	        }
+	        
 			// rollback the work from the test
 			rollback();
 			DB.executeUpdateEx("UPDATE AD_Field SET IsDisplayed=?, IsDisplayedGrid=? WHERE AD_Field_ID=?", new Object[] {displayOri, displayGridOri, FIELD_ORDERLINE_SHIPPER}, null);
