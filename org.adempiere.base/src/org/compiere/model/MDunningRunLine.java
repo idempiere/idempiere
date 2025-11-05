@@ -289,8 +289,8 @@ public class MDunningRunLine extends X_C_DunningRunLine
 		// Update invoice with dunning level 
 		if (isProcessed() && getInvoice() != null)
 		{
-			I_C_DunningLevel level = getParent().getC_DunningLevel();
-			if (level != null) {
+			MDunningLevel level = new MDunningLevel (getCtx(), getParent().getC_DunningLevel_ID(), get_TrxName());
+			if (getParent().getC_DunningLevel_ID() > 0 && level.getC_DunningLevel_ID() == getParent().getC_DunningLevel_ID()) {
 				getInvoice().setC_DunningLevel_ID(level.getC_DunningLevel_ID());
 				if (level.getInvoiceCollectionType() != null) {
 					getInvoice().setInvoiceCollectionType (level.getInvoiceCollectionType());

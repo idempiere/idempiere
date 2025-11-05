@@ -12,6 +12,8 @@ import org.compiere.model.MAssetAcct;
 import org.compiere.model.MAssetAddition;
 import org.compiere.model.MCharge;
 import org.compiere.model.MDocType;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MProject;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_C_Project_Acct;
@@ -109,7 +111,7 @@ public class Doc_AssetAddition extends Doc
 		MAccount pAssetAcct = null;
 		if (MAssetAddition.A_SOURCETYPE_Project.equals(assetAdd.getA_SourceType()))
 		{
-			I_C_Project prj = assetAdd.getC_Project();
+			MProject prj = new MProject(getCtx(), assetAdd.getC_Project_ID(), getTrxName());
 			return getProjectAcct(prj, as);
 		}
 		else if (MAssetAddition.A_SOURCETYPE_Manual.equals(assetAdd.getA_SourceType())
@@ -117,11 +119,12 @@ public class Doc_AssetAddition extends Doc
 		{	
 			pAssetAcct = MCharge.getAccount(getC_Charge_ID(), as);
 			return pAssetAcct;
-		}	
-		else if (MAssetAddition.A_SOURCETYPE_Invoice.equals(assetAdd.getA_SourceType())
-				&& assetAdd.getC_InvoiceLine().getC_Project_ID() > 0)
+		}
+		MInvoiceLine invLine = new MInvoiceLine(getCtx(), assetAdd.getC_InvoiceLine_ID(), getTrxName());
+		if (MAssetAddition.A_SOURCETYPE_Invoice.equals(assetAdd.getA_SourceType())
+				&& invLine.getC_Project_ID() > 0)
 		{
-			I_C_Project prj = assetAdd.getC_InvoiceLine().getC_Project();
+			MProject prj = new MProject(getCtx(), invLine.getC_Project_ID(), getTrxName());
 			return getProjectAcct(prj, as);
 		}
 		else
@@ -187,7 +190,8 @@ public class Doc_AssetAddition extends Doc
 		if (MAssetAddition.A_SOURCETYPE_Invoice.equals(assetAdd.getA_SourceType())
 				&& assetAdd.getC_Invoice_ID() > 0)
 		{
-			return assetAdd.getC_Invoice().getC_BPartner_ID();
+			MInvoice invoice = MInvoice.get(assetAdd.getC_Invoice_ID());
+			return invoice.getC_BPartner_ID();
 		}
 		else
 		{
@@ -204,7 +208,8 @@ public class Doc_AssetAddition extends Doc
 		if (MAssetAddition.A_SOURCETYPE_Invoice.equals(assetAdd.getA_SourceType())
 				&& assetAdd.getC_Invoice_ID() > 0)			
 		{
-			return assetAdd.getC_InvoiceLine().getC_Project_ID();
+			MInvoiceLine invLine = new MInvoiceLine(getCtx(), assetAdd.getC_InvoiceLine_ID(), getTrxName());
+			return invLine.getC_Project_ID();
 		}
 		else
 		{

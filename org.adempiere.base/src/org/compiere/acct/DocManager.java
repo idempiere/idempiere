@@ -36,6 +36,7 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MTable;
@@ -659,7 +660,8 @@ public class DocManager {
 		Timestamp today = TimeUtil.trunc(new Timestamp(System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
 		for (int x = bdcds.size() - 1; x >= 0; x--) {
 			MCostDetail bdcd = bdcds.get(x);
-			Timestamp allowedBackDate = TimeUtil.addDays(today, - bdcd.getC_AcctSchema().getBackDateDay());
+			MAcctSchema as = new MAcctSchema(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
+			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getBackDateDay());
 			if (bdcd.getDateAcct().before(allowedBackDate))
 				bdcds.remove(x);
 		}
@@ -758,7 +760,7 @@ public class DocManager {
 		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID, cd.M_CostDetail_ID, cd.IsBackDate ");
 		selectSql.append("FROM M_CostDetail cd ");
 		selectSql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID) ");
+		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct) ");
 		selectSql.append("LEFT JOIN C_InvoiceLine il ON (il.C_InvoiceLine_ID = cd.C_InvoiceLine_ID) ");
 		selectSql.append("LEFT JOIN M_InOutLine iol ON (iol.M_InOutLine_ID = cd.M_InOutLine_ID) ");
 		selectSql.append("LEFT JOIN M_MatchInv mi ON (mi.M_MatchInv_ID = cd.M_MatchInv_ID) ");
@@ -821,7 +823,8 @@ public class DocManager {
 
 				if (tableID == MMatchInv.Table_ID) {
 					MMatchInv mi = new MMatchInv(Env.getCtx(), recordID, trxName);
-					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + mi.getC_InvoiceLine().getC_Invoice_ID()))
+					MInvoiceLine il = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), trxName);	
+					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + il.getC_Invoice_ID()))
 						continue;
 				}
 				

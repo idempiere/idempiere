@@ -573,7 +573,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			s_oldCountry_ID = m_location.getC_Country_ID();
 		}
 		
-		if (m_location.getC_Region_ID() > 0 && m_location.getC_Region().getC_Country_ID() == country.getC_Country_ID()) {
+		if (m_location.getC_Region_ID() > 0 && m_location.getRegion().getC_Country_ID() == country.getC_Country_ID()) {
 			setRegion();
 		} else {
 			lstRegion.setSelectedItem(null);
@@ -884,7 +884,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				while (iter.hasNext())
 				{
 					ListItem listitem = (ListItem)iter.next();
-					if (m_location.getC_AddressValidation().equals(listitem.getValue()))
+					MAddressValidation addrVal = new MAddressValidation(Env.getCtx(), m_location.getC_AddressValidation_ID(), m_location.get_TrxName());
+					if (addrVal.equals(listitem.getValue()))
 					{
 						lstAddressValidation.setSelectedItem(listitem);
 						break;

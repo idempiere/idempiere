@@ -647,6 +647,69 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}	//	getPO
 
+	/**
+	 * 	Get PO Instance for uuid table
+	 *	@param uuid record uuid. not null or empty string.
+	 *	@param trxName
+	 *	@return PO for Record_ID or null
+	 */
+	public PO getUUIDPOInstance (String uuid, String trxName)
+	{
+		String tableName = getTableName();
+		if (!isUUIDKeyTable())
+		{
+			log.log(Level.WARNING, "Not UUID Key " + tableName);
+			return null;
+		}
+
+		PO po = null;
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
+		if (cache != null)
+		{
+			IModelFactory service = cache.getService();
+			if (service != null && service.getClass(tableName) != null)
+			{
+				po = service.getPO(tableName, uuid, trxName);
+				if (po != null)
+				{
+					if (!UUID_NEW_RECORD.equals(uuid) && !uuid.equals(po.get_UUID()))
+						po = null;
+					return po;
+				}
+			}
+			s_modelFactoryCache.remove(tableName);
+		}
+		
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
+		if (factoryList != null)
+		{
+			for(IServiceReferenceHolder<IModelFactory> factory : factoryList)
+			{
+				IModelFactory service = factory.getService();
+				if (service != null && service.getClass(tableName) != null)
+				{
+					po = service.getPO(tableName, uuid, trxName);
+					if (po != null)
+					{
+						if (!UUID_NEW_RECORD.equals(uuid) && !uuid.equals(po.get_UUID()))
+							po = null;
+						s_modelFactoryCache.put(tableName, factory);
+						break;
+					}
+				}
+			}
+		}
+
+		if (po == null && s_modelFactoryCache.get(tableName) == null)
+		{
+			po = new GenericPO(tableName, getCtx(), uuid, trxName);
+			if (!UUID_NEW_RECORD.equals(uuid) && !uuid.equals(po.get_UUID()))
+				po = null;
+		}
+
+		return po;
+	}
+	
 	private static final ThreadLocal<Map<Integer, String[]>> partialPOResultSetColumns = new ThreadLocal<>();
 	
 	/**
@@ -738,6 +801,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public PO getPOByUU (String uuID, String trxName)
 	{
+		if (isUUIDKeyTable())
+			return getUUIDPOInstance(uuID, trxName);
+		
 		PO po = getPO(0, trxName);
 		po.loadByUU(uuID, trxName);
 

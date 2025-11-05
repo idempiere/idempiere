@@ -41,6 +41,7 @@ public final class ConvertMap_PostgreSQL {
 		s_pg.put("\\bNUMBER\\b",                "NUMERIC");
 		s_pg.put("\\bDATE\\b",                  "TIMESTAMP");
 
+		s_pg.put("\\bVARCHAR2/\\*UUID\\*/\\(36\\)",  "UUID");
 		s_pg.put("\\bVARCHAR2\\b",              "VARCHAR");
 		// because map is ordered this replacement is executed after VARCHAR2 above, so here we have just VARCHAR
 		s_pg.put("\\bVARCHAR\\b( *\\( *[1-9][0-9]*)  *CHAR\\)", "VARCHAR$1)");

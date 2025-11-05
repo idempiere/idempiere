@@ -45,9 +45,9 @@ import org.compiere.util.Util;
 public class MTree extends MTree_Base
 {
 	/**
-	 * generated serial id 
+	 * 
 	 */
-	private static final long serialVersionUID = 8572653421094006917L;
+	private static final long serialVersionUID = -5471090207406467359L;
 
 	/**
 	 *  Default Constructor.
@@ -783,4 +783,41 @@ public class MTree extends MTree_Base
 		sb.append("]");
 		return sb.toString();
 	}
+
+	/**
+	 * Return the table name of the table driving a tree 
+	 * @param treeId
+	 * @return
+	 */
+	public static String getRefTableFromTree(int treeId) {
+		final String sqlTableTree = ""
+				+ "SELECT CASE "
+				+ "         WHEN TreeType = 'AY' THEN 'C_Activity' "
+				+ "         WHEN TreeType = 'BB' THEN 'M_BOM' "
+				+ "         WHEN TreeType = 'BP' THEN 'C_BPartner' "
+				+ "         WHEN TreeType = 'CC' THEN 'CM_Container' "
+				+ "         WHEN TreeType = 'CM' THEN 'CM_Media' "
+				+ "         WHEN TreeType = 'CS' THEN 'CM_CStage' "
+				+ "         WHEN TreeType = 'CT' THEN 'CM_Template' "
+				+ "         WHEN TreeType = 'EV' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'MC' THEN 'C_Campaign' "
+				+ "         WHEN TreeType = 'MM' THEN 'AD_Menu' "
+				+ "         WHEN TreeType = 'OO' THEN 'AD_Org' "
+				+ "         WHEN TreeType = 'PC' THEN 'M_Product_Category' "
+				+ "         WHEN TreeType = 'PJ' THEN 'C_Project' "
+				+ "         WHEN TreeType = 'PR' THEN 'M_Product' "
+				+ "         WHEN TreeType = 'SR' THEN 'C_SalesRegion' "
+				+ "         WHEN TreeType = 'U1' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U2' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U3' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U4' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'TL' THEN AD_Table.TableName "
+				+ "         ELSE NULL "
+				+ "       END "
+				+ "FROM   AD_Tree "
+				+ "       LEFT JOIN AD_Table ON ( AD_Table.AD_Table_ID = AD_Tree.AD_Table_ID ) "
+				+ "WHERE  AD_Tree_ID = ?";
+		return DB.getSQLValueStringEx(null, sqlTableTree, treeId);
+	}
+
 }   //  MTree

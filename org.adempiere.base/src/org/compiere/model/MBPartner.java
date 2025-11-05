@@ -103,7 +103,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	 */
 	public static MBPartner getBPartnerCashTrx (Properties ctx, int AD_Client_ID)
 	{
-		MBPartner retValue = (MBPartner) MClientInfo.get(ctx, AD_Client_ID).getC_BPartnerCashTrx();
+		MBPartner retValue = MBPartner.get(ctx, MClientInfo.get(ctx, AD_Client_ID).getC_BPartnerCashTrx_ID());
 		if (retValue == null)
 			s_log.log(Level.SEVERE, "Not found for AD_Client_ID=" + AD_Client_ID);
 	

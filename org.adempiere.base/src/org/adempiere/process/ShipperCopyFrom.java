@@ -25,10 +25,10 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MShipperPickupTypesCfg;
 import org.compiere.model.X_M_ShipperCfg;
 import org.compiere.model.X_M_ShipperLabelsCfg;
 import org.compiere.model.X_M_ShipperPackagingCfg;
-import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
@@ -149,11 +149,11 @@ public class ShipperCopyFrom extends SvrProcess
 		whereClause.append("FROM M_ShipperPickupTypesCfg ");
 		whereClause.append("WHERE M_ShipperCfg_ID=" + To_M_ShipperCfg_ID + ")");
 		
-		int[] xsptIds = X_M_ShipperPickupTypesCfg.getAllIDs(X_M_ShipperPickupTypesCfg.Table_Name, whereClause.toString(), get_TrxName());		
+		int[] xsptIds = MShipperPickupTypesCfg.getAllIDs(MShipperPickupTypesCfg.Table_Name, whereClause.toString(), get_TrxName());		
 		for (int xsptId : xsptIds)
 		{
-			X_M_ShipperPickupTypesCfg xspt = new X_M_ShipperPickupTypesCfg(getCtx(), xsptId, get_TrxName());
-			X_M_ShipperPickupTypesCfg spt = new X_M_ShipperPickupTypesCfg(getCtx(), 0, null);
+			MShipperPickupTypesCfg xspt = new MShipperPickupTypesCfg(getCtx(), xsptId, get_TrxName());
+			MShipperPickupTypesCfg spt = new MShipperPickupTypesCfg(getCtx(), 0, null);
 			spt.setDescription(xspt.getDescription());
 			spt.setIsActive(xspt.isActive());
 			spt.setIsDefault(xspt.isDefault());

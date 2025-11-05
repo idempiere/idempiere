@@ -68,7 +68,8 @@ public class MAttributeSetTest extends AbstractTestCase {
 		int instance = 0;
 		int nonInstance = 0;
 		for (MAttributeUse use : uses) {
-			if (use.getM_Attribute().isInstanceAttribute())
+			
+			if (MAttribute.get(use.getCtx(), use.getM_Attribute_ID()).isInstanceAttribute())
 				instance++;
 			else
 				nonInstance++;

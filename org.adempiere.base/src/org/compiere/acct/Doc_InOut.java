@@ -25,9 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.compiere.model.I_C_OrderLine;
-import org.compiere.model.I_M_InOutLine;
-import org.compiere.model.I_M_RMALine;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
@@ -36,9 +33,12 @@ import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
+import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MRMA;
+import org.compiere.model.MRMALine;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.util.DB;
@@ -95,8 +95,8 @@ public class Doc_InOut extends Doc
 		if (inout.isSOTrx()) {
 			MInOutLine[] lines = inout.getLines();
 			for (MInOutLine line : lines) {
-				I_C_OrderLine orderLine = line.getC_OrderLine();
-				if (orderLine != null) {
+				MOrderLine orderLine = new MOrderLine(getCtx(), line.getC_OrderLine_ID(), getTrxName());
+				if (line.getC_OrderLine_ID() > 0 && line.getC_OrderLine_ID() == orderLine.getC_OrderLine_ID()) {
 					if (orderLine.getLink_OrderLine_ID() > 0) {
 						//	Defer posting if found the linked MR is not posted
 						String sql = "SELECT COUNT(*) FROM M_InOutLine iol WHERE iol.C_OrderLine_ID=? AND EXISTS (SELECT * FROM M_InOut io WHERE io.M_InOut_ID=iol.M_InOut_ID AND io.IsSOTrx='N' AND io.Posted<>'Y')";
@@ -931,12 +931,12 @@ public class Doc_InOut extends Doc
 				if (!isReversal(line))
 				{
 					MInOutLine ioLine = (MInOutLine) line.getPO();
-					I_M_RMALine rmaLine = ioLine.getM_RMALine();
-					costs = rmaLine != null ? rmaLine.getAmt() : BigDecimal.ZERO;
-					I_M_InOutLine originalInOutLine = rmaLine != null ? rmaLine.getM_InOutLine() : null;
+					MRMALine rmaLine = new MRMALine(getCtx(), ioLine.getM_RMALine_ID(), getTrxName());
+					costs = (ioLine.getM_RMALine_ID() > 0 && ioLine.getM_RMALine_ID() == rmaLine.getM_RMALine_ID()) ? rmaLine.getAmt() : BigDecimal.ZERO;
+					MInOutLine originalInOutLine = rmaLine != null ? new MInOutLine(getCtx(), rmaLine.getM_InOutLine_ID(), getTrxName()) : null;
 					if (originalInOutLine != null && originalInOutLine.getC_OrderLine_ID() > 0)
 					{
-						MOrderLine originalOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
+						MOrderLine originalOrderLine = new MOrderLine(getCtx(), originalInOutLine.getC_OrderLine_ID(), getTrxName());
 						//	Goodwill: Correct included Tax
 				    	int C_Tax_ID = originalOrderLine.getC_Tax_ID();
 				    	MTax tax = MTax.get(getCtx(), C_Tax_ID);
@@ -1228,12 +1228,17 @@ public class Doc_InOut extends Doc
 	public int getC_Currency_ID()
 	{
 		MInOut io = (MInOut) getPO();
-		if (io.getC_Order_ID() > 0)
-			return io.getC_Order().getC_Currency_ID();
-		else if (io.getM_RMA_ID() > 0) {
-			if (io.getM_RMA().getInOut_ID() > 0) {
-				if (io.getM_RMA().getInOut().getC_Order_ID() > 0)
-					return io.getM_RMA().getInOut().getC_Order().getC_Currency_ID();
+		if (io.getC_Order_ID() > 0) {
+			MOrder order = new MOrder(io.getCtx(), io.getC_Order_ID(), io.get_TrxName());
+			return order.getC_Currency_ID();
+		} else if (io.getM_RMA_ID() > 0) {
+			MRMA rma = new MRMA(io.getCtx(), io.getM_RMA_ID(), io.get_TrxName());
+			if (rma.getInOut_ID() > 0) {
+				MInOut inOut = new MInOut(io.getCtx(), rma.getInOut_ID(), io.get_TrxName());
+				if (inOut.getC_Order_ID() > 0) {
+					MOrder order = new MOrder(inOut.getCtx(), inOut.getC_Order_ID(), inOut.get_TrxName());
+					return order.getC_Currency_ID();
+				}
 			}
 		}
 		return super.getC_Currency_ID();
@@ -1243,12 +1248,17 @@ public class Doc_InOut extends Doc
 	public int getC_ConversionType_ID()
 	{
 		MInOut io = (MInOut) getPO();
-		if (io.getC_Order_ID() > 0)
-			return io.getC_Order().getC_ConversionType_ID();
-		else if (io.getM_RMA_ID() > 0) {
-			if (io.getM_RMA().getInOut_ID() > 0) {
-				if (io.getM_RMA().getInOut().getC_Order_ID() > 0)
-					return io.getM_RMA().getInOut().getC_Order().getC_ConversionType_ID();
+		if (io.getC_Order_ID() > 0) {
+			MOrder order = new MOrder(io.getCtx(), io.getC_Order_ID(), io.get_TrxName());
+			return order.getC_ConversionType_ID();
+		} else if (io.getM_RMA_ID() > 0) {
+			MRMA rma = new MRMA(io.getCtx(), io.getM_RMA_ID(), io.get_TrxName());
+			if (rma.getInOut_ID() > 0) {
+				MInOut inOut = new MInOut(io.getCtx(), rma.getInOut_ID(), io.get_TrxName());
+				if (inOut.getC_Order_ID() > 0) {
+					MOrder order = new MOrder(inOut.getCtx(), inOut.getC_Order_ID(), inOut.get_TrxName());
+					return order.getC_ConversionType_ID();
+				}
 			}
 		}
 		return super.getC_ConversionType_ID();

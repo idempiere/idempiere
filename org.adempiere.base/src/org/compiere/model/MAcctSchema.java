@@ -47,9 +47,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 2740537819749888011L;
+	private static final long serialVersionUID = -8345280015158127523L;
 
 	/**
 	 *  Get AccountSchema
@@ -852,4 +852,12 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 		}
 		return true;
 	}
+
+	/**
+	 * @return
+	 */
+	public MCurrency getCurrency() {
+		return MCurrency.get(getCtx(), getC_Currency_ID());
+	}
+
 }	//	MAcctSchema

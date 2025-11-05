@@ -1639,12 +1639,16 @@ public class GridTable extends AbstractTableModel
 		/**
 		 *	Update row *****
 		 */
-		int Record_ID = 0;
+		int Record_ID = m_inserting ? 0 : -1;
+		String uuid = null;
 		if (!m_inserting)
-			Record_ID = getKeyID(m_rowChanged);
+			if (m_indexKeyColumn == -1 && m_indexUUIDColumn >= 0)
+				uuid = getKeyUUID(m_rowChanged);
+			else
+				Record_ID = getKeyID(m_rowChanged);
 		try
 		{
-			return dataSavePO (Record_ID);
+			return dataSavePO (Record_ID, uuid);
 		}
 		catch (Throwable e)
 		{
@@ -1663,10 +1667,11 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 	Save via PO
 	 *	@param Record_ID
+	 *  @param uuid
 	 *	@return SAVE_ERROR or SAVE_OK
 	 *	@throws Exception
 	 */
-	private char dataSavePO (int Record_ID) throws Exception
+	private char dataSavePO (int Record_ID, String uuid) throws Exception
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("ID=" + Record_ID);
 		//
@@ -1682,9 +1687,14 @@ public class GridTable extends AbstractTableModel
 				String uuidFromZeroID = table.getUUIDFromZeroID();
 				po = table.getPOByUU(uuidFromZeroID, m_trxName);
 			} else {
-				po = table.getPO(Record_ID, m_trxName);
+				if (m_indexKeyColumn == -1 && m_indexUUIDColumn >= 0 && table.isUUIDKeyTable())
+					po = table.getPOByUU(PO.UUID_NEW_RECORD, m_trxName);
+				else
+					po = table.getPO(Record_ID, m_trxName);
 			}
 		}
+		else if (!Util.isEmpty(uuid, true))
+			po = table.getPOByUU(uuid, m_trxName);
 		else	//	Multi - Key
 			po = table.getPO(getWhereClause(rowData), m_trxName);
 		//	No Persistent Object

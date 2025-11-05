@@ -77,6 +77,7 @@ import org.compiere.model.I_M_InventoryLine;
 import org.compiere.model.Lookup;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAddressValidation;
+import org.compiere.model.MAddressValidationCfg;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MClientInfo;
@@ -91,7 +92,9 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTaxProvider;
+import org.compiere.model.MTaxProviderCfg;
 import org.compiere.model.MTest;
+import org.compiere.model.MTestUU;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.MZoomCondition;
 import org.compiere.model.ModelValidator;
@@ -99,8 +102,6 @@ import org.compiere.model.PO;
 import org.compiere.model.PaymentProcessor;
 import org.compiere.model.Query;
 import org.compiere.model.StandardTaxProvider;
-import org.compiere.model.X_C_AddressValidationCfg;
-import org.compiere.model.X_C_TaxProviderCfg;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.BPartnerValidate;
 import org.compiere.process.DocAction;
@@ -398,7 +399,7 @@ public class CacheTest extends AbstractTestCase {
 		assertTrue(cache.getHit() > hit, "Hit for " + cacheName + " doesn't increase as expected");
 		
 		//IAddressValidationFactory
-		X_C_AddressValidationCfg cfg = new X_C_AddressValidationCfg(Env.getCtx(), 0, getTrxName());
+		MAddressValidationCfg cfg = new MAddressValidationCfg(Env.getCtx(), 0, getTrxName());
 		cfg.setHostAddress("10.8.0.1");
 		cfg.setHostPort(433);
 		cfg.setName("Test Cfg");
@@ -424,7 +425,7 @@ public class CacheTest extends AbstractTestCase {
 		assertTrue(cache.getHit() > hit, "Hit for " + cacheName + " doesn't increase as expected");
 		
 		//ITaxProviderFactory
-		X_C_TaxProviderCfg taxProviderCfg = new X_C_TaxProviderCfg(Env.getCtx(), 0, getTrxName());
+		MTaxProviderCfg taxProviderCfg = new MTaxProviderCfg(Env.getCtx(), 0, getTrxName());
 		taxProviderCfg.setName("Standard Provider Configuration");
 		taxProviderCfg.setTaxProviderClass(StandardTaxProvider.class.getName());
 		taxProviderCfg.saveEx();
@@ -978,6 +979,25 @@ public class CacheTest extends AbstractTestCase {
 			} catch (InterruptedException e) {
 			}
 			assertEquals(esName+"1", p.get_Translation("Name", locale), "Translation not refresh in cache");
+		} finally {
+			po.set_ValueOfColumn("Name", esName);
+			po.saveEx();
+		}
+		
+		//test translation reset for uuid key table
+		MTestUU uu = new MTestUU(Env.getCtx(), "8858ecc2-cf1d-405f-987f-793536037e76", null);
+		esName = uu.get_Translation("Name", locale);
+		query = new Query(Env.getCtx(), MTestUU.Table_Name+"_Trl", "TestUU_UU=? AND AD_Language=?", null);
+		po = query.setParameters(uu.get_UUID(), locale).firstOnly();
+		assertEquals(esName, po.get_Value("Name"), "Expected translation not found");
+		try {
+			po.set_ValueOfColumn("Name", esName+"1");
+			po.saveEx();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+			assertEquals(esName+"1", uu.get_Translation("Name", locale), "Translation not refresh in cache");
 		} finally {
 			po.set_ValueOfColumn("Name", esName);
 			po.saveEx();

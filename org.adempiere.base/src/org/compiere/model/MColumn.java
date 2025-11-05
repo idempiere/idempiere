@@ -129,7 +129,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public static MColumn get (Properties ctx, String tableName, String columnName)
 	{
 		MTable table = MTable.get(ctx, tableName);
-		return  table.getColumn(columnName);
+		return  table != null ? table.getColumn(columnName) : null;
 	}	//	get
 
 	/**
@@ -143,7 +143,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public static MColumn get (Properties ctx, String tableName, String columnName, String trxName)
 	{
 		MTable table = MTable.get(ctx, tableName, trxName);
-		return table.getColumn(columnName);
+		return table != null ? table.getColumn(columnName) : null;
 	}	//	get
 
 	/**
@@ -618,6 +618,10 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (getAD_Reference_ID() == DisplayType.Payment)
 			setAD_Reference_Value_ID(SystemIDs.REFERENCE_PAYMENTRULE);
 
+		// Fix references for old tables created for example with 2Packs defining the reference as String
+		if (getColumnName().equals(PO.getUUIDColumnName(tableName)) && getAD_Reference_ID() != DisplayType.UUID)
+			setAD_Reference_ID(DisplayType.UUID);
+
 		return true;
 	}	//	beforeSave
 	
@@ -879,6 +883,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
 		} else if (DisplayType.Table == refid || DisplayType.TableUU == refid || DisplayType.Search == refid || DisplayType.SearchUU == refid) {
 			foreignTable = DB.getSQLValueStringEx(get_TrxName(), sqlTableNameReference, getAD_Column_ID());
+		} else if (DisplayType.isMultiID(refid)) {
+			foreignTable = getMultiReferenceTableName();
 		} else if (DisplayType.Button == refid) {
 			// C_BPartner.AD_OrgBP_ID and C_Project.C_ProjectType_ID are defined as buttons
 			if ("AD_OrgBP_ID".equalsIgnoreCase(getColumnName()))
@@ -1040,7 +1046,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())) && !column.isVirtualColumn())
 		{
 			int refid = column.getAD_Reference_ID();
-			if (!DisplayType.isList(refid))
+			if (!DisplayType.isList(refid) && !DisplayType.isMultiID(refid))
 			{
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)
@@ -1280,7 +1286,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				return "";
 
 			int refid = column.getAD_Reference_ID();
-			if (!DisplayType.isList(refid))
+			if (!DisplayType.isList(refid) && !DisplayType.isMultiID(refid))
 			{
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)

@@ -34,6 +34,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefTable;
+import org.compiere.model.MReference;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -463,10 +464,8 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		}
 
 		if (windowId == 0) {
-
-			PORelationException.throwMissingWindowId(po,
-					getAD_Reference_Target().getName(), table.getName(), Env
-							.isSOTrx(po.getCtx()));
+			MReference refTarget = MReference.get(getAD_Reference_Target_ID());
+			PORelationException.throwMissingWindowId(po, refTarget.getName(), table.getName(), Env.isSOTrx(po.getCtx()));
 		}
 		return windowId;
 

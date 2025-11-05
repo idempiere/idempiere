@@ -68,6 +68,7 @@ import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.X_I_BPartner;
 import org.compiere.model.X_I_Product;
+import org.compiere.print.MPrintFormat;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ImportBPartner;
@@ -82,10 +83,10 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.osgi.service.event.Event;
 
 @TestMethodOrder(OrderAnnotation.class)
@@ -235,7 +236,7 @@ public class EventHandlerTest extends AbstractTestCase {
 		pi.setRecord_ID(Patio_Chair);
 		pi.setTransactionName(getTrxName());
 		if(process.getAD_PrintFormat_ID() > 0)
-			pi.setTransientObject(process.getAD_PrintFormat());
+			pi.setTransientObject(MPrintFormat.get(process.getAD_PrintFormat_ID()));
 		
 		ServerProcessCtl.process(pi, getTrx());
 		if (pi.isError()) {

@@ -31,7 +31,6 @@ import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
 import org.adempiere.webui.apps.AEnv;
@@ -516,13 +515,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
 		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
 	    String ssoLogoutURL = null;
-	    if (!isAdminLogin && (isSSOLogin && Util.isEmpty(provider)))
+	    if (!isAdminLogin && isSSOLogin)
 		{
 			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider);
 			if (service != null)
 				ssoLogoutURL = service.getLogoutURL();
-			else
-				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "SSOServiceNotFound"));
 		}
 	    
 	    final Session session = logout0();

@@ -17,18 +17,18 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
+import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -139,9 +139,15 @@ public class Doc_ProjectIssue extends Doc
 		//  Issue Cost
 		BigDecimal cost = null;
 		if (m_issue.getM_InOutLine_ID() != 0)
-			cost = getPOCost(as);
+		{
+			MInOutLine inOutLine = new MInOutLine(getCtx(), m_issue.getM_InOutLine_ID(), getTrxName());
+			cost = inOutLine.getPOCost(as, m_line.getQty());
+		}
 		else if (m_issue.getS_TimeExpenseLine_ID() != 0)
-			cost = getLaborCost(as);
+		{
+			MTimeExpenseLine timeExpenseLine = new MTimeExpenseLine(getCtx(), m_issue.getS_TimeExpenseLine_ID(), getTrxName());
+			cost = timeExpenseLine.getLaborCost(as);
+		}
 		if (cost == null)	//	standard Product Costs
 			cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
 
@@ -191,93 +197,4 @@ public class Doc_ProjectIssue extends Doc
 		facts.add(fact);
 		return facts;
 	}   //  createFact
-
-	/**
-	 * 	Get PO Costs in Currency of AcctSchema
-	 *	@param as Account Schema
-	 *	@return Unit PO Cost
-	 */
-	private BigDecimal getPOCost(MAcctSchema as)
-	{
-		BigDecimal retValue = null;
-		//	Uses PO Date
-		String sql = "SELECT currencyConvert(ol.PriceActual, o.C_Currency_ID, ?, o.DateOrdered, o.C_ConversionType_ID, ?, ?) "
-				+ "FROM C_OrderLine ol"
-				+ " INNER JOIN M_InOutLine iol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID)"
-				+ " INNER JOIN C_Order o ON (o.C_Order_ID=ol.C_Order_ID) "
-				+ "WHERE iol.M_InOutLine_ID=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, getTrxName());
-			pstmt.setInt(1, as.getC_Currency_ID());
-			pstmt.setInt(2, getAD_Client_ID());
-			pstmt.setInt(3, getAD_Org_ID());
-			pstmt.setInt(4, m_issue.getM_InOutLine_ID());
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				retValue = rs.getBigDecimal(1);
-				if (log.isLoggable(Level.FINE)) log.fine("POCost = " + retValue);
-			}
-			else
-				log.warning("Not found for M_InOutLine_ID=" + m_issue.getM_InOutLine_ID());
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			pstmt = null; rs = null;
-		}
-		if (retValue != null)
-			retValue = retValue.multiply(m_line.getQty());
-		return retValue;
-	}	//	getPOCost();
-
-	/**
-	 * 	Get Labor Cost from Expense Report
-	 *	@param as Account Schema
-	 *	@return Unit Labor Cost
-	 */
-	private BigDecimal getLaborCost(MAcctSchema as)
-	{
-		// Todor Lulov 30.01.2008
-		BigDecimal retValue = Env.ZERO;
-		BigDecimal qty = Env.ZERO;
-
-		String sql = "SELECT ConvertedAmt, Qty FROM S_TimeExpenseLine " +
-				" WHERE S_TimeExpenseLine.S_TimeExpenseLine_ID = ?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, getTrxName());
-			pstmt.setInt(1, m_issue.getS_TimeExpenseLine_ID());
-			rs = pstmt.executeQuery();
-			if (rs.next())
-			{
-				retValue = rs.getBigDecimal(1);
-				qty = rs.getBigDecimal(2);
-				retValue = retValue.multiply(qty);
-				if (log.isLoggable(Level.FINE)) log.fine("ExpLineCost = " + retValue);
-			}
-			else
-				log.warning("Not found for S_TimeExpenseLine_ID=" + m_issue.getS_TimeExpenseLine_ID());
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			pstmt = null; rs = null;
-		}
-		return retValue;
-	}	//	getLaborCost
-
 }	//	DocProjectIssue

@@ -710,6 +710,19 @@ public interface I_AD_User
 	  */
 	public String getPassword();
 
+    /** Column name PasswordHashAlgorithm */
+    public static final String COLUMNNAME_PasswordHashAlgorithm = "PasswordHashAlgorithm";
+
+	/** Set Password Hash Algorithm.
+	  * Algorithm use to perform hashing of password
+	  */
+	public void setPasswordHashAlgorithm (String PasswordHashAlgorithm);
+
+	/** Get Password Hash Algorithm.
+	  * Algorithm use to perform hashing of password
+	  */
+	public String getPasswordHashAlgorithm();
+
     /** Column name Phone */
     public static final String COLUMNNAME_Phone = "Phone";
 
@@ -785,6 +798,19 @@ public interface I_AD_User
 	  * Random data added to improve password hash effectiveness
 	  */
 	public String getSalt();
+
+    /** Column name SaltAlgorithm */
+    public static final String COLUMNNAME_SaltAlgorithm = "SaltAlgorithm";
+
+	/** Set Salt Algorithm.
+	  * Secure random algorithm use to generate password salt
+	  */
+	public void setSaltAlgorithm (String SaltAlgorithm);
+
+	/** Get Salt Algorithm.
+	  * Secure random algorithm use to generate password salt
+	  */
+	public String getSaltAlgorithm();
 
     /** Column name SecurityQuestion */
     public static final String COLUMNNAME_SecurityQuestion = "SecurityQuestion";
