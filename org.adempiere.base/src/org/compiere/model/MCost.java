@@ -1490,6 +1490,13 @@ public class MCost extends X_M_Cost implements ICostInfo
 		return get(product, M_AttributeSetInstance_ID, as, AD_Org_ID, M_CostElement_ID, product.get_TrxName());
 	}
 
+	private static final String getWhereClause = "AD_Client_ID=? AND AD_Org_ID=?"
+			+" AND "+COLUMNNAME_M_Product_ID+"=?"
+			+" AND "+COLUMNNAME_M_CostType_ID+"=?"
+			+" AND "+COLUMNNAME_C_AcctSchema_ID+"=?"
+			+" AND "+COLUMNNAME_M_CostElement_ID+"=?"
+			+" AND "+COLUMNNAME_M_AttributeSetInstance_ID+"=?";
+	
 	/**
 	 * Get Cost Record
 	 * @param ctx context
@@ -1508,16 +1515,10 @@ public class MCost extends X_M_Cost implements ICostInfo
 		int M_AttributeSetInstance_ID,
 		String trxName)
 	{
-		final String whereClause = "AD_Client_ID=? AND AD_Org_ID=?"
-				+" AND "+COLUMNNAME_M_Product_ID+"=?"
-				+" AND "+COLUMNNAME_M_CostType_ID+"=?"
-				+" AND "+COLUMNNAME_C_AcctSchema_ID+"=?"
-				+" AND "+COLUMNNAME_M_CostElement_ID+"=?"
-				+" AND "+COLUMNNAME_M_AttributeSetInstance_ID+"=?";
 		final Object[] params = new Object[]{AD_Client_ID, AD_Org_ID, M_Product_ID,
 							M_CostType_ID, C_AcctSchema_ID,
 							M_CostElement_ID, M_AttributeSetInstance_ID};
-		return new Query(ctx, Table_Name, whereClause, trxName)
+		return new Query(ctx, Table_Name, getWhereClause, trxName)
 				.setOnlyActiveRecords(true)
 				.setParameters(params)
 				.firstOnly();
@@ -1563,6 +1564,10 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (history != null && MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
 			cost.setCurrentQty(history.getCurrentQty());
 			cost.setCumulatedQty(history.getCumulatedQty());
+			if (costDetail != null && history.getCurrentCostPrice().compareTo(Env.ZERO) != 0)
+				cost.setCurrentCostPrice(history.getCurrentCostPrice());
+			if (costDetail != null && history.getCumulatedAmt().compareTo(Env.ZERO) != 0)
+				cost.setCumulatedAmt(history.getCumulatedAmt());
 		}
 		return cost;
 	}	//	get
@@ -1665,13 +1670,16 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	public void add (BigDecimal amt, BigDecimal qty)
 	{
-		MCostElement costElement = (MCostElement) getM_CostElement();
-		if (costElement.isAveragePO() || costElement.isAverageInvoice()) 
-		{
-			if (getCurrentQty().add(qty).signum() < 0)
+		if (!isSkipAverageCostingQtyCheck) {
+			MCostElement costElement = new MCostElement(getCtx(), getM_CostElement_ID(), get_TrxName());
+			if (costElement.isAveragePO() || costElement.isAverageInvoice()) 
 			{
-				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-						+ ", CostElement="+costElement.getName()+", Schema="+getC_AcctSchema().getName());
+				if (getCurrentQty().add(qty).signum() < 0)
+				{
+					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
+							+ ", CostElement="+costElement.getName()+", Schema="+as.getName());
+				}
 			}
 		}
 		setCumulatedAmt(getCumulatedAmt().add(amt));
@@ -1704,10 +1712,13 @@ public class MCost extends X_M_Cost implements ICostInfo
 					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
 		}
 		
-		if (getCurrentQty().add(qty).signum() < 0)
-		{
-			throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-					+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+		if (!isSkipAverageCostingQtyCheck) {
+			if (getCurrentQty().add(qty).signum() < 0)
+			{
+				MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
+						+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getName());
+			}
 		}
 				
 		BigDecimal sumQty = getCurrentQty().add(qty);
@@ -1883,13 +1894,16 @@ public class MCost extends X_M_Cost implements ICostInfo
 				setCumulatedQty(Env.ZERO);
 		}
 		
-		//Throw exception if CurrentQty have been updated to negative and cost element is average costing
-		if (ce!=null && (ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
-		{
-			if (getCurrentQty().signum() < 0)
+		if (!isSkipAverageCostingQtyCheck) {
+			//Throw exception if CurrentQty have been updated to negative and cost element is average costing
+			if (ce!=null && (ce.isAveragePO() || ce.isAverageInvoice()) && is_ValueChanged(COLUMNNAME_CurrentQty)) 
 			{
-				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
-						+", CostElement="+getM_CostElement().getName()+", Schema="+getC_AcctSchema().getName());
+				if (getCurrentQty().signum() < 0)
+				{
+					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
+							+", CostElement="+ce.getName()+", Schema="+as.getName());
+				}
 			}
 		}
 		
@@ -1902,15 +1916,29 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	@Override
 	public void setCurrentQty(BigDecimal CurrentQty) {
-		MCostElement ce = (MCostElement)getM_CostElement();
-		if (ce.isAveragePO() || ce.isAverageInvoice()) 
-		{
-			if (CurrentQty.signum() < 0)
+		if (!isSkipAverageCostingQtyCheck) {
+			MCostElement ce = new MCostElement(getCtx(), getM_CostElement_ID(), get_TrxName());
+			if (ce.isAveragePO() || ce.isAverageInvoice()) 
 			{
-				throw new AverageCostingNegativeQtyException("Product="+getM_Product().getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
-						+", CostElement="+ce.getName()+", Schema="+getC_AcctSchema().getName());
+				if (CurrentQty.signum() < 0)
+				{
+					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+					throw new AverageCostingNegativeQtyException("Product="+MProduct.get(getM_Product_ID()).getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
+							+", CostElement="+ce.getName()+", Schema="+as.getName());
+				}
 			}
 		}
 		super.setCurrentQty(CurrentQty);
 	}
+	
+	private transient boolean isSkipAverageCostingQtyCheck = false;
+
+	protected boolean isSkipAverageCostingQtyCheck() {
+		return isSkipAverageCostingQtyCheck;
+	}
+
+	protected void setSkipAverageCostingQtyCheck(boolean isSkipAverageCostingQtyCheck) {
+		this.isSkipAverageCostingQtyCheck = isSkipAverageCostingQtyCheck;
+	}
+	
 }	//	MCost
