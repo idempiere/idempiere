@@ -422,15 +422,19 @@ public class Trx
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, m_trxName, e);
+			String msg = DBException.getDefaultDBExceptionMessage(e);
 			if (throwException) 
 			{
 				m_active = false;
 				fireAfterCommitEvent(false);
-				throw e;
+				if (msg != null)
+					msg = Msg.getMsg(Env.getCtx(), msg);
+				else
+					msg = e.getLocalizedMessage();
+				throw new AdempiereException(msg, e);
 			}
 			else
 			{
-				String msg = DBException.getDefaultDBExceptionMessage(e);
 				log.saveError(msg != null ? msg : e.getLocalizedMessage(), e);
 			}
 		}

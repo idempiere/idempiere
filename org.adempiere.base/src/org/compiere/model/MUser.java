@@ -18,7 +18,9 @@ package org.compiere.model;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -59,9 +61,11 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MUser extends X_AD_User implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 1351277092193923708L;
+	private static final long serialVersionUID = 9139076628293770170L;
+
+	public static final String SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED = "SavingMigrateUserPasswordIfNeeded";
 
 	/**
 	 * Get active Users of BPartner
@@ -438,8 +442,6 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	private Boolean				m_isAdministrator = null;
 	/** User Access Rights				*/
 	private MUserBPAccess[]	m_bpAccess = null;
-	/** Password Hashed **/
-	private boolean being_hashed = false;
 			
 	/**
 	 * 	Get Value
@@ -513,7 +515,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	}	//	cleanValue
 	
 	/**
-	 * Convert Password to SHA-512 hash with salt * 1000 iterations https://www.owasp.org/index.php/Hashing_Java
+	 * Convert password to hashed value if USER_PASSWORD_HASH is true
 	 * @param password -- plain text password
 	 */
 	@Override
@@ -529,22 +531,18 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			super.setPassword(password);
 			return;
 		}
-		
-		if ( being_hashed  )
-			return;
-		
-		being_hashed = true;   // prevents double call from beforeSave
-		
+
 		// Uses a secure Random not a simple Random
-		SecureRandom random;
 		try {
-			random = SecureRandom.getInstance("SHA1PRNG");
-			// Salt generation 64 bits long
-			byte[] bSalt = new byte[8];
+			SecureRandom random = SecureEngine.getSecureRandom();
+			// Salt generation 128 bits long
+			byte[] bSalt = new byte[16];
 			random.nextBytes(bSalt);
 			// Digest computation
 			String hash;
-			hash = SecureEngine.getSHA512Hash(1000,password,bSalt);
+			setPasswordHashAlgorithm(MSysConfig.getValue(MSysConfig.USER_PASSWORD_HASH_ALGORITHM));
+			setSaltAlgorithm(SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM);
+			hash = SecureEngine.getPasswordHash(getPasswordHashAlgorithm(), password,bSalt);
 
 	        String sSalt = Secure.convertToHexString(bSalt);
 			super.setPassword(hash);
@@ -553,6 +551,10 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			super.setPassword(password);
 		} catch (UnsupportedEncodingException e) {
 			super.setPassword(password);
+		} catch (NoSuchProviderException e) {
+			super.setPassword(password);
+		} catch (InvalidKeySpecException e) {
+			super.setPassword(password);
 		}
 	}
 	
@@ -560,7 +562,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 * check if hashed password matches
 	 */
 	public boolean authenticateHash (String password)  {
-		return SecureEngine.isMatchHash (getPassword(), getSalt(), password);
+		return SecureEngine.isMatchHash (getPasswordHashAlgorithm(), getPassword(), getSalt(), password);
 	}	
 	
 	/**
@@ -1017,7 +1019,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		}
 
 		boolean hasPassword = ! Util.isEmpty(getPassword());
-		if (hasPassword && (newRecord || is_ValueChanged("Password"))) {
+		if (   hasPassword
+			&& ! "Y".equals(get_Attribute(SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED))
+			&& (newRecord || is_ValueChanged("Password"))) {
 			// Validate password policies / IDEMPIERE-221
 			if (! (get_ValueOld("Salt") == null && get_Value("Salt") != null)) { // not being hashed
 				MPasswordRule pwdrule = MPasswordRule.getRules(getCtx(), get_TrxName());
@@ -1032,6 +1036,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		if (   hasPassword
 			&& is_ValueChanged("Password")
+			&& ! "Y".equals(get_Attribute(SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED))
 			&& (!newRecord || (hash_password && getSalt() == null))) {
 			// Hash password - IDEMPIERE-347
 			if (hash_password)

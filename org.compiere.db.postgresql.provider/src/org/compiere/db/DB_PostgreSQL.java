@@ -1051,11 +1051,12 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	
 	/**
 	 * Get the name of the unique constraint name based on a postgresql message
-	 * This method works for English, Spanish and German
+	 * This method works for English, Spanish, German and French
 	 * The foreign key constraint name is expected to be found in the second quoted string
 	 *   English quotes -> "constraint"
 	 *   Spanish quotes -> «constraint»
 	 *   German  quotes -> »constraint«
+	 *   French  quotes -> « constraint »
 	 */
 	@Override
 	public String getNameOfUniqueConstraintError(Exception e) {
@@ -1077,17 +1078,18 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			}
 		}
 		if (end != -1)
-			return info.substring(start+1, end);
+			return info.substring(start+1, end).trim();
 		return null;
 	}
 
 	/**
 	 * Get the foreign key constraint name based on a postgresql message
-	 * This method works for English, Spanish and German
+	 * This method works for English, Spanish, German and French
 	 * The foreign key constraint name is expected to be found in the second quoted string
 	 *   English quotes -> "constraint"
 	 *   Spanish quotes -> «constraint»
 	 *   German  quotes -> »constraint«
+	 *   French  quotes -> « constraint »
 	 */
 	@Override
 	public String getForeignKeyConstraint(Exception e) {
@@ -1115,7 +1117,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			}
 		}
 		if (end != -1)
-			return info.substring(start+1, end);
+			return info.substring(start+1, end).trim();;
 		return null;
 	}
 
