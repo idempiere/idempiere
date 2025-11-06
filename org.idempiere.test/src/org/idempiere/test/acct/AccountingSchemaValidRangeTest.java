@@ -235,7 +235,8 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 			MCostType costType = new MCostType(Env.getCtx(), M_CostType_ID, getTrxName());
 			costType.deleteEx(true, getTrxName());
 			commit();
-
+			//
+			CacheMgt.get().reset();
 		}
 	}
 
