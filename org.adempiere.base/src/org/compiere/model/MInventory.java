@@ -541,20 +541,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 						MClient client = MClient.get(getCtx(), getAD_Client_ID());
 						MAcctSchema as = client.getAcctSchema();
 						MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), client.get_ID());
-						
-						if (as.getC_Currency_ID() != getC_Currency_ID()) 
-						{
-							for (int i = 0; i < ass.length ; i ++)
-							{
-								MAcctSchema a =  ass[i];
-								if (a.getC_Currency_ID() ==  getC_Currency_ID()) 
+						if (as.getC_Currency_ID() != getC_Currency_ID()) {
+							for (MAcctSchema a : ass) {
+								if (a.getC_Currency_ID() == getC_Currency_ID()) 
 									as = a ; 
 							}
 						}
-	
-						ICostInfo cost = product.getCostInfo(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod(), getMovementDate());
-						if (cost != null && cost.getCurrentCostPrice().compareTo(currentCost) != 0) 
-						{
+						BigDecimal currentCostPrice = line.getCurrentCostPriceForCostAdjustment();
+						if (currentCostPrice != null && currentCostPrice.compareTo(currentCost) != 0) {
 							m_processMsg = "Current Cost for Line " + line.getLine() + " have changed.";
 							return DocAction.STATUS_Invalid; 
 						}
