@@ -43,7 +43,7 @@ com.sun.xml.messaging.saaj.impl,1.5.3,file:${user.home}/.m2/repository/com/sun/x
 com.sun.xml.stream.buffer.streambuffer,1.5.10,file:${user.home}/.m2/repository/com/sun/xml/stream/buffer/streambuffer/1.5.10/streambuffer-1.5.10.jar,4,false
 com.sun.xml.ws.jaxws-rt,2.3.5,file:${user.home}/.m2/repository/com/sun/xml/ws/jaxws-rt/2.3.5/jaxws-rt-2.3.5.jar,4,false
 com.sun.xml.ws.policy,2.7.10,file:${user.home}/.m2/repository/com/sun/xml/ws/policy/2.7.10/policy-2.7.10.jar,4,false
-com.zaxxer.HikariCP,7.0.2,file:${user.home}/.m2/repository/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar,4,false
+com.zaxxer.HikariCP,7.0.2,file:${user.home}/.m2/repository/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2.jar,4,false
 groovy,3.0.8,file:${user.home}/.m2/repository/org/codehaus/groovy/groovy/3.0.8/groovy-3.0.8.jar,4,false
 groovy-console,3.0.8,file:${user.home}/.m2/repository/org/codehaus/groovy/groovy-console/3.0.8/groovy-console-3.0.8.jar,4,false
 groovy-datetime,3.0.8,file:${user.home}/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.8/groovy-datetime-3.0.8.jar,4,false
