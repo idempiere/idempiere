@@ -59,7 +59,6 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPInstance;
-import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
@@ -73,6 +72,7 @@ import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -612,7 +612,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected void querySaved() 
 	{
 		//user query
-		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID));
+		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID),m_pi.getAD_PInstance_ID());
 		fSavedName.removeAllItems();
 		for (MPInstance instance : savedParams)
 		{
@@ -828,11 +828,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			boolean lastRun = false;
 			if (fSavedName.getRawText() != null) {
 				saveName = fSavedName.getRawText();
-				lastRun = ("** " + Msg.getMsg(Env.getCtx(), "LastRun") + " **")
-						.equals(saveName);
+				final String name = saveName;
+				lastRun = fSavedName.getSelectedIndex()>-1 && savedParams.stream().filter(i->i.getName().equals(name) && i.getAD_PInstance_ID()!=m_pi.getAD_PInstance_ID()).count()>0;
 			}
 			if (bSave.equals(event.getTarget()))
-				updateSaveParameter(saveName);
+				updateSaveCurrentParameter(saveName);
 			else if (bDelete.equals(event.getTarget()))
 				deleteSaveParameter(saveName);
 			else
@@ -849,51 +849,37 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 * Set MPInstance.Name = saveName.
 	 * @param saveName
 	 */
-	protected void updateSaveParameter(String saveName) {
-		// Update existing
-		if (fSavedName.getSelectedIndex() > -1 && savedParams != null) {
-			for (int i = 0; i < savedParams.size(); i++) {
-				if (savedParams.get(i).getName().equals(saveName)) {
-					getProcessInfo().setAD_PInstance_ID(savedParams.get(i)
-							.getAD_PInstance_ID());
-					for (MPInstancePara para : savedParams.get(i)
-							.getParameters()) {
-						para.deleteEx(true);
-					}
-					getParameterPanel().saveParameters();
-					
-					saveReportOptionToInstance(savedParams.get(i));
-					
-					savedParams.get(i).saveEx();
-					
-					getProcessInfo().setAD_PInstance_ID(0);
-				}
-			}
-		}
-		// create new
-		else {
-			MPInstance instance = null;
-			try {
-				instance = new MPInstance(Env.getCtx(),
-						getProcessInfo().getAD_Process_ID(), getProcessInfo().getTable_ID(), getProcessInfo().getRecord_ID(), getProcessInfo().getRecord_UU());
+	protected void updateSaveCurrentParameter(String saveName) {
+		MPInstance instance = null;
+		try {
+			if (m_pi.getAD_PInstance_ID() == 0) {
+				instance = new MPInstance(Env.getCtx(), getProcessInfo().getAD_Process_ID(),
+						getProcessInfo().getTable_ID(), getProcessInfo().getRecord_ID(),
+						getProcessInfo().getRecord_UU());
 				instance.setName(saveName);
 				saveReportOptionToInstance(instance);
 				instance.saveEx();
 				getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
-				// Get Parameters
-				if (getParameterPanel() != null) {
-					if (!getParameterPanel().saveParameters()) {
-						throw new AdempiereSystemError(Msg.getMsg(
-								Env.getCtx(), "SaveParameterError"));
-					}
-				}
-			} catch (Exception ex) {
-				log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+			} else {
+				instance = new MPInstance(getCtx(), m_pi.getAD_PInstance_ID(), null);
+				instance.setName(saveName);
+				saveReportOptionToInstance(instance);
+				instance.saveEx();
 			}
+
+			// Get Parameters
+			if (getParameterPanel() != null) {
+				if (!getParameterPanel().saveParameters()) {
+					throw new AdempiereSystemError(Msg.getMsg(Env.getCtx(), "SaveParameterError"));
+				}
+			}
+		} catch (Exception ex) {
+			log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
 		}
-		//reload fSavedName
+		// reload fSavedName
 		querySaved();
 		fSavedName.setSelectedItem(getComboItem(saveName));
+		bDelete.setEnabled(true);
 	}
 	
 	/**
@@ -955,8 +941,14 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		if (savedParams != null && o != null) {
 			String selected = fSavedName.getSelectedItem().getLabel();
 			for (int i = 0; i < savedParams.size(); i++) {
-				if (savedParams.get(i).getName().equals(selected)) {
-					savedParams.get(i).deleteEx(true);
+				if (savedParams.get(i).getName().equals(selected) && savedParams.get(i).getAD_PInstance_ID()==m_pi.getAD_PInstance_ID()) {
+					MPInstance instance = savedParams.get(i);
+					instance.setName(null);
+					instance.saveEx();
+					DB.executeUpdate("DELETE FROM AD_PInstance_Para WHERE AD_PInstance_ID = ?", m_pi.getAD_PInstance_ID(),false,null);
+					bDelete.setEnabled(false);
+					bSave.setEnabled(false);
+					break;
 				}
 			}
 		}
@@ -969,17 +961,19 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 * @param lastRun
 	 */
 	protected void chooseSaveParameter(String saveName, boolean lastRun) {
+		MPInstance selectedInstance = null;
 		if (savedParams != null && saveName != null) {
 			for (int i = 0; i < savedParams.size(); i++) {
 				if (savedParams.get(i).getName().equals(saveName)) {
 					loadSavedParams(savedParams.get(i));
+					selectedInstance = savedParams.get(i);
 				}
 			}
 		}
 		boolean enabled = !Util.isEmpty(saveName);
 		bSave.setEnabled(enabled && !lastRun);
 		bDelete.setEnabled(enabled && fSavedName.getSelectedIndex() > -1
-				&& !lastRun);	
+				&& !lastRun && selectedInstance.get_ID()==m_pi.getAD_PInstance_ID());	
 	}
 	
 	/**
