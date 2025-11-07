@@ -377,7 +377,7 @@
     <orderEntry type="library" name="Partial: org.osgi.util.tracker-1.5.4.202109301733" level="project" />
     <orderEntry type="library" name="Partial: org.osgi.util.xml-1.0.2.202109301733" level="project" />
     <orderEntry type="library" name="Partial: org.passay-1.6.1" level="project" />
-    <orderEntry type="library" name="Partial: org.postgresql.jdbc-42.7.8" level="project" />
+    <orderEntry type="library" name="Partial: org.postgresql.jdbc-42.7.3" level="project" />
     <orderEntry type="library" name="Partial: org.sat4j.core-2.3.6.v20201214" level="project" />
     <orderEntry type="library" name="Partial: org.sat4j.pb-2.3.6.v20201214" level="project" />
     <orderEntry type="library" name="Partial: org.tukaani.xz-1.9.0" level="project" />

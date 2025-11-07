@@ -1670,7 +1670,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="error" type="Maven">
 	    <groupId>org.postgresql</groupId>
     	<artifactId>postgresql</artifactId>
-    	<version>42.7.8</version>
+    	<version>42.7.3</version>
     </location>
     <location includeSource="true" missingManifest="generate" type="Maven">
     	<groupId>com.oracle.database.jdbc</groupId>

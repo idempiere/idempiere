@@ -99,7 +99,7 @@ org.osgi.util.pushstream,1.1.0.202212101352,file:plugins/org.osgi.util.pushstrea
 org.osgi.util.tracker,1.5.4.202109301733,file:${user.home}/.m2/repository/org/osgi/org.osgi.util.tracker/1.5.4/org.osgi.util.tracker-1.5.4.jar,4,false
 org.osgi.util.xml,1.0.2.202109301733,file:plugins/org.osgi.util.xml_1.0.2.202109301733.jar,4,false
 org.passay,1.6.1,file:${user.home}/.m2/repository/org/passay/passay/1.6.1/passay-1.6.1.jar,4,false
-org.postgresql.jdbc,42.7.8,file:${user.home}/.m2/repository/org/postgresql/postgresql/42.7.8/postgresql-42.7.8.jar,4,false
+org.postgresql.jdbc,42.7.3,file:${user.home}/.m2/repository/org/postgresql/postgresql/42.7.3/postgresql-42.7.3.jar,4,false
 slf4j.api,2.0.12,file:${user.home}/.m2/repository/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar,4,false
 slf4j.jdk14,2.0.12,file:${user.home}/.m2/repository/org/slf4j/slf4j-jdk14/2.0.12/slf4j-jdk14-2.0.12.jar,3,true
 wrapped.com.google.http-client.google-http-client-gson,1.39.2.sp1,file:${user.home}/.m2/repository/com/google/http-client/google-http-client-gson/1.39.2-sp.1/bnd-2aec70198dafbe64646870da9ce0bda1/google-http-client-gson-1.39.2-sp.1.jar,4,false
