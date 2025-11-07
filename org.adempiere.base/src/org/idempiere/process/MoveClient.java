@@ -1029,7 +1029,10 @@ public class MoveClient extends SvrProcess {
 							if (rsGD.wasNull()) {
 								parameters[i] = null;
 							} else {
-								if (   ! (key instanceof Number && ((Number)key).intValue() == 0 && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName)))  // Parent_ID/Node_ID=0 is valid
+								if (   ! (key instanceof Number 
+										  && ((Number)key).intValue() == 0 
+										      && (   "Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName)       // Parent_ID/Node_ID=0 is valid
+										    	  || ("Record_ID".equalsIgnoreCase(columnName) && "AD_Archive".equalsIgnoreCase(tableName)))) // AD_Archive.Record_ID=0 is valid
 									&& (key instanceof String || (key instanceof Number && ((Number)key).intValue() >= MTable.MAX_OFFICIAL_ID) || p_IsCopyClient)) {
 									Object convertedId = null;
 
