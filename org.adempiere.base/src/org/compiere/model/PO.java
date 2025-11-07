@@ -6577,4 +6577,27 @@ public abstract class PO
 		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", null).setParameters(get_Table_ID(), get_ID()).list();
 	}
 
+	/** Set of active AD_Workflow_IDs */
+	private final Set<Integer> activeWorkflows = new HashSet<>();
+
+	/**
+	 * @return the activeWorkflows
+	 */
+	public Set<Integer> getActiveWorkflows() {
+		return activeWorkflows;
+	}
+
+	/**
+	 * @param workflowId the AD_Workflow_ID to set
+	 */
+	public boolean addActiveWorkflow(Integer workflowId) {
+		return activeWorkflows.add(workflowId);
+	}
+
+	/**
+	 * @param workflowId the AD_Workflow_ID to remove
+	 */
+	public boolean removeActiveWorkflow(Integer workflowId) {
+		return activeWorkflows.remove(workflowId);
+	}
 }   //  PO
