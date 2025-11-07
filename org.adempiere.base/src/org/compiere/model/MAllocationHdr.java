@@ -459,7 +459,8 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 
 			// IDEMPIERE-1850 - validate date against related docs
 			if (line.getC_Invoice_ID() > 0) {
-				if (line.getParent().getDateAcct().after(getDateAcct())) {
+				MInvoice invoice = line.getInvoice();
+				if (invoice != null && invoice.getDateAcct().after(getDateAcct())) {
 					m_processMsg = "Wrong allocation date";
 					return DocAction.STATUS_Invalid;
 				}

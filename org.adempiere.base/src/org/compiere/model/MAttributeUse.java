@@ -80,8 +80,8 @@ public class MAttributeUse extends X_M_AttributeUse
 		// Not advanced roles cannot assign for use a reference attribute
 		if ((newRecord || is_ValueChanged(COLUMNNAME_M_Attribute_ID))
 				&& ! MRole.getDefault().isAccessAdvanced()) {			
-			MAttribute att = MAttribute.get(getCtx(), getM_Attribute_ID());
-			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(att.getAttributeValueType())) {
+			MAttribute attrib = new MAttribute(getCtx(), getM_Attribute_ID(), get_TrxName());
+			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(attrib.getAttributeValueType())) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
 				return false;
 			}

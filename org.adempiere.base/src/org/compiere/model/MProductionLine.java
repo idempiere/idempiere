@@ -164,8 +164,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		if ( getM_Product_ID() == getEndProduct_ID()) {
 			if (reversalId <= 0  && isAutoGenerateLot && getM_AttributeSetInstance_ID() == 0)
 			{
-				MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
-				asi = MAttributeSetInstance.generateLot(getCtx(), product, get_TrxName());
+				asi = MAttributeSetInstance.generateLot(getCtx(), prod, get_TrxName());
 				setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 			} 
 			Timestamp dateMPolicy = date;

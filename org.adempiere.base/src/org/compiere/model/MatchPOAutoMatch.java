@@ -461,19 +461,22 @@ public class MatchPOAutoMatch {
 					if (po.getReversal_ID() == 0 && po.getC_InvoiceLine_ID() > 0 && po.getRef_MatchPO_ID() > 0)
 					{
 						MInvoiceLine il = new MInvoiceLine(ctx, po.getC_InvoiceLine_ID(), trxName);
-						MMatchPO refMatchPO = new MMatchPO(ctx, po.getRef_MatchPO_ID(), trxName);
-						MInvoiceLine refIL = new MInvoiceLine(ctx, refMatchPO.getC_InvoiceLine_ID(), trxName);
 						if (il.getC_Invoice_ID() == C_Invoice_ID)
 						{
 							po.setRef_MatchPO_ID(0);
 							po.setPosted(false);
 							po.saveEx(trxName);
 						}
-						else if (refIL.getC_Invoice_ID() == C_Invoice_ID)
+						else
 						{
-							po.setRef_MatchPO_ID(0);
-							po.setPosted(false);
-							po.saveEx(trxName);
+							MMatchPO refMatchPO = new MMatchPO(ctx, po.getRef_MatchPO_ID(), trxName);
+							MInvoiceLine refIL = new MInvoiceLine(ctx, refMatchPO.getC_InvoiceLine_ID(), trxName);
+							if (refIL.getC_Invoice_ID() == C_Invoice_ID)
+							{
+								po.setRef_MatchPO_ID(0);
+								po.setPosted(false);
+								po.saveEx(trxName);
+							}
 						}
 					}
 				}
