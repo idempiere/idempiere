@@ -6153,6 +6153,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					new FactAcct(landedCostAccount, new BigDecimal("30.00"), 2, false));
 			assertFactAcctEntries(list, expected);
 		} finally {
+			rollback();
 			costElement.deleteEx(true);
 		}
 	}
@@ -6355,6 +6356,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertFactAcctEntries(list, expected);
 			}
 		} finally {
+			rollback();
 			costElement.deleteEx(true);
 		}
 	}
@@ -6591,6 +6593,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertFactAcctEntries(list, expected);
 			}
 		} finally {
+			rollback();
 			costElement.deleteEx(true);
 		}
 	}
