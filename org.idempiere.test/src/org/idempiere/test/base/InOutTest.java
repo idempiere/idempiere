@@ -60,13 +60,13 @@ import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.MShipper;
 import org.compiere.model.MShippingProcessor;
+import org.compiere.model.MShippingProcessorCfg;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BP_ShippingAcct;
-import org.compiere.model.X_M_ShippingProcessorCfg;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -441,7 +441,7 @@ public class InOutTest extends AbstractTestCase {
 		order.setDatePromised(today);
 		order.saveEx();
 		
-		X_M_ShippingProcessorCfg cfg = new X_M_ShippingProcessorCfg(Env.getCtx(), 0, getTrxName());
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(Env.getCtx(), 0, getTrxName());
 		cfg.setHostAddress("0.0.0.0");
 		cfg.setName("Test Shipping Processor Config");
 		cfg.setHostPort(0);

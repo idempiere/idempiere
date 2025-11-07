@@ -1695,7 +1695,8 @@ public class MCostDetail extends X_M_CostDetail
 				{
 					if (adjustment)
 					{
-						costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+						MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+						costingMethod = invLine.getParent().getCostingMethod();
 						if (MCostElement.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
 						{
 							if (cost.getCurrentQty().signum() == 0 && qty.signum() == 0) {
@@ -1725,7 +1726,8 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (adjustment)
 				{
-					costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+					costingMethod = invLine.getParent().getCostingMethod();
 					if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod))
 					{
 						if (cost.getCurrentQty().signum() == 0 && qty.signum() == 0) {
@@ -1800,7 +1802,8 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (adjustment)
 				{
-					costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+					costingMethod = invLine.getParent().getCostingMethod();
 					if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 					{
 						cost.add(amt.multiply(cost.getCurrentQty()), qty);					

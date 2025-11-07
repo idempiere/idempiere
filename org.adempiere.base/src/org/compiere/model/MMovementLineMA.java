@@ -266,7 +266,7 @@ public class MMovementLineMA extends X_M_MovementLineMA
 		}
 		// Set DateMaterialPolicy after edit of M_AttributeSetInstance_ID field
 		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
-			I_M_MovementLine line = getM_MovementLine();
+			MMovementLine line = new MMovementLine(getCtx(), getM_MovementLine_ID(), get_TrxName());
 			
 			Timestamp dateMPolicy = null;
 			if(getM_AttributeSetInstance_ID()>0)
@@ -276,7 +276,7 @@ public class MMovementLineMA extends X_M_MovementLineMA
 			
 			if(dateMPolicy == null)
 			{
-				I_M_Movement  movement = line.getM_Movement();
+				MMovement  movement = line.getParent();
 				dateMPolicy = movement.getMovementDate();
 			}
 			
