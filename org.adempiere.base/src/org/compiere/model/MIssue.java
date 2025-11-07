@@ -72,16 +72,12 @@ public class MIssue extends X_AD_Issue
 			s_creatingIssue = true;
 		}
 
-		MSystem system = MSystem.get(Env.getCtx());
-		if (system == null || !system.isAutoErrorReport()) {
-			synchronized (s_issueLock) {
-				s_creatingIssue = false;
-			}
-			return null;
-		}
 		//
 		MIssue issue = null;
 		try {
+			MSystem system = MSystem.get(Env.getCtx());
+			if (system == null || !system.isAutoErrorReport())
+				return null;
 			issue = new MIssue(record);
 			issue.saveEx();
 		} catch (Exception e) {
