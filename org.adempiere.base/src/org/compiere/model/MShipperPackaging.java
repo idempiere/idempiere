@@ -69,6 +69,7 @@ public class MShipperPackaging extends X_M_ShipperPackaging
 	 */
 	public String getValue()
 	{
-		return getM_ShipperPackagingCfg().getValue();
+		MShipperPackagingCfg cfg = new MShipperPackagingCfg(getCtx(), getM_ShipperPackagingCfg_ID(), get_TrxName());
+		return cfg.getValue();
 	}
 }
