@@ -24,7 +24,6 @@ import java.net.InetAddress;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
@@ -48,9 +47,13 @@ public class MIssue extends X_AD_Issue
 	 */
 	private static final long serialVersionUID = -417575919393424660L;
 
-	/** Flag to prevent infinite loop when saving issues - works across threads */
-	private static final Object s_issueLock = new Object();
-	private static final AtomicBoolean s_creatingIssue = new AtomicBoolean(false);
+	/** Flag to prevent infinite loop when saving issues - inheritable across thread hierarchy */
+	private static final InheritableThreadLocal<Boolean> s_creatingIssue = new InheritableThreadLocal<Boolean>() {
+	    @Override
+	    protected Boolean initialValue() {
+	        return false;
+	    }
+	};
 
 	/**
 	 * 	Create and report issue
@@ -65,15 +68,12 @@ public class MIssue extends X_AD_Issue
 			return null;
 
 		// Prevent infinite loop - don't create issues while already creating an issue
-		synchronized (s_issueLock) {
-			if (!s_creatingIssue.compareAndSet(false, true)) {
-				s_log.log(Level.WARNING, "Skipping issue creation to prevent infinite loop: " + record.getMessage());
-				return null;
-			}
-			s_creatingIssue.set(true);
-		}
+	    if (s_creatingIssue.get()) {
+	        s_log.log(Level.WARNING, "Skipping issue creation to prevent infinite loop: " + record.getMessage());
+	        return null;
+	    }
 
-		//
+	    s_creatingIssue.set(true);
 		MIssue issue = null;
 		try {
 			MSystem system = MSystem.get(Env.getCtx());
@@ -86,9 +86,7 @@ public class MIssue extends X_AD_Issue
 			s_log.log(Level.WARNING, "Failed to save issue: " + e.getMessage());
 			return null;
 		} finally {
-			synchronized (s_issueLock) {
-				s_creatingIssue.set(false);
-			}
+	        s_creatingIssue.set(false);
 		}
 		return issue;
 	}	//	create
