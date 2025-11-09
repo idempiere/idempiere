@@ -43,9 +43,17 @@ import org.compiere.util.Util;
 public class MIssue extends X_AD_Issue
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -3680542992654002121L;
+	private static final long serialVersionUID = -417575919393424660L;
+
+	/** Flag to prevent infinite loop when saving issues - inheritable across thread hierarchy */
+	private static final InheritableThreadLocal<Boolean> s_creatingIssue = new InheritableThreadLocal<Boolean>() {
+	    @Override
+	    protected Boolean initialValue() {
+	        return false;
+	    }
+	};
 
 	/**
 	 * 	Create and report issue
@@ -58,18 +66,31 @@ public class MIssue extends X_AD_Issue
 			s_log.config(record.getMessage());
 		if (!DB.isConnected())
 			return null;
-		MSystem system = MSystem.get(Env.getCtx()); 
-		if (system == null || !system.isAutoErrorReport())
+
+		// Prevent infinite loop - don't create issues while already creating an issue
+	    if (s_creatingIssue.get()) {
+	        s_log.log(Level.WARNING, "Skipping issue creation to prevent infinite loop: " + record.getMessage());
+	        return null;
+	    }
+
+	    s_creatingIssue.set(true);
+		MIssue issue = null;
+		try {
+			MSystem system = MSystem.get(Env.getCtx());
+			if (system == null || !system.isAutoErrorReport())
+				return null;
+			issue = new MIssue(record);
+			issue.saveEx();
+		} catch (Exception e) {
+			// Prevent infinite loop - don't log this error as it would trigger another MIssue.create call
+			s_log.log(Level.WARNING, "Failed to save issue: " + e.getMessage());
 			return null;
-		//
-		MIssue issue = new MIssue(record);
-		String error = issue.report();
-		issue.saveEx();
-		if (error != null)
-			return null;
+		} finally {
+	        s_creatingIssue.set(false);
+		}
 		return issue;
 	}	//	create
-	
+
 	/**
 	 * 	Create from decoded hash map string
 	 *	@param ctx context
