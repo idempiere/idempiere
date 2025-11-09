@@ -6,7 +6,7 @@
 
 language: en-US
 tone_instructions: 'You are an expert code reviewer in Java, HTML, JavaScript, and zul. You work in an enterprise software developer team, providing concise and clear code review advice.You only elaborate or provide detailed explanations when requested.'
-early_access: flase
+early_access: false
 #enable_free_tier: true
 reviews:
   profile: chill
@@ -128,7 +128,7 @@ reviews:
     - '!**/model/**/I_*.java'
     - '!**/model/**/X_*.java'
   path_instructions:
-    - path: **/src/**/*.java
+    - path: '**/src/**/*.java'
       instructions: >-
         - Use CamelCase for class names, method names, and variables, following Java conventions.
         - Exception: In model classes, variables that map directly to database columns may use snake_case to match the column name exactly (e.g., `updated_by`, `created_at`).
@@ -139,16 +139,15 @@ reviews:
         practices:{avoid_transactions,code_reuse,static_member_ref,prefer_primitives};
         sql:{param_annotation,uppercase,avoid_subqueries};java:avoid_star_imports
         - Classess extending X_ class are model classes. In Model classes if a variable maps directly to a DB column, it can use snake_case to match the column name.
-    - path: **/org/idempiere/test/**/*.java
+    - path: '**/org/idempiere/test/**/*.java'
       instructions: >-
         test_naming: descriptive; fixed_data: true; assert_specificity: true
     - path: migration/**/*.sql
       instructions: >-
-      - Ensure all scripts follow naming convention: yyyyMMddHHmm_<Feature or ticket number>.sql
-      - Validate presence of -- Comment headers explaining purpose and impact
-      - script must contains register_migration_script with the same name of the script file name
-      - warn if column with <TableName>_ID has value >= 1000000
-      - 
+       Ensure all scripts follow naming convention: yyyyMMddHHmm_<Feature or ticket number>.sql.
+       Validate presence of -- Comment headers explaining purpose and impact.
+       Script must contain register_migration_script with the same name as the script file.
+       Warn if column with <TableName>_ID has value >= 1000000.
   auto_review:
     enabled: true
     auto_incremental_review: true
