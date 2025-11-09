@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
@@ -49,7 +50,7 @@ public class MIssue extends X_AD_Issue
 
 	/** Flag to prevent infinite loop when saving issues - works across threads */
 	private static final Object s_issueLock = new Object();
-	private static volatile boolean s_creatingIssue = false;
+	private static final AtomicBoolean s_creatingIssue = new AtomicBoolean(false);
 
 	/**
 	 * 	Create and report issue
@@ -65,11 +66,11 @@ public class MIssue extends X_AD_Issue
 
 		// Prevent infinite loop - don't create issues while already creating an issue
 		synchronized (s_issueLock) {
-			if (s_creatingIssue) {
+			if (!s_creatingIssue.compareAndSet(false, true)) {
 				s_log.log(Level.WARNING, "Skipping issue creation to prevent infinite loop: " + record.getMessage());
 				return null;
 			}
-			s_creatingIssue = true;
+			s_creatingIssue.set(true);
 		}
 
 		//
@@ -86,7 +87,7 @@ public class MIssue extends X_AD_Issue
 			return null;
 		} finally {
 			synchronized (s_issueLock) {
-				s_creatingIssue = false;
+				s_creatingIssue.set(false);
 			}
 		}
 		return issue;
