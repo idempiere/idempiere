@@ -130,14 +130,13 @@ reviews:
   path_instructions:
     - path: '**/src/**/*.java'
       instructions: >-
+        - principles:{avoid_star_imports,no_duplication,clean_code,secure_code,performance,code_comments,logging_practices,error_handling}
+        - file_handling:os_indep_paths
+        - practices:{avoid_transactions,code_reuse,static_member_ref,prefer_primitives}
+        - sql:{param_annotation,uppercase,avoid_subqueries};java:avoid_star_imports
         - Use CamelCase for class names, method names, and variables, following Java conventions.
         - Exception: In model classes, variables that map directly to database columns may use snake_case to match the column name exactly (e.g., `updated_by`, `created_at`).
         - Do not mix naming styles within the same context unless justified by database mapping.
-        principles:{avoid_star_imports,no_duplication,clean_code,secure_code,performance,code_comments,logging_practices,error_handling};
-        db:{perf_queries,datetime_not_timestamp};
-        file_handling:os_indep_paths;
-        practices:{avoid_transactions,code_reuse,static_member_ref,prefer_primitives};
-        sql:{param_annotation,uppercase,avoid_subqueries};java:avoid_star_imports
         - Classess extending X_ class are model classes. In Model classes if a variable maps directly to a DB column, it can use snake_case to match the column name.
     - path: '**/org/idempiere/test/**/*.java'
       instructions: >-
