@@ -224,6 +224,10 @@ public class MAttributeSetTest extends AbstractTestCase {
 			assertNotNull(atomic2.get(), "Lot 2 not generated");
 			assertNotEquals(atomic1.get(), atomic2.get(), "Duplicate lot generated");
 		} finally {
+			rollback();
+			trx1.rollback();
+			trx2.rollback();
+			
 			//Delete Lot records from the DB
 			String lot1Value = atomic1.get();
 			if (lot1Value != null) {
