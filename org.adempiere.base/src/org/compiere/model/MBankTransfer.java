@@ -103,25 +103,27 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 			return false;
 		}
 		// From bank account and bank transfer document must belongs to the same organization
-		if (getFrom_C_BankAccount().getAD_Org_ID() != 0 && getFrom_C_BankAccount().getAD_Org_ID() != getFrom_AD_Org_ID()) {
+		MBankAccount fromBankAccount = new MBankAccount(getCtx(), getFrom_C_BankAccount_ID(), get_TrxName());
+		if (fromBankAccount.getAD_Org_ID() != 0 && fromBankAccount.getAD_Org_ID() != getFrom_AD_Org_ID()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "FromOrgNotMatchBankAccount", new Object[] {toString()}));
 			return false;
 		}
 		// Set From Currency from From_C_BankAccount_ID
 		if (getFrom_C_Currency_ID() == 0) {
-			int From_C_Currency_ID = getFrom_C_BankAccount().getC_Currency_ID();
+			int From_C_Currency_ID = fromBankAccount.getC_Currency_ID();
 			if (From_C_Currency_ID > 0)
 				setFrom_C_Currency_ID(From_C_Currency_ID);
 		}
 		// Set To_AD_Org_ID from To_C_BankAccount_ID
+		MBankAccount toBankAccount = new MBankAccount(getCtx(), getTo_C_BankAccount_ID(), get_TrxName());
 		if (getTo_AD_Org_ID() == 0) {
-			int To_AD_Org_ID = getTo_C_BankAccount().getAD_Org_ID();
+			int To_AD_Org_ID = toBankAccount.getAD_Org_ID();
 			if (To_AD_Org_ID > 0)
 				setTo_AD_Org_ID(To_AD_Org_ID);
 		}
 		// Set To_C_Currency_ID from To_C_BankAccount_ID
 		if (getTo_C_Currency_ID() == 0) {
-			int To_C_Currency_ID = getTo_C_BankAccount().getC_Currency_ID();
+			int To_C_Currency_ID = toBankAccount.getC_Currency_ID();
 			if (To_C_Currency_ID > 0)
 				setTo_C_Currency_ID(To_C_Currency_ID);
 		}

@@ -57,6 +57,7 @@ public class POCrossTenantTest extends AbstractTestCase
 	protected void tearDown() {
         PO.clearCrossTenantSafe();
         Env.setContext(ctx, Env.AD_CLIENT_ID, originalClientID);
+        rollback();
     }
     
     @Test

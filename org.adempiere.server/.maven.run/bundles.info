@@ -43,7 +43,7 @@ com.sun.xml.messaging.saaj.impl,1.5.3,file:${user.home}/.m2/repository/com/sun/x
 com.sun.xml.stream.buffer.streambuffer,1.5.10,file:${user.home}/.m2/repository/com/sun/xml/stream/buffer/streambuffer/1.5.10/streambuffer-1.5.10.jar,4,false
 com.sun.xml.ws.jaxws-rt,2.3.5,file:${user.home}/.m2/repository/com/sun/xml/ws/jaxws-rt/2.3.5/jaxws-rt-2.3.5.jar,4,false
 com.sun.xml.ws.policy,2.7.10,file:${user.home}/.m2/repository/com/sun/xml/ws/policy/2.7.10/policy-2.7.10.jar,4,false
-com.zaxxer.HikariCP,5.1.0,file:${user.home}/.m2/repository/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar,4,false
+com.zaxxer.HikariCP,7.0.2,file:${user.home}/.m2/repository/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2.jar,4,false
 groovy,3.0.8,file:${user.home}/.m2/repository/org/codehaus/groovy/groovy/3.0.8/groovy-3.0.8.jar,4,false
 groovy-console,3.0.8,file:${user.home}/.m2/repository/org/codehaus/groovy/groovy-console/3.0.8/groovy-console-3.0.8.jar,4,false
 groovy-datetime,3.0.8,file:${user.home}/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.8/groovy-datetime-3.0.8.jar,4,false
@@ -347,7 +347,7 @@ org.osgi.util.pushstream,1.1.0.202212101352,file:plugins/org.osgi.util.pushstrea
 org.osgi.util.tracker,1.5.4.202109301733,file:${user.home}/.m2/repository/org/osgi/org.osgi.util.tracker/1.5.4/org.osgi.util.tracker-1.5.4.jar,4,false
 org.osgi.util.xml,1.0.2.202109301733,file:plugins/org.osgi.util.xml_1.0.2.202109301733.jar,4,false
 org.passay,1.6.1,file:${user.home}/.m2/repository/org/passay/passay/1.6.1/passay-1.6.1.jar,4,false
-org.postgresql.jdbc,42.7.3,file:${user.home}/.m2/repository/org/postgresql/postgresql/42.7.3/postgresql-42.7.3.jar,4,false
+org.postgresql.jdbc,42.7.8,file:${user.home}/.m2/repository/org/postgresql/postgresql/42.7.8/postgresql-42.7.8.jar,4,false
 org.sat4j.core,2.3.6.v20201214,file:plugins/org.sat4j.core_2.3.6.v20201214.jar,4,false
 org.sat4j.pb,2.3.6.v20201214,file:plugins/org.sat4j.pb_2.3.6.v20201214.jar,4,false
 org.tukaani.xz,1.9.0,file:plugins/org.tukaani.xz_1.9.0.jar,4,false
@@ -361,7 +361,7 @@ slf4j.jdk14,2.0.12,file:${user.home}/.m2/repository/org/slf4j/slf4j-jdk14/2.0.12
 stax2-api,4.2.1,file:${user.home}/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.1/stax2-api-4.2.1.jar,4,false
 wrapped.com.google.http-client.google-http-client-gson,1.39.2.sp1,file:${user.home}/.m2/repository/com/google/http-client/google-http-client-gson/1.39.2-sp.1/bnd-2aec70198dafbe64646870da9ce0bda1/google-http-client-gson-1.39.2-sp.1.jar,4,false
 wrapped.com.google.zxing.javase,3.4.1,file:${user.home}/.m2/repository/com/google/zxing/javase/3.4.1/bnd-fd0891a26b67203f2dde44003aef69db/javase-3.4.1.jar,4,false
-wrapped.com.oracle.database.jdbc.ojdbc10,19.21.0.0,file:${user.home}/.m2/repository/com/oracle/database/jdbc/ojdbc10/19.21.0.0/bnd-2aec70198dafbe64646870da9ce0bda1/ojdbc10-19.21.0.0.jar,4,false
+wrapped.com.oracle.database.jdbc.ojdbc17,23.26.0.0,file:${user.home}/.m2/repository/com/oracle/database/jdbc/ojdbc17/23.26.0.0/bnd-2aec70198dafbe64646870da9ce0bda1/ojdbc17-23.26.0.0.jar,4,false
 wrapped.com.sun.net.httpserver.http,20070405.0.0,file:${user.home}/.m2/repository/com/sun/net/httpserver/http/20070405/bnd-43e7be55c7defe55981aefbae50f5d80/http-20070405.jar,4,false
 wrapped.com.sun.org.apache.xml.internal.resolver,20050927.0.0,file:${user.home}/.m2/repository/com/sun/org/apache/xml/internal/resolver/20050927/bnd-2aec70198dafbe64646870da9ce0bda1/resolver-20050927.jar,4,false
 wrapped.com.zaxxer.SparseBitSet,1.2.0,file:${user.home}/.m2/repository/com/zaxxer/SparseBitSet/1.2/bnd-2aec70198dafbe64646870da9ce0bda1/SparseBitSet-1.2.jar,4,false

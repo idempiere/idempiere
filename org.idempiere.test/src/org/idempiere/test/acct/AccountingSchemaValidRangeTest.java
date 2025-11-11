@@ -15,6 +15,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAcctSchemaGL;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
+import org.compiere.model.MCostType;
 import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MPInstance;
@@ -214,6 +215,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		finally
 		{
 			rollback();
+			int M_CostType_ID = acctSchema.getM_CostType_ID();
 			//
 			MAcctSchemaDefault def = MAcctSchemaDefault.get(Env.getCtx(), acctSchema.get_ID());
 			def.deleteEx(true, null);
@@ -227,6 +229,13 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 			DB.executeUpdate("DELETE FROM C_DocType					WHERE C_DocType_ID = ?", docType.get_ID(), null);
 			//
 			commit();
+			//
+			CacheMgt.get().reset();
+			// Delete the cost type created in the before save of accounting schema
+			MCostType costType = new MCostType(Env.getCtx(), M_CostType_ID, getTrxName());
+			costType.deleteEx(true, getTrxName());
+			commit();
+			//
 			CacheMgt.get().reset();
 		}
 	}
