@@ -5448,7 +5448,7 @@ public abstract class PO
 	public MAttachment getAttachment (boolean requery)
 	{
 		if (m_attachment == null || requery)
-			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), null);
+			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), get_TrxName());
 		return m_attachment;
 	}	//	getAttachment
 
@@ -6490,7 +6490,7 @@ public abstract class PO
 			{
 				String where = m_tableAttributeMap.isEmpty() ? "" : " AND a.Name = ? ";
 				// 4 - String, 5 - data, 6 - number, 7 - attribute value
-				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_VALUE_SQL + where, null);
+				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_VALUE_SQL + where, get_TrxName());
 				pstmt.setInt(1, get_Table_ID());
 				pstmt.setInt(2, get_ID());
 				if (!m_tableAttributeMap.isEmpty())
@@ -6579,7 +6579,7 @@ public abstract class PO
 	 */
 	public List<PO> get_TableAttributes()
 	{
-		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", null).setParameters(get_Table_ID(), get_ID()).list();
+		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", get_TrxName()).setParameters(get_Table_ID(), get_ID()).list();
 	}
 
 }   //  PO

@@ -32,26 +32,41 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
 import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MBPGroup;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MBPartnerInfo;
 import org.compiere.model.MCalendar;
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MClientShare;
 import org.compiere.model.MColumn;
+import org.compiere.model.MImage;
 import org.compiere.model.MMessage;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
@@ -59,23 +74,31 @@ import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MSession;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableIndex;
 import org.compiere.model.MTest;
 import org.compiere.model.MTestUU;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Tests for {@link org.compiere.model.PO} class.
@@ -1124,5 +1147,180 @@ public class POTest extends AbstractTestCase
 	    	calendar.saveEx();
 	    	assertEquals(0, calendar.getAD_Org_ID());
     	}
+    }
+    
+    @Test
+    void testReadonlySession() {
+    	MTest test = new MTest(Env.getCtx(), 0, getTrxName());
+    	test.setName("testReadonlySession");
+    	assertFalse(Env.isReadOnlySession());
+    	assertTrue(test.save());
+    	Env.setContext(Env.getCtx(), "IsReadOnlySession", "Y");
+    	assertTrue(Env.isReadOnlySession());
+    	test.setT_Integer(1);
+    	assertFalse(test.save());
+    }
+    
+    @Test
+    void testGet_Xml() {
+    	StringBuffer xml = new StringBuffer();
+    	MTest test = new MTest(Env.getCtx(), 0, getTrxName());    	
+    	test.setName("testGet_XmlString");
+    	test.saveEx();
+    	test.get_xmlString(xml);
+    	assertTrue(xml.length() > 0);
+    	try {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document document = builder.parse(new ByteArrayInputStream(xml.toString().getBytes()));
+			assertNotNull(document);
+			NodeList nodes = document.getElementsByTagName("Name");
+			assertNotNull(nodes);
+			assertEquals(1, nodes.getLength());
+			Node node = nodes.item(0);
+			assertNotNull(node);
+			assertEquals(test.getName(), node.getTextContent());
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			fail(e);
+		}
+    	
+    	Document document = test.get_xmlDocument(true);
+    	assertNotNull(document);
+		NodeList nodes = document.getElementsByTagName("Name");
+		assertNotNull(nodes);
+		assertEquals(1, nodes.getLength());
+		Node node = nodes.item(0);
+		assertNotNull(node);
+		assertEquals(test.getName(), node.getTextContent());
+    }
+    
+    @Test
+    void testGetFindParameter() {
+    	MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+    	MBPartnerInfo[] bpInfos = MBPartnerInfo.find(Env.getCtx(), null, bp.getName().toLowerCase(), "", null, "%", null);
+    	assertTrue(bpInfos.length > 0);
+    	Optional<MBPartnerInfo> optional = Arrays.stream(bpInfos).filter(e -> e.getName().equals(bp.getName())).findFirst();
+    	assertTrue(optional.isPresent());		
+    }
+    
+    @Test
+    void testLock() {
+    	MBPGroup bpGroup = new MBPGroup(Env.getCtx(), DictionaryIDs.C_BP_Group.STANDARD_CUSTOMERS.id, getTrxName());
+    	//lock should fail since bpGroup has no processing column
+    	assertFalse(bpGroup.lock());
+    	MTest test = null;
+    	try {
+    		test = new MTest(Env.getCtx(), 0, null);
+    		test.setName("testLock");
+    		test.setProcessing(false);
+    		test.saveEx();
+    		assertTrue(test.lock());
+    		assertFalse(test.lock());
+    		assertTrue(test.isProcessing());
+    		assertTrue(test.unlock(null));
+    		assertFalse(test.isProcessing());
+    	} finally {
+    		rollback();
+			if (test != null) {
+				test.deleteEx(true);
+			}
+		}
+    }
+    
+    @Test
+    void testPdfAttachment() throws IOException {
+    	MTest test = new MTest(Env.getCtx(), 0, getTrxName());
+		test.setName("testPdfAttachment");
+		test.saveEx();
+		
+		//test pdf attachment
+		MAttachment attachment = new MAttachment(Env.getCtx(), test.get_Table_ID(), test.get_ID(), test.get_UUID(), getTrxName());
+		attachment.setTitle("test pdf");
+		
+		File pdfFile = File.createTempFile("test", ".pdf");
+		pdfFile.deleteOnExit();
+		try (FileWriter writer = new FileWriter(pdfFile)) {
+			writer.write("dummy pdf content");
+		}
+		
+		try (attachment) {
+			MAttachmentEntry entry1 = new MAttachmentEntry(pdfFile.getName(), "dummy pdf content".getBytes(), 0);
+			attachment.addEntry(entry1);
+			attachment.saveEx();		
+			assertTrue(test.isPdfAttachment());
+			byte[] attachmentBytes = test.getPdfAttachment();
+			assertNotNull(attachmentBytes);
+			assertTrue(attachmentBytes.length > 0);
+		}		
+		
+		// test non-pdf attachment
+		File txtFile = File.createTempFile("test", ".txt");
+		txtFile.deleteOnExit();
+		try (FileWriter writer = new FileWriter(txtFile)) {
+			writer.write("dummy txt content");
+		}
+		
+		MTest test1 = new MTest(Env.getCtx(), 0, getTrxName());
+		test1.setName("testNonPdfAttachment1");
+		test1.saveEx();
+		MAttachment attachment1 = new MAttachment(Env.getCtx(), test1.get_Table_ID(), test1.get_ID(), test1.get_UUID(), getTrxName());
+		attachment1.setTitle("test non pdf");
+		try (attachment1) {
+			MAttachmentEntry entry2 = new MAttachmentEntry(txtFile.getName(), "dummy txt content".getBytes(), 0);
+			attachment1.addEntry(entry2);
+			attachment1.saveEx();
+		}
+		assertFalse(test1.isPdfAttachment());
+		assertNull(test1.getPdfAttachment());		
+    }
+    
+    @Test
+    void testValidateUniqueIndex() {
+    	//ad_tableindex: c_bpartner_value | 200361
+    	MTableIndex tableIndex = new MTableIndex(Env.getCtx(), 200361, null);
+    	int currentMessageId = tableIndex.getAD_Message_ID();
+    	int expectedMessageId = currentMessageId;
+    	try {
+	    	if (currentMessageId == 0) {
+	    		//SaveErrorNotUnique | 502
+	    		tableIndex.setAD_Message_ID(502);
+	    		tableIndex.saveCrossTenantSafeEx();
+	    		expectedMessageId = 502;
+	    	}
+	    	
+	    	MMessage expectedMessage = MMessage.get(Env.getCtx(), expectedMessageId);
+	    	String expectedMsgText = Msg.getMsg(Env.getCtx(), expectedMessage.getValue());
+	    	MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id);
+	    	MBPartner bp1 = new MBPartner(Env.getCtx(), 0, getTrxName());
+	    	bp1.setValue(bp.getValue());
+	    	bp1.setName("Test ValidateUniqueIndex");
+	    	assertFalse(bp1.save(), "Save should have failed due to unique index violation");
+	    	ValueNamePair ppE = CLogger.retrieveError();
+	    	assertNotNull(ppE, "No error message retrieved");
+	    	assertTrue(ppE.getName().startsWith(expectedMsgText), "Unexpected error message text");
+    	} finally {
+    		if (expectedMessageId != currentMessageId) {
+				tableIndex.setAD_Message_ID(currentMessageId);
+				tableIndex.saveCrossTenantSafeEx();
+			}
+    	}
+    }
+    
+    @Test
+    void testBinaryData() throws IOException {
+    	byte[] imageData = null;
+        try (InputStream is = getClass().getResourceAsStream("/org/idempiere/test/model/idempiere_logo.png")) {
+        	imageData = is.readAllBytes();
+        }
+        assertTrue(imageData != null && imageData.length > 0, "Image data should not be null or empty");
+        
+        MImage image = new MImage(Env.getCtx(), 0, getTrxName());
+        image.setName("idempiere_logo.png");
+        image.setBinaryData(imageData);
+		image.saveEx();
+        
+		image = new MImage(Env.getCtx(), image.get_ID(), getTrxName());
+		byte[] binaryData = image.getBinaryData();
+		assertTrue(binaryData != null && binaryData.length > 0, "Binary data should not be null or empty");
+		assertEquals(imageData.length, binaryData.length, "Binary data does not match the original data");
     }
 }
