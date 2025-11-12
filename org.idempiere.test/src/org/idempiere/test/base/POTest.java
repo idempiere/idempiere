@@ -36,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -43,9 +45,12 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
 import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MBPGroup;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MCalendar;
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MClient;
+import org.compiere.model.MClientShare;
 import org.compiere.model.MColumn;
 import org.compiere.model.MMessage;
 import org.compiere.model.MProduct;
@@ -53,17 +58,24 @@ import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MSession;
+import org.compiere.model.MTable;
 import org.compiere.model.MTest;
+import org.compiere.model.MTestUU;
+import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.Query;
+import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link org.compiere.model.PO} class.
@@ -178,6 +190,9 @@ public class POTest extends AbstractTestCase
 
 		// Finally, delete the testPO
 		testPO.delete(true, getTrxName());
+		assertFalse(testPO.is_ValueChanged(-1));
+		assertFalse(testPO.is_ValueChanged(Integer.MAX_VALUE));
+		assertFalse(testPO.is_ValueChanged("NonExistentColumn") );
 	}
 
 
@@ -656,9 +671,137 @@ public class POTest extends AbstractTestCase
         // Test setting boolean value on a String column
         assertFalse(testPO.set_ValueOfColumnReturningBoolean("Name", true));
         assertFalse(testPO.set_ValueOfColumnReturningBoolean(326, true));
+        
+        // Invalid column index and name
+        assertNull(testPO.get_Value(-1));
+        assertNull(testPO.get_Value(Integer.MAX_VALUE));
+        assertNull(testPO.get_Value("NonExistentColumn"));
+        assertNull(testPO.get_ValueOfColumn(-1));
+        assertNull(testPO.get_ValueOld(-1));
+        assertNull(testPO.get_ValueOld(Integer.MAX_VALUE));
+        assertEquals("", testPO.get_ValueAsString("NonExistentColumn"));
+        assertEquals(0, testPO.get_ValueAsInt(testPO.get_ColumnIndex(MTest.COLUMNNAME_Name)));
+        testPO.set_ValueOfColumn(MTest.COLUMNNAME_Name, "123");
+        assertEquals(123, testPO.get_ValueAsInt(testPO.get_ColumnIndex(MTest.COLUMNNAME_Name)));
+        assertThrows(AdempiereUserError.class, () -> testPO.set_Value("NonExistentColumn", "1"));
+        
+        // Test auto convert of string to _ID
+        testPO.set_Value(MTest.COLUMNNAME_C_Currency_ID, Integer.toString(DictionaryIDs.C_Currency.JPY.id));
+        assertEquals(DictionaryIDs.C_Currency.JPY.id, testPO.getC_Currency_ID());
+        
+        // Test set virtual column value
+        assertFalse(testPO.set_Value(MTest.COLUMNNAME_TestVirtualQty, BigDecimal.TEN));
+        
+        // Test set mandatory column to null
+        assertFalse(testPO.set_Value(MTest.COLUMNNAME_Name, null));
+        
+        // Test auto convert of string to integer
+        assertTrue(testPO.set_Value(MTest.COLUMNNAME_T_Integer, "456"));
+        assertFalse(testPO.set_Value(MTest.COLUMNNAME_T_Integer, "456a"));
+        
+        // Test Validate (Min/Max)
+        // C_BP_Group | CreditWatchPercent | 0 | 100
+        MBPGroup bpGroup = new MBPGroup(Env.getCtx(), DictionaryIDs.C_BP_Group.STANDARD_CUSTOMERS.id, getTrxName());
+        assertTrue(bpGroup.set_Value(MBPGroup.COLUMNNAME_CreditWatchPercent, new BigDecimal("50")));
+        assertFalse(bpGroup.set_Value(MBPGroup.COLUMNNAME_CreditWatchPercent, new BigDecimal("-1")));
+        assertFalse(bpGroup.set_Value(MBPGroup.COLUMNNAME_CreditWatchPercent, new BigDecimal("500")));
+        
+        // Test DisplayType.List validation
+        MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+        assertFalse(bp.set_Value(MBPartner.COLUMNNAME_InvoiceRule, "NonExistentValue"));
+        
+        // Test updateable validation
+        assertFalse(bp.set_Value(MBPartner.COLUMNNAME_AD_Client_ID, 1000000));
+        
+        // Test convert bigdecimal to integer
+        assertTrue(testPO.set_Value(MTest.COLUMNNAME_T_Integer, new BigDecimal("50")));
+        // Test convert Y/N to boolean
+        assertTrue(testPO.set_Value(MTest.COLUMNNAME_IsActive, "N"));
+        assertFalse(testPO.isActive());
+        assertTrue(testPO.set_Value(MTest.COLUMNNAME_IsActive, "Y"));
+        assertTrue(testPO.isActive());
     }
     
     @Test
+    void testGetValueDifference() {
+    	MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+    	
+    	// --- unsupported type ---
+    	int nameIndex = testPO.get_ColumnIndex(MTest.COLUMNNAME_Name);
+    	testPO.set_Value(nameIndex, "old");
+    	testPO.saveEx();
+    	testPO.set_Value(nameIndex, "new");
+    	Object diff = testPO.get_ValueDifference(nameIndex);
+    	assertNull(diff);
+    	
+    	
+    	// --- BigDecimal ---
+    	int amtIndex = testPO.get_ColumnIndex(MTest.COLUMNNAME_T_Amount);
+    	testPO.set_Value(amtIndex, new BigDecimal("10.0"));
+    	testPO.saveEx();
+    	testPO.set_Value(amtIndex, new BigDecimal("12.5"));
+    	diff = testPO.get_ValueDifference(amtIndex);
+    	assertTrue(diff instanceof BigDecimal);
+    	assertEquals(new BigDecimal("2.5"), diff);
+    	diff = testPO.get_ValueDifference(MTest.COLUMNNAME_T_Amount);
+    	assertTrue(diff instanceof BigDecimal);
+    	assertEquals(new BigDecimal("2.5"), diff);
+    	
+    	// --- Integer ---
+    	int integerIndex = testPO.get_ColumnIndex(MTest.COLUMNNAME_T_Integer);
+    	testPO.set_Value(integerIndex, 10);
+    	testPO.saveEx();
+    	testPO.set_Value(integerIndex, 15);
+    	diff = testPO.get_ValueDifference(integerIndex);
+    	assertTrue(diff instanceof Integer);
+    	assertEquals(Integer.valueOf("5"), diff);
+    	
+    	// --- Timestamp ---
+    	int dateIndex = testPO.get_ColumnIndex(MTest.COLUMNNAME_T_DateTime);
+    	long now = System.currentTimeMillis();
+    	java.sql.Timestamp date1 = new java.sql.Timestamp(now);
+    	java.sql.Timestamp date2 = new java.sql.Timestamp(now + 10000);
+    	testPO.set_Value(dateIndex, date1);
+    	testPO.saveEx();
+    	testPO.set_Value(dateIndex, date2);
+    	diff = testPO.get_ValueDifference(dateIndex);
+    	assertTrue(diff instanceof Long);
+    	assertEquals(10000L, diff);
+    	
+    	// --- No change ---
+    	testPO.set_Value(integerIndex, 15);
+    	testPO.saveEx();
+    	testPO.set_Value(integerIndex, 15);
+    	diff = testPO.get_ValueDifference(integerIndex);
+    	assertEquals(0, diff);
+    	
+    	// --- null old value ---
+    	testPO.set_Value(integerIndex, null);
+    	testPO.saveEx();
+    	testPO.set_Value(integerIndex, 15);
+    	diff = testPO.get_ValueDifference(integerIndex);
+    	assertEquals(15, diff);
+    	    	
+    	// --- null new value ---
+    	testPO.set_Value(integerIndex, 15);
+    	testPO.saveEx();
+    	testPO.set_Value(integerIndex, null);
+    	diff = testPO.get_ValueDifference(integerIndex);
+    	assertNull(diff);
+    	testPO.set_Value(integerIndex, 15);
+    	testPO.saveEx();
+    	
+    	// --- invalid index ---
+    	diff = testPO.get_ValueDifference(-1);
+    	assertNull(diff);
+    	diff = testPO.get_ValueDifference(9999);
+    	assertNull(diff);
+    	
+    	// --- invalid column name ---
+    	diff = testPO.get_ValueDifference("NoSuchColumn");
+    	assertNull(diff);
+    }
+        @Test
     void testGet_ValueOld() {
     	
     	//Valid column Name
@@ -689,9 +832,12 @@ public class POTest extends AbstractTestCase
         // Old value should still be "InitialName" (from last save)
         assertEquals("InitialName", testPO.get_ValueOld(MTest.COLUMNNAME_Name));
         assertEquals("Name2", testPO.get_Value(MTest.COLUMNNAME_Name));
+        assertEquals(0, testPO.get_ValueOldAsInt(MTest.COLUMNNAME_Name));
 
         // Test with non-existent column
         Object result = testPO.get_ValueOld("NonExistentColumn");
+        assertNull(result);
+        result = testPO.get_ValueOld(-1);
         assertNull(result);
 
 		// Finally, delete the testPO
@@ -713,5 +859,270 @@ public class POTest extends AbstractTestCase
         );
     }
     
+    private static final class NullPOInfoPO extends PO {
+		private static final long serialVersionUID = 1L;
 
+		public NullPOInfoPO(Properties ctx, int ID, String trxName, ResultSet rs, String... virtualColumns) {
+			super(ctx, ID, trxName, rs, virtualColumns);
+		}
+
+		public NullPOInfoPO(Properties ctx, int ID, String trxName, String... virtualColumns) {
+			super(ctx, ID, trxName, virtualColumns);
+		}
+
+		public NullPOInfoPO(Properties ctx, int ID, String trxName) {
+			super(ctx, ID, trxName);
+		}
+
+		public NullPOInfoPO(Properties ctx, PO source, int AD_Client_ID, int AD_Org_ID) {
+			super(ctx, source, AD_Client_ID, AD_Org_ID);
+		}
+
+		public NullPOInfoPO(Properties ctx, ResultSet rs, String trxName) {
+			super(ctx, rs, trxName);
+		}
+
+		public NullPOInfoPO(Properties ctx, String UUID, String trxName, ResultSet rs, String... virtualColumns) {
+			super(ctx, UUID, trxName, rs, virtualColumns);
+		}
+
+		public NullPOInfoPO(Properties ctx, String UUID, String trxName, String... virtualColumns) {
+			super(ctx, UUID, trxName, virtualColumns);
+		}
+
+		public NullPOInfoPO(Properties ctx, String UUID, String trxName) {
+			super(ctx, UUID, trxName);
+		}
+
+		public NullPOInfoPO(Properties ctx) {
+			super(ctx);
+		}
+
+		@Override
+		protected POInfo initPO(Properties ctx) {
+			return null;
+		}
+
+		@Override
+		protected int get_AccessLevel() {
+			return 0;
+		}
+    }
+    
+    @Test
+    void testNullPOInfoPO() {
+		assertThrows(IllegalArgumentException.class, () -> new NullPOInfoPO(Env.getCtx(), 0, getTrxName()));
+		assertThrows(IllegalArgumentException.class, () -> new NullPOInfoPO(Env.getCtx(), "", getTrxName()));
+	}
+    
+    private static final class BadPOInfoPO extends PO {
+		private static final long serialVersionUID = 1L;
+
+		public BadPOInfoPO(Properties ctx, int ID, String trxName, ResultSet rs, String... virtualColumns) {
+			super(ctx, ID, trxName, rs, virtualColumns);
+		}
+
+		public BadPOInfoPO(Properties ctx, int ID, String trxName, String... virtualColumns) {
+			super(ctx, ID, trxName, virtualColumns);
+		}
+
+		public BadPOInfoPO(Properties ctx, int ID, String trxName) {
+			super(ctx, ID, trxName);
+		}
+
+		public BadPOInfoPO(Properties ctx, PO source, int AD_Client_ID, int AD_Org_ID) {
+			super(ctx, source, AD_Client_ID, AD_Org_ID);
+		}
+
+		public BadPOInfoPO(Properties ctx, ResultSet rs, String trxName) {
+			super(ctx, rs, trxName);
+		}
+
+		public BadPOInfoPO(Properties ctx, String UUID, String trxName, ResultSet rs, String... virtualColumns) {
+			super(ctx, UUID, trxName, rs, virtualColumns);
+		}
+
+		public BadPOInfoPO(Properties ctx, String UUID, String trxName, String... virtualColumns) {
+			super(ctx, UUID, trxName, virtualColumns);
+		}
+
+		public BadPOInfoPO(Properties ctx, String UUID, String trxName) {
+			super(ctx, UUID, trxName);
+		}
+
+		public BadPOInfoPO(Properties ctx) {
+			super(ctx);
+		}
+
+		@Override
+		protected POInfo initPO(Properties ctx) {
+			return POInfo.getPOInfo(ctx, -9999);
+		}
+
+		@Override
+		protected int get_AccessLevel() {
+			return 0;
+		}
+    }
+
+    @Test
+    void testBadPOInfoPO() {
+		assertThrows(IllegalArgumentException.class, () -> new BadPOInfoPO(Env.getCtx(), 0, getTrxName()));
+		assertThrows(IllegalArgumentException.class, () -> new BadPOInfoPO(Env.getCtx(), "", getTrxName()));
+	}
+    
+    @Test
+    void testGet_DisplayValue() {
+    	MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+    	assertEquals(bp.getName(), bp.get_DisplayValue(MBPartner.COLUMNNAME_Name, true));
+    	assertEquals("true", bp.get_DisplayValue(MBPartner.COLUMNNAME_IsActive, true));
+    	String oldName2 = "name2";
+    	bp.setName2(oldName2);
+    	bp.saveEx();
+    	bp.setName2(null);
+    	assertEquals("./.", bp.get_DisplayValue(MBPartner.COLUMNNAME_Name2, true));
+    	assertEquals(oldName2, bp.get_DisplayValue(MBPartner.COLUMNNAME_Name2, false));
+    	String displayValue = bp.get_DisplayValue(MBPartner.COLUMNNAME_C_BP_Group_ID, true);
+    	assertEquals(MBPGroup.get(bp.getC_BP_Group_ID()).getName(), displayValue);
+    }
+    
+    @Test
+    void testCopyValues() {
+    	// same class
+    	MTest source = new MTest(Env.getCtx(), 0, getTrxName());
+    	source.setName("Source");
+    	source.setT_Integer(1);
+    	source.saveEx();
+    	MTest target = new MTest(Env.getCtx(), 0, getTrxName());
+    	target.setName("Target");
+    	target.setT_Integer(2);
+    	PO.copyValues(source, target);
+    	assertEquals(source.getT_Integer(), target.getT_Integer());
+    	
+    	//different class
+    	MTestUU target2 = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+    	target2.setName("Target2");
+    	target2.setDescription("testuu");
+    	source.setDescription("source desc");
+    	source.saveEx();
+    	PO.copyValues(source, target2);	
+    	assertEquals(source.getDescription(), target2.getDescription());
+    }
+    
+    @Test
+    void testLoadPOByUU() {
+    	MTest test = new MTest(Env.getCtx(), 0, getTrxName());
+    	test.setName("TestLoadByUU");
+    	test.saveEx();
+    	
+    	MTable table = MTable.get(Env.getCtx(), MTest.Table_Name);
+    	PO po = table.getPOByUU(test.getTest_UU(), getTrxName());
+    	assertNotNull(po);
+    	assertTrue(po instanceof MTest);
+    	assertEquals(test.get_ID(), po.get_ID());
+    	
+    	//test non existing UU
+    	po = table.getPOByUU(test.getTest_UU().replaceFirst(".?", "Z"), getTrxName());
+    	assertNotNull(po);
+    	assertTrue(po instanceof MTest);
+    	assertEquals(0, po.get_ID());
+    	assertTrue(po.is_new());
+    	rollback();
+    	
+    	MTestUU testuu = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+    	testuu.setName("TestUU");
+    	testuu.saveEx();
+    	table = MTable.get(Env.getCtx(), MTestUU.Table_Name);
+    	po = table.getPOByUU(testuu.get_UUID(), getTrxName());
+    	assertNotNull(po);
+    	assertTrue(po instanceof MTestUU);
+    	assertEquals(testuu.get_UUID(), po.get_UUID());    	    	
+    }
+    
+    @Test
+    void testImmutable() {
+    	MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+    	bp.markImmutable();
+		assertTrue(bp.is_Immutable());
+		assertThrows(IllegalStateException.class, () -> { bp.setName("New Name"); });
+    }
+    
+    @Test
+    void testEquals() {
+    	MTest test1 = new MTest(Env.getCtx(), 0, getTrxName());
+		test1.setName("TestEquals");
+		test1.saveEx();
+		
+		MTest test2 = new MTest(Env.getCtx(), test1.get_ID(), getTrxName());
+		
+		assertTrue(test1.equals(test2));
+		
+		MTest test3 = new MTest(Env.getCtx(), 0, getTrxName());
+		test3.setName("TestEquals");
+		test3.saveEx();
+		
+		assertFalse(test1.equals(test3));
+		assertFalse(test1.equals(null));
+		assertFalse(test1.equals(Boolean.TRUE));
+		
+		MTest test4 = new MTest(Env.getCtx(), 0, getTrxName());
+		test4.setName("TestEquals 4");
+		MTest test5 = new MTest(Env.getCtx(), 0, getTrxName());
+		test5.setName("TestEquals 5");
+		MTest test6 = new MTest(Env.getCtx(), 0, getTrxName());
+		test6.setName(test4.getName());
+		assertFalse(test4.equals(test5));
+		assertFalse(test4.equals(test6));
+    }
+    
+    @Test
+    void testSetCustomColumn() {
+    	MTest test = new MTest(Env.getCtx(), 0, getTrxName());
+		test.setName("testSetCustomColumn");
+		test.saveEx();
+		
+		// Test works for non custom column too
+		assertTrue(test.set_CustomColumnReturningBoolean(MTest.COLUMNNAME_Description, "Description"));
+		assertEquals("Description", test.getDescription());
+		
+		assertTrue(test.set_CustomColumnReturningBoolean("CustomNumber", BigDecimal.TEN));
+		assertTrue(test.set_CustomColumnReturningBoolean("CustomBoolean", Boolean.TRUE));
+		assertTrue(test.set_CustomColumnReturningBoolean("CustomTimestamp", new Timestamp(System.currentTimeMillis())));
+		assertTrue(test.set_CustomColumnReturningBoolean("CustomText", "Custom Text"));
+    }
+    
+    @Test
+    void testLoadPartialPO () {
+    	MTest test = new MTest(Env.getCtx(), 0, getTrxName());
+		test.setName("testLoadPartialPO");
+		test.setDescription("testLoadPartialPO description");
+		test.setT_Integer(1);
+		test.saveEx();
+		
+		Query query = new Query(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_Test_ID+"=?", getTrxName());
+		MTest partial = query.selectColumns(MTest.COLUMNNAME_Name).setParameters(test.get_ID()).first();
+		assertNotNull(partial);
+		assertEquals(test.getName(), partial.getName());
+		assertTrue(Util.isEmpty(partial.getDescription()));
+		assertEquals(0, partial.getT_Integer());
+		// created is always loaded
+		assertEquals(test.getCreated(), partial.getCreated());
+    }
+    
+    @Test
+    void testOrgReset() {
+    	//C_Calendar access level is client only
+    	MTable table = MTable.get(Env.getCtx(), MCalendar.Table_Name);
+    	assertEquals(MTable.ACCESSLEVEL_ClientOnly, table.getAccessLevel().trim());
+    	try (MockedStatic<MClientShare> clientShareMock = Mockito.mockStatic(MClientShare.class, Mockito.CALLS_REAL_METHODS);) {
+    		clientShareMock.when(() -> MClientShare.isClientLevelOnly(Mockito.eq(getAD_Client_ID()), 
+    			Mockito.eq(MCalendar.Table_ID)))
+				.thenReturn(true);
+	    	MCalendar calendar = new MCalendar(Env.getCtx(), 0, getTrxName());
+	    	calendar.setName("testOrgReset");
+	    	calendar.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+	    	calendar.saveEx();
+	    	assertEquals(0, calendar.getAD_Org_ID());
+    	}
+    }
 }

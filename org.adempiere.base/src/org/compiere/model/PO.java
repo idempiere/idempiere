@@ -792,7 +792,7 @@ public abstract class PO
 	}   //  is_ValueChanged
 
 	/**
-	 *  Get new - old.<br/>
+	 *  Get new - old (implemented for numeric and timestamp type).<br/>
 	 * 	- New Value if Old Value is null<br/>
 	 * 	- New Value - Old Value if Number<br/>
 	 * 	- otherwise null
@@ -825,6 +825,12 @@ public abstract class PO
 			result -= ((Integer)oValue).intValue();
 			return Integer.valueOf(result);
 		}
+		else if (nValue instanceof Timestamp)
+		{
+			long result = ((Timestamp)nValue).getTime();
+			result -= ((Timestamp)oValue).getTime();
+			return Long.valueOf(result);
+		}
 		//
 		log.warning("Invalid type - New=" + nValue);
 		return null;
@@ -855,7 +861,7 @@ public abstract class PO
 	 *  @param value value to set
 	 *  @return true if value set
 	 */
-	protected final boolean set_Value (String ColumnName, Object value)
+	public final boolean set_Value (String ColumnName, Object value)
 	{
 		return set_Value(ColumnName, value, true);
 	}
@@ -878,9 +884,7 @@ public abstract class PO
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 		{
-			log.log(Level.SEVERE, "Column not found - " + get_TableName() + "." + ColumnName);
-			log.saveError("ColumnNotFound", get_TableName() + "." + ColumnName);
-			return false;
+			throw new AdempiereUserError("ColumnNotFound", get_TableName() + "." + ColumnName);
 		}
 		if (ColumnName.endsWith("_ID") && value instanceof String )
 		{
@@ -914,7 +918,7 @@ public abstract class PO
 	 *  @param value value to set
 	 *  @return true if value set
 	 */
-	protected final boolean set_Value (int index, Object value)
+	public final boolean set_Value (int index, Object value)
 	{
 		return set_Value(index, value, true);
 	}
@@ -933,8 +937,7 @@ public abstract class PO
 		
 		if (index < 0 || index >= get_ColumnCount())
 		{
-			log.log(Level.WARNING, "Index invalid - " + index);
-			return false;
+			throw new AdempiereException("Index invalid - " + index);
 		}
 		String ColumnName = p_info.getColumnName(index);
 		String colInfo = " - " + ColumnName;
@@ -1774,6 +1777,7 @@ public abstract class PO
 	 * 	@param hmIn hash map
 	 * 	@return true if loaded
 	 */
+	@Deprecated
 	protected boolean load (HashMap<String,String> hmIn)
 	{
 		checkImmutable();
@@ -2070,6 +2074,7 @@ public abstract class PO
 	 *  Stops at first null mandatory field.
 	 *  @return true if all mandatory fields are ok
 	 */
+	@Deprecated
 	protected boolean isMandatoryOK()
 	{
 		int size = get_ColumnCount();
