@@ -2306,7 +2306,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		for (int i = 0; i < lines.length; i++)
 		{
 			MInOutLine dropLine = lines[i];
-			MOrderLine ol = new MOrderLine(getCtx(), dropLine.getC_OrderLine_ID(), null);
+			MOrderLine ol = new MOrderLine(getCtx(), dropLine.getC_OrderLine_ID(), get_TrxName());
 			if ( ol.getC_OrderLine_ID() != 0 ) {
 				dropLine.setC_OrderLine_ID(ol.getLink_OrderLine_ID());
 				dropLine.saveEx();
@@ -3481,6 +3481,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				}
 			}
 		} else if (reversalDate == null && MovementType.equals(MOVEMENTTYPE_CustomerShipment)) {
+			if (getC_Order_ID() > 0) {
+				MOrder sOrder = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+				if (sOrder.getLink_Order_ID() > 0) {
+					MOrder lOrder = new MOrder(getCtx(), sOrder.getLink_Order_ID(), get_TrxName());
+					if (lOrder.isDropShip())
+						return true;
+				}
+			}
  			MInOutLine[] sLines = getLines(false);
 			for (MInOutLine sLine : sLines) {
 				int AD_Org_ID = sLine.getAD_Org_ID();

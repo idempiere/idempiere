@@ -72,6 +72,7 @@ import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
@@ -7986,6 +7987,121 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			product.set_TrxName(getTrxName());
 			cost.load(getTrxName());
  			assertEquals(new BigDecimal("35").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
+	/**
+	 * IDEMPIERE-6702
+	 * PO1 Qty=10
+	 * MR1 Qty=10
+	 * SO1 Qty=10
+	 * SH1 Qty=10
+	 * SO2 Qty=10
+	 * PO2 Qty=10 (Generate PO from Sales Order) - Drop Shipment
+	 * MR2 Qty=10
+	 */
+	@Test
+	public void testDropShipment() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			backDateDays = configureAcctSchema(ass);
+			MProduct product = createProduct("testDropShipment", new BigDecimal(5));
+			mockProductGet(productMock, product);
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate = new Timestamp(cal.getTimeInMillis());
+			
+			// PO1 & MR1
+			createPOAndMRForProduct(backDate, product.get_ID(), new BigDecimal(10), new BigDecimal(5));
+			
+			// SO1 & SH1
+			createSOAndSHForProduct(backDate, product.get_ID(), new BigDecimal(10), new BigDecimal(5));
+			
+			// SO2
+			MOrder salesOrder = new MOrder(Env.getCtx(), 0, getTrxName());
+			salesOrder.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			salesOrder.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			salesOrder.setIsSOTrx(true);
+			salesOrder.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			salesOrder.setDocStatus(DocAction.STATUS_Drafted);
+			salesOrder.setDocAction(DocAction.ACTION_Complete);
+			salesOrder.setDateAcct(backDate);
+			salesOrder.setDateOrdered(backDate);
+			salesOrder.setDatePromised(backDate);		
+			salesOrder.saveEx();
+
+			MOrderLine salesOrderLine = new MOrderLine(salesOrder);
+			salesOrderLine.setLine(10);
+			salesOrderLine.setProduct(new MProduct(Env.getCtx(), product.get_ID(), getTrxName()));
+			salesOrderLine.setQty(new BigDecimal(10));
+			salesOrderLine.setDatePromised(backDate);
+			salesOrderLine.setPrice(new BigDecimal(5));
+			salesOrderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(salesOrder, DocAction.ACTION_Complete);
+			salesOrder.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, salesOrder.getDocStatus());
+			
+			// PO2
+			MOrder purchaseOrder = new MOrder(Env.getCtx(), 0, getTrxName());
+			purchaseOrder.setClientOrg(salesOrder.getAD_Client_ID(), salesOrder.getAD_Org_ID());
+			purchaseOrder.setLink_Order_ID(salesOrder.getC_Order_ID());
+			purchaseOrder.setIsSOTrx(false);
+			purchaseOrder.setC_DocTypeTarget_ID();
+			purchaseOrder.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			purchaseOrder.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			purchaseOrder.setDocStatus(DocAction.STATUS_Drafted);
+			purchaseOrder.setDocAction(DocAction.ACTION_Complete);
+			purchaseOrder.setDateAcct(today);
+			purchaseOrder.setDateOrdered(today);
+			purchaseOrder.setDatePromised(today);
+			purchaseOrder.setIsDropShip(true);
+			purchaseOrder.setDropShip_BPartner_ID(salesOrder.getC_BPartner_ID());
+			purchaseOrder.setDropShip_Location_ID(salesOrder.getC_BPartner_Location_ID());
+			purchaseOrder.setDropShip_User_ID(salesOrder.getAD_User_ID());
+			MOrgInfo orginfo = MOrgInfo.get(Env.getCtx(), purchaseOrder.getAD_Org_ID(), getTrxName());
+			if (orginfo.getDropShip_Warehouse_ID() != 0 )
+				purchaseOrder.setM_Warehouse_ID(orginfo.getDropShip_Warehouse_ID());
+			purchaseOrder.saveEx();
+			
+			salesOrder.setLink_Order_ID(purchaseOrder.getC_Order_ID());
+			salesOrder.saveEx();
+
+			MOrderLine purchaseOrderLine = new MOrderLine(purchaseOrder);
+			purchaseOrderLine.setLink_OrderLine_ID(salesOrderLine.getC_OrderLine_ID());
+			purchaseOrderLine.setLine(10);
+			purchaseOrderLine.setProduct(new MProduct(Env.getCtx(), product.get_ID(), getTrxName()));
+			purchaseOrderLine.setQty(new BigDecimal(10));
+			purchaseOrderLine.setDatePromised(today);
+			purchaseOrderLine.setPrice(new BigDecimal(5));
+			purchaseOrderLine.saveEx();
+			
+			salesOrderLine.setLink_OrderLine_ID(purchaseOrderLine.getC_OrderLine_ID());
+			salesOrderLine.saveEx();			
+			
+			info = MWorkflow.runDocumentActionWorkflow(purchaseOrder, DocAction.ACTION_Complete);
+			purchaseOrder.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, purchaseOrder.getDocStatus());
+
+			// MR2
+			createMRForPO(purchaseOrderLine, today, new BigDecimal(10));
+			
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
