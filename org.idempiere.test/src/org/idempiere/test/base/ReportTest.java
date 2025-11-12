@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -93,52 +94,74 @@ public class ReportTest extends AbstractTestCase {
 	
 	@Test
 	public void testBackgroundJob() {
-		//Storage Detail report
-		MProcess process = MProcess.get(236);
-		ProcessInfo pi = new ProcessInfo(process.getName(), process.getAD_Process_ID());
-		pi.setReportType("PDF");
-		pi.setAD_Client_ID(getAD_Client_ID());
-		pi.setAD_User_ID(getAD_User_ID());
-		
-		Callback<Integer> createParaCallback = id -> {
-			if (id > 0) {
-				MPInstancePara para = new MPInstancePara(Env.getCtx(), id, 10);
-				para.setParameter("M_Product_Category_ID", ""+DictionaryIDs.M_Product_Category.PATIO.id);
-				para.saveEx();
+		MProcess process = null;
+		ProcessInfo pi = null;
+		MPInstance pinstance = null;
+		MNote note = null;
+		try {
+			process = MProcess.get(236);
+			pi = new ProcessInfo(process.getName(), process.getAD_Process_ID());
+			pi.setReportType("PDF");
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			
+			Callback<Integer> createParaCallback = id -> {
+				if (id > 0) {
+					MPInstancePara para = new MPInstancePara(Env.getCtx(), id, 10);
+					para.setParameter("M_Product_Category_ID", ""+DictionaryIDs.M_Product_Category.PATIO.id);
+					para.saveEx();
+				}
+			};
+			
+			ScheduledFuture<ProcessInfo> future = BackgroundJob.create(pi)
+				.withNotificationType(MUser.NOTIFICATIONTYPE_Notice)
+				.withInitialDelay(10)
+				.run(createParaCallback);
+			
+			assertNotNull(future, "Failed to schedule background job");
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {}
+			
+			assertTrue(pi.getAD_PInstance_ID() > 0, "Failed to create background process instance");
+			assertFalse(pi.isError(), "Error creating background job: " + pi.getSummary());
+			pinstance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
+			assertEquals(pi.getAD_PInstance_ID(), pinstance.get_ID(), "Failed to retrive background process instance");
+			try {
+				pi = future.get(10000, TimeUnit.MILLISECONDS);
+			} catch (ExecutionException | TimeoutException | InterruptedException e) {
+				e.printStackTrace();
+				fail("Error waiting for background job to complete: " + e.getMessage());
 			}
-		};
-		
-		ScheduledFuture<ProcessInfo> future = BackgroundJob.create(pi)
-			.withNotificationType(MUser.NOTIFICATIONTYPE_Notice)
-			.withInitialDelay(10)
-			.run(createParaCallback);
-		
-		assertNotNull(future, "Failed to schedule background job");
-		
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {}
-		
-		assertTrue(pi.getAD_PInstance_ID() > 0, "Failed to create background process instance");
-		assertFalse(pi.isError(), "Error creating background job: " + pi.getSummary());
-		MPInstance pinstance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
-		assertEquals(pi.getAD_PInstance_ID(), pinstance.get_ID(), "Failed to retrive background process instance");
-		try {
-			pi = future.get(10000, TimeUnit.MILLISECONDS);
-		} catch (ExecutionException | TimeoutException | InterruptedException e) {
-			e.printStackTrace();
+			assertFalse(pi.isError(), "Error running background job: " + pi.getSummary());
+			pinstance.load((String)null);
+			assertFalse(pinstance.isProcessing(), "Timeout waiting for background job to complete");
+			
+			Query query = new Query(Env.getCtx(), MNote.Table_Name, "AD_Table_ID=? AND Record_ID=?", null);
+			note = query.setParameters(MPInstance.Table_ID, pinstance.getAD_PInstance_ID()).first();
+			assertNotNull(note, "Failed to retrieve notice");
+			MAttachment attachment = note.getAttachment();
+			assertEquals(1, attachment.getEntryCount(), "Unexpected number of notice attachment");
+			MAttachmentEntry entry = attachment.getEntry(0);
+			assertNotNull(entry, "Failed to retrieve attachment entry");
+			assertTrue(entry.getName() != null && entry.getName().toUpperCase().contains(".PDF"), "No PDF report attach to notice");
+			
+		} finally {
+			rollback();
+
+			// Clean up in reverse order of creation
+			if (note != null) {
+				MAttachment attachment = note.getAttachment();
+				if (attachment != null) {
+					attachment.deleteEx(true);
+				}
+				note.deleteEx(true);
+			}
+			
+			if (pinstance != null) {
+				pinstance.deleteEx(true);
+			}
 		}
-		assertFalse(pi.isError(), "Error running background job: " + pi.getSummary());
-		pinstance.load((String)null);
-		assertFalse(pinstance.isProcessing(), "Timeout waiting for background job to complete");
-		
-		Query query = new Query(Env.getCtx(), MNote.Table_Name, "AD_Table_ID=? AND Record_ID=?", null);
-		MNote note = query.setParameters(MPInstance.Table_ID, pinstance.getAD_PInstance_ID()).first();
-		assertNotNull(note, "Failed to retrieve notice");
-		MAttachment attachment = note.getAttachment();
-		assertEquals(1, attachment.getEntryCount(), "Unexpected number of notice attachment");
-		MAttachmentEntry entry = attachment.getEntry(0);
-		assertNotNull(entry, "Failed to retrieve attachment entry");
-		assertTrue(entry.getName() != null && entry.getName().toUpperCase().contains(".PDF"), "No PDF report attach to notice");
 	}
 }
