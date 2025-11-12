@@ -136,8 +136,12 @@ public class MStorageOnHandTest extends AbstractTestCase {
 				asi2.saveEx();
 				DB.executeUpdateEx("UPDATE M_StorageOnHand SET M_AttributeSetInstance_ID=? WHERE M_StorageOnHand_UU=?", new Object[] {asi2.get_ID(), onhands[1].getM_StorageOnHand_UU()}, getTrxName());
 				CacheMgt.get().reset(MProduct.Table_Name, product.get_ID());
-				CacheMgt.get().reset(MStorageOnHand.Table_Name);
-		        CacheMgt.get().reset(MAttributeSetInstance.Table_Name);
+				// wait for cache reset to complete
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} 
 				onhands = MStorageOnHand.getAll(Env.getCtx(), product.get_ID(), 0, false, true, getTrxName(), false, 0);
 				assertEquals(asi2.get_ID(), onhands[0].getM_AttributeSetInstance_ID());
 				assertEquals(DictionaryIDs.M_Locator.STORE.id, onhands[0].getM_Locator_ID());
