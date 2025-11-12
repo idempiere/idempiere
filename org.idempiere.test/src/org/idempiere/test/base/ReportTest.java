@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -131,6 +132,7 @@ public class ReportTest extends AbstractTestCase {
 				pi = future.get(10000, TimeUnit.MILLISECONDS);
 			} catch (ExecutionException | TimeoutException | InterruptedException e) {
 				e.printStackTrace();
+				fail("Error waiting for background job to complete: " + e.getMessage());
 			}
 			assertFalse(pi.isError(), "Error running background job: " + pi.getSummary());
 			pinstance.load((String)null);
@@ -146,6 +148,8 @@ public class ReportTest extends AbstractTestCase {
 			assertTrue(entry.getName() != null && entry.getName().toUpperCase().contains(".PDF"), "No PDF report attach to notice");
 			
 		} finally {
+			rollback();
+
 			// Clean up in reverse order of creation
 			if (note != null) {
 				MAttachment attachment = note.getAttachment();
