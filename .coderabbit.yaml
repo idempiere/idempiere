@@ -10,7 +10,7 @@ early_access: false
 #enable_free_tier: true
 reviews:
   profile: chill
-  request_changes_workflow: true
+  request_changes_workflow: false
   high_level_summary: true
   high_level_summary_placeholder: '@coderabbitai summary'
   auto_title_placeholder: '@coderabbitai title'
