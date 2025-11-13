@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.swing.tree.TreeNode;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -77,6 +78,10 @@ import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.MTest;
 import org.compiere.model.MTestUU;
+import org.compiere.model.MTree;
+import org.compiere.model.MTreeNode;
+import org.compiere.model.MTree_Base;
+import org.compiere.model.MTree_NodeBP;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.Query;
@@ -1322,5 +1327,77 @@ public class POTest extends AbstractTestCase
 		byte[] binaryData = image.getBinaryData();
 		assertTrue(binaryData != null && binaryData.length > 0, "Binary data should not be null or empty");
 		assertEquals(imageData.length, binaryData.length, "Binary data does not match the original data");
+    }
+    
+    @Test
+    void testTreeDrivenByValue() {
+    	// 103 | GardenWorld Bus Partner Tree
+    	int GARDENWORLD_BP_TREE_ID = 103;
+    	MTree_Base tree = new MTree_Base(Env.getCtx(), GARDENWORLD_BP_TREE_ID, getTrxName());
+    	tree.setIsTreeDrivenByValue(true);
+    	tree.setIsValueDisplayed(true);
+    	tree.saveEx();
+    	    	
+    	MBPartner parent = new MBPartner(Env.getCtx(), 0, getTrxName());
+    	parent.setName("Parent BPartner");
+    	parent.setIsSummary(true);
+    	parent.saveEx();
+    	
+    	MBPartner child1 = new MBPartner(Env.getCtx(), 0, getTrxName());
+    	child1.setName("Child BPartner 1");
+    	child1.setIsSummary(false);
+    	child1.saveEx();
+    	
+    	MBPartner child2 = new MBPartner(Env.getCtx(), 0, getTrxName());
+    	child2.setName("Child BPartner 2");
+    	child2.setIsSummary(false);
+    	child2.saveEx();
+    	
+    	// create tree nodes
+    	MTree_NodeBP parentNode = new Query(Env.getCtx(), MTree_NodeBP.Table_Name, 
+			MTree_NodeBP.COLUMNNAME_AD_Tree_ID + "=? AND " + MTree_NodeBP.COLUMNNAME_Node_ID + "=?", getTrxName())
+			.setParameters(GARDENWORLD_BP_TREE_ID, parent.get_ID())
+			.first();
+    	MTree_NodeBP child1Node = new Query(Env.getCtx(), MTree_NodeBP.Table_Name, 
+    			MTree_NodeBP.COLUMNNAME_AD_Tree_ID + "=? AND " + MTree_NodeBP.COLUMNNAME_Node_ID + "=?", getTrxName())
+    			.setParameters(GARDENWORLD_BP_TREE_ID, child1.get_ID())
+    			.first();
+    	MTree_NodeBP child2Node = new Query(Env.getCtx(), MTree_NodeBP.Table_Name, 
+    			MTree_NodeBP.COLUMNNAME_AD_Tree_ID + "=? AND " + MTree_NodeBP.COLUMNNAME_Node_ID + "=?", getTrxName())
+    			.setParameters(GARDENWORLD_BP_TREE_ID, child2.get_ID())
+    			.first();
+    	child1Node.setParent_ID(parentNode.getNode_ID());
+    	child1Node.setSeqNo(10);
+    	child1Node.saveEx();
+    	child2Node.setParent_ID(parentNode.getNode_ID());
+    	child2Node.setSeqNo(20);
+    	child2Node.saveEx();
+    	
+    	// trigger update of sequence by changing value
+    	child2.setValue(parent.getValue()+"_01");
+    	child2.saveEx();
+    	child1.setValue(parent.getValue()+"_02");
+    	child1.saveEx();
+    	
+    	MTree mt = new MTree(Env.getCtx(), GARDENWORLD_BP_TREE_ID, false, false, getTrxName(), null, 0);
+    	MTreeNode root = mt.getRoot();
+    	assertNotNull(root, "Tree root node is null");
+    	MTreeNode pNode = root.findNode(parentNode.getNode_ID());
+    	assertNotNull(pNode, "Parent node not found in tree");
+    	
+    	int childCount = pNode.getChildCount();
+    	assertEquals(2, childCount, "Tree child count does not match");
+    	for(int i = 0; i < childCount; i++) {
+			TreeNode childNode = pNode.getChildAt(i);
+			assertTrue(childNode instanceof MTreeNode, "Tree child node is not MTreeNode");
+			MTreeNode childNodeCast = (MTreeNode) childNode;
+			if (i == 0) {
+				//seq no 10
+				assertEquals(child2.getValue(), childNodeCast.getName().substring(0, child2.getValue().length()), "Tree child node name does not match");
+			} else if (i == 1) {
+				//seq no 20
+				assertEquals(child1.getValue(), childNodeCast.getName().substring(0, child1.getValue().length()), "Tree child node name does not match");
+			}
+		}
     }
 }
