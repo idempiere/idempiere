@@ -32,5 +32,5 @@ public interface IZoomProvider {
 	 * @return a list of zoom targets. The {@link MQuery#getRecordCount()} of
 	 *         the ZoomInfo's query member might be zero.
 	 */
-	List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(PO po);
+	List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(PO po,int windowNo);
 }

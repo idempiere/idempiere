@@ -149,7 +149,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * @return matching relation types
 	 */
 	public static List<MRelationType> retrieveTypes(final PO po,
-			final int windowId) {
+			final int windowId,int windowNo) {
 
 		if (po.get_KeyColumns().length != 1) {
 
@@ -172,7 +172,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 			rs = pstmt.executeQuery();
 
-			final List<MRelationType> result = evalResultSet(po, windowId, rs);
+			final List<MRelationType> result = evalResultSet(po, windowId, rs,windowNo);
 
 			if (logger.isLoggable(Level.INFO)) logger.info("There are " + result.size() + " matching types for "
 					+ po);
@@ -193,16 +193,16 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * @return zoom info records from matching relation types
 	 */
 	public static List<ZoomInfo> retrieveZoomInfos(final PO po,
-			final int windowID) {
+			final int windowID,int windowNo) {
 
 		final List<MRelationType> matchingTypes = MRelationType.retrieveTypes(
-				po, windowID);
+				po, windowID,windowNo);
 
 		final List<ZoomInfo> result = new ArrayList<ZoomInfo>();
 
 		for (final MRelationType currentType : matchingTypes) {
 
-			result.addAll(currentType.retrieveZoomInfos(po));
+			result.addAll(currentType.retrieveZoomInfos(po,windowNo));
 
 		}
 		return result;
@@ -272,7 +272,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * @throws SQLException
 	 */
 	private static List<MRelationType> evalResultSet(final PO po,
-			final int windowId, final ResultSet rs) throws SQLException {
+			final int windowId, final ResultSet rs,int windowNo) throws SQLException {
 
 		final List<MRelationType> result = new ArrayList<MRelationType>();
 
@@ -303,7 +303,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 				final MRefTable sourceRefTable = retrieveRefTable(po.getCtx(),
 						newType.getAD_Reference_Source_ID(), po.get_TrxName());
 
-				if (windowId == newType.retrieveWindowID(po, sourceRefTable)) {
+				if (windowId == newType.retrieveWindowID(po, sourceRefTable,windowNo)) {
 
 					newType.destinationRefId = newType
 							.getAD_Reference_Target_ID();
@@ -415,7 +415,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * @param po
 	 * @return zoom info records from destination reference
 	 */
-	public List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(final PO po) {
+	public List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(final PO po,int windowNo) {
 
 		checkDestinationRefId();
 
@@ -429,7 +429,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 		evaluateQuery(query);
 
-		final int windowId = retrieveWindowID(po, refTable);
+		final int windowId = retrieveWindowID(po, refTable,windowNo);
 
 		String display = getDestinationRoleDisplay();
 		if (Util.isEmpty(display)) {
@@ -446,7 +446,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * @param refTable
 	 * @return AD_Window_ID
 	 */
-	public int retrieveWindowID(final PO po, final MRefTable refTable) {
+	public int retrieveWindowID(final PO po, final MRefTable refTable,int windowNo) {
 
 		MTable table = null;
 
@@ -456,7 +456,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			final int tableId = refTable.getAD_Table_ID();
 			table = MTable.get(po.getCtx(), tableId);
 
-			if (Env.isSOTrx(po.getCtx())) {
+			if (Env.isSOTrx(po.getCtx(),windowNo)) {
 				windowId = table.getAD_Window_ID();
 			} else {
 				windowId = table.getPO_Window_ID();
