@@ -3465,11 +3465,18 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				for (MCostDetail costDetail : costDetailList) {
 					if (costDetail.getM_InOutLine_ID() > 0) {
 						MInOutLine inoutLine = new MInOutLine(getCtx(), costDetail.getM_InOutLine_ID(), get_TrxName());
-						if (inoutLine.getParent().getReversal_ID() > 0)
+						MInOut inout = inoutLine.getParent();						
+						if (inout.getReversal_ID() > 0) // reversed shipment
 							continue;
+						MOrder sOrder = new MOrder(getCtx(), inout.getC_Order_ID(), get_TrxName());
+						if (sOrder.getLink_Order_ID() > 0) {
+							MOrder lOrder = new MOrder(getCtx(), sOrder.getLink_Order_ID(), get_TrxName());
+							if (lOrder.isDropShip()) // drop shipment
+								continue;
+						}
 					} else if (costDetail.getC_ProjectIssue_ID() > 0) {
 						MProjectIssue projectIssue = new MProjectIssue(getCtx(), costDetail.getC_ProjectIssue_ID(), get_TrxName());
-						if (projectIssue.getReversal_ID() > 0)
+						if (projectIssue.getReversal_ID() > 0) // reversed project issue
 							continue;
 					} else {
 						continue;
@@ -3485,7 +3492,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				MOrder sOrder = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
 				if (sOrder.getLink_Order_ID() > 0) {
 					MOrder lOrder = new MOrder(getCtx(), sOrder.getLink_Order_ID(), get_TrxName());
-					if (lOrder.isDropShip())
+					if (lOrder.isDropShip()) // drop shipment
 						return true;
 				}
 			}

@@ -8003,6 +8003,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 * SO2 Qty=10
 	 * PO2 Qty=10 (Generate PO from Sales Order) - Drop Shipment
 	 * MR2 Qty=10
+	 * MR2 (Reverse-Correct)
 	 */
 	@Test
 	public void testDropShipment() {
@@ -8097,11 +8098,16 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, purchaseOrder.getDocStatus());
 
 			// MR2
-			createMRForPO(purchaseOrderLine, today, new BigDecimal(10));
+			MInOutLine rceiptLine = createMRForPO(purchaseOrderLine, today, new BigDecimal(10));
 			
 			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
  			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// MR2 (Reverse-Correct)
+			reverseInOut(rceiptLine, false);
+			
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
