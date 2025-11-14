@@ -5202,8 +5202,8 @@ public abstract class PO
 		}
 		String updateSeqNo = "UPDATE " + tableName + " SET SeqNo=SeqNo+1 WHERE Parent_ID=? AND SeqNo>=? AND AD_Tree_ID=?";
 		String update = "UPDATE " + tableName + " SET SeqNo=?, Parent_ID=? WHERE Node_ID=? AND AD_Tree_ID=?";
-		String selMinSeqNo = "SELECT COALESCE(MIN(tn.SeqNo),-1) FROM AD_TreeNode tn JOIN " + sourceTableName + " n ON (tn.Node_ID=n." + sourceTableName + "_ID) WHERE tn.Parent_ID=? AND tn.AD_Tree_ID=? AND n.Value>?";
-		String selMaxSeqNo = "SELECT COALESCE(MAX(tn.SeqNo)+1,999) FROM AD_TreeNode tn JOIN " + sourceTableName + " n ON (tn.Node_ID=n." + sourceTableName + "_ID) WHERE tn.Parent_ID=? AND tn.AD_Tree_ID=? AND n.Value<?";
+		String selMinSeqNo = "SELECT COALESCE(MIN(tn.SeqNo),-1) FROM " + tableName +" tn JOIN " + sourceTableName + " n ON (tn.Node_ID=n." + sourceTableName + "_ID) WHERE tn.Parent_ID=? AND tn.AD_Tree_ID=? AND n.Value>?";
+		String selMaxSeqNo = "SELECT COALESCE(MAX(tn.SeqNo)+1,999) FROM " + tableName +" tn JOIN " + sourceTableName + " n ON (tn.Node_ID=n." + sourceTableName + "_ID) WHERE tn.Parent_ID=? AND tn.AD_Tree_ID=? AND n.Value<?";
 
 		List<MTree_Base> trees = new Query(getCtx(), MTree_Base.Table_Name, whereTree, get_TrxName())
 			.setClient_ID()
@@ -5448,7 +5448,7 @@ public abstract class PO
 	public MAttachment getAttachment (boolean requery)
 	{
 		if (m_attachment == null || requery)
-			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), null);
+			m_attachment = MAttachment.get (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), get_TrxName());
 		return m_attachment;
 	}	//	getAttachment
 
@@ -6490,7 +6490,7 @@ public abstract class PO
 			{
 				String where = m_tableAttributeMap.isEmpty() ? "" : " AND a.Name = ? ";
 				// 4 - String, 5 - data, 6 - number, 7 - attribute value
-				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_VALUE_SQL + where, null);
+				pstmt = DB.prepareStatement(TABLE_ATTRIBUTE_VALUE_SQL + where, get_TrxName());
 				pstmt.setInt(1, get_Table_ID());
 				pstmt.setInt(2, get_ID());
 				if (!m_tableAttributeMap.isEmpty())
@@ -6579,7 +6579,7 @@ public abstract class PO
 	 */
 	public List<PO> get_TableAttributes()
 	{
-		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", null).setParameters(get_Table_ID(), get_ID()).list();
+		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", get_TrxName()).setParameters(get_Table_ID(), get_ID()).list();
 	}
 
 }   //  PO
