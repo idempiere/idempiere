@@ -561,7 +561,7 @@ public class MTree extends MTree_Base
 			sql = MRole.getDefault(getCtx(), false).addAccessSQL(sql, 
 				sourceTable, MRole.SQL_FULLYQUALIFIED, m_editable);
 		log.fine(sql);
-		m_nodeRowSet = DB.getRowSet (sql);
+		m_nodeRowSet = DB.getRowSet (sql, get_TrxName());
 		m_nodeIdMap = new HashMap<Integer, ArrayList<Integer>>(50);
 		try 
 		{
