@@ -255,8 +255,9 @@ public class MQuery implements Serializable, Cloneable
 				//	Date
 				else if (P_Date != null || P_Date_To != null)
 				{
-					String paramName = (Reference_ID == DisplayType.DateTime || Reference_ID == DisplayType.Date) ? ParameterName
-							: "TRUNC(" + ParameterName + ")";
+					boolean truncDate = MSysConfig.getBooleanValue(MSysConfig.TRUNC_REPORT_DATE_FIELD, false);
+					boolean isDateTimeField = Reference_ID == DisplayType.DateTime || Reference_ID == DisplayType.Date;
+					String paramName = (isDateTimeField && !truncDate) ? ParameterName : "TRUNC(" + ParameterName + ")";
 
 					if (P_Date_To == null)
 					{
