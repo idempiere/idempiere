@@ -415,36 +415,31 @@ public class POInfo implements Serializable
 			return true;
 		return m_columns[index].ColumnSQL != null 
 			&& m_columns[index].ColumnSQL.length() > 0
-			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
-			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
+			&& !m_columns[index].ColumnSQL.equals("NULL"); // virtual UI and Search columns have ColumnSQL equals to NULL
 	}   //  isVirtualDBColumn
 
 	/**
 	 *  Is Column Virtual UI?
+	 *  @deprecated This method is useless because, for virtual UI columns, the ColumnSQL value is set to NULL in the loadInfo method (see line 206), so this method never returns the correct value. Use {@link #isVirtualColumn(int)} or other appropriate logic instead.
 	 *  @param index index
 	 *  @return true if column is virtual UI
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public boolean isVirtualUIColumn (int index)
 	{
-		if (index < 0 || index >= m_columns.length)
-			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
+		return false;
 	}   //  isVirtualUIColumn
 	
 	/**
 	 *  Is Column Virtual Search?
+	 * 	@deprecated This method is useless because, for virtual Search columns, the ColumnSQL value is set to NULL in the loadInfo method (see line 206), so this method never returns the correct value. Use {@link #isVirtualColumn(int)} or other appropriate logic instead.
 	 *  @param index index
 	 *  @return true if column is virtual search
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public boolean isVirtualSearchColumn (int index)
 	{
-		if (index < 0 || index >= m_columns.length)
-			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
+		return false;
 	}   //  isVirtualSearchColumn
 
 	/**
