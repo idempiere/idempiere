@@ -813,5 +813,15 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
+	
+	public enum AD_Element {
+		NAME2(1111);
+		
+		public final int id;
+
+		private AD_Element(int id) {
+			this.id = id;
+		}
+	}
 
 }
