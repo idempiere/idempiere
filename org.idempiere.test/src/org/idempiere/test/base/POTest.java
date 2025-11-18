@@ -96,6 +96,7 @@ import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.model.PO_Record;
 import org.compiere.model.Query;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.AdempiereUserError;
@@ -2042,7 +2043,7 @@ public class POTest extends AbstractTestCase
 				column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_ModelNoAction_ForbidDeletion);
 				column.saveCrossTenantSafeEx();
 				CacheMgt.get().reset(MColumn.Table_Name, column.get_ID());
-				CacheMgt.get().reset("PORecordTables");
+				PO_Record.resetCache();
 			}
 			
 			// Attempt to delete t1 - should fail due to existing t2 referencing it

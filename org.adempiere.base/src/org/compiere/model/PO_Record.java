@@ -45,6 +45,13 @@ public class PO_Record
 	private static CLogger log = CLogger.getCLogger (PO_Record.class);
 	
 	/**
+	 * Reset the KeyNamePair<AD_Table_ID, TableName> cache for constraint types + Record_ID/Record_UU reference id
+	 */
+	public static void resetCache() {
+		s_po_record_tables_cache.reset();
+	}
+	
+	/**
 	 * 	Delete Cascade including (selected)parent relationships
 	 *	@param AD_Table_ID table
 	 *	@param Record_IDorUU record ID (int) or UUID (String)
