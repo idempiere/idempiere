@@ -389,6 +389,10 @@ public class MTableTest extends AbstractTestCase {
 		tbl.markImmutable();
 
 		MTable cached = MTable.get(ctx, testTableId);
+		try {
+			cached.setIsActive(false);
+		} catch (Exception e) {}
+		assertTrue(cached.isActive(), "IsActive after setIsActive should be active, no change");
 		assertSame(tbl, cached, "Cached table must remain consistent after markImmutable");
 	}
 
