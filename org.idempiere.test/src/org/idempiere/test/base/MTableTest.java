@@ -311,7 +311,7 @@ public class MTableTest extends AbstractTestCase {
 
 		PO poByUUID = tbl.getUUIDPOInstance(PO.UUID_NEW_RECORD, getTrxName());
 		if (tbl.isUUIDKeyTable())
-			assertNotNull(poNew, "getUUIDPOInstance should return a PO instance if it is UUID-key table");
+			assertNotNull(poByUUID, "getUUIDPOInstance should return a PO instance if it is UUID-key table");
 		else
 			assertNull(poByUUID, "getUUIDPOInstance should return null if it is not UUID-key table");
 	}
@@ -385,11 +385,11 @@ public class MTableTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testMarkImmutable() {
-		MTable tbl = new MTable(ctx, testTableId, getTrxName());
+		MTable tbl = MTable.get(ctx, testTableId);
 		tbl.markImmutable();
 
 		MTable cached = MTable.get(ctx, testTableId);
-		assertSame(cached, cached, "Cached table must remain consistent after markImmutable");
+		assertSame(tbl, cached, "Cached table must remain consistent after markImmutable");
 	}
 
 }
