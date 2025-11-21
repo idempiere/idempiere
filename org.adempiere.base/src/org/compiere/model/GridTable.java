@@ -1289,7 +1289,7 @@ public class GridTable extends AbstractTableModel
 		m_rowLoadTimeout = false;
 		try
 		{
-			stmt = DB.prepareStatement(sql.toString(), null);
+			stmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 			if (timeout > 0)
 				stmt.setQueryTimeout(timeout);
@@ -2500,6 +2500,7 @@ public class GridTable extends AbstractTableModel
 		close(false);
 		if (retainedWhere != null)
 		{
+			String currentWhere = m_whereClause;
 			if (m_whereClause != null && m_whereClause.trim().length() > 0)
 			{
 				StringBuilder orRetainedWhere = new StringBuilder(") OR (").append(retainedWhere).append(")) ");
@@ -2507,6 +2508,7 @@ public class GridTable extends AbstractTableModel
 					m_whereClause = "((" + m_whereClause + orRetainedWhere.toString();
 			}
 			open(m_maxRows);
+			m_whereClause = currentWhere;
 		}
 		else
 		{
@@ -3218,7 +3220,7 @@ public class GridTable extends AbstractTableModel
 					}
 
 					//	Statement all 1000 rows & sleep
-					if (m_sort.size() % 1000 == 0)
+					if (!m_sort.isEmpty() && m_sort.size() % 1000 == 0)
 					{
 						backgroundLoad = true;
 						DataStatusEvent evt = createDSE();
