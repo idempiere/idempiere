@@ -295,7 +295,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		if (m_loaderFuture != null && m_loaderFuture.isDone())
 		{
-			waitLoadCompete();
+			waitLoadComplete();
 			if (isLoadComplete())
 				return true;
 		}
