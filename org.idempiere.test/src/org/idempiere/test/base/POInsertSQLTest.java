@@ -26,17 +26,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import org.compiere.db.Database;
 import org.compiere.model.MTest;
 import org.compiere.model.MUser;
+import org.compiere.model.MImage;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_ChangeLog;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Unit tests for PO.toInsertSQL() and PO.buildInsertSQL() methods
@@ -249,8 +256,6 @@ class POInsertSQLTest extends AbstractTestCase {
 		assertNotNull(sql);
 		assertTrue(sql.startsWith("INSERT INTO Test"));
 		
-
-		
 		// Custom column should appear
 		assertTrue(sql.contains("secret123"), "Password value should not be in SQL for script generation");
 		assertTrue(sql.contains("NormalColumn"), "Normal custom columns should be included");
@@ -375,5 +380,50 @@ class POInsertSQLTest extends AbstractTestCase {
 		// When AD_Table_ID is not set, Record_ID should be used directly even if > MAX_OFFICIAL_ID
 		assertTrue(sql.contains("5000000"), "Record_ID should be included directly when AD_Table_ID not set");
 		assertFalse(sql.contains("toRecordId"), "toRecordId function should NOT be used when AD_Table_ID not set");
+	}
+	
+	@Test
+	void testToInsertSQLAndExecute() throws IOException {
+		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+		testPO.setName("InsertSQLTest0");
+		testPO.setT_Integer(100);
+		testPO.saveEx();
+		
+		MTest testPO1 = new MTest(Env.getCtx(), 0, getTrxName());
+		testPO1.setName("InsertSQLTest1");
+		testPO1.setT_Integer(100);
+		testPO1.setAD_Table_ID(MTest.Table_ID);
+		testPO1.setRecord_ID(testPO.get_ID());
+		testPO1.saveEx();
+		
+		String insertSQL = testPO1.toInsertSQL(DB.getDatabase().getName());
+		assertNotNull(insertSQL);
+		assertTrue(insertSQL.startsWith("INSERT INTO "));
+		assertTrue(insertSQL.contains(MTest.Table_Name));
+		assertTrue(insertSQL.contains(MTest.COLUMNNAME_Name));
+		assertTrue(insertSQL.contains(MTest.COLUMNNAME_T_Integer));
+		
+		testPO1.deleteEx(true);
+		
+		DB.executeUpdateEx(insertSQL, getTrxName());
+		
+		// test for binary data
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.EXPORT_BLOB_COLUMN_FOR_INSERT, true, Env.getAD_Client_ID(Env.getCtx())))
+				.thenReturn(true);
+			byte[] imageData = null;
+	        try (InputStream is = getClass().getResourceAsStream("/org/idempiere/test/model/idempiere_logo.png")) {
+	        	imageData = is.readAllBytes();
+	        }
+	        assertTrue(imageData != null && imageData.length > 0, "Image data should not be null or empty");        
+	        MImage image = new MImage(Env.getCtx(), 0, getTrxName());
+	        image.setName("idempiere_logo.png");
+	        image.setBinaryData(imageData);
+			image.saveEx();
+			
+			insertSQL = image.toInsertSQL(DB.getDatabase().getName());
+			image.deleteEx(true);
+			DB.executeUpdateEx(insertSQL, getTrxName());
+		}
 	}
 }
