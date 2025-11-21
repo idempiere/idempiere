@@ -26,16 +26,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.sql.Timestamp;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.M_Element;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.LoginDetails;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests for {@link MColumn} class.
@@ -43,6 +51,13 @@ import org.junit.jupiter.api.Test;
  */
 public class MColumnTest extends AbstractTestCase {
 
+	@Override
+	protected LoginDetails newLoginDetails(TestInfo testInfo) {
+		//System client, SuperUser and System Administrator role
+		return new LoginDetails(0, 0, 0, 0, 0, 
+				new Timestamp(System.currentTimeMillis()), Language.getLanguage("en_US"));
+	}
+	
 	/**
 	 * Test getting MColumn from cache by ID
 	 */
@@ -263,6 +278,10 @@ public class MColumnTest extends AbstractTestCase {
 				"Table ID should be the same");
 		assertEquals(originalColumn.getAD_Reference_ID(), copiedColumn.getAD_Reference_ID(), 
 				"Reference ID should be the same");
+		
+		MColumn anotherCopy = new MColumn(Env.getCtx(), copiedColumn);
+		assertNotNull(anotherCopy, "Copy constructor should create a new instance");
+		assertEquals(copiedColumn.getColumnName(), anotherCopy.getColumnName(), "Name of the second copy should also match");
 	}
 	
 	/**
@@ -560,5 +579,110 @@ public class MColumnTest extends AbstractTestCase {
 		assertEquals("NULL", column.getColumnSQL(true, true), "Empty search SQL with nullForSearch=true should return NULL");
 		assertEquals("", column.getColumnSQL(true, false), "Empty search SQL with nullForSearch=false should return empty string");
 	}
+	
+	/**
+	 * Test getDefaultValue method
+	 */
+	@Test
+	public void testDefaultValue() {
+		MTable table = MTable.get(Env.getCtx(), "AD_User");
+		MColumn col = table.getColumn("AD_Client_ID");
+		assertNotNull(col, "Column 'AD_Client_ID' should exist");
 
+		String defaultValue = col.getDefaultValue();
+		assertTrue(defaultValue == null || defaultValue.startsWith("@"), "Default value should be null or start with '@'");
+	}
+
+	/**
+	 * Test isEncrypted method
+	 */
+    @Test
+	public void testIsEncrypted() {
+		MColumn nonEncryptedColumn = MColumn.get(Env.getCtx(), "AD_Client", "Name");
+		assertFalse(nonEncryptedColumn.isEncrypted(), "Name should not be encrypted");
+	}
+    
+    /**
+	 * Test SQL Modify generation
+	 */
+	@Test
+	public void testSQLModify() {
+		MColumn column = MColumn.get(Env.getCtx(), "AD_User", "Name");
+		MTable table = MTable.get(Env.getCtx(), "AD_User");
+		String modifySql = column.getSQLModify(table, true);
+
+		assertNotNull(modifySql, "getSQLModify() should not be null");
+		assertTrue(modifySql.length() > 0, "getSQLModify() should not be empty");
+	}
+	
+	/**
+     * Test static cache behaviour: MColumn.get(ctx, AD_Column_ID) should return the same immutable instance.
+     */
+    @Test
+	public void testStaticCacheBehavior() {
+		MColumn a = MColumn.get(Env.getCtx(), DictionaryIDs.AD_Column.COLUMN_NAME.id);
+		MColumn b = MColumn.get(Env.getCtx(), DictionaryIDs.AD_Column.COLUMN_NAME.id);
+		assertSame(a, b, "MColumn.get(ctx, id) should return the same cached immutable instance");
+	}
+	
+	/**
+     * Test mandatory field validation for new MColumn.
+     */
+    @Test
+	public void testMandatoryValidation() {
+		MColumn col = new MColumn(Env.getCtx(), 0, getTrxName());
+		assertThrows(Exception.class, () -> {
+			col.saveEx();
+		}, "Should throw exception when without mandatory fields");
+	}
+    
+    /**
+     * Test creating persistent MColumn and cleanup.
+     */
+    @Test
+	public void testCreatePersistentObjectAndCleanup() {
+		MTable table = MTable.get(Env.getCtx(), "AD_User");
+		MColumn col = new MColumn(Env.getCtx(), 0, getTrxName());
+		M_Element elem = new M_Element(Env.getCtx(), 0, getTrxName());
+		String uniqueColumnName = "T_TEST_COLUMN_" + System.currentTimeMillis();
+		try {
+			elem.setColumnName(uniqueColumnName);
+			elem.setName("Test Column");
+			elem.setPrintName("Test Column");
+			boolean saved = elem.save();
+			assertTrue(saved, "New AD_Element should save when mandatory fields are provided");
+			assertTrue(elem.get_ID() > 0, "Saved AD_Element must have assigned AD_Element_ID");
+
+			col.setAD_Table_ID(table.getAD_Table_ID());
+			col.setAD_Element_ID(elem.get_ID());
+			col.setColumnName(uniqueColumnName);
+			col.setName("Test Column");
+			col.setAD_Reference_ID(10); // String reference for example
+			col.setFieldLength(60);
+			saved = col.save();
+			assertTrue(saved, "New MColumn should save with mandatory fields");
+			assertTrue(col.get_ID() > 0, "Saved MColumn must have assigned AD_Column_ID");
+		} finally {
+			try {
+				if (col.get_ID() > 0)
+					col.delete(true, getTrxName());
+				if (elem.get_ID() > 0)
+					elem.delete(true, getTrxName());
+			} catch (Exception e) {
+			}
+		}
+	}
+
+    /**
+     * Test markImmutable() do not throw and behave as expected.
+     */
+    @Test
+	public void testMarkImmutable() {
+		MColumn c = MColumn.get(Env.getCtx(), "AD_User", "Name");
+		c.markImmutable();
+		try {
+			c.setIsActive(false);
+		} catch (Exception e) {}
+		assertTrue(c.isActive(), "Active after setIsActive should be true, no change");
+	}
 }
