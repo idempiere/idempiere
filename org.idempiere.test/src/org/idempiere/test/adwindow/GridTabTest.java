@@ -415,16 +415,19 @@ public class GridTabTest extends AbstractTestCase {
 		Properties ctx = Env.getCtx();
 		int createdOrderId = -1;
 		try {
+			// set context for OrderType default below
+			String prefKey = "P" + SystemIDs.WINDOW_SALES_ORDER + "|" + MOrder.COLUMNNAME_C_DocTypeTarget_ID;
+			Env.setContext(ctx, prefKey, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			Env.setContext(Env.getCtx(), "IsSOTrx", true);
 			int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
 			var gridWindow = createGridWindow(AD_Window_ID);
 
 			// Header tab - create new order
 			GridTab headerTab = gridWindow.getTab(0);
-			headerTab.setQuery(null);
-			headerTab.query(false, 7, 0);
+			headerTab.setQuery(MQuery.getNoRecordQuery(MOrder.Table_Name, true));
+			headerTab.query(false);
 			headerTab.dataNew(false);
 			assertTrue(!Util.isEmpty(Env.getContext(ctx, 1, "OrderType", true), true), "OrderType" + " not set in context after dataNew");
-			headerTab.setValue(MOrder.COLUMNNAME_C_DocTypeTarget_ID, DictionaryIDs.C_DocType.STANDARD_ORDER.id);			
 			headerTab.setValue(MOrder.COLUMNNAME_C_BPartner_ID, DictionaryIDs.C_BPartner.C_AND_W.id);
 			assertTrue(headerTab.dataSave(true), "Could not save order header");
 			createdOrderId = ((Integer) headerTab.getValue(MOrder.COLUMNNAME_C_Order_ID)).intValue();
@@ -541,9 +544,7 @@ public class GridTabTest extends AbstractTestCase {
         gridTab.addDataStatusListener(newGridTabDataStatusListener(gridWindow));
 
         // Initialize the query to load the tab state
-        MQuery query = new MQuery(gridTab.getTableName());
-        query.addRestriction("1=2");
-        gridTab.setQuery(query);
+        gridTab.setQuery(MQuery.getNoRecordQuery(gridTab.getTableName(), true));
         gridTab.query(false, 0, 0);
 
         // Create New Record
@@ -1079,9 +1080,7 @@ public class GridTabTest extends AbstractTestCase {
 	        GridWindow gridWindow = createGridWindow(AD_Window_ID);
 	        GridTab gridTab = gridWindow.getTab(0); 
 	        gridTab.getTableModel().setImportingMode(true, getTrxName());
-	        MQuery query = new MQuery(MBankStatement.Table_Name);
-	        query.addRestriction("1=2"); // No initial records
-	        gridTab.setQuery(query);
+	        gridTab.setQuery(MQuery.getNoRecordQuery(gridTab.getTableName(), true));
 	        gridTab.query(false, 0, 0);
 	
 	        // Create first row
