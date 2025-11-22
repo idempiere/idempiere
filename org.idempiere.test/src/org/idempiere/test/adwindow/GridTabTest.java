@@ -51,6 +51,7 @@ import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.GridTabVO;
 import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
@@ -1150,4 +1151,56 @@ public class GridTabTest extends AbstractTestCase {
 		assertTrue(childTab.hasChangedCurrentTabAndParents(), "hasChangedCurrentTabAndParents should return true after external change to parent");		
 		assertFalse(childTab.dataSave(true), "dataSave should return false due to external changes to parent");
     }
+    
+    /**
+	 * Test GridTab.isDisplayed() logic by manipulating the DisplayLogic in the VO.
+	 */
+	@Test
+	void testIsDisplayed() {
+		Properties ctx = Env.getCtx();
+		
+		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;		
+
+		// Create the Window Value Object (VO)
+		int windowNo = 1;
+		GridWindowVO windowVO = GridWindowVO.create(ctx, windowNo, AD_Window_ID);
+		assertTrue(windowVO.Tabs.size() > 0, "Window must have tabs");
+
+		// Test Case A: Tab should be displayed
+		GridTabVO tabVO_Visible = windowVO.Tabs.get(0);
+		
+		// Inject "Always True" logic
+		tabVO_Visible.DisplayLogic = "1=1"; 
+		
+		// Initialize Window and Tab from the modified VO
+		GridWindow gridWindow = new GridWindow(windowVO);
+		GridTab tabVisible = gridWindow.getTab(0);
+		
+		assertTrue(tabVisible.isDisplayed(), "Tab with DisplayLogic '1=1' should be displayed");
+
+		// Test Case B: Tab should NOT be displayed		
+		GridWindowVO windowVO_Hidden = GridWindowVO.create(ctx, windowNo + 1, AD_Window_ID);
+		GridTabVO tabVO_Hidden = windowVO_Hidden.Tabs.get(0);
+		
+		// Inject "Always False" logic
+		tabVO_Hidden.DisplayLogic = "1=2";
+		
+		GridWindow gridWindowHidden = new GridWindow(windowVO_Hidden);
+		GridTab tabHidden = gridWindowHidden.getTab(0);
+		
+		assertFalse(tabHidden.isDisplayed(), "Tab with DisplayLogic '1=2' should NOT be displayed");
+		
+		// Test Case C: Tab visibility when no DisplayLogic is set
+		windowVO = GridWindowVO.create(ctx, windowNo+2, AD_Window_ID);
+		tabVO_Visible = windowVO.Tabs.get(0);
+		
+		// No display logic
+		tabVO_Visible.DisplayLogic = ""; 
+		
+		// Initialize Window and Tab from the modified VO
+		gridWindow = new GridWindow(windowVO);
+		tabVisible = gridWindow.getTab(0);
+		
+		assertTrue(tabVisible.isDisplayed(), "Tab with no DisplayLogic should be displayed");
+	}
 }
