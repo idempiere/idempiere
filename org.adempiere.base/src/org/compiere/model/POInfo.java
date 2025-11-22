@@ -413,33 +413,41 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& !m_columns[index].ColumnSQL.equals("NULL"); // virtual UI and Search columns have ColumnSQL equals to NULL
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& !originalColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
+			&& !originalColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualDBColumn
 
 	/**
 	 *  Is Column Virtual UI?
-	 *  @deprecated This method is useless because, for virtual UI columns, the ColumnSQL value is set to NULL in the loadInfo method (see line 206), so this method never returns the correct value. Use {@link #isVirtualColumn(int)} or other appropriate logic instead.
 	 *  @param index index
 	 *  @return true if column is virtual UI
 	 */
-	@Deprecated(forRemoval = true, since = "13")
 	public boolean isVirtualUIColumn (int index)
 	{
-		return false;
+		if (index < 0 || index >= m_columns.length)
+			return true;
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& originalColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}   //  isVirtualUIColumn
 	
 	/**
 	 *  Is Column Virtual Search?
-	 * 	@deprecated This method is useless because, for virtual Search columns, the ColumnSQL value is set to NULL in the loadInfo method (see line 206), so this method never returns the correct value. Use {@link #isVirtualColumn(int)} or other appropriate logic instead.
 	 *  @param index index
 	 *  @return true if column is virtual search
 	 */
-	@Deprecated(forRemoval = true, since = "13")
 	public boolean isVirtualSearchColumn (int index)
 	{
-		return false;
+		if (index < 0 || index >= m_columns.length)
+			return true;
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& originalColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualSearchColumn
 
 	/**

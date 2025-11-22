@@ -962,6 +962,7 @@ public class POInfoTest extends AbstractTestCase {
 		int qtyAvailableIndex = info.getColumnIndex("QtyAvailable");
 		if (qtyAvailableIndex >= 0) {
 			assertTrue(info.isVirtualColumn(qtyAvailableIndex), "QtyAvailable should be virtual");
+			assertTrue(info.isVirtualSearchColumn(qtyAvailableIndex), "QtyAvailable should be virtual");
 			assertFalse(info.isVirtualDBColumn(qtyAvailableIndex), "QtyAvailable should not be virtual DB");
 		}
 	}
