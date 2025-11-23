@@ -1202,5 +1202,26 @@ public class GridTabTest extends AbstractTestCase {
 		tabVisible = gridWindow.getTab(0);
 		
 		assertTrue(tabVisible.isDisplayed(), "Tab with no DisplayLogic should be displayed");
+		
+		// Test Case D: Tab with cotext-dependent DisplayLogic
+		windowVO = GridWindowVO.create(ctx, windowNo+3, AD_Window_ID);
+		tabVO_Visible = windowVO.Tabs.get(0);
+		
+		// No display logic
+		tabVO_Visible.DisplayLogic = "@TestVar@='Y'"; 
+		
+		// Initialize Window and Tab from the modified VO
+		gridWindow = new GridWindow(windowVO);
+		tabVisible = gridWindow.getTab(0);
+		
+		Env.setContext(Env.getCtx(), windowNo+3, "TestVar", "Y");
+		assertTrue(tabVisible.isDisplayed(), "Tab should be displayed when TestVar='Y'");
+		
+		Env.setContext(Env.getCtx(), windowNo+3, "TestVar", "N");
+		assertFalse(tabVisible.isDisplayed(), "Tab should NOT be displayed when TestVar!='Y'");
+		
+		// Verify: False (TestVar is removed)
+		Env.setContext(Env.getCtx(), windowNo+3, "TestVar", (String)null);
+		assertFalse(tabVisible.isDisplayed(), "Tab should NOT be displayed when TestVar is null");
 	}
 }
