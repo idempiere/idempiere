@@ -38,6 +38,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 
 import java.math.BigDecimal;
@@ -66,6 +67,7 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
 import org.compiere.model.MRule;
 import org.compiere.model.MStatusLine;
 import org.compiere.model.MStatusLineUsedIn;
@@ -382,9 +384,75 @@ public class GridTabTest extends AbstractTestCase {
 		assertNotEquals(gTab.getValue(spyField), gTab.getValue("Description"));
 		try (MockedStatic<MRule> mockedRule = mockStatic(MRule.class, Mockito.CALLS_REAL_METHODS)) {
 			mockedRule.when(() -> MRule.get(any(), eq(rule.getValue()))).thenReturn(rule);			
-			gTab.processCallout(spyField);
+			String error = gTab.processCallout(spyField);
+			assertEquals("", error, "Script Callout processing error: " + error);
 		}
 		assertEquals(gTab.getValue(spyField), gTab.getValue("Description"));
+		
+		// test invalid script callout
+		try (MockedStatic<MRule> mockedRule = mockStatic(MRule.class, Mockito.CALLS_REAL_METHODS)) {
+			mockedRule.when(() -> MRule.get(any(), eq(rule.getValue()))).thenReturn(rule);
+			//invalid rule value
+			scriptCallout = MRule.SCRIPT_PREFIX+rule.getValue()+"_INVALID";
+			reset(spyField);
+			doReturn(scriptCallout).when(spyField).getCallout();
+			String error = gTab.processCallout(spyField);
+			assertTrue(!Util.isEmpty(error, true), "Script Callout processing should return error for invalid rule value");
+						
+			//invalid event type
+			rule.setValue("groovy:TestScriptCallout");
+			rule.setEventType(MRule.EVENTTYPE_ModelValidatorTableEvent);
+			scriptCallout = MRule.SCRIPT_PREFIX+rule.getValue();
+			reset(spyField);
+			doReturn(scriptCallout).when(spyField).getCallout();
+			error = gTab.processCallout(spyField);
+			assertTrue(!Util.isEmpty(error, true), "Script Callout processing should return error for invalid rule event type");
+			
+			//invalid rule type
+			rule.setEventType(MRule.EVENTTYPE_Callout);
+			rule.setRuleType(MRule.RULETYPE_SQL);
+			error = gTab.processCallout(spyField);
+			assertTrue(!Util.isEmpty(error, true), "Script Callout processing should return error for invalid rule type");
+		}
+
+		//invalid script engine
+		try (MockedStatic<MRule> mockedRule = mockStatic(MRule.class, Mockito.CALLS_REAL_METHODS)) {
+			//need to create a new rule instance since engine is cache
+			MRule rule1 = new MRule(Env.getCtx(), 0, getTrxName());
+			rule1.setName("Test Script Callout Rule");
+			rule1.setValue("groovy1:TestScriptCallout");
+			rule1.setEventType(MRule.EVENTTYPE_Callout);
+			rule1.setRuleType(MRule.RULETYPE_JSR223ScriptingAPIs);
+			rule1.setScript("""
+					A_Tab.setValue("Description", A_Value);
+					""");
+			
+			mockedRule.when(() -> MRule.get(any(), eq(rule1.getValue()))).thenReturn(rule1);
+			
+			scriptCallout = MRule.SCRIPT_PREFIX+rule1.getValue();
+			reset(spyField);
+			doReturn(scriptCallout).when(spyField).getCallout();
+			String error = gTab.processCallout(spyField);
+			assertTrue(!Util.isEmpty(error, true), "Script Callout processing should return error for invalid script engine name");
+		}
+		
+		//test script with exception
+		try (MockedStatic<MRule> mockedRule = mockStatic(MRule.class, Mockito.CALLS_REAL_METHODS)) {
+			rule.setValue("groovy:TestScriptCallout");
+			rule.setEventType(MRule.EVENTTYPE_Callout);
+			rule.setRuleType(MRule.RULETYPE_JSR223ScriptingAPIs);
+			rule.setScript("""
+					throw new Exception("Test Exception in Script");
+					""");
+			
+			mockedRule.when(() -> MRule.get(any(), eq(rule.getValue()))).thenReturn(rule);
+			
+			scriptCallout = MRule.SCRIPT_PREFIX+rule.getValue();
+			reset(spyField);
+			doReturn(scriptCallout).when(spyField).getCallout();
+			String error = gTab.processCallout(spyField);
+			assertTrue(!Util.isEmpty(error, true), "Script Callout processing should return error for exception in script");
+		}
 	}
 	
 	@Test
@@ -488,6 +556,11 @@ public class GridTabTest extends AbstractTestCase {
 			lineTab.switchRows(0, 0, -1, true);
 			Integer idRow0NoChange = (Integer) lineTab.getValue(0, MOrderLine.COLUMNNAME_C_OrderLine_ID);
 			assertEquals(idRow0Revert, idRow0NoChange, "Switch with same indices should not change ordering");
+			
+			// Call with invalid to should do nothing
+			lineTab.switchRows(0, 100, -1, true);
+			idRow0NoChange = (Integer) lineTab.getValue(0, MOrderLine.COLUMNNAME_C_OrderLine_ID);
+			assertEquals(idRow0Revert, idRow0NoChange, "Switch with invalid to indices should not change ordering");
 			
 			// Mark both lines as processed and try switch
 			// Switch should not happens since both line is processed (not editable)
@@ -1223,5 +1296,41 @@ public class GridTabTest extends AbstractTestCase {
 		// Verify: False (TestVar is removed)
 		Env.setContext(Env.getCtx(), windowNo+3, "TestVar", (String)null);
 		assertFalse(tabVisible.isDisplayed(), "Tab should NOT be displayed when TestVar is null");
+	}
+	
+	@Test
+	void testGetMaxQueryRecords() {
+		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
+		var gridWindow = createGridWindow(AD_Window_ID);
+		assertTrue(gridWindow.getTabCount() > 0, "Tab Count is Zero. AD_Window_ID=" + AD_Window_ID);
+
+		GridTab gTab = gridWindow.getTab(0);
+		int maxRecords = gTab.getMaxQueryRecords();
+		assertTrue(maxRecords > 0, "getMaxQueryRecords should return a positive value, got: " + maxRecords);
+	}
+	
+	@Test
+	void testIsQueryRequire() {
+		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
+		var gridWindow = createGridWindow(AD_Window_ID);
+		assertTrue(gridWindow.getTabCount() > 0, "Tab Count is Zero. AD_Window_ID=" + AD_Window_ID);
+
+		GridTab gTab = gridWindow.getTab(0);
+		int maxRecords = gTab.getMaxQueryRecords();
+
+		MRole role = MRole.getDefault();
+		MRole roleSpy = spy(role);
+		doReturn(maxRecords).when(roleSpy).getConfirmQueryRecords();
+		
+		try (MockedStatic<MRole> mockedRole = mockStatic(MRole.class, Mockito.CALLS_REAL_METHODS);) {
+			mockedRole.when(() -> MRole.getDefault()).thenReturn(roleSpy);
+
+			// Should not require query if less than or equal to max
+			assertFalse(gTab.isQueryRequire(1), "isQueryRequire should be false for rowCount < 2");
+			assertFalse(gTab.isQueryRequire(maxRecords - 1), "isQueryRequire should be false for rowCount < maxRecords");
+			assertFalse(gTab.isQueryRequire(maxRecords), "isQueryRequire should be false for rowCount == maxRecords");
+			// Should require query if greater than max
+			assertTrue(gTab.isQueryRequire(maxRecords + 1), "isQueryRequire should be true for rowCount > maxRecords");
+		}
 	}
 }
