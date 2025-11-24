@@ -37,11 +37,14 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Tests for {@link POInfo} class.
  * @author d-ruiz
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public class POInfoTest extends AbstractTestCase {
 	
 	/**
