@@ -61,16 +61,16 @@ public class MsgTest extends AbstractTestCase {
 	public void testSplitToMsgTipNoTip() {
 		String msg = Msg.getMsg(getLanguage(), "ZoomDocument");
 		ValueNamePair vnp = Msg.splitToMsgTip(msg);
-		assertEquals(vnp.getValue(), "Document Zoom");
-		assertEquals(vnp.getName(), "");
+		assertEquals("Document Zoom", vnp.getValue());
+		assertEquals("", vnp.getName());
 	}
 
 	@Test
 	public void testSplitToMsgTipWithTip() {
 		String msg = Msg.getMsg(getLanguage(), "AccessCannotDelete");
 		ValueNamePair vnp = Msg.splitToMsgTip(msg);
-		assertEquals(vnp.getValue(), "You cannot delete this record ");
-		assertEquals(vnp.getName(), "You don't have the privileges");
+		assertEquals("You cannot delete this record ", vnp.getValue());
+		assertEquals("You don't have the privileges", vnp.getName());
 	}
 
 	@Test
