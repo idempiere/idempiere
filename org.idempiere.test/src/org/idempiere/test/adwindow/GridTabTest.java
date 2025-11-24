@@ -1089,14 +1089,14 @@ public class GridTabTest extends AbstractTestCase {
 	        // Test setting DocType to Sales (IsSOTrx = Y)
 	        gridTab.setValue("C_DocType_ID", docTypeSales.getC_DocType_ID());
 	        gridTab.setValue(MBankStatement.COLUMNNAME_C_BankAccount_ID, DictionaryIDs.C_BankAccount.ACCOUNT_1234.id); // Set mandatory Bank Account
-	        assertTrue(gridTab.dataSave(true), "Failed to save record with Sales DocType " + gridTab.getLastDataStatusEvent().getAD_Message() + " - " + gridTab.getLastDataStatusEvent().getInfo());
+	        assertTrue(gridTab.dataSave(true), "Failed to save record with Sales DocType " + getMessage(gridTab));
 	        
 	        // Create second row
 	        gridTab.dataNew(false);
 	        // Test setting DocType to Purchase (IsSOTrx = N)
 	        gridTab.setValue("C_DocType_ID", docTypePurchase.getC_DocType_ID());
 	        gridTab.setValue(MBankStatement.COLUMNNAME_C_BankAccount_ID, DictionaryIDs.C_BankAccount.ACCOUNT_1234.id); // Set mandatory Bank Account
-	        assertTrue(gridTab.dataSave(true), "Failed to save record with Purchase DocType " + gridTab.getLastDataStatusEvent().getAD_Message() + " - " + gridTab.getLastDataStatusEvent().getInfo());
+	        assertTrue(gridTab.dataSave(true), "Failed to save record with Purchase DocType " + getMessage(gridTab));
 	        
 	        // Verify the context variable "IsSOTrx" is updated to "Y" for row 1
 	        gridTab.setCurrentRow(0);	        
