@@ -401,7 +401,7 @@ public class MLookupFactory
 			+ "rt.WhereClause,rt.OrderByClause,t.AD_Window_ID,t.PO_Window_ID, "		//	6..9
 			+ "t.AD_Table_ID, cd.ColumnSQL as DisplayColumnSQL, "					//	10..11
 			+ "rt.AD_Window_ID as RT_AD_Window_ID, rt.AD_InfoWindow_ID as AD_InfoWindow_ID, " // 12..13
-			+ "rt.DisplaySQL, rt.IsDisplayIdentifier, cd.AD_Reference_ID AS DisplayColumn_Reference_ID " // 14..16
+			+ "rt.DisplaySQL, cd.AD_Reference_ID AS DisplayColumn_Reference_ID " // 14..15
 			+ "FROM AD_Ref_Table rt"
 			+ " INNER JOIN AD_Table t ON (rt.AD_Table_ID=t.AD_Table_ID)"
 			+ " INNER JOIN AD_Column ck ON (rt.AD_Key=ck.AD_Column_ID)"
@@ -411,7 +411,7 @@ public class MLookupFactory
 		//
 		String	KeyColumn = null, DisplayColumn = null, TableName = null, WhereClause = null, OrderByClause = null;
 		String displayColumnSQL = null, displaySQL = null;
-		boolean IsTranslated = false, isValueDisplayed = false, isDisplayIdentifier = false;
+		boolean IsTranslated = false, isValueDisplayed = false;
 		int DisplayColumn_Reference_ID = 0;
 
 		int ZoomWindow = 0;
@@ -432,7 +432,7 @@ public class MLookupFactory
 				TableName = rs.getString(1);
 				KeyColumn = rs.getString(2);
 				DisplayColumn = rs.getString(3);
-				DisplayColumn_Reference_ID = rs.getInt(16);
+				DisplayColumn_Reference_ID = rs.getInt(15);
 				isValueDisplayed = "Y".equals(rs.getString(4));
 				IsTranslated = "Y".equals(rs.getString(5));
 				WhereClause = rs.getString(6);
@@ -447,7 +447,6 @@ public class MLookupFactory
 				overrideZoomWindow = rs.getInt(12);
 				infoWindowId = rs.getInt(13);
 				displaySQL = rs.getString(14);
-				isDisplayIdentifier = "Y".equals(rs.getString(15));
 				loaded = true;
 			}
 		}
@@ -468,10 +467,7 @@ public class MLookupFactory
 			s_log.log(Level.SEVERE, "No Table Reference Table ID=" + AD_Reference_Value_ID);
 			return null;
 		}
-		
-		if (isDisplayIdentifier)
-			displaySQL = getDisplayColumn(language, TableName, getListIdentifiers(TableName)).toString();
-		else if (!Util.isEmpty(displaySQL, true))
+		if (!Util.isEmpty(displaySQL, true))
 			displaySQL = "(" + displaySQL + ")";
 
 		StringBuilder realSQL = new StringBuilder("SELECT ");
@@ -1153,4 +1149,3 @@ public class MLookupFactory
 	}
 
 }   //  MLookupFactory
-
