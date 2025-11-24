@@ -224,12 +224,14 @@ public class SystemIDs
 	public final static int WINDOW_MY_REQUESTS = 237;
 	public final static int WINDOW_NOTICE = 193;
 	public final static int WINDOW_PAYMENTS_INTO_BATCH = 200031;
+	public final static int WINDOW_PRODUCT = 140;
 	public final static int WINDOW_REQUEST = 201;
 	public final static int WINDOW_REQUESTS_ALL = 232;
 	public final static int WINDOW_RESOURCE = 236;
 	public final static int WINDOW_RETURNTOVENDOR = 53098;
 	public final static int WINDOW_SALES_ORDER = 143;
 	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
+	public final static int WINDOW_TABLE_AND_COLUMN = 100;
 	public final static int WINDOW_TEST = 127;
 	public final static int WINDOW_USER_PREFERENCE = 200073;
 	public final static int WINDOW_VENDOR_RMA = 53099;

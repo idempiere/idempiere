@@ -151,7 +151,7 @@ public class GridWindowVO implements Serializable
 		boolean clone = false;
 		if (vo != null)
 		{
-			vo = vo.clone(WindowNo, false);
+			vo = vo.clone(ctx, WindowNo, false);
 			clone = true;
 		} 
 		else
@@ -431,14 +431,26 @@ public class GridWindowVO implements Serializable
 		}
 	}   //  setCtx
 
+	@Deprecated
+	public GridWindowVO clone (int windowNo)
+	{
+		return clone (ctx, windowNo);
+	}
+	
 	/**
 	 * 	Clone
 	 * 	@param windowNo no
 	 *	@return GridWindowVO
 	 */
-	public GridWindowVO clone (int windowNo)
+	public GridWindowVO clone (Properties ctx, int windowNo)
 	{
-		return clone(windowNo, true);
+		return clone(ctx, windowNo, true);
+	}
+	
+	@Deprecated
+	public GridWindowVO clone (int windowNo, boolean cloneTabs)
+	{
+		return clone (ctx, windowNo, cloneTabs);
 	}
 	
 	/**
@@ -447,7 +459,7 @@ public class GridWindowVO implements Serializable
 	 *  @param cloneTabs
 	 *	@return GridWindowVO
 	 */
-	public GridWindowVO clone (int windowNo, boolean cloneTabs)
+	public GridWindowVO clone (Properties ctx, int windowNo, boolean cloneTabs)
 	{
 		GridWindowVO clone = null;
 		try

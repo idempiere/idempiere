@@ -42,6 +42,7 @@ import javax.script.ScriptEngine;
 import javax.swing.event.EventListenerList;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.IColumnCalloutFactory;
 import org.adempiere.model.MTabCustomization;
@@ -256,7 +257,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *  Wait until loading is complete
 	 */
-	private void waitLoadCompete()
+	public void waitLoadComplete()
 	{
 		if (m_loaderFuture == null || m_loadComplete)
 			return;
@@ -294,7 +295,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		if (m_loaderFuture != null && m_loaderFuture.isDone())
 		{
-			waitLoadCompete();
+			waitLoadComplete();
 			if (isLoadComplete())
 				return true;
 		}
@@ -523,6 +524,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  Get Tab Icon
 	 *  @return Icon
 	 */
+	@Deprecated
+	@GeneratedCodeCoverageExclusion
 	public javax.swing.Icon getIcon()
 	{
 		if (m_vo.AD_Image_ID == 0)
@@ -817,7 +820,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return query.getWhereClause(true);
 		}
 
-		//	Find Reference Column e.g. BillTo_ID -> C_BPartner_Location_ID
+		//	Find Reference Column e.g. Bill_Location_ID -> C_BPartner_Location_ID
 		final String sql1 = "SELECT cc.ColumnName "
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Ref_Table r ON (c.AD_Reference_Value_ID=r.AD_Reference_ID)"
@@ -837,12 +840,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			colName = refColName;
 		}
 
-		//	Column NOT in Tab - create EXISTS subquery
+		//	Column NOT in Tab - create IN subquery for detail/child tab
 		String tabKeyColumn = getKeyColumnName();
 		final String sql2 = "SELECT t.TableName "
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
-			+ "WHERE c.ColumnName=? AND IsKey='Y'"		//	#1 Link Column
+			+ "WHERE c.ColumnName=? AND IsKey='Y'"		//	#1 Detail/Child tab key Column
 			+ " AND EXISTS (SELECT * FROM AD_Column cc"
 			+ " WHERE cc.AD_Table_ID=t.AD_Table_ID AND cc.ColumnName=?)";	//	#2 Tab Key Column
 		String tableName = DB.getSQLValueStringEx(null, sql2, colName, tabKeyColumn);
@@ -1019,7 +1022,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	
 	/**
 	 * Validate if current tab or parent tab record has changed in database 
-	 * @return true if if there are changes
+	 * @return true if there are changes
 	 */
 	public boolean hasChangedCurrentTabAndParents() {
 		String msg = null;
@@ -1188,19 +1191,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - row=" + m_currentRow);
 		boolean retValue = m_mTable.dataDelete(m_currentRow);
 		setCurrentRow(m_currentRow, true);
-		if (!selection.isEmpty()) 
-		{
-			List<Integer> tmp = new ArrayList<Integer>();
-			for(Integer i : selection)
-			{
-				if (i.intValue() == m_currentRow)
-					continue;
-				else if (i.intValue() > m_currentRow)
-					tmp.add(i.intValue()-1);
-				else
-					tmp.add(i);
-			}
-		}
 		fireStateChangeEvent(new StateChangeEvent(this, StateChangeEvent.DATA_DELETE));
 		return retValue;
 	}   //  dataDelete
@@ -1342,7 +1332,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}	//	setLinkColumnName
 
 	/**
-	 *	Is the tab current?
+	 *	Is the tab current?<br/>
+	 *  This is usually used to determine if a re-query of detail tabs is necessary due to parent tab current row pointer has changed.
 	 *  <pre>
 	 *	Yes     - Table must be open
 	 *	        - Query String is the same
@@ -1387,6 +1378,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @deprecated
 	 */
 	@Deprecated
+	@GeneratedCodeCoverageExclusion
 	public boolean isIncluded()
 	{
 		if (! m_includedAlreadyCalc) {
@@ -1786,6 +1778,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @deprecated use getStatusLine and configure Status Line instead
 	 */
 	@Deprecated
+	@GeneratedCodeCoverageExclusion
 	public String getTrxInfo()
 	{
 		//	InvoiceBatch
@@ -3376,6 +3369,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * @return list of all tabs included in this tab
 	 */
+	@GeneratedCodeCoverageExclusion
 	public List<GridTab> getIncludedTabs()
 	{
 		List<GridTab> list = new ArrayList<GridTab>(1);
@@ -3653,4 +3647,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		setCurrentRow(0, true);
 	}
 
+	/**
+	 * Get last DataStatusEvent
+	 * @return last DataStatusEvent
+	 */
+	public DataStatusEvent getLastDataStatusEvent() {
+		DataStatusEventRecord dse = m_lastDataStatusEventReference.get();
+		if (dse != null) {
+			return dse.dataStatusEvent();
+		}
+		return null;
+	}
 }	//	GridTab
