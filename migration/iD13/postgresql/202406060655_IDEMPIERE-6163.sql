@@ -20,7 +20,7 @@ ALTER TABLE AD_Ref_Table ADD COLUMN IsDisplayIdentifier CHAR(1) DEFAULT 'N' CHEC
 ;
 
 -- Mar 26, 2019 4:58:01 PM IST
-ALTER TABLE AD_Ref_Table ADD COLUMN DisplaySQL TEXT DEFAULT NULL 
+ALTER TABLE AD_Ref_Table ADD COLUMN DisplaySQL VARCHAR(4000) DEFAULT NULL 
 ;
 
 -- Mar 26, 2019 5:00:05 PM IST
@@ -37,4 +37,3 @@ UPDATE AD_Field SET DisplayLogic='@IsDisplayIdentifier@=N', AD_Reference_Value_I
 
 SELECT register_migration_script('202406060655_IDEMPIERE-6163.sql') FROM dual
 ;
-
