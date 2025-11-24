@@ -201,7 +201,7 @@ public final class DB
 	 * Connect to database and initialise all connections.
 	 * @return True if success, false otherwise
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean connect() {
 		//direct connection
 		boolean success =false;
@@ -482,7 +482,7 @@ public final class DB
 	 *  @return Prepared Statement
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static CPreparedStatement prepareStatement (String sql)
 	{
 		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
@@ -518,7 +518,7 @@ public final class DB
 	 *  @return Prepared Statement
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static CPreparedStatement prepareStatement (String sql,
 		int resultSetType, int resultSetConcurrency)
 	{
@@ -657,7 +657,7 @@ public final class DB
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int executeUpdate (String sql)
 	{
 		return executeUpdate(sql, null, false, null);
@@ -698,7 +698,7 @@ public final class DB
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int executeUpdate (String sql, boolean ignoreError)
 	{
 		return executeUpdate (sql, null, ignoreError, null);
@@ -1836,7 +1836,7 @@ public final class DB
 	 *	@return document no or null
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static String getDocumentNo(int C_DocType_ID, String trxName)
 	{
 		return MSequence.getDocumentNo (C_DocType_ID, trxName, false);
@@ -1940,7 +1940,7 @@ public final class DB
 	 *	@return true if client and RMI or Objects on Server
 	 *  @deprecated
 	 */
-	@Deprecated (forRemoval=true)
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean isRemoteObjects()
 	{
 		return false;
@@ -1953,7 +1953,7 @@ public final class DB
 	 *	@return true if client and RMI or Process on Server
 	 *  @deprecated
 	 */
-	@Deprecated (forRemoval=true)
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean isRemoteProcess()
 	{
 		return false;
