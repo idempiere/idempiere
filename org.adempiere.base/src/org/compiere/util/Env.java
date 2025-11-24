@@ -137,6 +137,7 @@ public final class Env
 	public static final String THEME = "#Theme";
 	public static final String UI_CLIENT = "#UIClient";
 	public static final String USER_LEVEL = "#User_Level";
+	public static final String USER_ORG = "#User_Org";
 
 	public static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 	
