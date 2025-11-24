@@ -8,10 +8,6 @@ SET DEFINE OFF
 UPDATE AD_Column SET FieldLength=4000, AD_Reference_ID=10, FKConstraintType=NULL,Updated=TO_TIMESTAMP('2025-02-11 16:53:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213865
 ;
 
--- Feb 11, 2025, 4:53:55 PM IST
-ALTER TABLE AD_Ref_Table MODIFY DisplaySQL VARCHAR2(4000 CHAR) DEFAULT NULL 
-;
-
 -- Feb 11, 2025, 4:55:21 PM IST
 UPDATE AD_Field SET NumLines=3,Updated=TO_TIMESTAMP('2025-02-11 16:55:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205956
 ;
@@ -46,3 +42,6 @@ Key Points:
 Ensure proper testing to avoid errors and confirm expected results.',Updated=TO_TIMESTAMP('2025-03-07 14:37:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205956
 ;
 
+-- Nov 24, 2025, 8:31:22 PM CET
+UPDATE AD_Field SET DisplayLogic='@DisplaySQL:0@=0',Updated=TO_TIMESTAMP('2025-11-24 20:31:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=1266
+;
