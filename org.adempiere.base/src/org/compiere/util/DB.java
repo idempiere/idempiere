@@ -1337,7 +1337,7 @@ public final class DB
      * Reset connection's auto commit to true and read only to false before closing it.
      * @param conn
      */
-	private static void closeAndResetReadonlyConnection(Connection conn) {
+	public static void closeAndResetReadonlyConnection(Connection conn) {
 		try {
 			conn.setAutoCommit(true);
 		} catch (SQLException e) {
