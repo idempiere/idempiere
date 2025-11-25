@@ -21,10 +21,10 @@ import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 import static org.compiere.model.SystemIDs.REFERENCE_YESNO;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -3383,19 +3383,31 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
         		GridTable.DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
         m_total = 999999;
-        Statement stmt = null;
+        PreparedStatement pstmt = null;
         ResultSet rs = null;
+    	Connection conn = null; 
         try
         {
-            stmt = DB.createStatement();
+        	conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
+   			conn.setAutoCommit(false);
+   			conn.setReadOnly(true);
+            pstmt = DB.prepareStatement(conn, finalSQL);
             if (timeout > 0)
-            	stmt.setQueryTimeout(timeout);
-            rs = stmt.executeQuery(finalSQL);
+            	pstmt.setQueryTimeout(timeout);
+            rs = pstmt.executeQuery();
             if (rs.next())
                 m_total = rs.getInt(1);
         }
         catch (SQLException e)
         {
+    		if (conn != null)
+    		{
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+    		}
         	if (DB.getDatabase().isQueryTimeout(e))
         	{
        			m_total = COUNTING_RECORDS_TIMED_OUT; // unknown
@@ -3410,9 +3422,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         finally
         {
-        	DB.close(rs, stmt);
+        	DB.close(rs, pstmt);
         	rs = null;
-        	stmt = null;
+        	pstmt = null;
+    		if (conn != null)
+    			DB.closeAndResetReadonlyConnection(conn);
         }
         //  No Records
         if (m_total == 0 && alertRecords)
