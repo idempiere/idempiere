@@ -399,4 +399,382 @@ public class EnvTest extends AbstractTestCase {
     	String expected = "The record 80000 about SuperUser was created by GardenUser and updated by GardenAdmin";
     	assertEquals(expected, mMailText.getMailText());
     }
+
+	@Test
+	public void testSetContextString() {
+		Properties ctx = new Properties();
+		
+		// Test setting string value
+		Env.setContext(ctx, "TestKey", "TestValue");
+		assertEquals("TestValue", Env.getContext(ctx, "TestKey"), "Failed to set/get string context");
+		
+		// Test setting null/empty value removes context
+		Env.setContext(ctx, "TestKey", (String)null);
+		assertEquals("", Env.getContext(ctx, "TestKey"), "Failed to remove context with null");
+		
+		Env.setContext(ctx, "TestKey2", "Value");
+		Env.setContext(ctx, "TestKey2", "");
+		assertEquals("", Env.getContext(ctx, "TestKey2"), "Failed to remove context with empty string");
+	}
+
+	@Test
+	public void testSetContextInt() {
+		Properties ctx = new Properties();
+		
+		// Test setting int value
+		Env.setContext(ctx, "TestInt", 12345);
+		assertEquals("12345", Env.getContext(ctx, "TestInt"), "Failed to set/get int context");
+		assertEquals(12345, Env.getContextAsInt(ctx, "TestInt"), "Failed to get int context as int");
+		
+		// Test setting zero
+		Env.setContext(ctx, "TestInt", 0);
+		assertEquals("0", Env.getContext(ctx, "TestInt"), "Failed to set zero value");
+		assertEquals(0, Env.getContextAsInt(ctx, "TestInt"), "Failed to get zero value as int");
+		
+		// Test negative value
+		Env.setContext(ctx, "TestInt", -100);
+		assertEquals("-100", Env.getContext(ctx, "TestInt"), "Failed to set negative value");
+		assertEquals(-100, Env.getContextAsInt(ctx, "TestInt"), "Failed to get negative value as int");
+	}
+
+	@Test
+	public void testSetContextBoolean() {
+		Properties ctx = new Properties();
+		
+		// Test setting boolean values
+		Env.setContext(ctx, "TestBool", true);
+		assertEquals("Y", Env.getContext(ctx, "TestBool"), "Failed to set boolean true");
+		
+		Env.setContext(ctx, "TestBool", false);
+		assertEquals("N", Env.getContext(ctx, "TestBool"), "Failed to set boolean false");
+	}
+
+	@Test
+	public void testSetContextTimestamp() {
+		Properties ctx = new Properties();
+		java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2025-11-25 10:30:45");
+		
+		// Test setting timestamp value
+		Env.setContext(ctx, "TestDate", timestamp);
+		String value = Env.getContext(ctx, "TestDate");
+		assertTrue(value.contains("2025-11-25"), "Timestamp should contain date");
+		
+		// Test setting null timestamp removes context
+		Env.setContext(ctx, "TestDate", (java.sql.Timestamp)null);
+		assertEquals("", Env.getContext(ctx, "TestDate"), "Failed to remove timestamp context with null");
+	}
+
+	@Test
+	public void testSetContextWithWindowNo() {
+		Properties ctx = new Properties();
+		int windowNo = 5;
+		
+		// Test window-specific context
+		Env.setContext(ctx, windowNo, "TestKey", "WindowValue");
+		assertEquals("WindowValue", Env.getContext(ctx, windowNo, "TestKey"), "Failed to set/get window context");
+		
+		// Test window context with int
+		Env.setContext(ctx, windowNo, "TestInt", 999);
+		assertEquals(999, Env.getContextAsInt(ctx, windowNo, "TestInt"), "Failed to set/get window int context");
+		
+		// Test window context with boolean
+		Env.setContext(ctx, windowNo, "TestBool", true);
+		assertEquals("Y", Env.getContext(ctx, windowNo, "TestBool"), "Failed to set/get window boolean context");
+		
+		// Test that window context doesn't affect global context
+		Env.setContext(ctx, "GlobalKey", "GlobalValue");
+		Env.setContext(ctx, windowNo, "GlobalKey", "WindowValue");
+		assertEquals("GlobalValue", Env.getContext(ctx, "GlobalKey"), "Window context should not override global");
+		assertEquals("WindowValue", Env.getContext(ctx, windowNo, "GlobalKey"), "Window context should be retrievable");
+	}
+
+	@Test
+	public void testSetContextWithWindowAndTabNo() {
+		Properties ctx = new Properties();
+		int windowNo = 3;
+		int tabNo = 2;
+		
+		// Test tab-specific context
+		Env.setContext(ctx, windowNo, tabNo, "TabKey", "TabValue");
+		assertEquals("TabValue", Env.getContext(ctx, windowNo, tabNo, "TabKey"), "Failed to set/get tab context");
+		
+		// Test tab context with int
+		Env.setContext(ctx, windowNo, tabNo, "TabInt", 777);
+		assertEquals(777, Env.getContextAsInt(ctx, windowNo, tabNo, "TabInt"), "Failed to set/get tab int context");
+		
+		// Test tab context with boolean
+		Env.setContext(ctx, windowNo, tabNo, "TabBool", false);
+		assertEquals("N", Env.getContext(ctx, windowNo, tabNo, "TabBool"), "Failed to set/get tab boolean context");
+		
+		// Test null _ID field gets default value "0"
+		Env.setContext(ctx, windowNo, tabNo, "Test_ID", (String)null);
+		assertEquals("0", Env.getContext(ctx, windowNo, tabNo, "Test_ID"), "Null _ID field should default to 0");
+		
+		// Test non-ID field gets empty string
+		Env.setContext(ctx, windowNo, tabNo, "TestName", (String)null);
+		assertEquals("", Env.getContext(ctx, windowNo, tabNo, "TestName"), "Null non-ID field should be empty");
+	}
+
+	@Test
+	public void testGetContextAsInt() {
+		Properties ctx = new Properties();
+		
+		// Test valid int
+		Env.setContext(ctx, "ValidInt", 12345);
+		assertEquals(12345, Env.getContextAsInt(ctx, "ValidInt"), "Failed to get valid int");
+		
+		// Test empty/missing context returns 0
+		assertEquals(0, Env.getContextAsInt(ctx, "MissingKey"), "Missing key should return 0");
+		
+		// Test invalid number returns 0
+		ctx.setProperty("InvalidInt", "NotANumber");
+		assertEquals(0, Env.getContextAsInt(ctx, "InvalidInt"), "Invalid number should return 0");
+		
+		// Test with window context
+		int windowNo = 10;
+		Env.setContext(ctx, windowNo, "WindowInt", 5555);
+		assertEquals(5555, Env.getContextAsInt(ctx, windowNo, "WindowInt"), "Failed to get window int");
+		assertEquals(0, Env.getContextAsInt(ctx, windowNo, "MissingWindowInt"), "Missing window key should return 0");
+	}
+
+	@Test
+	public void testGetContextAsDate() {
+		Properties ctx = new Properties();
+		
+		// Test valid timestamp
+		java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2025-11-25 10:30:45");
+		Env.setContext(ctx, "TestDate", timestamp);
+		java.sql.Timestamp retrieved = Env.getContextAsDate(ctx, "TestDate");
+		assertFalse(retrieved == null, "Should retrieve valid timestamp");
+		
+		// Test missing context returns current date
+		java.sql.Timestamp defaultDate = Env.getContextAsDate(ctx, "MissingDate");
+		assertFalse(defaultDate == null, "Missing date should return current date");
+		
+		// Test with window context
+		int windowNo = 7;
+		Env.setContext(ctx, windowNo, "WindowDate", timestamp);
+		java.sql.Timestamp windowDate = Env.getContextAsDate(ctx, windowNo, "WindowDate");
+		assertFalse(windowDate == null, "Should retrieve valid window timestamp");
+	}
+
+	@Test
+	public void testAutoCommit() {
+		Properties ctx = new Properties();
+		
+		// Test default (should be false)
+		assertFalse(Env.isAutoCommit(ctx), "Default AutoCommit should be false");
+		
+		// Test window-specific auto commit
+		int windowNo = 4;
+		Env.setAutoCommit(ctx, windowNo, true);
+		assertTrue(Env.isAutoCommit(ctx, windowNo), "Failed to set window AutoCommit to true");
+		
+		Env.setAutoCommit(ctx, windowNo, false);
+		assertFalse(Env.isAutoCommit(ctx, windowNo), "Failed to set window AutoCommit to false");
+	}
+
+	@Test
+	public void testAutoNew() {
+		Properties ctx = new Properties();
+		
+		// Test default (should be false)
+		assertFalse(Env.isAutoNew(ctx), "Default AutoNew should be false");
+		
+		// Test window-specific auto new
+		int windowNo = 6;
+		Env.setAutoNew(ctx, windowNo, true);
+		assertTrue(Env.isAutoNew(ctx, windowNo), "Failed to set window AutoNew to true");
+		
+		Env.setAutoNew(ctx, windowNo, false);
+		assertFalse(Env.isAutoNew(ctx, windowNo), "Failed to set window AutoNew to false");
+	}
+
+	@Test
+	public void testIsSOTrx() {
+		Properties ctx = new Properties();
+		
+		// Test default (should be true - Sales Order)
+		assertTrue(Env.isSOTrx(ctx), "Default IsSOTrx should be true");
+		
+		// Test setting to Purchase Order
+		Env.setSOTrx(ctx, false);
+		assertFalse(Env.isSOTrx(ctx), "Failed to set IsSOTrx to false");
+		
+		// Test setting to Sales Order
+		Env.setSOTrx(ctx, true);
+		assertTrue(Env.isSOTrx(ctx), "Failed to set IsSOTrx to true");
+		
+		// Test window-specific IsSOTrx
+		int windowNo = 8;
+		Env.setContext(ctx, windowNo, "IsSOTrx", false);
+		assertFalse(Env.isSOTrx(ctx, windowNo), "Failed to get window IsSOTrx as false");
+		
+		Env.setContext(ctx, windowNo, "IsSOTrx", true);
+		assertTrue(Env.isSOTrx(ctx, windowNo), "Failed to get window IsSOTrx as true");
+	}
+
+	@Test
+	public void testGetAD_Client_ID() {
+		Properties ctx = new Properties();
+		Env.setContext(ctx, Env.AD_CLIENT_ID, DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+		assertEquals(DictionaryIDs.AD_Client.GARDEN_WORLD.id, Env.getAD_Client_ID(ctx), "Failed to get AD_Client_ID");
+	}
+
+	@Test
+	public void testGetAD_Org_ID() {
+		Properties ctx = new Properties();
+		Env.setContext(ctx, Env.AD_ORG_ID, DictionaryIDs.AD_Org.HQ.id);
+		assertEquals(DictionaryIDs.AD_Org.HQ.id, Env.getAD_Org_ID(ctx), "Failed to get AD_Org_ID");
+	}
+
+	@Test
+	public void testGetAD_User_ID() {
+		Properties ctx = new Properties();
+		Env.setContext(ctx, Env.AD_USER_ID, DictionaryIDs.AD_User.SUPER_USER.id);
+		assertEquals(DictionaryIDs.AD_User.SUPER_USER.id, Env.getAD_User_ID(ctx), "Failed to get AD_User_ID");
+	}
+
+	@Test
+	public void testGetAD_Role_ID() {
+		Properties ctx = new Properties();
+		Env.setContext(ctx, Env.AD_ROLE_ID, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN_NOT_ADVANCED.id);
+		assertEquals(DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN_NOT_ADVANCED.id, Env.getAD_Role_ID(ctx), "Failed to get AD_Role_ID");
+	}
+
+	@Test
+	public void testContextHierarchy() {
+		Properties ctx = new Properties();
+		int windowNo = 1;
+		int tabNo = 2;
+		
+		// Set values at different levels
+		Env.setContext(ctx, "#GlobalKey", "GlobalValue");
+		Env.setContext(ctx, windowNo, "WindowKey", "WindowValue");
+		Env.setContext(ctx, windowNo, tabNo, "TabKey", "TabValue");
+		
+		// Test retrieval hierarchy
+		// Global context should be accessible from anywhere
+		assertEquals("GlobalValue", Env.getContext(ctx, "#GlobalKey"), "Global context should be accessible globally");
+		assertEquals("GlobalValue", Env.getContext(ctx, windowNo, "#GlobalKey"), "Global context should be accessible from window");
+		assertEquals("GlobalValue", Env.getContext(ctx, windowNo, tabNo, "#GlobalKey"), "Global context should be accessible from tab");
+		
+		// Window context should not be accessible globally with onlyWindow=true
+		assertEquals("", Env.getContext(ctx, "WindowKey"), "Window context should not be in global context");
+		assertEquals("WindowValue", Env.getContext(ctx, windowNo, "WindowKey"), "Window context should be accessible from window");
+		assertEquals("WindowValue", Env.getContext(ctx, windowNo, tabNo, "WindowKey"), "Window context should be accessible from tab");
+		
+		// Tab context should only be accessible from tab
+		assertEquals("", Env.getContext(ctx, "TabKey"), "Tab context should not be in global context");
+		assertEquals("", Env.getContext(ctx, windowNo, "TabKey", true), "Tab context should not be in window context with onlyWindow=true");
+		assertEquals("TabValue", Env.getContext(ctx, windowNo, tabNo, "TabKey"), "Tab context should be accessible from tab");
+	}
+
+	@Test
+	public void testContextOnlyWindowAndOnlyTab() {
+		Properties ctx = new Properties();
+		int windowNo = 10;
+		int tabNo = 5;
+		
+		// Set up contexts at different levels
+		Env.setContext(ctx, "#TestKey", "GlobalValue");
+		Env.setContext(ctx, windowNo, "TestKey", "WindowValue");
+		Env.setContext(ctx, windowNo, tabNo, "TestKey", "TabValue");
+		
+		// Test onlyWindow flag
+		assertEquals("WindowValue", Env.getContext(ctx, windowNo, "TestKey", true), "onlyWindow=true should return window value");
+		assertEquals("WindowValue", Env.getContext(ctx, windowNo, "TestKey", false), "onlyWindow=false should return window value");
+		
+		// Test when window context doesn't exist
+		assertEquals("", Env.getContext(ctx, windowNo, "OnlyGlobal", true), "onlyWindow=true should not return global value");
+		assertEquals("", Env.getContext(ctx, windowNo, "OnlyGlobal", false), "onlyWindow=false with no # prefix should not return global value");
+		
+		// Test onlyTab flag
+		assertEquals("TabValue", Env.getContext(ctx, windowNo, tabNo, "TestKey", true, false), "onlyTab=true should return tab value");
+		assertTrue(Util.isEmpty(Env.getContext(ctx, windowNo, tabNo, "OnlyWindow", true, false)), "onlyTab=true should not search window");
+		// Set window context and verify onlyTab=false searches window
+		Env.setContext(ctx, windowNo, "OnlyWindow", "WindowValue");
+		assertEquals("WindowValue", Env.getContext(ctx, windowNo, tabNo, "OnlyWindow", false, false), "onlyTab=false should search window");
+	}
+
+	@Test
+	public void testEnvironmentVariables() {
+		Properties ctx = new Properties();
+		
+		// Test system variable prefix
+		String expr = "@" + Env.PREFIX_SYSTEM_VARIABLE + "PATH@";
+		String parsedText = Env.parseContext(ctx, 0, expr, false);
+		assertFalse(parsedText.isEmpty(), "Should retrieve system PATH variable");
+		
+		// Test non-existent environment variable
+		expr = "@" + Env.PREFIX_SYSTEM_VARIABLE + "NONEXISTENT_VAR_12345@";
+		parsedText = Env.parseContext(ctx, 0, expr, false);
+		assertEquals("", parsedText, "Non-existent environment variable should return empty string");
+	}
+
+	@Test
+	public void testNullContextHandling() {
+		// Test that null context throws IllegalArgumentException
+		try {
+			Env.getContext(null, "TestKey");
+			assertTrue(false, "Should throw IllegalArgumentException for null context");
+		} catch (IllegalArgumentException e) {
+			assertTrue(true, "Correctly throws IllegalArgumentException");
+		}
+		
+		try {
+			Env.setContext(null, "TestKey", "TestValue");
+			// Should not throw, just return early
+			assertTrue(true, "setContext handles null context gracefully");
+		} catch (Exception e) {
+			assertTrue(false, "Should not throw exception: " + e.getMessage());
+		}
+		
+		// Test null context key
+		try {
+			Env.getContext(new Properties(), null);
+			assertTrue(false, "Should throw IllegalArgumentException for null context key");
+		} catch (IllegalArgumentException e) {
+			assertTrue(true, "Correctly throws IllegalArgumentException");
+		}
+	}
+
+	@Test
+	public void testContextAsIntWithWindowAndTab() {
+		Properties ctx = new Properties();
+		int windowNo = 15;
+		int tabNo = 3;
+		
+		Env.setContext(ctx, windowNo, tabNo, "TabInt", 888);
+		assertEquals(888, Env.getContextAsInt(ctx, windowNo, tabNo, "TabInt"), "Failed to get tab int context");
+		
+		// Test empty context returns 0
+		assertEquals(0, Env.getContextAsInt(ctx, windowNo, tabNo, "MissingTabInt"), "Missing tab int should return 0");
+		
+		// Test invalid number returns 0
+		ctx.setProperty(windowNo+"|"+tabNo+"|InvalidInt", "ABC");
+		assertEquals(0, Env.getContextAsInt(ctx, windowNo, tabNo, "InvalidInt"), "Invalid tab int should return 0");
+	}
+
+	@Test
+	public void testGetContextOnlyWindowParameter() {
+		Properties ctx = new Properties();
+		int windowNo = 20;
+		
+		// Set global context
+		Env.setContext(ctx, "#GlobalParam", "GlobalValue");
+		
+		// Test that onlyWindow=true doesn't return global value without # prefix
+		String result = Env.getContext(ctx, windowNo, "GlobalParam", true);
+		assertEquals("", result, "onlyWindow=true should not search global context without # prefix");
+		
+		// Test that onlyWindow=false returns global value
+		result = Env.getContext(ctx, windowNo, "#GlobalParam", false);
+		assertEquals("GlobalValue", result, "onlyWindow=false should search global context with # prefix");
+		
+		// Test window-specific value
+		Env.setContext(ctx, windowNo, "WindowParam", "WindowValue");
+		result = Env.getContext(ctx, windowNo, "WindowParam", true);
+		assertEquals("WindowValue", result, "onlyWindow=true should return window value");
+	}
 }
