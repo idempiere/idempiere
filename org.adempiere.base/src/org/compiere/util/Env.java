@@ -1524,7 +1524,7 @@ public final class Env
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow, boolean ignoreUnparsable)
 	{
-		return parseContext(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, false);
+		return parseContext(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, false, true);
 	}
 
 	/**
@@ -1537,11 +1537,31 @@ public final class Env
 	 * 	@param ignoreUnparsable 
 	 *  If true, just skip context variable that's not resolvable. 
 	 *  If false, return "" if there are context variable that's not resolvable.
-	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.  
+	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
 	 *	@return parsed expression
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow, boolean ignoreUnparsable, boolean keepEscapeSequence)
+	{
+		return parseContext(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, false, true);
+	}
+
+	/**
+	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
+	 *
+	 *  @param ctx context
+	 *	@param WindowNo	Number of Window
+	 *	@param value Expression to be parsed
+	 *  @param onlyWindow if true, do not use global context value
+	 * 	@param ignoreUnparsable 
+	 *  If true, just skip context variable that's not resolvable. 
+	 *  If false, return "" if there are context variable that's not resolvable.
+	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+  	 *  @param forSQL if true, the parsed value is intended for SQL statement, so it replaces quotes accordingly
+	 *	@return parsed expression
+	 */
+	public static String parseContext (Properties ctx, int WindowNo, String value,
+		boolean onlyWindow, boolean ignoreUnparsable, boolean keepEscapeSequence, boolean forSQL)
 	{
 		if (value == null || value.length() == 0)
 			return "";
@@ -1581,7 +1601,11 @@ public final class Env
 			token = inStr.substring(0, j);
 
 			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);
-			if (ctxInfo.length() == 0)
+			if (forSQL && ctxInfo.contains("'")) {
+				// TODO: take into account escape characters
+				ctxInfo = ctxInfo.replace("'", "''");
+			}
+			if (ctxInfo.isEmpty())
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
 				if (!ignoreUnparsable)
@@ -1614,7 +1638,7 @@ public final class Env
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
 		boolean onlyTab, boolean ignoreUnparsable)
 	{
-		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, ignoreUnparsable, false);
+		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, ignoreUnparsable, false, true);
 	}
 
 	/**
@@ -1633,6 +1657,27 @@ public final class Env
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
 		boolean onlyTab, boolean ignoreUnparsable, boolean keepEscapeSequence)
+	{
+		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, ignoreUnparsable, keepEscapeSequence, true);
+	}
+
+	/**
+	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
+	 *
+	 *  @param ctx context
+	 *	@param WindowNo	Number of Window
+	 *	@param tabNo	Number of Tab
+	 *	@param value Expression to be parsed
+	 *  @param onlyTab if true, only context for tabNo are used
+	 * 	@param ignoreUnparsable 
+	 *  If true, just skip context variable that's not resolvable. 
+	 *  If false, return "" if there are context variable that's not resolvable.
+	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+ 	 *  @param forSQL if true, the parsed value is intended for SQL statement, so it replaces quotes accordingly
+	 *	@return parsed expression
+	 */
+	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
+		boolean onlyTab, boolean ignoreUnparsable, boolean keepEscapeSequence, boolean forSQL)
 	{
 		if (value == null || value.length() == 0)
 			return "";
@@ -1672,6 +1717,10 @@ public final class Env
 			token = inStr.substring(0, j);
 
 			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);			
+			if (forSQL && ctxInfo.contains("'")) {
+				// TODO: take into account escape characters
+				ctxInfo = ctxInfo.replace("'", "''");
+			}
 			if (Util.isEmpty(ctxInfo))
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
@@ -1701,7 +1750,7 @@ public final class Env
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow)
 	{
-		return parseContext(ctx, WindowNo, value, onlyWindow, false);
+		return parseContext(ctx, WindowNo, value, onlyWindow, false, false, true);
 	}	//	parseContext
 	
 	/**
