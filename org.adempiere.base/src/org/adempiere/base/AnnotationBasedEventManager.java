@@ -219,7 +219,9 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 	 * @return array of registered event handlers
 	 */
 	public EventHandler[] getHandlers() {
-		return handlers.toArray(new EventHandler[0]);
+		synchronized (handlers) {
+			return handlers.toArray(new EventHandler[0]);
+		}
 	}
 	
 	/**
