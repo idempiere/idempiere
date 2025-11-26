@@ -48,6 +48,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.adempiere.base.Core;
+import org.adempiere.model.MTabCustomization;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -79,6 +80,7 @@ import org.compiere.model.MStatusLineUsedIn;
 import org.compiere.model.MStyle;
 import org.compiere.model.MTable;
 import org.compiere.model.MTest;
+import org.compiere.model.MTestUU;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
@@ -1047,6 +1049,9 @@ public class GridTabTest extends AbstractTestCase {
         // Recovery: Refresh the child tab
         contactsTab.query(false);
         assertTrue(contactsTab.isCurrent(), "Child tab should be current again after refresh");
+        
+        int currentRow = bpTab.getCurrentRow();
+        assertEquals(currentRow, bpTab.navigateCurrent(), "navigateCurrent() should return the current row index");
 	}
 	
 	@Test
@@ -1424,5 +1429,48 @@ public class GridTabTest extends AbstractTestCase {
 				label.deleteEx(true);
 			bp.deleteEx(true);
 		}
+	}
+
+	@Test
+	void testIsSingleRow() {
+		// test 
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		GridTab gTab = gridWindow.getTab(0);
+		assertTrue(gTab.isSingleRow(), "Business Partner main tab should be single-row");
+
+		try (MockedStatic<MTabCustomization> mockedMTabCustomization = mockStatic(MTabCustomization.class, Mockito.CALLS_REAL_METHODS);) {
+			MTabCustomization tabCustomization = new MTabCustomization(Env.getCtx(), 0, null);
+			tabCustomization.setIsDisplayedGrid("Y");
+			// mock to multi-row
+			mockedMTabCustomization.when(() -> MTabCustomization.get(eq(Env.getCtx()), anyInt(), eq(gTab.getAD_Tab_ID()), any()))
+				.thenReturn(tabCustomization);
+			assertFalse(gTab.isSingleRow(), "Business Partner main tab should be multi-row after mock");
+		}
+	}
+	
+	@Test
+	void testIsAlwaysUpdateable() {
+		// test 
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		GridTab gTab = gridWindow.getTab(0);
+		// Payment Rule is always updateable
+		assertTrue(gTab.isAlwaysUpdateField(), "Business Partner main tab has always updateable fields");
+	}
+	
+	@Test
+	void testGetRecord_UU() {
+		MTestUU test = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+		test.setName("Test UU " + System.currentTimeMillis());
+		test.saveEx();
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		MQuery query = new MQuery(MTestUU.Table_Name);
+		query.addRestriction(MTestUU.COLUMNNAME_TestUU_UU, MQuery.EQUAL,test.getTestUU_UU());
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		
+		assertEquals(1, gTab.getRowCount(), "Should have one record");
+		assertEquals(test.getTestUU_UU(), gTab.getRecord_UU(), "Record_UU mismatch" );
 	}
 }
