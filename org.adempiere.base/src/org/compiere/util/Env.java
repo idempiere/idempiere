@@ -1511,6 +1511,10 @@ public final class Env
 
 	/**
 	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
+	 *  Note that this method replaces all quote with quote-quote  ' -> ''
+	 *    as this is mostly intended for SQL parsing, if parsing a nonSQL String you must use the method
+	 *    parseContext (Properties, int, String, boolean, boolean, boolean, boolean)
+	 *    with the last parameter forSQL as false
 	 *
 	 *  @param ctx context
 	 *	@param WindowNo	Number of Window
@@ -1529,6 +1533,10 @@ public final class Env
 
 	/**
 	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
+	 *  Note that this method replaces all quote with quote-quote  ' -> ''
+	 *    as this is mostly intended for SQL parsing, if parsing a nonSQL String you must use the method
+	 *    parseContext (Properties, int, String, boolean, boolean, boolean, boolean)
+	 *    with the last parameter forSQL as false
 	 *
 	 *  @param ctx context
 	 *	@param WindowNo	Number of Window
@@ -1543,7 +1551,7 @@ public final class Env
 	public static String parseContext (Properties ctx, int WindowNo, String value,
 		boolean onlyWindow, boolean ignoreUnparsable, boolean keepEscapeSequence)
 	{
-		return parseContext(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, false, true);
+		return parseContext(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, keepEscapeSequence, true);
 	}
 
 	/**
@@ -1601,10 +1609,8 @@ public final class Env
 			token = inStr.substring(0, j);
 
 			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);
-			if (forSQL && ctxInfo.contains("'")) {
-				// TODO: take into account escape characters
+			if (forSQL && ctxInfo.contains("'"))
 				ctxInfo = ctxInfo.replace("'", "''");
-			}
 			if (ctxInfo.isEmpty())
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
@@ -1624,6 +1630,10 @@ public final class Env
 	
 	/**
 	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
+	 *  Note that this method replaces all quote with quote-quote  ' -> ''
+	 *    as this is mostly intended for SQL parsing, if parsing a nonSQL String you must use the method
+	 *    parseContext (Properties, int, int, String, boolean, boolean, boolean, boolean)
+	 *    with the last parameter forSQL as false
 	 *
 	 *  @param ctx context
 	 *	@param WindowNo	Number of Window
@@ -1643,6 +1653,10 @@ public final class Env
 
 	/**
 	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
+	 *  Note that this method replaces all quote with quote-quote  ' -> ''
+	 *    as this is mostly intended for SQL parsing, if parsing a nonSQL String you must use the method
+	 *    parseContext (Properties, int, int, String, boolean, boolean, boolean, boolean)
+	 *    with the last parameter forSQL as false
 	 *
 	 *  @param ctx context
 	 *	@param WindowNo	Number of Window
@@ -1717,10 +1731,8 @@ public final class Env
 			token = inStr.substring(0, j);
 
 			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);			
-			if (forSQL && ctxInfo.contains("'")) {
-				// TODO: take into account escape characters
+			if (forSQL && ctxInfo.contains("'"))
 				ctxInfo = ctxInfo.replace("'", "''");
-			}
 			if (Util.isEmpty(ctxInfo))
 			{
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
