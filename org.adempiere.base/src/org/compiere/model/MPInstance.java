@@ -524,7 +524,7 @@ public class MPInstance extends X_AD_PInstance
 	 * @param AD_User_ID
 	 * @return process instance list
 	 */
-	public static List<MPInstance> get(Properties ctx, int AD_Process_ID, int AD_User_ID,int currentAD_PInstance_ID) {
+	public static List<MPInstance> get(Properties ctx, int AD_Process_ID, int AD_User_ID) {
 		List<MPInstance> list = new ArrayList<MPInstance>();
 		List<String> paramsStrAdded = new ArrayList<String>();
 
@@ -545,7 +545,7 @@ public class MPInstance extends X_AD_PInstance
 			int maxLoopCount = 10 * lastRunCount;
 			// using JDBC instead of Query for performance reasons, AD_PInstance can be huge
 			String sql = "SELECT * FROM AD_PInstance "
-					+ " WHERE AD_Process_ID=? AND AD_User_ID=? AND IsActive='Y' AND AD_Client_ID=? AND Name IS NULL AND AD_PInstance_ID<>?" 
+					+ " WHERE AD_Process_ID=? AND AD_User_ID=? AND IsActive='Y' AND AD_Client_ID=? AND Name IS NULL" 
 					+ " ORDER BY Created DESC";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -557,7 +557,6 @@ public class MPInstance extends X_AD_PInstance
 				pstmt.setInt(1, AD_Process_ID);
 				pstmt.setInt(2, AD_User_ID);
 				pstmt.setInt(3, Env.getAD_Client_ID(ctx));
-				pstmt.setInt(4, currentAD_PInstance_ID);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					loopCount++;
