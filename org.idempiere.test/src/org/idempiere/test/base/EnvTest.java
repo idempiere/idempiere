@@ -26,6 +26,7 @@ package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -715,28 +716,17 @@ public class EnvTest extends AbstractTestCase {
 	@Test
 	public void testNullContextHandling() {
 		// Test that null context throws IllegalArgumentException
-		try {
+		assertThrows(IllegalArgumentException.class, () -> {
 			Env.getContext(null, "TestKey");
-			assertTrue(false, "Should throw IllegalArgumentException for null context");
-		} catch (IllegalArgumentException e) {
-			assertTrue(true, "Correctly throws IllegalArgumentException");
-		}
+		}, "Should throw IllegalArgumentException for null context");
 		
-		try {
-			Env.setContext(null, "TestKey", "TestValue");
-			// Should not throw, just return early
-			assertTrue(true, "setContext handles null context gracefully");
-		} catch (Exception e) {
-			assertTrue(false, "Should not throw exception: " + e.getMessage());
-		}
+		// setContext handles null context gracefully - should not throw
+		Env.setContext(null, "TestKey", "TestValue");
 		
 		// Test null context key
-		try {
+		assertThrows(IllegalArgumentException.class, () -> {
 			Env.getContext(new Properties(), null);
-			assertTrue(false, "Should throw IllegalArgumentException for null context key");
-		} catch (IllegalArgumentException e) {
-			assertTrue(true, "Correctly throws IllegalArgumentException");
-		}
+		}, "Should throw IllegalArgumentException for null context key");
 	}
 
 	@Test
