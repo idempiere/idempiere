@@ -143,7 +143,7 @@ public final class Env
 	
 	public static final String PREFIX_SYSCONFIG_VARIABLE = "$sysconfig.";
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
@@ -157,7 +157,7 @@ public final class Env
 	 * @param provider
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void setContextProvider(ContextProvider provider)
 	{
 	}
@@ -531,7 +531,7 @@ public final class Env
 	 *  @param autoCommit auto commit (save)
 	 *  @Deprecated user setProperty instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void setAutoCommit (Properties ctx, boolean autoCommit)
 	{
 		if (ctx == null)
@@ -558,7 +558,7 @@ public final class Env
 	 *  @param autoNew auto new record
 	 *  @Deprecated user setProperty instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void setAutoNew (Properties ctx, boolean autoNew)
 	{
 		if (ctx == null)
