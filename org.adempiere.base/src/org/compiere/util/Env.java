@@ -884,7 +884,7 @@ public final class Env
 	{
 		if (ctx == null)
 			throw new IllegalArgumentException ("Require Context");
-		String s = getContext(Env.getCtx(), "P|IsShowTechnicalInfOnHelp");
+		String s = getContext(ctx, "P|IsShowTechnicalInfOnHelp");
 		if (s != null)
 		{
 			if (s.equals("Y"))
