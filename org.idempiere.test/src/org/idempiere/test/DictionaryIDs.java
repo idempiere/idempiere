@@ -816,7 +816,8 @@ public final class DictionaryIDs {
 	}
 	
 	public enum AD_Window {
-		USER(108);
+		USER(108),
+		SALES_INVOICE(167);
 		
 		public final int id;
 
