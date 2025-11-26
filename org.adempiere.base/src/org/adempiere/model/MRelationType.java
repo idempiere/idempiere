@@ -459,7 +459,10 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			if (Env.isSOTrx(po.getCtx(),windowNo)) {
 				windowId = table.getAD_Window_ID();
 			} else {
-				windowId = table.getPO_Window_ID();
+				if(table.getPO_Window_ID()==0)
+					windowId = table.getAD_Window_ID();
+				else
+					windowId = table.getPO_Window_ID();
 			}
 		}
 
