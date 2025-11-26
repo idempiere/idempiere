@@ -56,15 +56,20 @@ import org.compiere.model.GridTabVO;
 import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MBankStatement;
+import org.compiere.model.MChat;
 import org.compiere.model.MDocType;
 import org.compiere.model.MField;
+import org.compiere.model.MLabel;
+import org.compiere.model.MLabelAssignment;
 import org.compiere.model.MLookup;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
+import org.compiere.model.MPostIt;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -281,7 +286,10 @@ public class GridTabTest extends AbstractTestCase {
 			gTab1.setValue(MOrderLine.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.AZALEA_BUSH.id);
 			assertTrue(gTab1.dataSave(true));
 
+			gTab1.addToSelection(0);
+			assertTrue(gTab1.getSelection().length > 0, "Selection is not working as expected");
 			assertTrue(gTab1.dataNew(false));
+			assertTrue(gTab1.getSelection().length == 0, "Selection should be cleared after dataNew");
 			gTab1.setValue(MOrderLine.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.SEEDER.id);
 			assertTrue(gTab1.dataSave(true));
 
@@ -936,7 +944,7 @@ public class GridTabTest extends AbstractTestCase {
 		headerTab.dataNew(false);
 		detailTab.resetDetailForNewParentRecord();
 		assertEquals(0, detailTab.getRowCount(), "Detail tab should have 0 row after reset");
-		
+		assertFalse(detailTab.dataNew(false), "Detail tab dataNew should return false when header tab is new");		
 	}
 	
 	@Test
@@ -1176,7 +1184,7 @@ public class GridTabTest extends AbstractTestCase {
 	        String isSOTrxCtx = Env.getContext(Env.getCtx(), gridWindow.getWindowNo(), "IsSOTrx");
 	        assertEquals("Y", isSOTrxCtx, "Context IsSOTrx should be 'Y' for Sales DocType");
 	
-	        // Verify the context variable "IsSOTrx" is updated to "N"
+	        // Verify the context variable "IsSOTrx" is updated to "N" for row 2
 	        gridTab.setCurrentRow(1);	        
 	        isSOTrxCtx = Env.getContext(Env.getCtx(), gridWindow.getWindowNo(), "IsSOTrx");
 	        assertEquals("N", isSOTrxCtx, "Context IsSOTrx should be 'N' for Purchase DocType");
@@ -1331,6 +1339,90 @@ public class GridTabTest extends AbstractTestCase {
 			assertFalse(gTab.isQueryRequire(maxRecords), "isQueryRequire should be false for rowCount == maxRecords");
 			// Should require query if greater than max
 			assertTrue(gTab.isQueryRequire(maxRecords + 1), "isQueryRequire should be true for rowCount > maxRecords");
+		}
+	}
+	
+	@Test
+	void testAttachment_PostIt_Chat_Label() {
+		Properties ctx = Env.getCtx();
+		// create bpartner
+		MBPartner bp = new MBPartner(ctx ,0 , null);
+		bp.setValue("BP" + System.currentTimeMillis());
+		bp.setName("Test BP");
+		bp.saveEx();
+		int recordId = bp.get_ID();
+		String recordUU = bp.get_UUID();
+		int tableId = MTable.getTable_ID(MBPartner.Table_Name);
+		
+		MAttachment attachment = new MAttachment(ctx, tableId, recordId, recordUU, null);
+		MPostIt postIt = new MPostIt(ctx, 0, null);
+		MChat chat = new MChat(ctx, 0, null);
+		MLabelAssignment labelAssignment = new MLabelAssignment(ctx, 0, null);
+		MLabel label = new MLabel(ctx, 0, null);
+		try(attachment) {			
+			var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+			GridTab gt = gridWindow.getTab(0);
+			
+			//navigate to record
+			MQuery query = new MQuery(MBPartner.Table_Name);
+			query.addRestriction(MBPartner.COLUMNNAME_C_BPartner_ID, MQuery.EQUAL, recordId);
+			gt.setQuery(query);
+			gt.query(false);
+			
+			assertEquals(1, gt.getRowCount(), "Should have one record");
+			assertEquals(recordId, gt.getRecord_ID(), "Failed to navigate to test record");
+			
+			// test attachment
+			attachment.setTitle("Test Attachment");
+			attachment.addEntry("test.txt", "test data".getBytes());
+			attachment.saveEx();
+			int attachmentId = attachment.get_ID();		
+			int AD_Attachment_ID = gt.getAD_AttachmentID();
+			assertEquals(attachmentId, AD_Attachment_ID);
+
+			// test postit
+			postIt.setAD_Table_ID(tableId);
+			postIt.setRecord_ID(recordId);
+			postIt.setRecord_UU(recordUU);
+			postIt.setText("Test PostIt");
+			postIt.saveEx();
+			int postItId = postIt.get_ID();
+			int AD_PostIt_ID = gt.getAD_PostIt_ID();
+			assertEquals(postItId, AD_PostIt_ID);
+
+			// test chat
+			chat.setAD_Table_ID(tableId);
+			chat.setRecord_ID(recordId);
+			chat.setRecord_UU(recordUU);
+			chat.setDescription("Test Chat");
+			chat.saveEx();
+			int chatId = chat.get_ID();
+			int CM_Chat_ID = gt.getCM_ChatID();
+			assertEquals(chatId, CM_Chat_ID);
+			
+			// test label
+			label.setName("Test Label " + System.currentTimeMillis());
+			label.saveEx();			
+			labelAssignment.setAD_Table_ID(tableId);
+			labelAssignment.setRecord_ID(recordId);
+			labelAssignment.setRecord_UU(recordUU);
+			labelAssignment.setAD_Label_ID(label.get_ID());
+			labelAssignment.saveEx();
+			assertTrue(gt.hasLabel(), "Should have label");
+		} finally {
+			// clean up
+			rollback();
+			if (attachment.get_ID() > 0)
+				attachment.deleteEx(true);
+			if (postIt.get_ID() > 0)
+				postIt.deleteEx(true);
+			if (chat.get_ID() > 0)
+				chat.deleteEx(true);
+			if (labelAssignment.get_ID() > 0)
+				labelAssignment.deleteEx(true);			
+			if (label.get_ID() > 0)
+				label.deleteEx(true);
+			bp.deleteEx(true);
 		}
 	}
 }

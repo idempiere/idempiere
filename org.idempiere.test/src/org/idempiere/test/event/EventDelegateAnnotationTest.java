@@ -31,6 +31,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.DefaultAnnotationBasedEventManager;
+import org.adempiere.base.event.annotations.ModelEventHandler;
 import org.compiere.model.MTest;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
@@ -61,5 +62,15 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		mtest.saveEx();
 		
 		assertEquals(desc + "MTestEventDelegate", mtest.getDescription(), "MTestEventDelegate not handling before new event as expected");
+		// clean up
+		EventHandler[] handlers = mgr.getHandlers();
+		for (EventHandler handler : handlers) {
+			if (handler instanceof ModelEventHandler meh) {
+				if (meh.getDelegateClass().equals(MTestEventDelegate.class)) {
+					mgr.removeHandler(handler);
+					break;
+				}
+			}
+		}		
 	}
 }
