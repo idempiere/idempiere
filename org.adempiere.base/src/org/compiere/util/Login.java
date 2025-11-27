@@ -192,7 +192,7 @@ public class Login
 		Env.setContext(m_ctx, "#Host", cc.getAppsHost());
 		Env.setContext(m_ctx, "#Database", cc.getDbName());
 		
-		Connection conn = DB.getConnectionRO(); 
+		Connection conn = DB.getConnection(); 
 		if (conn == null)
 		{
 			log.saveError("NoDatabase", "");

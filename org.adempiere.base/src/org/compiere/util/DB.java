@@ -42,15 +42,11 @@ import javax.sql.RowSet;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.util.ProcessUtil;
 import org.compiere.Adempiere;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.CConnection;
 import org.compiere.db.Database;
 import org.compiere.db.ProxyFactory;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MLanguage;
-import org.compiere.model.MRole;
 import org.compiere.model.MSequence;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
@@ -58,8 +54,6 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
 import org.compiere.model.SystemIDs;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ProcessInfoParameter;
 
 /**
  *  Static methods for JDBC interface
@@ -104,81 +98,6 @@ public final class DB
 
 	/** SQL Statement Separator "; "	*/
 	public static final String SQLSTATEMENT_SEPARATOR = "; ";
-
-	/**
-	 * 	Check need for post Upgrade
-	 * 	@param ctx context
-	 *	@return true if post upgrade ran - false if there was no need
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static boolean afterMigration (Properties ctx)
-	{
-		//	UPDATE AD_System SET IsJustMigrated='Y'
-		MSystem system = MSystem.get(ctx);
-		if (!system.isJustMigrated())
-			return false;
-
-		//	Role update
-		log.info("Role");
-		String sql = "SELECT * FROM AD_Role";
-		PreparedStatement pstmt = null;
-        ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				MRole role = new MRole (ctx, rs, null);
-				role.updateAccessRecords();
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "(1)", e);
-		}
-        finally
-        {
-            close(rs);
-            close(pstmt);
-            rs= null;
-            pstmt = null;
-        }
-		//	Release Specif stuff & Print Format
-		try
-		{
-			Class<?> clazz = Class.forName("org.compiere.MigrateData");
-			clazz.getDeclaredConstructor().newInstance();
-		}
-		catch (Exception e)
-		{
-			log.log (Level.SEVERE, "Data", e);
-		}
-
-		//	Language check
-		log.info("Language");
-		MLanguage.maintain(ctx);
-
-		//	Sequence check
-		log.info("Sequence");
-		ProcessInfo processInfo = new ProcessInfo("Sequence Check", 0);
-		processInfo.setClassName("org.compiere.process.SequenceCheck");
-		processInfo.setParameter(new ProcessInfoParameter[0]);
-		ProcessUtil.startJavaProcess(ctx, processInfo, null);
-
-		//	Costing Setup
-		log.info("Costing");
-		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, 0);
-		for (int i = 0; i < ass.length; i++)
-		{
-			ass[i].checkCosting();
-			ass[i].saveEx();
-		}
-
-		//	Reset Flag
-		system.setIsJustMigrated(false);
-		return system.save();
-	}	//	afterMigration
 
 	/**
 	 * 	Update Mail Settings for System Client and System User (idempiereEnv.properties)
@@ -282,7 +201,7 @@ public final class DB
 	 * Connect to database and initialise all connections.
 	 * @return True if success, false otherwise
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean connect() {
 		//direct connection
 		boolean success =false;
@@ -337,20 +256,6 @@ public final class DB
 	}
 
 	/**
-	 *  Replace by {@link #isConnected()}
-	 * 
-	 *  Is there a connection to the database ?
-	 *  @param createNew ignore
-	 *  @return true, if connected to database
-	 *  @deprecated
-	 */
-	@Deprecated (since="10", forRemoval=true)
-	public static boolean isConnected(boolean createNew)
-	{
-		return isConnected();
-	}   //  isConnected
-
-	/**
 	 * Get auto commit connection from connection pool.
 	 * @return {@link Connection}
 	 */
@@ -370,61 +275,6 @@ public final class DB
 	{
 		return createConnection(autoCommit, Connection.TRANSACTION_READ_COMMITTED);
 	}
-	
-	/**
-	 * Replace by @{@link #getConnection()} 
-	 * 
-	 * @return Connection (r/w)
-	 * @deprecated
-	 */
-	@Deprecated (since="10", forRemoval=true)
-	public static Connection getConnectionRW()
-	{
-		return getConnection();
-	}
-
-	/**
-	 *  Replace by @{@link #getConnection()}
-	 *  
-	 *	Return (pooled) r/w AutoCommit, Serializable connection.
-	 *	For Transaction control use Trx.getConnection()
-	 *  @param createNew ignore
-	 *  @return Connection (r/w)
-	 *  @deprecated
-	 */
-	@Deprecated (since="10", forRemoval=true)
-	public static Connection getConnectionRW (boolean createNew)
-	{
-        return getConnection();
-	}   //  getConnectionRW
-
-	/**
-	 *  Replace by @{@link #getConnection(boolean)}. 
-	 *  Note that this is intended for internal use only from the beginning.
-	 *  
-	 *	Return everytime a new r/w no AutoCommit, Serializable connection.
-	 *	To be used to ID
-	 *  @return Connection (r/w)
-	 *  @deprecated
-	 */
-	@Deprecated (since="10", forRemoval=true)
-	public static Connection getConnectionID ()
-	{
-        return getConnection(false);
-	}   //  getConnectionID
-
-	/**
-	 *  Replace by @{@link #getConnection()}. Use {@link Trx} instead for readonly transaction.
-	 *  
-	 *	Return read committed, read/only from pool.
-	 *  @return Connection (r/o)
-	 *  @deprecated
-	 */
-	@Deprecated (since="10", forRemoval=true)
-	public static Connection getConnectionRO ()
-	{
-        return getConnection();
-	}	//	getConnectionRO
 
 	/**
 	 *	Return a replica connection if possible, otherwise from pool.
@@ -467,24 +317,6 @@ public final class DB
 		return conn;
 	}	//	createConnection
 
-    /**
-     *  Replace by {@link #createConnection(boolean, int)}.
-     *  Use {@link Trx} instead for readonly transaction.
-     *  
-     *  Create new Connection.
-     *  The connection must be closed explicitly by the application.
-     *
-     *  @param autoCommit auto commit
-     *  @param readOnly ignore
-     *  @param trxLevel - Connection.TRANSACTION_READ_UNCOMMITTED, Connection.TRANSACTION_READ_COMMITTED, Connection.TRANSACTION_REPEATABLE_READ, or Connection.TRANSACTION_READ_COMMITTED.
-     *  @return Connection connection
-     *  @deprecated
-     */
-	@Deprecated (since="10", forRemoval=true)
-    public static Connection createConnection (boolean autoCommit, boolean readOnly, int trxLevel)
-    {
-        return createConnection(autoCommit, trxLevel);
-    }   //  createConnection
 
 	/**
 	 *  Get Database Adapter.<br/>
@@ -543,52 +375,7 @@ public final class DB
 		if (s_cc != null)
 			return s_cc.getDBInfo();
 		return "No Database";
-	}	//	getDatabaseInfo
-
-	/**
-	 *  Check database Version with Code version
-	 *  @param ctx context
-	 *  @return true if Database version (date) is the same
-	 *  @deprecated
-	 */
-	@Deprecated (since="10", forRemoval=true)
-	public static boolean isDatabaseOK (Properties ctx)
-	{
-		// Check Version
-        String version = "?";
-        String sql = "SELECT Version FROM AD_System";
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try
-        {
-            pstmt = prepareStatement(sql, null);
-            rs = pstmt.executeQuery();
-            if (rs.next())
-                version = rs.getString(1);
-        }
-        catch (SQLException e)
-        {
-            log.log(Level.SEVERE, "Problem with AD_System Table - Run system.sql script - " + e.toString());
-            return false;
-        }
-        finally
-        {
-            close(rs);
-            close(pstmt);
-            rs= null;
-            pstmt = null;
-        }
-        if (log.isLoggable(Level.INFO)) log.info("DB_Version=" + version);
-        //  Identical DB version
-        if (Adempiere.DB_VERSION.equals(version))
-            return true;
-
-        String AD_Message = "DatabaseVersionError";
-        //  Code assumes Database version {0}, but Database has Version {1}.
-        String msg = Msg.getMsg(ctx, AD_Message, new Object[] {Adempiere.DB_VERSION, version});   //  complete message
-        System.err.println(msg);
-        return false;
-	}   //  isDatabaseOK
+	}	//	getDatabaseInfK
 
 	/**
 	 *  Check Build Version of Database against running client
@@ -695,7 +482,7 @@ public final class DB
 	 *  @return Prepared Statement
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static CPreparedStatement prepareStatement (String sql)
 	{
 		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
@@ -731,7 +518,7 @@ public final class DB
 	 *  @return Prepared Statement
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static CPreparedStatement prepareStatement (String sql,
 		int resultSetType, int resultSetConcurrency)
 	{
@@ -870,7 +657,7 @@ public final class DB
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int executeUpdate (String sql)
 	{
 		return executeUpdate(sql, null, false, null);
@@ -911,7 +698,7 @@ public final class DB
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int executeUpdate (String sql, boolean ignoreError)
 	{
 		return executeUpdate (sql, null, ignoreError, null);
@@ -2049,7 +1836,7 @@ public final class DB
 	 *	@return document no or null
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static String getDocumentNo(int C_DocType_ID, String trxName)
 	{
 		return MSequence.getDocumentNo (C_DocType_ID, trxName, false);
@@ -2153,7 +1940,7 @@ public final class DB
 	 *	@return true if client and RMI or Objects on Server
 	 *  @deprecated
 	 */
-	@Deprecated (forRemoval=true)
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean isRemoteObjects()
 	{
 		return false;
@@ -2166,7 +1953,7 @@ public final class DB
 	 *	@return true if client and RMI or Process on Server
 	 *  @deprecated
 	 */
-	@Deprecated (forRemoval=true)
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean isRemoteProcess()
 	{
 		return false;
