@@ -1433,7 +1433,6 @@ public class GridTabTest extends AbstractTestCase {
 
 	@Test
 	void testIsSingleRow() {
-		// test 
 		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		GridTab gTab = gridWindow.getTab(0);
 		assertTrue(gTab.isSingleRow(), "Business Partner main tab should be single-row");
@@ -1450,7 +1449,6 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testIsAlwaysUpdateable() {
-		// test 
 		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		GridTab gTab = gridWindow.getTab(0);
 		// Payment Rule is always updateable

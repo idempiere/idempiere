@@ -237,8 +237,9 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 		synchronized (handlers) {
 			removed = handlers.remove(handler);
 		}
-		if (eventManager != null && removed) {
-			eventManager.unregister(handler);
+		IEventManager em = eventManager;
+		if (em != null && removed) {
+			em.unregister(handler);
 		}
 		return removed;
 	}
