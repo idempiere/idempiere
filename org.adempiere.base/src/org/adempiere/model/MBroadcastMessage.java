@@ -202,7 +202,7 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
 	@Override
 	public String get_Translation (String columnName) {
 		String translation = super.get_Translation(columnName);
-		if (!Util.isEmpty(translation) && translation.indexOf('@') > 0)
+		if (!Util.isEmpty(translation) && translation.indexOf('@') >= 0)
 			return Env.parseContext(getCtx(), 0, translation, false, false, false, false);
 
 		return translation;
