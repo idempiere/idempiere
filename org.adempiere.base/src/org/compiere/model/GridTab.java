@@ -293,7 +293,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - Async=" + async + " - Where=" + m_vo.WhereClause);
 		if (isLoadComplete()) return true;
 
-		if (m_loaderFuture != null && m_loaderFuture.isDone())
+		if (m_loaderFuture != null && !m_loaderFuture.isDone())
 		{
 			waitLoadComplete();
 			if (isLoadComplete())
@@ -672,7 +672,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				where.append(" AND ");
 			where.append("Created >= ");
 			where.append("getDate()-").append(m_vo.onlyCurrentDays);
-		}
+		}		
 		//	Detail Query
 		if (isDetail())
 		{
@@ -685,9 +685,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			else
 			{
 				String value = null;
+				String effectiveLinkColumnName = lc;
 				if ( m_parentColumnName.length() > 0 )
 				{
 					// explicit parent link defined
+					effectiveLinkColumnName = m_parentColumnName;
 					value = Env.getContext(m_vo.ctx, m_vo.WindowNo, getParentTabNo(), m_parentColumnName, true);
 					if (value == null || value.length() == 0)
 						value = Env.getContext(m_vo.ctx, m_vo.WindowNo, m_parentColumnName, true); // back compatibility
@@ -702,7 +704,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					setQuery(null);
 				m_linkValue = value;
 				//	Check validity
-				if (value.length() == 0)
+				if (value.length() == 0 || (effectiveLinkColumnName.endsWith("_ID") && "0".equals(value)
+					&& getParentTab() != null && getParentTab().isNew()))
 				{
 					//parent is new, can't retrieve detail
 					m_parentNeedSave = true;
@@ -840,7 +843,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			colName = refColName;
 		}
 
-		//	Column NOT in Tab - create IN subquery for detail/child tab
+		//	Column NOT exists in this Tab - assume it is in detail tab and try to create IN sub-query for detail tab
 		String tabKeyColumn = getKeyColumnName();
 		final String sql2 = "SELECT t.TableName "
 			+ "FROM AD_Column c"
@@ -849,14 +852,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			+ " AND EXISTS (SELECT * FROM AD_Column cc"
 			+ " WHERE cc.AD_Table_ID=t.AD_Table_ID AND cc.ColumnName=?)";	//	#2 Tab Key Column
 		String tableName = DB.getSQLValueStringEx(null, sql2, colName, tabKeyColumn);
-		//	Special Reference Handling
-		if (tabKeyColumn.equals("AD_Reference_ID"))
-		{
-			//	Column=AccessLevel, Key=AD_Reference_ID, Query=AccessLevel='6'
-			final String sql3 = "SELECT AD_Reference_ID FROM AD_Column WHERE ColumnName=?";
-			int AD_Reference_ID = DB.getSQLValueEx(null, sql3, colName);
-			return "AD_Reference_ID=" + AD_Reference_ID;
-		}
 
 		//	Causes could be functions in query
 		//	e.g. Column=UPPER(Name), Key=AD_Element_ID, Query=UPPER(AD_Element.Name) LIKE '%CUSTOMER%'
@@ -3314,16 +3309,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return;
 		}
 		//get the line/seq numbers
-		Integer lineNoCurrentRow = null;
-		Integer lineNoNextRow = null;
-		if (m_mTable.getValueAt(from, lineCol) instanceof Integer) {
-			lineNoCurrentRow = (Integer) m_mTable.getValueAt(from, lineCol);
-			lineNoNextRow = (Integer) m_mTable.getValueAt(to, lineCol);
-		} else if (m_mTable.getValueAt(from, lineCol) instanceof BigDecimal) {
-			lineNoCurrentRow = Integer.valueOf(((BigDecimal) m_mTable.getValueAt(from, lineCol))
-					.intValue());
-			lineNoNextRow = Integer.valueOf(((BigDecimal) m_mTable.getValueAt(to, lineCol))
-					.intValue());
+		int lineNoCurrentRow = -1;
+		int lineNoNextRow = -1;
+		if (m_mTable.getValueAt(from, lineCol) instanceof Number) {
+			lineNoCurrentRow = ((Number) m_mTable.getValueAt(from, lineCol)).intValue();
+			lineNoNextRow = ((Number) m_mTable.getValueAt(to, lineCol)).intValue();
 		} else {
 			log.fine("unknown value format - return");
 			return;
