@@ -233,6 +233,7 @@ public class SystemIDs
 	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
 	public final static int WINDOW_TABLE_AND_COLUMN = 100;
 	public final static int WINDOW_TEST = 127;
+	public final static int WINDOW_TEST_UU = 200138;
 	public final static int WINDOW_USER_PREFERENCE = 200073;
 	public final static int WINDOW_VENDOR_RMA = 53099;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;

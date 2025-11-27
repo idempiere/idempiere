@@ -48,6 +48,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.adempiere.base.Core;
+import org.adempiere.model.MTabCustomization;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -56,15 +57,21 @@ import org.compiere.model.GridTabVO;
 import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MBankStatement;
+import org.compiere.model.MChat;
+import org.compiere.model.MColumn;
 import org.compiere.model.MDocType;
 import org.compiere.model.MField;
+import org.compiere.model.MLabel;
+import org.compiere.model.MLabelAssignment;
 import org.compiere.model.MLookup;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
+import org.compiere.model.MPostIt;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -74,6 +81,7 @@ import org.compiere.model.MStatusLineUsedIn;
 import org.compiere.model.MStyle;
 import org.compiere.model.MTable;
 import org.compiere.model.MTest;
+import org.compiere.model.MTestUU;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
@@ -133,6 +141,49 @@ public class GridTabTest extends AbstractTestCase {
 		String name = (String) gTab.getValue("Name");
 		MBPartner bpartner = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		assertTrue(bpartner.getName().equals(name), "GridTab Name != MBPartner.getName(). GridTab.Name="+name + " MBPartner.getName="+bpartner.getName());
+		
+		//test query with no restriction
+		query = new MQuery(MBPartner.Table_Name);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 3);
+		assertTrue(gTab.getRowCount() >= 3, "GridTab Row Count is less than 3. GridTab="+gTab.getName());
+		
+		//test query with 2 restrictions
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_IsCustomer, MQuery.EQUAL, "Y");
+		query.addRestriction(MBPartner.COLUMNNAME_IsVendor, MQuery.EQUAL, "Y");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "GridTab Row Count is 0. GridTab="+gTab.getName());
+		int customerCount = 0;
+		int vendorCount = 0;
+		for(int row = 0; row < gTab.getRowCount(); row++) {
+			gTab.setCurrentRow(row);
+			Boolean isCustomer = (Boolean) gTab.getValue(MBPartner.COLUMNNAME_IsCustomer);
+			if (isCustomer != null && isCustomer.booleanValue())
+				customerCount++;
+			Boolean isVendor = (Boolean) gTab.getValue(MBPartner.COLUMNNAME_IsVendor);
+			if (isVendor != null && isVendor.booleanValue())
+				vendorCount++;
+		}
+		assertTrue(customerCount == vendorCount && customerCount == gTab.getRowCount(), "GridTab Row Count != Customer/Vendor count. GridTab="+gTab.getName()
+				+ " RowCount="+gTab.getRowCount() + " CustomerCount="+customerCount + " VendorCount="+vendorCount);
+		
+		// test with function
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction("Upper("+MBPartner.COLUMNNAME_Name+")", MQuery.EQUAL, bpartner.getName().toUpperCase());
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
+		assertEquals(bpartner.getName(), gTab.getValue(MBPartner.COLUMNNAME_Name), "GridTab Name != MBPartner.getName. GridTab.Name="+gTab.getValue(MBPartner.COLUMNNAME_Name) + " MBPartner.getName="+bpartner.getName());
+		
+		// test with reference column
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MOrder.COLUMNNAME_Bill_BPartner_ID, MQuery.EQUAL, DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
+		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(), "GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID="+gTab.getRecord_ID());
 	}
 	
 	@Test
@@ -281,7 +332,10 @@ public class GridTabTest extends AbstractTestCase {
 			gTab1.setValue(MOrderLine.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.AZALEA_BUSH.id);
 			assertTrue(gTab1.dataSave(true));
 
+			gTab1.addToSelection(0);
+			assertTrue(gTab1.getSelection().length > 0, "Selection is not working as expected");
 			assertTrue(gTab1.dataNew(false));
+			assertTrue(gTab1.getSelection().length == 0, "Selection should be cleared after dataNew");
 			gTab1.setValue(MOrderLine.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.SEEDER.id);
 			assertTrue(gTab1.dataSave(true));
 
@@ -477,6 +531,35 @@ public class GridTabTest extends AbstractTestCase {
 		gTab.setCurrentRow(0);
 		assertEquals(100, gTab.getValue(MOrderLine.COLUMNNAME_C_Order_ID));
 		assertEquals(100, gTab.getValue(MOrderLine.COLUMNNAME_C_OrderLine_ID));
+		
+		// test with no link column
+		var spyTab = spy(gTab);
+		doReturn("").when(spyTab).getLinkColumnName();
+		spyTab.query(false, 0, 0);
+		assertEquals(0, spyTab.getRowCount(), "GridTab Row Count should be 0 when link column is empty. GridTab=" + gTab.getName());
+		
+		// test with new parent record
+		gTab = gridWindow.getTab(0);
+		gTab.dataNew(false);
+		assertTrue(gTab.isNew(), "Grid Tab dataNew call not working as expected");
+		gTab = gridWindow.getTab(1);
+		gTab.query(false, 0, 0);
+		assertEquals(0, gTab.getRowCount(), "GridTab Row Count should be 0 when parent record is new. GridTab=" + gTab.getName());
+		
+		// revert parent
+		gTab = gridWindow.getTab(0);
+		gTab.dataIgnore();
+		assertFalse(gTab.isNew(), "Grid Tab dataIgnore call not working as expected");
+		gTab = gridWindow.getTab(1);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "GridTab Row Count is 0. GridTab=" + gTab.getName());
+		
+		// test explicit parent link column
+		gTab = gridWindow.getTab(1);
+		gTab.getVO().Parent_Column_ID = MColumn.getColumn_ID(MOrderLine.Table_Name, MOrderLine.COLUMNNAME_C_Order_ID);
+		gTab.setLinkColumnName(null);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "GridTab Row Count is 0. GridTab=" + gTab.getName());
 	}
 	
 	@Test
@@ -573,6 +656,28 @@ public class GridTabTest extends AbstractTestCase {
 			lineTab.switchRows(0, 1, -1, true);
 			idRow0NoChange = (Integer) lineTab.getValue(0, MOrderLine.COLUMNNAME_C_OrderLine_ID);
 			assertEquals(idRow0Revert, idRow0NoChange, "Switch with processed line should not change ordering");
+			
+			//test switch with explicit sort field
+			lineTab.navigate(0);
+			lineTab.setValue(MOrderLine.COLUMNNAME_Processed, false);
+			assertTrue(lineTab.dataSave(true), "Failed to save line 0");
+			lineTab.navigate(1);
+			lineTab.setValue(MOrderLine.COLUMNNAME_Processed, false);
+			assertTrue(lineTab.dataSave(true), "Failed to save line 1");
+			int lineColumnIndex = lineTab.getTableModel().findColumn(MOrderLine.COLUMNNAME_Line);
+			assertTrue(lineColumnIndex >= 0, "Could not find Line column index in line");
+			lineTab.switchRows(0, 1, lineColumnIndex, true);
+			idRow1After = (Integer) lineTab.getValue(1, MOrderLine.COLUMNNAME_C_OrderLine_ID);
+			assertEquals(idRow0Before, idRow1After, "Row1 should now contain former Row0 line");
+
+			//test switch row without line and seqno field
+			gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+			GridTab bpTab = gridWindow.getTab(0);
+			bpTab.query(false, 0, 3);
+			assertTrue(bpTab.getRowCount() >= 2, "Need at least 2 rows for switchRows test");
+			Integer bpIdRow0Before = (Integer) bpTab.getValue(0, MBPartner.COLUMNNAME_C_BPartner_ID);
+			bpTab.switchRows(0, 1, -1, true);
+			assertEquals(bpIdRow0Before, (Integer) bpTab.getValue(0, MBPartner.COLUMNNAME_C_BPartner_ID), "Row switching without line/seqno field should not change ordering");
 		} finally {
 			rollback();
 			if (createdOrderId > 0) {
@@ -684,7 +789,15 @@ public class GridTabTest extends AbstractTestCase {
 
 		// Action: Refresh without retaining the current row
 		gt.dataRefreshAll(true);
-
+		// Current row remain and Selection should be reset to 0
+		assertEquals(1, gt.getCurrentRow(), "Current row should remain as 1 after dataRefreshAll(..., false)");
+		assertEquals(0, gt.getSelection().length, "Selection should be reset to 0 after dataRefreshAll(..., false)");
+		
+		// test without fireEvent
+		gt.addToSelection(0);
+		gt.addToSelection(1);
+		assertEquals(2, gt.getSelection().length);
+		gt.dataRefreshAll(false);
 		// Current row remain and Selection should be reset to 0
 		assertEquals(1, gt.getCurrentRow(), "Current row should remain as 1 after dataRefreshAll(..., false)");
 		assertEquals(0, gt.getSelection().length, "Selection should be reset to 0 after dataRefreshAll(..., false)");
@@ -729,6 +842,59 @@ public class GridTabTest extends AbstractTestCase {
 		assertEquals(2, gt.getRowCount(), "Query should return 2 records in MTest");
 		gt.navigate(0);
 		if (gt.getRecord_ID() != t2.get_ID())
+			gt.navigate(1);
+
+		// Change t2 to make it not match the query above
+		t2.setDescription("Changed");
+		t2.saveEx();
+		
+		// retained t2
+		gt.dataRefreshAll(true, true);
+		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., true), Row Count should still be 2");
+
+		// not retained t2
+		gt.dataRefreshAll(true, false);
+		assertEquals(1, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should be 1");
+	}
+	
+	/**
+	 * Test dataRefreshAll(boolean fireEvent, boolean retainedCurrentRow)
+	 * Scenario:
+	 * 1. Load a tab with query.
+	 * 2. Make changes to a row with MTest
+	 * 3. Call dataRefreshAll with retainedCurrentRow = true/false.
+	 * 4. Verify that the current row is retained or not based on the parameter.
+	 */
+	@Test
+	public void testDataRefreshAll_RetainedCurrentRow_UU()
+	{
+		int AD_Window_ID = SystemIDs.WINDOW_TEST_UU;
+		
+		MTestUU t1 = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+		t1.setName("t1_"+System.currentTimeMillis());
+		String description = UUID.randomUUID().toString();
+		t1.setDescription(description);
+		t1.saveEx();
+		
+		MTestUU t2 = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+		t2.setName("t2_"+System.currentTimeMillis());
+		t2.setDescription(description);
+		t2.saveEx();
+		
+		GridWindow gw = createGridWindow(AD_Window_ID);
+		GridTab gt = gw.getTab(0);
+		gt.getTableModel().setImportingMode(true, getTrxName());
+
+		// Execution: Load data
+		MQuery query = new MQuery(MTestUU.Table_Name);
+		query.addRestriction(MTestUU.COLUMNNAME_Description, MQuery.EQUAL, description);
+		gt.setQuery(query);
+		gt.query(false);
+
+		// Make t2 current row
+		assertEquals(2, gt.getRowCount(), "Query should return 2 records in MTest");
+		gt.navigate(0);
+		if (!t2.get_UUID().equals(gt.getRecord_UU()))
 			gt.navigate(1);
 
 		// Change t2 to make it not match the query above
@@ -860,6 +1026,19 @@ public class GridTabTest extends AbstractTestCase {
 		gt.waitLoadComplete();
 		assertTrue(gt.isLoadComplete(), "Tab should be marked as loaded after waitLoadComplete()");
 		assertTrue(gt.getFieldCount() > 0, "Tab should have fields loaded after async loading completes");
+		
+		// test initTab(true) twice as alternative to waitLoadComplete
+		gWindowVO = GridWindowVO.create(Env.getCtx(), 2, AD_Window_ID);
+		gw = new GridWindow(gWindowVO, true);
+		gt = gw.getTab(0);
+		init = gt.initTab(true);
+		assertFalse(init, "initTab(true) should return false immediately as loading is async");
+		assertFalse(gt.isLoadComplete(), "Tab should not be loaded yet since init is async");
+		assertEquals(0, gt.getFieldCount(), "Tab should have zero fields before async loading completes");
+		init = gt.initTab(true);
+		assertTrue(init, "initTab(true) should return true when called second time and triggering completion");
+		assertTrue(gt.isLoadComplete(), "Tab should be marked as loaded after second initTab(true) call");
+		assertTrue(gt.getFieldCount() > 0, "Tab should have fields loaded after async loading completes");
 	}
 	
 	/**
@@ -904,6 +1083,14 @@ public class GridTabTest extends AbstractTestCase {
 			gt.dataRefresh(0, true);	
 			// GridTab should now show the updated value
 			assertEquals(updatedName, gt.getValue(MTest.COLUMNNAME_Name), "GridTab should reflect external change after dataRefresh");
+			
+			// Refresh without fireEvent
+			updatedName = "Updated1_" + System.currentTimeMillis();
+			mTest.setName(updatedName);
+			mTest.saveEx();
+			gt.dataRefresh(0, false);	
+			// GridTab should now show the updated value
+			assertEquals(updatedName, gt.getValue(MTest.COLUMNNAME_Name), "GridTab should reflect external change after dataRefresh");
 		} finally {
 			rollback();
 			// Cleanup
@@ -936,7 +1123,7 @@ public class GridTabTest extends AbstractTestCase {
 		headerTab.dataNew(false);
 		detailTab.resetDetailForNewParentRecord();
 		assertEquals(0, detailTab.getRowCount(), "Detail tab should have 0 row after reset");
-		
+		assertFalse(detailTab.dataNew(false), "Detail tab dataNew should return false when header tab is new");		
 	}
 	
 	@Test
@@ -1039,6 +1226,9 @@ public class GridTabTest extends AbstractTestCase {
         // Recovery: Refresh the child tab
         contactsTab.query(false);
         assertTrue(contactsTab.isCurrent(), "Child tab should be current again after refresh");
+        
+        int currentRow = bpTab.getCurrentRow();
+        assertEquals(currentRow, bpTab.navigateCurrent(), "navigateCurrent() should return the current row index");
 	}
 	
 	@Test
@@ -1176,7 +1366,7 @@ public class GridTabTest extends AbstractTestCase {
 	        String isSOTrxCtx = Env.getContext(Env.getCtx(), gridWindow.getWindowNo(), "IsSOTrx");
 	        assertEquals("Y", isSOTrxCtx, "Context IsSOTrx should be 'Y' for Sales DocType");
 	
-	        // Verify the context variable "IsSOTrx" is updated to "N"
+	        // Verify the context variable "IsSOTrx" is updated to "N" for row 2
 	        gridTab.setCurrentRow(1);	        
 	        isSOTrxCtx = Env.getContext(Env.getCtx(), gridWindow.getWindowNo(), "IsSOTrx");
 	        assertEquals("N", isSOTrxCtx, "Context IsSOTrx should be 'N' for Purchase DocType");
@@ -1332,5 +1522,141 @@ public class GridTabTest extends AbstractTestCase {
 			// Should require query if greater than max
 			assertTrue(gTab.isQueryRequire(maxRecords + 1), "isQueryRequire should be true for rowCount > maxRecords");
 		}
+	}
+	
+	@Test
+	void testAttachment_PostIt_Chat_Label() {
+		Properties ctx = Env.getCtx();
+		// create bpartner
+		MBPartner bp = new MBPartner(ctx ,0 , null);
+		bp.setValue("BP" + System.currentTimeMillis());
+		bp.setName("Test BP");
+		bp.saveEx();
+		int recordId = bp.get_ID();
+		String recordUU = bp.get_UUID();
+		int tableId = MTable.getTable_ID(MBPartner.Table_Name);
+		
+		MAttachment attachment = new MAttachment(ctx, tableId, recordId, recordUU, null);
+		MPostIt postIt = new MPostIt(ctx, 0, null);
+		MChat chat = new MChat(ctx, 0, null);
+		MLabelAssignment labelAssignment = new MLabelAssignment(ctx, 0, null);
+		MLabel label = new MLabel(ctx, 0, null);
+		try(attachment) {			
+			var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+			GridTab gt = gridWindow.getTab(0);
+			
+			//navigate to record
+			MQuery query = new MQuery(MBPartner.Table_Name);
+			query.addRestriction(MBPartner.COLUMNNAME_C_BPartner_ID, MQuery.EQUAL, recordId);
+			gt.setQuery(query);
+			gt.query(false);
+			
+			assertEquals(1, gt.getRowCount(), "Should have one record");
+			assertEquals(recordId, gt.getRecord_ID(), "Failed to navigate to test record");
+			
+			// test attachment
+			attachment.setTitle("Test Attachment");
+			attachment.addEntry("test.txt", "test data".getBytes());
+			attachment.saveEx();
+			int attachmentId = attachment.get_ID();		
+			int AD_Attachment_ID = gt.getAD_AttachmentID();
+			assertEquals(attachmentId, AD_Attachment_ID);
+
+			// test postit
+			postIt.setAD_Table_ID(tableId);
+			postIt.setRecord_ID(recordId);
+			postIt.setRecord_UU(recordUU);
+			postIt.setText("Test PostIt");
+			postIt.saveEx();
+			int postItId = postIt.get_ID();
+			int AD_PostIt_ID = gt.getAD_PostIt_ID();
+			assertEquals(postItId, AD_PostIt_ID);
+
+			// test chat
+			chat.setAD_Table_ID(tableId);
+			chat.setRecord_ID(recordId);
+			chat.setRecord_UU(recordUU);
+			chat.setDescription("Test Chat");
+			chat.saveEx();
+			int chatId = chat.get_ID();
+			int CM_Chat_ID = gt.getCM_ChatID();
+			assertEquals(chatId, CM_Chat_ID);
+			
+			// test label
+			label.setName("Test Label " + System.currentTimeMillis());
+			label.saveEx();			
+			labelAssignment.setAD_Table_ID(tableId);
+			labelAssignment.setRecord_ID(recordId);
+			labelAssignment.setRecord_UU(recordUU);
+			labelAssignment.setAD_Label_ID(label.get_ID());
+			labelAssignment.saveEx();
+			assertTrue(gt.hasLabel(), "Should have label");
+		} finally {
+			// clean up
+			rollback();
+			if (attachment.get_ID() > 0)
+				attachment.deleteEx(true);
+			if (postIt.get_ID() > 0)
+				postIt.deleteEx(true);
+			if (chat.get_ID() > 0)
+				chat.deleteEx(true);
+			if (labelAssignment.get_ID() > 0)
+				labelAssignment.deleteEx(true);			
+			if (label.get_ID() > 0)
+				label.deleteEx(true);
+			bp.deleteEx(true);
+		}
+	}
+
+	@Test
+	void testIsSingleRow() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		GridTab gTab = gridWindow.getTab(0);
+		assertTrue(gTab.isSingleRow(), "Business Partner main tab should be single-row");
+
+		try (MockedStatic<MTabCustomization> mockedMTabCustomization = mockStatic(MTabCustomization.class, Mockito.CALLS_REAL_METHODS);) {
+			MTabCustomization tabCustomization = new MTabCustomization(Env.getCtx(), 0, null);
+			tabCustomization.setIsDisplayedGrid("Y");
+			// mock to multi-row
+			mockedMTabCustomization.when(() -> MTabCustomization.get(eq(Env.getCtx()), anyInt(), eq(gTab.getAD_Tab_ID()), any()))
+				.thenReturn(tabCustomization);
+			assertFalse(gTab.isSingleRow(), "Business Partner main tab should be multi-row after mock");
+		}
+	}
+	
+	@Test
+	void testIsAlwaysUpdateable() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		GridTab gTab = gridWindow.getTab(0);
+		// Payment Rule is always updateable
+		assertTrue(gTab.isAlwaysUpdateField(), "Business Partner main tab has always updateable fields");
+	}
+	
+	@Test
+	void testGetRecord_UU() {
+		MTestUU test = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+		test.setName("Test UU " + System.currentTimeMillis());
+		test.saveEx();
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		MQuery query = new MQuery(MTestUU.Table_Name);
+		query.addRestriction(MTestUU.COLUMNNAME_TestUU_UU, MQuery.EQUAL,test.getTestUU_UU());
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		
+		assertEquals(1, gTab.getRowCount(), "Should have one record");
+		assertEquals(test.getTestUU_UU(), gTab.getRecord_UU(), "Record_UU mismatch" );
+	}
+	
+	@Test
+	void testToString() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		GridTab gTab = gridWindow.getTab(0);
+		String toString = gTab.toString();
+		assertNotNull(toString, "toString should not be null");
+		assertTrue(toString.contains(Integer.toString(gTab.getTabNo())), "toString should contain TabNo");
+		assertTrue(toString.contains(gTab.getName()), "toString should contain Name");
+		assertTrue(toString.contains(Integer.toString(gTab.getAD_Tab_ID())), "toString should contain AD_Tab_ID");
 	}
 }
