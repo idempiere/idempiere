@@ -328,11 +328,13 @@ public class EnvTest extends AbstractTestCase {
 
         // test parse with and without SQL
 		Env.setContext(Env.getCtx(), windowNo, "TestString", "'MyString'");
-		parsedText = Env.parseContext(Env.getCtx(), windowNo, "SELECT * FROM C_Charge WHERE Name=@TestString@", true, false, false, false);
-		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText);
+		expr = "SELECT * FROM C_Charge WHERE Name=@TestString@";
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true, false, false, false);
+		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText, "Unexpected parsed text forSQL=false for "+expr);
 		Env.setContext(Env.getCtx(), windowNo, "TestString", "MyString");
-		parsedText = Env.parseContext(Env.getCtx(), windowNo, "SELECT * FROM C_Charge WHERE Name='@TestString@'", true, false, false, true);
-		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText);
+		expr = "SELECT * FROM C_Charge WHERE Name='@TestString@'";
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true, false, false, true);
+		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText, "Unexpected parsed text forSQL=true for "+expr);
 	}
 
 	@Test
