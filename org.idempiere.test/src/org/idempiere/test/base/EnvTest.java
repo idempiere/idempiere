@@ -176,7 +176,7 @@ public class EnvTest extends AbstractTestCase {
 		assertEquals("test@idempiere.com='test@idempiere.com'", parsedText, "Unexpected parseContext value");
 		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@EMail@='test@@idempiere.com'", true, true, false);
 		assertEquals("test@idempiere.com='test@idempiere.com'", parsedText, "Unexpected parseContext value");
-		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@EMail@='test@@idempiere.com'", true, true, true);
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, "@EMail@='test@@idempiere.com'", true, true, true, false);
 		assertEquals("test@idempiere.com='test@@idempiere.com'", parsedText, "Unexpected parseContext value");
 		
 		Evaluatee contextEvaluatee = v -> {
@@ -311,6 +311,21 @@ public class EnvTest extends AbstractTestCase {
 		expr = "@"+Env.PREFIX_SYSCONFIG_VARIABLE + MSysConfig.ZK_MAX_UPLOAD_SIZE+"@='0'";
 		evaluation = Evaluator.evaluateLogic(evaluatee, expr);
 		assertFalse(evaluation, "Unexpected logic evaluation result");
+
+        // test parse with and without SQL
+		Env.setContext(Env.getCtx(), windowNo, "TestString", "'MyString'");
+		expr = "SELECT * FROM C_Charge WHERE Name=@TestString@";
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true, false, false, false);
+		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText, "Unexpected parsed text forSQL=false for "+expr);
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true, false, false, true);
+		assertEquals("SELECT * FROM C_Charge WHERE Name=''MyString''", parsedText, "Unexpected parsed text forSQL=true for "+expr);
+
+		Env.setContext(Env.getCtx(), windowNo, "TestString", "MyString");
+		expr = "SELECT * FROM C_Charge WHERE Name='@TestString@'";
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true, false, false, false);
+		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText, "Unexpected parsed text forSQL=false for "+expr);
+		parsedText = Env.parseContext(Env.getCtx(), windowNo, expr, true, false, false, true);
+		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText, "Unexpected parsed text forSQL=true for "+expr);
 	}
 
 	@Test

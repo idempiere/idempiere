@@ -198,7 +198,7 @@ public class Scheduler extends AdempiereServer
 		MScheduler scheduler = get(getCtx(), AD_Scheduler_ID);
 		
 		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
-		String schedulerName = Env.parseContext(getCtx(), -1, scheduler.getName(), false, true);
+		String schedulerName = Env.parseContext(getCtx(), -1, scheduler.getName(), false, true, false, false);
 		
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = scheduler.getAD_Table_ID();
