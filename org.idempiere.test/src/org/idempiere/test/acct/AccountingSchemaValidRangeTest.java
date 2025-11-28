@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaDefault;
@@ -275,7 +276,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 	}
 	
 	@Test
-	public void testAcctSchemaInvalidDateRange()
+	public void testAcctSchemaDateRangeValidation()
 	{
 		// Test Case 1: StartDate > EndDate should fail
 		Timestamp startDate = Timestamp.valueOf("2024-12-31 23:59:59");
@@ -287,7 +288,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		acctSchema1.setStartDate(startDate);
 		acctSchema1.setEndDate(endDate);
 		
-		Exception exception = assertThrows(Exception.class, () -> {
+		AdempiereException exception = assertThrows(AdempiereException.class, () -> {
 			acctSchema1.saveEx();
 		}, "Should have thrown exception for StartDate > EndDate");
 		
