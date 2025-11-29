@@ -732,6 +732,12 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 				return false; 
 			}
 		}
+		// Validate that StartDate is not after EndDate
+		if (getStartDate() != null && getEndDate() != null && getStartDate().after(getEndDate()))
+		{
+			log.saveError("Error", Msg.getMsg(getCtx(), "EndDateAfterStartDate"));
+			return false;
+		}
 		return true;
 	}	//	beforeSave
 	

@@ -2,12 +2,14 @@ package org.idempiere.test.acct;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaDefault;
@@ -271,5 +273,81 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		//
 		Query query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), acctSchema.get_ID(), getTrxName());
 		return query.list();
+	}
+	
+	@Test
+	public void testAcctSchemaDateRangeValidation()
+	{
+		// Test Case 1: StartDate > EndDate should fail
+		Timestamp startDate = Timestamp.valueOf("2024-12-31 23:59:59");
+		Timestamp endDate = Timestamp.valueOf("2024-01-01 00:00:00");
+		
+		MAcctSchema acctSchema1 = new MAcctSchema(Env.getCtx(), 0, getTrxName());
+		acctSchema1.setName("Invalid Date Range Schema");
+		acctSchema1.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		acctSchema1.setStartDate(startDate);
+		acctSchema1.setEndDate(endDate);
+		
+		AdempiereException exception = assertThrows(AdempiereException.class, () -> {
+			acctSchema1.saveEx();
+		}, "Should have thrown exception for StartDate > EndDate");
+		
+		// Verify it's a meaningful error message
+		String errorMsg = exception.getMessage();
+		assertTrue(errorMsg != null && !errorMsg.isEmpty(), 
+				"Exception message should not be empty");
+		assertTrue(errorMsg.contains("Start Date"), 
+				"Exception should mention date validation issue. Actual message: " + errorMsg);
+		
+		rollback();
+		
+		// Test Case 2: StartDate == EndDate should succeed
+		Timestamp sameDate = Timestamp.valueOf("2024-06-15 12:00:00");
+		MAcctSchema acctSchema2 = new MAcctSchema(Env.getCtx(), 0, getTrxName());
+		acctSchema2.setName("Same Date Range Schema");
+		acctSchema2.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		acctSchema2.setStartDate(sameDate);
+		acctSchema2.setEndDate(sameDate);
+		acctSchema2.saveEx();
+		assertTrue(acctSchema2.get_ID() > 0, "Schema with StartDate == EndDate should save successfully");
+		rollback();
+		
+		// Test Case 3: StartDate < EndDate should succeed (valid range)
+		startDate = Timestamp.valueOf("2024-01-01 00:00:00");
+		endDate = Timestamp.valueOf("2024-12-31 23:59:59");
+		MAcctSchema acctSchema3 = new MAcctSchema(Env.getCtx(), 0, getTrxName());
+		acctSchema3.setName("Valid Date Range Schema");
+		acctSchema3.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		acctSchema3.setStartDate(startDate);
+		acctSchema3.setEndDate(endDate);
+		acctSchema3.saveEx();
+		assertTrue(acctSchema3.get_ID() > 0, "Schema with valid date range should save successfully");
+		rollback();
+		
+		// Test Case 4: Only StartDate set (no EndDate) should succeed
+		MAcctSchema acctSchema4 = new MAcctSchema(Env.getCtx(), 0, getTrxName());
+		acctSchema4.setName("Only Start Date Schema");
+		acctSchema4.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		acctSchema4.setStartDate(startDate);
+		acctSchema4.saveEx();
+		assertTrue(acctSchema4.get_ID() > 0, "Schema with only StartDate should save successfully");
+		rollback();
+		
+		// Test Case 5: Only EndDate set (no StartDate) should succeed
+		MAcctSchema acctSchema5 = new MAcctSchema(Env.getCtx(), 0, getTrxName());
+		acctSchema5.setName("Only End Date Schema");
+		acctSchema5.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		acctSchema5.setEndDate(endDate);
+		acctSchema5.saveEx();
+		assertTrue(acctSchema5.get_ID() > 0, "Schema with only EndDate should save successfully");
+		rollback();
+		
+		// Test Case 6: No date range set should succeed
+		MAcctSchema acctSchema6 = new MAcctSchema(Env.getCtx(), 0, getTrxName());
+		acctSchema6.setName("No Date Range Schema");
+		acctSchema6.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		acctSchema6.saveEx();
+		assertTrue(acctSchema6.get_ID() > 0, "Schema with no date range should save successfully");
+		rollback();
 	}
 }
