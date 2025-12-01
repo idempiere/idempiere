@@ -55,10 +55,10 @@ public class WZoomAcross
 	 *  @param tableName zoom source table (i.e. the table we start from)
 	 *  @param query query that specifies the zoom source PO (i.e. the PO we start from)
 	 */
-	public WZoomAcross (Component invoker, String tableName, final int windowID, MQuery query)
+	public WZoomAcross (Component invoker, String tableName, final int windowID, MQuery query,int windowNo)
 	{
 		this(invoker, new Query(Env.getCtx(), tableName,
-				query.getWhereClause(), null).first(), windowID);
+				query.getWhereClause(), null).first(), windowID,windowNo);
 		
 	}
 
@@ -68,11 +68,11 @@ public class WZoomAcross
 	 * @param po
 	 * @param windowID
 	 */
-	public WZoomAcross(Component invoker, PO po, final int windowID) {
+	public WZoomAcross(Component invoker, PO po, final int windowID,int windowNo) {
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("PO=" + po+", WindowID="+windowID);
 		
-		mkZoomTargets(po, windowID);
+		mkZoomTargets(po, windowID,windowNo);
 				
 		for (final ZoomInfoFactory.ZoomInfo zoomInfo : zoomInfos) {
 
@@ -120,10 +120,10 @@ public class WZoomAcross
 	 * @param po
 	 * @param windowID
 	 */
-	private void mkZoomTargets(final PO po, final int windowID) {
+	private void mkZoomTargets(final PO po, final int windowID,int windowNo) {
 	
 		for (final ZoomInfoFactory.ZoomInfo zoomInfo : ZoomInfoFactory.retrieveZoomInfos(po,
-				windowID)) {
+				windowID,windowNo)) {
 
 			if (zoomInfo.query.getRecordCount() == 0) {
 				if (log.isLoggable(Level.FINE)) log.fine("No target records for destination "
