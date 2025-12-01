@@ -308,12 +308,14 @@ public class MTableTest extends AbstractTestCase {
 		MTable tbl = new MTable(ctx, testTableId, getTrxName());
 		PO poNew = tbl.getPO(0, getTrxName());
 		assertNotNull(poNew, "getPO(0) should return a PO instance for creating new records");
+		assertTrue(poNew.is_new(), "PO instance from getPO(0) should be marked as new");
+		assertEquals(0, poNew.get_ID(), "PO instance from getPO(0) should have ID=0");
 
 		PO poByUUID = tbl.getUUIDPOInstance(PO.UUID_NEW_RECORD, getTrxName());
-		if (tbl.isUUIDKeyTable())
-			assertNotNull(poByUUID, "getUUIDPOInstance should return a PO instance if it is UUID-key table");
-		else
-			assertNull(poByUUID, "getUUIDPOInstance should return null if it is not UUID-key table");
+		assertNotNull(poByUUID, "getUUIDPOInstance should return a PO instance for creating new records by UUID");
+		assertTrue(poByUUID.is_new(), "PO instance from getUUIDPOInstance should be marked as new");
+		assertEquals(PO.UUID_NEW_RECORD, poByUUID.get_UUID(), "PO instance from getUUIDPOInstance(UUID_NEW_RECORD) should have UUID=UUID_NEW_RECORD");
+		
 	}
 
 	/**

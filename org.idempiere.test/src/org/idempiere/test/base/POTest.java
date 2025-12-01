@@ -77,6 +77,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MImage;
 import org.compiere.model.MMessage;
 import org.compiere.model.MOrder;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
@@ -1132,6 +1133,10 @@ public class POTest extends AbstractTestCase
     	
     	//test non existing UU
     	po = table.getPOByUU(test.getTest_UU().replaceFirst(".?", "Z"), getTrxName());
+    	assertNull(po);
+    	
+    	// test new record UU
+    	po = table.getPOByUU(PO.UUID_NEW_RECORD, getTrxName());
     	assertNotNull(po);
     	assertTrue(po instanceof MTest);
     	assertEquals(0, po.get_ID());
@@ -1145,7 +1150,20 @@ public class POTest extends AbstractTestCase
     	po = table.getPOByUU(testuu.get_UUID(), getTrxName());
     	assertNotNull(po);
     	assertTrue(po instanceof MTestUU);
-    	assertEquals(testuu.get_UUID(), po.get_UUID());    	    	
+    	assertEquals(testuu.get_UUID(), po.get_UUID()); 
+    	
+    	// Test orgInfo
+    	MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+		assertTrue(orgInfo.getAD_Org_ID() > 0, "MOrgInfo must have a valid AD_Org_ID");
+		String orgInfoUU = orgInfo.getAD_OrgInfo_UU();
+		assertTrue(!Util.isEmpty(orgInfoUU, true), "MOrgInfo must have a valid AD_OrgInfo_UU");
+		
+		MTable orgInfoTable = MTable.get(Env.getCtx(), MOrgInfo.Table_Name);
+		po = orgInfoTable.getPOByUU(orgInfoUU, getTrxName());
+		assertNotNull(po, "getPOByUU should return a PO instance for valid UUID");
+		assertEquals(orgInfo.getAD_Org_ID(), po.get_ID(), "Returned PO must have expected AD_Org_ID");
+		assertEquals(orgInfoUU, po.get_ValueAsString("AD_OrgInfo_UU"), "Returned PO must have expected UUID");
+		assertTrue(po instanceof MOrgInfo, "Returned PO must be an instance of MOrgInfo");
     }
     
     @Test
@@ -2253,5 +2271,5 @@ public class POTest extends AbstractTestCase
 			assertTrue(count > 0, "There should be non-translated records when client language is base language");
 			
 		}
-	}
+	}	
 }

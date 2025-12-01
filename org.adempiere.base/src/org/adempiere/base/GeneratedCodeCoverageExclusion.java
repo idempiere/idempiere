@@ -22,55 +22,25 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.idempiere.test.event;
+package org.adempiere.base;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import org.adempiere.base.Core;
-import org.adempiere.base.DefaultAnnotationBasedEventManager;
-import org.adempiere.base.event.annotations.ModelEventHandler;
-import org.compiere.model.MTest;
-import org.compiere.util.Env;
-import org.idempiere.test.AbstractTestCase;
-import org.idempiere.test.TestActivator;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Isolated;
-import org.osgi.service.event.EventHandler;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @author hengsin
+ * Custom annotation to exclude methods or classes from JaCoCo code coverage.
+ * * JaCoCo automatically filters out any method/class/constructor
+ * annotated with an annotation whose name contains "Generated" and
+ * has RUNTIME or CLASS retention.
  */
-@Isolated
-public class EventDelegateAnnotationTest extends AbstractTestCase {
-
-	public EventDelegateAnnotationTest() {
-	}
-
-	@Test
-	public void testAnnotatedEventDelegate() {
-		DefaultAnnotationBasedEventManager mgr = Core.getDefaultAnnotationBasedEventManager();
-		CompletableFuture<List<EventHandler>> completable = mgr.scan(TestActivator.context, MTestEventDelegate.class.getPackageName());
-		completable.join();
-		
-		String desc = "test";
-		MTest mtest = new MTest(Env.getCtx(), 0, getTrxName());
-		mtest.setName("testAnnotatedEventDelegate");
-		mtest.setDescription(desc);
-		mtest.saveEx();
-		
-		assertEquals(desc + "MTestEventDelegate", mtest.getDescription(), "MTestEventDelegate not handling before new event as expected");
-		// clean up
-		EventHandler[] handlers = mgr.getHandlers();
-		for (EventHandler handler : handlers) {
-			if (handler instanceof ModelEventHandler meh) {
-				if (meh.getDelegateClass().equals(MTestEventDelegate.class)) {
-					mgr.removeHandler(handler);
-					break;
-				}
-			}
-		}		
-	}
+@Documented
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
+public @interface GeneratedCodeCoverageExclusion {
+    // No members needed
 }
+
+

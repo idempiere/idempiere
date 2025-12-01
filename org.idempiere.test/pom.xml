@@ -14,7 +14,7 @@
 		<idempiere.home>..</idempiere.home>
 		<skipTests>true</skipTests>
 		<sonar.skip>true</sonar.skip>
-		<p1>-Djunit.jupiter.execution.parallel.enabled=true</p1>
+		<p1>-Djunit.jupiter.execution.parallel.enabled=false</p1>
 		<p2>-Djunit.jupiter.execution.parallel.mode.default=concurrent</p2>
 		<p3>-Djunit.jupiter.execution.parallel.config.strategy=fixed</p3>
 		<p4>-Djunit.jupiter.execution.parallel.config.fixed.parallelism=4</p4>
@@ -177,6 +177,16 @@
 							<requirement>
 								<type>eclipse-plugin</type>
 								<id>wrapped.org.apache.xmlbeans.xmlbeans</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>groovy</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>groovy-jsr223</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 						</extraRequirements>

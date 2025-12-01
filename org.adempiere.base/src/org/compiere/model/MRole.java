@@ -41,7 +41,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
@@ -834,17 +833,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		m_orgAccess = new OrgAccess[list.size()];
 		list.toArray(m_orgAccess); 
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_orgAccess.length + (reload ? " - reload" : "")); 
-		if (Ini.isClient())
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < m_orgAccess.length; i++)
 		{
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < m_orgAccess.length; i++)
-			{
-				if (i > 0)
-					sb.append(",");
-				sb.append(m_orgAccess[i].AD_Org_ID);
-			}
-			Env.setContext(Env.getCtx(), "#User_Org", sb.toString());
+			if (i > 0)
+				sb.append(",");
+			sb.append(m_orgAccess[i].AD_Org_ID);
 		}
+		Env.setContext(Env.getCtx(), Env.USER_ORG, sb.toString());
 	}	//	loadOrgAccess
 
 	/**

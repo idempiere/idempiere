@@ -735,6 +735,9 @@ public class DocumentSearchController implements EventListener<Event>{
 			sql = Env.parseContext(Env.getCtx(), -1, sql, false, true);
 			if (hasFullTextOperator)
 				sql = sql.replace("~!#$*", "@@");
+			
+			sql = DB.getDatabase().addPagingSQL(sql, 0, MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER);
+			
 			pstmt = DB.prepareStatement(sql, (String)null);
 			if (params.size() > 0)
 				DB.setParameters(pstmt, params);

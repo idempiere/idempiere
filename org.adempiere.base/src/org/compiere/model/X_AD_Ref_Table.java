@@ -31,7 +31,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20251124L;
 
     /** Standard Constructor */
     public X_AD_Ref_Table (Properties ctx, int AD_Ref_Table_ID, String trxName)
@@ -45,6 +45,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -61,6 +63,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -77,6 +81,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -93,6 +99,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -316,6 +324,22 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Display SQL.
+		@param DisplaySQL SQL for display of lookup value
+	*/
+	public void setDisplaySQL (String DisplaySQL)
+	{
+		set_Value (COLUMNNAME_DisplaySQL, DisplaySQL);
+	}
+
+	/** Get Display SQL.
+		@return SQL for display of lookup value
+	  */
+	public String getDisplaySQL()
+	{
+		return (String)get_Value(COLUMNNAME_DisplaySQL);
+	}
+
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
@@ -333,6 +357,29 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
+	}
+
+	/** Set Display Identifier.
+		@param IsDisplayIdentifier Display the record identifier
+	*/
+	public void setIsDisplayIdentifier (boolean IsDisplayIdentifier)
+	{
+		set_Value (COLUMNNAME_IsDisplayIdentifier, Boolean.valueOf(IsDisplayIdentifier));
+	}
+
+	/** Get Display Identifier.
+		@return Display the record identifier
+	  */
+	public boolean isDisplayIdentifier()
+	{
+		Object oo = get_Value(COLUMNNAME_IsDisplayIdentifier);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Display Value.
