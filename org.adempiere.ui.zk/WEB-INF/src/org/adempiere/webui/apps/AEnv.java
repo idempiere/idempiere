@@ -318,7 +318,7 @@ public final class AEnv
 				mWindowVO = cache.get(AD_Window_ID);
 				if (mWindowVO != null)
 				{
-					mWindowVO = mWindowVO.clone(WindowNo);
+					mWindowVO = mWindowVO.clone(Env.getCtx(), WindowNo);
 					if (log.isLoggable(Level.INFO))
 						log.info("Cached=" + mWindowVO);
 				}

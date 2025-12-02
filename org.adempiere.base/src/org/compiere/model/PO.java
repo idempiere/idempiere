@@ -138,6 +138,30 @@ public abstract class PO
 	/** Record Attribute and Value Map */
 	private Map<String, Object> m_tableAttributeMap = new HashMap<String, Object>();
 
+	/** Query Timeout in seconds, override {@link #QUERY_TIME_OUT} **/
+	private Integer m_queryTimeout = null;
+	
+	/**
+	 * Set Query Timeout in seconds, override the default {@link #QUERY_TIME_OUT} value.<br/>
+	 * This has no effect if {@link #isUseTimeoutForUpdate()} returns false.
+	 * @param seconds
+	 */
+	public void set_QueryTimeout(int seconds)
+	{		
+		m_queryTimeout = seconds > 0 ? Integer.valueOf(seconds) : null;
+	}
+	
+	/**
+	 * Get Query Timeout in seconds.
+	 * @return query timeout in seconds
+	 */
+	public int get_QueryTimeout()
+	{
+		if (m_queryTimeout != null)
+			return m_queryTimeout.intValue();
+		return QUERY_TIME_OUT;
+	}
+	
 	/**
 	 * 	Set Document Value Workflow Manager
 	 *	@param docWFMgr mgr
@@ -1777,7 +1801,6 @@ public abstract class PO
 	 * 	@param hmIn hash map
 	 * 	@return true if loaded
 	 */
-	@Deprecated
 	protected boolean load (HashMap<String,String> hmIn)
 	{
 		checkImmutable();
@@ -3296,23 +3319,8 @@ public abstract class PO
 				//
 				String column = (String)it.next();
 				String value = (String)m_custom.get(column);
-				int index = p_info.getColumnIndex(column);
-				if (withValues)
-				{
-					sql.append(column).append("=").append(encrypt(index,value));
-				}
-				else
-				{
-					sql.append(column).append("=?");
-					if (value == null || value.toString().length() == 0)
-					{
-						params.add(null);
-					} 
-					else
-					{
-						params.add(encrypt(index,value));
-					}
-				}
+				// custom column value is always in sql string format (for e.g 'CustomVlue'), see set_CustomColumn
+				sql.append(column).append("=").append(value);
 			}
 			m_custom = null;
 		}
@@ -3362,8 +3370,8 @@ public abstract class PO
 			
 			int no = 0;
 			if (isUseTimeoutForUpdate())
-				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, QUERY_TIME_OUT)
-								: DB.executeUpdateEx(sql.toString(), params.toArray(), m_trxName, QUERY_TIME_OUT);
+				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, get_QueryTimeout())
+								: DB.executeUpdateEx(sql.toString(), params.toArray(), m_trxName, get_QueryTimeout());
 			else
 				no = withValues ? DB.executeUpdate(sql.toString(), m_trxName)
 						 		: DB.executeUpdate(sql.toString(), params.toArray(), false, m_trxName);
@@ -3716,7 +3724,7 @@ public abstract class PO
 		StringBuilder sqlValues = new StringBuilder(") VALUES (");
 		int size = get_ColumnCount();
 		boolean doComma = false;
-		Map<String, String> oracleBlobSQL = new HashMap<String, String>();
+		OracleBlobSQL oracleBlobSQL = new OracleBlobSQL(this);
 		for (int i = 0; i < size; i++)
 		{
 			String columnName = p_info.getColumnName(i);
@@ -3812,34 +3820,7 @@ public abstract class PO
 						}
 						else
 						{
-							String refTableName = null;
-							if ("AD_Tree_Favorite_Node".equalsIgnoreCase(tableName))
-								refTableName = "AD_Tree_Favorite_Node";
-							else if ("AD_TreeBar".equalsIgnoreCase(tableName)
-									|| "AD_TreeNodeMM".equalsIgnoreCase(tableName))
-								refTableName = "AD_Menu";
-							else if ("AD_TreeNodeBP".equalsIgnoreCase(tableName))
-								refTableName = "C_BPartner";
-							else if ("AD_TreeNodeCMC".equalsIgnoreCase(tableName))
-								refTableName = "CM_Container";
-							else if ("AD_TreeNodeCMM".equalsIgnoreCase(tableName))
-								refTableName = "CM_Media";
-							else if ("AD_TreeNodeCMS".equalsIgnoreCase(tableName))
-								refTableName = "CM_CStage";
-							else if ("AD_TreeNodeCMT".equalsIgnoreCase(tableName))
-								refTableName = "CM_Template";
-							else if ("AD_TreeNodePR".equalsIgnoreCase(tableName))
-								refTableName = "M_Product";
-							else if ("AD_TreeNodeU1".equalsIgnoreCase(tableName)
-									|| "AD_TreeNodeU2".equalsIgnoreCase(tableName) 
-									|| "AD_TreeNodeU3".equalsIgnoreCase(tableName)
-									|| "AD_TreeNodeU4".equalsIgnoreCase(tableName))
-								refTableName = "C_ElementValue";
-							else if ("AD_TreeNode".equalsIgnoreCase(tableName))
-							{
-								int treeId = get_ValueAsInt("AD_Tree_ID");
-								refTableName = MTree.getRefTableFromTree(treeId);
-							}
+							String refTableName = MTree.getRefTableNameFromTableName(tableName, get_ValueAsInt("AD_Tree_ID"));
 							if (refTableName != null)
 							{
 								MTable refTable = MTable.get(Env.getCtx(), refTableName);
@@ -4014,9 +3995,8 @@ public abstract class PO
 			while (it.hasNext())
 			{
 				String column = (String)it.next();
-				int index = p_info.getColumnIndex(column);
 				String value = (String)m_custom.get(column);
-				if (value == null)
+				if (value == null || value.length() == 0)
 					continue;
 				if (doComma)
 				{
@@ -4026,67 +4006,17 @@ public abstract class PO
 				else
 					doComma = true;
 				sqlInsert.append(column);
-				if (withValues)
-				{
-					sqlValues.append(encrypt(index, value));
-				}
-				else
-				{
-					sqlValues.append("?");
-					if (value == null || value.toString().length() == 0)
-					{
-						params.add(null);
-					}
-					else
-					{
-						params.add(encrypt(index, value));
-					}
-				}
+				// custom column value is always in sql string format (for e.g 'CustomVlue'), see set_CustomColumn
+				sqlValues.append(value);
 			}
 			m_custom = null;
 		}
 		sqlInsert.append(sqlValues)
 			.append(")");
-		
-		// Use pl/sql block for Oracle blob insert that's > 2048 bytes
+				
 		if (!oracleBlobSQL.isEmpty()) 
 		{
-			sqlInsert.append("\n;");
-			for(String column : oracleBlobSQL.keySet())
-			{
-				sqlInsert.append("\n\n");				
-				String blobSQL = oracleBlobSQL.get(column);
-				int hexDataStart = blobSQL.indexOf("'");
-				int hexDataEnd = blobSQL.indexOf("'", hexDataStart+1);
-				String functionStart = blobSQL.substring(0, hexDataStart);
-				String hexData = blobSQL.substring(hexDataStart+1, hexDataEnd);
-				String functionEnd = blobSQL.substring(hexDataEnd+1);
-				int remaining = hexData.length();
-				int lineSize = 2048;
-				sqlInsert.append("DECLARE\n")
-					.append("   lob_out blob;\n")
-					.append("BEGIN\n")
-					.append("   UPDATE ").append(tableName)
-					.append(" SET ").append(column).append("=EMPTY_BLOB()\n")
-					.append("   WHERE ").append(getUUIDColumnName()).append("=")
-					.append("'").append(get_UUID()).append("';\n")
-					.append("   SELECT ").append(column).append(" INTO lob_out\n")
-					.append("   FROM ").append(tableName).append("\n")
-					.append("   WHERE ").append(getUUIDColumnName()).append("=")
-					.append("'").append(get_UUID()).append("'\n")
-					.append("   FOR UPDATE;\n");
-				// Split hex encoded text into 2048 bytes block
-				int index = 0;				
-				while (remaining > 0) 
-				{
-					sqlInsert.append("   dbms_lob.append(lob_out, ").append(functionStart).append("'");
-					String data = remaining > lineSize ? hexData.substring(index, index+lineSize) : hexData.substring(index);
-					sqlInsert.append(data).append("'").append(functionEnd).append(");\n");
-					remaining = remaining > lineSize ? remaining - lineSize : 0;
-					index = index + lineSize;
-				}
-				sqlInsert.append("END;\n/");
-			}
+			oracleBlobSQL.appendPLSQLBlock(sqlInsert);
 		}
 		return AD_ChangeLog_ID;
 	}
@@ -4421,8 +4351,8 @@ public abstract class PO
 				int no = 0;
 				if (isUseTimeoutForUpdate())
 					no = optimisticLockingParams.isEmpty() 
-						 ? DB.executeUpdateEx(sql.toString(), localTrxName, QUERY_TIME_OUT)
-						 : DB.executeUpdateEx(sql.toString(), optimisticLockingParams.toArray(), localTrxName, QUERY_TIME_OUT);
+						 ? DB.executeUpdateEx(sql.toString(), localTrxName, get_QueryTimeout())
+						 : DB.executeUpdateEx(sql.toString(), optimisticLockingParams.toArray(), localTrxName, get_QueryTimeout());
 				else
 					no = optimisticLockingParams.isEmpty() 
 						 ? DB.executeUpdate(sql.toString(), localTrxName)
@@ -5355,7 +5285,7 @@ public abstract class PO
 				+ get_WhereClause(true);
 			boolean success = false;
 			if (isUseTimeoutForUpdate())
-				success = DB.executeUpdateEx(sql, null, QUERY_TIME_OUT) == 1;	//	outside trx
+				success = DB.executeUpdateEx(sql, null, get_QueryTimeout()) == 1;	//	outside trx
 			else
 				success = DB.executeUpdate(sql, null) == 1;	//	outside trx
 			if (success)
@@ -5392,7 +5322,7 @@ public abstract class PO
 				+ " SET Processing='N' WHERE " + get_WhereClause(true);
 			boolean success = false;
 			if (isUseTimeoutForUpdate())
-				success = DB.executeUpdateEx(sql, trxName, QUERY_TIME_OUT) == 1;
+				success = DB.executeUpdateEx(sql, trxName, get_QueryTimeout()) == 1;
 			else
 				success = DB.executeUpdate(sql, trxName) == 1;
 			if (success) {

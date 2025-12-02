@@ -28,11 +28,17 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -44,6 +50,7 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -69,11 +76,14 @@ import org.compiere.model.MClientShare;
 import org.compiere.model.MColumn;
 import org.compiere.model.MImage;
 import org.compiere.model.MMessage;
+import org.compiere.model.MOrder;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.MTest;
@@ -82,14 +92,22 @@ import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.MTree_NodeBP;
+import org.compiere.model.MUOM;
+import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.model.PO_Record;
 import org.compiere.model.Query;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
+import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
@@ -451,7 +469,11 @@ public class POTest extends AbstractTestCase
 		assertTrue(updated);
 		
 		bp2.set_UseOptimisticLocking(true);
-		bp2.set_OptimisticLockingColumns(new String[] {"Name"});
+		bp2.set_OptimisticLockingColumns(new String[] {"Name","IsActive"});
+		String[] olcs = bp2.get_OptimisticLockingColumns();
+		assertEquals(2, olcs.length);
+		assertEquals("Name", olcs[0]);
+		assertEquals("IsActive", olcs[1]);
 		bp2.setDescription("bp2");
 		updated = bp2.save();
 		assertTrue(updated);
@@ -556,7 +578,8 @@ public class POTest extends AbstractTestCase
 	}
 
 	@Test
-	public void testLogMigrationScript() {
+	public void testLogMigrationScript() throws IOException {
+		MSession.create(Env.getCtx());
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		
@@ -597,6 +620,42 @@ public class POTest extends AbstractTestCase
 			lotLevel.deleteEx(true);
 		}
 		
+		// log migration script for update of lookup fields
+		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+		testPO.setName("testPO1");
+		testPO.setT_Integer(100);
+		testPO.saveEx();
+		
+		MTest testPO1 = new MTest(Env.getCtx(), 0, getTrxName());
+		testPO1.setName("testPO2");
+		testPO1.setT_Integer(100);
+		testPO1.saveEx();
+		
+		MUOM testUOM = new MUOM(Env.getCtx(), 0, getTrxName());
+		testUOM.setName("testUOM1");
+		testUOM.setX12DE355("testUOM1");
+		testUOM.saveEx();
+		testPO1.setAD_Table_ID(MTest.Table_ID);
+		testPO1.setRecord_ID(testPO.get_ID());
+		testPO1.setC_UOM_ID(testUOM.get_ID());
+		testPO1.setIsActive(false);
+		testPO1.setT_DateTime(new Timestamp(System.currentTimeMillis()));
+		testPO1.setT_Number(BigDecimal.TEN);
+		testPO1.saveEx();
+		
+		// test change log for insert
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
+				.thenReturn("K");
+			MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+			t1.saveEx();
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_ID + "=?", getTrxName());
+			MChangeLog changeLog = query.setParameters(MTest.Table_ID, t1.get_ID()).first();
+			assertNotNull(changeLog, "No change log found for inserted record");
+			assertTrue(changeLog.get_ID() > 0, "Change log ID is invalid");
+		}
+				
 		String fileName = Convert.getGeneratedMigrationScriptFileName();
 		String folderPg = Convert.getMigrationScriptFolder("postgresql");
 		String folderOr = Convert.getMigrationScriptFolder("oracle");
@@ -668,6 +727,29 @@ public class POTest extends AbstractTestCase
 		} finally {
 			product.setDescription(description);
 			product.saveEx();
+		}
+		
+		// test change log for insert
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
+				.thenReturn("K");
+			MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+			t1.saveEx();
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_ID + "=?", getTrxName());
+			MChangeLog changeLog = query.setParameters(MTest.Table_ID, t1.get_ID()).first();
+			assertNotNull(changeLog, "No change log found for inserted record");
+			assertTrue(changeLog.get_ID() > 0, "Change log ID is invalid");
+		}		
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
+				.thenReturn("N");
+			MTest t2 = new MTest(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+			t2.saveEx();
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_ID + "=?", getTrxName());
+			MChangeLog changeLog = query.setParameters(MTest.Table_ID, t2.get_ID()).first();
+			assertNull(changeLog, "Change log found for inserted record");
 		}
 	}
 	
@@ -1051,6 +1133,10 @@ public class POTest extends AbstractTestCase
     	
     	//test non existing UU
     	po = table.getPOByUU(test.getTest_UU().replaceFirst(".?", "Z"), getTrxName());
+    	assertNull(po);
+    	
+    	// test new record UU
+    	po = table.getPOByUU(PO.UUID_NEW_RECORD, getTrxName());
     	assertNotNull(po);
     	assertTrue(po instanceof MTest);
     	assertEquals(0, po.get_ID());
@@ -1064,7 +1150,20 @@ public class POTest extends AbstractTestCase
     	po = table.getPOByUU(testuu.get_UUID(), getTrxName());
     	assertNotNull(po);
     	assertTrue(po instanceof MTestUU);
-    	assertEquals(testuu.get_UUID(), po.get_UUID());    	    	
+    	assertEquals(testuu.get_UUID(), po.get_UUID()); 
+    	
+    	// Test orgInfo
+    	MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+		assertTrue(orgInfo.getAD_Org_ID() > 0, "MOrgInfo must have a valid AD_Org_ID");
+		String orgInfoUU = orgInfo.getAD_OrgInfo_UU();
+		assertTrue(!Util.isEmpty(orgInfoUU, true), "MOrgInfo must have a valid AD_OrgInfo_UU");
+		
+		MTable orgInfoTable = MTable.get(Env.getCtx(), MOrgInfo.Table_Name);
+		po = orgInfoTable.getPOByUU(orgInfoUU, getTrxName());
+		assertNotNull(po, "getPOByUU should return a PO instance for valid UUID");
+		assertEquals(orgInfo.getAD_Org_ID(), po.get_ID(), "Returned PO must have expected AD_Org_ID");
+		assertEquals(orgInfoUU, po.get_ValueAsString("AD_OrgInfo_UU"), "Returned PO must have expected UUID");
+		assertTrue(po instanceof MOrgInfo, "Returned PO must be an instance of MOrgInfo");
     }
     
     @Test
@@ -1164,6 +1263,8 @@ public class POTest extends AbstractTestCase
     	assertTrue(Env.isReadOnlySession());
     	test.setT_Integer(1);
     	assertFalse(test.save());
+    	test = new MTest(Env.getCtx(), 103, getTrxName());
+    	assertFalse(test.delete(false));
     }
     
     @Test
@@ -1399,5 +1500,776 @@ public class POTest extends AbstractTestCase
 				assertEquals(child1.getValue(), childNodeCast.getName().substring(0, child1.getValue().length()), "Tree child node name does not match");
 			}
 		}
+    	
+    	// test toInsertSQL for tree node
+    	String sql = child2Node.toInsertSQL(DB.getDatabase().getName());
+    	assertNotNull(sql, "toInsertSQL returned null");
+    	child2Node.deleteEx(true);
+    	DB.executeUpdateEx(sql, getTrxName());
     }
+    
+    private static final class TestHashMapPO extends MTest {
+        private static final long serialVersionUID = 1L;
+        public TestHashMapPO(Properties ctx, int ID, String trxName) { super(ctx, ID, trxName); }
+        public boolean loadFromHashMap(HashMap<String,String> map) { return super.load(map); }
+        public HashMap<String,String> exportHashMap() { return super.get_HashMap(); }
+    }
+
+    @Test
+    void testLoadAndGetHashMap() {
+        MTest original = new TestHashMapPO(Env.getCtx(), 0, getTrxName());
+        original.setName("HashMapTest");
+        original.setDescription("HashMap Description");
+        original.setT_Integer(42);
+        original.saveEx();
+        assertTrue(original.get_ID() > 0);
+        // export to hash map
+        TestHashMapPO accessor = (TestHashMapPO) original; // safe cast
+        HashMap<String,String> map = accessor.exportHashMap();
+        assertNotNull(map);
+        assertEquals(original.getName(), map.get(MTest.COLUMNNAME_Name));
+        assertEquals(original.getDescription(), map.get(MTest.COLUMNNAME_Description));
+        assertEquals(Integer.toString(original.getT_Integer()), map.get(MTest.COLUMNNAME_T_Integer));
+        assertEquals("Y", map.get(MTest.COLUMNNAME_IsActive));
+        // virtual column should not be present
+        assertFalse(map.containsKey(MTest.COLUMNNAME_TestVirtualQty));
+        // load into a new instance from hash map
+        TestHashMapPO loaded = new TestHashMapPO(Env.getCtx(), 0, getTrxName());
+        boolean ok = loaded.loadFromHashMap(map);
+        assertTrue(ok);
+        // after load, key column newValues reset so object considered new
+        assertTrue(loaded.is_new());
+        assertEquals(original.getName(), loaded.getName());
+        assertEquals(original.getDescription(), loaded.getDescription());
+        assertEquals(original.getT_Integer(), loaded.getT_Integer());
+        assertTrue(loaded.isActive());
+        // ensure virtual column still not loaded
+        assertNull(loaded.get_Value(MTest.COLUMNNAME_TestVirtualQty));
+    }
+    
+    // New private test PO that throws in beforeSave to trigger rollback to savepoint
+	private static final class ThrowBeforeSavePO extends MTest {
+		private static final long serialVersionUID = 1L;
+		public ThrowBeforeSavePO(Properties ctx, String name, int someInt, String trxName) {
+			super(ctx, name, someInt, trxName);
+		}
+		public ThrowBeforeSavePO(Properties ctx, int id, String trxName) {
+			super(ctx, id, trxName);
+		}
+		@Override
+		protected boolean beforeSave(boolean newRecord) {
+			throw new RuntimeException("Simulated beforeSave failure");
+		}
+	}
+
+	@Test
+	void testBeforeSaveExRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in beforeSave - this should rollback only to the savepoint
+		ThrowBeforeSavePO t2 = new ThrowBeforeSavePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		try {
+			t2.saveEx();
+			fail("saveEx should have thrown due to beforeSave failure");
+		} catch (Exception e) {
+			// expected
+		}
+		// t2 may have been assigned an ID but should not be persisted
+		if (t2.get_ID() > 0)
+			assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should NOT exist after failed save");
+		// test without trx
+		t2 = new ThrowBeforeSavePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, null);
+		try {
+			t2.saveEx();
+			fail("saveEx should have thrown due to beforeSave failure");
+		} catch (Exception e) {
+			// expected
+		}
+		
+		// Now create another normal MTest and save - this must succeed even after the failed save
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 failure");
+	}
+	
+	// New private test PO that return false in beforeSave to trigger rollback to savepoint
+	private static final class BeforeSaveFalsePO extends MTest {
+		private static final long serialVersionUID = 1L;
+		public BeforeSaveFalsePO(Properties ctx, String name, int someInt, String trxName) {
+			super(ctx, name, someInt, trxName);
+		}
+		public BeforeSaveFalsePO(Properties ctx, int id, String trxName) {
+			super(ctx, id, trxName);
+		}
+		@Override
+		protected boolean beforeSave(boolean newRecord) {
+			return false;
+		}
+	}
+
+	@Test
+	void testBeforeSaveFalseRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in beforeSave - this should rollback only to the savepoint
+		BeforeSaveFalsePO t2 = new BeforeSaveFalsePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		try {
+			t2.saveEx();
+			fail("saveEx should have thrown due to beforeSave failure");
+		} catch (Exception e) {
+			// expected
+		}
+		// t2 may have been assigned an ID but should not be persisted
+		if (t2.get_ID() > 0)
+			assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should NOT exist after failed save");
+		// test without trx
+		t2 = new BeforeSaveFalsePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, null);
+		try {
+			t2.saveEx();
+			fail("saveEx should have thrown due to beforeSave failure");
+		} catch (Exception e) {
+			// expected
+		}
+
+		// Now create another normal MTest and save - this must succeed even after the failed save
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 failure");
+	}
+
+	@Test
+	void testBeforeSaveValidatorRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in beforeSave - this should rollback only to the savepoint
+		MTest t2 = new MTest(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		//simulate beforeSafe validator failure by mocking ModelValidationEngine
+		ModelValidationEngine mockedEngine = Mockito.mock(ModelValidationEngine.class);
+		when(mockedEngine.fireModelChange(any(MTest.class), eq(ModelValidator.TYPE_NEW))).thenReturn("TYPE_NEW validation failed");
+		when(mockedEngine.fireModelChange(any(MTest.class), eq(ModelValidator.TYPE_CHANGE))).thenReturn("TYPE_CHANGE validation failed");
+		try (MockedStatic<ModelValidationEngine> mockedStatic = Mockito.mockStatic(ModelValidationEngine.class, Mockito.CALLS_REAL_METHODS)) {
+			mockedStatic.when(() -> ModelValidationEngine.get()).thenReturn(mockedEngine);
+			try {
+				t2.saveEx();
+				fail("saveEx should have thrown due to beforeSave failure");
+			} catch (Exception e) {
+				// expected
+			}
+			// t2 may have been assigned an ID but should not be persisted
+			if (t2.get_ID() > 0)
+				assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should NOT exist after failed save");
+			// test without trx
+			t2 = new MTest(Env.getCtx(), 200003, null);
+			String name = t2.getName();
+			t2.setName("t2_"+System.currentTimeMillis());
+			try {
+				t2.saveEx();
+				fail("saveEx should have thrown due to beforeSave failure");
+			} catch (Exception e) {
+				// expected
+			}
+			t2 = new MTest(Env.getCtx(), 200003, null);
+			assertEquals(name, t2.getName(), "Name should not have changed after failed save");
+		} finally {
+			reset(mockedEngine);
+		}		
+				
+		// Now create another normal MTest and save - this must succeed even after the failed save
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 failure");
+	}
+	
+	// New private test PO that throws in afterSave to trigger rollback to savepoint
+	private static final class ThrowAfterSavePO extends MTest {
+		private static final long serialVersionUID = 1L;
+		public ThrowAfterSavePO(Properties ctx, String name, int someInt, String trxName) {
+			super(ctx, name, someInt, trxName);
+		}
+		public ThrowAfterSavePO(Properties ctx, int id, String trxName) {
+			super(ctx, id, trxName);
+		}
+		@Override
+		protected boolean afterSave(boolean newRecord, boolean success) {
+			throw new RuntimeException("Simulated afterSave failure");
+		}
+	}
+
+	@Test
+	void testAfterSaveExRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in afterSave - this should rollback only to the savepoint
+		ThrowAfterSavePO t2 = new ThrowAfterSavePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		try {
+			t2.saveEx();
+			fail("saveEx should have thrown due to afterSave failure");
+		} catch (Exception e) {
+			// expected
+		}
+		// t2 may have been assigned an ID but should not be persisted
+		if (t2.get_ID() > 0)
+			assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should NOT exist after failed save");
+		// test without trx
+		t2 = new ThrowAfterSavePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, null);
+		try {
+			t2.saveEx();
+			fail("saveEx should have thrown due to afterSave failure");
+		} catch (Exception e) {
+			// expected
+		}
+
+		// Now create another normal MTest and save - this must succeed even after the failed save
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 failure");
+	}
+	
+	// New private test PO that throws in beforeDelete to trigger rollback to savepoint
+	private static final class ThrowBeforeDeletePO extends MTest {
+		private static final long serialVersionUID = 1L;
+		public ThrowBeforeDeletePO(Properties ctx, String name, int someInt, String trxName) {
+			super(ctx, name, someInt, trxName);
+		}
+		public ThrowBeforeDeletePO(Properties ctx, int id, String trxName) {
+			super(ctx, id, trxName);
+		}
+		@Override
+		protected boolean beforeDelete() {
+			throw new RuntimeException("Simulated beforeDelete failure");
+		}
+	}
+
+	@Test
+	void testBeforeDeleteExRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in beforeDelete - this should rollback only to the savepoint
+		ThrowBeforeDeletePO t2 = new ThrowBeforeDeletePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		t2.saveEx();
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to beforeDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		// t2 should still exist
+		assertTrue(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should exist after failed delete");
+		// test without trx
+		t2 = new ThrowBeforeDeletePO(Env.getCtx(), 200003, null);
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to beforeDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		assertEquals(200003, new MTest(Env.getCtx(), 200003, null).get_ID());
+
+		// Now create another normal MTest and save - this must succeed even after the failed delete
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 delete failure");
+	}
+	
+	// New private test PO that throws in afterDelete to trigger rollback to savepoint
+	private static final class ThrowAfterDeletePO extends MTest {
+		private static final long serialVersionUID = 1L;
+		public ThrowAfterDeletePO(Properties ctx, String name, int someInt, String trxName) {
+			super(ctx, name, someInt, trxName);
+		}
+		public ThrowAfterDeletePO(Properties ctx, int id, String trxName) {
+			super(ctx, id, trxName);
+		}
+		@Override
+		protected boolean afterDelete(boolean success) {
+			throw new RuntimeException("Simulated afterDelete failure");
+		}
+	}
+
+	@Test
+	void testAfterDeleteExRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in afterDelete - this should rollback only to the savepoint
+		ThrowAfterDeletePO t2 = new ThrowAfterDeletePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		t2.saveEx();
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to afterDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		// for afterDelete error, t2 doesn't exist in current trx
+		if (t2.get_ID() > 0)
+			assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should not exist for afterDelete failure");
+		// test without trx
+		t2 = new ThrowAfterDeletePO(Env.getCtx(), 200003, null);
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to afterDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		assertEquals(200003, new MTest(Env.getCtx(), 200003, null).get_ID());
+		
+		// Now create another normal MTest and save - this must succeed even after the failed delete
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 delete failure");
+	}
+		
+	// New private test PO that return false in beforeDelete to trigger rollback to savepoint
+	private static final class BeforeDeleteFalsePO extends MTest {
+		private static final long serialVersionUID = 1L;
+		public BeforeDeleteFalsePO(Properties ctx, String name, int someInt, String trxName) {
+			super(ctx, name, someInt, trxName);
+		}
+		public BeforeDeleteFalsePO(Properties ctx, int id, String trxName) {
+			super(ctx, id, trxName);
+		}
+		@Override
+		protected boolean beforeDelete() {
+			return false;
+		}
+	}
+
+	@Test
+	void testBeforeDeleteFalseRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in beforeDelete - this should rollback only to the savepoint
+		BeforeDeleteFalsePO t2 = new BeforeDeleteFalsePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		t2.saveEx();
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to beforeDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		// t2 should still exist
+		if (t2.get_ID() > 0)
+			assertTrue(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should exist after failed delete");
+		// test without trx
+		t2 = new BeforeDeleteFalsePO(Env.getCtx(), 200003, null);
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to beforeDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		assertEquals(200003, new MTest(Env.getCtx(), 200003, null).get_ID());
+		
+		// Now create another normal MTest and save - this must succeed even after the failed delete
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 delete failure");
+	}
+	
+	// New private test PO that return false in afterDelete to trigger rollback to savepoint
+	private static final class AfterDeleteFalsePO extends MTest {
+		private static final long serialVersionUID = 1L;
+		public AfterDeleteFalsePO(Properties ctx, String name, int someInt, String trxName) {
+			super(ctx, name, someInt, trxName);
+		}
+		public AfterDeleteFalsePO(Properties ctx, int id, String trxName) {
+			super(ctx, id, trxName);
+		}
+		@Override
+		protected boolean afterDelete(boolean success) {
+			return false;
+		}
+	}
+
+	@Test
+	void testAfterDeleteFalseRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+
+		// Create a PO that fails in beforeDelete - this should rollback only to the savepoint
+		AfterDeleteFalsePO t2 = new AfterDeleteFalsePO(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		t2.saveEx();
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to afterDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		// for afterDelete error, t2 doesn't exist in current trx
+		if (t2.get_ID() > 0)
+			assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should not exists for afterDelete failure");
+		t2 = new AfterDeleteFalsePO(Env.getCtx(), 200003, null);
+		try {
+			t2.deleteEx(false);
+			fail("deleteEx should have thrown due to afterDelete failure");
+		} catch (Exception e) {
+			// expected
+		}
+		assertEquals(200003, new MTest(Env.getCtx(), 200003, null).get_ID());
+		
+		// Now create another normal MTest and save - this must succeed even after the failed delete
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 delete failure");
+	}
+	
+
+	@Test
+	void testBeforeDeleteValidatorRollbackWithSavepoint()
+	{
+		// Ensure we have a transaction name (so save() will create a savepoint)
+		assertNotNull(getTrxName(), "TrxName should not be null");
+
+		// Create and save a normal MTest within the transaction
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should exist after save");
+		
+		// Create a PO that fails in beforeDelete - this should rollback only to the savepoint
+		MTest t2 = new MTest(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		t2.saveEx();
+		
+		//simulate beforeDelete validator failure by mocking ModelValidationEngine
+		ModelValidationEngine mockedEngine = Mockito.mock(ModelValidationEngine.class);
+		when(mockedEngine.fireModelChange(any(MTest.class), eq(ModelValidator.TYPE_DELETE))).thenReturn("BeforeDelete validation failed");
+		try (MockedStatic<ModelValidationEngine> mockedStatic = Mockito.mockStatic(ModelValidationEngine.class, Mockito.CALLS_REAL_METHODS)) {
+			mockedStatic.when(() -> ModelValidationEngine.get()).thenReturn(mockedEngine);
+			try {
+				t2.deleteEx(false);
+				fail("deleteEx should have thrown due to beforeDelete failure");
+			} catch (Exception e) {
+				// expected
+			}
+			// t2 should still exist
+			if (t2.get_ID() > 0)
+				assertTrue(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should exist after failed delete");
+			// test without trx
+			t2 = new MTest(Env.getCtx(), 200003, null);
+			try {
+				t2.deleteEx(false);
+				fail("deleteEx should have thrown due to beforeDelete failure");
+			} catch (Exception e) {
+				// expected
+			}
+			assertEquals(200003, new MTest(Env.getCtx(), 200003, null).get_ID());
+		} finally {
+			reset(mockedEngine);
+		}						
+
+		// Now create another normal MTest and save - this must succeed even after the failed delete
+		MTest t3 = new MTest(Env.getCtx(), "t3_"+System.currentTimeMillis(), 10, getTrxName());
+		t3.saveEx();
+		assertTrue(MyTestPO.exists(t3.get_ID(), getTrxName()), "t3 should exist after save");
+
+		// Verify t1 still exists (was not rolled back)
+		assertTrue(MyTestPO.exists(t1.get_ID(), getTrxName()), "t1 should still exist after t2 delete failure");
+	}
+	
+	@Test
+	void testRecord_IDDeleteValidation() {
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		
+		MTest t2 = new MTest(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
+		t2.setAD_Table_ID(MTest.Table_ID);
+		t2.setRecord_ID(t1.get_ID());
+		t2.saveEx();
+		
+		//Test.Record_ID | 215775
+		MColumn column = new MColumn(Env.getCtx(), 215775, null);
+		String fkct = column.getFKConstraintType();
+		try {
+			if (!MColumn.FKCONSTRAINTTYPE_ModelNoAction_ForbidDeletion.equals(fkct)) {
+				column.setFKConstraintType(MColumn.FKCONSTRAINTTYPE_ModelNoAction_ForbidDeletion);
+				column.saveCrossTenantSafeEx();
+				CacheMgt.get().reset(MColumn.Table_Name, column.get_ID());
+				PO_Record.resetCache();
+			}
+			
+			// Attempt to delete t1 - should fail due to existing t2 referencing it
+			try {
+				t1.deleteEx(true);
+				fail("deleteEx should have thrown due to Record_ID validation");
+			} catch (AdempiereException e) {
+				// expected
+			}
+		} finally {
+			if (!MColumn.FKCONSTRAINTTYPE_ModelNoAction_ForbidDeletion.equals(fkct)) {
+				column.setFKConstraintType(fkct);
+				column.saveCrossTenantSafeEx();
+				CacheMgt.get().reset(MColumn.Table_Name, column.get_ID());
+				CacheMgt.get().reset("PORecordTables");
+			}
+		}
+	}
+	
+	@Test
+	void TestUpdateSetUUID() {
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.saveEx();
+		assertNotNull(t1.get_UUID(), "UUID should have been set in create");
+		DB.executeUpdateEx("UPDATE " + MTest.Table_Name + " SET Test_UU=NULL WHERE Test_ID=" + t1.get_ID(), getTrxName());
+		t1.load(getTrxName());
+		assertNull(t1.getTest_UU(), "UUID should have been set to null by update statement");
+		assertEquals("", t1.get_UUID(), "get_UUID should return empty string when UUID column is null");
+		t1.setT_Integer(1);
+		t1.saveEx();
+		t1.load(getTrxName());
+		assertNotNull(t1.get_UUID(), "UUID should have been set in update");
+	}
+	
+	@Test
+	void TestUseTimeoutForUpdate() {
+		try (MockedStatic<SystemProperties> mocked = Mockito.mockStatic(SystemProperties.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> SystemProperties.isUseTimeoutForUpdate())
+				.thenReturn(true);
+			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 1);
+			
+			Trx trx1 = Trx.get(Trx.createTrxName("TestUseTimeoutForUpdate1"), true);
+			try {
+				MBPartner bp1 = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, trx1.getTrxName());
+				bp1.set_QueryTimeout(1);
+				bp1.setName2(trx1.getTrxName());
+				try {
+					bp1.saveEx();
+				} catch (Exception e) {
+					Exception cause = e.getCause() != null ? (Exception)e.getCause() : e;
+					assertInstanceOf(DBException.class, cause);
+					DBException dbEx = (DBException) cause;
+					assertNotNull(dbEx.getSQLException(), "SQLException is null");
+					assertTrue(DB.getDatabase().isQueryTimeout(dbEx.getSQLException()), "Exception is not a query timeout");
+				}
+				
+				trx1.rollback();
+				
+				//test delete with timeout
+				trx1.start();
+				try {
+					bp1 = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, trx1.getTrxName());
+					bp1.set_QueryTimeout(1);
+					bp1.deleteEx(false);
+				} catch (Exception e) {
+					Exception cause = e.getCause() != null ? (Exception)e.getCause() : e;
+					assertInstanceOf(DBException.class, cause);
+					DBException dbEx = (DBException) cause;
+					assertNotNull(dbEx.getSQLException(), "SQLException is null");
+					assertTrue(DB.getDatabase().isQueryTimeout(dbEx.getSQLException()), "Exception is not a query timeout");
+				}
+				trx1.rollback();
+				
+				// release lock
+				rollback();								
+				
+				trx1.start();
+				bp1.saveEx();
+			} finally {
+				try {
+					trx1.rollback();
+				} catch (Exception e) {
+					//ignore
+				}
+				trx1.close();
+			}
+		}
+	}
+	
+	@Test
+	void testUpdateLOB() throws IOException {
+		byte[] imageData = null;
+        try (InputStream is = getClass().getResourceAsStream("/org/idempiere/test/model/idempiere_logo.png")) {
+        	imageData = is.readAllBytes();
+        }
+        assertTrue(imageData != null && imageData.length > 0, "Image data should not be null or empty");        
+        MImage image = new MImage(Env.getCtx(), 0, getTrxName());
+        image.setName("idempiere_logo.png");        
+		image.saveEx();
+		
+		image.setBinaryData(imageData);
+		image.saveEx();
+		
+		MImage image1 = new MImage(Env.getCtx(), image.get_ID(), getTrxName());
+		byte[] binaryData = image1.getBinaryData();
+		assertTrue(binaryData != null && binaryData.length > 0, "Binary data should not be null or empty");
+	}
+	
+	@Test
+	void testOverrideTempDocNo() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id);
+		order.setDateOrdered(new Timestamp(System.currentTimeMillis()));
+		order.setDateAcct(order.getDateOrdered());
+		order.setIsSOTrx(true);
+		order.setC_DocTypeTarget_ID();
+		String tempDocNo = "<TMP-"+System.currentTimeMillis() + ">";
+		// test override on insert
+		order.setDocumentNo(tempDocNo);
+		order.saveEx();
+		order.load(getTrxName());
+		assertNotEquals(tempDocNo, order.getDocumentNo(), "DocumentNo should have been overridden");
+		// test override on update
+		order.setDocumentNo(tempDocNo);
+		order.saveEx();
+		order.load(getTrxName());
+		assertNotEquals(tempDocNo, order.getDocumentNo(), "DocumentNo should have been overridden");
+	}
+	
+	@Test
+	void testCustomColumnInsertUpdate() {
+		MTable table = MTable.get(Env.getCtx(), MTest.Table_Name);
+		MColumn customColumn = new MColumn(table);
+		String customColumnName = "Custom_Column_" + System.currentTimeMillis();
+		customColumn.setColumnName(customColumnName);
+		customColumn.setAD_Reference_ID(DisplayType.String);
+		customColumn.setFieldLength(40);
+		
+		String addColumnSQL = DB.getDatabase().getSQLAdd(table, customColumn);
+		DB.executeUpdateEx(addColumnSQL, null);
+		
+		try {
+			MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+			String customColumnValue = "Custom Column Value";
+			assertTrue(t1.set_CustomColumnReturningBoolean(customColumnName, customColumnValue), "Setting custom column value failed");
+			t1.saveEx();
+			
+			String valueFromDB = DB.getSQLValueString(getTrxName(), "SELECT " + customColumnName + " FROM " + MTest.Table_Name
+					+ " WHERE " + MTest.COLUMNNAME_Test_ID + "=?", t1.get_ID());
+			assertEquals(customColumnValue, valueFromDB, "Custom column value from DB does not match");
+			
+			//test update
+			String customColumnValueUpdated = "Updated Custom Column Value";
+			assertTrue(t1.set_CustomColumnReturningBoolean(customColumnName, customColumnValueUpdated), "Setting custom column value failed");
+			t1.saveEx();
+			
+			valueFromDB = DB.getSQLValueString(getTrxName(), "SELECT " + customColumnName + " FROM " + MTest.Table_Name
+					+ " WHERE " + MTest.COLUMNNAME_Test_ID + "=?", t1.get_ID());
+			assertEquals(customColumnValueUpdated, valueFromDB, "Custom column value from DB does not match");
+		} finally {
+			rollback();
+			//drop column sql is the same for Oracle and Postgres
+			String dropColumnSQL = "ALTER TABLE " + MTest.Table_Name + " DROP COLUMN " + customColumnName;
+			DB.executeUpdateEx(dropColumnSQL, null);
+		}
+	}
+	
+	@Test
+	void testDeleteProcessedRecord() {
+		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+		t1.setProcessed(true);
+		t1.saveEx();
+	
+		assertFalse(t1.delete(false), "Deleting processed record should have failed");
+	}
+
+	@Test
+	void testUpdateIsTranslated() {
+		MClient client = MClient.get(Env.getCtx());
+		client = new MClient(client);
+		client.setIsMultiLingualDocument(true);
+		client.setAD_Language("es_CO");
+		try (MockedStatic<MClient> mocked = Mockito.mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MClient.get(any())).thenReturn(client);
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setName("Test Product");
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id );
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.saveEx();
+			
+			// client not base language, IsTranslated should be set to 'Y' on update
+			product.setName("Test Product Updated");
+			product.saveEx();						
+			int count = DB.getSQLValueEx(getTrxName(), "SELECT COUNT(*) FROM M_Product_TRL WHERE M_Product_ID=? "
+					+ "AND IsTranslated='Y' AND AD_Language=? AND AD_Client_ID=?", product.get_ID(), 
+					client.getAD_Language(), client.getAD_Client_ID());
+			assertTrue(count > 0, "There should be translated records for " + client.getAD_Language());
+			
+			// client is base language, IsTranslated should be set to 'N' on update
+			client.setAD_Language(Language.getBaseAD_Language());
+			product.setName("Test Product Updated1");
+			product.saveEx();			
+			count = DB.getSQLValueEx(getTrxName(), "SELECT COUNT(*) FROM M_Product_TRL WHERE M_Product_ID=? "
+					+ "AND IsTranslated='N' AND AD_Client_ID=?", product.get_ID(), client.getAD_Client_ID());
+			assertTrue(count > 0, "There should be non-translated records when client language is base language");
+			
+		}
+	}	
 }

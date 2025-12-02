@@ -329,7 +329,7 @@ public class GridWindow implements Serializable
 	 */
 	public int getTabCount()
 	{
-		return m_tabs.size();
+		return m_tabs != null ? m_tabs.size() : 0;
 	}	//	getTabCount
 
 	/**

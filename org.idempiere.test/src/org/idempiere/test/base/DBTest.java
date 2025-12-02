@@ -14,7 +14,9 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -526,6 +528,748 @@ public class DBTest extends AbstractTestCase
 		assertTrue(userKeyNamePairs.length > 0, "Failed to retrieve User records");
 		optional = Arrays.stream(userKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_User.GARDEN_USER.id).findFirst();
 		assertTrue(optional.isPresent(), "Failed to find Garden_User user record");
+	}
+	
+	/**
+	 * Test DB.createConnection with autoCommit true and READ_COMMITTED isolation level
+	 * Tests that autoCommit=true automatically commits changes without explicit commit
+	 */
+	@Test
+	public void testCreateConnectionAutoCommitTrue() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			conn = DB.createConnection(true, java.sql.Connection.TRANSACTION_READ_COMMITTED);
+			
+			assertNotNull(conn, "Connection should not be null");
+			assertTrue(conn.getAutoCommit(), "AutoCommit should be true");
+			assertEquals(java.sql.Connection.TRANSACTION_READ_COMMITTED, conn.getTransactionIsolation(), 
+					"Transaction isolation level should be READ_COMMITTED");
+			
+			// Verify connection is usable
+			assertTrue(conn.isValid(5), "Connection should be valid");
+			
+			// Get initial value
+			int initialValue = DB.getSQLValueEx(null, "SELECT t_integer FROM test WHERE test_id=?", TEST_RECORD_ID);
+			
+			// Update value using the connection with autoCommit=true
+			String updateSql = "UPDATE test SET t_integer=? WHERE test_id=?";
+			int newValue = initialValue + 777;
+			try (java.sql.PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+				pstmt.setInt(1, newValue);
+				pstmt.setInt(2, TEST_RECORD_ID);
+				int rowsUpdated = pstmt.executeUpdate();
+				assertEquals(1, rowsUpdated, "Should update 1 row");
+			}
+			// No explicit commit needed - autoCommit=true should have committed automatically
+			
+			// Verify the update is visible from a DIFFERENT connection immediately
+			// This proves autoCommit=true worked (change was committed automatically)
+			int valueFromOtherConnection = DB.getSQLValueEx(null, "SELECT t_integer FROM test WHERE test_id=?", TEST_RECORD_ID);
+			assertEquals(newValue, valueFromOtherConnection, 
+					"Value should be immediately visible from another connection (autoCommit worked)");
+			
+			// Restore original value
+			try (java.sql.PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+				pstmt.setInt(1, initialValue);
+				pstmt.setInt(2, TEST_RECORD_ID);
+				pstmt.executeUpdate();
+			}
+			
+			// Verify restoration
+			int restoredValue = DB.getSQLValueEx(null, "SELECT t_integer FROM test WHERE test_id=?", TEST_RECORD_ID);
+			assertEquals(initialValue, restoredValue, "Value should be restored to original");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test DB.createConnection with autoCommit false and READ_COMMITTED isolation level
+	 */
+	@Test
+	public void testCreateConnectionAutoCommitFalse() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			conn = DB.createConnection(false, java.sql.Connection.TRANSACTION_READ_COMMITTED);
+			
+			assertNotNull(conn, "Connection should not be null");
+			assertFalse(conn.getAutoCommit(), "AutoCommit should be false");
+			assertEquals(java.sql.Connection.TRANSACTION_READ_COMMITTED, conn.getTransactionIsolation(), 
+					"Transaction isolation level should be READ_COMMITTED");
+			
+			// Verify connection is usable
+			assertTrue(conn.isValid(5), "Connection should be valid");
+			
+			// With autocommit false, we need to rollback or commit
+			try (java.sql.PreparedStatement pstmt = conn.prepareStatement("SELECT 1 FROM DUAL")) {
+				try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+					assertTrue(rs.next(), "Should have a result");
+					assertEquals(1, rs.getInt(1), "Simple query should return 1");
+				}
+			}
+			conn.rollback();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.rollback();
+				} catch (Exception e) {}
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test DB.createConnection with READ_UNCOMMITTED isolation level
+	 */
+	@Test
+	public void testCreateConnectionReadUncommitted() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			conn = DB.createConnection(true, java.sql.Connection.TRANSACTION_READ_UNCOMMITTED);
+			
+			assertNotNull(conn, "Connection should not be null");
+			int isolationLevel = conn.getTransactionIsolation();
+			assertTrue(isolationLevel == java.sql.Connection.TRANSACTION_READ_UNCOMMITTED,
+					"Transaction isolation level should be READ_UNCOMMITTED");
+			assertTrue(conn.isValid(5), "Connection should be valid");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test DB.createConnection with REPEATABLE_READ isolation level
+	 */
+	@Test
+	public void testCreateConnectionRepeatableRead() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			conn = DB.createConnection(false, java.sql.Connection.TRANSACTION_REPEATABLE_READ);
+			
+			assertNotNull(conn, "Connection should not be null");
+			// Note: Some databases may not support REPEATABLE_READ
+			int isolationLevel = conn.getTransactionIsolation();
+			assertTrue(isolationLevel >= java.sql.Connection.TRANSACTION_READ_COMMITTED,
+					"Transaction isolation level should be at least READ_COMMITTED");
+			assertTrue(conn.isValid(5), "Connection should be valid");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.rollback();
+				} catch (Exception e) {}
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test DB.createConnection with SERIALIZABLE isolation level
+	 */
+	@Test
+	public void testCreateConnectionSerializable() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			conn = DB.createConnection(true, java.sql.Connection.TRANSACTION_SERIALIZABLE);
+			
+			assertNotNull(conn, "Connection should not be null");
+			int isolationLevel = conn.getTransactionIsolation();
+			assertEquals(isolationLevel, java.sql.Connection.TRANSACTION_SERIALIZABLE,
+					"Transaction isolation level should be Serializable");
+			assertTrue(conn.isValid(5), "Connection should be valid");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test that multiple connections created are independent
+	 */
+	@Test
+	public void testCreateConnectionMultipleIndependent() throws Exception {
+		java.sql.Connection conn1 = null;
+		java.sql.Connection conn2 = null;
+		try {
+			conn1 = DB.createConnection(true, java.sql.Connection.TRANSACTION_READ_COMMITTED);
+			conn2 = DB.createConnection(false, java.sql.Connection.TRANSACTION_REPEATABLE_READ);
+			
+			assertNotNull(conn1, "Connection 1 should not be null");
+			assertNotNull(conn2, "Connection 2 should not be null");
+			
+			// Verify they are different connection instances
+			assertNotSame(conn1, conn2, "Connections should be different instances");
+			
+			// Verify each has its own properties
+			assertTrue(conn1.getAutoCommit(), "Connection 1 should have autoCommit=true");
+			assertFalse(conn2.getAutoCommit(), "Connection 2 should have autoCommit=false");
+			
+			// Both should be valid and usable
+			assertTrue(conn1.isValid(5), "Connection 1 should be valid");
+			assertTrue(conn2.isValid(5), "Connection 2 should be valid");
+		} finally {
+			if (conn1 != null) {
+				conn1.close();
+			}
+			if (conn2 != null) {
+				try {
+					conn2.rollback();
+				} catch (Exception e) {}
+				conn2.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test DB.getConnection convenience method
+	 */
+	@Test
+	public void testGetConnection() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			// Test with autoCommit=true
+			conn = DB.getConnection(true);
+			assertNotNull(conn, "Connection should not be null");
+			assertTrue(conn.getAutoCommit(), "AutoCommit should be true");
+			assertEquals(java.sql.Connection.TRANSACTION_READ_COMMITTED, conn.getTransactionIsolation(),
+					"Default isolation level should be READ_COMMITTED");
+			conn.close();
+			
+			// Test with autoCommit=false
+			conn = DB.getConnection(false);
+			assertNotNull(conn, "Connection should not be null");
+			assertFalse(conn.getAutoCommit(), "AutoCommit should be false");
+			assertEquals(java.sql.Connection.TRANSACTION_READ_COMMITTED, conn.getTransactionIsolation(),
+					"Default isolation level should be READ_COMMITTED");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.rollback();
+				} catch (Exception e) {}
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test that connection can execute queries properly
+	 */
+	@Test
+	public void testCreateConnectionExecuteQuery() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			conn = DB.createConnection(true, java.sql.Connection.TRANSACTION_READ_COMMITTED);
+			assertNotNull(conn, "Connection should not be null");
+			
+			// Execute a query using the connection
+			String sql = "SELECT AD_Client_ID, Name FROM AD_Client WHERE AD_Client_ID=?";
+			try (java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+				pstmt.setInt(1, DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+				try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+					assertTrue(rs.next(), "Should have at least one result");
+					assertEquals(DictionaryIDs.AD_Client.GARDEN_WORLD.id, rs.getInt(1), "AD_Client_ID should be 11");
+					assertNotNull(rs.getString(2), "Name should not be null");
+				}
+			}
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test that connection properly handles transactions with autoCommit=false
+	 */
+	@Test
+	public void testCreateConnectionTransactionRollback() throws Exception {
+		java.sql.Connection conn = null;
+		try {
+			conn = DB.createConnection(false, java.sql.Connection.TRANSACTION_READ_COMMITTED);
+			assertNotNull(conn, "Connection should not be null");
+			assertFalse(conn.getAutoCommit(), "AutoCommit should be false");
+			
+			// Get initial value
+			int initialValue = DB.getSQLValueEx(null, "SELECT t_integer FROM test WHERE test_id=?", TEST_RECORD_ID);
+			
+			// Update value using the connection (but don't commit)
+			String updateSql = "UPDATE test SET t_integer=? WHERE test_id=?";
+			try (java.sql.PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+				pstmt.setInt(1, initialValue + 999);
+				pstmt.setInt(2, TEST_RECORD_ID);
+				pstmt.executeUpdate();
+			}
+			
+	        // Verify the update using the SAME connection
+	        String selectSql = "SELECT t_integer FROM test WHERE test_id=?";
+	        try (java.sql.PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
+	            pstmt.setInt(1, TEST_RECORD_ID);
+	            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+	                assertTrue(rs.next(), "Should have a result");
+	                int updatedValue = rs.getInt(1);
+	                assertEquals(initialValue + 999, updatedValue, "Value should be updated within transaction");
+	            }
+	        }
+
+			// Rollback the transaction
+			conn.rollback();
+			
+			// Verify value is unchanged
+			int afterRollback = DB.getSQLValueEx(null, "SELECT t_integer FROM test WHERE test_id=?", TEST_RECORD_ID);
+			assertEquals(initialValue, afterRollback, "Value should be unchanged after rollback");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.rollback();
+				} catch (Exception e) {}
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * Test DB.isSelectStatement with valid SELECT statements
+	 */
+	@Test
+	public void testIsSelectStatementValid() {
+		// Simple SELECT
+		assertTrue(DB.isSelectStatement("SELECT * FROM AD_Client"), 
+				"Simple SELECT should be valid");
+		
+		// SELECT with WHERE clause
+		assertTrue(DB.isSelectStatement("SELECT AD_Client_ID, Name FROM AD_Client WHERE AD_Client_ID=11"), 
+				"SELECT with WHERE should be valid");
+		
+		// SELECT with JOIN
+		assertTrue(DB.isSelectStatement("SELECT c.AD_Client_ID, c.Name FROM AD_Client c JOIN AD_Org o ON c.AD_Client_ID=o.AD_Client_ID"), 
+				"SELECT with JOIN should be valid");
+		
+		// SELECT with ORDER BY
+		assertTrue(DB.isSelectStatement("SELECT Name FROM AD_Client ORDER BY Name"), 
+				"SELECT with ORDER BY should be valid");
+		
+		// SELECT with GROUP BY
+		assertTrue(DB.isSelectStatement("SELECT AD_Client_ID, COUNT(*) FROM AD_User GROUP BY AD_Client_ID"), 
+				"SELECT with GROUP BY should be valid");
+		
+		// Uppercase SELECT
+		assertTrue(DB.isSelectStatement("SELECT Name FROM AD_Client"), 
+				"Uppercase SELECT should be valid");
+		
+		// Lowercase SELECT
+		assertTrue(DB.isSelectStatement("select name from ad_client"), 
+				"Lowercase SELECT should be valid");
+		
+		// Mixed case SELECT
+		assertTrue(DB.isSelectStatement("SeLeCt NaMe FrOm AD_Client"), 
+				"Mixed case SELECT should be valid");
+	}
+	
+	/**
+	 * Test DB.isSelectStatement with leading whitespace
+	 */
+	@Test
+	public void testIsSelectStatementWithWhitespace() {
+		// Leading spaces
+		assertTrue(DB.isSelectStatement("   SELECT * FROM AD_Client"), 
+				"SELECT with leading spaces should be valid");
+		
+		// Leading tabs
+		assertTrue(DB.isSelectStatement("\t\tSELECT * FROM AD_Client"), 
+				"SELECT with leading tabs should be valid");
+		
+		// Leading newlines
+		assertTrue(DB.isSelectStatement("\n\nSELECT * FROM AD_Client"), 
+				"SELECT with leading newlines should be valid");
+		
+		// Mixed leading whitespace
+		assertTrue(DB.isSelectStatement("  \t\n  SELECT * FROM AD_Client"), 
+				"SELECT with mixed leading whitespace should be valid");
+	}
+	
+	/**
+	 * Test DB.isSelectStatement with comments
+	 */
+	@Test
+	public void testIsSelectStatementWithComments() {
+		// Comment before SELECT
+		assertTrue(DB.isSelectStatement("/* This is a comment */ SELECT * FROM AD_Client"), 
+				"SELECT with comment before should be valid");
+		
+		// Comment after SELECT
+		assertTrue(DB.isSelectStatement("SELECT /* inline comment */ * FROM AD_Client"), 
+				"SELECT with inline comment should be valid");
+		
+		// Multi-line comment
+		assertTrue(DB.isSelectStatement("/* This is a\nmulti-line\ncomment */ SELECT * FROM AD_Client"), 
+				"SELECT with multi-line comment should be valid");
+		
+		// Multiple comments
+		assertTrue(DB.isSelectStatement("/* Comment 1 */ SELECT /* Comment 2 */ * FROM AD_Client"), 
+				"SELECT with multiple comments should be valid");
+	}
+	
+	/**
+	 * Test DB.isSelectStatement with quoted strings
+	 */
+	@Test
+	public void testIsSelectStatementWithQuotedStrings() {
+		// String in WHERE clause
+		assertTrue(DB.isSelectStatement("SELECT * FROM AD_Client WHERE Name='GardenWorld'"), 
+				"SELECT with quoted string should be valid");
+		
+		// String containing SELECT keyword
+		assertTrue(DB.isSelectStatement("SELECT * FROM AD_Client WHERE Description='This SELECT is in a string'"), 
+				"SELECT with 'SELECT' in quoted string should be valid");
+		
+		// String with newlines
+		assertTrue(DB.isSelectStatement("SELECT * FROM AD_Client WHERE Name='Garden\nWorld'"), 
+				"SELECT with newline in quoted string should be valid");
+		
+		// Multiple quoted strings
+		assertTrue(DB.isSelectStatement("SELECT * FROM AD_Client WHERE Name='Test' OR Value='TEST'"), 
+				"SELECT with multiple quoted strings should be valid");
+	}
+	
+	/**
+	 * Test DB.isSelectStatement with invalid statements (non-SELECT)
+	 */
+	@Test
+	public void testIsSelectStatementInvalid() {
+		// UPDATE statement
+		assertFalse(DB.isSelectStatement("UPDATE AD_Client SET Name='Test' WHERE AD_Client_ID=11"), 
+				"UPDATE should not be valid");
+		
+		// INSERT statement
+		assertFalse(DB.isSelectStatement("INSERT INTO AD_Client (AD_Client_ID, Name) VALUES (999, 'Test')"), 
+				"INSERT should not be valid");
+		
+		// DELETE statement
+		assertFalse(DB.isSelectStatement("DELETE FROM AD_Client WHERE AD_Client_ID=999"), 
+				"DELETE should not be valid");
+		
+		// CREATE statement
+		assertFalse(DB.isSelectStatement("CREATE TABLE Test (ID INT)"), 
+				"CREATE should not be valid");
+		
+		// DROP statement
+		assertFalse(DB.isSelectStatement("DROP TABLE Test"), 
+				"DROP should not be valid");
+		
+		// ALTER statement
+		assertFalse(DB.isSelectStatement("ALTER TABLE AD_Client ADD COLUMN Test VARCHAR(60)"), 
+				"ALTER should not be valid");
+		
+		// TRUNCATE statement
+		assertFalse(DB.isSelectStatement("TRUNCATE TABLE Test"), 
+				"TRUNCATE should not be valid");
+		
+		// Empty string
+		assertFalse(DB.isSelectStatement(""), 
+				"Empty string should not be valid");
+		
+		// Just whitespace
+		assertFalse(DB.isSelectStatement("   "), 
+				"Whitespace only should not be valid");
+	}
+	
+	/**
+	 * Test DB.isSelectStatement with semicolons (should be invalid)
+	 */
+	@Test
+	public void testIsSelectStatementWithSemicolon() {
+		// SELECT with semicolon at end
+		assertFalse(DB.isSelectStatement("SELECT * FROM AD_Client;"), 
+				"SELECT with semicolon should not be valid");
+		
+		// SELECT with semicolon in middle (SQL injection attempt)
+		assertFalse(DB.isSelectStatement("SELECT * FROM AD_Client; DROP TABLE AD_Client"), 
+				"SELECT with semicolon and additional statement should not be valid");
+		
+		// Multiple statements
+		assertFalse(DB.isSelectStatement("SELECT * FROM AD_Client; SELECT * FROM AD_Org"), 
+				"Multiple statements should not be valid");
+	}
+	
+	/**
+	 * Test DB.isSelectStatement with complex queries
+	 */
+	@Test
+	public void testIsSelectStatementComplex() {
+		// Subquery
+		assertTrue(DB.isSelectStatement("SELECT * FROM AD_Client WHERE AD_Client_ID IN (SELECT AD_Client_ID FROM AD_Org WHERE IsActive='Y')"), 
+				"SELECT with subquery should be valid");
+		
+		// UNION (single SELECT from perspective of the method)
+		assertTrue(DB.isSelectStatement("SELECT Name FROM AD_Client UNION SELECT Name FROM AD_Org"), 
+				"SELECT with UNION should be valid");
+		
+		// Complex joins with multiple conditions
+		assertTrue(DB.isSelectStatement("SELECT c.Name, o.Name FROM AD_Client c LEFT JOIN AD_Org o ON c.AD_Client_ID=o.AD_Client_ID AND o.IsActive='Y' WHERE c.AD_Client_ID > 0"), 
+				"SELECT with complex joins should be valid");
+	}
+	
+	/**
+	 * Test DB.isSelectStatement edge cases
+	 */
+	@Test
+	public void testIsSelectStatementEdgeCases() {
+		// SELECT as part of word should fail
+		assertFalse(DB.isSelectStatement("SELECTFROM AD_Client"), 
+				"SELECT without space after should not be valid");
+		
+		// Comment containing non-SELECT keyword
+		assertTrue(DB.isSelectStatement("/* UPDATE */ SELECT * FROM AD_Client"), 
+				"Comment with non-SELECT keyword should still be valid if SELECT follows");
+		
+		// Quoted string at start (not SELECT)
+		assertFalse(DB.isSelectStatement("'SELECT' is a keyword"), 
+				"Quoted SELECT at start should not be valid");
+		
+		// SELECT in quoted string but UPDATE as actual statement
+		assertFalse(DB.isSelectStatement("UPDATE AD_Client SET Description='SELECT * FROM' WHERE AD_Client_ID=1"), 
+				"UPDATE with SELECT in string should not be valid");
+		
+		// SELECT with DUAL (Oracle specific)
+		assertTrue(DB.isSelectStatement("SELECT 1 FROM DUAL"), 
+				"SELECT from DUAL should be valid");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with ID columns (numeric)
+	 */
+	@Test
+	public void testInClauseForCSV_IDColumns() {
+		// Single ID
+		String result = DB.inClauseForCSV("AD_Client_ID", "11");
+		assertEquals("AD_Client_ID IN (11)", result, 
+				"Single ID should create simple IN clause");
+		
+		// Multiple IDs
+		result = DB.inClauseForCSV("AD_Client_ID", "11,0,1000");
+		assertEquals("AD_Client_ID IN (11,0,1000)", result, 
+				"Multiple IDs should be comma-separated without quotes");
+		
+		// ID with spaces after commas (spaces are preserved in split)
+		result = DB.inClauseForCSV("AD_Client_ID", "11, 0, 1000");
+		assertEquals("AD_Client_ID IN (11, 0, 1000)", result, 
+				"Spaces after commas in CSV should be preserved for IDs");
+		
+		// Large list of IDs
+		result = DB.inClauseForCSV("M_Product_ID", "100,101,102,103,104,105");
+		assertEquals("M_Product_ID IN (100,101,102,103,104,105)", result, 
+				"Large list of IDs should work correctly");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with string columns
+	 */
+	@Test
+	public void testInClauseForCSV_StringColumns() {
+		// Single string value
+		String result = DB.inClauseForCSV("Name", "Test");
+		assertEquals("Name IN ('Test')", result, 
+				"Single string should be quoted");
+		
+		// Multiple string values
+		result = DB.inClauseForCSV("Name", "Test1,Test2,Test3");
+		assertEquals("Name IN ('Test1','Test2','Test3')", result, 
+				"Multiple strings should be quoted and comma-separated");
+		
+		// String values containing spaces
+		result = DB.inClauseForCSV("Value", "Garden World,Joe Block,Standard");
+		assertEquals("Value IN ('Garden World','Joe Block','Standard')", result, 
+				"String values containing spaces should be properly quoted");
+		
+		// Empty string in CSV - TO_STRING converts empty strings to NULL
+		result = DB.inClauseForCSV("Status", "Active,,Inactive");
+		assertEquals("Status IN ('Active',NULL,'Inactive')", result, 
+				"Empty values should be converted to NULL by TO_STRING");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with quoted strings in CSV
+	 */
+	@Test
+	public void testInClauseForCSV_QuotedStrings() {
+		// Double-quoted strings should have quotes removed
+		String result = DB.inClauseForCSV("Name", "\"Test1\",\"Test2\"");
+		assertEquals("Name IN ('Test1','Test2')", result, 
+				"Double quotes in CSV should be removed before adding SQL quotes");
+		
+		// Mix of quoted and unquoted
+		result = DB.inClauseForCSV("Value", "\"Garden World\",Standard,\"Joe Block\"");
+		assertEquals("Value IN ('Garden World','Standard','Joe Block')", result, 
+				"Mix of quoted and unquoted should work correctly");
+		
+		// String with comma inside quotes - NOTE: quotes don't protect from split
+		// The method splits by comma first, so "Test, with comma" becomes two values
+		result = DB.inClauseForCSV("Description", "\"Test\",\"with comma\"");
+		assertEquals("Description IN ('Test','with comma')", result, 
+				"Double-quoted strings should have quotes removed");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with NOT IN clause
+	 */
+	@Test
+	public void testInClauseForCSV_NotInClause() {
+		// NOT IN with IDs
+		String result = DB.inClauseForCSV("AD_Client_ID", "11,0", true);
+		assertEquals("AD_Client_ID NOT  IN (11,0)", result, 
+				"NOT IN clause should include NOT keyword for IDs");
+		
+		// NOT IN with strings
+		result = DB.inClauseForCSV("Status", "Draft,Invalid", true);
+		assertEquals("Status NOT  IN ('Draft','Invalid')", result, 
+				"NOT IN clause should include NOT keyword for strings");
+		
+		// NOT IN with single value
+		result = DB.inClauseForCSV("DocStatus", "VO", true);
+		assertEquals("DocStatus NOT  IN ('VO')", result, 
+				"NOT IN with single value should work");
+		
+		// Regular IN (false parameter)
+		result = DB.inClauseForCSV("AD_Org_ID", "100,200", false);
+		assertEquals("AD_Org_ID IN (100,200)", result, 
+				"false parameter should create regular IN clause");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with convenience method (no isNotClause parameter)
+	 */
+	@Test
+	public void testInClauseForCSV_ConvenienceMethod() {
+		// Should default to regular IN clause (not NOT IN)
+		String result = DB.inClauseForCSV("AD_Table_ID", "100,200,300");
+		assertEquals("AD_Table_ID IN (100,200,300)", result, 
+				"Convenience method should create regular IN clause");
+		
+		result = DB.inClauseForCSV("EntityType", "D,U");
+		assertEquals("EntityType IN ('D','U')", result, 
+				"Convenience method with strings should work");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with edge cases
+	 */
+	@Test
+	public void testInClauseForCSV_EdgeCases() {
+		// Single value
+		String result = DB.inClauseForCSV("AD_Client_ID", "11");
+		assertEquals("AD_Client_ID IN (11)", result, 
+				"Single value should work");
+		
+		// Value with leading/trailing spaces in column name
+		result = DB.inClauseForCSV("AD_User_ID", "100");
+		assertEquals("AD_User_ID IN (100)", result, 
+				"Column name should be used as-is");
+		
+		// Numeric strings for non-ID column
+		result = DB.inClauseForCSV("Code", "123,456");
+		assertEquals("Code IN ('123','456')", result, 
+				"Numeric values for non-ID columns should be quoted");
+		
+		// Special characters in string values - single quotes are escaped by doubling
+		result = DB.inClauseForCSV("Value", "Test's,Another");
+		assertEquals("Value IN ('Test''s','Another')", result, 
+				"Single quotes should be escaped by doubling them");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with different column name patterns
+	 */
+	@Test
+	public void testInClauseForCSV_ColumnNamePatterns() {
+		// Columns ending with _ID
+		String result = DB.inClauseForCSV("C_BPartner_ID", "100,200");
+		assertEquals("C_BPartner_ID IN (100,200)", result, 
+				"Column ending with _ID should not quote values");
+		
+		result = DB.inClauseForCSV("Record_ID", "1,2,3");
+		assertEquals("Record_ID IN (1,2,3)", result, 
+				"Any column ending with _ID should treat values as numeric");
+		
+		// Columns NOT ending with _ID
+		result = DB.inClauseForCSV("Name", "100,200");
+		assertEquals("Name IN ('100','200')", result, 
+				"Column not ending with _ID should quote values");
+		
+		result = DB.inClauseForCSV("Value", "Test");
+		assertEquals("Value IN ('Test')", result, 
+				"String column should quote values");
+		
+		// Column with ID in the middle (not at end)
+		result = DB.inClauseForCSV("ID_Column", "100");
+		assertEquals("ID_Column IN ('100')", result, 
+				"Column with _ID not at end should quote values");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV with real-world scenarios
+	 */
+	@Test
+	public void testInClauseForCSV_RealWorldScenarios() {
+		// Client IDs
+		String result = DB.inClauseForCSV("AD_Client_ID", "0,11");
+		assertEquals("AD_Client_ID IN (0,11)", result, 
+				"System and GardenWorld client IDs");
+		
+		// Document statuses
+		result = DB.inClauseForCSV("DocStatus", "CO,CL");
+		assertEquals("DocStatus IN ('CO','CL')", result, 
+				"Completed and Closed document statuses");
+		
+		// Entity types
+		result = DB.inClauseForCSV("EntityType", "D,U");
+		assertEquals("EntityType IN ('D','U')", result, 
+				"Dictionary and User entity types");
+		
+		// Product IDs
+		result = DB.inClauseForCSV("M_Product_ID", "123,124,125,126,127");
+		assertEquals("M_Product_ID IN (123,124,125,126,127)", result, 
+				"Multiple product IDs");
+		
+		// NOT IN for excluding certain values
+		result = DB.inClauseForCSV("DocStatus", "VO,RE,IN", true);
+		assertEquals("DocStatus NOT  IN ('VO','RE','IN')", result, 
+				"Exclude voided, reversed, and invalid statuses");
+		
+		// Table names with mixed case
+		result = DB.inClauseForCSV("TableName", "AD_Client,AD_Org,C_BPartner");
+		assertEquals("TableName IN ('AD_Client','AD_Org','C_BPartner')", result, 
+				"Table names should be quoted");
+	}
+	
+	/**
+	 * Test DB.inClauseForCSV verifying actual SQL usage
+	 */
+	@Test
+	public void testInClauseForCSV_ActualSQLUsage() {
+		// Build a WHERE clause using inClauseForCSV and execute it
+		String inClause = DB.inClauseForCSV("AD_Client_ID", "0,11");
+		String sql = "SELECT COUNT(*) FROM AD_Client WHERE " + inClause;
+		
+		int count = DB.getSQLValue(null, sql);
+		assertTrue(count >= 2, "Should find at least System and GardenWorld clients");
+		
+		// Test with string column
+		inClause = DB.inClauseForCSV("EntityType", "D");
+		sql = "SELECT COUNT(*) FROM AD_Table WHERE " + inClause;
+		
+		count = DB.getSQLValue(null, sql);
+		assertTrue(count > 0, "Should find Dictionary tables");
+		
+		// Test NOT IN clause
+		inClause = DB.inClauseForCSV("AD_Client_ID", "999999", true);
+		sql = "SELECT COUNT(*) FROM AD_Client WHERE " + inClause;
+		
+		count = DB.getSQLValue(null, sql);
+		assertTrue(count >= 2, "NOT IN with non-existent ID should return all clients");
 	}
 	
 }
