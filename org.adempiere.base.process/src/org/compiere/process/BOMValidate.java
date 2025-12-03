@@ -38,7 +38,7 @@ import org.compiere.util.Env;
  *  @version $Id: BOMValidate.java,v 1.3 2006/07/30 00:51:01 jjanke Exp $
  */
 @org.adempiere.base.annotation.Process
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class BOMValidate extends SvrProcess
 {
 	/**	The Product			*/

@@ -139,7 +139,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 * @param wh warehouse
 	 * @deprecated since 3.5.3a . Please use {@link #MInventory(MWarehouse, String)}.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MInventory (MWarehouse wh)
 	{
 		this(wh, wh.get_TrxName());

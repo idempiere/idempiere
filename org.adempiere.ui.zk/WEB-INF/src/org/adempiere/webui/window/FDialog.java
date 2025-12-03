@@ -114,7 +114,7 @@ public class FDialog
 	 * @see #warn(int, String, String)
 	 * @see #warn(int, Component, String, String, String)
 	 */
-    @Deprecated
+    @Deprecated(forRemoval = true, since = "13")
     public static void warn(int windowNo, Component comp, String adMessage, String message)
     {
     	warn(windowNo, comp, adMessage, message, null);

@@ -99,7 +99,7 @@ public class MIssue extends X_AD_Issue
 	 *  @deprecated
 	 */
 	@SuppressWarnings("unchecked")
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MIssue create (Properties ctx, String hexInput)
 	{
 		HashMap<String,String> hmIn = null;
@@ -239,7 +239,7 @@ public class MIssue extends X_AD_Issue
 	 *	@param hmIn hash map
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MIssue (Properties ctx, HashMap<String,String> hmIn)
 	{
 		super (ctx, 0, null);
@@ -375,7 +375,7 @@ public class MIssue extends X_AD_Issue
 	 * 	@return answer
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String process()
 	{
 		MIssueProject.get(this);	//	sets also Asset
@@ -389,7 +389,7 @@ public class MIssue extends X_AD_Issue
 	 *	@return answer
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String createAnswer()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -448,7 +448,7 @@ public class MIssue extends X_AD_Issue
 	 *	@return error message
 	 *  @deprecated not implemented
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String report()
 	{
 		return null;

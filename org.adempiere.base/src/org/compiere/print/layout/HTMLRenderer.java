@@ -88,7 +88,7 @@ public class HTMLRenderer extends View implements Externalizable
 	/**
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public HTMLRenderer() {
 		super(null);
 	}

@@ -616,7 +616,7 @@ public final class AEnv
      * @return true if client browser is firefox 2+
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isFirefox2() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -635,7 +635,7 @@ public final class AEnv
      * @return boolean
      * @deprecated See IDEMPIERE-1022
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isBrowserSupported() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -669,7 +669,7 @@ public final class AEnv
      * @return true if user agent is internet explorer
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isInternetExplorer()
     {
     	Execution execution = Executions.getCurrent();

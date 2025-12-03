@@ -119,7 +119,7 @@ public interface SecureInterface
 	 *  @param value message
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String getDigest (String value);
 
 	/**
@@ -127,7 +127,7 @@ public interface SecureInterface
 	 *  @param value digest string
 	 *  @return true if valid digest
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isDigest (String value);
 	
 	/**

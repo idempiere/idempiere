@@ -92,7 +92,7 @@ public class Login
 	 *	@param isClient client session
 	 *	@return Context
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static Properties initTest (boolean isClient)
 	{
 	//	logger.entering("Env", "initTest");
@@ -1246,7 +1246,7 @@ public class Login
 	 * 	Get SSO Principal
 	 *	@return principal
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public Principal getPrincipal()
 	{
 		return null;

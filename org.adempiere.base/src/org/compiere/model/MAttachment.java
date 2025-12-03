@@ -153,7 +153,7 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	 *	@param trxName transaction
 	 *  @deprecated Use {@link MAttachment#MAttachment(Properties, int, int, String, String)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
 		this(ctx, AD_Table_ID, Record_ID, null, trxName);
@@ -731,7 +731,7 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	 * @return AD_Attachment_ID
  	 * @deprecated Use {@link MAttachment#getID(int, int, String)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_ID=?";
 		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_ID);

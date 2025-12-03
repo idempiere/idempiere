@@ -297,7 +297,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 *	@param trx transaction
 	 *	@return Process Instance
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MPInstance processIt (int Record_ID, Trx trx)
 	{
 		return processIt(Record_ID, trx, true);
@@ -309,7 +309,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 *	@param trx transaction
 	 *	@return Process Instance
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MPInstance processIt (int Record_ID, Trx trx, boolean managedTrx)
 	{
 		MPInstance pInstance = new MPInstance (getCtx(), this.getAD_Process_ID(), Record_ID);
@@ -497,7 +497,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 *	@param seconds sec
 	 *  @deprecated - use UPDATE instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void addStatistics (int seconds)
 	{
 		setStatistic_Count(getStatistic_Count() + 1);

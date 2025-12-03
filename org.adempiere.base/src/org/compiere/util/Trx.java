@@ -88,7 +88,7 @@ public class Trx
 	 *	@return Transaction or null
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static Trx get (String trxName, boolean createNew, Connection con)
 	{
 		if (trxName == null || trxName.length() == 0)
@@ -182,7 +182,7 @@ public class Trx
 	 * 	@param trxName unique name
 	 *  @param con optional connection ( ignore for remote transaction )
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	private Trx (String trxName, Connection con)
 	{
 		this(trxName);
@@ -656,7 +656,7 @@ public class Trx
 	 * @return Trx[]
 	 * @deprecated - wrong method name fixed with IDEMPIERE-5355 - please use getOpenTransactions
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static Trx[] getActiveTransactions()
 	{
 		return getOpenTransactions();

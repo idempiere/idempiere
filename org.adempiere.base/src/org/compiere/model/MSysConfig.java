@@ -59,7 +59,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
     public static final String ALLOW_REVERSAL_OF_RECONCILED_PAYMENT = "ALLOW_REVERSAL_OF_RECONCILED_PAYMENT";
     public static final String ALogin_ShowDate = "ALogin_ShowDate";
-    @Deprecated(forRemoval = true, since = "11")
+    @Deprecated (forRemoval = true, since = "11")
     public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
     public static final String APPLICATION_DATABASE_VERSION = "APPLICATION_DATABASE_VERSION";
     public static final String APPLICATION_DATABASE_VERSION_SHOWN = "APPLICATION_DATABASE_VERSION_SHOWN";
@@ -135,9 +135,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
     public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
-    @Deprecated(forRemoval = true, since = "11")
+    @Deprecated (forRemoval = true, since = "11")
     public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
-    @Deprecated(forRemoval = true, since = "11")
+    @Deprecated (forRemoval = true, since = "11")
     public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
@@ -235,7 +235,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE = "ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE";
     public static final String ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL = "ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL";
     /** @deprecated not use for the new billboard implementation */
-    @Deprecated(forRemoval = true, since = "11")
+    @Deprecated (forRemoval = true, since = "11")
     public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
     public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
@@ -384,7 +384,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @return double
 	 * @deprecated replace by getBigDecimalValue
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static double getDoubleValue(String Name, double defaultValue)
 	{
 		String s = getValue(Name);
@@ -503,7 +503,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @return double
 	 * @deprecated replace by getBigDecimalValue
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID)
 	{
 		String s = getValue(Name, AD_Client_ID);
@@ -674,7 +674,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @return double
 	 * @deprecated replace by getBigDecimalValue
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
 		String s = getValue(Name, AD_Client_ID, AD_Org_ID);

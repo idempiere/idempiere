@@ -44,7 +44,7 @@ import org.zkoss.zul.Vbox;
  * Contributors: 
  * Deepak Pansheriya - showing only notes message
  */
-@Deprecated // replaced with DPDocumentStatus
+@Deprecated (since="13", forRemoval=true) // replaced with DPDocumentStatus
 public class DPActivities extends DashboardPanel implements EventListener<Event> {
 	/**
 	 * 

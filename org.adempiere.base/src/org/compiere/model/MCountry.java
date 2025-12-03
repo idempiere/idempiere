@@ -93,7 +93,7 @@ public class MCountry extends X_C_Country
 	 *	@return Country
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MCountry getDefault (Properties ctx)
 	{
 		return getDefault();
@@ -121,7 +121,7 @@ public class MCountry extends X_C_Country
 	 *  @return MCountry Array
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MCountry[] getCountries(Properties ctx)
 	{
 		return getCountries();

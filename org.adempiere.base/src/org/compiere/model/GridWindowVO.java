@@ -431,7 +431,7 @@ public class GridWindowVO implements Serializable
 		}
 	}   //  setCtx
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public GridWindowVO clone (int windowNo)
 	{
 		return clone (ctx, windowNo);
@@ -447,7 +447,7 @@ public class GridWindowVO implements Serializable
 		return clone(ctx, windowNo, true);
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public GridWindowVO clone (int windowNo, boolean cloneTabs)
 	{
 		return clone (ctx, windowNo, cloneTabs);

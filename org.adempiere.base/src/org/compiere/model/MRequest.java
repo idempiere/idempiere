@@ -959,7 +959,7 @@ public class MRequest extends X_R_Request
 	 * @return int[], [0] = inactive request count and [1] = active request count
 	 * @deprecated - use {@link #getRequestCount(int, int, String, StringBuilder, String)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int[] getRequestCount(int AD_Table_ID, int Record_ID, StringBuilder whereClause, String trxName) {
 		return getRequestCount(AD_Table_ID, Record_ID, null, whereClause, trxName);
 	}
@@ -1042,7 +1042,7 @@ public class MRequest extends X_R_Request
 	 * @param C_BPartner_ID
 	 * @deprecated - use {@link #newRequest(GridTab, int, int, String, int)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void newRequest(GridTab tab, int AD_Table_ID, int Record_ID, int C_BPartner_ID) {
 		newRequest(tab, AD_Table_ID, Record_ID, null, C_BPartner_ID);
 	}
