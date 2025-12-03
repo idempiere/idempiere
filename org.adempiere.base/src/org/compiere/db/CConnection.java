@@ -22,7 +22,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.swing.JOptionPane;
 
@@ -1203,18 +1202,6 @@ public class CConnection implements Serializable, Cloneable
 	{
 		return m_dbException;
 	}
-
-	/**
-	 *  Get Application Server Initial Context
-	 *  @param useCache if true, use existing cache
-	 *  @return Initial Context or null
-	 *  @deprecated
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public InitialContext getInitialContext (boolean useCache)
-	{
-		return null;
-	}	//	getInitialContext
 
 	/**
 	 *  Convert Statement
