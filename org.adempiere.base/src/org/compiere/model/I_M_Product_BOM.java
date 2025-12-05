@@ -24,6 +24,7 @@ import org.compiere.util.KeyNamePair;
  *  @author iDempiere (generated) 
  *  @version Development 9.0
  */
+@Deprecated (since="13", forRemoval=true)
 public interface I_M_Product_BOM 
 {
 
