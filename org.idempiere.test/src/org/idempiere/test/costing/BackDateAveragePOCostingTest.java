@@ -4949,34 +4949,12 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for shipment line");
 			validateCostDetail(cd, shipmentLine1.getParent().getDateAcct(), false, new BigDecimal("6.00"));
 			
-			// Physical Inventory (Back-Date)			
-			MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
-			inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
-			inventory.setMovementDate(backDate2);
-			inventory.saveEx();
-			
-			MInventoryLine inventoryLine = new MInventoryLine(Env.getCtx(), 0, getTrxName());
-			inventoryLine.setM_Inventory_ID(inventory.get_ID());
-			inventoryLine.setM_Product_ID(product.getM_Product_ID());
-			inventoryLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			// Physical Inventory (Back-Date)
 			BigDecimal QtyOnHand = MStorageOnHand.getQtyOnHandForLocatorWithASIMovementDate(
-					inventoryLine.getM_Product_ID(), inventoryLine.getM_Locator_ID(), 
-					inventoryLine.getM_AttributeSetInstance_ID(), inventory.getMovementDate(), getTrxName());
-			inventoryLine.setQtyBook(QtyOnHand);
+					product.getM_Product_ID(), DictionaryIDs.M_Locator.HQ.id, 
+					0, backDate2, getTrxName());
+			MInventoryLine inventoryLine = createPhysicalInventory(backDate2, product.getM_Product_ID(), QtyOnHand, new BigDecimal("6.00"));
 			assertEquals(new BigDecimal("10.00").setScale(2), inventoryLine.getQtyBook().setScale(2), "Unexpected Quantity Book");
-			inventoryLine.setQtyCount(new BigDecimal("6.00"));
-			inventoryLine.saveEx();
-			
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
-			inventory.load(getTrxName());
-			assertFalse(info.isError(), info.getSummary());
-			assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus(), "Unexpected Document Status");
-			if (!inventory.isPosted()) {
-				String error = DocumentEngine.postImmediate(Env.getCtx(), inventory.getAD_Client_ID(), inventory.get_Table_ID(), inventory.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
-			}
-			inventory.load(getTrxName());
-			assertTrue(inventory.isPosted());
 			
 			cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", inventoryLine.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for inventory line");
@@ -8115,6 +8093,73 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		}
 	}
 	
+	/**
+	 * IDEMPIERE-6751
+	 * MR Qty=1, Date1
+	 * Physical Inventory 1 Qty=0, Date2
+	 * Physical Inventory 1 Reverse-Correct
+	 * Physical Inventory 2, Date1
+	 */
+	@Test
+	public void testReverseCorrectInventory() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			backDateDays = configureAcctSchema(ass);
+			MProduct product = createProduct("testReverseCorrectInventory", new BigDecimal(5));
+			mockProductGet(productMock, product);
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate  = new Timestamp(cal.getTimeInMillis());
+			
+			// MR
+			MInOutLine receiptLine = createPOAndMRForProduct(backDate, product.getM_Product_ID(), new BigDecimal(1), new BigDecimal(5));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetail(cd, receiptLine.getParent().getDateAcct(), true, new BigDecimal("5.00"));
+			
+			// Physical Inventory 1
+			MInventoryLine inventoryLine = createPhysicalInventory(today, product.getM_Product_ID(), new BigDecimal(1), BigDecimal.ZERO);
+			
+			// Physical Inventory 1 Reversal
+			MInventoryLine reversalInventoryLine = reverseInventory(inventoryLine, false);
+					
+			// Physical Inventory 2
+			createPhysicalInventory(backDate, product.getM_Product_ID(), new BigDecimal(1), BigDecimal.ZERO);
+			
+			// Physical Inventory 1
+			MInventory inventory = inventoryLine.getParent();
+			inventory.load(getTrxName());
+			if (!inventory.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), inventory.getAD_Client_ID(), inventory.get_Table_ID(), inventory.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			inventory.load(getTrxName());
+			assertTrue(inventory.isPosted());
+			
+			// Physical Inventory 1 Reversal
+			MInventory reversalInventory = reversalInventoryLine.getParent();
+			reversalInventory.load(getTrxName());
+			if (!reversalInventory.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), reversalInventory.getAD_Client_ID(), reversalInventory.get_Table_ID(), reversalInventory.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			reversalInventory.load(getTrxName());
+			assertTrue(reversalInventory.isPosted());
+			
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
 	private MProduct createProduct(String name, BigDecimal price) {
 		return createProduct(name, price, DictionaryIDs.M_Product_Category.STANDARD.id);
 	}
@@ -8314,6 +8359,34 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		inventoryLine.setQtyInternalUse(qty);
 		inventoryLine.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
 		inventoryLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+		inventoryLine.saveEx();		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+		inventory.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus(), "Unexpected Document Status");
+		if (!inventory.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), inventory.getAD_Client_ID(), inventory.get_Table_ID(), inventory.get_ID(), false, getTrxName());
+			assertTrue(error == null, error);
+		}
+		inventory.load(getTrxName());
+		assertTrue(inventory.isPosted());
+		
+		return inventoryLine;
+	}
+	
+	private MInventoryLine createPhysicalInventory(Timestamp acctDate, int productId, BigDecimal qtyBook, BigDecimal qtyCount) {
+		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+		inventory.setMovementDate(acctDate);
+		inventory.saveEx();
+		
+		MInventoryLine inventoryLine = new MInventoryLine(Env.getCtx(), 0, getTrxName());
+		inventoryLine.setM_Inventory_ID(inventory.get_ID());
+		inventoryLine.setM_Product_ID(productId);
+		inventoryLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+		inventoryLine.setQtyBook(qtyBook);
+		inventoryLine.setQtyCount(qtyCount);
 		inventoryLine.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
