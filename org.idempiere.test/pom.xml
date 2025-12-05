@@ -97,7 +97,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<argLine>
-						-DIDEMPIERE_HOME=${idempiere.home} ${p1} ${p2} ${p3} ${p4} ${p5}
+						-DIDEMPIERE_HOME=${idempiere.home} ${p1} ${p2} ${p3} ${p4} ${p5} ${tycho.testArgLine}
 					</argLine>
 					<testRuntime>default</testRuntime>
 					<skipTests>${skipTests}</skipTests>
@@ -105,13 +105,13 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>default-test</id>
+						<id>default-plugin-test</id>
 						<goals>
-							<goal>test</goal>
+							<goal>plugin-test</goal>
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>      
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
