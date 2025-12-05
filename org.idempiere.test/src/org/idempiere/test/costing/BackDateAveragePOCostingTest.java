@@ -8038,7 +8038,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			purchaseOrder.setClientOrg(salesOrder.getAD_Client_ID(), salesOrder.getAD_Org_ID());
 			purchaseOrder.setLink_Order_ID(salesOrder.getC_Order_ID());
 			purchaseOrder.setIsSOTrx(false);
-			purchaseOrder.setC_DocTypeTarget_ID();
+			purchaseOrder.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
 			purchaseOrder.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
 			purchaseOrder.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 			purchaseOrder.setDocStatus(DocAction.STATUS_Drafted);
@@ -8051,8 +8051,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			purchaseOrder.setDropShip_Location_ID(salesOrder.getC_BPartner_Location_ID());
 			purchaseOrder.setDropShip_User_ID(salesOrder.getAD_User_ID());
 			MOrgInfo orginfo = MOrgInfo.get(Env.getCtx(), purchaseOrder.getAD_Org_ID(), getTrxName());
-			if (orginfo.getDropShip_Warehouse_ID() != 0 )
+			if (orginfo != null && orginfo.getDropShip_Warehouse_ID() > 0) {
 				purchaseOrder.setM_Warehouse_ID(orginfo.getDropShip_Warehouse_ID());
+			}
 			purchaseOrder.saveEx();
 			
 			salesOrder.setLink_Order_ID(purchaseOrder.getC_Order_ID());
