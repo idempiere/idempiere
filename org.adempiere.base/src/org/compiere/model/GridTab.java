@@ -1090,24 +1090,28 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	}
 	
 	/**
-	 *  Do we need to Save?
-	 *  @param rowChange row change
-	 *  @param  onlyRealChange if true the value of a field was actually changed
-	 *  (e.g. for new records, which have not been changed) - default false
-	 *	@return true it needs to be saved
+	 *  Return true for one of the following conditions:
+	 *  <li>rowChange is true and current row has changes</li>
+	 *  <li>rowChange is false and onlyRealChange is false and current row is new and has no changes and setChanged(true) was called</li>
+	 *  <br/>
+	 *  Return false for one of the following conditions:
+	 *  <li>current row has no changes and setChanged(true) was not called</li>
+	 *  <li>rowChange is false and onlyRealChange is true and current row is new and has no changes and setChanged(true) was called</li>
+	 *  <li>rowChange is false and onlyRealChange is false and current row has changes</li>
+	 *  <li>rowChange is true and current row has no changes</li>
+	 *  @param rowChange if true, return true if current row has changes
+	 *  @param  onlyRealChange if rowChange is false and onlyRealChange is false, return true if setChanged(true) was called and no real changes were made
+	 *	@return true if conditions met the parameters passed
 	 */
 	public boolean needSave (boolean rowChange, boolean onlyRealChange)
 	{
 		if (rowChange)
 		{
-			return m_mTable.needSave(-2, onlyRealChange);
+			return m_mTable.needSave(-2, true);
 		}
 		else
 		{
-			if (onlyRealChange)
-				return m_mTable.needSave();
-			else
-				return m_mTable.needSave(onlyRealChange);
+			return m_mTable.needSave(m_mTable.getRowChanged()==-1 ? -2 : m_mTable.getRowChanged(), onlyRealChange);
 		}
 	}   //  isDataChanged
 

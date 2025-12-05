@@ -176,7 +176,7 @@ public class GridTable extends AbstractTableModel
 	private int				    m_rowCount = 0;
 	private boolean				m_rowCountTimeout = false;
 	private boolean				m_rowLoadTimeout = false;
-	/**	Has Data changed?           */
+	/**	Boolean flag set via the {@link #setChanged(boolean)} method  */
 	private boolean			    m_changed = false;
 	/** Index of changed row via SetValueAt */
 	private int				    m_rowChanged = -1;
@@ -1460,57 +1460,72 @@ public class GridTable extends AbstractTableModel
 	}   // getOldValue
 
 	/**
-	 *	Check if {@link #m_rowChanged} needs to be saved.
-	 *  @param  onlyRealChange if true the value of a field was actually changed
-	 *  (e.g. for new records, which have not been changed) - default false
-	 *	@return true if needs to be saved
+	 *	Return true for one of the following conditions:
+	 *  <li>Current row has changes (i.e {@link #m_rowChanged} > -1</li>
+	 *  <li>onlyRealChange is false and {@link #setChanged(true)} was called and current row has no changes ({@link #m_rowChanged} = -1)</li>
+	 *  @param  onlyRealChange if false, return true if {@link #setChanged(true)} was called and current row has no changes ({@link #m_rowChanged} = -1)
+	 *	@return true if conditions met the parameters passed
 	 */
 	public boolean needSave(boolean onlyRealChange)
 	{
-		return needSave(m_rowChanged, onlyRealChange);
+		return needSave(-2, onlyRealChange);
 	}   //  needSave
 
 	/**
-	 *	Check if {@link #m_rowChanged} needs to be saved.
-	 *	@return true if needs to be saved
+	 *	Return true for one of the conditions met:
+	 *  <li>Current row has changes (i.e {@link #m_rowChanged} > -1</li>
+	 *  <li>{@link #setChanged(true)} was called and current row has no changes ({@link #m_rowChanged} = -1)</li>
+	 *	@return true if current row has changes or {@link #setChanged(true)} was called for a not modified row
 	 */
 	public boolean needSave()
 	{
-		return needSave(m_rowChanged, false);
+		return needSave(-2, false);
 	}   //  needSave
 
 	/**
-	 *	Check if newRow needs to be saved.
-	 *	@param	newRow to check
-	 *	@return true if needs to be saved
+	 *  Return true for one of the following conditions:
+	 *  <li>rowFlag not equal to current changed row value (e.g rowFlag=-2, m_rowChanged=0) and current row has changes (i.e {@link #m_rowChanged} > -1)</li>
+	 *  <li>rowFlag not equal to current changed row value (e.g rowFlag-2, m_rowChanged=-1) and {@link #setChanged(true)} was called and current row 
+	 *  has no changes ({@link #m_rowChanged} = -1)</li>
+	 *  <br/>
+	 *	Return false for one of the following conditions:
+	 *  <li>current row has no changes and setChanged(true) was not called</li>
+	 *  <li>rowFlag is the value of current changed row</li>
+	 *	@param	rowFlag row value to determine the 'need save' condition
+	 *	@return true if conditions met the parameters passed
 	 */
-	public boolean needSave(int newRow)
+	public boolean needSave(int rowFlag)
 	{
-		return needSave(newRow, false);
+		return needSave(rowFlag, false);
 	}   //  needSave
 
 	/**
-	 *	Check if the row needs to be saved.
-	 *  - only when row changed
-	 *  - only if nothing was changed
-	 *	@param	newRow to check
-	 *  @param  onlyRealChange if true, only if the value of a field was actually changed
-	 *  (e.g. for new record with default value, which have not been changed) - default false
-	 *	@return true it needs to be saved
+	 *	Return true for one of the following conditions:
+	 *  <li>rowFlag not equal to current changed row value (e.g rowFlag=-2, m_rowChanged=0) and current row has changes (i.e {@link #m_rowChanged} > -1)</li>
+	 *  <li>rowFlag not equal to current changed row value (e.g rowFlag=-2, m_rowChanged=-1) and {@link #setChanged(true)} was called 
+	 *  and current row has no changes ({@link #m_rowChanged} = -1) and onlyRealChange is false</li>
+	 *  <br/>
+	 *  Return false for one of the following conditions:
+	 *  <li>current row has no changes and setChanged(true) was not called</li>
+	 *  <li>rowFlag is the value of current changed row</li>
+	 *	@param	rowFlag row value to determine the 'need save' condition
+	 *  @param  onlyRealChange if false, return true if {@link #setChanged(true)} was called and current row has no changes ({@link #m_rowChanged} = -1)
+	 *  and rowFlag not equal to {@link #m_rowChanged}
+	 *	@return true if conditions met the parameters passed
 	 */
-	public boolean needSave(int newRow, boolean onlyRealChange)
+	public boolean needSave(int rowFlag, boolean onlyRealChange)
 	{
 		if (log.isLoggable(Level.FINE))
-			log.fine("Row=" + newRow +
+			log.fine("Row=" + rowFlag +
 					", Changed=" + m_rowChanged + "/" + m_changed);  //  m_rowChanged set in setValueAt
 		//  nothing done
 		if (!m_changed && m_rowChanged == -1)
 			return false;
-		//  E.g. New unchanged records
+		//  setChange(true) but no setValueAt called
 		if (m_changed && m_rowChanged == -1 && onlyRealChange)
 			return false;
-		//  same row
-		if (newRow == m_rowChanged)
+		//  flag to always return false
+		if (rowFlag == m_rowChanged)
 			return false;
 
 		return true;

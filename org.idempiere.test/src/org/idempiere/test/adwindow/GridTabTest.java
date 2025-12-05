@@ -44,6 +44,8 @@ import static org.mockito.Mockito.spy;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -65,6 +67,7 @@ import org.compiere.model.MChat;
 import org.compiere.model.MColumn;
 import org.compiere.model.MDocType;
 import org.compiere.model.MField;
+import org.compiere.model.MImportTemplate;
 import org.compiere.model.MLabel;
 import org.compiere.model.MLabelAssignment;
 import org.compiere.model.MLookup;
@@ -72,6 +75,7 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.MPostIt;
+import org.compiere.model.MPrivateAccess;
 import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -184,6 +188,10 @@ public class GridTabTest extends AbstractTestCase {
 		gTab.query(false, 0, 0);
 		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
 		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(), "GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID="+gTab.getRecord_ID());
+		
+		// test with set negative current row
+		assertEquals(0, gTab.setCurrentRow(-1, true), "Setting current row to -1 did not result in 0. GridTab="+gTab.getName());
+		assertEquals(0, gTab.getCurrentRow(), "Current row is not 0 after setting to -1. GridTab="+gTab.getName());
 	}
 	
 	@Test
@@ -710,6 +718,19 @@ public class GridTabTest extends AbstractTestCase {
 		// Unlock the record
 		gTab.lock(Env.getCtx(), recordID, false);
 		assertEquals(false, gTab.isLocked(), "Record should not be locked");
+		
+		//repeat lock/unlock to ensure no side effect
+		gTab.lock(Env.getCtx(), recordID, true);
+		gTab.isLocked();
+		assertTrue(gTab.isLocked(), "Record should be locked");
+		gTab.lock(Env.getCtx(), recordID, false);
+		assertEquals(false, gTab.isLocked(), "Record should not be locked");
+		
+		//clean up
+		MPrivateAccess access = MPrivateAccess.get (Env.getCtx(), getAD_User_ID(), gTab.getAD_Table_ID(), gTab.getRecord_ID());
+		if (access != null) {
+			access.deleteEx(true);
+		}
 	}
 	
 	/**
@@ -1038,7 +1059,7 @@ public class GridTabTest extends AbstractTestCase {
 		init = gt.initTab(true);
 		assertTrue(init, "initTab(true) should return true when called second time and triggering completion");
 		assertTrue(gt.isLoadComplete(), "Tab should be marked as loaded after second initTab(true) call");
-		assertTrue(gt.getFieldCount() > 0, "Tab should have fields loaded after async loading completes");
+		assertTrue(gt.getFieldCount() > 0, "Tab should have fields loaded after async loading completes");		
 	}
 	
 	/**
@@ -1497,6 +1518,7 @@ public class GridTabTest extends AbstractTestCase {
 		GridTab gTab = gridWindow.getTab(0);
 		int maxRecords = gTab.getMaxQueryRecords();
 		assertTrue(maxRecords > 0, "getMaxQueryRecords should return a positive value, got: " + maxRecords);
+		assertTrue(gTab.isQueryMax(maxRecords + 1), "isQueryMax should return true for rowCount > maxRecords");
 	}
 	
 	@Test
@@ -1659,4 +1681,136 @@ public class GridTabTest extends AbstractTestCase {
 		assertTrue(toString.contains(gTab.getName()), "toString should contain Name");
 		assertTrue(toString.contains(Integer.toString(gTab.getAD_Tab_ID())), "toString should contain AD_Tab_ID");
 	}
+	
+	@Test
+	void testCanHaveAttachments() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		GridTab gTab = gridWindow.getTab(0);
+		assertTrue(gTab.canHaveAttachment(), "Test tab should support attachments");
+		
+		gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		gTab = gridWindow.getTab(0);
+		assertTrue(gTab.canHaveAttachment(), "Test UU tab should support attachments");
+	}
+	
+	@Test
+    void testHasTemplate() {
+        var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+        GridTab gTab = gridWindow.getTab(0);
+        // Mock MImportTemplate.getTemplates to return non-empty list
+        try (MockedStatic<MImportTemplate> mockedTemplates = mockStatic(MImportTemplate.class, Mockito.CALLS_REAL_METHODS)) {
+            List<Object> templates = new ArrayList<>();
+            templates.add(new Object());
+            mockedTemplates.when(() -> MImportTemplate.getTemplates(Env.getAD_Role_ID(Env.getCtx()), gTab.getAD_Tab_ID())).thenReturn(templates);
+            assertTrue(gTab.hasTemplate(), "hasTemplate should return true when templates exist");
+        }
+        // Mock MImportTemplate.getTemplates to return empty list
+        try (MockedStatic<MImportTemplate> mockedTemplates = mockStatic(MImportTemplate.class, Mockito.CALLS_REAL_METHODS)) {
+            mockedTemplates.when(() -> MImportTemplate.getTemplates(Env.getAD_Role_ID(Env.getCtx()), gTab.getAD_Tab_ID())).thenReturn(Collections.emptyList());
+            assertFalse(gTab.hasTemplate(), "hasTemplate should return false when no templates exist");
+        }
+    }
+	
+	@Test
+	void testNeedSave() {
+		String prefKey = "P" + SystemIDs.WINDOW_SALES_ORDER + "|" + MOrder.COLUMNNAME_C_DocTypeTarget_ID;
+		Env.setContext(Env.getCtx(), prefKey, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+		Env.setContext(Env.getCtx(), "IsSOTrx", true);
+		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
+		var gridWindow = createGridWindow(AD_Window_ID);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
+		gTab.query(false, 0, 0);
+		
+		// New Record, no changes (setValue), no setChanged(true)
+		gTab.dataNew(false);
+		assertFalse(gTab.needSave(false, false));
+		assertFalse(gTab.needSave(false, true));
+		assertFalse(gTab.needSave(true, false));
+		assertFalse(gTab.needSave(true, true));
+		
+		// New Record, no changes (setValue), with setChanged(true)
+		gTab.getTableModel().setChanged(true);
+		assertTrue(gTab.needSave(false, false));
+		assertFalse(gTab.needSave(false, true));
+		assertFalse(gTab.needSave(true, false));
+		assertFalse(gTab.needSave(true, true));
+
+		// New Record, with changes (setValue)
+		gTab.setValue(MOrder.COLUMNNAME_C_BPartner_ID, DictionaryIDs.C_BPartner.C_AND_W.id);
+		assertFalse(gTab.needSave(false, false));
+		assertFalse(gTab.needSave(false, true));
+		assertTrue(gTab.needSave(true, false));
+		assertTrue(gTab.needSave(true, true));
+		
+		// Existing Record, no changes (setValue)
+		gTab.dataIgnore();
+		gTab.setQuery(null);
+		gTab.query(false, 0, 3);
+		assertFalse(gTab.needSave(false, false));
+		assertFalse(gTab.needSave(false, true));
+		assertFalse(gTab.needSave(true, false));
+		assertFalse(gTab.needSave(true, true));
+		
+		// Existing Record, with changes (setValue)
+		gTab.setValue(MOrder.COLUMNNAME_Description, "Test Need Save " + System.currentTimeMillis());
+		assertFalse(gTab.needSave(false, false));
+		assertFalse(gTab.needSave(false, true));
+		assertTrue(gTab.needSave(true, false));
+		assertTrue(gTab.needSave(true, true));
+	
+	}
+	
+	@Test
+	void test0IsNull() {
+		int AD_Window_ID = SystemIDs.WINDOW_TEST;
+		var gridWindow = createGridWindow(AD_Window_ID);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.setQuery(MQuery.getNoRecordQuery(MTest.Table_Name, true));
+		gTab.query(false, 0, 0);
+		gTab.dataNew(false);
+		gTab.setValue(MTest.COLUMNNAME_Name, "Test IsNull " + System.currentTimeMillis());
+		gTab.setValue(MTest.COLUMNNAME_C_UOM_ID, DictionaryIDs.C_UOM.EACH.id);
+		assertTrue(gTab.dataSave(true), "Failed to save new record for IsNull test");
+		
+		assertNotNull(gTab.getValue(MTest.COLUMNNAME_C_UOM_ID), "C_UOM_ID should not be null");
+		gTab.setValue(MTest.COLUMNNAME_C_UOM_ID, 0);
+		assertNull(gTab.getValue(MTest.COLUMNNAME_C_UOM_ID), "C_UOM_ID should be null after setting to 0");
+		assertTrue(gTab.dataSave(true), "Failed to save new record for IsNull test");
+	}
+	
+	@Test
+	void testDataStatusEventProperties() {
+		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		GridTab gTab = gridWindow.getTab(0);
+		MQuery query = new MQuery(MOrg.Table_Name);
+		query.addRestriction(MOrg.COLUMNNAME_AD_Org_ID, MQuery.EQUAL, DictionaryIDs.AD_Org.HQ.id);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Should have one record");
+		gTab = gridWindow.getTab(1); //org info
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Should have one record");
+		DataStatusEvent dse = gTab.getLastDataStatusEvent();
+		assertNotNull(dse, "DataStatusEvent should not be null");
+		assertEquals(gridWindow.getTab(0).getRecord_ID(), dse.Record_ID, "Record_ID should match");
+		assertEquals(gTab.getValue("CreatedBy"), dse.CreatedBy, "CreatedBy should match");
+	}
+	
+	@Test
+	void testStateChangeListener() {
+		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		GridTab gTab = gridWindow.getTab(0);
+		StringBuilder sb = new StringBuilder();
+		gTab.addStateChangeListener((e) -> {
+			sb.append(e.toString());
+		});
+		MQuery query = new MQuery(MOrg.Table_Name);
+		query.addRestriction(MOrg.COLUMNNAME_AD_Org_ID, MQuery.EQUAL, DictionaryIDs.AD_Org.HQ.id);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Should have one record");
+		assertTrue(sb.length() > 0, "StateChangeListener should have been triggered" );
+	}	
 }
