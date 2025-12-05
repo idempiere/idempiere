@@ -32,7 +32,6 @@ import org.zkoss.zul.East;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.West;
-import org.zkoss.zul.Window;
 
 /**
  * Manage login window for login and role selection
@@ -46,8 +45,6 @@ public class WLogin extends AbstractUIPart
 	private IWebClient app;
 	/** Main layout */
 	private Borderlayout layout;
-	@Deprecated(forRemoval = true, since = "11")
-	private Window browserWarningWindow;
 	/** embedded window for login and role selection */
 	private LoginWindow loginWindow;
 
@@ -129,8 +126,6 @@ public class WLogin extends AbstractUIPart
 	public void detach() {
 		layout.detach();
 		layout = null;
-		if (browserWarningWindow != null)
-			browserWarningWindow.detach();
 	}
 
 	/**

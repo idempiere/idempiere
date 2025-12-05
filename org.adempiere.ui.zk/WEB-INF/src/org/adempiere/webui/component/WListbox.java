@@ -1194,7 +1194,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
     /**
      * no op, to ease porting of swing form
      */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void autoSize() {
 		//no op
 	}

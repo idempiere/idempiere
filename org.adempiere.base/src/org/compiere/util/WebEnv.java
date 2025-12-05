@@ -491,7 +491,7 @@ public class WebEnv
 	 *  @param body - Body to add footer
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void addFooter(HttpServletRequest request, HttpServletResponse response,
 		HttpServlet servlet, body body)
 	{

@@ -319,7 +319,7 @@ public class MSystem extends X_AD_System
 	 *	@return true if valid
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isValid()
 	{
 		if (getName() == null || getName().length() < 2)
@@ -345,7 +345,7 @@ public class MSystem extends X_AD_System
 	 *	@return true if there is a PDF License
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isPDFLicense()
 	{
 		String key = getSummary();
@@ -454,7 +454,7 @@ public class MSystem extends X_AD_System
 	 * 	Print info
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void info()
 	{
 		if (!CLogMgt.isLevelFine())

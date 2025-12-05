@@ -56,19 +56,19 @@ public class HttpSessionAdaptor implements HttpSession {
 	}
 
 	/**@deprecated*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public javax.servlet.http.HttpSessionContext getSessionContext() {
 		return session.getSessionContext();
 	}
 
 	/**@deprecated*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public Object getValue(String arg0) {
 		return session.getValue(arg0);
 	}
 
 	/**@deprecated*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String[] getValueNames() {
 		return session.getValueNames();
 	}
@@ -82,7 +82,7 @@ public class HttpSessionAdaptor implements HttpSession {
 	}
 
 	/**@deprecated*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void putValue(String arg0, Object arg1) {
 		session.putValue(arg0, arg1);
 	}
@@ -92,7 +92,7 @@ public class HttpSessionAdaptor implements HttpSession {
 	}
 
 	/**@deprecated*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void removeValue(String arg0) {
 		session.removeValue(arg0);
 	}

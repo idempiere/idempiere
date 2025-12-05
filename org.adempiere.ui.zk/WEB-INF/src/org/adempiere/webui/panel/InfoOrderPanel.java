@@ -72,7 +72,7 @@ import org.zkoss.zul.Vbox;
  * @version	InfoOrder.java Adempiere Swing UI 3.4.1
  **/
 
-@Deprecated // replaced with InfoOrderWindow IDEMPIERE-325
+@Deprecated (since="13", forRemoval=true) // replaced with InfoOrderWindow IDEMPIERE-325
 public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 {
     /**

@@ -524,7 +524,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  Get Tab Icon
 	 *  @return Icon
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	@GeneratedCodeCoverageExclusion
 	public javax.swing.Icon getIcon()
 	{
@@ -1376,7 +1376,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return true if included
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	@GeneratedCodeCoverageExclusion
 	public boolean isIncluded()
 	{
@@ -1400,7 +1400,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @param isIncluded true if included
 	 *  @deprecated The method getIncluded now validate against the structure, this method is called nowhere
 	*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void setIncluded(boolean isIncluded)
 	{
 		m_included = isIncluded;
@@ -1674,7 +1674,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return Included_Tab_ID
 	 *  @deprecated the functionality related to AD_Tab.Included_Tab_ID is deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public int getIncluded_Tab_ID()
 	{
 		return m_vo.Included_Tab_ID;
@@ -1776,7 +1776,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 *  @return info
 	 *  @deprecated use getStatusLine and configure Status Line instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	@GeneratedCodeCoverageExclusion
 	public String getTrxInfo()
 	{

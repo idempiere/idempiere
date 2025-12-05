@@ -172,7 +172,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 * 	@return true if success
 	 *  @deprecated incomplete/abandon implementation of DocAction interface 
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
@@ -185,7 +185,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean invalidateIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("invalidateIt - " + toString());
@@ -199,7 +199,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *  @deprecated incomplete/abandon implementation of DocAction interface 
 	 */
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean voidIt() {
 		if (log.isLoggable(Level.INFO)) log.info("voidIt - " + toString());
 		// Before Void
@@ -276,7 +276,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *	@return document info (untranslated)
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String getDocumentInfo()
 	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
@@ -288,7 +288,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *	@return File or null
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public File createPDF ()
 	{
 		try
@@ -309,7 +309,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *	@return file if success
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public File createPDF (File file)
 	{
 		return null;
@@ -321,7 +321,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *	@return clear text error message
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String getProcessMsg()
 	{
 		return m_processMsg;
@@ -332,7 +332,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *	@return AD_User_ID (Created By)
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public int getDoc_User_ID()
 	{
 		return getCreatedBy();
@@ -343,7 +343,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *	@return DR amount
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
-	@Deprecated	
+	@Deprecated (since="13", forRemoval=true)	
 	public BigDecimal getApprovalAmt()
 	{
 		return getDepositAmt();
@@ -400,7 +400,7 @@ public class MDepositBatch extends X_C_DepositBatch implements DocAction
 	 *	@return true if CO, CL or RE
 	 *  @deprecated incomplete/abandon implementation of DocAction interface
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isComplete()
 	{
 		String ds = getDocStatus();

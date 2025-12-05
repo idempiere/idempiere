@@ -65,7 +65,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoAsset.java Adempiere Swing UI 3.4.1 
 */
 
-@Deprecated // replaced with InfoAssetWindow IDEMPIERE-325
+@Deprecated (since="13", forRemoval=true) // replaced with InfoAssetWindow IDEMPIERE-325
 public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, EventListener<Event>
 {
 	/**

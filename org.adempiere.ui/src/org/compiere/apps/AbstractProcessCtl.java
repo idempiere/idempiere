@@ -323,7 +323,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		return getProcessMonitor();
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected boolean isServerProcess()
 	{
 		return false;

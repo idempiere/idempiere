@@ -134,9 +134,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	private static final CLogger logger = CLogger.getCLogger(AdempiereWebUI.class);
 
-	@Deprecated(forRemoval = true, since = "11")
-	public static final String EXECUTION_CARRYOVER_SESSION_KEY = "execution.carryover";
-
 	/** Session attribute to hold {@link ClientInfo} reference */
 	private static final String CLIENT_INFO = "client.info";
 	

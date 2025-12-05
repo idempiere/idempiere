@@ -76,7 +76,7 @@ public class WebDoc
 	 *  @return Document
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static WebDoc createPopup (String title)
 	{
 		WebDoc doc = create (title);
@@ -100,7 +100,7 @@ public class WebDoc
 	 *  @return Document
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static WebDoc createWindow (String title)
 	{
 		WebDoc doc = create (title);
@@ -305,7 +305,7 @@ public class WebDoc
 	 *	@return null or array with left/right td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public td[] addPopupClose(Properties ctx)
 	{
 		input button = WebUtil.createClosePopupButton(ctx); 
@@ -329,7 +329,7 @@ public class WebDoc
 	 *	@return empty single center td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public td addWindowCenter(boolean nowrap)
 	{
 		if (m_table == null)
@@ -347,7 +347,7 @@ public class WebDoc
 	 *	@return null or array with empty left/right td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public td[] addWindowFooters()
 	{
 		if (m_table == null)
@@ -366,7 +366,7 @@ public class WebDoc
 	 *	@return empty single center td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public td addWindowFooter()
 	{
 		if (m_table == null)

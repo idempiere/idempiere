@@ -488,7 +488,7 @@ public class Util
 	 * @param comp  Component with ActionMap
 	 * @deprecated Swing client have been deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	@Generated
 	public static void printActionInputMap (JComponent comp)
 	{

@@ -424,7 +424,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@return true if query required
 	 *  @deprecated replace by {@link GridTab#isQueryRequire(int)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isQueryRequire (int noRecords)
 	{
 		if (noRecords < 2)
@@ -442,7 +442,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@return true if over max query
 	 *  @deprecated replace by {@link GridTab#isQueryMax(int)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isQueryMax (int noRecords)
 	{
 		int max = getMaxQueryRecords();

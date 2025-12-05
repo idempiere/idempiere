@@ -33,7 +33,7 @@ import org.jfree.data.general.DefaultValueDataset;
  * @author hengsin
  * @deprecated replace by billboard based implementation
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class PerformanceGraphBuilder {
 
 	public JFreeChart createIndicatorChart(IndicatorModel model)

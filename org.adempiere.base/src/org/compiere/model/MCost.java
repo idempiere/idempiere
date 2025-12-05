@@ -1483,7 +1483,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		return costInfo;
 	}	//	get
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MCost get (MProduct product, int M_AttributeSetInstance_ID,
 			MAcctSchema as, int AD_Org_ID, int M_CostElement_ID)
 	{
@@ -1572,7 +1572,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		return cost;
 	}	//	get
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MCost get (Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
 			int M_CostType_ID, int C_AcctSchema_ID, int M_CostElement_ID,
 			int M_AttributeSetInstance_ID)

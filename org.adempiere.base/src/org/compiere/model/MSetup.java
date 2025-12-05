@@ -417,7 +417,7 @@ public final class MSetup
 	 * @return true if created
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean createAccounting(KeyNamePair currency,
 			boolean hasProduct, boolean hasBPartner, boolean hasProject,
 			boolean hasMCampaign, boolean hasSRegion,

@@ -102,9 +102,6 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	/** Prefix for Button Name **/
 	public static final String BTNPREFIX = "Btn";
 	
-	@Deprecated(forRemoval = true, since = "11")
-	public static final String MNITMPREFIX = "Mnitm";
-
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
     
 	/** translated message for new query label (default for en is "** New Query **") */

@@ -48,7 +48,7 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	 *	@param ctx context
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void migrateDownloads (Properties ctx)
 	{
 		String sql = "SELECT COUNT(*) FROM M_ProductDownload";

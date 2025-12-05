@@ -54,7 +54,7 @@ import org.zkoss.zul.North;
  * @deprecated ticket IDEMPIERE-1965 replaced this with an Info Window
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInvoiceGen")
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class WInvoiceGen extends InvoiceGen implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private WGenForm form;

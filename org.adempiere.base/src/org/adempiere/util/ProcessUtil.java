@@ -116,7 +116,7 @@ public final class ProcessUtil {
 		return true;
 	}
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean startJavaProcess(ProcessInfo pi, Trx trx) {
 		return startJavaProcess(Env.getCtx(), pi, trx);
 	}

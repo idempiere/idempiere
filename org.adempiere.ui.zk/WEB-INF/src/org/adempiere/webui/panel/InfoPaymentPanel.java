@@ -72,7 +72,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoPayment.java Adempiere Swing UI 3.4.1
 */
 
-@Deprecated // replaced with InfoPaymentWindow IDEMPIERE-325
+@Deprecated (since="13", forRemoval=true) // replaced with InfoPaymentWindow IDEMPIERE-325
 public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, EventListener<Event>
 {
 	/**

@@ -284,7 +284,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	/**
 	 * @deprecated use {@link MWFNode#getWFNodes(Properties, String, String)} instead.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MWFNode[] getWFNodes (Properties ctx, String whereClause, String trxName)
 	{		
 		return MWFNode.getWFNodes(ctx, whereClause, trxName);

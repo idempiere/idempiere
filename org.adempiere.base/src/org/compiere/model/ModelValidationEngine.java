@@ -980,7 +980,7 @@ public class ModelValidationEngine
 	 * Before Save Properties for selected client.
 	 * @deprecated for deprecated swing client only
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void beforeSaveProperties ()
 	{
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());

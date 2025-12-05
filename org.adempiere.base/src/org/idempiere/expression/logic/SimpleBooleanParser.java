@@ -53,7 +53,7 @@ public class SimpleBooleanParser extends Parser {
 	/**
 	 * @deprecated Use {@link #VOCABULARY} instead.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final String[] tokenNames;
 	static {
 		tokenNames = new String[_SYMBOLIC_NAMES.length];
@@ -70,7 +70,7 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String[] getTokenNames() {
 		return tokenNames;
 	}

@@ -35,7 +35,7 @@ public class Paymentbox extends Div {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1807586169091171780L;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	/** List of payment rules */
 	protected Combobox combo;
@@ -161,7 +161,7 @@ public class Paymentbox extends Div {
 	 * @param l PropertyChangeListener
 	 * @deprecated not implemented
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}

@@ -146,18 +146,6 @@ public class CustomizeGridViewDialog extends Window {
 	}
 
 	/**
-	 * show grid view customization dialog for tabPanel
-	 * @param tabPanel
-	 * @return ignore the return value, it is not working correctly
-	 * @deprecated
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static boolean onCustomize(ADTabpanel tabPanel) {
-		onCustomize(tabPanel, null);
-		return true;
-	}
-
-	/**
 	 * Show grid view customization dialog for tabPanel
 	 * @param tabPanel
 	 * @param callback
@@ -183,26 +171,6 @@ public class CustomizeGridViewDialog extends Window {
 
 		}
 		showCustomize(0, tabPanel.getGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView(), null, false, callback);
-	}
-	
-	/**
-	 * Show User customize (modal)
-	 * @param WindowNo window no
-	 * @param AD_Tab_ID
-	 * @param columnsWidth 
-	 * @param gridFieldIds list fieldId current display in gridview
-	 * @param gridPanel
-	 * @param isQuickForm
-	 * @param quickGridView
-	 * @return ignore the return value, it is not working correctly
-	 * @deprecated 
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static boolean showCustomize(int WindowNo, int AD_Tab_ID, Map <Integer, String> columnsWidth, ArrayList <Integer> gridFieldIds, GridView gridPanel,
-		QuickGridView quickGridView, boolean isQuickForm)
-	{
-		showCustomize(WindowNo, AD_Tab_ID, columnsWidth, gridFieldIds, gridPanel, quickGridView, isQuickForm, null);
-		return true;
 	}
 	
 	/**

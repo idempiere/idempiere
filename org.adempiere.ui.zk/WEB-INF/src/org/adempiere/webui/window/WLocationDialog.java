@@ -614,10 +614,6 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			if (s.startsWith("CO")) {
 				//  Country Last
 				addComponents((Row)lstCountry.getParent());
-				// TODO: Add Online
-				// if (m_location.getCountry().isPostcodeLookup()) {
-					// addLine(line++, lOnline, fOnline);
-				// }
 			} else if (s.startsWith("Com")) {
 				addComponents((Row)txtComments.getParent());
 				isCommentsMandatory = s.endsWith("!");

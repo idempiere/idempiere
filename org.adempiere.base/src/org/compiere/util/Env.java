@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
@@ -1998,34 +1997,6 @@ public final class Env
 		}
 		if (log.isLoggable(Level.INFO)) log.info("End");
 	}	//	sleep
-
-	/**
-	 * Prepare the context for calling remote server (for e.g, ejb),
-	 * only default and global variables are pass over.
-	 * It is too expensive and also can have serialization issue if
-	 * every remote call to server is passing the whole client context.
-	 * @param ctx
-	 * @return Properties
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static Properties getRemoteCallCtx(Properties ctx)
-	{
-		Properties p = new Properties();
-		Set<Object> keys = ctx.keySet();
-		for (Object key : keys)
-		{
-			if(!(key instanceof String))
-				continue;
-
-			Object value = ctx.get(key);
-			if (!(value instanceof String))
-				continue;
-
-			p.put(key, value);
-		}
-
-		return p;
-	}
 
 	/**
 	 *  Get AD_Window value object model

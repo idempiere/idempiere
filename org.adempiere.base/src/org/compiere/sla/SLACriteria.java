@@ -29,7 +29,7 @@ import org.compiere.model.MSLAGoal;
  *  @version $Id: SLACriteria.java,v 1.3 2006/07/30 00:51:06 jjanke Exp $
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public abstract class SLACriteria
 {
 	/**

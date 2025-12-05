@@ -53,7 +53,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@param dateAcct date (to be tested with ValidFrom/ValidTo)
 	 *	@return array of distributions
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MDistribution[] get (MAccount acct,  
 		String PostingType, int C_DocType_ID, Timestamp dateAcct)
 	{
@@ -225,7 +225,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@return array of distributions
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MDistribution[] get (Properties ctx, int Account_ID)
 	{
 		return get(Account_ID);
@@ -238,7 +238,7 @@ public class MDistribution extends X_GL_Distribution
 	 *  @deprecated - using the method to get a specific account ID doesn't make sense because of the flag IsAnyAcct
 	 *                use method getAll() instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MDistribution[] get (int Account_ID)
 	{
 		Properties ctx = Env.getCtx();
@@ -269,7 +269,7 @@ public class MDistribution extends X_GL_Distribution
 	 *	@param ctx ignore
 	 *	@return array of distributions
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MDistribution[] getAll (Properties ctx)
 	{
 		return getAll();

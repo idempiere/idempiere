@@ -65,7 +65,7 @@ public class MProductPricing extends AbstractProductPricing
 	 * 	@param isSOTrx SO or PO
 	 *  @deprecated Use constructor with explicit trxName parameter
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MProductPricing (int M_Product_ID, int C_BPartner_ID, 
 		BigDecimal Qty, boolean isSOTrx)
 	{

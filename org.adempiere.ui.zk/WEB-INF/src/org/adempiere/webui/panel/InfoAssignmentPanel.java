@@ -73,7 +73,7 @@ import org.zkoss.zul.Vbox;
 * @version	InfoAssignment.java Adempiere Swing UI 3.4.1
 */
 
-@Deprecated // replaced with InfoAssignmentWindow IDEMPIERE-325
+@Deprecated (since="13", forRemoval=true) // replaced with InfoAssignmentWindow IDEMPIERE-325
 public class InfoAssignmentPanel extends InfoPanel implements EventListener<Event>, ValueChangeListener
 {
 	/**

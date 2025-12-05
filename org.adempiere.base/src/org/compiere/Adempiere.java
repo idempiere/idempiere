@@ -61,7 +61,7 @@ import org.osgi.framework.Bundle;
 public final class Adempiere
 {
 	/** Timestamp                   */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
 	static public String	MAIN_VERSION	= "Release 13";

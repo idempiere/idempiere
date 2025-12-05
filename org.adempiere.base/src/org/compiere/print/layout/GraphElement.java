@@ -29,7 +29,7 @@ import org.compiere.print.MPrintGraph;
  * 	@version 	$Id: GraphElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
  *  @deprecated not fully implemented
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class GraphElement extends PrintElement
 {
 	/**

@@ -64,7 +64,7 @@ import org.zkoss.zul.Vbox;
 * 	@version	InfoBPartner.java Adempiere Swing UI 3.4.1 
 */
 
-@Deprecated // replaced with InfoBPartnerWindow IDEMPIERE-325
+@Deprecated (since="13", forRemoval=true) // replaced with InfoBPartnerWindow IDEMPIERE-325
 public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>, WTableModelListener
 {
 	/**

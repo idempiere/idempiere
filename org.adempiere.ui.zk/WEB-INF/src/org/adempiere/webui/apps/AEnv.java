@@ -236,16 +236,6 @@ public final class AEnv
 	}
 
 	/**
-	 *	Exit System.
-	 *  @param status System exit status (usually 0 for no error)
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static void exit (int status)
-	{
-		Env.exitEnv(status);
-	}	//	exit
-
-	/**
 	 * Logout AD_Session and clear {@link #windowCache}.
 	 */
 	public static void logout()
@@ -616,7 +606,7 @@ public final class AEnv
      * @return true if client browser is firefox 2+
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isFirefox2() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -635,7 +625,7 @@ public final class AEnv
      * @return boolean
      * @deprecated See IDEMPIERE-1022
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isBrowserSupported() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -669,7 +659,7 @@ public final class AEnv
      * @return true if user agent is internet explorer
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isInternetExplorer()
     {
     	Execution execution = Executions.getCurrent();
@@ -860,15 +850,6 @@ public final class AEnv
 			WeakReference<Desktop> ref = DesktopRunnable.getThreadLocalDesktop();
 			return ref != null ? ref.get() : null;
 		}
-	}
-	
-	/**
-	 * @deprecated replace by ClientInfo.isMobile()
-	 * @return true if running on a tablet
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static boolean isTablet() {
-		return ClientInfo.isMobile();
 	}
 	
 	/**

@@ -240,7 +240,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @return true if ok
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean add (Properties ctx, int M_Warehouse_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			BigDecimal diffQty, boolean isSOTrx, String trxName)
@@ -301,7 +301,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @param addition
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void addQty(BigDecimal addition) {
 		addQty(addition, null);
 	}
@@ -336,7 +336,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 *	@param trxName transaction
 	 *	@return true if updated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean add (Properties ctx, int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, int reservationAttributeSetInstance_ID,
 		BigDecimal diffQty, boolean isSOTrx, String trxName)
