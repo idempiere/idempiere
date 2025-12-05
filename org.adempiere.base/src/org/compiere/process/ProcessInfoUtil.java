@@ -48,67 +48,49 @@ public class ProcessInfoUtil
 	 */
 	public static void setSummaryFromDB (ProcessInfo pi)
 	{
-		//
-		int sleepTime = 2000;	//	2 secomds
-		int noRetry = 5;        //  10 seconds total
-		//
 		String sql = "SELECT Result, ErrorMsg FROM AD_PInstance "
 			+ "WHERE AD_PInstance_ID=?"
 			+ " AND Result IS NOT NULL";
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, 
+			pstmt = DB.prepareStatement(sql,
 				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
-			for (int noTry = 0; noTry < noRetry; noTry++)
+			pstmt.setInt(1, pi.getAD_PInstance_ID());
+			rs = pstmt.executeQuery();
+			if (rs.next())
 			{
-				pstmt.setInt(1, pi.getAD_PInstance_ID());
-				rs = pstmt.executeQuery();
-				if (rs.next())
+				//	we have a result
+				int result = rs.getInt(1);
+				if (result == 1)
 				{
-					//	we have a result
-					int i = rs.getInt(1);
-					if (i == 1)
-					{
-						pi.setSummary(Msg.getMsg(Env.getCtx(), "Success"));
-					}
-					else
-					{
-						pi.setSummary(Msg.getMsg(Env.getCtx(), "Failure"), true);
-					}
-					String Message = rs.getString(2);
-					//
-					if (Message != null)
-						pi.addSummary ("  (" +  Msg.parseTranslation(Env.getCtx(), Message)  + ")");
-					return;
+					pi.setSummary(Msg.getMsg(Env.getCtx(), "Success"));
 				}
-				DB.close(rs);
-				rs = null;
-				//	sleep
-				try
+				else
 				{
-					if (s_log.isLoggable(Level.FINE)) s_log.fine("sleeping");
-					Thread.sleep(sleepTime);
+					pi.setSummary(Msg.getMsg(Env.getCtx(), "Failure"), true);
 				}
-				catch (InterruptedException ie)
-				{
-					s_log.log(Level.SEVERE, "Sleep Thread", ie);
-				}
+				String message = rs.getString(2);
+				if (message != null)
+					pi.addSummary("  (" + Msg.parseTranslation(Env.getCtx(), message) + ")");
+			}
+			else
+			{
+				s_log.warning("No result found in AD_PInstance for AD_PInstance_ID=" + pi.getAD_PInstance_ID());
+				pi.setSummary(Msg.getMsg(Env.getCtx(), "ProcessRunError"), true);
 			}
 		}
 		catch (SQLException e)
 		{
 			s_log.log(Level.SEVERE, sql, e);
-			pi.setSummary (e.getLocalizedMessage(), true);
-			return;
+			pi.setSummary(e.getLocalizedMessage(), true);
 		}
 		finally
 		{
-			DB.close(rs,pstmt);
-			rs = null;pstmt = null;
+			DB.close(rs, pstmt);
 		}
-		pi.setSummary (Msg.getMsg(Env.getCtx(), "Timeout"), true);
 	}	//	setSummaryFromDB
 
 	/**

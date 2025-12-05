@@ -152,7 +152,7 @@ public final class ProcessUtil {
 	public static boolean startJavaProcess(Properties ctx, ProcessInfo pi, Trx trx, boolean managedTrx, IProcessUI processMonitor) {
 		String className = pi.getClassName();
 		if (className == null) {
-			MProcess proc = new MProcess(ctx, pi.getAD_Process_ID(), trx.getTrxName());
+			MProcess proc = MProcess.get(pi.getAD_Process_ID());
 			if (proc.getJasperReport() != null)
 				className = JASPER_STARTER_CLASS;
 		}
@@ -169,7 +169,7 @@ public final class ProcessUtil {
 		boolean success = false;
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		try
-		{			
+		{
 			Thread.currentThread().setContextClassLoader(process.getClass().getClassLoader());
 			process.setProcessUI(processMonitor);
 			success = process.startProcess(ctx, pi, trx);
@@ -193,7 +193,6 @@ public final class ProcessUtil {
 					trx.rollback();
 				}
 				trx.close();
-				trx = null;
 			}
 			Thread.currentThread().setContextClassLoader(cl);
 		}
@@ -282,7 +281,8 @@ public final class ProcessUtil {
 			}
 			engine.put(MRule.ARGUMENTS_PREFIX + "ProcessInfo", pi);
 
-			msg = engine.eval(rule.getScript()).toString();
+			Object result = engine.eval(rule.getScript());
+			msg = (result != null) ? result.toString() : "";
 			//transaction should rollback if there are error in process
 			if (msg != null && msg.startsWith("@Error@"))
 				success = false;
@@ -298,26 +298,30 @@ public final class ProcessUtil {
 			log.log(Level.SEVERE, pi.getClassName(), e);
 			success = false;
 		}
-		if (success) {
+		finally
+		{
 			if (trx != null)
 			{
-				try
+				if (success)
 				{
-					trx.commit(true);
-				} catch (Exception e)
-				{
-					log.log(Level.SEVERE, "Commit failed.", e);
-					pi.addSummary("Commit Failed.");
-					pi.setError(true);
-					success = false;
+					try
+					{
+						trx.commit(true);
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, "Commit failed.", e);
+						pi.addSummary("Commit Failed.");
+						pi.setError(true);
+						success = false;
+					}
+					trx.close();
 				}
-				trx.close();
-			}
-		} else {
-			if (trx != null)
-			{
-				trx.rollback();
-				trx.close();
+				else
+				{
+					trx.rollback();
+					trx.close();
+				}
 			}
 		}
 		return success;

@@ -795,14 +795,23 @@ public class Util
 	}
 	
 	/**
-	 * Returns a string with a formatted JSON object  
-	 * @return string with a pretty JSON format 
+	 * Thread-safe singleton Gson instance for JSON prettification.
+	 * Gson instances are immutable and thread-safe, so this is safe to reuse.
+	 * This eliminates the overhead of creating new Gson instances on every call (~0.5-2ms per creation).
+	 */
+	private static final Gson PRETTY_GSON = new GsonBuilder()
+			.serializeNulls()
+			.setPrettyPrinting()
+			.create();
+
+	/**
+	 * Returns a string with a formatted JSON object
+	 * @return string with a pretty JSON format
 	 */
 	public static String prettifyJSONString(String value) {
-		Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 		try {
 			JsonElement jsonElement = JsonParser.parseString(value);
-			return gson.toJson(jsonElement);
+			return PRETTY_GSON.toJson(jsonElement);
 	    } catch (JsonSyntaxException e) {
 	        throw new AdempiereException(Msg.getMsg(Env.getCtx(), "InvalidJSON"));
 	    }
