@@ -1486,6 +1486,10 @@ public class MCostDetail extends X_M_CostDetail
 		} else if (getC_ProjectIssue_ID() > 0) { // skip average costing qty check for reversed project issue
 			MProjectIssue pi = new MProjectIssue(getCtx(), getC_ProjectIssue_ID(), get_TrxName());
 			cost.setSkipAverageCostingQtyCheck(pi.getReversal_ID() > 0);
+		} else if (getM_InventoryLine_ID() > 0) { // skip average costing qty check for reversed inventory
+			MInventoryLine il = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+			MInventory i = new MInventory(getCtx(), il.getM_Inventory_ID(), get_TrxName());
+			cost.setSkipAverageCostingQtyCheck(i.getReversal_ID() > 0);
 		}
 		
 		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
