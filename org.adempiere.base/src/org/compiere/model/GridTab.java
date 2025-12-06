@@ -233,6 +233,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_AD_Table_UU = "_TabInfo_AD_Table_UU";
 	public static final String CTX_FindSQL = "_TabInfo_FindSQL";
 	public static final String CTX_SQL = "_TabInfo_SQL";
+	public static final String CTX_Params = "_TabInfo_Params";
 	public static final String CTX_IsSortTab = "_TabInfo_IsSortTab";
 	public static final String CTX_Record_ID = "_TabInfo_Record_ID";
 	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
@@ -657,7 +658,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo
 			+ " - Only Current Rows=" + onlyCurrentRows
 			+ ", Days=" + onlyCurrentDays + ", Detail=" + isDetail());
-		m_oldQuery = m_query.getWhereClause();
+		m_oldQuery = m_query.getWhereClauseBinding();
 		m_vo.onlyCurrentRows = onlyCurrentRows;
 		m_vo.onlyCurrentDays = onlyCurrentDays;
 
@@ -748,11 +749,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);
 		if (m_mTable.isOpen())
 		{
-			m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
+			m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays, m_query);
 		}
 		else
 		{
-			m_mTable.setSelectWhereClause(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
+			m_mTable.setSelectWhereClause(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays, m_query);
 			m_mTable.open(maxRows);
 		}
 		//  Go to Record 0
@@ -777,7 +778,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			 *	Query
 			 */
 			if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);		
-			m_mTable.dataRequery(where, m_vo.onlyCurrentRows && !isDetail(), 0);
+			m_mTable.dataRequery(where, m_vo.onlyCurrentRows && !isDetail(), 0, m_query);
 			
 			// Go to Record 0
 			setCurrentRow(0, true);
@@ -799,20 +800,20 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (query.getRestrictionCount() != 1)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(More than 1 Restriction): " + query);
-			return query.getWhereClause(true);
+			return query.getWhereClauseBinding(true);
 		}
 
 		String colName = query.getColumnName(0);
 		if (colName == null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(No Column): " + query);
-			return query.getWhereClause(true);
+			return query.getWhereClauseBinding(true);
 		}
 		//	a '(' in the name = function - don't try to resolve
 		if (colName.indexOf('(') != -1)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(Function): " + colName);
-			return query.getWhereClause(true);
+			return query.getWhereClauseBinding(true);
 		}
 		//	OK - Query is valid
 
@@ -820,7 +821,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (getField(colName) != null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Field Found: " + colName);
-			return query.getWhereClause(true);
+			return query.getWhereClauseBinding(true);
 		}
 
 		//	Find Reference Column e.g. Bill_Location_ID -> C_BPartner_Location_ID
@@ -838,7 +839,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (getField(refColName) != null)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Column " + colName + " replaced with " + refColName);
-				return query.getWhereClause(true);
+				return query.getWhereClauseBinding(true);
 			}
 			colName = refColName;
 		}
@@ -860,7 +861,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (log.isLoggable(Level.INFO)) log.info ("Not successful - Column="
 				+ colName + ", Key=" + tabKeyColumn
 				+ ", Query=" + query);
-			return query.getWhereClause(true);
+			return query.getWhereClauseBinding(true);
 		}
 
 		query.setTableName("xx");
@@ -869,7 +870,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			.append(" IN (SELECT xx.").append(tabKeyColumn)
 			.append(" FROM ")
 			.append(tableName).append(" xx WHERE ")
-			.append(query.getWhereClause(true))
+			.append(query.getWhereClauseBinding(true))
 			.append(")");
 		if (log.isLoggable(Level.FINE)) log.fine(result.toString());
 		return result.toString();
@@ -1347,7 +1348,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!m_mTable.isOpen())
 			return false;
 		//	Same Query
-		if (!m_oldQuery.equals(m_query.getWhereClause()))
+		if (!m_oldQuery.equals(m_query.getWhereClauseBinding()))
 			return false;
 		//	Detail?
 		if (!isDetail())

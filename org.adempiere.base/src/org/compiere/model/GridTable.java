@@ -116,6 +116,8 @@ public class GridTable extends AbstractTableModel
 	public static final String DATA_IGNORED_MESSAGE = "Ignored";
 	public static final String DATA_SAVED_MESSAGE = "Saved";
 
+	private MQuery 				m_query = null;
+
 	/**
 	 *	JDBC Based Buffered Table
 	 *
@@ -286,7 +288,21 @@ public class GridTable extends AbstractTableModel
 	 *  @param onlyCurrentDays how many days back for current
 	 *	@return true if where clase set
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public boolean setSelectWhereClause(String newWhereClause, boolean onlyCurrentRows, int onlyCurrentDays)
+	{
+		return setSelectWhereClause(newWhereClause, onlyCurrentRows, onlyCurrentDays, null);
+	}
+
+	/**
+	 *	Set Where Clause (w/o the WHERE keyword and w/o History).
+	 *  @param newWhereClause sql where clause
+	 *  @param onlyCurrentRows only current rows
+	 *  @param onlyCurrentDays how many days back for current
+	 *  @param query
+	 *	@return true if where clase set
+	 */
+	public boolean setSelectWhereClause(String newWhereClause, boolean onlyCurrentRows, int onlyCurrentDays, MQuery query)
 	{
 		if (m_open)
 		{
@@ -295,6 +311,7 @@ public class GridTable extends AbstractTableModel
 		}
 		//
 		m_whereClause = newWhereClause;
+		m_query = query;
 		m_onlyCurrentRows = onlyCurrentRows;
 		m_onlyCurrentDays = onlyCurrentDays;
 		if (m_whereClause == null)
@@ -441,6 +458,20 @@ public class GridTable extends AbstractTableModel
 		if (log.isLoggable(Level.FINE))
 			log.fine(m_SQL_Count);
 		Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_SQL, m_SQL);
+		StringBuilder strParams = new StringBuilder();
+		if (m_query != null) {
+			List<Object> params = m_query.getParameters();
+			if (! params.isEmpty()) {
+				strParams.append("[");
+				for (Object strParam : params) {
+					if (strParams.length() != 1)
+						strParams.append(",");
+					strParams.append(strParam);
+				}
+				strParams.append("]");
+			}
+		}
+		Env.setContext(m_ctx, m_WindowNo, m_TabNo, GridTab.CTX_Params, strParams.toString());
 		return m_SQL;
 	}	//	createSelectSql
 
@@ -2551,14 +2582,16 @@ public class GridTable extends AbstractTableModel
 	 *  @param onlyCurrentRows only current rows
 	 *  @param onlyCurrentDays how many days back
 	 *  @param fireEvents if tabledatachanged and datastatusievent must be fired
+	 *  @param query
 	 *  @return true if success
 	 */
-	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays, boolean fireEvents)
+	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays, boolean fireEvents, MQuery query)
 	{
-		if (log.isLoggable(Level.INFO)) log.info(whereClause + "; OnlyCurrent=" + onlyCurrentRows);
+		if (log.isLoggable(Level.INFO)) log.info(whereClause + "; OnlyCurrent=" + onlyCurrentRows + "; query=" + query);
 		close(false);
 		m_onlyCurrentDays = onlyCurrentDays;
-		setSelectWhereClause(whereClause, onlyCurrentRows, m_onlyCurrentDays);
+		m_query = query;
+		setSelectWhereClause(whereClause, onlyCurrentRows, m_onlyCurrentDays, query);
 		open(m_maxRows);
 		//  Info
 		m_rowData = null;
@@ -2578,15 +2611,43 @@ public class GridTable extends AbstractTableModel
 	}	//	dataRequery
 
 	/**
+	 *	Re-query with new whereClause
+	 *  @param whereClause sql where clause
+	 *  @param onlyCurrentRows only current rows
+	 *  @param onlyCurrentDays how many days back
+	 *  @param fireEvents if tabledatachanged and datastatusievent must be fired
+	 *  @return true if success
+	 */
+	@Deprecated (since="13", forRemoval=true)
+	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays, boolean fireEvents)
+	{
+		return dataRequery (whereClause, onlyCurrentRows, onlyCurrentDays, fireEvents, null);
+	}
+
+	/**
 	 * Delegate to {@link #dataRequery(String, boolean, int, boolean)} with fireEvents=true
 	 * @param whereClause
 	 * @param onlyCurrentRows
 	 * @param onlyCurrentDays
 	 * @return true if success
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays)
 	{
-		return dataRequery (whereClause, onlyCurrentRows, onlyCurrentDays, true);
+		return dataRequery (whereClause, onlyCurrentRows, onlyCurrentDays, true, null);
+	}	//	dataRequery
+
+	/**
+	 * Delegate to {@link #dataRequery(String, boolean, int, boolean)} with fireEvents=true
+	 * @param whereClause
+	 * @param onlyCurrentRows
+	 * @param onlyCurrentDays
+	 * @param query
+	 * @return true if success
+	 */
+	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays, MQuery query)
+	{
+		return dataRequery (whereClause, onlyCurrentRows, onlyCurrentDays, true, query);
 	}	//	dataRequery
 
 	/**
@@ -3072,7 +3133,8 @@ public class GridTable extends AbstractTableModel
 			try
 			{
 				pstmt = DB.prepareStatement(m_SQL_Count, get_TrxName());
-				setParameter (pstmt, true);
+				int nextPos = setParameter(pstmt, m_query);
+				setParameter (pstmt, true, nextPos);
 		        int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
 		        		DEFAULT_GRIDTABLE_COUNT_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
@@ -3130,7 +3192,8 @@ public class GridTable extends AbstractTableModel
 				//ensure not all rows are fetch into memory for virtual table
 				if (m_virtual)
 					m_pstmt.setFetchSize(100);
-				setParameter (m_pstmt, false);
+				int nextPos = setParameter(m_pstmt, m_query);
+				setParameter (m_pstmt, false, nextPos);
 				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
 					m_pstmt.setQueryTimeout(timeout);
@@ -3295,18 +3358,39 @@ public class GridTable extends AbstractTableModel
 		}
 
 		/**
+		 *	Set Parameters from MQuery
+		 *  @param pstmt prepared statement
+		 *  @param query
+		 *  @return next position
+		 */
+		private int setParameter(PreparedStatement pstmt, MQuery m_query) {
+			int pos = 1;
+			if (m_query != null) {
+				for (Object param : m_query.getParameters()) { 
+					try {
+						pstmt.setObject(pos, param);
+					} catch (SQLException e) {
+						log.log(Level.SEVERE, "parameter", e);
+					}
+					pos++;
+				}
+			}
+			return pos;
+		}
+
+		/**
 		 *	Set Parameter for Query.
 		 *		elements must be Integer, BigDecimal, String (default)
 		 *  @param pstmt prepared statement
 		 *  @param countSQL count
 		 */
-		private void setParameter (PreparedStatement pstmt, boolean countSQL)
+		private void setParameter (PreparedStatement pstmt, boolean countSQL, int nextPos)
 		{
 			if (m_parameterSELECT.size() == 0 && m_parameterWHERE.size() == 0)
 				return;
 			try
 			{
-				int pos = 1;	//	position in Statement
+				int pos = nextPos;	//	position in Statement
 				//	Select Clause Parameters
 				for (int i = 0; !countSQL && i < m_parameterSELECT.size(); i++)
 				{
