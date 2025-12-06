@@ -54,9 +54,9 @@ import org.compiere.util.ValueNamePair;
 public class MQuery implements Serializable, Cloneable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -8671209250739719461L;
+	private static final long serialVersionUID = -6099486564252217898L;
 
 	/**
 	 *	Create new Query for report
@@ -985,6 +985,7 @@ public class MQuery implements Serializable, Cloneable
 	 * 	Create the resulting Query WHERE Clause
 	 * 	@return Where Clause
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getWhereClause ()
 	{
 		return getWhereClause(false);
@@ -995,6 +996,7 @@ public class MQuery implements Serializable, Cloneable
 	 * 	@param fullyQualified fully qualified Table.ColumnName
 	 * 	@return Where Clause
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getWhereClause (boolean fullyQualified)
 	{
 		int currentDepth = 0;
@@ -1043,6 +1045,80 @@ public class MQuery implements Serializable, Cloneable
 	}	//	getWhereClause
 
 	/**
+	 * 	Create the resulting Query WHERE Clause
+	 * 	@return Where Clause
+	 */
+	public String getWhereClauseBinding ()
+	{
+		return getWhereClauseBinding(false);
+	}	//	getWhereClauseBinding
+
+	/**
+	 * 	Create the resulting Query WHERE Clause
+	 * 	@param fullyQualified fully qualified Table.ColumnName
+	 * 	@return Where Clause
+	 */
+	public String getWhereClauseBinding (boolean fullyQualified)
+	{
+		int currentDepth = 0;
+		boolean qualified = fullyQualified;
+		if (qualified && (m_TableName == null || m_TableName.length() == 0))
+			qualified = false;
+		//
+		StringBuilder sb = new StringBuilder();
+		if (! isActive())
+			return sb.toString();
+
+		sb.append('(');
+		for (int i = 0; i < m_list.size(); i++)
+		{
+			Restriction r = (Restriction)m_list.get(i);
+			if (i != 0)
+				sb.append(" ").append(r.andOrCondition).append(" ");
+
+			//NOT
+			sb.append(r.notCondition ? " NOT " : "");
+			//EXISTS
+			sb.append(r.existsCondition ? " EXISTS " : "");
+
+			for ( ; currentDepth < r.joinDepth; currentDepth++ )
+			{
+				sb.append('(');
+			}
+			if (qualified)
+				sb.append(r.getSQLBinding(m_TableName));
+			else
+				sb.append(r.getSQLBinding(null));
+
+			for ( ; currentDepth > r.joinDepth; currentDepth-- )
+			{
+				sb.append(')');
+			}
+		}
+
+		// close brackets
+		for ( ; currentDepth > 0; currentDepth-- )
+		{
+			sb.append(')');
+		}
+		sb.append(')');
+		return sb.toString();
+	}	//	getWhereClauseBinding
+
+	/**
+	 * @return
+	 */
+	public List<Object> getParameters() {
+		List<Object> params = new ArrayList<Object>();
+		for (int i = 0; i < m_list.size(); i++) {
+			Restriction r = (Restriction)m_list.get(i);
+			List<Object> rparams = r.getParameters();
+			params.addAll(rparams);
+		}
+		return params;
+	}
+
+	/**
 	 * 	Get printable Query Info
 	 *	@return info
 	 */
@@ -1084,13 +1160,13 @@ public class MQuery implements Serializable, Cloneable
 		return sb.toString();
 	}	//	getInfo
 
-	
 	/**
 	 * 	Create Query WHERE Clause.
 	 *  Not fully qualified.
 	 * 	@param index restriction index
 	 * 	@return Where Clause or "" if not valid
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getWhereClause (int index)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -1098,6 +1174,23 @@ public class MQuery implements Serializable, Cloneable
 		{
 			Restriction r = (Restriction)m_list.get(index);
 			sb.append(r.getSQL(null));
+		}
+		return sb.toString();
+	}	//	getWhereClause
+
+	/**
+	 * 	Create Query WHERE Clause.
+	 *  Not fully qualified.
+	 * 	@param index restriction index
+	 * 	@return Where Clause or "" if not valid
+	 */
+	public String getWhereClauseBinding (int index)
+	{
+		StringBuilder sb = new StringBuilder();
+		if (index >= 0 && index < m_list.size())
+		{
+			Restriction r = (Restriction)m_list.get(index);
+			sb.append(r.getSQLBinding(null));
 		}
 		return sb.toString();
 	}	//	getWhereClause
@@ -1276,7 +1369,7 @@ public class MQuery implements Serializable, Cloneable
 	public String toString()
 	{
 		if (isActive())
-			return getWhereClause(true);
+			return getWhereClauseBinding(true)  + " Params=["+ getParameters() + "]";
 		return "MQuery[" + m_TableName + ",Restrictions=0]";
 	}	//	toString
 	
@@ -1372,7 +1465,7 @@ public class MQuery implements Serializable, Cloneable
 	public MQuery getReportProcessQuery() {
 		return m_reportProcessQuery;
 	}
-	
+
 	/**
 	 * @param ColumnName
 	 * @param Operator
@@ -1383,6 +1476,7 @@ public class MQuery implements Serializable, Cloneable
 	 * @param depth number of parenthesis
 	 * @return SQL
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getRestrictionSQL (String ColumnName, String Operator,
 			Object Code, String InfoName, String InfoDisplay, boolean andCondition, int depth)
 	{
@@ -1402,6 +1496,7 @@ public class MQuery implements Serializable, Cloneable
 	 * @param depth number of parenthesis
 	 * @return SQL
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getRestrictionSQL (String ColumnName, 
 			Object Code, Object Code_To, String InfoName, String InfoDisplay, String InfoDisplay_To, boolean andCondition, int depth)
 	{
@@ -1410,6 +1505,43 @@ public class MQuery implements Serializable, Cloneable
 		return r.getSQL(null);
 	}
 	
+	/**
+	 * @param ColumnName
+	 * @param Operator
+	 * @param Code query value
+	 * @param InfoName
+	 * @param InfoDisplay display text of code
+	 * @param andCondition true=and, false=or
+	 * @param depth number of parenthesis
+	 * @return SQL
+	 */
+	public String getRestrictionSQLBinding (String ColumnName, String Operator,
+			Object Code, String InfoName, String InfoDisplay, boolean andCondition, int depth)
+	{
+		Restriction r = new Restriction (ColumnName, Operator,
+				Code, InfoName, InfoDisplay, andCondition, depth);
+		return r.getSQLBinding(null);
+	}	//	getRestrictionSQL
+
+	/**
+	 * @param ColumnName
+	 * @param Code from value
+	 * @param Code_To to value
+	 * @param InfoName
+	 * @param InfoDisplay display text of from value
+	 * @param InfoDisplay_To display text of to value
+	 * @param andCondition true=and, false=or
+	 * @param depth number of parenthesis
+	 * @return SQL
+	 */
+	public String getRestrictionSQLBinding (String ColumnName, 
+			Object Code, Object Code_To, String InfoName, String InfoDisplay, String InfoDisplay_To, boolean andCondition, int depth)
+	{
+		Restriction r = new Restriction(ColumnName, Code, Code_To, InfoName, 
+					InfoDisplay, InfoDisplay_To, andCondition, false, depth);
+		return r.getSQLBinding(null);
+	}
+
 	@Override
 	public MQuery clone() {
 		try {
@@ -1430,9 +1562,9 @@ public class MQuery implements Serializable, Cloneable
 class Restriction  implements Serializable
 {
 	/**
-	 * generated serial id 
+	 * 
 	 */
-	private static final long serialVersionUID = -4521978087587321243L;
+	private static final long serialVersionUID = 7213516617020382794L;
 
 	/**
 	 * 	Restriction
@@ -1450,6 +1582,13 @@ class Restriction  implements Serializable
 		this(columnName, operator, code, infoName, infoDisplay,
 				andCondition ? "AND" : "OR",
 				depth);
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Object> getParameters() {
+		return params;
 	}
 
 	/**
@@ -1683,12 +1822,15 @@ class Restriction  implements Serializable
 	protected boolean	notCondition = false;	
 	/** Exists Condition	*/
 	protected boolean	existsCondition = false;
+	/** SQL Where Params, just filled if called with getSQLBinding	*/
+	protected List<Object> 	params = new ArrayList<Object>();
 
 	/**
 	 * 	Get SQL build from this restriction
 	 *  @param tableName optional table name
 	 * 	@return SQL WHERE clause
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getSQL (String tableName)
 	{
 		if (DirectWhereClause != null)
@@ -1787,13 +1929,111 @@ class Restriction  implements Serializable
 	}	//	getSQL
 
 	/**
+	 * 	Get SQL build from this restriction
+	 *  @param tableName optional table name
+	 * 	@return SQL WHERE clause
+	 */
+	public String getSQLBinding (String tableName)
+	{
+		params.clear();
+		if (DirectWhereClause != null)
+			return DirectWhereClause;
+
+		if(ExistsClause != null){
+			StringBuilder sb = new StringBuilder();
+			sb.append(ExistsClause);
+
+			if (Code instanceof String)
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_STRING(Code.toString())));
+			else if (Code instanceof Timestamp)
+				sb = new StringBuilder(sb.toString().replace("?", DB.TO_DATE((Timestamp)Code, false)));
+			else
+				sb = new StringBuilder(sb.toString().replace("?", Code.toString()));
+
+			return sb.toString();
+		}
+
+		// verify if is a virtual column, do not prefix tableName if this is a virtualColumn
+		boolean virtualColumn = false;
+		if (tableName != null && tableName.length() > 0) {
+			MTable table = MTable.get(Env.getCtx(), tableName);
+			if (table != null) {
+				for (MColumn col : table.getColumns(false)) {
+					String colSQL = col.getColumnSQL(true, false);
+					if (colSQL != null && colSQL.contains("@"))
+						colSQL = Env.parseContext(Env.getCtx(), -1, colSQL, false, true);
+					if (colSQL != null && ColumnName.equals(colSQL.trim()))  {
+						virtualColumn = true;
+						break;
+					}
+				}
+			}
+		}
+		//
+		StringBuilder sb = new StringBuilder();
+		if (!virtualColumn && tableName != null && tableName.length() > 0)
+		{
+			//	Assumes - REPLACE(INITCAP(variable),'s','X') or UPPER(variable)
+			int pos = ColumnName.lastIndexOf('(')+1;	//	including (
+			int end = ColumnName.indexOf(')');
+			//	We have a Function in the ColumnName
+			if (pos != -1 && end != -1 && !(pos-1==ColumnName.indexOf('(') && ColumnName.trim().startsWith("(")))
+				sb.append(ColumnName.substring(0, pos))
+				.append(tableName).append(".").append(DB.getDatabase().quoteColumnName(ColumnName.substring(pos, end)))
+				.append(ColumnName.substring(end));
+			else
+			{
+				int selectIndex = ColumnName.toLowerCase().indexOf("select ");
+				int fromIndex = ColumnName.toLowerCase().indexOf(" from ");
+				if (selectIndex >= 0 && fromIndex > 0) 
+				{
+					sb.append(ColumnName);
+				}
+				else
+				{
+					sb.append(tableName).append(".").append(DB.getDatabase().quoteColumnName(ColumnName));
+				}
+			}
+		}
+		else
+			sb.append(virtualColumn ? ColumnName : DB.getDatabase().quoteColumnName(ColumnName));
+		if(MQuery.ILIKE.equals(Operator))
+			sb.append(MQuery.LIKE);
+		else
+			sb.append(Operator);
+		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
+		{
+			if (Code instanceof String) {
+				if (ColumnName.toUpperCase().startsWith("UPPER(")) {
+					sb.append("UPPER(?)");
+				} else {
+					sb.append("?");
+				}
+				params.add(Code.toString());
+			} else {
+				sb.append("?");
+				params.add(Code);
+			}
+
+			//	Between
+			//	if (Code_to != null && InfoDisplay_to != null)
+			if (MQuery.BETWEEN.equals(Operator))
+			{
+				sb.append(" AND ?");
+				params.add(Code);
+			}
+		}
+		return sb.toString();
+	}	//	getSQLBinding
+
+	/**
 	 * 	Get String Representation
 	 * 	@return info
 	 */
 	@Override
 	public String toString()
 	{
-		return getSQL(null);
+		return getSQLBinding(null) + " Params=["+ getParameters() + "]";
 	}	//	toString
 
 	/**

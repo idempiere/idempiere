@@ -3364,13 +3364,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             sql.append(" WHERE ").append(m_whereExtended);
             hasWhere = true;
         }
+        List<Object> params = new ArrayList<Object>();
         if (query != null && query.isActive())
         {
             if (hasWhere)
                 sql.append(" AND ");
             else
                 sql.append(" WHERE ");
-            sql.append(query.getWhereClause());
+            sql.append(query.getWhereClauseBinding());
+            params = query.getParameters();
         }
         //  Add Access
         String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
@@ -3394,6 +3396,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             pstmt = DB.prepareStatement(conn, finalSQL);
             if (timeout > 0)
             	pstmt.setQueryTimeout(timeout);
+            int idx = 1;
+            for (Object param : params) {
+            	pstmt.setObject(idx, param);
+            	idx++;
+            }
             rs = pstmt.executeQuery();
             if (rs.next())
                 m_total = rs.getInt(1);
