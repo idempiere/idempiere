@@ -82,7 +82,7 @@ public class ZoomInfoFactory {
 	 * @return matching zoom info records
 	 */
 	public static List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(final PO po,
-			final int windowID) {
+			final int windowID,int windowNo) {
 
 		if (logger.isLoggable(Level.CONFIG)) logger.config("PO=" + po + " - AD_Window_ID=" + windowID);
 
@@ -91,7 +91,7 @@ public class ZoomInfoFactory {
 		final Set<String> alreadySeen = new HashSet<String>();
 
 		for (final ZoomInfo zoomInfo : MRelationType.retrieveZoomInfos(po,
-				windowID)) {
+				windowID,windowNo)) {
 			
 			if (alreadySeen.add(zoomInfo.destinationDisplay + "|" + zoomInfo.windowId)) {
 				
@@ -103,7 +103,7 @@ public class ZoomInfoFactory {
 		final GenericZoomProvider genericZoomProvider = new GenericZoomProvider();
 
 		for (final ZoomInfo zoomInfo : genericZoomProvider
-				.retrieveZoomInfos(po)) {
+				.retrieveZoomInfos(po,windowNo)) {
 
 			if (alreadySeen.add(zoomInfo.destinationDisplay + "|" + zoomInfo.windowId)) {
 

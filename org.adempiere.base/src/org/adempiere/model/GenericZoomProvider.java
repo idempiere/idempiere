@@ -58,7 +58,7 @@ public class GenericZoomProvider implements IZoomProvider {
 	private Map<String, Integer> queries;
 
 	@Override
-	public List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(PO po) {
+	public List<ZoomInfoFactory.ZoomInfo> retrieveZoomInfos(PO po,int windowNo) {
 		// User preference
 		boolean detailedZoom = "Y".equals(Env.getContext(Env.getCtx(), "P|IsDetailedZoomAcross"));
 
