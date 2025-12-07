@@ -26,6 +26,7 @@ package org.idempiere.test.adwindow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -36,21 +37,36 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.startsWith;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.MTabCustomization;
+import org.compiere.Adempiere;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -71,6 +87,7 @@ import org.compiere.model.MImportTemplate;
 import org.compiere.model.MLabel;
 import org.compiere.model.MLabelAssignment;
 import org.compiere.model.MLookup;
+import org.compiere.model.MMessage;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
@@ -92,10 +109,13 @@ import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BPartner_Location;
 import org.compiere.model.X_C_Greeting;
+import org.compiere.model.X_M_Substitute;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
+import org.compiere.util.CPreparedStatement;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
@@ -876,6 +896,58 @@ public class GridTabTest extends AbstractTestCase {
 		// not retained t2
 		gt.dataRefreshAll(true, false);
 		assertEquals(1, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should be 1");
+		
+		// test retain for multi-key tab
+		gw = createGridWindow(SystemIDs.WINDOW_PRODUCT);
+		gt = gw.getTab(0);
+		gt.setUpdateWindowContext(true);
+		gt.getTableModel().setImportingMode(true, getTrxName());
+		query = new MQuery(MProduct.Table_Name);
+		query.addRestriction(MProduct.COLUMNNAME_M_Product_ID, MQuery.EQUAL, DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		gt.setQuery(query);
+		gt.query(false);
+		assertEquals(1, gt.getRowCount(), "Query should return 1 record after filtering M_Product by AZALEA_BUSH");
+		//find substitute tab - no key, 2 parent key
+		GridTab stab = null;
+		for(int i=1; i < gw.getTabCount(); i++)
+		{
+			GridTab tab = gw.getTab(i);
+			if (tab.getAD_Table_ID() == X_M_Substitute.Table_ID)
+			{
+				stab = tab;
+				break;
+			}
+		}
+		assertNotNull(stab, "Could not find Substitute tab in Product window");
+		stab.getTableModel().setImportingMode(true, getTrxName());		
+		stab.query(false);
+		assertTrue(stab.getRowCount() == 0, "Substitute tab should have no records for Azalea Bush");
+		stab.dataNew(false);
+		stab.setValue(X_M_Substitute.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		stab.setValue(X_M_Substitute.COLUMNNAME_Substitute_ID, DictionaryIDs.M_Product.SEEDER.id);
+		stab.setValue(X_M_Substitute.COLUMNNAME_Name, "Name 1");
+		stab.setValue(X_M_Substitute.COLUMNNAME_Description, "Description");
+		assertTrue(stab.dataSave(true), "Failed to save substitute record. " + getMessage(stab));
+		stab.dataNew(false);
+		stab.setValue(X_M_Substitute.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		stab.setValue(X_M_Substitute.COLUMNNAME_Substitute_ID, DictionaryIDs.M_Product.MULCH.id);
+		stab.setValue(X_M_Substitute.COLUMNNAME_Description, "Description");
+		stab.setValue(X_M_Substitute.COLUMNNAME_Name, "Name 2");
+		assertTrue(stab.dataSave(true), "Failed to save substitute record");
+		query = new MQuery(X_M_Substitute.Table_Name);
+		query.addRestriction(X_M_Substitute.COLUMNNAME_Description	, MQuery.EQUAL, "Description");
+		stab.setQuery(query);
+		stab.query(false);
+		assertEquals(2, stab.getRowCount(), "Should have 2 substitute records for Azalea Bush");		
+		stab.setValue(X_M_Substitute.COLUMNNAME_Description, "Description Updated");
+		assertTrue(stab.dataSave(true), "Failed to save substitute record");
+		stab.dataRefreshAll(true, true);
+		assertEquals(2, stab.getRowCount(), "Should retain 2 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=true");
+		stab.dataRefreshAll(true, false);
+		assertEquals(1, stab.getRowCount(), "Should retain 1 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=false");
+		PO po = stab.getTableModel().getPO(0);
+		assertNotNull(po, "PO should not be null for remaining substitute record");
+		assertInstanceOf(X_M_Substitute.class, po, "PO should be instance of X_M_Substitute");
 	}
 	
 	/**
@@ -1813,4 +1885,674 @@ public class GridTabTest extends AbstractTestCase {
 		assertEquals(1, gTab.getRowCount(), "Should have one record");
 		assertTrue(sb.length() > 0, "StateChangeListener should have been triggered" );
 	}	
+	
+	@Test
+	void testInsertUpdateUU() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
+		gTab.query(false, 0, 0);
+		
+		assertEquals(0, gTab.getRowCount(), "Tab should be empty before insert");
+		
+		gTab.dataNew(false);
+		gTab.setValue(MTestUU.COLUMNNAME_Name, "Test UU " + System.currentTimeMillis());
+		assertTrue(gTab.dataSave(true), "Failed to save new record");
+		
+		assertEquals(1, gTab.getRowCount(), "Tab should have one record after insert");
+		String recordUU = (String)gTab.getValue(MTestUU.COLUMNNAME_TestUU_UU);
+		assertNotNull(recordUU, "Record_UU should not be null");
+		assertTrue(recordUU.length() > 0, "Record_UU should not be empty");
+		
+		gTab.setValue(MTestUU.COLUMNNAME_Name, "Test UU1 " + System.currentTimeMillis());
+		assertTrue(gTab.dataSave(true), "Failed to update record");
+		
+		MTestUU testUU = new MTestUU(Env.getCtx(), recordUU, getTrxName());
+		assertEquals(recordUU, testUU.getTestUU_UU(), "Record_UU should match after update");
+		testUU.setName("Test UU2 " + System.currentTimeMillis());
+		testUU.saveEx();
+		
+		gTab.setValue(MTestUU.COLUMNNAME_Name, "Test UU3 " + System.currentTimeMillis());
+		assertFalse(gTab.dataSave(true), "Update should fail due to external change");
+		assertNotNull(gTab.getLastDataStatusEvent(), "DataStatusEvent should not be null after external change");
+		assertEquals("CurrentRecordModified", gTab.getLastDataStatusEvent().getAD_Message(), "AD_Message should indicate record modified externally");
+		
+		// refresh and save should work now
+		gTab.dataRefresh(gTab.getCurrentRow(), true);
+		gTab.setValue(MTestUU.COLUMNNAME_Name, "Test UU4 " + System.currentTimeMillis());
+		assertTrue(gTab.dataSave(true), "Update should succeed after refresh");
+		
+		// test direct external update
+		DB.executeUpdateEx("UPDATE "+MTestUU.Table_Name+" SET Name=? WHERE "+MTestUU.COLUMNNAME_TestUU_UU+"=?", 
+				new Object[] {"Test UU5 " + System.currentTimeMillis(), recordUU}, getTrxName());
+		
+		gTab.setValue(MTestUU.COLUMNNAME_Name, "Test UU6 " + System.currentTimeMillis());
+		assertFalse(gTab.dataSave(true), "Update should fail due to external change");
+		assertNotNull(gTab.getLastDataStatusEvent(), "DataStatusEvent should not be null after external change");
+		assertEquals("SaveErrorDataChanged", gTab.getLastDataStatusEvent().getAD_Message(), "AD_Message should indicate record modified externally");
+	}
+	
+	@Test
+	void testUpdteWrongType() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
+		gTab.query(false, 0, 0);
+		gTab.dataNew(false);
+		gTab.setValue(MTest.COLUMNNAME_Name, "Test Wrong Type " + System.currentTimeMillis());
+		assertTrue(gTab.dataSave(true), "Failed to save new record for Wrong Type test");
+
+		gTab.setValue("Name", "Test Wrong Type Updated " + System.currentTimeMillis());
+		gTab.setValue(MTest.COLUMNNAME_T_Qty, "A1"); // wrong type
+		assertFalse(gTab.dataSave(true), "Save should fail for wrong type column update");
+	}
+	
+	@Test
+	void testUpdateZeroIdTable() {
+		// need to use system administrator role to update org 0
+		Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id);
+		Env.setContext(Env.getCtx(), Env.AD_USER_ID, DictionaryIDs.AD_User.SUPER_USER.id);
+		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, 0);
+		
+		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		MQuery query = new MQuery(MOrg.Table_Name);
+		query.addRestriction(MOrg.COLUMNNAME_AD_Org_ID, MQuery.EQUAL,"0");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Tab should have one record after query");
+		Integer id = (Integer)gTab.getValue(MOrg.COLUMNNAME_AD_Org_ID);
+		assertEquals(0, id.intValue(), "ID should be zero");
+		gTab.setValue(MOrg.COLUMNNAME_Description, "Updated " + System.currentTimeMillis());
+		assertTrue(gTab.dataSave(true), "Failed to save update on zero ID record");
+	}
+	
+	@Test
+	void testDataNewCopy() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		MQuery query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_C_BPartner_ID, MQuery.EQUAL,DictionaryIDs.C_BPartner.C_AND_W.id);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Tab should have one record after query");
+		String bpName = (String)gTab.getValue(MBPartner.COLUMNNAME_Name);
+		assertTrue(!Util.isEmpty(bpName, true), "Business Partner Name should not be null or empty");
+		gTab.dataNew(true); //copy
+		String copyName = (String)gTab.getValue(MBPartner.COLUMNNAME_Name);
+		assertEquals(bpName, copyName, "Copied Business Partner Name should match original");
+	}
+	
+	@Test
+	void testDeleteNotDeletable() {
+		// need to use system administrator role to delete system message record
+		Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id);
+		Env.setContext(Env.getCtx(), Env.AD_USER_ID, DictionaryIDs.AD_User.SUPER_USER.id);
+		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
+		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, 0);
+		Env.setContext(Env.getCtx(), Env.SHOW_TRANSLATION, true);
+		
+		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.MESSAGE.id);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		MQuery query = new MQuery(MMessage.Table_Name);
+		query.addRestriction(MMessage.COLUMNNAME_AD_Message_ID, MQuery.EQUAL,"101"); //zero
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Tab should have one record after query");
+		gTab = gridWindow.getTab(1); //translation tab is not deletable
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 0);
+		MTable table = MTable.get(gTab.getAD_Table_ID());
+		assertEquals(MMessage.Table_Name + "_Trl", table.getTableName(), "Tab 1 should be translation table for message");
+		assertTrue(gTab.getRowCount() > 0, "Translation tab should have records");
+		assertFalse(gTab.dataDelete(), "Delete should fail for non-deletable tab");
+	}
+	
+	@Test
+	void testDeleteProcessedRecord() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 3);
+		assertTrue(gTab.getRowCount() > 0, "Tab should have at least one record after query");
+		if (!Boolean.TRUE.equals(gTab.getValue(MTest.COLUMNNAME_Processed))) {
+			gTab.setValue(MTest.COLUMNNAME_Processed, true);
+			assertTrue(gTab.dataSave(true), "Failed to set record as processed");
+		}
+		assertFalse(gTab.dataDelete(), "Delete should fail for processed record");
+	}
+	
+	@Test
+	void testRowChangeIndexAfterSort() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
+		gTab.query(false, 0, 0);
+		// Insert multiple records
+		for (int i = 0; i < 3; i++) {
+			gTab.dataNew(false);
+			gTab.setValue(MTest.COLUMNNAME_Name, "Test Sort " + System.currentTimeMillis() + " " + i);
+			gTab.setValue(MTest.COLUMNNAME_T_Integer, i+1);
+			assertTrue(gTab.dataSave(true), "Failed to save new record for sort test");
+		}
+		int recordId = gTab.getRecord_ID();
+		gTab.setValue(MTest.COLUMNNAME_T_Amount, BigDecimal.TEN);
+		int changeRowIndex = gTab.getTableModel().getRowChanged();
+		gTab.getTableModel().sort(gTab.getTableModel().findColumn(MTest.COLUMNNAME_T_Integer), false); //sort by t_integer desc
+		int newChangeRowIndex = gTab.getTableModel().getRowChanged();
+		assertNotEquals(changeRowIndex, newChangeRowIndex, "RowChanged index should change after sort");
+		gTab.setCurrentRow(newChangeRowIndex);
+		assertEquals(recordId, gTab.getRecord_ID(), "Record_ID should match after set newChangeRowIndex as current row");
+	}
+	
+	@Test
+	void testReset() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_PRODUCT);
+		var gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 3);
+		assertTrue(gTab.getRowCount() > 0, "Tab should have records after query");
+		gTab.reset();
+		assertEquals(0, gTab.getRowCount(), "Tab should have zero records after reset");
+	}
+	
+	@Test
+	void testColorColumn() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
+		gTab.query(false, 0, 0);
+		gTab.dataNew(false);
+		gTab.setValue(MTest.COLUMNNAME_Name, "Test Color " + System.currentTimeMillis());
+		gTab.setValue(MTest.COLUMNNAME_T_Amount, BigDecimal.TEN);
+		assertTrue(gTab.dataSave(true), "Failed to save new record for color column test");
+		gTab.getTableModel().setColorColumn(MTest.COLUMNNAME_T_Amount);
+		var value = gTab.getTableModel().getColorCode(gTab.getCurrentRow());
+		assertEquals(1, value, "Color code should be 1 for T_Amount=10");
+	}
+	
+	@Test
+	void testSetVFormat() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
+		gTab.query(false, 0, 0);
+		gTab.dataNew(false);
+		String strNewFormat = "#,##0.000";
+		gTab.setFieldVFormat(MTest.COLUMNNAME_T_Amount, strNewFormat);
+		assertEquals(strNewFormat, gTab.getField(MTest.COLUMNNAME_T_Amount).getVFormat(), "VFormat should match the set format");
+	}
+	
+	@Test
+	void testRowCountTimeoutEvent() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		StringBuilder eventMessage = new StringBuilder();
+		tableModel.addDataStatusListener(e -> {
+			eventMessage.append(e.getAD_Message());
+		});
+		CPreparedStatement stmt = mock(CPreparedStatement.class);
+		SQLTimeoutException simulatedTimeout = DB.isPostgreSQL()  
+				 ? new SQLTimeoutException("Simulated timeout", "57014")
+				 : new SQLTimeoutException("Simulated timeout", "72000", 1013);
+		try {
+			when(stmt.executeQuery()).thenThrow(simulatedTimeout);
+		} catch (SQLException e1) {
+			fail("Unexpected exception setting up mock CPreparedStatement. " + e1.getMessage());
+		}
+		
+		Future<?> future= mock(Future.class);
+		ScheduledThreadPoolExecutor scheduler = mock(ScheduledThreadPoolExecutor.class);
+		when(scheduler.submit(any(Runnable.class))).thenAnswer(invocation -> {
+			Runnable runnable = invocation.getArgument(0);
+			runnable.run(); // run immediately
+			return future;
+		});
+		try (MockedStatic<DB> mockedDB = mockStatic(DB.class, Mockito.CALLS_REAL_METHODS);
+			MockedStatic<Adempiere> mockedAdempiere = mockStatic(Adempiere.class, Mockito.CALLS_REAL_METHODS);) {
+			mockedDB.when(() -> DB.prepareStatement(startsWith("SELECT COUNT(*)"), any())).thenReturn(stmt);
+			mockedAdempiere.when(Adempiere::getThreadPoolExecutor).thenReturn(scheduler);
+			gTab.query(false, 0, 0);
+			assertEquals(GridTable.COUNT_QUERY_TIMEOUT_ERROR_MESSAGE, eventMessage.toString(), "DataStatusEvent info should indicate timeout");
+		}		
+	}
+	
+	@Test
+	void testBackGroundLoadingEvent() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		StringBuilder eventMessage = new StringBuilder();
+		tableModel.addDataStatusListener(e -> {
+			if (e.getLoadedRows() == 1000)
+				eventMessage.append(e.getLoadedRows());
+		});
+		
+		StringBuilder select = createSelectSQL(tableModel);
+		
+		Future<?> future= mock(Future.class);
+		ScheduledThreadPoolExecutor scheduler = mock(ScheduledThreadPoolExecutor.class);
+		when(scheduler.submit(any(Runnable.class))).thenAnswer(invocation -> {
+			Runnable runnable = invocation.getArgument(0);
+			runnable.run(); // run immediately
+			return future;
+		});
+		
+		// simulate large result set by returning true 1005 times
+		int totalRows = 1005;
+        AtomicInteger counter = new AtomicInteger(totalRows);
+		try (MockedStatic<DB> mockedDB = mockStatic(DB.class, Mockito.CALLS_REAL_METHODS);
+			MockedStatic<Adempiere> mockedAdempiere = mockStatic(Adempiere.class, Mockito.CALLS_REAL_METHODS);) {
+			mockedDB.when(() -> DB.prepareStatement(startsWith(select.toString()), any())).thenAnswer(invocation -> {
+				CPreparedStatement stmt = (CPreparedStatement) invocation.callRealMethod();
+				var spyStmt = spy(stmt);
+				// return true for next() totalRows times, then false
+				doAnswer(invocationOnMock -> {
+					ResultSet rs = (ResultSet) invocationOnMock.callRealMethod();
+					var spyr = spy(rs);
+					doAnswer(rsInvocation -> {						
+						if (counter.get() == totalRows) {							
+							rsInvocation.callRealMethod();
+						}
+						return counter.getAndDecrement() > 0;
+					}).when(spyr).next();
+					return spyr;
+				}).when(spyStmt).executeQuery();
+				return spyStmt;
+			});
+			mockedAdempiere.when(Adempiere::getThreadPoolExecutor).thenReturn(scheduler);
+			gTab.query(false, 0, 0);
+			gTab.getTableModel().loadComplete();
+			assertEquals("1000", eventMessage.toString(), "DataStatusEvent info should capture 1000 loaded rows");
+		}
+	}
+
+	private StringBuilder createSelectSQL(GridTable tableModel) {
+		// Create SELECT Part (copy from GridTable)
+		StringBuilder select = new StringBuilder("SELECT ");
+		var fields = tableModel.getFields();
+		for (int i = 0; i < fields.length; i++)
+		{
+			if (i > 0)
+				select.append(",");
+			GridField field = fields[i];
+			select.append(field.isVirtualColumn() ? field.getColumnSQL(true) : DB.getDatabase().quoteColumnName(field.getColumnSQL(true)));	//	ColumnName or Virtual Column
+		}
+		//
+		select.append(" FROM ").append(tableModel.getTableName());
+		return select;
+	}
+	
+	@Test
+	void testLoadRowTimeoutEvent() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		StringBuilder eventMessage = new StringBuilder();
+		tableModel.addDataStatusListener(e -> {
+			eventMessage.append(e.getAD_Message());
+		});
+		
+		StringBuilder select = createSelectSQL(tableModel);
+		
+		CPreparedStatement stmt = mock(CPreparedStatement.class);
+		SQLTimeoutException simulatedTimeout = DB.isPostgreSQL()  
+				 ? new SQLTimeoutException("Simulated timeout", "57014")
+				 : new SQLTimeoutException("Simulated timeout", "72000", 1013);
+		try {
+			when(stmt.executeQuery()).thenThrow(simulatedTimeout);
+		} catch (SQLException e1) {
+			fail("Unexpected exception setting up mock CPreparedStatement. " + e1.getMessage());
+		}
+		
+		Future<?> future= mock(Future.class);
+		ScheduledThreadPoolExecutor scheduler = mock(ScheduledThreadPoolExecutor.class);
+		when(scheduler.submit(any(Runnable.class))).thenAnswer(invocation -> {
+			Runnable runnable = invocation.getArgument(0);
+			runnable.run(); // run immediately
+			return future;
+		});
+		try (MockedStatic<DB> mockedDB = mockStatic(DB.class, Mockito.CALLS_REAL_METHODS);
+			MockedStatic<Adempiere> mockedAdempiere = mockStatic(Adempiere.class, Mockito.CALLS_REAL_METHODS);) {
+			mockedDB.when(() -> DB.prepareStatement(startsWith(select.toString()), any())).thenReturn(stmt);
+			mockedAdempiere.when(Adempiere::getThreadPoolExecutor).thenReturn(scheduler);
+			gTab.query(false, 0, 0);
+			assertEquals(GridTable.LOAD_TIMEOUT_ERROR_MESSAGE, eventMessage.toString(), "DataStatusEvent info should indicate timeout");
+		}
+	}
+	
+	@Test
+	void testSaveNoChange() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		assertFalse(gTab.getTableModel().isNeedSaveAndMandatoryFill(), "Should return false when table model is not open yet");
+		assertFalse(gTab.dataSave(true), "dataSave should return false when table model is not open yet");
+		gTab.query(false, 0, 3);
+		assertFalse(gTab.dataSave(true), "dataSave should return false when there are no changes to save");
+		gTab.dataNew(false);
+		assertFalse(gTab.getTableModel().isNeedSaveAndMandatoryFill(), "New record with no changes should not need save");
+		assertFalse(gTab.dataSave(true), "dataSave should return false when there are no changes to save");
+	}
+	
+	@Test
+	void testIsCellEditable() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		gTab.query(false, 0, 3);
+		assertFalse(tableModel.isCellEditable(0, tableModel.findColumn(MBPartner.COLUMNNAME_C_BPartner_ID)), "Key column should not be editable");
+		assertFalse(tableModel.isCellEditable(0, -1), "Invalid column index should not be editable");
+		assertFalse(tableModel.isCellEditable(0, tableModel.getFieldCount()), "Invalid column index should not be editable");
+		assertTrue(tableModel.isCellEditable(0, tableModel.findColumn("IsActive")), "IsActive column should be editable");
+		GridField field = gTab.getField(MBPartner.COLUMNNAME_Name);
+		if (tableModel.isRowEditable(0))
+			assertEquals(field.isEditable(false), tableModel.isCellEditable(0, tableModel.findColumn(MBPartner.COLUMNNAME_Name)), "Should match field isEditable");
+		else
+			assertFalse(tableModel.isCellEditable(0, tableModel.findColumn(MBPartner.COLUMNNAME_Name)), "Row is not editable, so cell should not be editable");
+	}
+	
+	@Test
+	void testGetColumnClass() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		gTab.query(false, 0, 3);
+		GridField field = gTab.getField(MTest.COLUMNNAME_T_Amount);
+		Class<?> columnClass = tableModel.getColumnClass(tableModel.findColumn(MTest.COLUMNNAME_T_Amount));
+		assertEquals(DisplayType.getClass(field.getDisplayType(), false), columnClass, "Column class should match field class type");
+		assertNull(tableModel.getColumnClass(-1), "Invalid column index should return null class");
+		assertTrue(tableModel.toString().contains(MTest.Table_Name), "GridTable.toString should contain table name");
+	}
+	
+	@Test
+	void testDeleteBySQL() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		tableModel.setImportingMode(true, getTrxName());
+		gTab.setQuery(MQuery.getNoRecordQuery(MTest.Table_Name, true));
+		gTab.query(false, 0, 0);
+		gTab.dataNew(false);
+		gTab.setValue(MTest.COLUMNNAME_Name, "Test DeleteBySQL " + System.currentTimeMillis());
+		assertTrue(gTab.dataSave(true), "Failed to save new record for DeleteBySQL test");
+		var spyTableModel = spy(tableModel);
+		doReturn(null).when(spyTableModel).getPO(anyInt());
+		assertTrue(spyTableModel.getPO(gTab.getCurrentRow()) == null, "getPO should return null for spy");
+		//use reflection to set gTab.m_mTable to spyTableModel
+		try {
+			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
+			mTableField.setAccessible(true);
+			mTableField.set(gTab, spyTableModel);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
+		}
+		assertTrue(gTab.dataDelete(), "dataDelete should succeed even when getPO returns null");
+	}
+	
+	@Test
+	void testUpdateSystemRecord() {
+		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		MQuery query = new MQuery(MOrg.Table_Name);
+		query.addRestriction(MOrg.COLUMNNAME_AD_Org_ID, MQuery.EQUAL,DictionaryIDs.AD_Org.GLOBAL.id);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Tab should have one record after query");
+		Integer id = (Integer)gTab.getValue(MOrg.COLUMNNAME_AD_Org_ID);
+		assertEquals(DictionaryIDs.AD_Org.GLOBAL.id, id.intValue(), "ID should match global org");
+		gTab.setValue(MOrg.COLUMNNAME_Description, "Updated Global Org " + System.currentTimeMillis());
+		assertFalse(gTab.dataSave(true), "Save should fail for system record");
+	}
+	
+	@Test
+	void testDeleteSystemRecord() {
+		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ROLE.id);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		MQuery query = new MQuery(MRole.Table_Name);
+		query.addRestriction(MRole.COLUMNNAME_AD_Role_ID, MQuery.EQUAL,DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id); //zero
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Tab should have one record after query" );
+		MRole role = MRole.get(Env.getCtx(), DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id);
+		assertEquals(role.getName(), gTab.getValue(MRole.COLUMNNAME_Name), "Role name should match" );
+		assertFalse(gTab.dataDelete(), "Delete should fail for system record" );
+	}
+	
+	@Test
+	void testUpdateReadonly() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		GridTab gTab = gridWindow.getTab(0);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "Tab should have records after query" );
+		gTab.setValue(MUser.COLUMNNAME_Name, "Updated Name " + System.currentTimeMillis());
+		gTab.getTableModel().setReadOnly(true);
+		assertTrue(gTab.getTableModel().isReadOnly(), "Row should be readonly" );		
+		assertFalse(gTab.dataSave(true), "Save should fail for readonly record" );
+		gTab.dataIgnore();
+		assertFalse(gTab.dataDelete(), "Delete should fail for readonly record" );
+	}
+	
+	@Test
+	void testDeleteErrorEvent() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		StringBuilder eventMessage = new StringBuilder();
+		tableModel.addDataStatusListener(e -> {
+			if (e.isError())
+				eventMessage.append(e.getAD_Message());
+		});
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 0);
+		assertFalse(gTab.getTableModel().isOnlyCurrentRowsDisplayed(), "Table model should not be only current rows displayed" );
+		
+		var spyTableModel = spy(tableModel);
+		doAnswer(invocation -> {
+			PO po = (PO) invocation.callRealMethod();
+			var spyPo = spy(po);
+			doReturn(false).when(spyPo).delete(anyBoolean());
+			return spyPo;
+		}).when(spyTableModel).getPO(anyInt());
+		//use reflection to set gTab.m_mTable to spyTableModel
+		try {
+			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
+			mTableField.setAccessible(true);
+			mTableField.set(gTab, spyTableModel);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
+		}
+		assertFalse(gTab.dataDelete(), "dataDelete should fail when PO.delete returns false");
+		assertTrue(eventMessage.length() > 0, "DataStatusEvent error message should be captured" );
+	}
+	
+	@Test
+	void testSaveErrorEvent() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		StringBuilder eventMessage = new StringBuilder();
+		tableModel.addDataStatusListener(e -> {
+			if (e.isError())
+				eventMessage.append(e.getAD_Message());
+		});
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 0);
+		
+		var spyTableModel = spy(tableModel);
+		doAnswer(invocation -> {
+			PO po = (PO) invocation.callRealMethod();
+			var spyPo = spy(po);
+			doReturn(false).when(spyPo).save();
+			return spyPo;
+		}).when(spyTableModel).getPO(anyInt());
+		//use reflection to set gTab.m_mTable to spyTableModel
+		try {
+			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
+			mTableField.setAccessible(true);
+			mTableField.set(gTab, spyTableModel);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
+		}
+		gTab.setValue(MTest.COLUMNNAME_Name, "Test Save Error " + System.currentTimeMillis());
+		assertTrue(spyTableModel.needSave(), "Table model should need save after value change" );		
+		assertTrue(spyTableModel.needSave(true), "Table model should need save after value change" );
+		assertFalse(gTab.dataSave(true), "dataSave should fail when PO.save returns false");
+		assertTrue(eventMessage.length() > 0, "DataStatusEvent error message should be captured" );
+	}
+	
+	@Test
+	void testGetErrorFromLogger() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 0);
+		
+		var spyTableModel = spy(tableModel);
+		doAnswer(invocation -> {
+			PO po = (PO) invocation.callRealMethod();
+			var spyPo = spy(po);
+			doThrow(new AdempiereException("MyError")).when(spyPo).save();
+			return spyPo;
+		}).when(spyTableModel).getPO(anyInt());
+		//use reflection to set gTab.m_mTable to spyTableModel
+		try {
+			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
+			mTableField.setAccessible(true);
+			mTableField.set(gTab, spyTableModel);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
+		}
+		gTab.setValue(MTest.COLUMNNAME_Name, "Test Save Error " + System.currentTimeMillis());
+		assertTrue(spyTableModel.needSave(), "Table model should need save after value change" );		
+		assertTrue(spyTableModel.needSave(true), "Table model should need save after value change" );
+		assertFalse(gTab.dataSave(true), "dataSave should fail when PO.save returns false");
+		assertTrue(CLogger.retrieveError() != null, "CLogger should have captured error");
+	}
+	
+	@Test
+	void testVetoableChangeSupport() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		StringBuilder eventMessage = new StringBuilder();
+		VetoableChangeListener listener = e -> {
+			eventMessage.append(e.getPropertyName());
+			throw new PropertyVetoException("Vetoable change failed", e);
+		};
+		tableModel.addVetoableChangeListener(listener);
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 0);
+		gTab.setValue(MTest.COLUMNNAME_Name, "Test Vetoable " + System.currentTimeMillis());
+		//false to trigger vetoable change event
+		assertFalse(gTab.dataSave(false), "dataSave should fail due to vetoable change exception");
+		assertTrue(eventMessage.length() > 0, "VetoableChangeEvent should be captured" );
+		tableModel.removeVetoableChangeListener(listener);
+		assertTrue(gTab.dataSave(false), "dataSave should succeed after removing vetoable change listener");
+	}
+	
+	@Test
+	void testGetColumnName() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		gTab.query(false, 0, 0);
+		GridField[] fields = tableModel.getFields();
+		assertEquals("", tableModel.getColumnName(-1), "Invalid column index should return empty string");
+		assertEquals("", tableModel.getColumnName(fields.length), "Invalid column index should return empty string");
+		for (int i = 0; i < fields.length; i++) {
+			assertEquals(fields[i].getColumnName(), tableModel.getColumnName(i), "Column name should match for index " + i);
+		}
+	}
+	
+	@Test
+	void testSort() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		gTab.query(false, 0, 0);
+		assertEquals(-1, tableModel.getSortColumnIndex(), "Table should not be sorted initially");
+
+		// Sort the table
+		tableModel.sort(0, true);
+		assertEquals(0, tableModel.getSortColumnIndex(), "Table should be sorted by column 0");
+		assertTrue(tableModel.isSortedAscending(), "Table should be sorted ascending");
+		int recordIdFirst = (int) tableModel.getValueAt(0, tableModel.findColumn(MTest.COLUMNNAME_Test_ID));
+		// invalid column index should do nothing
+		tableModel.sort(-1, false);
+		assertEquals(0, tableModel.getSortColumnIndex(), "Table should be sorted by column 0");
+		assertTrue(tableModel.isSortedAscending(), "Table should be sorted ascending");
+
+		// Sort descending
+		tableModel.sort(0, false);
+		assertEquals(0, tableModel.getSortColumnIndex(), "Table should be sorted by column 0");
+		assertFalse(tableModel.isSortedAscending(), "Table should be sorted descending");
+		int recordIdLast = (int) tableModel.getValueAt(tableModel.getRowCount() -1, tableModel.findColumn(MTest.COLUMNNAME_Test_ID));
+		assertEquals(recordIdFirst, recordIdLast, "First record ID in ascending sort should match last record ID in descending sort");
+		
+		// sort ascending with new row
+		gTab.dataNew(false);
+		gTab.setValue(MTest.COLUMNNAME_Name, "AAA New Sort " + System.currentTimeMillis());
+		assertTrue(gTab.isNew(), "New record should be marked as new");
+		int newRowIndex = tableModel.getNewRow();
+		assertTrue(newRowIndex > 0, "New row index should be greater than zero");
+		tableModel.sort(0, true);
+		assertEquals(0, tableModel.getSortColumnIndex(), "Table should be sorted by column 0");
+		assertTrue(tableModel.isSortedAscending(), "Table should be sorted ascending");
+		assertEquals(0, tableModel.getNewRow(), "New row index should move to top after sort");
+		
+		tableModel.resetCacheSortState();
+		assertEquals(-1, tableModel.getSortColumnIndex(), "Sort column index should be reset after resetCacheSortState");
+	}
+	
+	@Test
+	void testQueryWithContextVariable() {
+		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.USER.id);
+		GridTab gTab = gridWindow.getTab(0);
+		MQuery query = new MQuery(MUser.Table_Name);
+		query.addRestriction(MUser.COLUMNNAME_AD_User_ID, MQuery.EQUAL, "@#AD_User_ID@");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(1, gTab.getRowCount(), "Should have one record for current user" );
+		assertEquals(Env.getAD_User_ID(Env.getCtx()), gTab.getRecord_ID(), "Record_ID should match current user" );
+		// invalid context
+		query.addRestriction(MUser.COLUMNNAME_AD_User_ID, MQuery.EQUAL, "@#AD_User_IDx@");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertEquals(0, gTab.getRowCount(), "Should have zero records for invalid context variable" );
+	}
+	
+	@Test
+	void testIsRowEditable() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gTab = gridWindow.getTab(0);
+		var tableModel = gTab.getTableModel();
+		tableModel.setImportingMode(true, getTrxName());
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "Tab should have records after query" );
+		assertFalse(tableModel.isRowEditable(-1), "Invalid row index should not be editable" );
+		assertFalse(tableModel.isRowEditable(gTab.getRowCount()), "Invalid row index should not be editable" );
+		tableModel.setValueAt(false, 0, tableModel.findColumn(MTest.COLUMNNAME_Processed));
+		tableModel.setValueAt(false, 0, tableModel.findColumn("IsActive"));
+		assertFalse(tableModel.isRowEditable(0), "Row should not be editable when IsActive is false" );
+		tableModel.setValueAt(true, 0, tableModel.findColumn("IsActive"));
+		assertTrue(tableModel.isRowEditable(0), "Row should not be editable when IsActive is true" );
+		tableModel.setValueAt(true, 0, tableModel.findColumn(MTest.COLUMNNAME_Processed));
+		assertFalse(tableModel.isRowEditable(0), "Row should not be editable when Processed is true" );
+		tableModel.setValueAt(false, 0, tableModel.findColumn(MTest.COLUMNNAME_Processed));
+		assertTrue(tableModel.isRowEditable(0), "Row should not be editable when Processed is false" );
+	}
 }
