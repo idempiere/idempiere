@@ -1934,7 +1934,7 @@ public class GridTabTest extends AbstractTestCase {
 	}
 	
 	@Test
-	void testUpdteWrongType() {
+	void testUpdateWithWrongValueType() {
 		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
