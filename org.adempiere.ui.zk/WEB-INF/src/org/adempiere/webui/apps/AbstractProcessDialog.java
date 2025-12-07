@@ -854,19 +854,22 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		if (fSavedName.getSelectedIndex() > -1 && savedParams != null) {
 			for (int i = 0; i < savedParams.size(); i++) {
 				if (savedParams.get(i).getName().equals(saveName)) {
-					getProcessInfo().setAD_PInstance_ID(savedParams.get(i)
-							.getAD_PInstance_ID());
-					for (MPInstancePara para : savedParams.get(i)
-							.getParameters()) {
-						para.deleteEx(true);
+					int currentPInstance_ID = getProcessInfo().getAD_PInstance_ID();
+					try {
+						getProcessInfo().setAD_PInstance_ID(savedParams.get(i)
+								.getAD_PInstance_ID());
+						for (MPInstancePara para : savedParams.get(i)
+								.getParameters()) {
+							para.deleteEx(true);
+						}
+						getParameterPanel().saveParameters();
+						
+						saveReportOptionToInstance(savedParams.get(i));
+						
+						savedParams.get(i).saveEx();
+					} finally {
+						getProcessInfo().setAD_PInstance_ID(currentPInstance_ID);
 					}
-					getParameterPanel().saveParameters();
-					
-					saveReportOptionToInstance(savedParams.get(i));
-					
-					savedParams.get(i).saveEx();
-					
-					getProcessInfo().setAD_PInstance_ID(0);
 				}
 			}
 		}
