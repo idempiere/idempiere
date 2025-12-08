@@ -56,9 +56,9 @@ import org.w3c.dom.Element;
 public class PrintData implements Serializable
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3493453909439452289L;
+	private static final long serialVersionUID = -3380487232643232275L;
 
 	/**
 	 * 	@param ctx context
@@ -107,6 +107,8 @@ public class PrintData implements Serializable
 	private PrintDataColumn[]	m_columnInfo = null;
 	/**	Optional sql				*/
 	private String				m_sql = null;
+	/** Parameters for the sql		*/
+	private List<Object> m_params;
 	/** Optional TableName			*/
 	private String				m_TableName = null;
 
@@ -166,9 +168,21 @@ public class PrintData implements Serializable
 	 * 	Set SQL (optional)
 	 * 	@param sql SQL
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public void setSQL (String sql)
 	{
 		m_sql = sql;
+	}	//	setSQL
+
+	/**
+	 * 	Set SQL (optional)
+	 * 	@param sql SQL
+	 *  @param params parameters
+	 */
+	public void setSQL (String sql, List<Object> params)
+	{
+		m_sql = sql;
+		m_params = params;
 	}	//	setSQL
 
 	/**
@@ -179,6 +193,15 @@ public class PrintData implements Serializable
 	{
 		return m_sql;
 	}	//	getSQL
+
+	/**
+	 * 	Get parameters for SQL
+	 * 	@return params
+	 */
+	public List<Object> getParams()
+	{
+		return m_params;
+	}	//	getParams
 
 	/**
 	 * 	Set TableName (optional)

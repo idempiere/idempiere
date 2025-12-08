@@ -98,7 +98,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1852095729689900949L;
+	private static final long serialVersionUID = -148950412253350775L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
@@ -328,6 +328,17 @@ public class GridTable extends AbstractTableModel
 		return m_whereClause;
 	}	//	getWhereClause
 
+
+	/**
+	 * Get Query Parameters
+	 * @return
+	 */
+	public List<Object> getParameters() {
+		if (m_query != null)
+			return m_query.getParameters();
+		return null;
+	}
+
 	/**
 	 *	Is History displayed
 	 *  @return true if history displayed
@@ -461,7 +472,7 @@ public class GridTable extends AbstractTableModel
 		StringBuilder strParams = new StringBuilder();
 		if (m_query != null) {
 			List<Object> params = m_query.getParameters();
-			if (! params.isEmpty()) {
+			if (!params.isEmpty()) {
 				strParams.append("[");
 				for (Object strParam : params) {
 					if (strParams.length() != 1)
@@ -3370,7 +3381,7 @@ public class GridTable extends AbstractTableModel
 					try {
 						pstmt.setObject(pos, param);
 					} catch (SQLException e) {
-						log.log(Level.SEVERE, "parameter", e);
+						throw new DBException(e);
 					}
 					pos++;
 				}
@@ -3432,7 +3443,7 @@ public class GridTable extends AbstractTableModel
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, "parameter", e);
+				throw new DBException(e);
 			}
 		}	//	setParameter
 
@@ -3787,4 +3798,5 @@ public class GridTable extends AbstractTableModel
 	protected void setCurrentRow(int m_currentRow) {
 		this.m_currentRow  = m_currentRow;
 	}
+
 }

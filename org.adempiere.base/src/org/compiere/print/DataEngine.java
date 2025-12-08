@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -142,6 +143,8 @@ public class DataEngine
 	private int				m_windowNo = 0;
 
 	private Map<Object, Object> m_summarized = new HashMap<Object, Object>();
+
+	private List<Object> params;
 
 	public static final int DEFAULT_REPORT_LOAD_TIMEOUT_IN_SECONDS = 120;
 
@@ -733,13 +736,15 @@ public class DataEngine
 		finalSQL.append(sqlSELECT.substring(0, sqlSELECT.length()-1))
 			.append(sqlFROM);
 
+		params = null;
 		//	WHERE clause
 		if (tableName.startsWith("T_Report"))
 		{
 			finalSQL.append(" WHERE ");
 			for (int i = 0; i < query.getRestrictionCount(); i++)
 			{
-				String q = query.getWhereClause (i);
+				String q = query.getWhereClauseBinding (i);
+				params = query.getParameters();
 				if (q.indexOf("AD_PInstance_ID") != -1)	//	ignore all other Parameters
 					finalSQL.append (q);
 			}	//	for all restrictions
@@ -752,7 +757,8 @@ public class DataEngine
 				finalSQL.append (" WHERE ");
 				if (!query.getTableName ().equals (tableName))
 					query.setTableName (tableName);
-				finalSQL.append (query.getWhereClause (true));
+				finalSQL.append (query.getWhereClauseBinding (true));
+				params = query.getParameters();
 			}
 			//	Access Restriction
 			MRole role = MRole.getDefault(ctx, false);
@@ -807,7 +813,7 @@ public class DataEngine
 		columns.toArray(info);		//	column order is is m_synonymc with SELECT column position
 		pd.setColumnInfo(info);
 		pd.setTableName(tableName);
-		pd.setSQL(finalSQL.toString());
+		pd.setSQL(finalSQL.toString(), params);
 		pd.setHasLevelNo(hasLevelNo);
 
 		if (log.isLoggable(Level.FINEST))
@@ -940,6 +946,7 @@ public class DataEngine
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = pd.getSQL();
+		params = pd.getParams();
 		try
 		{
 			int maxRows = MSysConfig.getIntValue(MSysConfig.GLOBAL_MAX_REPORT_RECORDS, DEFAULT_GLOBAL_MAX_REPORT_RECORDS, Env.getAD_Client_ID(Env.getCtx()));
@@ -950,6 +957,13 @@ public class DataEngine
 				pstmt.setMaxRows(maxRows+1);
 			if (timeout > 0)
 				pstmt.setQueryTimeout(timeout);
+			if (params != null && ! params.isEmpty()) {
+				int idx = 1;
+				for (Object param : params) {
+					pstmt.setObject(idx, param);
+					idx++;
+				}
+			}
 			rs = pstmt.executeQuery();
 
 			boolean isExistsT_Report_PA_ReportLine_ID = false;

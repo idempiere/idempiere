@@ -952,6 +952,20 @@ public class MQuery implements Serializable, Cloneable
 	}	//	addRestriction
 
 	/**
+	 * 	Add Restriction
+	 * 	@param whereClause SQL WHERE clause
+	 *  @param params parameters
+	 */
+	public void addRestriction (String whereClause, List<Object> params)
+	{
+		if (whereClause == null || whereClause.trim().length() == 0)
+			return;
+		Restriction r = new Restriction (whereClause, true, 0, params);
+		m_list.add(r);
+		m_newRecord = whereClause.equals(NEWRECORD);
+	}	//	addRestriction
+
+	/**
 	 * Add restriction 
 	 * @param whereClause
 	 * @param Operator
@@ -1770,6 +1784,35 @@ class Restriction  implements Serializable
 	/**
 	 * 	Create Restriction with direct WHERE clause
 	 * 	@param whereClause SQL WHERE Clause
+	 * 	@param andCondition true->AND false->OR
+	 *  @param depth number of parenthesis
+	 *  @param params parameters
+	 */
+	Restriction (String whereClause, boolean andCondition, int depth, List<Object> params)
+	{
+		this(whereClause, andCondition ? "AND" : "OR", depth, params);
+	}
+
+	/**
+	 * 	Create Restriction with direct WHERE clause
+	 * 	@param whereClause SQL WHERE Clause
+	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
+	 *  @param depth number of parenthesis
+	 *  @param params parameters
+	 */
+	Restriction (String whereClause, String andOrCondition, int depth, List<Object> params)
+	{
+		DirectWhereClause = whereClause;
+		this.andOrCondition = andOrCondition;
+		this.notCondition = false;
+		this.existsCondition = false;
+		this.joinDepth = depth;
+		this.params = params;
+	}	//	Restriction
+
+	/**
+	 * 	Create Restriction with direct WHERE clause
+	 * 	@param whereClause SQL WHERE Clause
 	 *  @param andCondition true=and, false=or
 	 *  @param notCondition true=not
 	 *  @param existsCondition true=exists
@@ -1935,7 +1978,6 @@ class Restriction  implements Serializable
 	 */
 	public String getSQLBinding (String tableName)
 	{
-		params.clear();
 		if (DirectWhereClause != null)
 			return DirectWhereClause;
 
@@ -2001,6 +2043,7 @@ class Restriction  implements Serializable
 			sb.append(MQuery.LIKE);
 		else
 			sb.append(Operator);
+		params.clear();
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
 			if (Code instanceof String) {
@@ -2020,7 +2063,7 @@ class Restriction  implements Serializable
 			if (MQuery.BETWEEN.equals(Operator))
 			{
 				sb.append(" AND ?");
-				params.add(Code);
+				params.add(Code_to);
 			}
 		}
 		return sb.toString();

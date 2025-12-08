@@ -295,18 +295,21 @@ public class ReportAction implements EventListener<Event>
 		MTable table = MTable.get(gridTab.getAD_Table_ID());
 		StringBuilder whereClause = new StringBuilder("");
 
+		List<Object> params = null;
 		if (currentRowOnly)
 		{
 			Record_ID = gridTab.getRecord_ID();
 			Record_UU = gridTab.getRecord_UU();
 			whereClause.append(gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow()));
-			if (whereClause.length() == 0)
+			if (whereClause.length() == 0) {
 				whereClause.append(gridTab.getTableModel().getSelectWhereClause());
-
+				params = gridTab.getTableModel().getParameters();
+			}
 		}
 		else
 		{
 			whereClause.append(gridTab.getTableModel().getSelectWhereClause());
+			params = gridTab.getTableModel().getParameters();
 			if (pf != null && pf.getJasperProcess_ID() > 0) {
 				if (table.isUUIDKeyTable()) {
 					jasperRecordUUs = new ArrayList<String>();
@@ -349,7 +352,7 @@ public class ReportAction implements EventListener<Event>
 			whereClause.append(")");
 		}
 
-		query.addRestriction(whereClause.toString());
+		query.addRestriction(whereClause.toString(), params);
 
 		PrintInfo info = new PrintInfo(pf.getName(), pf.getAD_Table_ID(), Record_ID, Record_UU);
 		info.setDescription(query.getInfo());

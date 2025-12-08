@@ -658,7 +658,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo
 			+ " - Only Current Rows=" + onlyCurrentRows
 			+ ", Days=" + onlyCurrentDays + ", Detail=" + isDetail());
-		m_oldQuery = m_query.getWhereClauseBinding();
+		m_oldQuery = m_query.toString();
 		m_vo.onlyCurrentRows = onlyCurrentRows;
 		m_vo.onlyCurrentDays = onlyCurrentDays;
 
@@ -1348,7 +1348,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!m_mTable.isOpen())
 			return false;
 		//	Same Query
-		if (!m_oldQuery.equals(m_query.getWhereClauseBinding()))
+		if (!m_oldQuery.equals(m_query.toString()))
 			return false;
 		//	Detail?
 		if (!isDetail())
