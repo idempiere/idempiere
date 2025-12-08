@@ -1961,7 +1961,7 @@ public class GridTabTest extends AbstractTestCase {
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MOrg.Table_Name);
-		query.addRestriction(MOrg.COLUMNNAME_AD_Org_ID, MQuery.EQUAL,"0");
+		query.addRestriction(MOrg.COLUMNNAME_AD_Org_ID, MQuery.EQUAL,0);
 		gTab.setQuery(query);
 		gTab.query(false, 0, 0);
 		assertEquals(1, gTab.getRowCount(), "Tab should have one record after query");
@@ -2001,7 +2001,7 @@ public class GridTabTest extends AbstractTestCase {
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MMessage.Table_Name);
-		query.addRestriction(MMessage.COLUMNNAME_AD_Message_ID, MQuery.EQUAL,"101"); //zero
+		query.addRestriction(MMessage.COLUMNNAME_AD_Message_ID, MQuery.EQUAL,101); //zero
 		gTab.setQuery(query);
 		gTab.query(false, 0, 0);
 		assertEquals(1, gTab.getRowCount(), "Tab should have one record after query");
@@ -2288,6 +2288,11 @@ public class GridTabTest extends AbstractTestCase {
 		var spyTableModel = spy(tableModel);
 		doReturn(null).when(spyTableModel).getPO(anyInt());
 		assertTrue(spyTableModel.getPO(gTab.getCurrentRow()) == null, "getPO should return null for spy");
+		setTableModelSpy(gTab, spyTableModel);
+		assertTrue(gTab.dataDelete(), "dataDelete should succeed even when getPO returns null");
+	}
+
+	private void setTableModelSpy(GridTab gTab, GridTable spyTableModel) {
 		//use reflection to set gTab.m_mTable to spyTableModel
 		try {
 			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
@@ -2296,7 +2301,6 @@ public class GridTabTest extends AbstractTestCase {
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
 		}
-		assertTrue(gTab.dataDelete(), "dataDelete should succeed even when getPO returns null");
 	}
 	
 	@Test
@@ -2366,14 +2370,7 @@ public class GridTabTest extends AbstractTestCase {
 			doReturn(false).when(spyPo).delete(anyBoolean());
 			return spyPo;
 		}).when(spyTableModel).getPO(anyInt());
-		//use reflection to set gTab.m_mTable to spyTableModel
-		try {
-			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
-			mTableField.setAccessible(true);
-			mTableField.set(gTab, spyTableModel);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
-		}
+		setTableModelSpy(gTab, spyTableModel);
 		assertFalse(gTab.dataDelete(), "dataDelete should fail when PO.delete returns false");
 		assertTrue(eventMessage.length() > 0, "DataStatusEvent error message should be captured" );
 	}
@@ -2398,14 +2395,7 @@ public class GridTabTest extends AbstractTestCase {
 			doReturn(false).when(spyPo).save();
 			return spyPo;
 		}).when(spyTableModel).getPO(anyInt());
-		//use reflection to set gTab.m_mTable to spyTableModel
-		try {
-			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
-			mTableField.setAccessible(true);
-			mTableField.set(gTab, spyTableModel);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
-		}
+		setTableModelSpy(gTab, spyTableModel);
 		gTab.setValue(MTest.COLUMNNAME_Name, "Test Save Error " + System.currentTimeMillis());
 		assertTrue(spyTableModel.needSave(), "Table model should need save after value change" );		
 		assertTrue(spyTableModel.needSave(true), "Table model should need save after value change" );
@@ -2428,14 +2418,7 @@ public class GridTabTest extends AbstractTestCase {
 			doThrow(new AdempiereException("MyError")).when(spyPo).save();
 			return spyPo;
 		}).when(spyTableModel).getPO(anyInt());
-		//use reflection to set gTab.m_mTable to spyTableModel
-		try {
-			java.lang.reflect.Field mTableField = GridTab.class.getDeclaredField("m_mTable");
-			mTableField.setAccessible(true);
-			mTableField.set(gTab, spyTableModel);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			fail("Failed to set m_mTable field for spyGTab. " + e.getMessage());
-		}
+		setTableModelSpy(gTab, spyTableModel);
 		gTab.setValue(MTest.COLUMNNAME_Name, "Test Save Error " + System.currentTimeMillis());
 		assertTrue(spyTableModel.needSave(), "Table model should need save after value change" );		
 		assertTrue(spyTableModel.needSave(true), "Table model should need save after value change" );
@@ -2549,10 +2532,10 @@ public class GridTabTest extends AbstractTestCase {
 		tableModel.setValueAt(false, 0, tableModel.findColumn("IsActive"));
 		assertFalse(tableModel.isRowEditable(0), "Row should not be editable when IsActive is false" );
 		tableModel.setValueAt(true, 0, tableModel.findColumn("IsActive"));
-		assertTrue(tableModel.isRowEditable(0), "Row should not be editable when IsActive is true" );
+		assertTrue(tableModel.isRowEditable(0), "Row should be editable when IsActive is true" );
 		tableModel.setValueAt(true, 0, tableModel.findColumn(MTest.COLUMNNAME_Processed));
 		assertFalse(tableModel.isRowEditable(0), "Row should not be editable when Processed is true" );
 		tableModel.setValueAt(false, 0, tableModel.findColumn(MTest.COLUMNNAME_Processed));
-		assertTrue(tableModel.isRowEditable(0), "Row should not be editable when Processed is false" );
+		assertTrue(tableModel.isRowEditable(0), "Row should be editable when Processed is false" );
 	}
 }
