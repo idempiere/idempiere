@@ -72,7 +72,7 @@ import org.zkoss.zul.Vbox;
  * @version	InfoInvoice.java Adempiere Swing UI 3.4.1
  **/
 
-@Deprecated // replaced with InfoInvoiceWindow IDEMPIERE-325
+@Deprecated (since="13", forRemoval=true) // replaced with InfoInvoiceWindow IDEMPIERE-325
 public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 {
     /**

@@ -74,7 +74,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 * @return array of users
 	 * @deprecated Since 3.5.3a. Please use {@link #getOfBPartner(Properties, int, String)}.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MUser[] getOfBPartner (Properties ctx, int C_BPartner_ID)
 	{
 		return getOfBPartner(ctx, C_BPartner_ID, null);

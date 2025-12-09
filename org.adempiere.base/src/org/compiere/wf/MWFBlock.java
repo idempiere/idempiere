@@ -31,7 +31,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @version $Id: MWFBlock.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  *  @deprecated not fully implemented, marked as inactive in dictionary
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class MWFBlock extends X_AD_WF_Block implements ImmutablePOSupport
 {
 	/**

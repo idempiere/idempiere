@@ -1229,7 +1229,7 @@ public class GridField
 	 *  @return true if valid
 	 *  @deprecated use validateValueNoDirect instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean validateValue()
 	{
 		//  null

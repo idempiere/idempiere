@@ -246,7 +246,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * @param autoStart
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public ProcessModalDialog (Window parent, String title,
 			int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)

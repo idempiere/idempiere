@@ -4394,13 +4394,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
 	/**
-	 * @param pi
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public void executeASync(ProcessInfo pi) {
-	}
-
-	/**
 	 * Handle DialogEvents.ON_WINDOW_CLOSE event for {@link ProcessModalDialog}.<br/>
 	 * Delegate update of UI to {@link #updateUI(ProcessInfo)}.
 	 * @param pi

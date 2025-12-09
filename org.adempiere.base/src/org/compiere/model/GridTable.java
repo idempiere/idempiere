@@ -189,7 +189,7 @@ public class GridTable extends AbstractTableModel
 	/**	Is the Resultset open?      */
 	private boolean			    m_open = false;
 	/**	Compare to DB before save	*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	private boolean				m_compareDB = true;		//	set to true after every save
 
 	/** Data buffer */
@@ -2685,7 +2685,7 @@ public class GridTable extends AbstractTableModel
 	 * 	@param compareDB compare DB - false forces overwrite
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	@GeneratedCodeCoverageExclusion
 	public void setCompareDB (boolean compareDB)
 	{
@@ -2698,7 +2698,7 @@ public class GridTable extends AbstractTableModel
 	 * 	(false forces overwrite).
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean getCompareDB ()
 	{
 		return m_compareDB;

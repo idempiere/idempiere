@@ -44,7 +44,7 @@ import org.compiere.util.Trx;
  * Generate Shipment (manual) controller class
  * @deprecated ticket IDEMPIERE-1963 replaced this with an Info Window
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class InOutGen extends GenForm
 {
 	/**	Logger			*/

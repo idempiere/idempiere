@@ -533,7 +533,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 *	@return Shipment
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MInOut copyFrom (MInOut from, Timestamp dateDoc,
 		int C_DocType_ID, boolean isSOTrx, boolean counter, String trxName, boolean setOrder)
 	{

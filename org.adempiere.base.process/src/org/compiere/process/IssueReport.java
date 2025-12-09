@@ -29,7 +29,7 @@ import org.compiere.util.AdempiereSystemError;
  *  @version $Id: IssueReport.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
  *  @deprecated not fully implemented
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 @org.adempiere.base.annotation.Process
 public class IssueReport extends SvrProcess
 {

@@ -455,7 +455,7 @@ public class PrintData implements Serializable
 	 * 	@return PrintData(Element) with AD_Column_ID or null
 	 *  @deprecated replace by {@link #getNodeByPrintFormatItemId(int)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public Object getNode (Integer AD_Column_ID)
 	{
 		int index = getIndex (AD_Column_ID.intValue());
@@ -546,7 +546,7 @@ public class PrintData implements Serializable
 	 * 	@param AD_Column_ID AD_Column_ID
 	 * 	@return index or -1
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public int getIndex (int AD_Column_ID)
 	{
 		if (m_columnInfo == null)

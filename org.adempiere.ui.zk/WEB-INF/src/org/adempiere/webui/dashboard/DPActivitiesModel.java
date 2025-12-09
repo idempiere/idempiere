@@ -31,7 +31,7 @@ import org.compiere.wf.MWFActivity;
  * Contributors: 
  * Deepak Pansheriya - showing only notes message
  */
-@Deprecated // replaced with DPDocumentStatus
+@Deprecated (since="13", forRemoval=true) // replaced with DPDocumentStatus
 public class DPActivitiesModel {
 
 	public static boolean isShowUnprocessed() {
