@@ -40,9 +40,7 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 
 /**
  * Default Accounting Service Implementation
@@ -51,24 +49,6 @@ import org.osgi.service.component.annotations.Deactivate;
 public class POAccountingServiceImpl implements IPOAccountingService {
 	
     private static CLogger log = CLogger.getCLogger(POAccountingServiceImpl.class);
-    
-    /**
-     * Activate the service and register with PO
-     */
-    @Activate
-    protected void activate() {
-        PO.setAccountingService(this);
-        log.info("POAccountingService activated and registered with PO");
-    }
-    
-    /**
-     * Deactivate the service and unregister from PO
-     */
-    @Deactivate
-    protected void deactivate() {
-        PO.setAccountingService(null);
-        log.info("POAccountingService deactivated");
-    }
     
     /** Accounting Columns cache per table - Map of table name to column list */
     private static ThreadLocal<Map<String, ArrayList<String>>> s_acctColumns = 
