@@ -1482,10 +1482,26 @@ public class MCostDetail extends X_M_CostDetail
 		if (getM_InOutLine_ID() > 0) { // skip average costing qty check for reversed shipment
 			MInOutLine iol = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
 			MInOut io = new MInOut(getCtx(), iol.getM_InOut_ID(), get_TrxName());
-			cost.setSkipAverageCostingQtyCheck(io.getReversal_ID() > 0);
+			if (io.getReversal_ID() > 0)
+				cost.setSkipAverageCostingQtyCheck(io.getReversal_ID() > 0);
+			else { // skip average costing qty check for drop shipment
+				int C_Order_ID = io.getC_Order_ID();
+				if (C_Order_ID > 0) {
+					MOrder sOrder = new MOrder(getCtx(), C_Order_ID, get_TrxName());
+					int Link_Order_ID = sOrder.getLink_Order_ID();
+					if (Link_Order_ID > 0) {
+						MOrder lOrder = new MOrder(getCtx(), Link_Order_ID, get_TrxName());
+						cost.setSkipAverageCostingQtyCheck(lOrder.isDropShip());
+					}
+				}
+			}
 		} else if (getC_ProjectIssue_ID() > 0) { // skip average costing qty check for reversed project issue
 			MProjectIssue pi = new MProjectIssue(getCtx(), getC_ProjectIssue_ID(), get_TrxName());
 			cost.setSkipAverageCostingQtyCheck(pi.getReversal_ID() > 0);
+		} else if (getM_InventoryLine_ID() > 0) { // skip average costing qty check for reversed inventory
+			MInventoryLine il = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+			MInventory i = new MInventory(getCtx(), il.getM_Inventory_ID(), get_TrxName());
+			cost.setSkipAverageCostingQtyCheck(i.getReversal_ID() > 0);
 		}
 		
 		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
