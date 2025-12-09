@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 

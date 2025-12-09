@@ -220,7 +220,7 @@ public final class Ini implements Serializable
 	 *	Save INI parameters to disk
 	 *  @param tryUserHome true to try user home first
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "removal" })
 	public static void saveProperties (boolean tryUserHome)
 	{
 		if (Ini.isClient() && DB.isConnected()) {

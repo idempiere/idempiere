@@ -47,7 +47,6 @@ import org.compiere.util.Env;
  * @author hengsin
  *
  */
-@SuppressWarnings("deprecation")
 public class DefaultInfoFactory implements IInfoFactory {
 
 	@Override
@@ -78,6 +77,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 	 * @param field
 	 * @return InfoPanel
 	 */
+	@SuppressWarnings("removal")
 	public InfoPanel create(int WindowNo, String tableName, String keyColumn,
 				String value, boolean multiSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables, GridField field) {
 		InfoPanel info = null;
@@ -151,6 +151,7 @@ public class DefaultInfoFactory implements IInfoFactory {
         return info;
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public InfoPanel create(Lookup lookup, GridField field, String tableName,
 			String keyColumn, String queryValue, boolean multiSelection,

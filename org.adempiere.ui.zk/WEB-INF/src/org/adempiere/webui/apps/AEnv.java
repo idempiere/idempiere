@@ -33,7 +33,6 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
 
-import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
