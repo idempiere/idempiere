@@ -155,17 +155,4 @@ public class POAccountingServiceImpl implements IPOAccountingService {
     		}
     		return no > 0;
 	}
-
-	@Override
-	public Object getAccountingDoc(PO po) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setAccountingDoc(PO po, Object doc) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

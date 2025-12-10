@@ -43,18 +43,5 @@ public interface IPOAccountingService {
     boolean insertAccounting(PO po, String acctTableName, 
                             String acctBaseTable, String whereClause);
     
-    /**
-     * Get accounting document for PO
-     * @param po Persistent Object
-     * @return accounting document or null
-     */
-    Object getAccountingDoc(PO po);
-    
-    /**
-     * Set accounting document for PO
-     * @param po Persistent Object
-     * @param doc accounting document
-     */
-    void setAccountingDoc(PO po, Object doc);
 
 }

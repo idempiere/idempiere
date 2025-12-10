@@ -60,7 +60,6 @@ import org.adempiere.exceptions.CrossTenantException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
-import org.compiere.acct.Doc;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.util.AdempiereUserError;
@@ -5712,14 +5711,14 @@ public abstract class PO
 	}	//	getDocument
 
 	/** Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
-	private Doc m_doc;
+	private Object m_doc;
 
 	/**
 	 * Set the accounting document associated to the PO - for use in POST ModelValidator
 	 * @param doc Document
 	 */
-	public void setDoc(Doc doc) {
-		m_doc = doc;		
+	public void setDoc(Object doc) {
+	    m_doc = doc;		
 	}
 
 	/**
@@ -5744,8 +5743,8 @@ public abstract class PO
 	 * Get the accounting document associated to the PO - for use in POST ModelValidator
 	 * @return Doc Document
 	 */
-	public Doc getDoc() {
-		return m_doc;
+	public Object getDoc() {
+	    return m_doc;
 	}
 
 	/**
