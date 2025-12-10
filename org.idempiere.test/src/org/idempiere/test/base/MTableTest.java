@@ -977,7 +977,7 @@ public class MTableTest extends AbstractTestCase {
 			pi.setTable_ID(pinstance.getAD_Table_ID());
 			pi.setRecord_ID(pinstance.getRecord_ID());
 			process.processIt(pi, Trx.get(getTrxName(), false), false);
-			assertFalse(!pi.isError(), pi.getSummary()); // can't detach or re-attach default partition
+			assertTrue(pi.isError(), pi.getSummary()); // can't detach or re-attach default partition
 		} finally {
 			rollback();
 			try {

@@ -147,29 +147,19 @@ public class MWindowTest extends AbstractTestCase {
 		MWindow original = new MWindow(ctx, testWindowId, getTrxName());
 		MTab[] originalTabs = original.getTabs(false, getTrxName());
 		
-		MWindow copy = new MWindow(ctx, original, getTrxName());
-		MTab[] copyTabs = copy.getTabs(false, getTrxName());
-		assertNotNull(copy, "Copy of MWindow must not be null");
-		assertEquals(original.getName(), copy.getName(), "Copied MWindow should keep the same name");
-		assertEquals(originalTabs.length, copyTabs.length, "Copied MWindow should keep the same number of tabs");
-		for (int i = 0; i < originalTabs.length; i++) 
-			assertEquals(originalTabs[i].getName(), copyTabs[i].getName(), "Copied MWindow should keep the same tab name");
-		
-		copy = new MWindow(ctx, original);
-		copyTabs = copy.getTabs(false, getTrxName());
-		assertNotNull(copy, "Copy of MWindow must not be null");
-		assertEquals(original.getName(), copy.getName(), "Copied MWindow should keep the same name");
-		assertEquals(originalTabs.length, copyTabs.length, "Copied MWindow should keep the same number of tabs");
-		for (int i = 0; i < originalTabs.length; i++) 
-			assertEquals(originalTabs[i].getName(), copyTabs[i].getName(), "Copied MWindow should keep the same tab name");
-		
-		copy = new MWindow(original);
-		copyTabs = copy.getTabs(false, getTrxName());
-		assertNotNull(copy, "Copy of MWindow must not be null");
-		assertEquals(original.getName(), copy.getName(), "Copied MWindow should keep the same name");
-		assertEquals(originalTabs.length, copyTabs.length, "Copied MWindow should keep the same number of tabs");
-		for (int i = 0; i < originalTabs.length; i++) 
-			assertEquals(originalTabs[i].getName(), copyTabs[i].getName(), "Copied MWindow should keep the same tab name");
+		MWindow[] copies = {
+				new MWindow(ctx, original, getTrxName()),
+				new MWindow(ctx, original),
+				new MWindow(original)
+		};		
+		for (MWindow copy : copies) {			
+			MTab[] copyTabs = copy.getTabs(false, getTrxName());
+			assertNotNull(copy, "Copy of MWindow must not be null");
+			assertEquals(original.getName(), copy.getName(), "Copied MWindow should keep the same name");
+			assertEquals(originalTabs.length, copyTabs.length, "Copied MWindow should keep the same number of tabs");
+			for (int i = 0; i < originalTabs.length; i++) 
+				assertEquals(originalTabs[i].getName(), copyTabs[i].getName(), "Copied MWindow should keep the same tab name");
+		}
 	}
 
 	/**
