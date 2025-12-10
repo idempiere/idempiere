@@ -315,11 +315,11 @@ public class MFieldTest extends AbstractTestCase {
 	public void testGetById() {
         // Valid ID
         MField firstLoad = MField.get(ctx, testFieldId);
-        assertNotNull(firstLoad, "Valid ID should not retun null");
+        assertNotNull(firstLoad, "Valid ID should not return null");
         assertEquals(testFieldId, firstLoad.getAD_Field_ID());
         
         MField secondLoad = MField.get(testFieldId);
-        assertNotNull(secondLoad, "Valid ID should not retun null");
+        assertNotNull(secondLoad, "Valid ID should not return null");
         assertSame(firstLoad, secondLoad, "Cache should return same instance");
         
         // Invalid ID

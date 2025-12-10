@@ -301,11 +301,11 @@ public class MWindowTest extends AbstractTestCase {
 	public void testGetById() {
         // Valid ID
         MWindow firstLoad = MWindow.get(ctx, testWindowId);
-        assertNotNull(firstLoad, "Valid ID should not retun null");
+        assertNotNull(firstLoad, "Valid ID should not return null");
         assertEquals(testWindowId, firstLoad.getAD_Window_ID());
         
         MWindow secondLoad = MWindow.get(testWindowId);
-        assertNotNull(secondLoad, "Valid ID should not retun null");
+        assertNotNull(secondLoad, "Valid ID should not return null");
         assertSame(firstLoad, secondLoad, "Cache should return same instance");
         
         // Invalid ID
@@ -332,12 +332,12 @@ public class MWindowTest extends AbstractTestCase {
 	    
         // Valid UU
         MWindow firstLoad = MWindow.get(ctx, testWindowUUID);
-        assertNotNull(firstLoad, "Valid UUID should not retun null");
+        assertNotNull(firstLoad, "Valid UUID should not return null");
         assertEquals(testWindowId, firstLoad.getAD_Window_ID());
         
         MWindow secondLoad = MWindow.get(ctx, testWindowUUID);
-        assertNotNull(secondLoad, "Valid UUID should not retun null");
-        assertNotSame(firstLoad, secondLoad, "Cache should return same instance");
+        assertNotNull(secondLoad, "Valid UUID should not return null");
+        assertNotSame(firstLoad, secondLoad, "get(ctx, uuid) creates new instances, not cached");
 	}
 	
 	/**

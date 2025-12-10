@@ -862,7 +862,7 @@ public class MTableTest extends AbstractTestCase {
 		    // primaryLevelOnly = false
 		    partitionName = table.getTableName() + "_AD_Client_ID_AD_Org_ID";
 		    assertEquals(partitionName, MTable.getPartitionName(Env.getCtx(), table.getTableName(), false, getTrxName()), 
-		    		"Primary level only should append only the first partition column");
+		    		"All partition columns should be appended when primaryLevelOnly is false");
 		} finally {
 			rollback();
 		}
