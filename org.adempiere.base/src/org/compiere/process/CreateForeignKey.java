@@ -204,7 +204,7 @@ public class CreateForeignKey extends SvrProcess {
 					int AD_Column_ID = DB.getSQLValue(null, getColumnIDSql, table.getAD_Table_ID(), columnName.toLowerCase());
 					if (AD_Column_ID > 0)
 					{
-						column = MColumn.get(getCtx(), AD_Column_ID);
+						column = MColumn.getCopy(getCtx(), AD_Column_ID, get_TrxName());
 						if (column == null)
 							continue;
 						String foreignTable = column.getReferenceTableName();
