@@ -2097,7 +2097,7 @@ public abstract class PO
 	 *  Stops at first null mandatory field.
 	 *  @return true if all mandatory fields are ok
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected boolean isMandatoryOK()
 	{
 		int size = get_ColumnCount();
@@ -5001,7 +5001,7 @@ public abstract class PO
 	 *	@param acctTable accounting sub table
 	 *	@return true
 	 */
-	@Deprecated // see IDEMPIERE-2088
+	@Deprecated (since="13", forRemoval=true) // see IDEMPIERE-2088
 	protected boolean delete_Accounting(String acctTable)
 	{
 		return true;
@@ -5901,7 +5901,7 @@ public abstract class PO
 	}
 	
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected Object clone() throws CloneNotSupportedException {
 		PO clone = (PO) super.clone();
 		clone.m_trxName = null;

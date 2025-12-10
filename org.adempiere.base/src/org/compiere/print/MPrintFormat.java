@@ -1387,7 +1387,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MPrintFormat clone() throws CloneNotSupportedException {
 		MPrintFormat clone = (MPrintFormat) super.clone();
 		clone.m_items = getItems() == null ? null : new MPrintFormatItem[getItems().length];

@@ -33,7 +33,6 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
 
-import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
@@ -234,16 +233,6 @@ public final class AEnv
 	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query) {
 		zoom (AD_Table_ID, Record_ID, query, 0);
 	}
-
-	/**
-	 *	Exit System.
-	 *  @param status System exit status (usually 0 for no error)
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static void exit (int status)
-	{
-		Env.exitEnv(status);
-	}	//	exit
 
 	/**
 	 * Logout AD_Session and clear {@link #windowCache}.
@@ -616,7 +605,7 @@ public final class AEnv
      * @return true if client browser is firefox 2+
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isFirefox2() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -635,7 +624,7 @@ public final class AEnv
      * @return boolean
      * @deprecated See IDEMPIERE-1022
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isBrowserSupported() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -669,7 +658,7 @@ public final class AEnv
      * @return true if user agent is internet explorer
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isInternetExplorer()
     {
     	Execution execution = Executions.getCurrent();
@@ -860,15 +849,6 @@ public final class AEnv
 			WeakReference<Desktop> ref = DesktopRunnable.getThreadLocalDesktop();
 			return ref != null ? ref.get() : null;
 		}
-	}
-	
-	/**
-	 * @deprecated replace by ClientInfo.isMobile()
-	 * @return true if running on a tablet
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static boolean isTablet() {
-		return ClientInfo.isMobile();
 	}
 	
 	/**

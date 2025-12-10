@@ -342,7 +342,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	 * 	@param setOrder set Order links
 	 *	@return Invoice
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MInvoice copyFrom (MInvoice from, Timestamp dateDoc,
 		int C_DocTypeTarget_ID, boolean isSOTrx, boolean counter,
 		String trxName, boolean setOrder)

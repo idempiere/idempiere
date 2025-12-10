@@ -95,19 +95,19 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         this(zoom, requery, preferences, false, false, false, false, null);
     }
     
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord)
     {
     	this(zoom, requery, preferences, newRecord, false, false, null);
     }
     
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord)
     {
     	this(zoom, requery, preferences, newRecord, updateRecord, false, null);
     }
 
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation)
     {
     	this(zoom, requery, preferences, newRecord, updateRecord, false, null);

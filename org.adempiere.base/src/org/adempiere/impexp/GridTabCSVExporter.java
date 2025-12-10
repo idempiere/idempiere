@@ -410,7 +410,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 	 * @param currentParentIndex
 	 * @return
 	 */
-	@Deprecated // don't use any where, relate IDEMPIERE-2788
+	@Deprecated (since="13", forRemoval=true) // don't use any where, relate IDEMPIERE-2788
 	public String getWhereClause (GridTab childTab, GridTab parentGrid, int currentParentIndex){
 		String whereClau = null; 
 		String linkColumn = childTab.getLinkColumnName();

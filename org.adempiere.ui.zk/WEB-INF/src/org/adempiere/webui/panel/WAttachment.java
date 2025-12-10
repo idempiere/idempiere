@@ -174,7 +174,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param Record_ID record key
 	 *  @param trxName transaction
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName)
 	{
@@ -191,7 +191,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param trxName transaction
 	 *  @param eventListener
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 			int AD_Table_ID, int Record_ID, String trxName, EventListener<Event> eventListener)
 	{

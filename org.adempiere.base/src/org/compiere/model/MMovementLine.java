@@ -287,7 +287,7 @@ public class MMovementLine extends X_M_MovementLine
 	 * @param isReceipt
 	 * @deprecated not fully implemented 
 	 */ 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void setOrderLine (MDDOrderLine oLine, BigDecimal Qty, boolean isReceipt) 
 	{ 
 		setDD_OrderLine_ID(oLine.getDD_OrderLine_ID()); 
@@ -411,7 +411,7 @@ public class MMovementLine extends X_M_MovementLine
 	 *  @return array of receipt lines
 	 *  @deprecated not fully implemented 
 	 */ 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MMovementLine[] getOfOrderLine (Properties ctx, 
 			int DD_OrderLine_ID, String where, String trxName) 
 	{

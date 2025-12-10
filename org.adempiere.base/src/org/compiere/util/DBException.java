@@ -25,7 +25,7 @@ package org.compiere.util;
  * @deprecated This class was moved to {@link org.adempiere.exceptions.DBException}
  * 				and will be removed in future. 
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class DBException extends org.adempiere.exceptions.DBException {
 	/**
 	 * 

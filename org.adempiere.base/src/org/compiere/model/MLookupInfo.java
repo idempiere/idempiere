@@ -44,7 +44,7 @@ public class MLookupInfo implements Serializable, Cloneable
 	 *  @return AD_Reference_ID
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int getAD_Reference_ID (String referenceName)
 	{
 		int retValue = 0;
@@ -97,7 +97,7 @@ public class MLookupInfo implements Serializable, Cloneable
 	 *  @return AD_Column_ID
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int getAD_Column_ID (String columnName)
 	{
 		int retValue = 0;

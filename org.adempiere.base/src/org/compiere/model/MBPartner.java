@@ -629,20 +629,6 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		super.setClientOrg(AD_Client_ID, AD_Org_ID);
 	}	//	setClientOrg
 
-	/** 
-	 * 	Get Linked Organization.
-	 * 	(is Button)
-	 * 	The Business Partner is another Organization 
-	 * 	for explicit Inter-Org transactions 
-	 * 	@return AD_Org_ID if BP
-	 *  @deprecated
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public int getAD_OrgBP_ID_Int() 
-	{
-		return getAD_OrgBP_ID();
-	}	//	getAD_OrgBP_ID_Int
-
 	/**
 	 * 	Get Primary C_BPartner_Location_ID (First BillTo or First)
 	 *	@return C_BPartner_Location_ID

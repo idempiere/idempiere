@@ -42,7 +42,7 @@ import org.compiere.util.Env;
  *  @version $Id: DeliveryAccuracy.java,v 1.2 2006/07/30 00:51:06 jjanke Exp $
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class DeliveryAccuracy extends SLACriteria
 {
 
