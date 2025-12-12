@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import javax.swing.Icon;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.h2;
 import org.apache.ecs.xhtml.h3;
@@ -246,7 +247,10 @@ public class GridWindow implements Serializable
 	/**
 	 *  Get Window Icon
 	 *  @return Icon for Window
+	 *  @deprecated legacy method for the now deprecated Swing UI
 	 */
+	@Deprecated(forRemoval = true, since = "13")
+	@GeneratedCodeCoverageExclusion
 	public Image getImage()
 	{
 		if (m_vo.AD_Image_ID == 0)
@@ -271,7 +275,10 @@ public class GridWindow implements Serializable
 	/**
 	 *  Get Window Icon
 	 *  @return Icon for Window
+	 *  @deprecated legacy method for the now deprecated Swing UI
 	 */
+	@Deprecated(forRemoval = true, since = "13")
+	@GeneratedCodeCoverageExclusion
 	public Icon getIcon()
 	{
 		if (m_vo.AD_Image_ID == 0)
@@ -284,7 +291,10 @@ public class GridWindow implements Serializable
 	/**
 	 *  Get Color
 	 *  @return MColor or null
+	 *  @deprecated Colors are not used in the new web UI
 	 */
+	@Deprecated(forRemoval = true, since = "13")
+	@GeneratedCodeCoverageExclusion
 	public MColor getColor()
 	{
 		if (m_vo.AD_Color_ID == 0)
@@ -427,7 +437,10 @@ public class GridWindow implements Serializable
 	/**
 	 * 	Get Window Size
 	 *	@return window size or null if not set
+	 *  @deprecated legacy method for the now deprecated Swing UI
 	 */
+	@Deprecated(forRemoval = true, since = "13")
+	@GeneratedCodeCoverageExclusion
 	public Dimension getWindowSize()
 	{
 		if (m_vo.WinWidth != 0 && m_vo.WinHeight != 0)
@@ -450,6 +463,7 @@ public class GridWindow implements Serializable
 	 * 	@param javaClient true if java client, false for browser
 	 *	@return help document
 	 */
+	@GeneratedCodeCoverageExclusion
 	public WebDoc getHelpDoc (boolean javaClient)
 	{
 		StringBuilder title = new StringBuilder(Msg.getMsg(Env.getCtx(), "Window")).append(": ").append(getName());
@@ -572,6 +586,7 @@ public class GridWindow implements Serializable
 	 * 	@param recalc true to always re-query from DB
 	 *	@return last updated timestamp
 	 */
+	@GeneratedCodeCoverageExclusion
 	public Timestamp getModelUpdated (boolean recalc)
 	{
 		if (recalc || m_modelUpdated == null)
