@@ -43,5 +43,18 @@ public interface IPOAccountingService {
     boolean insertAccounting(PO po, String acctTableName, 
                             String acctBaseTable, String whereClause);
     
+    /**
+     * Get the Doc associated with this PO (for accounting purposes)
+     * @param po persistent object
+     * @return Doc or null
+     */
+    Object getDoc(PO po);
+    
+    /**
+     * Set the Doc associated with this PO (for accounting purposes)
+     * @param po persistent object
+     * @param doc document
+     */
+    void setDoc(PO po, Object doc);
 
 }

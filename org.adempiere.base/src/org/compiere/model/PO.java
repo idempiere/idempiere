@@ -5713,11 +5713,10 @@ public abstract class PO
 	/** Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
 	private Object m_doc;
 
-	/**
-	 * Set the accounting document associated to the PO - for use in POST ModelValidator
-	 * @param doc Document
-	 */
 	public void setDoc(Object doc) {
+	    if (isAccountingAvailable()) {
+	        s_accountingService.setDoc(this, doc);
+	    }
 	    m_doc = doc;		
 	}
 
@@ -5739,11 +5738,10 @@ public abstract class PO
 		return m_isReplication;
 	}
 
-	/**
-	 * Get the accounting document associated to the PO - for use in POST ModelValidator
-	 * @return Doc Document
-	 */
 	public Object getDoc() {
+	    if (isAccountingAvailable()) {
+	        return s_accountingService.getDoc(this);
+	    }
 	    return m_doc;
 	}
 

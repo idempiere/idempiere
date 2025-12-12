@@ -32,7 +32,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.base.IPOAccountingService;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
+import org.compiere.acct.Doc;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
@@ -155,4 +157,21 @@ public class POAccountingServiceImpl implements IPOAccountingService {
     		}
     		return no > 0;
 	}
+	
+    @Override
+    public Object getDoc(PO po) {
+        // Could store in PO attributes map for better encapsulation
+        return po.get_Attribute("_Doc");
+    }
+
+    @Override
+    public void setDoc(PO po, Object doc) {
+        // Validate it's actually a Doc
+        if (doc != null && !(doc instanceof Doc)) {
+            throw new AdempiereException(
+                "Expected Doc, got " + doc.getClass().getName());
+        }
+        // Store in PO attributes map
+        po.set_Attribute("_Doc", doc);
+    }
 }
