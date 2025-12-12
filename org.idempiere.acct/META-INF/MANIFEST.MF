@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iDempiere Accounting
+Bundle-SymbolicName: org.idempiere.acct;singleton:=true
+Bundle-Version: 13.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
+Eclipse-RegisterBuddy: org.adempiere.base
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Automatic-Module-Name: org.idempiere.acct
+Bundle-Vendor: iDempiere Community
+Import-Package: org.osgi.framework,
+ org.osgi.service.component.annotations;version="1.5.1"
