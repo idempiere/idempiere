@@ -170,10 +170,10 @@ public class GridField
 	public static final String  INSERTING = "FieldValueInserting";
 
 	/** Error Value for HTML interface          */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "13")
 	private String			m_errorValue = null;
 	/** Error Value indicator for HTML interface    */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "13")
 	private boolean			m_errorValueFlag = false;
 
 	/**	Logger			*/
