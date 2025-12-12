@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.report;
 
+import static org.compiere.model.SystemIDs.PRINTFORMAT_STATEMENTOFACCOUNT;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,8 +30,6 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
-
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -116,6 +116,9 @@ public class FinStatement extends SvrProcess
 	
 	/**	Start Time						*/
 	private long 				m_start = System.currentTimeMillis();
+
+	private final static String	SQL_INSERT					= "INSERT INTO T_ReportStatement (AD_PInstance_ID, Fact_Acct_ID, LevelNo,"
+																+ " DateAcct, Name, Description, AmtAcctDr, AmtAcctCr, Balance, Qty, Account_ID, C_BPartner_ID) ";
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -348,14 +351,11 @@ public class FinStatement extends SvrProcess
 	 */
 	private void createBalanceLine()
 	{
-		StringBuilder sb = new StringBuilder ("INSERT INTO T_ReportStatement "
-			+ "(AD_PInstance_ID, Fact_Acct_ID, LevelNo,"
-			+ "DateAcct, Name, Description,"
-			+ "AmtAcctDr, AmtAcctCr, Balance, Qty) ");
+		StringBuilder sb = new StringBuilder (SQL_INSERT);
 		sb.append("SELECT ").append(getAD_PInstance_ID()).append(",0,0,")
 			.append(DB.TO_DATE(p_DateAcct_From, true)).append(",")
 			.append(DB.TO_STRING(Msg.getMsg(Env.getCtx(), "BeginningBalance"))).append(",NULL,"
-			+ "COALESCE(SUM(AmtAcctDr),0), COALESCE(SUM(AmtAcctCr),0), COALESCE(SUM(AmtAcctDr-AmtAcctCr),0), COALESCE(SUM(Qty),0) "
+			+ "COALESCE(SUM(AmtAcctDr),0), COALESCE(SUM(AmtAcctCr),0), COALESCE(SUM(AmtAcctDr-AmtAcctCr),0), COALESCE(SUM(Qty),0), Account_ID, NULL "
 			+ "FROM Fact_Acct "
 			+ "WHERE ").append(m_parameterWhere)
 			.append(" AND TRUNC(DateAcct) < ").append(DB.TO_DATE(p_DateAcct_From));
@@ -373,6 +373,7 @@ public class FinStatement extends SvrProcess
 					log.log(Level.SEVERE, "First period not found");
 			}
 		}
+		sb.append(" GROUP BY Account_ID ");
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("#" + no + " (Account_ID=" + p_Account_ID + ")");
@@ -384,13 +385,10 @@ public class FinStatement extends SvrProcess
 	 */
 	private void createDetailLines()
 	{
-		StringBuilder sb = new StringBuilder ("INSERT INTO T_ReportStatement "
-			+ "(AD_PInstance_ID, Fact_Acct_ID, LevelNo,"
-			+ "DateAcct, Name, Description,"
-			+ "AmtAcctDr, AmtAcctCr, Balance, Qty) ");
+		StringBuilder sb = new StringBuilder (SQL_INSERT);
 		sb.append("SELECT ").append(getAD_PInstance_ID()).append(",Fact_Acct_ID,1,")
 			.append("TRUNC(DateAcct),NULL,NULL,"
-			+ "AmtAcctDr, AmtAcctCr, AmtAcctDr-AmtAcctCr, Qty "
+			+ "		AmtAcctDr, AmtAcctCr, AmtAcctDr-AmtAcctCr, Qty, Account_ID, C_BPartner_ID "
 			+ "FROM Fact_Acct "
 			+ "WHERE ").append(m_parameterWhere)
 			.append(" AND TRUNC(DateAcct) BETWEEN ").append(DB.TO_DATE(p_DateAcct_From))
