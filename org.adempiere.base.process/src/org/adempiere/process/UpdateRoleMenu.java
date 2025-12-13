@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MRoleMenu;
 import org.compiere.process.ProcessInfoParameter;
@@ -12,6 +13,8 @@ import org.compiere.util.DB;
 
 @org.adempiere.base.annotation.Process
 @Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class UpdateRoleMenu extends SvrProcess
 {
 	private int p_role_id = 0;
