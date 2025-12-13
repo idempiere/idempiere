@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
@@ -310,6 +311,8 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 *	@return Process Instance
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
+	@GeneratedCodeCoverageExclusion
 	public MPInstance processIt (int Record_ID, Trx trx, boolean managedTrx)
 	{
 		MPInstance pInstance = new MPInstance (getCtx(), this.getAD_Process_ID(), Record_ID);
