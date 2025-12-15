@@ -235,6 +235,8 @@ public class CalloutGLJournal extends CalloutEngine
 	public String account (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)	// idempiere 344 - nmicoud
 	{
 		String colName = mField.getColumnName();
+		if (colName.equals("M_Product_ID"))
+			mTab.setValue("M_AttributeSetInstance_ID", null);
 		if (value == null || isCalloutActive())
 			return "";
 
