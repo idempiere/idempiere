@@ -718,7 +718,7 @@ public class MTableTest extends AbstractTestCase {
 			assertTrue(table.save(), "New AD_Table record should save when mandatory fields are provided");
 			assertTrue(table.get_ID() > 0, "Saved AD_Table must have an assigned AD_Table_ID");
 			
-			MProcess process = MProcess.get(DictionaryIDs.AD_Process.CREATETABLE.id);
+			MProcess process = MProcess.get(DictionaryIDs.AD_Process.CREATE_TABLE.id);
 			MPInstance pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			MPInstancePara[] paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -786,7 +786,7 @@ public class MTableTest extends AbstractTestCase {
 			assertTrue(table.save(), "New AD_Table record should save when mandatory fields are provided");
 			assertTrue(table.get_ID() > 0, "Saved AD_Table must have an assigned AD_Table_ID");
 			
-			MProcess process = MProcess.get(DictionaryIDs.AD_Process.CREATETABLE.id);
+			MProcess process = MProcess.get(DictionaryIDs.AD_Process.CREATE_TABLE.id);
 			MPInstance pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			MPInstancePara[] paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -882,7 +882,7 @@ public class MTableTest extends AbstractTestCase {
 			assertTrue(table.save(), "New AD_Table record should save when mandatory fields are provided");
 			assertTrue(table.get_ID() > 0, "Saved AD_Table must have an assigned AD_Table_ID");
 			
-			MProcess process = MProcess.get(DictionaryIDs.AD_Process.CREATETABLE.id);
+			MProcess process = MProcess.get(DictionaryIDs.AD_Process.CREATE_TABLE.id);
 			MPInstance pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			MPInstancePara[] paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -955,7 +955,7 @@ public class MTableTest extends AbstractTestCase {
  			commit();
 		    
 		    // Create Partition
-		    process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_CREATEPARTITION.id);
+		    process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_CREATE_PARTITION.id);
 			pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			pi = new ProcessInfo(process.getName(), process.getAD_Process_ID());
 			pi.setAD_PInstance_ID(pinstance.getAD_PInstance_ID());
@@ -970,7 +970,7 @@ public class MTableTest extends AbstractTestCase {
 			assertEquals(partitions.size(), partitionNames.size());
 			
 			// Detach / Reattach Partition
-			process = MProcess.get(DictionaryIDs.AD_Process.DETACHORREATTACHPARTITION.id);
+			process = MProcess.get(DictionaryIDs.AD_Process.DETACH_OR_REATTACH_PARTITION.id);
 			pinstance = new MPInstance(process, MTablePartition.Table_ID, partitions.get(0).get_ID(), partitions.get(0).get_UUID());
 			pi = new ProcessInfo(process.getName(), process.getAD_Process_ID());
 			pi.setAD_PInstance_ID(pinstance.getAD_PInstance_ID());

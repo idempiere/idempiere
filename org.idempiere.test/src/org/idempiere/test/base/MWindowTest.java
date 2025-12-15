@@ -253,14 +253,14 @@ public class MWindowTest extends AbstractTestCase {
 		for (MTab tab : tabs)
 			assertTrue(tab.is_Immutable(), "Tab should be marked immutable when window is immutable");
 		
-		try {
+		assertThrows(Exception.class, () -> {
 			window.setWindowSize(new Dimension(800, 600));
-		} catch (Exception e) {}
+		}, "Should throw exception when updating window marked immutable");
 		assertTrue(window.getWinWidth() == 0, "WinWidth after setWindowSize should be zero, no change");
 		
 		MWindow returned = window.markImmutable();
         assertSame(window, returned, "Should return itself if already immutable");
-        assertTrue(window.is_Immutable(), "Process should be marked immutable");
+        assertTrue(window.is_Immutable(), "Window should be marked immutable");
 	}
 
 	/**

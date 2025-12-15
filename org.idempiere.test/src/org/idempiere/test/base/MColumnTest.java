@@ -1281,7 +1281,7 @@ public class MColumnTest extends AbstractTestCase {
 			assertTrue(table.save());
 			
 			// Copy Columns from Table
-			MProcess process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPYCOLUMNSFROMTABLE.id);
+			MProcess process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPY_COLUMNS_FROM_TABLE.id);
 			MPInstance pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			MPInstancePara[] paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -1358,7 +1358,7 @@ public class MColumnTest extends AbstractTestCase {
 			assertTrue(table.save());
 			
 			// Copy Columns from Table
-			process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPYCOLUMNSFROMTABLE.id);
+			process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPY_COLUMNS_FROM_TABLE.id);
 			pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -1408,7 +1408,7 @@ public class MColumnTest extends AbstractTestCase {
 			commit();
 			
 			// Create Foreign Key
-			process = MProcess.get(DictionaryIDs.AD_Process.CREATEFOREIGNKEY.id);
+			process = MProcess.get(DictionaryIDs.AD_Process.CREATE_FOREIGN_KEY.id);
 			pinstance = new MPInstance(process, 0, 0, null);
 			paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -1461,7 +1461,7 @@ public class MColumnTest extends AbstractTestCase {
 			assertTrue(table.save());
 			
 			// Copy Columns from Table
-			MProcess process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPYCOLUMNSFROMTABLE.id);
+			MProcess process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPY_COLUMNS_FROM_TABLE.id);
 			MPInstance pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			MPInstancePara[] paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -1519,7 +1519,7 @@ public class MColumnTest extends AbstractTestCase {
 			commit();
 			
 			// Create Foreign Key
-			process = MProcess.get(DictionaryIDs.AD_Process.CREATEFOREIGNKEY.id);
+			process = MProcess.get(DictionaryIDs.AD_Process.CREATE_FOREIGN_KEY.id);
 			pinstance = new MPInstance(process, 0, 0, null);
 			paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
@@ -1545,7 +1545,7 @@ public class MColumnTest extends AbstractTestCase {
 			assertTrue(table.save());
 			
 			// Copy Columns from Table
-			process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPYCOLUMNSFROMTABLE.id);
+			process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPY_COLUMNS_FROM_TABLE.id);
 			pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
 			paras = pinstance.getParameters();
 			for (MPInstancePara para : paras) {
