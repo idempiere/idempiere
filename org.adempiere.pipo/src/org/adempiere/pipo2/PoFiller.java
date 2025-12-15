@@ -18,7 +18,6 @@ import org.compiere.model.MImage;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -31,7 +30,6 @@ public class PoFiller{
 	private AbstractElementHandler handler;
 	private PIPOContext ctx;
 	private Element element;
-	private static final CLogger s_log = CLogger.getCLogger (PoFiller.class);
 
 	/**
 	 * @param ctx
