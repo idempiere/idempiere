@@ -280,6 +280,7 @@ public class MQuery implements Serializable, Cloneable
 					}
 				}
 				
+				System.out.println(query.getRestrictionCount());
 				//keep custom query for later context parsing
 				if (!Util.isEmpty(P_Query) && (parameterMap.containsKey(ParameterName) || parameterMap.containsKey("To_"+ParameterName)))
 					queryList.add(P_Query);
@@ -1265,10 +1266,21 @@ public class MQuery implements Serializable, Cloneable
 	 */
 	public SQLFragment getSQLFilter(int index)
 	{
+		return getSQLFilter(index, false);
+	}
+	
+	/**
+	 * 	Create Query WHERE Clause.
+	 * 	@param index restriction index
+	 *  @param fullyQualified fully qualified Table.ColumnName
+	 * 	@return SQLFilter or null if not valid
+	 */
+	public SQLFragment getSQLFilter(int index, boolean fullyQualified)
+	{
 		if (index >= 0 && index < m_list.size())
 		{
 			Restriction r = (Restriction)m_list.get(index);
-			return r.getSQLFilter(null);
+			return r.getSQLFilter(fullyQualified ? m_TableName : null);
 		}
 		return null;
 	}	//	getWhereClause
@@ -1447,7 +1459,7 @@ public class MQuery implements Serializable, Cloneable
 	public String toString()
 	{
 		if (isActive())
-			return getWhereClause(true);
+			return getSQLFilter(true).sqlClause();
 		return "MQuery[" + m_TableName + ",Restrictions=0]";
 	}	//	toString
 	
@@ -1604,6 +1616,12 @@ public class MQuery implements Serializable, Cloneable
 		try {
 			MQuery clone = (MQuery) super.clone();
 			clone.m_recordCount = 999999;
+			if (m_list != null) {
+				clone.m_list = new ArrayList<>();
+				for (Restriction r : m_list) {
+					clone.m_list.add(r); // Restrictions are immutable, no need to clone
+				}
+			}
 			if (m_reportProcessQuery != null)
 				clone.m_reportProcessQuery = m_reportProcessQuery.clone();
 			return clone;
