@@ -18,6 +18,7 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.model.MIssue;
 import org.compiere.model.MSystem;
 import org.compiere.util.AdempiereSystemError;
@@ -30,6 +31,8 @@ import org.compiere.util.AdempiereSystemError;
  *  @deprecated not fully implemented
  */
 @Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 @org.adempiere.base.annotation.Process
 public class IssueReport extends SvrProcess
 {
@@ -48,7 +51,7 @@ public class IssueReport extends SvrProcess
 	 * 	Do It
 	 *	@return info
 	 *	@throws Exception
-	 */
+	 */	
 	protected String doIt () throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info("AD_Issue_ID=" + m_AD_Issue_ID);

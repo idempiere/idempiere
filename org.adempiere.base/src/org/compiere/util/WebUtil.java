@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.apache.ecs.AlignType;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.body;
@@ -963,6 +964,8 @@ public final class WebUtil
 	 *  @deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
+	@GeneratedCodeCoverageExclusion
 	public static boolean updateFields (HttpServletRequest request, WebUser wu, boolean updateEMailPwd)
 	{
 		if (updateEMailPwd)

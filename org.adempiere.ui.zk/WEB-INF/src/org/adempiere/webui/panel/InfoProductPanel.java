@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -98,6 +99,8 @@ import org.zkoss.zul.South;
  */
 
 @Deprecated (since="13", forRemoval=true) // replaced with InfoProductWindow IDEMPIERE-325
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 {
 	/**

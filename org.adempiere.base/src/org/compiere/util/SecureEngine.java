@@ -25,6 +25,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
@@ -139,6 +140,8 @@ public class SecureEngine
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
+	@GeneratedCodeCoverageExclusion
 	public static String getDigest (String value)
 	{
 		if (s_engine == null)
