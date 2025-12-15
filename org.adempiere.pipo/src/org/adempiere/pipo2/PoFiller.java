@@ -18,6 +18,7 @@ import org.compiere.model.MImage;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -30,6 +31,7 @@ public class PoFiller{
 	private AbstractElementHandler handler;
 	private PIPOContext ctx;
 	private Element element;
+	private static final CLogger s_log = CLogger.getCLogger (PoFiller.class);
 
 	/**
 	 * @param ctx
@@ -268,7 +270,8 @@ public class PoFiller{
 				return 0;
 			}
 		} else {
-			po.set_ValueNoCheck(columnName, null);
+			if (po.get_ColumnIndex(columnName) >= 0)
+				po.set_ValueNoCheck(columnName, null);
 			return 0;
 		}
 	}
