@@ -23,7 +23,10 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,7 +40,10 @@ import java.util.Properties;
 import org.compiere.model.MColumn;
 import org.compiere.model.MField;
 import org.compiere.model.MTab;
+import org.compiere.model.MUser;
+import org.compiere.model.MWindow;
 import org.compiere.model.M_Element;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -58,8 +64,8 @@ import org.junit.jupiter.api.TestInstance;
 public class MFieldTest extends AbstractTestCase {
 
 	private final Properties ctx = Env.getCtx();
-	private final int testTabId = DictionaryIDs.AD_Tab.USER_CONTACT.id;
-	private final int testFieldId = DictionaryIDs.AD_Field.USER_CONTACT_NAME.id;
+	private final int testTabId = DictionaryIDs.AD_Tab.TEST_TEST.id;
+	private final int testFieldId = DictionaryIDs.AD_Field.TEST_TEST_NAME.id;
 	private String testFieldUUID;
 	private int testColumnId;
 
@@ -83,8 +89,7 @@ public class MFieldTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test ID-based constructor: MField(Properties ctx, int AD_Field_ID, String
-	 * trxName)
+	 * Test ID-based constructor: MField(Properties ctx, int AD_Field_ID, String trxName)
 	 */
 	@Test
 	public void testConstructor_ByID() {
@@ -94,19 +99,30 @@ public class MFieldTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test UUID-based constructor: MField(Properties ctx, String AD_Field_UU,
-	 * String trxName)
+	 * Test UUID-based constructor: MField(Properties ctx, String AD_Field_UU, String trxName)
 	 */
 	@Test
 	public void testConstructor_ByUUID() {
 		MField f = new MField(ctx, testFieldUUID, getTrxName());
 		assertNotNull(f, "MField constructed by UUID should not be null");
 		assertEquals(testFieldId, f.getAD_Field_ID(), "MField loaded by UUID should map to same AD_Field_ID");
+		
+		f = new MField(ctx, PO.UUID_NEW_RECORD, getTrxName());
+		assertNotNull(f, "MField constructed by UUID should not be null");
+		assertEquals(0, f.getAD_Field_ID(), "AD_Field_ID should be 0 for new record");
+		assertEquals(MField.ENTITYTYPE_UserMaintained, f.getEntityType());
+		assertTrue(f.isCentrallyMaintained());
+		assertTrue(f.isDisplayed());
+		assertTrue(f.isDisplayedGrid());
+		assertFalse(f.isEncrypted());
+		assertFalse(f.isFieldOnly());
+		assertFalse(f.isHeading());
+		assertFalse(f.isReadOnly());
+		assertFalse(f.isSameLine());
 	}
 
 	/**
-	 * Test ResultSet-based constructor: MField(Properties ctx, ResultSet rs, String
-	 * trxName)
+	 * Test ResultSet-based constructor: MField(Properties ctx, ResultSet rs, String trxName)
 	 */
 	@Test
 	public void testConstructor_FromResultSet() throws SQLException {
@@ -123,20 +139,12 @@ public class MFieldTest extends AbstractTestCase {
 			assertNotNull(f, "MField constructed from ResultSet should not be null");
 			assertEquals(testFieldId, f.getAD_Field_ID(), "MField(ResultSet) must have expected AD_Field_ID");
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-				} catch (SQLException ignored) {}
-			if (pstmt != null)
-				try {
-					pstmt.close();
-				} catch (SQLException ignored) {}
+			DB.close(rs, pstmt);
 		}
 	}
 
 	/**
-	 * Test copy constructor: MField(MField original, int AD_Client_ID, String
-	 * trxName)
+	 * Test copy constructor: MField(MField original, int AD_Client_ID, String trxName)
 	 */
 	@Test
 	public void testConstructor_Copy() {
@@ -180,8 +188,7 @@ public class MFieldTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test mandatory field validation: creating a new MField without mandatory
-	 * fields should not save.
+	 * Test mandatory field validation: creating a new MField without mandatory fields should not save.
 	 */
 	@Test
 	public void testMandatoryFieldValidation() {
@@ -192,17 +199,18 @@ public class MFieldTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test creating a persistent MField and ensure cleanup.
+	 * Test creating a persistent MField
 	 */
 	@Test
-	public void testCreatePersistentObjectAndCleanup() {
-		MTab tab = MTab.get(testTabId);
-		MField f = new MField(ctx, 0, getTrxName());
-		MColumn col = new MColumn(Env.getCtx(), 0, getTrxName());
-		M_Element elem = new M_Element(Env.getCtx(), 0, getTrxName());
-		String uniqueFieldName = "T_TEST_FIELD_" + System.currentTimeMillis();
-		String uniqueColumnName = "T_TEST_COLUMN_" + System.currentTimeMillis();
+	public void testCreatePersistentObject() {	
 		try {
+			MTab tab = MTab.get(testTabId);
+			MField f = new MField(ctx, 0, getTrxName());
+			MColumn col = new MColumn(Env.getCtx(), 0, getTrxName());
+			M_Element elem = new M_Element(Env.getCtx(), 0, getTrxName());
+			String unique = "T_" + System.currentTimeMillis();
+			String uniqueColumnName = "TestColumnName_" + unique;
+			
 			elem.setColumnName(uniqueColumnName);
 			elem.setName("Test Column");
 			elem.setPrintName("Test Column");
@@ -222,22 +230,189 @@ public class MFieldTest extends AbstractTestCase {
 
 			f.setAD_Tab_ID(testTabId);
 			f.setAD_Column_ID(col.get_ID());
-			f.setName("Test Field " + uniqueFieldName);
+			f.setName("Test Field " + unique);
 			f.setSeqNo(10);
 			f.setAD_Reference_ID(10);
 			saved = f.save();
 			assertTrue(saved, "New AD_Field should save when minimal mandatory fields are provided");
 			assertTrue(f.get_ID() > 0, "Saved AD_Field must have assigned AD_Field_ID");
 		} finally {
-			try {
-				if (f.get_ID() > 0)
-					f.delete(true, getTrxName());
-				if (col.get_ID() > 0)
-					col.delete(true, getTrxName());
-				if (elem.get_ID() > 0)
-					elem.delete(true, getTrxName());
-			} catch (Exception e) {}
+			rollback();
+		}
+	}
+	
+	/**
+	 * Test cases for MField(MTab parent) and MField(MTab parent, MField from)
+	 */
+	@Test
+	public void testConstructor_CopyWithParent() {
+		try {
+			MWindow window = new MWindow(ctx, 0, getTrxName());
+			String unique = "T_" + System.currentTimeMillis();
+			window.setName("Test Window " + unique);
+			window.setWindowType(MWindow.WINDOWTYPE_Maintain);
+			assertTrue(window.save());
+			
+			MTab tab = new MTab(window);
+			tab.setAD_Table_ID(MUser.Table_ID);
+			tab.setName("Test Tab " + unique);
+			tab.setSeqNo(10);
+			assertTrue(tab.save());
+			
+			MField field = new MField(tab);
+			assertEquals(0, field.get_ID(), "New field should be unsaved (ID=0)");
+	        assertEquals(tab.getAD_Tab_ID(), field.getAD_Tab_ID(), "AD_Tab_ID should match parent");
+	        assertEquals(tab.getAD_Client_ID(), field.getAD_Client_ID(), "Client should match parent");
+	        assertEquals(tab.getAD_Org_ID(), field.getAD_Org_ID(), "Org should match parent");
+	        
+	        window = new MWindow(ctx, 0, getTrxName());
+			unique = "T_" + System.currentTimeMillis();
+			window.setName("Test Window " + unique);
+			window.setWindowType(MWindow.WINDOWTYPE_Maintain);
+			assertTrue(window.save());
+			
+			MTab parent = new MTab(window);
+			parent.setAD_Table_ID(MUser.Table_ID);
+			parent.setName("Test Tab " + unique);
+			parent.setSeqNo(10);
+			assertTrue(parent.save());
+	        
+	        MField originalField = new MField(ctx, DictionaryIDs.AD_Field.TEST_TEST_NAME.id, getTrxName());
+	        MField copyField = new MField(parent, originalField);
+	        assertEquals(originalField.getName(), copyField.getName());
+	        assertEquals(originalField.getSeqNo(), copyField.getSeqNo());
+	        assertEquals(parent.getAD_Client_ID(), copyField.getAD_Client_ID());
+	        assertEquals(parent.getAD_Org_ID(), copyField.getAD_Org_ID());
+	        assertEquals(parent.getAD_Tab_ID(), copyField.getAD_Tab_ID());
+	        assertEquals(parent.getEntityType(), copyField.getEntityType());
+	        assertNotSame(originalField, copyField, "Copy should be a new object");
+		} finally {
+			rollback();
 		}
 	}
 
+	/**
+	 * Test cases for MField.markImmutable()
+	 */
+	@Test
+	public void testMarkImmutable() {
+		MField field = new MField(ctx, DictionaryIDs.AD_Field.USER_CONTACT_NAME.id, getTrxName());
+		assertFalse(field.is_Immutable(), "Field should initially be mutable");
+		
+		MField returned = field.markImmutable();
+        assertSame(field, returned, "Should return self");
+        assertTrue(field.is_Immutable(), "Field should be marked immutable");
+        
+        returned = field.markImmutable();
+        assertSame(field, returned, "Immutable tab should return self");
+        assertTrue(field.is_Immutable(), "Field remains immutable");
+	}
+	
+	/**
+	 * Test cases for MField.get(Properties ctx, int AD_Field_ID) and MField.get(int AD_Field_ID)
+	 */
+	@Test
+	public void testGetById() {
+        // Valid ID
+        MField firstLoad = MField.get(ctx, testFieldId);
+        assertNotNull(firstLoad, "Valid ID should not return null");
+        assertEquals(testFieldId, firstLoad.getAD_Field_ID());
+        
+        MField secondLoad = MField.get(testFieldId);
+        assertNotNull(secondLoad, "Valid ID should not return null");
+        assertSame(firstLoad, secondLoad, "Cache should return same instance");
+        
+        // Invalid ID
+        MField invalid = MField.get(-1);
+        assertNull(invalid, "Invalid ID should return null");
+        
+        invalid = MField.get(ctx, -99999);
+        assertNull(invalid, "Invalid ID must return null");
+	}
+	
+	/**
+	 * Test cases for MField.setColumn(MColumn column)
+	 */
+	@Test
+	public void testSetColumn() {
+		try {
+			MWindow window = new MWindow(ctx, 0, getTrxName());
+			String unique = "T_" + System.currentTimeMillis();
+			window.setName("Test Window " + unique);
+			window.setWindowType(MWindow.WINDOWTYPE_Maintain);
+			assertTrue(window.save());
+			
+			MTab tab = new MTab(window);
+			tab.setAD_Table_ID(MUser.Table_ID);
+			tab.setName("Test Tab " + unique);
+			tab.setSeqNo(10);
+			assertTrue(tab.save());
+			
+			MColumn column = MColumn.get(DictionaryIDs.AD_Column.USER_NAME.id);
+			MField field = new MField(tab);
+			field.setColumn(column);
+			assertEquals(column.getAD_Column_ID(), field.getAD_Column_ID());
+	        assertEquals(column.getName(), field.getName());
+	        assertEquals(column.getDescription(), field.getDescription());
+	        assertEquals(column.getHelp(), field.getHelp());
+	        assertEquals(column.getFieldLength(), field.getDisplayLength());
+	        assertEquals(column.getEntityType(), field.getEntityType());
+	    } finally {
+	        rollback();
+	    }
+	}
+	
+	/**
+	 * Test cases for MField.beforeSave(boolean newRecord)
+	 */
+	@Test
+	public void testBeforeSave() {
+	    try {
+	    	MWindow window = new MWindow(ctx, 0, getTrxName());
+			String unique = "T_" + System.currentTimeMillis();
+			window.setName("Test Window " + unique);
+			window.setWindowType(MWindow.WINDOWTYPE_Maintain);
+			assertTrue(window.save());
+			
+			MTab tab = new MTab(window);
+			tab.setAD_Table_ID(MUser.Table_ID);
+			tab.setName("Test Tab " + unique);
+			tab.setSeqNo(10);
+			assertTrue(tab.save());
+			
+			MColumn column = MColumn.get(ctx, DictionaryIDs.AD_Column.USER_NAME.id, getTrxName());
+			MField field = new MField(tab);
+		    field.setAD_Column_ID(column.getAD_Column_ID());
+		    field.setIsAllowCopy("Y");
+		    field.setAD_Reference_ID(0);
+		    field.setIsToolbarButton("Y");
+		    field.setIsDisplayed(true);
+		    field.setReadOnlyLogic("1=1");
+		    field.setDisplayLogic("1=1");
+		    field.setMandatoryLogic("1=1");
+		    field.setIsActive(true);
+	        assertTrue(field.save());
+	        
+	        M_Element element = M_Element.getOfColumn(ctx, column.getAD_Column_ID());
+	        assertEquals(element.getName(), field.getName());
+	        assertEquals(element.getDescription(), field.getDescription());
+	        assertEquals(element.getHelp(), field.getHelp());
+
+	        // Validate IsAllowCopy reset
+	        assertEquals("Y", field.getIsAllowCopy());
+
+	        // Validate reference IDs reset
+	        assertEquals(0, field.getAD_Reference_Value_ID());
+	        assertEquals(0, field.getAD_Val_Rule_ID());
+	        assertNull(field.getIsToolbarButton());
+
+	        // Validate logic expressions evaluated without exceptions
+	        field.setReadOnlyLogic("1=1");
+	        field.setDisplayLogic("1=1");
+	        field.setMandatoryLogic("1=1");
+	        assertTrue(field.save());
+	    } finally {
+	        rollback();
+	    }
+	}
 }
