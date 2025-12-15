@@ -527,9 +527,8 @@ public class MTableTest extends AbstractTestCase {
 	        Class<?> clazz2 = MTable.getClass(MWebService.Table_Name);
 	        assertEquals(MWebService.class, clazz2, "Should return class from second valid factory");
 
-	        assertThrows(NullPointerException.class,
-		            () -> MTable.getClass("DoesNotExist"),
-		            "should throw NullPointerException");
+	        Class<?> clazz3 = MTable.getClass("DoesNotExist");
+	        assertNull(clazz3, "Should return null when the table does not exist");
 	    } finally {
 	        rollback();
 	    }
