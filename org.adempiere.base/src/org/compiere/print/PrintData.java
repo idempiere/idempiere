@@ -39,6 +39,7 @@ import org.compiere.report.MReportLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Trace;
+import org.idempiere.db.util.SQLFragment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -106,7 +107,7 @@ public class PrintData implements Serializable
 	/**	Optional Column Meta Data	*/
 	private PrintDataColumn[]	m_columnInfo = null;
 	/**	Optional sql				*/
-	private String				m_sql = null;
+	private SQLFragment			m_sql = null;
 	/** Optional TableName			*/
 	private String				m_TableName = null;
 
@@ -165,21 +166,43 @@ public class PrintData implements Serializable
 	/**
 	 * 	Set SQL (optional)
 	 * 	@param sql SQL
+	 *  @deprecated use {@link #setSQLClause(SQLFragment)} instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public void setSQL (String sql)
 	{
-		m_sql = sql;
+		setSQLClause(new SQLFragment(sql));
 	}	//	setSQL
 
 	/**
 	 * 	Get optional SQL
 	 * 	@return SQL
+	 *  @deprecated use {@link #getSQLClause()} instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getSQL()
 	{
-		return m_sql;
+		return m_sql != null ? m_sql.sqlClause() : null;
 	}	//	getSQL
 
+	/**
+	 * Set SQL clause (optional)
+	 * @param sqlClause SQL clause and parameters
+	 */
+	public void setSQLClause(SQLFragment sqlClause)
+	{
+		m_sql = sqlClause;
+	}
+	
+	/**
+	 * Get optional SQL clause
+	 * @return SQL clause and parameters
+	 */
+	public SQLFragment getSQLClause()
+	{
+		return m_sql;
+	}
+	
 	/**
 	 * 	Set TableName (optional)
 	 * 	@param TableName TableName
@@ -870,5 +893,4 @@ public class PrintData implements Serializable
 		if (m_hasLevelNo && reportLineID != 0)
 			addNode(new PrintDataElement(0, "PA_ReportLine_ID", reportLineID, DisplayType.Integer, null));
 	}
-
 }	//	PrintData

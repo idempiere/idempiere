@@ -39,6 +39,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *	Query Descriptor.
@@ -73,7 +74,7 @@ public class MQuery implements Serializable, Cloneable
 		MTable table =  MTable.get(ctx, TableName);
 		if (TableName.startsWith("T_"))
 		{
-			reportQuery.addRestriction(TableName + ".AD_PInstance_ID=" + AD_PInstance_ID);
+			reportQuery.addRestriction(new SQLFragment(TableName + ".AD_PInstance_ID=?", List.of(AD_PInstance_ID)));
 		}
 		//use separate query object for rendering of parameter at report
 		reportQuery.setReportProcessQuery(new MQuery(TableName));
@@ -196,17 +197,17 @@ public class MQuery implements Serializable, Cloneable
 							String columnName = TableName + "." + ParameterName;		
 							int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=? AND AD_Reference_ID=?", ParameterName.toUpperCase(), DisplayType.ChosenMultipleSelectionList);
 							if (cnt > 0)
-								query.addRestriction(DB.intersectClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.intersectFilterForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 							else
-								query.addRestriction(DB.inClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.inFilterForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 						} 
 						else if (Reference_ID == DisplayType.ChosenMultipleSelectionTable || Reference_ID == DisplayType.ChosenMultipleSelectionSearch)
 						{
 							String columnName = TableName + "." + ParameterName;
 							if (columnName.endsWith("_ID"))
-								query.addRestriction(DB.inClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.inFilterForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 							else
-								query.addRestriction(DB.intersectClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.intersectFilterForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 						}
 						else
 						{
@@ -301,7 +302,7 @@ public class MQuery implements Serializable, Cloneable
 			rs = null; pstmt = null;
 		}
 		
-		//add custom query
+		//add custom query (this is subject to SQL injection attacks - use with care)
 		if (queryList.size() > 0)
 		{
 			QueryEvaluatee evaluatee=  new QueryEvaluatee(parameterMap);
@@ -309,9 +310,9 @@ public class MQuery implements Serializable, Cloneable
 			{
 				if (query.indexOf("@") >= 0)
 				{
-					query = parseVariable(evaluatee, query, false);
-					reportQuery.addRestriction(query);
+					query = parseVariable(evaluatee, query, false);					
 				}
+				reportQuery.addRestriction(new SQLFragment(query, List.of()));
 			}
 		}
 		
@@ -880,7 +881,9 @@ public class MQuery implements Serializable, Cloneable
 	 * 	@param whereClause SQL WHERE clause
 	 *  @param andCondition true=and, false=or
 	 *  @param joinDepth number of parenthesis
+	 *  @deprecated Use addRestriction (SQLFilter sqlFilter, boolean andCondition, int joinDepth)
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, boolean andCondition, int joinDepth)
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
@@ -896,7 +899,9 @@ public class MQuery implements Serializable, Cloneable
 	 *  @param andCondition true=and, false=or
 	 *  @param notCondition true=not
 	 *  @param joinDepth number of parenthesis
+	 *  @deprecated Use addRestriction (SQLFilter sqlFilter, boolean andCondition, boolean notCondition, int joinDepth)
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, boolean andCondition, boolean notCondition, int joinDepth)
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
@@ -906,6 +911,18 @@ public class MQuery implements Serializable, Cloneable
 		m_newRecord = whereClause.equals(NEWRECORD);
 	}	//	addRestriction
 
+	/** 	
+	 *  Add Restriction
+	 * 	@param sqlFilter SQL WHERE clause
+	 *  @param andCondition true=and, false=or
+	 *  @param notCondition true=not
+	 *  @param joinDepth number of parenthesis
+	 */
+	public void addRestriction (SQLFragment sqlFilter, boolean andCondition, boolean notCondition, int joinDepth)
+	{
+		addRestriction(sqlFilter, andCondition, notCondition, false, joinDepth);
+	}	//	addRestriction
+	
 	/**
 	 * 	Add Restriction
 	 * 	@param whereClause SQL WHERE clause
@@ -913,7 +930,9 @@ public class MQuery implements Serializable, Cloneable
 	 *  @param notCondition true=not
 	 *  @param existsCondition true=exists
 	 *  @param joinDepth number of parenthesis
+	 *  @deprecated Use addRestriction (SQLFilter sqlFilter, boolean andCondition, boolean notCondition, boolean existsCondition, int joinDepth)
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, boolean andCondition, boolean notCondition, boolean existsCondition, int joinDepth)
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
@@ -925,10 +944,29 @@ public class MQuery implements Serializable, Cloneable
 	
 	/**
 	 * 	Add Restriction
+	 * 	@param sqlFilter SQL WHERE clause
+	 *  @param andCondition true=and, false=or
+	 *  @param notCondition true=not
+	 *  @param existsCondition true=exists
+	 *  @param joinDepth number of parenthesis
+	 */
+	public void addRestriction (SQLFragment sqlFilter, boolean andCondition, boolean notCondition, boolean existsCondition, int joinDepth)
+	{
+		if (sqlFilter == null)
+			throw new IllegalArgumentException("WhereClause is null");
+		Restriction r = new Restriction (sqlFilter, andCondition, notCondition, existsCondition, joinDepth);
+		m_list.add(r);
+		m_newRecord = sqlFilter.sqlClause().equals(NEWRECORD);
+	}	//	addRestriction
+	
+	/**
+	 * 	Add Restriction
 	 * 	@param whereClause SQL WHERE clause
 	 *  @param joinDepth number of parenthesis
 	 *  @param andOrCondition
+	 *  @deprecated Use addRestriction (SQLFilter sqlFilter, int joinDepth, String andOrCondition)
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, int joinDepth, String andOrCondition)
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
@@ -940,8 +978,25 @@ public class MQuery implements Serializable, Cloneable
 	
 	/**
 	 * 	Add Restriction
-	 * 	@param whereClause SQL WHERE clause
+	 * 	@param sqlFilter SQL WHERE clause
+	 *  @param joinDepth number of parenthesis
+	 *  @param andOrCondition
 	 */
+	public void addRestriction (SQLFragment sqlFilter, int joinDepth, String andOrCondition)
+	{
+		if (sqlFilter == null)
+			throw new IllegalArgumentException("WhereClause is null");
+		Restriction r = new Restriction (sqlFilter, andOrCondition, joinDepth);
+		m_list.add(r);
+		m_newRecord = sqlFilter.sqlClause().equals(NEWRECORD);
+	}	//	addRestriction
+	
+	/**
+	 * 	Add Restriction
+	 * 	@param whereClause SQL WHERE clause
+	 *  @deprecated Use addRestriction (SQLFilter sqlFilter)
+	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause)
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
@@ -952,12 +1007,27 @@ public class MQuery implements Serializable, Cloneable
 	}	//	addRestriction
 
 	/**
+	 * Add Restriction
+	 * @param sqlFilter
+	 */
+	public void addRestriction (SQLFragment sqlFilter)
+	{
+		if (sqlFilter == null)
+			throw new IllegalArgumentException("WhereClause is null");
+		Restriction r = new Restriction (sqlFilter, true, 0);
+		m_list.add(r);
+		m_newRecord = sqlFilter.sqlClause().equals(NEWRECORD);
+	}	//	addRestriction
+	
+	/**
 	 * Add restriction 
 	 * @param whereClause
 	 * @param Operator
 	 * @param InfoName
 	 * @param InfoDisplay
+	 * @deprecated Use addRestriction (SQLFilter sqlFilter, String Operator, String InfoName, String InfoDisplay)
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, String Operator, String InfoName, String InfoDisplay)
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
@@ -971,7 +1041,28 @@ public class MQuery implements Serializable, Cloneable
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
 	}
-
+	
+	/**
+	 * Add restriction 
+	 * @param sqlFilter
+	 * @param Operator
+	 * @param InfoName
+	 * @param InfoDisplay
+	 */
+	public void addRestriction (SQLFragment sqlFilter, String Operator, String InfoName, String InfoDisplay)
+	{
+		if (sqlFilter == null)
+			throw new IllegalArgumentException("WhereClause is null");
+		Restriction r = new Restriction (sqlFilter, true, 0);
+		r.Operator = Operator;
+		if (InfoName != null)
+			r.InfoName = InfoName;
+		if (InfoDisplay != null)
+			r.InfoDisplay = InfoDisplay.trim();
+		m_list.add(r);
+		m_newRecord = sqlFilter.sqlClause().equals(NEWRECORD);
+	}
+	
 	/**
 	 * 	New Record Query
 	 *	@return true if new record query
@@ -984,7 +1075,9 @@ public class MQuery implements Serializable, Cloneable
 	/**
 	 * 	Create the resulting Query WHERE Clause
 	 * 	@return Where Clause
+	 *  @deprecated Use getSQLFilter()
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereClause ()
 	{
 		return getWhereClause(false);
@@ -994,9 +1087,12 @@ public class MQuery implements Serializable, Cloneable
 	 * 	Create the resulting Query WHERE Clause
 	 * 	@param fullyQualified fully qualified Table.ColumnName
 	 * 	@return Where Clause
+	 *  @deprecated Use getSQLFilter(boolean fullyQualified)
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereClause (boolean fullyQualified)
 	{
+
 		int currentDepth = 0;
 		boolean qualified = fullyQualified;
 		if (qualified && (m_TableName == null || m_TableName.length() == 0))
@@ -1039,9 +1135,66 @@ public class MQuery implements Serializable, Cloneable
 			sb.append(')');
 		}
 		sb.append(')');
-		return sb.toString();
+		return sb.toString();	
 	}	//	getWhereClause
 
+	/**
+	 * Create the resulting Query WHERE Clause
+	 * 
+	 * @return WhereClause record with where clause and parameters
+	 */
+	public SQLFragment getSQLFilter() {
+		return getSQLFilter(false);
+	} // getWhereClause
+
+	/**
+	 * Create the resulting Query WHERE Clause
+	 * 
+	 * @param fullyQualified fully qualified Table.ColumnName
+	 * @return WhereClause record with where clause and parameters
+	 */
+	public SQLFragment getSQLFilter(boolean fullyQualified) {
+		List<Object> parameters = new ArrayList<>();
+		int currentDepth = 0;
+		boolean qualified = fullyQualified;
+		if (qualified && (m_TableName == null || m_TableName.length() == 0))
+			qualified = false;
+		//
+		StringBuilder sb = new StringBuilder();
+		if (!isActive())
+			return new SQLFragment(sb.toString(), parameters);
+
+		sb.append('(');
+		for (int i = 0; i < m_list.size(); i++) {
+			Restriction r = (Restriction) m_list.get(i);
+			if (i != 0)
+				sb.append(" ").append(r.andOrCondition).append(" ");
+
+			// NOT
+			sb.append(r.notCondition ? " NOT " : "");
+			// EXISTS
+			sb.append(r.existsCondition ? " EXISTS " : "");
+
+			for (; currentDepth < r.joinDepth; currentDepth++) {
+				sb.append('(');
+			}
+			SQLFragment rFilter = r.getSQLFilter(qualified ? m_TableName : null);
+			sb.append(rFilter.sqlClause());
+			parameters.addAll(rFilter.parameters());
+
+			for (; currentDepth > r.joinDepth; currentDepth--) {
+				sb.append(')');
+			}
+		}
+
+		// close brackets
+		for (; currentDepth > 0; currentDepth--) {
+			sb.append(')');
+		}
+		sb.append(')');
+		return new SQLFragment(sb.toString(), parameters);
+	} // getWhereClause
+	
 	/**
 	 * 	Get printable Query Info
 	 *	@return info
@@ -1090,7 +1243,9 @@ public class MQuery implements Serializable, Cloneable
 	 *  Not fully qualified.
 	 * 	@param index restriction index
 	 * 	@return Where Clause or "" if not valid
+	 *  @deprecated Use getSQLFilter(int index)
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereClause (int index)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -1102,6 +1257,22 @@ public class MQuery implements Serializable, Cloneable
 		return sb.toString();
 	}	//	getWhereClause
 
+	/**
+	 * 	Create Query WHERE Clause.
+	 *  Not fully qualified.
+	 * 	@param index restriction index
+	 * 	@return SQLFilter or null if not valid
+	 */
+	public SQLFragment getSQLFilter(int index)
+	{
+		if (index >= 0 && index < m_list.size())
+		{
+			Restriction r = (Restriction)m_list.get(index);
+			return r.getSQLFilter(null);
+		}
+		return null;
+	}	//	getWhereClause
+	
 	/**
 	 * 	Get Restriction Count
 	 * 	@return number of restrictions
@@ -1383,6 +1554,7 @@ public class MQuery implements Serializable, Cloneable
 	 * @param depth number of parenthesis
 	 * @return SQL
 	 */
+	@Deprecated
 	public String getRestrictionSQL (String ColumnName, String Operator,
 			Object Code, String InfoName, String InfoDisplay, boolean andCondition, int depth)
 	{
@@ -1391,6 +1563,14 @@ public class MQuery implements Serializable, Cloneable
 		return r.getSQL(null);
 	}	//	getRestrictionSQL
 
+	public SQLFragment getRestrictionSQLFilter (String ColumnName, String Operator,
+			Object Code, String InfoName, String InfoDisplay, boolean andCondition, int depth)
+	{
+		Restriction r = new Restriction (ColumnName, Operator,
+				Code, InfoName, InfoDisplay, andCondition, depth);
+		return r.getSQLFilter(null);
+	}	//	getRestrictionWhereClause
+	
 	/**
 	 * @param ColumnName
 	 * @param Code from value
@@ -1402,12 +1582,21 @@ public class MQuery implements Serializable, Cloneable
 	 * @param depth number of parenthesis
 	 * @return SQL
 	 */
+	@Deprecated
 	public String getRestrictionSQL (String ColumnName, 
 			Object Code, Object Code_To, String InfoName, String InfoDisplay, String InfoDisplay_To, boolean andCondition, int depth)
 	{
 		Restriction r = new Restriction(ColumnName, Code, Code_To, InfoName, 
 					InfoDisplay, InfoDisplay_To, andCondition, false, depth);
 		return r.getSQL(null);
+	}
+	
+	public SQLFragment getRestrictionSQLFilter (String ColumnName, 
+			Object Code, Object Code_To, String InfoName, String InfoDisplay, String InfoDisplay_To, boolean andCondition, int depth)
+	{
+		Restriction r = new Restriction(ColumnName, Code, Code_To, InfoName, 
+					InfoDisplay, InfoDisplay_To, andCondition, false, depth);
+		return r.getSQLFilter(null);
 	}
 	
 	@Override
@@ -1579,6 +1768,9 @@ class Restriction  implements Serializable
 	 *  @param infoName Display Name
 	 * 	@param infoDisplay Display of Code (Lookup)
 	 * 	@param infoDisplay_to Display of Code_To (Lookup)
+	 * 	@param andCondition true=and, false=or
+	 * 	@param notCondition true=not
+	 * 	@param depth number of parenthesis
 	 */
 	Restriction (String columnName,
 		Object code, Object code_to,
@@ -1608,26 +1800,42 @@ class Restriction  implements Serializable
 	 * 	@param andCondition true->AND false->OR
 	 *  @param depth number of parenthesis
 	 */
+	@Deprecated
 	Restriction (String whereClause, boolean andCondition, int depth)
 	{
 		this(whereClause, andCondition ? "AND" : "OR", depth);
 	}
 
+	Restriction (SQLFragment whereClause, boolean andCondition, int depth)
+	{
+		this(whereClause, andCondition ? "AND" : "OR", depth);
+	}
+	
 	/**
 	 * 	Create Restriction with direct WHERE clause
 	 * 	@param whereClause SQL WHERE Clause
 	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
 	 *  @param depth number of parenthesis
 	 */
+	@Deprecated
 	Restriction (String whereClause, String andOrCondition, int depth)
 	{
-		DirectWhereClause = whereClause;
+		DirectWhereClauseRecord = new SQLFragment(whereClause);
 		this.andOrCondition = andOrCondition;
 		this.notCondition = false;
 		this.existsCondition = false;
 		this.joinDepth = depth;
 	}	//	Restriction
 
+	Restriction (SQLFragment whereClause, String andOrCondition, int depth)
+	{
+		DirectWhereClauseRecord = whereClause;
+		this.andOrCondition = andOrCondition;
+		this.notCondition = false;
+		this.existsCondition = false;
+		this.joinDepth = depth;
+	}	//	Restriction
+	
 	/**
 	 * 	Create Restriction with direct WHERE clause
 	 * 	@param whereClause SQL WHERE Clause
@@ -1636,15 +1844,25 @@ class Restriction  implements Serializable
 	 *  @param existsCondition true=exists
 	 *  @param depth number of parenthesis
 	 */
+	@Deprecated
 	Restriction (String whereClause, boolean andCondition, boolean notCondition, boolean existsCondition, int depth)
 	{
-		DirectWhereClause = whereClause;
+		DirectWhereClauseRecord = new SQLFragment(whereClause);
 		this.andOrCondition = andCondition ? "AND" : "OR";
 		this.notCondition = notCondition;
 		this.existsCondition = existsCondition;
 		this.joinDepth = depth;
 	}	//	Restriction
 
+	Restriction (SQLFragment whereClause, boolean andCondition, boolean notCondition, boolean existsCondition, int depth)
+	{
+		DirectWhereClauseRecord = whereClause;
+		this.andOrCondition = andCondition ? "AND" : "OR";
+		this.notCondition = notCondition;
+		this.existsCondition = existsCondition;
+		this.joinDepth = depth;
+	}	//	Restriction
+	
 	/**
 	 * 
 	 * @param ColumnName
@@ -1658,7 +1876,7 @@ class Restriction  implements Serializable
 	}	//	Restriction
 	
 	/**	Direct Where Clause	*/
-	protected String	DirectWhereClause = null;
+	protected SQLFragment	DirectWhereClauseRecord = null;
 	/**	Exists Clause	*/
 	protected String	ExistsClause = null;
 	/**	Column Name			*/
@@ -1689,10 +1907,11 @@ class Restriction  implements Serializable
 	 *  @param tableName optional table name
 	 * 	@return SQL WHERE clause
 	 */
+	@Deprecated
 	public String getSQL (String tableName)
 	{
-		if (DirectWhereClause != null)
-			return DirectWhereClause;
+		if (DirectWhereClauseRecord != null)
+			return DirectWhereClauseRecord.sqlClause();
 		
 		if(ExistsClause != null){
 			StringBuilder sb = new StringBuilder();
@@ -1786,6 +2005,93 @@ class Restriction  implements Serializable
 		return sb.toString();
 	}	//	getSQL
 
+	/**
+	 * Get SQL build from this restriction
+	 * 
+	 * @param tableName  optional table name
+	 * @param parameters list to be populated with parameters
+	 * @return SQL WHERE clause
+	 */
+	public SQLFragment getSQLFilter(String tableName) {
+		if (DirectWhereClauseRecord != null)
+			return DirectWhereClauseRecord;
+
+		List<Object> parameters = new ArrayList<>();
+		if (ExistsClause != null) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ExistsClause);
+
+			if (Code != null)
+				parameters.add(Code);
+
+			return new SQLFragment(sb.toString(), parameters);
+		}
+
+		// verify if is a virtual column, do not prefix tableName if this is a
+		// virtualColumn
+		boolean virtualColumn = false;
+		if (tableName != null && tableName.length() > 0) {
+			MTable table = MTable.get(Env.getCtx(), tableName);
+			if (table != null) {
+				for (MColumn col : table.getColumns(false)) {
+					String colSQL = col.getColumnSQL(true, false);
+					if (colSQL != null && colSQL.contains("@"))
+						colSQL = Env.parseContext(Env.getCtx(), -1, colSQL, false, true);
+					if (colSQL != null && ColumnName.equals(colSQL.trim())) {
+						virtualColumn = true;
+						break;
+					}
+				}
+			}
+		}
+		//
+		StringBuilder sb = new StringBuilder();
+		if (!virtualColumn && tableName != null && tableName.length() > 0) {
+			// Assumes - REPLACE(INITCAP(variable),'s','X') or UPPER(variable)
+			int pos = ColumnName.lastIndexOf('(') + 1; // including (
+			int end = ColumnName.indexOf(')');
+			// We have a Function in the ColumnName
+			if (pos != -1 && end != -1 && !(pos - 1 == ColumnName.indexOf('(') && ColumnName.trim().startsWith("(")))
+				sb.append(ColumnName.substring(0, pos))
+						.append(tableName).append(".")
+						.append(DB.getDatabase().quoteColumnName(ColumnName.substring(pos, end)))
+						.append(ColumnName.substring(end));
+			else {
+				int selectIndex = ColumnName.toLowerCase().indexOf("select ");
+				int fromIndex = ColumnName.toLowerCase().indexOf(" from ");
+				if (selectIndex >= 0 && fromIndex > 0) {
+					sb.append(ColumnName);
+				} else {
+					sb.append(tableName).append(".").append(DB.getDatabase().quoteColumnName(ColumnName));
+				}
+			}
+		} else
+			sb.append(virtualColumn ? ColumnName : DB.getDatabase().quoteColumnName(ColumnName));
+		if (MQuery.ILIKE.equals(Operator))
+			sb.append(MQuery.LIKE);
+		else
+			sb.append(Operator);
+		if (!(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))) {
+			boolean useUpper = (Code instanceof String) && ColumnName.toUpperCase().startsWith("UPPER(");
+			if (useUpper)
+				sb.append("UPPER(");
+			sb.append("?");
+			if (useUpper)
+				sb.append(")");
+			parameters.add(Code);
+
+			// Between
+			// if (Code_to != null && InfoDisplay_to != null)
+			if (MQuery.BETWEEN.equals(Operator)) {
+				sb.append(" AND ");
+				sb.append("?");
+				parameters.add(Code_to);
+			}
+		}
+		return new SQLFragment(sb.toString(), parameters);
+	} // getSQLFilter
+	
+	
 	/**
 	 * 	Get String Representation
 	 * 	@return info

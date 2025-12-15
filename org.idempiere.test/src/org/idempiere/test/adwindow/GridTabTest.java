@@ -120,6 +120,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -1293,9 +1294,9 @@ public class GridTabTest extends AbstractTestCase {
         GridTab contactsTab = window.getTab(1);  // Child Tab (Contact)
         
         // Setup: Ensure we have at least 2 records in the parent tab to switch between.
-        String whereClause = "Value IN ('C&W', 'SeedFarm')";
+        String whereClause = "Value IN (?, ?)";
         MQuery query = new MQuery(MBPartner.Table_Name);
-        query.addRestriction(whereClause);
+        query.addRestriction(new SQLFragment(whereClause, List.of("C&W", "SeedFarm")));
         bpTab.setQuery(query);
         bpTab.query(false);
         

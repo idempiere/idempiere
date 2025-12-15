@@ -61,6 +61,7 @@ import org.compiere.util.SecureEngine;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *	Grid Table Model for JDBC table access, including buffering.
@@ -207,8 +208,6 @@ public class GridTable extends AbstractTableModel
 
 	/**	Columns                 		*/
 	private ArrayList<GridField>	m_fields = new ArrayList<GridField>(30);
-	private ArrayList<Object>	m_parameterSELECT = new ArrayList<Object>(5);
-	private ArrayList<Object>	m_parameterWHERE = new ArrayList<Object>(5);
 
 	/** Complete SQL statement          */
 	private String 		        m_SQL;
@@ -217,7 +216,7 @@ public class GridTable extends AbstractTableModel
 	/** The SELECT clause with FROM     */
 	private String 		        m_SQL_Select;
 	/** The static where clause         */
-	private String 		        m_whereClause = "2=3";
+	private SQLFragment 		        m_whereClause = new SQLFragment("2=3");
 	/** Show only Processed='N' and last 24h records    */
 	private boolean		        m_onlyCurrentRows = false;
 	/** Show only Not processed and x days				*/
@@ -286,8 +285,22 @@ public class GridTable extends AbstractTableModel
 	 *  @param onlyCurrentRows only current rows
 	 *  @param onlyCurrentDays how many days back for current
 	 *	@return true if where clase set
-	 */
+	 *  @deprecated replace by {@link #setSQLFilter(SQLFragment, boolean, int)}
+	 */	
+	@Deprecated(since="13", forRemoval=true)
 	public boolean setSelectWhereClause(String newWhereClause, boolean onlyCurrentRows, int onlyCurrentDays)
+	{
+		return this.setSQLFilter(new SQLFragment(newWhereClause != null ? newWhereClause : ""), onlyCurrentRows, onlyCurrentDays);
+	}
+	
+	/**
+	 *	Set Where Clause (w/o the WHERE keyword and w/o History).
+	 *  @param newWhereClause sql where clause and parameters
+	 *  @param onlyCurrentRows only current rows
+	 *  @param onlyCurrentDays how many days back for current
+	 *	@return true if where clase set
+	 */	
+	public boolean setSQLFilter(SQLFragment newWhereClause, boolean onlyCurrentRows, int onlyCurrentDays)
 	{
 		if (m_open)
 		{
@@ -298,20 +311,29 @@ public class GridTable extends AbstractTableModel
 		m_whereClause = newWhereClause;
 		m_onlyCurrentRows = onlyCurrentRows;
 		m_onlyCurrentDays = onlyCurrentDays;
-		if (m_whereClause == null)
-			m_whereClause = "";
 		return true;
 	}	//	setWhereClause
 
 	/**
 	 *	Get Where Clause (w/o the WHERE keyword and w/o History)
 	 *  @return where clause
+	 *  @deprecated use {@link #getSQLFilter()}
 	 */
+	@Deprecated(since="13", forRemoval=true)
 	public String getSelectWhereClause()
 	{
-		return m_whereClause;
+		return m_whereClause.sqlClause();
 	}	//	getWhereClause
 
+	/**
+	 * Get Where Clause (w/o the WHERE keyword and w/o History)
+	 * @return sql where clause and parameters
+	 */
+	public SQLFragment getSQLFilter()
+	{
+		return m_whereClause;
+	}	//	getSQLFilter
+	
 	/**
 	 *	Is show only unprocessed or the one updated within x days
 	 *  @return true if show only unprocessed or the one updated within x days
@@ -382,14 +404,15 @@ public class GridTable extends AbstractTableModel
 		
 		StringBuilder where = new StringBuilder("");
 		//	WHERE
-		if (m_whereClause.length() > 0)
+		if (!Util.isEmpty(m_whereClause.sqlClause(), true))
 		{
+			String whereClause = m_whereClause.sqlClause();
 			where.append(" WHERE (");
-			if (m_whereClause.indexOf('@') == -1)
-				where.append(m_whereClause);
+			if (whereClause.indexOf('@') == -1)
+				where.append(whereClause);
 			else    //  replace variables
 			{
-				String context = Env.parseContext(m_ctx, m_WindowNo, m_whereClause, false);
+				String context = Env.parseContext(m_ctx, m_WindowNo, whereClause, false);
 				if(context != null && context.trim().length() > 0)
 				{
 					where.append(context);
@@ -531,35 +554,6 @@ public class GridTable extends AbstractTableModel
 		GridField field = (GridField)m_fields.get(index);
 		return DisplayType.getClass(field.getDisplayType(), false);
 	}   //  getColumnClass
-
-	/**
-	 *	Set Select Clause Parameter.
-	 *	Assumes that you set parameters starting from index zero
-	 *  @param index index
-	 *  @param parameter parameter
-	 */
-	public void setParameterSELECT (int index, Object parameter)
-	{
-		if (index >= m_parameterSELECT.size())
-			m_parameterSELECT.add(parameter);
-		else
-			m_parameterSELECT.set(index, parameter);
-	}	//	setParameterSELECT
-
-	/**
-	 *	Set Where Clause Parameter.
-	 *	Assumes that you set parameters starting from index zero
-	 *  @param index index
-	 *  @param parameter parameter
-	 */
-	public void setParameterWHERE (int index, Object parameter)
-	{
-		if (index >= m_parameterWHERE.size())
-			m_parameterWHERE.add(parameter);
-		else
-			m_parameterWHERE.set(index, parameter);
-	}	//	setParameterWHERE
-
 
 	/**
 	 *	Get GridField at index
@@ -837,10 +831,6 @@ public class GridTable extends AbstractTableModel
 		//
 		m_vetoableChangeSupport = null;
 		//
-		m_parameterSELECT.clear();
-		m_parameterSELECT = null;
-		m_parameterWHERE.clear();
-		m_parameterWHERE = null;
 		//  clear data arrays
 		m_buffer = null;
 		m_virtualBuffer = null;
@@ -2479,13 +2469,21 @@ public class GridTable extends AbstractTableModel
 		close(false);
 		if (retainedWhere != null)
 		{
-			String currentWhere = m_whereClause;
-			if (m_whereClause != null && m_whereClause.trim().length() > 0)
+			SQLFragment currentWhere = m_whereClause;
+			String tempWhere = m_whereClause != null ? m_whereClause.sqlClause() : "";
+			if (!Util.isEmpty(tempWhere, true))
 			{
 				StringBuilder orRetainedWhere = new StringBuilder(") OR (").append(retainedWhere).append(")) ");
-				if (! m_whereClause.contains(orRetainedWhere.toString()))
-					m_whereClause = "((" + m_whereClause + orRetainedWhere.toString();
+				if (! tempWhere.contains(orRetainedWhere.toString()))
+					tempWhere = "((" + tempWhere + orRetainedWhere.toString();
 			}
+			else
+			{
+				StringBuilder orRetainedWhere = new StringBuilder(") OR (").append(retainedWhere).append(")) ");
+				if (! tempWhere.contains(orRetainedWhere.toString()))
+					tempWhere = "((" + tempWhere + orRetainedWhere.toString();
+			}
+			m_whereClause = new SQLFragment(tempWhere, m_whereClause != null ? m_whereClause.parameters() : null);
 			open(m_maxRows);
 			m_whereClause = currentWhere;
 		}
@@ -2508,7 +2506,21 @@ public class GridTable extends AbstractTableModel
 			fireDataStatusIEvent(DATA_REFRESH_MESSAGE, "");
 	}	//	dataRefreshAll
 
-
+	/**
+	 *	Re-query with new whereClause
+	 *  @param whereClause sql where clause
+	 *  @param onlyCurrentRows only current rows
+	 *  @param onlyCurrentDays how many days back
+	 *  @param fireEvents if tabledatachanged and datastatusievent must be fired
+	 *  @return true if success
+	 *  @deprecated use {@link #dataRequery(SQLFragment, boolean, int, boolean)} instead
+	 */
+	@Deprecated(forRemoval = true, since = "13")
+	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays, boolean fireEvents)
+	{
+		return dataRequery (new SQLFragment(whereClause), onlyCurrentRows, onlyCurrentDays, fireEvents);
+	}
+	
 	/**
 	 *	Re-query with new whereClause
 	 *  @param whereClause sql where clause
@@ -2517,12 +2529,12 @@ public class GridTable extends AbstractTableModel
 	 *  @param fireEvents if tabledatachanged and datastatusievent must be fired
 	 *  @return true if success
 	 */
-	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays, boolean fireEvents)
+	public boolean dataRequery (SQLFragment whereClause, boolean onlyCurrentRows, int onlyCurrentDays, boolean fireEvents)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(whereClause + "; OnlyCurrent=" + onlyCurrentRows);
 		close(false);
 		m_onlyCurrentDays = onlyCurrentDays;
-		setSelectWhereClause(whereClause, onlyCurrentRows, m_onlyCurrentDays);
+		setSQLFilter(whereClause, onlyCurrentRows, m_onlyCurrentDays);
 		open(m_maxRows);
 		//  Info
 		m_rowData = null;
@@ -2547,12 +2559,26 @@ public class GridTable extends AbstractTableModel
 	 * @param onlyCurrentRows
 	 * @param onlyCurrentDays
 	 * @return true if success
+	 * @deprecated use {@link #dataRequery(SQLFragment, boolean, int)} instead
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public boolean dataRequery (String whereClause, boolean onlyCurrentRows, int onlyCurrentDays)
 	{
 		return dataRequery (whereClause, onlyCurrentRows, onlyCurrentDays, true);
 	}	//	dataRequery
 
+	/**
+	 * Delegate to {@link #dataRequery(SQLFragment, boolean, int, boolean)} with fireEvents=true
+	 * @param whereClause
+	 * @param onlyCurrentRows
+	 * @param onlyCurrentDays
+	 * @return true if success
+	 */
+	public boolean dataRequery (SQLFragment whereClause, boolean onlyCurrentRows, int onlyCurrentDays)
+	{
+		return dataRequery (whereClause, onlyCurrentRows, onlyCurrentDays, true);
+	}
+	
 	/**
 	 *	Is Cell Editable.
 	 *  @param  row row index
@@ -3267,18 +3293,15 @@ public class GridTable extends AbstractTableModel
 		 */
 		private void setParameter (PreparedStatement pstmt, boolean countSQL)
 		{
-			if (m_parameterSELECT.size() == 0 && m_parameterWHERE.size() == 0)
+			if (m_whereClause == null || m_whereClause.parameters() == null || m_whereClause.parameters().isEmpty())
 				return;
+			
 			try
 			{
 				int pos = 1;	//	position in Statement
 				//	Select Clause Parameters
-				for (int i = 0; !countSQL && i < m_parameterSELECT.size(); i++)
+				for (Object para : m_whereClause.parameters())
 				{
-					Object para = m_parameterSELECT.get(i);
-					if (para != null)
-						if (log.isLoggable(Level.FINE)) log.fine("Select " + i + "=" + para);
-					//
 					if (para == null)
 						;
 					else if (para instanceof Integer)
@@ -3289,26 +3312,38 @@ public class GridTable extends AbstractTableModel
 					else if (para instanceof BigDecimal)
 						pstmt.setBigDecimal (pos++, (BigDecimal)para);
 					else
-						pstmt.setString(pos++, para.toString());
-				}
-				//	Where Clause Parameters
-				for (int i = 0; i < m_parameterWHERE.size(); i++)
-				{
-					Object para = m_parameterWHERE.get(i);
-					if (para != null)
-						if (log.isLoggable(Level.FINE)) log.fine("Where " + i + "=" + para);
-					//
-					if (para == null)
-						;
-					else if (para instanceof Integer)
 					{
-						Integer ii = (Integer)para;
-						pstmt.setInt (pos++, ii.intValue());
+						String str = para.toString();
+						boolean hasId = false;
+						if (str.indexOf('@') >= 0)
+						{
+							hasId = str.contains("_ID");
+							String context = Env.parseContext(m_ctx, m_WindowNo, str, false);
+							if(context != null && context.trim().length() > 0)
+							{
+								str = context;
+							}
+							else
+							{
+								log.log(Level.WARNING, "Failed to parse where clause. whereClause="+m_whereClause);
+								str = null;
+							}
+						}
+						if (hasId && str != null)
+						{
+							try
+							{
+								int id = Integer.parseInt(str);
+								pstmt.setInt (pos++, id);
+								continue;
+							}
+							catch (NumberFormatException nfe)
+							{
+								//	do nothing, set as string
+							}
+						}
+						pstmt.setString(pos++, str);
 					}
-					else if (para instanceof BigDecimal)
-						pstmt.setBigDecimal (pos++, (BigDecimal)para);
-					else
-						pstmt.setString(pos++, para.toString());
 				}
 			}
 			catch (SQLException e)

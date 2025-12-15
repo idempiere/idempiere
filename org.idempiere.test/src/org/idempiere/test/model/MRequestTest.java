@@ -35,6 +35,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRequest;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,7 @@ public class MRequestTest extends AbstractTestCase {
 		gridWindow.initTab(0);
 		GridTab gridTab = gridWindow.getTab(0);
 		MQuery query = new MQuery(MRequest.Table_ID);
-		query.addRestriction("1=2");
+		query.addRestriction(new SQLFragment("1=2"));
 		gridTab.setQuery(query);
 		gridTab.query(false);
 		MRequest.newRequest(gridTab, MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, DictionaryIDs.C_BPartner.PATIO.id);
