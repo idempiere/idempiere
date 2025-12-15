@@ -143,6 +143,7 @@ public final class Env
 	public static final String PREFIX_SYSCONFIG_VARIABLE = "$sysconfig.";
 
 	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();

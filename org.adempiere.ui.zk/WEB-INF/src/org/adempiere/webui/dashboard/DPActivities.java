@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
@@ -45,6 +46,8 @@ import org.zkoss.zul.Vbox;
  * Deepak Pansheriya - showing only notes message
  */
 @Deprecated (since="13", forRemoval=true) // replaced with DPDocumentStatus
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class DPActivities extends DashboardPanel implements EventListener<Event> {
 	/**
 	 * 
