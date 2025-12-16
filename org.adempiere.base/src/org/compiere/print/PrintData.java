@@ -32,6 +32,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.Adempiere;
 import org.compiere.print.util.SerializableMatrix;
 import org.compiere.print.util.SerializableMatrixImpl;
@@ -169,6 +170,7 @@ public class PrintData implements Serializable
 	 *  @deprecated use {@link #setSQLClause(SQLFragment)} instead
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public void setSQL (String sql)
 	{
 		setSQLClause(new SQLFragment(sql));
@@ -180,6 +182,7 @@ public class PrintData implements Serializable
 	 *  @deprecated use {@link #getSQLClause()} instead
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public String getSQL()
 	{
 		return m_sql != null ? m_sql.sqlClause() : null;
@@ -479,6 +482,7 @@ public class PrintData implements Serializable
 	 *  @deprecated replace by {@link #getNodeByPrintFormatItemId(int)}
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public Object getNode (Integer AD_Column_ID)
 	{
 		int index = getIndex (AD_Column_ID.intValue());
@@ -570,6 +574,7 @@ public class PrintData implements Serializable
 	 * 	@return index or -1
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public int getIndex (int AD_Column_ID)
 	{
 		if (m_columnInfo == null)
@@ -617,6 +622,7 @@ public class PrintData implements Serializable
 	/**
 	 * 	Dump All Data - header and rows
 	 */
+	@GeneratedCodeCoverageExclusion
 	public void dump()
 	{
 		dump(this);
@@ -625,6 +631,7 @@ public class PrintData implements Serializable
 	/**
 	 * 	Dump All Data
 	 */
+	@GeneratedCodeCoverageExclusion
 	public void dumpHeader()
 	{
 		dumpHeader(this);
@@ -633,6 +640,7 @@ public class PrintData implements Serializable
 	/**
 	 * 	Dump All Data
 	 */
+	@GeneratedCodeCoverageExclusion
 	public void dumpCurrentRow()
 	{
 		dumpRow(this, m_matrix.getRowIndex());
@@ -642,6 +650,7 @@ public class PrintData implements Serializable
 	 * 	Dump all PrintData - header and rows
 	 *  @param pd print data
 	 */
+	@GeneratedCodeCoverageExclusion
 	private static void dump (PrintData pd)
 	{
 		dumpHeader(pd);
@@ -653,6 +662,7 @@ public class PrintData implements Serializable
 	 * 	Dump PrintData Header
 	 *  @param pd print data
 	 */
+	@GeneratedCodeCoverageExclusion
 	private static void dumpHeader (PrintData pd)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(pd.toString());
@@ -668,6 +678,7 @@ public class PrintData implements Serializable
 	 *  @param pd print data
 	 * 	@param row row
 	 */
+	@GeneratedCodeCoverageExclusion
 	private static void dumpRow (PrintData pd, int row)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("Row #" + row);

@@ -280,7 +280,6 @@ public class MQuery implements Serializable, Cloneable
 					}
 				}
 				
-				System.out.println(query.getRestrictionCount());
 				//keep custom query for later context parsing
 				if (!Util.isEmpty(P_Query) && (parameterMap.containsKey(ParameterName) || parameterMap.containsKey("To_"+ParameterName)))
 					queryList.add(P_Query);
