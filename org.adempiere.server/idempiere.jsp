@@ -1,176 +1,144 @@
 <%@ page import="org.bmlaurus.home.Prop" %>
 <!--
-Theme Name: iDempiere Theme
-Version: 2.0
-Description: iDempiere Theme
-Author: BMLaurus
-Author URI: http://www.bmlaurus.com
+Theme Name: iDempiere 2025 Theme
+Version: 3.0
+Description: iDempiere 2025 Theme
+Author: Zuhri Utama
+Author URI: https://zuhriutama.com
 -->
 <html>
 <% Prop.load(); %>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%=Prop.getProperty(Prop.TITLE) %></title>
+    <link href="resources/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="<%=Prop.loadCss()%>">
 	<script type="text/javascript" src="resources/jquery/jquery.js"></script>
-	<title><%=Prop.getProperty(Prop.TITLE) %></title>
 </head>
-<body onload="checkWebstoreLinks()">
-	<div id="body" class="body">
-		<div id="toolBar" class="toolBar">
-			<div id="toolBar-title" class="toolBar-title">
-				<div id="credits" style="color:#336699;">
-					<%=Prop.getProperty(Prop.CREDITS_TXT)%>
-				</div>
-				<div class="left_div" id="title">
-					<p><%=Prop.getProperty(Prop.CLIENT_NAME)%></p>
-				</div>
-			</div>
-			<div id="toolBar-tools" class="toolBar-tools">
-				<a href="<%=Prop.getProperty(Prop.OPTION_LINK)%>"  target="_blank">
-					<img name="img_option" src="<%=Prop.getImage("img_option.png")%>" border="0" title="<%=Prop.getProperty(Prop.OPTION_TEXT)%>"/>
-				</a>
-				<a id="felixConsole" href="<%=Prop.getProperty(Prop.FELIX_LINK)%>">
-					<img name="img_felix" src="<%=Prop.getImage("img_felix.png")%>" border="0" title="<%=Prop.getProperty(Prop.FELIX_TEXT)%>"/>
-				</a>
-				<a id="ServerManagement" href="<%=Prop.getProperty(Prop.MONITOR_LINK)%>">
-					<img name="img_idempiereMonitor" src="<%=Prop.getImage("img_idempiereMonitor.png")%>" border="0" title="<%=Prop.getProperty(Prop.MONITOR_TEXT)%>"/>
-				</a>
-			</div>
-		</div>
-		<div id ="main" class="main">
-			<div id="main-content" class="main-content">
-				<div id="main-docuBtns">
-					<ul>
-						<li id="main-requestBtns-btnLogin">
-							<a href="<%=Prop.getProperty(Prop.WEBUI_LINK)%>" target="_self">
-								<img name="img_webui" src="<%=Prop.getImage("img_webui.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WEBUI_TEXT)%></span>
-							</a>
-						</li>
-						<li id ="main-requestBtns-btnLocSupp">
-							<a href="<%=Prop.getProperty(Prop.SUPPORT_LINK)%>" target="_blank">
-								<img name="img_locsupport" src="<%=Prop.getImage("img_locsupport.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.LOCAL_TEXT)%></span>
-							</a>
-						</li>
-						<li id ="main-requestBtns-btnResoc">
-							<a href="<%=Prop.getProperty(Prop.RESOURCE_LINK)%>" target="_blank">
-								<img name="img_resource" src="<%=Prop.getImage("img_resource.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.RESOURCE_TEXT)%></span>
-							</a>
-						</li>																		
-						<li id ="main-docuBtns-btnWiki">
-							<a href="<%=Prop.getProperty(Prop.WIKI_LINK)%>" target="_blank">
-								<img name="img_wiki" src="<%=Prop.getImage("img_wiki.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WIKI_TEXT)%></span>
-							</a>
-						</li>
-						<li id ="main-docuBtns-btnForum">
-							<a href="<%=Prop.getProperty(Prop.FORUMS_LINK)%>" target="_blank">
-								<img name="img_forum" src="<%=Prop.getImage("img_forum.png")%>" border="0"/>
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.FORUMS_TEXT)%></span>
-							</a>
-						</li>
-						<li id ="main-docuBtns-btnSuppReq">
-							<a href="<%=Prop.getProperty(Prop.SUPPORTREQ_LINK)%>" target="_blank">
-								<img name="img_supreq" src="<%=Prop.getImage("img_supreq.png")%>" border="0"/>
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></span>
-							</a>
-						</li>
-						<li id ="main-requestBtns-btnReq">
-							<a href="<%=Prop.getProperty(Prop.WEBSTORE_LINK)%>" target="_blank">
-								<img name="img_webstore" src="<%=Prop.getImage("img_webstore.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WEBSTORE_TEXT)%></span>
-							</a>
-						</li>
-						<li id ="main-requestBtns-btnSendReq">
-							<a href="<%=Prop.getProperty(Prop.SENDREQUEST_LINK)%>" target="_blank">
-								<img name="img_sendreq" src="<%=Prop.getImage("img_sendreq.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.SENDREQUEST_TEXT)%></span>
-							</a>
-						</li>
-					</ul>
-				</div>
-				<div id="main-background">
-					<img name="img_background" src="<%=Prop.getImage("img_back.jpg")%>" border="0"/>
-				</div>
-			</div>
-		</div>
-		<div id="foot" class="foot">
-			<div id="socialBar" class="socialBar">
-				<%if(!Prop.getProperty(Prop.SOC_FACEBOOK).equals("") && !Prop.getProperty(Prop.SOC_FACEBOOK).equals("NONE")){%>
-					<a id="facebook" href="<%=Prop.getProperty(Prop.SOC_FACEBOOK)%>" target="_blank">
-						<img name="img_facebook" src="<%=Prop.getImage("img_facebook.png")%>" border="0"/>
-					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_TWITTER).equals("") && !Prop.getProperty(Prop.SOC_TWITTER).equals("NONE")){%>
-					<a id="twitter" href="<%=Prop.getProperty(Prop.SOC_TWITTER)%>" target="_blank">
-						<img name="img_twitter" src="<%=Prop.getImage("img_twitter.png")%>" border="0"/>
-					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_LINKEDIN).equals("") && !Prop.getProperty(Prop.SOC_LINKEDIN).equals("NONE")){%>
-					<a id="linkedin" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
-						<img name="img_linkedin" src="<%=Prop.getImage("img_linkedin.png")%>" border="0"/>
-					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_GOOPLUS).equals("") && !Prop.getProperty(Prop.SOC_GOOPLUS).equals("NONE")){%>
-					<a id="google+" href="<%=Prop.getProperty(Prop.SOC_GOOPLUS)%>" target="_blank">
-						<img name="img_googleplus" src="<%=Prop.getImage("img_googleplus.png")%>" border="0"/>
-					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_5).equals("") && !Prop.getProperty(Prop.SOC_5).equals("NONE")){%>
-					<a id="soc5" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
-						<img name="img_soc5" src="<%=Prop.getImage("img_soc5.png")%>" border="0"/>
-					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_6).equals("") && !Prop.getProperty(Prop.SOC_6).equals("NONE")){%>
-					<a id="soc6" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
-						<img name="img_soc6" src="<%=Prop.getImage("img_soc6.png")%>" border="0"/>
-					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_7).equals("") && !Prop.getProperty(Prop.SOC_7).equals("NONE")){%>
-					<a id="soc7" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
-						<img name="img_soc7" src="<%=Prop.getImage("img_soc7.png")%>" border="0"/>
-					</a>
-				<%}%>
-			</div>
-			<div id="footercopyright">
-				<p>&copy; Copyright 2013-<%=Prop.getYear()%> iDempiere - All rights reserved</p>
-				<p><a href="http://www.gnu.org/licenses/gpl-2.0.html" target="blank">iDempiere License is GPLv2</a></p>
-				<%=Prop.getProperty(Prop.COPYRIGHT_TXT)%>
-			</div>
-		</div>
-	</div>	
-	<script>
-		function checkWebstoreLinks() {
-			try {
-				var element = document.getElementById("main-requestBtns-btnReq");
-				var link = element.getElementsByTagName("a")[0];
-				var url = link.href;
-				checkLink(element, url);
-				
-				element = document.getElementById("main-requestBtns-btnSendReq");
-				link = element.getElementsByTagName("a")[0];
-				url = link.href;
-				checkLink(element, url);			
-			} catch (error) {}
-		}
-		
-		function checkLink(element, url) {
-			var reader = new XMLHttpRequest();
-			//asynchronous is true
-			reader.open('get', url, true);
-			//check each time the ready state changes
-			//to see if the object is ready
-			reader.onreadystatechange = checkReadyState;
 
-			function checkReadyState() {
-			  if (reader.readyState === 4) {
-			    //check to see whether request for the file failed or succeeded
-			    if ((reader.status == 200) || (reader.status === 0)) {
-			      ;
-			    } else {
-			      element.style.display = "none";
-			    }
-			  }
-			}
-			
-			reader.send(null);
-		}
-	</script>
+<body>
+    <div class="col-lg-12 mx-auto p-2 p-md-5">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+              <div class="navbar-brand d-flex flex-column">
+                <span class="fs-4"><%=Prop.getProperty(Prop.CLIENT_NAME)%></span>
+                <span class="fs-6"><%=Prop.getProperty(Prop.CREDITS_TXT)%></span>
+              </div>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="<%=Prop.getProperty(Prop.OPTION_LINK)%>"><%=Prop.getProperty(Prop.OPTION_TEXT)%></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="<%=Prop.getProperty(Prop.FELIX_LINK)%>"><%=Prop.getProperty(Prop.FELIX_TEXT)%></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" aria-disabled="true" href="<%=Prop.getProperty(Prop.MONITOR_LINK)%>"><%=Prop.getProperty(Prop.MONITOR_TEXT)%></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <a href="<%=Prop.getProperty(Prop.WEBUI_LINK)%>" target="_self" class="btn bg-button p-4 rounded-3 d-flex flex-column justify-content-center align-items-center main-button">
+                        <img src="<%=Prop.getImage("idempiere-logo.svg")%>" alt="iDempiere" style="min-height: 300px;" class="d-none d-md-block">
+                        <img src="<%=Prop.getImage("idempiere-square.png")%>" alt="iDempiere" class="d-block d-md-none img-fluid">
+                        <span class="fs-1 fs-md-2 mt-2"><%=Prop.getProperty(Prop.WEBUI_TEXT)%></span>
+                    </a>
+                </div>
+                <div class="col-12 text-center">
+                    <div class="d-flex justify-content-between flex-wrap gap-3 my-4">
+                        <a href="<%=Prop.getProperty(Prop.SUPPORT_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                            <img src="<%=Prop.getImage("support.png")%>" alt="<%=Prop.getProperty(Prop.LOCAL_TEXT)%>" class="mb-2">
+                            <span><%=Prop.getProperty(Prop.LOCAL_TEXT)%></span>
+                        </a>
+                        <a href="<%=Prop.getProperty(Prop.RESOURCE_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                            <img src="<%=Prop.getImage("resource.png")%>" alt="<%=Prop.getProperty(Prop.RESOURCE_TEXT)%>" class="mb-2">
+                            <span><%=Prop.getProperty(Prop.RESOURCE_TEXT)%></span>
+                        </a>
+                        <a href="<%=Prop.getProperty(Prop.WIKI_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                            <img src="<%=Prop.getImage("wiki.png")%>" alt="<%=Prop.getProperty(Prop.WIKI_TEXT)%>" class="mb-2">
+                            <span><%=Prop.getProperty(Prop.WIKI_TEXT)%></span>
+                        </a>
+                        <a href="<%=Prop.getProperty(Prop.FORUMS_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                            <img src="<%=Prop.getImage("forum.png")%>" alt="<%=Prop.getProperty(Prop.FORUMS_TEXT)%>" class="mb-2">
+                            <span><%=Prop.getProperty(Prop.FORUMS_TEXT)%></span>
+                        </a>
+                        <a href="<%=Prop.getProperty(Prop.SUPPORTREQ_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                            <img src="<%=Prop.getImage("issue.png")%>" alt="<%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%>" class="mb-2">
+                            <span><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="">
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <p class="text-center text-md-start fs-5">iDempiere license is <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPLv2</a> <%=Prop.getProperty(Prop.COPYRIGHT_TXT)%></p>
+                </div>
+                <div class="col-12 col-md-4 d-flex justify-content-center align-items-center gap-2">
+                    <%if(!Prop.getProperty(Prop.SOC_FACEBOOK).equals("") && !Prop.getProperty(Prop.SOC_FACEBOOK).equals("NONE")){%>
+                        <a id="facebook" href="<%=Prop.getProperty(Prop.SOC_FACEBOOK)%>" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 24 24">
+	                            <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.406.595 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.312h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.406 24 22.674V1.326C24 .592 23.406 0 22.675 0"/>
+	                        </svg>
+                        </a>
+                    <%} if(!Prop.getProperty(Prop.SOC_TWITTER).equals("") && !Prop.getProperty(Prop.SOC_TWITTER).equals("NONE")){%>
+                        <a id="twitter" href="<%=Prop.getProperty(Prop.SOC_TWITTER)%>" target="_blank">
+                            <svg fill="#DC7633" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
+	                        zoomAndPan="magnify" viewBox="0 0 375 374.9999" height="32" preserveAspectRatio="xMidYMid meet" version="1.0">
+	                        <defs>
+	                            <path d="M 7.09375 7.09375 L 367.84375 7.09375 L 367.84375 367.84375 L 7.09375 367.84375 Z M 7.09375 7.09375 "
+	                            fill="#000000"></path>
+	                        </defs>
+	                        <g>
+	                            <path
+	                            d="M 187.46875 7.09375 C 87.851562 7.09375 7.09375 87.851562 7.09375 187.46875 C 7.09375 287.085938 87.851562 367.84375 187.46875 367.84375 C 287.085938 367.84375 367.84375 287.085938 367.84375 187.46875 C 367.84375 87.851562 287.085938 7.09375 187.46875 7.09375 "
+	                            fill-opacity="1" fill-rule="nonzero" fill="#000000"></path>
+	                        </g>
+	                        <g transform="translate(85, 75)"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" version="1.1"
+	                            height="215" width="215">
+	                            <path
+	                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+	                                fill="#ffffff"></path>
+	                            </svg> </g>
+	                        </svg>
+                        </a>
+                    <%} if(!Prop.getProperty(Prop.SOC_LINKEDIN).equals("") && !Prop.getProperty(Prop.SOC_LINKEDIN).equals("NONE")){%>
+                        <a id="linkedin" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#0077b5" viewBox="0 0 24 24">
+	                            <path d="M22.23 0H1.77C.792 0 0 .775 0 1.729V22.27C0 23.225.792 24 1.77 24h20.46c.978 0 1.77-.775 1.77-1.729V1.729C24 .775 23.208 0 22.23 0zM7.12 20.452H3.56V9h3.56v11.452zM5.34 7.658c-1.145 0-2.07-.927-2.07-2.069 0-1.143.925-2.069 2.07-2.069s2.07.926 2.07 2.069c0 1.142-.925 2.069-2.07 2.069zM20.452 20.452h-3.56v-5.605c0-1.336-.024-3.054-1.863-3.054-1.863 0-2.148 1.453-2.148 2.956v5.703h-3.559V9h3.419v1.561h.048c.476-.9 1.637-1.849 3.37-1.849 3.604 0 4.27 2.37 4.27 5.455v6.285z"/>
+	                        </svg>
+                        </a>
+                    <%} if(!Prop.getProperty(Prop.SOC_5).equals("") && !Prop.getProperty(Prop.SOC_5).equals("NONE")){%>
+                        <a id="soc5" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                            <img name="img_soc5" src="<%=Prop.getImage("img_soc5.png")%>" border="0"/>
+                        </a>
+                    <%} if(!Prop.getProperty(Prop.SOC_6).equals("") && !Prop.getProperty(Prop.SOC_6).equals("NONE")){%>
+                        <a id="soc6" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                            <img name="img_soc5" src="<%=Prop.getImage("img_soc6.png")%>" border="0"/>
+                        </a>
+                    <%} if(!Prop.getProperty(Prop.SOC_7).equals("") && !Prop.getProperty(Prop.SOC_7).equals("NONE")){%>
+                        <a id="soc7" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                            <img name="img_soc7" src="<%=Prop.getImage("img_soc7.png")%>" border="0"/>
+                        </a>
+                    <%}%>
+                </div>
+                <div class="col-12 col-md-4">
+                    <p class="text-center text-md-end fs-5">&copy; Copyright 2013-<%=Prop.getYear()%> iDempiere - All rights reserved</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="resources/bootstrap/bootstrap.bundle.min.js" type="text/javascript">
+    </script>
 </body>
+
 </html>
