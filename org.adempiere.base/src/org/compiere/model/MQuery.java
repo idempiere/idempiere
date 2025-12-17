@@ -881,7 +881,7 @@ public class MQuery implements Serializable, Cloneable
 	 * 	@param whereClause SQL WHERE clause
 	 *  @param andCondition true=and, false=or
 	 *  @param joinDepth number of parenthesis
-	 *  @deprecated Use addRestriction (SQLFilter sqlFilter, boolean andCondition, int joinDepth)
+	 *  @deprecated Use addRestriction (SQLFragment sqlFilter, boolean andCondition, int joinDepth)
 	 */
 	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, boolean andCondition, int joinDepth)
@@ -894,12 +894,26 @@ public class MQuery implements Serializable, Cloneable
 	}	//	addRestriction
 	
 	/**
+	 * @param sqlFilter
+	 * @param andCondition
+	 * @param joinDepth
+	 */
+	public void addRestriction (SQLFragment sqlFilter, boolean andCondition, int joinDepth)
+	{
+		if (sqlFilter == null || sqlFilter.sqlClause() == null)
+			return;
+		Restriction r = new Restriction (sqlFilter, andCondition, false, false, joinDepth);
+		m_list.add(r);
+		m_newRecord = sqlFilter.sqlClause().equals(NEWRECORD);
+	}	//	addRestriction
+	
+	/**
 	 * 	Add Restriction
 	 * 	@param whereClause SQL WHERE clause
 	 *  @param andCondition true=and, false=or
 	 *  @param notCondition true=not
 	 *  @param joinDepth number of parenthesis
-	 *  @deprecated Use addRestriction (SQLFilter sqlFilter, boolean andCondition, boolean notCondition, int joinDepth)
+	 *  @deprecated Use addRestriction (SQLFragment sqlFilter, boolean andCondition, boolean notCondition, int joinDepth)
 	 */
 	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, boolean andCondition, boolean notCondition, int joinDepth)
@@ -930,7 +944,7 @@ public class MQuery implements Serializable, Cloneable
 	 *  @param notCondition true=not
 	 *  @param existsCondition true=exists
 	 *  @param joinDepth number of parenthesis
-	 *  @deprecated Use addRestriction (SQLFilter sqlFilter, boolean andCondition, boolean notCondition, boolean existsCondition, int joinDepth)
+	 *  @deprecated Use addRestriction (SQLFragment sqlFilter, boolean andCondition, boolean notCondition, boolean existsCondition, int joinDepth)
 	 */
 	@Deprecated(forRemoval = true, since = "13")
 	public void addRestriction (String whereClause, boolean andCondition, boolean notCondition, boolean existsCondition, int joinDepth)

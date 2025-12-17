@@ -1709,6 +1709,20 @@ public final class DB
 	 */
 	public static boolean isSOTrx (String TableName, String whereClause, int windowNo)
 	{
+		return isSOTrx (TableName, whereClause, windowNo, List.of());
+	}
+	
+	/**
+	 * 	Is Sales Order Trx.<br/>
+	 * 	Assumes Sales Order. Query IsSOTrx value of table with where clause
+	 *	@param TableName table
+	 *	@param whereClause where clause
+	 *  @param windowNo
+	 *  @param params list of parameters
+	 *	@return true (default) or false if tested that not SO
+	 */
+	public static boolean isSOTrx (String TableName, String whereClause, int windowNo, List<Object> params)
+	{
         if (TableName == null || TableName.length() == 0)
         {
             log.severe("No TableName");
@@ -1732,6 +1746,9 @@ public final class DB
         	try
         	{
         		pstmt = DB.prepareStatement (sql, null);
+        		if (params != null && !params.isEmpty()) {
+					setParameters(pstmt, params);
+				}
         		rs = pstmt.executeQuery ();
         		if (rs.next ())
         			isSOTrx = Boolean.valueOf("Y".equals(rs.getString(1)));
@@ -1797,8 +1814,20 @@ public final class DB
 	 * @param whereClause
 	 * @return true (default) or false if tested that not SO
 	 */
-	public static boolean isSOTrx (String TableName, String whereClause) {
-		return isSOTrx (TableName, whereClause, -1);
+	public static boolean isSOTrx (String TableName, String whereClause)
+	{
+		return isSOTrx (TableName, whereClause, List.of());
+	}
+	
+	/**
+	 * Delegate to {@link #isSOTrx(String, String, int)} with -1 for windowNo parameter.
+	 * @param TableName
+	 * @param whereClause
+	 * @param params list of parameters
+	 * @return true (default) or false if tested that not SO
+	 */
+	public static boolean isSOTrx (String TableName, String whereClause, List<Object> params) {
+		return isSOTrx (TableName, whereClause, -1, params);
 	}
 
 	/**

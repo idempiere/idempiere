@@ -39,10 +39,10 @@ public record SQLFragment(String sqlClause, List<Object> parameters) {
 	}
 	
 	/**
-	 * @param whereClause
+	 * @param sqlClause
 	 */
-	public SQLFragment(String whereClause) {
-		this(whereClause, List.of());
+	public SQLFragment(String sqlClause) {
+		this(sqlClause, List.of());
 	}
 
 	@Override

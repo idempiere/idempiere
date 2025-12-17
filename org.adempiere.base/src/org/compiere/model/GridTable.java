@@ -2523,7 +2523,7 @@ public class GridTable extends AbstractTableModel
 	
 	/**
 	 *	Re-query with new whereClause
-	 *  @param whereClause sql where clause
+	 *  @param whereClause sql where clause and parameters
 	 *  @param onlyCurrentRows only current rows
 	 *  @param onlyCurrentDays how many days back
 	 *  @param fireEvents if tabledatachanged and datastatusievent must be fired
