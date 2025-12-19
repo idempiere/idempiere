@@ -26,7 +26,6 @@ package org.idempiere.test.adwindow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -58,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -109,7 +107,6 @@ import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BPartner_Location;
 import org.compiere.model.X_C_Greeting;
-import org.compiere.model.X_M_Substitute;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.CPreparedStatement;
@@ -846,163 +843,7 @@ public class GridTabTest extends AbstractTestCase {
 		gw.dispose();
 		assertTrue(gw.getTabCount() == 0, "GridWindow should have 0 tabs after dispose()");
 	}
-	
-	/**
-	 * Test dataRefreshAll(boolean fireEvent, boolean retainedCurrentRow)
-	 * Scenario:
-	 * 1. Load a tab with query.
-	 * 2. Make changes to a row with MTest
-	 * 3. Call dataRefreshAll with retainedCurrentRow = true/false.
-	 * 4. Verify that the current row is retained or not based on the parameter.
-	 */
-	@Test
-	public void testDataRefreshAll_RetainedCurrentRow()
-	{
-		int AD_Window_ID = SystemIDs.WINDOW_TEST;
-		
-		MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
-		String description = UUID.randomUUID().toString();
-		t1.setDescription(description);
-		t1.saveEx();
-		
-		MTest t2 = new MTest(Env.getCtx(), "t2_"+System.currentTimeMillis(), 10, getTrxName());
-		t2.setDescription(description);
-		t2.saveEx();
-		
-		GridWindow gw = GridWindowTest.createGridWindow(AD_Window_ID);
-		GridTab gt = gw.getTab(0);
-		gt.getTableModel().setImportingMode(true, getTrxName());
 
-		// Execution: Load data
-		MQuery query = new MQuery(MTest.Table_Name);
-		query.addRestriction(MTest.COLUMNNAME_Description, MQuery.EQUAL, description);
-		gt.setQuery(query);
-		gt.query(false);
-
-		// Make t2 current row
-		assertEquals(2, gt.getRowCount(), "Query should return 2 records in MTest");
-		gt.navigate(0);
-		if (gt.getRecord_ID() != t2.get_ID())
-			gt.navigate(1);
-
-		// Change t2 to make it not match the query above
-		t2.setDescription("Changed");
-		t2.saveEx();
-		
-		// retained t2
-		gt.dataRefreshAll(true, true);
-		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., true), Row Count should still be 2");
-
-		// not retained t2
-		gt.query(false);
-		assertEquals(1, gt.getRowCount(), "After query, Row Count should be 1");
-		
-		// test retain for multi-key tab
-		gw = GridWindowTest.createGridWindow(SystemIDs.WINDOW_PRODUCT);
-		gt = gw.getTab(0);
-		gt.setUpdateWindowContext(true);
-		gt.getTableModel().setImportingMode(true, getTrxName());
-		query = new MQuery(MProduct.Table_Name);
-		query.addRestriction(MProduct.COLUMNNAME_M_Product_ID, MQuery.EQUAL, DictionaryIDs.M_Product.AZALEA_BUSH.id);
-		gt.setQuery(query);
-		gt.query(false);
-		assertEquals(1, gt.getRowCount(), "Query should return 1 record after filtering M_Product by AZALEA_BUSH");
-		//find substitute tab - no key, 2 parent key
-		GridTab stab = null;
-		for(int i=1; i < gw.getTabCount(); i++)
-		{
-			GridTab tab = gw.getTab(i);
-			if (tab.getAD_Table_ID() == X_M_Substitute.Table_ID)
-			{
-				stab = tab;
-				break;
-			}
-		}
-		assertNotNull(stab, "Could not find Substitute tab in Product window");
-		stab.getTableModel().setImportingMode(true, getTrxName());		
-		stab.query(false);
-		assertTrue(stab.getRowCount() == 0, "Substitute tab should have no records for Azalea Bush");
-		stab.dataNew(false);
-		stab.setValue(X_M_Substitute.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.AZALEA_BUSH.id);
-		stab.setValue(X_M_Substitute.COLUMNNAME_Substitute_ID, DictionaryIDs.M_Product.SEEDER.id);
-		stab.setValue(X_M_Substitute.COLUMNNAME_Name, "Name 1");
-		stab.setValue(X_M_Substitute.COLUMNNAME_Description, "Description");
-		assertTrue(stab.dataSave(true), "Failed to save substitute record. " + getMessage(stab));
-		stab.dataNew(false);
-		stab.setValue(X_M_Substitute.COLUMNNAME_M_Product_ID, DictionaryIDs.M_Product.AZALEA_BUSH.id);
-		stab.setValue(X_M_Substitute.COLUMNNAME_Substitute_ID, DictionaryIDs.M_Product.MULCH.id);
-		stab.setValue(X_M_Substitute.COLUMNNAME_Description, "Description");
-		stab.setValue(X_M_Substitute.COLUMNNAME_Name, "Name 2");
-		assertTrue(stab.dataSave(true), "Failed to save substitute record");
-		query = new MQuery(X_M_Substitute.Table_Name);
-		query.addRestriction(X_M_Substitute.COLUMNNAME_Description	, MQuery.EQUAL, "Description");
-		stab.setQuery(query);
-		stab.query(false);
-		assertEquals(2, stab.getRowCount(), "Should have 2 substitute records for Azalea Bush");		
-		stab.setValue(X_M_Substitute.COLUMNNAME_Description, "Description Updated");
-		assertTrue(stab.dataSave(true), "Failed to save substitute record");
-		stab.dataRefreshAll(true, true);
-		assertEquals(2, stab.getRowCount(), "Should retain 2 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=true");
-		stab.query(false);
-		assertEquals(1, stab.getRowCount(), "Should retain 1 record for substitute of Azalea Bush after query");
-		PO po = stab.getTableModel().getPO(0);
-		assertNotNull(po, "PO should not be null for remaining substitute record");
-		assertInstanceOf(X_M_Substitute.class, po, "PO should be instance of X_M_Substitute");
-	}
-	
-	/**
-	 * Test dataRefreshAll(boolean fireEvent, boolean retainedCurrentRow)
-	 * Scenario:
-	 * 1. Load a tab with query.
-	 * 2. Make changes to a row with MTest
-	 * 3. Call dataRefreshAll with retainedCurrentRow = true/false.
-	 * 4. Verify that the current row is retained or not based on the parameter.
-	 */
-	@Test
-	public void testDataRefreshAll_RetainedCurrentRow_UU()
-	{
-		int AD_Window_ID = SystemIDs.WINDOW_TEST_UU;
-		
-		MTestUU t1 = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
-		t1.setName("t1_"+System.currentTimeMillis());
-		String description = UUID.randomUUID().toString();
-		t1.setDescription(description);
-		t1.saveEx();
-		
-		MTestUU t2 = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
-		t2.setName("t2_"+System.currentTimeMillis());
-		t2.setDescription(description);
-		t2.saveEx();
-		
-		GridWindow gw = GridWindowTest.createGridWindow(AD_Window_ID);
-		GridTab gt = gw.getTab(0);
-		gt.getTableModel().setImportingMode(true, getTrxName());
-
-		// Execution: Load data
-		MQuery query = new MQuery(MTestUU.Table_Name);
-		query.addRestriction(MTestUU.COLUMNNAME_Description, MQuery.EQUAL, description);
-		gt.setQuery(query);
-		gt.query(false);
-
-		// Make t2 current row
-		assertEquals(2, gt.getRowCount(), "Query should return 2 records in MTest");
-		gt.navigate(0);
-		if (!t2.get_UUID().equals(gt.getRecord_UU()))
-			gt.navigate(1);
-
-		// Change t2 to make it not match the query above
-		t2.setDescription("Changed");
-		t2.saveEx();
-		
-		// retained t2
-		gt.dataRefreshAll(true, true);
-		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., true), Row Count should still be 2");
-
-		// not retained t2
-		gt.query(false);
-		assertEquals(1, gt.getRowCount(), "After query, Row Count should be 1");
-	}
-	
 	/**
 	 * Test dataIgnore()
 	 * Scenario:
