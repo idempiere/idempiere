@@ -1734,7 +1734,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if (find == null) 
 			{
 
-				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID, null);
+				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getExtendedFilter(), findFields, 1, AD_Tab_ID, null);
 	            
 				if (!find.initialize()) 
 	            {

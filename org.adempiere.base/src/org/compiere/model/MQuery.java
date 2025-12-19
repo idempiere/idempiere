@@ -1580,7 +1580,7 @@ public class MQuery implements Serializable, Cloneable
 	 * @return SQL
 	 */
 	@Deprecated
-	public String getRestrictionSQL (String ColumnName, String Operator,
+	public static String getRestrictionSQL (String ColumnName, String Operator,
 			Object Code, String InfoName, String InfoDisplay, boolean andCondition, int depth)
 	{
 		Restriction r = new Restriction (ColumnName, Operator,
@@ -1588,7 +1588,17 @@ public class MQuery implements Serializable, Cloneable
 		return r.getSQL(null);
 	}	//	getRestrictionSQL
 
-	public SQLFragment getRestrictionSQLFilter (String ColumnName, String Operator,
+	/**
+	 * @param ColumnName
+	 * @param Operator
+	 * @param Code
+	 * @param InfoName
+	 * @param InfoDisplay
+	 * @param andCondition
+	 * @param depth
+	 * @return sql filter and parameters
+	 */
+	public static SQLFragment getRestrictionSQLFilter (String ColumnName, String Operator,
 			Object Code, String InfoName, String InfoDisplay, boolean andCondition, int depth)
 	{
 		Restriction r = new Restriction (ColumnName, Operator,
@@ -1608,7 +1618,7 @@ public class MQuery implements Serializable, Cloneable
 	 * @return SQL
 	 */
 	@Deprecated
-	public String getRestrictionSQL (String ColumnName, 
+	public static String getRestrictionSQL (String ColumnName, 
 			Object Code, Object Code_To, String InfoName, String InfoDisplay, String InfoDisplay_To, boolean andCondition, int depth)
 	{
 		Restriction r = new Restriction(ColumnName, Code, Code_To, InfoName, 
@@ -1616,7 +1626,7 @@ public class MQuery implements Serializable, Cloneable
 		return r.getSQL(null);
 	}
 	
-	public SQLFragment getRestrictionSQLFilter (String ColumnName, 
+	public static SQLFragment getRestrictionSQLFilter (String ColumnName, 
 			Object Code, Object Code_To, String InfoName, String InfoDisplay, String InfoDisplay_To, boolean andCondition, int depth)
 	{
 		Restriction r = new Restriction(ColumnName, Code, Code_To, InfoName, 

@@ -1914,6 +1914,15 @@ public final class Env
 		return parseVariable(expression, po, trxName, false, false, keepUnparseable);
 	}
 	
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param po
+	 * @param trxName
+	 * @param keepUnparseable
+	 * @param parameters list to collect parameters for prepared statement
+	 * @return String
+	 */
 	public static String parseVariableForSql(String expression, PO po, String trxName, boolean keepUnparseable, List<Object> parameters) {
 		return parseVariableForSql(expression, po, trxName, false, false, keepUnparseable, parameters);
 	}
@@ -1933,6 +1942,17 @@ public final class Env
 		return parseVariable(expression, po, trxName, useColumnDateFormat, useMsgForBoolean, keepUnparseable, false);
 	}
 	
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param po
+	 * @param useColumnDateFormat
+	 * @param useMsgForBoolean
+	 * @param trxName
+	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
+	 * @param parameters list to collect parameters for prepared statement
+	 * @return Parsed expression
+	 */
 	public static String parseVariableForSql(String expression, PO po, String trxName, boolean useColumnDateFormat, 
 			boolean useMsgForBoolean, boolean keepUnparseable, List<Object> parameters) {
 		return parseVariableForSql(expression, po, trxName, useColumnDateFormat, useMsgForBoolean, keepUnparseable, false, parameters);
