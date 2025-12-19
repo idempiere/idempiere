@@ -24,8 +24,11 @@
  **********************************************************************/
 package org.idempiere.db.util;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+
+import org.compiere.util.DB;
 
 /**
  * SQL fragment with SQL clause and parameters
@@ -60,5 +63,29 @@ public record SQLFragment(String sqlClause, List<Object> parameters) {
 			return false;
 		SQLFragment other = (SQLFragment) obj;
 		return Objects.equals(parameters, other.parameters) && Objects.equals(sqlClause, other.sqlClause);
+	}
+	
+	/**
+	 * Convert to WHERE clause by replacing ? parameters.
+	 * This is subjected to SQL injection attack, should be used only for backward compatibility.
+	 * @return where clause
+	 */
+	public String toWhereClause() {
+		if (parameters.isEmpty()) {
+			return sqlClause;
+		}
+		String whereClause = sqlClause;
+		for(Object param : parameters) {
+			String paramStr = "";
+			if (param instanceof String s) {
+				paramStr = DB.TO_STRING(s);
+			} else if (param instanceof Timestamp ts) {
+				paramStr = DB.TO_DATE(ts);
+			} else {
+				paramStr = param.toString();
+			}
+			whereClause = whereClause.replaceFirst("\\?", paramStr);			
+		}
+		return whereClause;
 	}
 }

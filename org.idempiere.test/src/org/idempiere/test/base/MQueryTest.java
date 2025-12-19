@@ -281,7 +281,7 @@ public class MQueryTest extends AbstractTestCase {
 		MQuery q = new MQuery("C_BPartner");
 		q.addRestriction("Name", MQuery.EQUAL, "Test");
 		String toString = q.toString();
-		assertEquals("(C_BPartner.Name=?)", toString);
+		assertEquals("SQLFragment[sqlClause=(C_BPartner.Name=?), parameters=[Test]]", toString);
 
 		MQuery qEmpty = new MQuery("C_Order");
 		assertEquals("MQuery[C_Order,Restrictions=0]", qEmpty.toString());

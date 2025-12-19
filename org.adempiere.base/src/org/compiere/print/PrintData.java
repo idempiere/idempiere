@@ -185,7 +185,7 @@ public class PrintData implements Serializable
 	@GeneratedCodeCoverageExclusion
 	public String getSQL()
 	{
-		return m_sql != null ? m_sql.sqlClause() : null;
+		return m_sql != null ? m_sql.toWhereClause() : null;
 	}	//	getSQL
 
 	/**

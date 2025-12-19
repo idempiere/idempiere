@@ -520,7 +520,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				gridWindow.initTab(tabIndex);
 				//init parent tab by parent ids
 				SQLFragment filter = query.getSQLFilter();
-				StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName()).append(" FROM ").append(gTab.getTableName()).append(" WHERE ")
+				StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName())
+						.append(" FROM ").append(gTab.getTableName())
+						.append(" WHERE ")
 						.append(filter.sqlClause());
 				List<List<Object>> parentIds = DB.getSQLArrayObjectsEx(null, sql.toString(), filter.parameters());
 				if (parentIds!=null && parentIds.size() > 0)
@@ -904,16 +906,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
 
         //
-		StringBuffer where = new StringBuffer(Env.parseContext(ctx, curWindowNo, mTab.getWhereExtended(), false));
+        List<Object> params = new ArrayList<Object>();
+        SQLFragment extendedFilter = mTab.getExtendedFilter();
+        params.addAll(extendedFilter.parameters());
+		StringBuffer where = new StringBuffer(Env.parseContextForSql(ctx, curWindowNo, extendedFilter.sqlClause(), false, params));
         // Query automatically if high volume and no query
         boolean require = mTab.isHighVolume();
         if (!require && !m_onlyCurrentRows) // No Trx Window
-        {
-        	List<Object> params = List.of();
+        {        	
             if (query != null)
             {
             	SQLFragment filter = query.getSQLFilter();
-            	params = filter.parameters();
+            	params.addAll(filter.parameters());
                 String wh2 = filter.sqlClause();
                 if (wh2.length() > 0)
                 {

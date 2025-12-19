@@ -37,6 +37,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Named status of records in a table via SQL criteria
@@ -202,7 +203,9 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	/**
 	 * @param documentStatus
 	 * @return where clause to find matching records
+	 * @deprecated use getSQLFilter
 	 */
+	@Deprecated
 	public static String getWhereClause(MDocumentStatus documentStatus) {
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		StringBuilder where = new StringBuilder(" ").append(tableName).append(".AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );
@@ -222,6 +225,35 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		return Env.parseContext(Env.getCtx(), 0, where.toString(), false);
 	}
 
+	/**
+	 * Get where clause for document status with parameters
+	 * @param documentStatus
+	 * @return where clause and parameters
+	 */
+	public static SQLFragment getSQLFilter(MDocumentStatus documentStatus) {
+		List<Object> params = new ArrayList<>();
+		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
+		StringBuilder where = new StringBuilder(" ").append(tableName).append(".AD_Client_ID=?");
+		params.add(Env.getAD_Client_ID(Env.getCtx()));
+		if (documentStatus.getC_Project_ID() > 0) 
+		{
+			where.append(" AND ").append(tableName).append(".C_Project_ID=?");
+			params.add(documentStatus.getC_Project_ID());
+		}
+		if (documentStatus.getAD_Org_ID() > 0) 
+		{
+			where.append(" AND ").append(tableName).append(".AD_Org_ID=?");
+			params.add(documentStatus.getAD_Org_ID());
+		}
+		String extra = documentStatus.getWhereClause();
+		if (extra != null && extra.trim().length() > 0)
+		{
+			where.append(" AND ( ").append(extra).append(" ) ");
+		}
+		String whereClause = Env.parseContextForSql(Env.getCtx(), 0, where.toString(), false, params);
+		return new SQLFragment(whereClause, params);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("MDocumentStatus[");

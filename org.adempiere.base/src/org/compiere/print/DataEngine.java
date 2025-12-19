@@ -962,12 +962,7 @@ public class DataEngine
 			List<Object> sqlParams = sqlFragment.parameters();
 			if (sqlParams != null && sqlParams.size() > 0)
 			{
-				int index = 1;
-				for (Object param : sqlParams)
-				{
-					pstmt.setObject(index, param);
-					index++;
-				}
+				DB.setParameters(pstmt, sqlParams);
 			}
 			rs = pstmt.executeQuery();
 

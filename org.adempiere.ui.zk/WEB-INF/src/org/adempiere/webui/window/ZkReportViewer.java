@@ -1263,7 +1263,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			new WReport (AD_Table_ID, data.getQuery(), component, m_WindowNo);
 		}
 		else
-			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+			log.warning("No Table found for " + data.getQuery().getSQLFilter(true));
 	}	//	executeDrill
 
 	/**

@@ -647,8 +647,8 @@ public final class DB
 		else if (param instanceof UUID
 				 || param.getClass().getName().equals("oracle.sql.BLOB"))
 			pstmt.setObject(index, param);
-		else
-			throw new DBException("Unknown parameter type "+index+" - "+param);
+		else //let jdbc driver handle the rest of types
+			pstmt.setObject(index, param);
 	}
 
 	/**

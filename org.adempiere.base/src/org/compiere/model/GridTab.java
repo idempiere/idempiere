@@ -173,7 +173,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 	private String m_parentColumnName = "";
 	/** Full where clause (including parent link for detail tab) **/
-	private SQLFragment			m_extendedWhere;
+	private SQLFragment			m_extendedFilter;
 	/** Locks		        */
 	private ArrayList<Integer>	m_Lock = null;
 
@@ -188,7 +188,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
     protected EventListenerList m_listenerList = new EventListenerList();
 	/**	Query							*/
 	private MQuery 				m_query = new MQuery();
-	private SQLFragment 			m_oldQuery = new SQLFragment("0=9");
+	private SQLFragment 		m_oldQuery = new SQLFragment("0=9");
 	private String 				m_linkValue = "999999";
 
 	/** Order By Array if SortNo 1..3   */
@@ -319,7 +319,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	protected boolean loadTab()
 	{
-		m_extendedWhere = new SQLFragment(m_vo.WhereClause);
+		m_extendedFilter = new SQLFragment(m_vo.WhereClause);
 
 		//	Get Field Data
 		if (!loadFields())
@@ -672,8 +672,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		{
 			if (where.length() > 0)
 				where.append(" AND ");
-			where.append("Created >= ");
-			where.append("getDate()-?");
+			
+			where.append("Created >= ").append("getDate()-?");
 			params.add(m_vo.onlyCurrentDays);
 		}
 		//	Detail Query
@@ -721,16 +721,17 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					//	we have column and value
 					if (where.length() != 0)
 						where.append(" AND ");
+					
 					where.append(getTableName()).append(".").append(lc).append("=?");
 					if (lc.endsWith("_ID"))
 						params.add(Integer.valueOf(value.trim()));
 					else
-						params.add(value);
+						params.add(value);					
 				}
 			}
 		}	//	isDetail
 
-		m_extendedWhere = new SQLFragment(where.toString(), params);
+		m_extendedFilter = new SQLFragment(where.toString(), params);
 		
 		//	Final Query
 		if (m_query.isActive())
@@ -772,7 +773,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (m_mTable.isOpen())
 		{
 			SQLFragment where = new SQLFragment("2=3");
-			m_extendedWhere = where;
+			m_extendedFilter = where;
 			m_oldQuery = where;
 			m_parentNeedSave = true;
 			
@@ -1733,12 +1734,22 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *	Get extended Where Clause (parent link)
 	 *  @return parent link
+	 *  @deprecated use getExtendedFilter() instead
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereExtended()
 	{
-		return m_extendedWhere.sqlClause();
+		return m_extendedFilter != null ? m_extendedFilter.toWhereClause() : "";
 	}	//	getWhereExtended
 
+	/**
+	 * Get extended SQL Filter (parent link)
+	 * @return parent link
+	 */
+	public SQLFragment getExtendedFilter() {
+		return m_extendedFilter;
+	}
+	
 	/**
 	 *	Get Order By Clause
 	 *  @param onlyCurrentRows only current rows

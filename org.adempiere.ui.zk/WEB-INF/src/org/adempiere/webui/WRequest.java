@@ -28,6 +28,7 @@ import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -155,19 +156,19 @@ public class WRequest implements EventListener<Event>
 			{
 				query = new MQuery("");
 				String where = "(" + m_where + ") AND Processed='N'";
-				query.addRestriction(where);
+				query.addRestriction(new SQLFragment(where));
 				query.setRecordCount(0);
 			}
 			else if (e.getTarget() == m_all)
 			{
 				query = new MQuery("");
-				query.addRestriction(m_where.toString());
+				query.addRestriction(new SQLFragment(m_where.toString()));
 				query.setRecordCount(0);
 			}
 			else if (e.getTarget() == m_new)
 			{
 				query = new MQuery("");
-				query.addRestriction("1=2");
+				query.addRestriction(new SQLFragment("1=2"));
 				query.setRecordCount(0);
 			}
 			

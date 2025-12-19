@@ -1472,7 +1472,7 @@ public class MQuery implements Serializable, Cloneable
 	public String toString()
 	{
 		if (isActive())
-			return getSQLFilter(true).sqlClause();
+			return getSQLFilter(true).toString();
 		return "MQuery[" + m_TableName + ",Restrictions=0]";
 	}	//	toString
 	
@@ -1942,7 +1942,7 @@ class Restriction  implements Serializable
 	public String getSQL (String tableName)
 	{
 		if (DirectWhereClauseRecord != null)
-			return DirectWhereClauseRecord.sqlClause();
+			return DirectWhereClauseRecord.toWhereClause();
 		
 		if(ExistsClause != null){
 			StringBuilder sb = new StringBuilder();
