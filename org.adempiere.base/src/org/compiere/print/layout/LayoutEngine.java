@@ -1074,7 +1074,10 @@ public class LayoutEngine implements Pageable, Printable, Doc
 						lineAligned = true;
 					}
 				}
-				
+
+				if (item.isFixedWidth() && item.getMaxWidth() > 0) {
+					maxWidth = item.getMaxWidth();
+				}
 				//	Type
 				PrintElement element = null;
 				if ( !PrintDataEvaluatee.hasPageLogic(item.getDisplayLogic()) && !isDisplayed(m_data, item) )
@@ -1161,6 +1164,12 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					if (!lineAligned)
 						m_lastWidth[m_area] = element.getWidth();
 					m_lastHeight[m_area] = element.getHeight();
+				}
+				else if (element == null && item.isFixedWidth() && maxWidth > 0)
+				{
+					somethingPrinted = true;
+					m_lastWidth[m_area] = maxWidth;
+					m_lastHeight[m_area] = 0f;
 				}
 				else
 				{
