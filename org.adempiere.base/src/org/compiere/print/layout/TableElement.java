@@ -1613,7 +1613,10 @@ public class TableElement extends PrintElement
                             {
                             	int fcColumn = col;
 								if (belowCols != null)
+								{
 									fcColumn = belowCols.get(index);
+									alignment = m_columnJustification[fcColumn];
+								}
                                 String thisLine = lines[lineNo];
                                 if (thisLine.length() == 0)
                                     thisLine = " ";
@@ -1655,7 +1658,15 @@ public class TableElement extends PrintElement
                                             penX += (netWidth-layout.getAdvance())/2;
                                         else if ((alignment.equals(MPrintFormatItem.FIELDALIGNMENTTYPE_TrailingRight) && layout.isLeftToRight())
                                                 || (alignment.equals(MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft) && !layout.isLeftToRight()))
+										{
                                             penX += netWidth-layout.getAdvance();
+											// In last line one char x-space is left more
+											if (alignment.equals(MPrintFormatItem.FIELDALIGNMENTTYPE_TrailingRight)
+													&& measurer.getPosition() >= iter.getEndIndex()) {
+												penX -= Math
+														.ceil((layout.getAdvance() / layout.getCharacterCount()) / 2);
+											}
+										}
                                         //
                                         if (fastDraw)
                                         {	//	Bug - set Font/Color explicitly
