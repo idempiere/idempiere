@@ -893,6 +893,10 @@ public class GridTabTest extends AbstractTestCase {
 		gt.dataRefreshAll(true, true);
 		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., true), Row Count should still be 2");
 
+		// still not retained t2
+		gt.dataRefreshAll(true, false);
+		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should still be 2");
+
 		// not retained t2
 		gt.query(false);
 		assertEquals(1, gt.getRowCount(), "After query, Row Count should be 1");
@@ -943,6 +947,8 @@ public class GridTabTest extends AbstractTestCase {
 		assertTrue(stab.dataSave(true), "Failed to save substitute record");
 		stab.dataRefreshAll(true, true);
 		assertEquals(2, stab.getRowCount(), "Should retain 2 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=true");
+		stab.dataRefreshAll(true, false);
+		assertEquals(2, stab.getRowCount(), "Should retain 2 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=false");
 		stab.query(false);
 		assertEquals(1, stab.getRowCount(), "Should retain 1 record for substitute of Azalea Bush after query");
 		PO po = stab.getTableModel().getPO(0);
@@ -997,6 +1003,10 @@ public class GridTabTest extends AbstractTestCase {
 		// retained t2
 		gt.dataRefreshAll(true, true);
 		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., true), Row Count should still be 2");
+
+		// still retained t2
+		gt.dataRefreshAll(true, false);
+		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should still be 2");
 
 		// not retained t2
 		gt.query(false);
