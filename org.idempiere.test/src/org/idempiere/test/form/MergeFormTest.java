@@ -26,6 +26,7 @@ package org.idempiere.test.form;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.parallel.ResourceAccessMode.READ_WRITE;
 
 import java.math.BigDecimal;
 
@@ -46,8 +47,10 @@ import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 /**
  * 
@@ -55,6 +58,7 @@ import org.junit.jupiter.api.Test;
  *
  */
 @Isolated
+@ResourceLock(value = Resources.GLOBAL, mode = READ_WRITE)
 public class MergeFormTest extends AbstractTestCase {
 
 	public MergeFormTest() {
