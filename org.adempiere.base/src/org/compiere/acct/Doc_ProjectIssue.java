@@ -19,6 +19,7 @@ package org.compiere.acct;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
@@ -30,6 +31,7 @@ import org.compiere.model.MProjectIssue;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Posting for {@link MProjectIssue} document. DOCTYPE_ProjectIssue.<br/>
@@ -76,8 +78,8 @@ public class Doc_ProjectIssue extends Doc
 		m_line.setReversalLine_ID(m_issue.getReversal_ID());
 
 		//	Pseudo Line Check
-		if (m_line.getM_Product_ID() == 0)
-			log.warning(m_line.toString() + " - No Product");
+		if (m_line.getM_Product_ID() == 0 && m_line.getC_Charge_ID() ==0)
+			log.warning(Msg.getMsg(getCtx(), "ChargeOrProductMandatory") + " [ " + m_issue + " ] ");
 		if (log.isLoggable(Level.FINE)) log.fine(m_line.toString());
 		return null;
 	}   //  loadDocumentDetails
@@ -138,17 +140,19 @@ public class Doc_ProjectIssue extends Doc
 
 		//  Issue Cost
 		BigDecimal cost = null;
-		if (m_issue.getM_InOutLine_ID() != 0)
+		if (m_issue.getM_InOutLine_ID() > 0)
 		{
 			MInOutLine inOutLine = new MInOutLine(getCtx(), m_issue.getM_InOutLine_ID(), getTrxName());
 			cost = inOutLine.getPOCost(as, m_line.getQty());
 		}
-		else if (m_issue.getS_TimeExpenseLine_ID() != 0)
+		else if (m_issue.getS_TimeExpenseLine_ID() >0)
 		{
 			MTimeExpenseLine timeExpenseLine = new MTimeExpenseLine(getCtx(), m_issue.getS_TimeExpenseLine_ID(), getTrxName());
 			cost = timeExpenseLine.getLaborCost(as);
 		}
-		if (cost == null)	//	standard Product Costs
+		else if (m_issue.getC_InvoiceLine_ID() > 0)
+			cost = m_issue.getAmt();
+		if ((Objects.isNull(cost) || cost.signum() <= 0) && getM_Product_ID() > 0)	//	standard Product Costs
 			cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
 
 		//  Project         DR
@@ -160,9 +164,16 @@ public class Doc_ProjectIssue extends Doc
 		dr.setQty(m_line.getQty().negate());
 
 		//  Inventory               CR
-		acctType = ProductCost.ACCTTYPE_P_Asset;
-		if (product.isService())
-			acctType = ProductCost.ACCTTYPE_P_Expense;
+		if (m_issue.getM_Product_ID() > 0)
+		{
+			acctType = ProductCost.ACCTTYPE_P_Asset;
+			if (product.isService())
+				acctType = ProductCost.ACCTTYPE_P_Expense;
+		}
+		else if (m_issue.getC_Charge_ID() > 0)
+		{
+			acctType = Doc.ACCTTYPE_Charge;
+		}
 		cr = fact.createLine(m_line,
 			m_line.getAccount(acctType, as),
 			as.getC_Currency_ID(), null, cost);

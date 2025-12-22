@@ -12,6 +12,8 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProject;
@@ -32,7 +34,7 @@ import org.junit.jupiter.api.Test;
 public class ProjectIssueTest extends AbstractTestCase
 {
 	@Test
-	public void testProjBalanceUpdate()
+	public void testProdProjBalanceUpdate()
 	{
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
@@ -117,5 +119,93 @@ public class ProjectIssueTest extends AbstractTestCase
 		BigDecimal cost = prodCost.getProductCosts(as, DictionaryIDs.AD_Org.HQ.id, null, 0, false);
 
 		assertTrue(proj.getProjectBalanceAmt().compareTo(cost) == 0, "Project Issue Amount is not added in project balance");
-	}
+	} // testProdProjBalanceUpdate
+
+	@Test
+	public void testChargeProjBalanceUpdate()
+	{
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
+
+		// Create PO Order
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setC_BPartner_ID(DictionaryIDs.C_BPartner.PATIO.id);
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+		order.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		order.setDateOrdered(currentDate);
+		order.setIsSOTrx(false);
+		order.save();
+
+		// Add Order Line
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+		orderLine.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+		orderLine.setQty(BigDecimal.TEN);
+		orderLine.setQtyInvoiced(BigDecimal.TEN);
+		orderLine.setPrice(BigDecimal.TEN);
+		orderLine.save();
+
+		// Complete Order
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		order.load(trxName);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order issue is not completing");
+
+		// C Invoice
+		MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, currentDate);
+		invoice.saveEx();
+
+		// Invoice Line
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setC_OrderLine_ID(orderLine.get_ID());
+		invoiceLine.setLine(orderLine.getLine());
+		invoiceLine.setC_Charge_ID(orderLine.getC_Charge_ID());
+		;
+		invoiceLine.setQty(orderLine.getQtyEntered());
+		invoiceLine.setQtyInvoiced(orderLine.getQtyInvoiced());
+		invoiceLine.setPriceEntered(orderLine.getPriceEntered());
+		invoiceLine.setLineNetAmt(orderLine.getLineNetAmt());
+		invoiceLine.setLineTotalAmt(orderLine.getLineNetAmt());
+		invoiceLine.saveEx();
+
+		// Complete Receipt
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), DocAction.STATUS_Completed + " != " + invoice.getDocStatus());
+
+		// Create Project
+		MProject proj = new MProject(ctx, 0, trxName);
+		proj.setName("Test Project");
+		proj.setC_ProjectType_ID(DictionaryIDs.C_ProjectType.WORK_ORDER.id);
+		proj.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		proj.setPlannedAmt(Env.ONE);
+		proj.setCommittedQty(Env.ONE);
+		proj.save();
+		assertTrue(Env.ZERO.compareTo(proj.getProjectBalanceAmt()) == 0, "Initial Project Balance is not Zero");
+
+		// Create Project Issue
+		MProjectIssue projIssue = new MProjectIssue(ctx, 0, trxName);
+		projIssue.setLine(10);
+		projIssue.setMovementDate(TimeUtil.getDay(System.currentTimeMillis()));
+		projIssue.setMovementQty(invoiceLine.getQtyInvoiced());
+		projIssue.setC_Project_ID(proj.get_ID());
+		projIssue.setC_InvoiceLine_ID(invoiceLine.get_ID());
+		projIssue.setC_Charge_ID(invoiceLine.getC_Charge_ID());
+		projIssue.setAmt(invoiceLine.getLineTotalAmt());
+		projIssue.save();
+
+		// Complete Project Issue
+		info = MWorkflow.runDocumentActionWorkflow(projIssue, DocAction.ACTION_Complete);
+		proj.load(trxName);
+		assertFalse(info.isError(), info.getSummary());
+		projIssue.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, projIssue.getDocStatus(), "Project issue is not completing");
+
+		BigDecimal cost = invoiceLine.getQtyEntered().multiply(invoiceLine.getPriceEntered());
+
+		assertTrue(proj.getProjectBalanceAmt().compareTo(cost) == 0, "Project Issue Amount is not added in project balance");
+	} // testChargeProjBalanceUpdate
 }
