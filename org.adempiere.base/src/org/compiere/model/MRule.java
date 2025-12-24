@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 
 import org.adempiere.base.Core;
@@ -269,6 +270,21 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 	 *  @param windowNo window number
 	 */
 	public static void setContext(ScriptEngine engine, Properties ctx, int windowNo) {
+		Bindings bindings = engine.createBindings();
+		setContext(bindings, ctx, windowNo);
+		for (String key : bindings.keySet()) {
+			engine.put(key, bindings.get(key));
+		}
+	}
+
+	/**
+	 *	Add context entries as variable binding to a Bindings object based on windowNo.
+	 *	This overload is used with CompiledScript for better performance.
+	 *  @param bindings Script Bindings
+	 *  @param ctx context
+	 *  @param windowNo window number
+	 */
+	public static void setContext(Bindings bindings, Properties ctx, int windowNo) {
 		Enumeration<Object> en = ctx.keys();
 		while (en.hasMoreElements())
 		{
@@ -283,13 +299,13 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 			Object value = ctx.get(key);
 			if (value != null) {
 				if (value instanceof Boolean)
-					engine.put(convertKey(key, windowNo), ((Boolean)value).booleanValue());
+					bindings.put(convertKey(key, windowNo), ((Boolean)value).booleanValue());
 				else if (value instanceof Integer)
-					engine.put(convertKey(key, windowNo), ((Integer)value).intValue());
+					bindings.put(convertKey(key, windowNo), ((Integer)value).intValue());
 				else if (value instanceof Double)
-					engine.put(convertKey(key, windowNo), ((Double)value).doubleValue());
+					bindings.put(convertKey(key, windowNo), ((Double)value).doubleValue());
 				else
-					engine.put(convertKey(key, windowNo), value);
+					bindings.put(convertKey(key, windowNo), value);
 			}
 		}
 	}
@@ -329,6 +345,13 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
+	}
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success)
+	{
+		Core.invalidateCompiledScript(getAD_Rule_ID());
+		return super.afterSave(newRecord, success);
 	}
 
 }	//	MRule
