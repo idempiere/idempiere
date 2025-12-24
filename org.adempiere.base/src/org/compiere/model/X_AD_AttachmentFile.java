@@ -17,8 +17,10 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.Env;
 
 /** Generated Model for AD_AttachmentFile
  *  @author iDempiere (generated)
@@ -30,25 +32,7 @@ public class X_AD_AttachmentFile extends PO implements I_AD_AttachmentFile, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250731L;
-
-    /** Standard Constructor */
-    public X_AD_AttachmentFile (Properties ctx, int AD_AttachmentFile_ID, String trxName)
-    {
-      super (ctx, AD_AttachmentFile_ID, trxName);
-      /** if (AD_AttachmentFile_ID == 0)
-        {
-        } */
-    }
-
-    /** Standard Constructor */
-    public X_AD_AttachmentFile (Properties ctx, int AD_AttachmentFile_ID, String trxName, String ... virtualColumns)
-    {
-      super (ctx, AD_AttachmentFile_ID, trxName, virtualColumns);
-      /** if (AD_AttachmentFile_ID == 0)
-        {
-        } */
-    }
+	private static final long serialVersionUID = 20251223L;
 
     /** Standard Constructor */
     public X_AD_AttachmentFile (Properties ctx, String AD_AttachmentFile_UU, String trxName)
@@ -111,6 +95,7 @@ public class X_AD_AttachmentFile extends PO implements I_AD_AttachmentFile, I_Pe
 		return (String)get_Value(COLUMNNAME_AD_AttachmentFile_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Attachment getAD_Attachment() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Attachment)MTable.get(getCtx(), org.compiere.model.I_AD_Attachment.Table_ID)
@@ -155,38 +140,39 @@ public class X_AD_AttachmentFile extends PO implements I_AD_AttachmentFile, I_Pe
 		return (String)get_Value(COLUMNNAME_FileName);
 	}
 
+	/** Set File Path.
+		@param FilePath Path where the file can be found
+	*/
+	public void setFilePath (String FilePath)
+	{
+		set_Value (COLUMNNAME_FilePath, FilePath);
+	}
+
+	/** Get File Path.
+		@return Path where the file can be found
+	  */
+	public String getFilePath()
+	{
+		return (String)get_Value(COLUMNNAME_FilePath);
+	}
+
 	/** Set File Size.
 		@param FileSize Size of the File in bytes
 	*/
-	public void setFileSize (int FileSize)
+	public void setFileSize (BigDecimal FileSize)
 	{
-		set_Value (COLUMNNAME_FileSize, Integer.valueOf(FileSize));
+		set_Value (COLUMNNAME_FileSize, FileSize);
 	}
 
 	/** Get File Size.
 		@return Size of the File in bytes
 	  */
-	public int getFileSize()
+	public BigDecimal getFileSize()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_FileSize);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set MD5 Checksum.
-		@param MD5Checksum MD5 Checksum
-	*/
-	public void setMD5Checksum (String MD5Checksum)
-	{
-		set_Value (COLUMNNAME_MD5Checksum, MD5Checksum);
-	}
-
-	/** Get MD5 Checksum.
-		@return MD5 Checksum	  */
-	public String getMD5Checksum()
-	{
-		return (String)get_Value(COLUMNNAME_MD5Checksum);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FileSize);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set MIME Type.
@@ -202,6 +188,21 @@ public class X_AD_AttachmentFile extends PO implements I_AD_AttachmentFile, I_Pe
 	public String getMIMEType()
 	{
 		return (String)get_Value(COLUMNNAME_MIMEType);
+	}
+
+	/** Set SHA256 Checksum.
+		@param SHA256Checksum SHA256 Checksum
+	*/
+	public void setSHA256Checksum (String SHA256Checksum)
+	{
+		set_Value (COLUMNNAME_SHA256Checksum, SHA256Checksum);
+	}
+
+	/** Get SHA256 Checksum.
+		@return SHA256 Checksum	  */
+	public String getSHA256Checksum()
+	{
+		return (String)get_Value(COLUMNNAME_SHA256Checksum);
 	}
 
 	/** Set Sequence.

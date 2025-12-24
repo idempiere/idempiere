@@ -16,7 +16,10 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.ResultSet;
@@ -58,7 +61,7 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8555678512288694221L;
+	private static final long serialVersionUID = 8842653136722756898L;
 
 	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
 	
@@ -201,11 +204,13 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	}
 	
 	/** Indicator for no data   */
-	public static final String 	NONE = ".";
+	public static final String 	NONE = TITLE_None;
 	/** Indicator for zip data  */
-	public static final String 	ZIP = "zip";
-	/** Indicator for xml data (store on file system) */
-	public static final String 	XML = "xml";
+	public static final String 	ZIP = TITLE_ListInZIPFile;
+	/** Indicator for xml data (store on file system or external provider by plugin) */
+	public static final String 	XML = TITLE_ListInXML;
+	/** Indicator for list of files in AD_AttachmentFile */
+	public static final String 	LIST_IN_ATTACHMENT_FILE = TITLE_ListInAttachmentFile;
 
 	/**	List of Entry Data		*/
 	public ArrayList<MAttachmentEntry> m_items = null;
@@ -455,7 +460,8 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			 item.setIndex(m_items.size());
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(item.toStringX());
-		setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
+		if (getTitle() == null || !getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
 		return retValue || replaced;
 	}	//	addEntry
 
@@ -502,7 +508,7 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			IAttachmentStore prov = provider.getAttachmentStore();
 			if (prov != null)
 			{
-				if(prov.deleteEntry(this,provider,index))
+				if (prov.deleteEntry(this,provider,index) && !getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
 					return set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
 				return false;
 			}
@@ -632,6 +638,21 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 		return false;
 	}
 
+	/**
+	 * Override save to handle LOB data when title is ListInAttachmentFile
+	 */
+	@Override
+	public boolean save() {
+		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			saveLOBData(true);		//	save in BinaryData
+		boolean success = super.save();
+        if (success) {
+    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+    			return saveLOBData(false);
+        }
+       	return success;
+	}
+
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -646,12 +667,16 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			if (po != null)
 				setRecord_UU(po.get_UUID());
 		}
+		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			return true;
 		return saveLOBData(true);		//	save in BinaryData
 	}	//	beforeSave
 
     @Override
     protected boolean afterSave(boolean newRecord, boolean success) {
         if (success) {
+    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+    			return true;
             return saveLOBData(false);
         } else {
             return false;
@@ -662,7 +687,17 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	protected boolean beforeDelete() {
 		if (isReadOnly(true))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
+		deleteAttachmentFiles();
 		return true;
+	}
+
+	/**
+	 * Delete the associated records in AD_AttachmentFile table
+	 */
+	public void deleteAttachmentFiles() {
+		for (MAttachmentFile af : getAttachmentFiles()) {
+			af.deleteEx(true);
+		}
 	}
 
 	/**
@@ -975,4 +1010,17 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
             }
         }
     }
+
+	/**
+	 * Get the list of attachment files from AD_AttachmentFile table
+	 * @return
+	 */
+	public List<MAttachmentFile> getAttachmentFiles() {
+		return new Query(getCtx(), MAttachmentFile.Table_Name, "AD_Attachment_ID=?", get_TrxName())
+				.setParameters(getAD_Attachment_ID())
+				.setOrderBy(MAttachmentFile.COLUMNNAME_SeqNo)
+				.setOnlyActiveRecords(true)
+				.list();
+	}
+
 }	//	MAttachment
