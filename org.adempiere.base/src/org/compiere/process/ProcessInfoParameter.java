@@ -138,8 +138,12 @@ public class ProcessInfoParameter implements Serializable
 			return 0;
 		if (m_Parameter instanceof Number)
 			return ((Number)m_Parameter).intValue();
-		BigDecimal bd = new BigDecimal(m_Parameter.toString());
-		return bd.intValue();
+		try {
+			BigDecimal bd = new BigDecimal(m_Parameter.toString());
+			return bd.intValue();
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Parameter '" + m_ParameterName + "' value '" + m_Parameter + "' is not a valid number", e);
+		}
 	}	//	getParameterAsInt
 	
 	/**
@@ -264,7 +268,11 @@ public class ProcessInfoParameter implements Serializable
 			return null;
 		if (m_Parameter instanceof BigDecimal)
 			return (BigDecimal) m_Parameter;
-		return new BigDecimal(m_Parameter.toString());
+		try {
+			return new BigDecimal(m_Parameter.toString());
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Parameter '" + m_ParameterName + "' value '" + m_Parameter + "' is not a valid number", e);
+		}
 	}	//	getParameterAsBigDecimal	
 	
 	/**

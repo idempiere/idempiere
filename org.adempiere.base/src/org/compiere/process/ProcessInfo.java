@@ -1165,10 +1165,15 @@ public class ProcessInfo implements Serializable
 	/**
 	 * Validates to inform a user running again a process that is already in execution.
 	 * @return true if the same process is already running
+	 * @throws IllegalStateException if the process record is not found for the AD_Process_ID
 	 */
 	public boolean isProcessRunning(MPInstancePara[] params) {
 		MProcess process = MProcess.get(Env.getCtx(), getAD_Process_ID());
-		
+
+		if (process == null) {
+			throw new IllegalStateException("Process not found for AD_Process_ID: " + getAD_Process_ID());
+		}
+
 		String multipleExecutions = process.getAllowMultipleExecution();
 		if (multipleExecutions == null || multipleExecutions.isEmpty())
 			return false;
@@ -1183,8 +1188,12 @@ public class ProcessInfo implements Serializable
 
 		if (   MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUser.equals(multipleExecutions)
 			|| MProcess.ALLOWMULTIPLEEXECUTION_NotFromSameUserAndParameters.equals(multipleExecutions)) {
+			Integer userId = getAD_User_ID();
+			if (userId == null) {
+				throw new IllegalStateException("User ID cannot be null when checking user-based concurrency restrictions for process instance: " + getAD_PInstance_ID());
+			}
 			whereClause.append(" AND AD_User_ID = ? ");
-			queryParams.add(getAD_User_ID());
+			queryParams.add(userId);
 		}
 
 		List<MPInstance> processInstanceList = new Query(Env.getCtx(), MPInstance.Table_Name, whereClause.toString(), null)
