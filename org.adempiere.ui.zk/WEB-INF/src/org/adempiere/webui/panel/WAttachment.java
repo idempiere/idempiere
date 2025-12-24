@@ -707,7 +707,7 @@ public class WAttachment extends Window implements EventListener<Event>
 						saveAttachment();
 					}
 				} else {
-					m_attachment.delete(true);
+					m_attachment.deleteEx(true);
 					m_attachment = null;
 				}
 

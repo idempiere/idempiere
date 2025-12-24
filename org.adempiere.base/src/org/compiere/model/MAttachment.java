@@ -508,8 +508,11 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			IAttachmentStore prov = provider.getAttachmentStore();
 			if (prov != null)
 			{
-				if (prov.deleteEntry(this,provider,index) && !getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
-					return set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
+				if (prov.deleteEntry(this, provider, index)) {
+					if (!getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+						set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
+					return true;
+				}
 				return false;
 			}
 			return false;
@@ -640,6 +643,10 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 
 	/**
 	 * Override save to handle LOB data when title is ListInAttachmentFile
+	 * When saving the attachment with title as ZIP or XML, it means the list of files are included in the zip file or in the XML file
+	 *  which is managed in the beforeSave and afterSave methods, so no need to handle here.
+	 * When saving as ListInAttachmentFile, before/after Save are not triggered because the Attachment record is not changed,
+	 *  so we need to override and manage the LOB data saving here.
 	 */
 	@Override
 	public boolean save() {
