@@ -27,6 +27,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -197,8 +198,6 @@ public class MAttachmentEntry
             } catch (IOException e) {
                 log.log(Level.WARNING, e.getMessage(), e);
             }
-			String sha256sum = calculateSHA256Sum(m_data);
-			setSHA256Sum(sha256sum);
 		}
         m_isDataSet = true;
     }
@@ -515,31 +514,15 @@ public class MAttachmentEntry
 	 * @return
 	 */
 	private String calculateSHA256Sum(byte[] data) {
+		if (data == null)
+			return null;
 		MessageDigest digest;
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
 		} catch (NoSuchAlgorithmException e) {
 			throw new AdempiereException("Error calculating checksum", e);
 		}
-		return encodeHexString(digest.digest(data));
+		return HexFormat.of().formatHex(digest.digest(data));
 	}
 
-    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
-    /**
-	 * Encode byte array to hex string
-	 * @param bytes
-	 * @return hex string
-	 */
-    public static String encodeHexString(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];       // High nibble
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];   // Low nibble
-        }
-
-        return new String(hexChars);
-    }
-
-}	//	MAttachmentItem
+}	//	MAttachmentEntry

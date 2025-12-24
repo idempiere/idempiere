@@ -1,4 +1,7 @@
 -- IDEMPIERE-6640 DBA - Tuning AD_Attachment (FHCA-3962)
+-- This migration creates the AD_AttachmentFile table to store attachment file metadata
+-- as an alternative to storing the list in XML within AD_Attachment.BinaryData.
+-- It also creates the corresponding UI tab under the Attachment window.
 SELECT register_migration_script('202507311636_IDEMPIERE-6640.sql') FROM dual;
 
 SET SQLBLANKLINES ON

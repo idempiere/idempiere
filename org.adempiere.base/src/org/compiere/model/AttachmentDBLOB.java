@@ -181,15 +181,26 @@ public class AttachmentDBLOB implements IAttachmentStore
     			for (int i = 0; i < attach.m_items.size(); i++) {
     				MAttachmentEntry entry = attach.m_items.get(i);
     				if (log.isLoggable(Level.FINE)) log.fine(entry.toString());
-    				MAttachmentFile af = new MAttachmentFile(attach.getCtx(), PO.UUID_NEW_RECORD, attach.get_TrxName());
-    				af.setAD_Attachment_ID(attach.getAD_Attachment_ID());
-    				af.setFileName(entry.getName());
+    				MAttachmentFile af = MAttachmentFile.get(attach, entry.getName());
     				af.setFileSize(BigDecimal.valueOf(entry.getSize()));
     				af.setSeqNo(i+1);
     				af.setSHA256Checksum(entry.getSHA256Sum());
     				af.setMIMEType(entry.getContentType());
     				af.saveEx(attach.get_TrxName());
     			}
+    			for (MAttachmentFile oldAF : attach.getAttachmentFiles()) {
+					boolean found = false;
+					for (MAttachmentEntry entry : attach.m_items) {
+						if (oldAF.getFileName() != null && oldAF.getFileName().equals(entry.getName())) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						if (log.isLoggable(Level.FINE)) log.fine("delete old attachment file " + oldAF);
+						oldAF.deleteEx(true, attach.get_TrxName());
+					}
+				}
 
     			try {
     				for (int i = 0; i < attach.m_items.size(); i++) {
