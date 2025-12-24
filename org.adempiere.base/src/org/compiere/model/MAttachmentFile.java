@@ -39,7 +39,7 @@ public class MAttachmentFile extends X_AD_AttachmentFile {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1785291963308055733L;
+	private static final long serialVersionUID = -4915087680828925380L;
 
 	/** Static Logger */
 	@SuppressWarnings("unused")
@@ -66,5 +66,30 @@ public class MAttachmentFile extends X_AD_AttachmentFile {
 	public MAttachmentFile(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	} // MAttachmentFile
+
+	/**
+	 * Get Attachment File by name
+	 * @param attach
+	 * @param name
+	 * @return
+	 */
+	public static MAttachmentFile get(MAttachment attach, String name) {
+		MAttachmentFile af = new Query(attach.getCtx(), I_AD_AttachmentFile.Table_Name, "AD_Attachment_ID=? AND FileName=?", attach.get_TrxName())
+				.setParameters(attach.getAD_Attachment_ID(), name)
+				.firstOnly();
+		if (af == null) {
+			af = new MAttachmentFile(attach.getCtx(), PO.UUID_NEW_RECORD, attach.get_TrxName());
+			af.setAD_Attachment_ID(attach.getAD_Attachment_ID());
+			af.setFileName(name);
+		}
+		return af;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder("MAttachmentFile[").append("FileName=").append(getFileName()).append("]");
+		return sb.toString();
+	}	//	toString
 
 } // MAttachmentFile

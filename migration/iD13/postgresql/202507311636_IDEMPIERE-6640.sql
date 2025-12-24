@@ -1,9 +1,6 @@
 -- IDEMPIERE-6640 DBA - Tuning AD_Attachment (FHCA-3962)
 SELECT register_migration_script('202507311636_IDEMPIERE-6640.sql') FROM dual;
 
-SET SQLBLANKLINES ON
-SET DEFINE OFF
-
 -- Jul 31, 2025, 4:36:36 PM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,TableName,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,IsChangeLog,ReplicationType,AD_Table_UU,Processing) VALUES (200432,'Attachment File','AD_AttachmentFile','6',0,0,'Y',TO_TIMESTAMP('2025-07-31 16:36:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 16:36:36','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','Y','L','19dd11ca-6f3a-4207-8389-c21e406937fe','N')
 ;
@@ -60,7 +57,7 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 ;
 
 -- Jul 31, 2025, 4:37:34 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217151,0,'Attachment','Attachment for the document','Attachment can be of any document/file type and can be attached to any record in the system.',200432,'AD_Attachment_ID',22,'N','Y','N','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2025-07-31 16:37:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 16:37:34','YYYY-MM-DD HH24:MI:SS'),100,101,'N','N','D','N','N','N','Y','af0136ad-5bb8-4219-bf7b-e3a375e5ff8d','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217151,0,'Attachment','Attachment for the document','Attachment can be of any document/file type and can be attached to any record in the system.',200432,'AD_Attachment_ID',22,'N','N','N','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2025-07-31 16:37:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 16:37:34','YYYY-MM-DD HH24:MI:SS'),100,101,'N','N','D','N','N','N','Y','af0136ad-5bb8-4219-bf7b-e3a375e5ff8d','Y',0,'N','N','N','N')
 ;
 
 -- Jul 31, 2025, 4:38:12 PM CEST
@@ -76,11 +73,11 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Jul 31, 2025, 4:40:11 PM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (204016,0,0,'Y',TO_TIMESTAMP('2025-07-31 16:39:32','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 16:39:32','YYYY-MM-DD HH24:MI:SS'),100,'MD5Checksum','MD5 Checksum',NULL,NULL,'MD5 Checksum','D','53f91140-d608-4e04-97a6-4523128dcf57')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (204016,0,0,'Y',TO_TIMESTAMP('2025-07-31 16:39:32','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 16:39:32','YYYY-MM-DD HH24:MI:SS'),100,'SHA256Checksum','SHA256 Checksum',NULL,NULL,'SHA256 Checksum','D','53f91140-d608-4e04-97a6-4523128dcf57')
 ;
 
 -- Jul 31, 2025, 4:41:47 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217155,0,'MD5 Checksum',200432,'MD5Checksum',32,'N','N','N','N','N',0,'N',10,0,0,'Y',TO_TIMESTAMP('2025-07-31 16:41:47','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 16:41:47','YYYY-MM-DD HH24:MI:SS'),100,204016,'Y','N','D','N','N','N','Y','6ec38302-6ebb-4236-93b8-b422d9bed817','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217155,0,'SHA256 Checksum',200432,'SHA256Checksum',64,'N','N','N','N','N',0,'N',10,0,0,'Y',TO_TIMESTAMP('2025-07-31 16:41:47','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 16:41:47','YYYY-MM-DD HH24:MI:SS'),100,204016,'Y','N','D','N','N','N','Y','6ec38302-6ebb-4236-93b8-b422d9bed817','Y',0,'N','N','N','N')
 ;
 
 -- Jul 31, 2025, 4:42:45 PM CEST
@@ -111,8 +108,8 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='CreatedBy_ADAttachmentFi
 UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_ADAttachmentFile', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-07-31 18:33:54','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217148
 ;
 
--- Jul 31, 2025, 6:33:54 PM CEST
-CREATE TABLE AD_AttachmentFile (AD_AttachmentFile_UU VARCHAR2(36 CHAR) DEFAULT NULL , AD_Attachment_ID NUMBER(10) DEFAULT NULL , AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, FileName VARCHAR2(1000 CHAR) DEFAULT NULL , FileSize NUMBER(10) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, MD5Checksum VARCHAR2(32 CHAR) DEFAULT NULL , MIMEType VARCHAR2(1000 CHAR) DEFAULT NULL , SeqNo NUMBER(10) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_AttachmentFile_UU_idx UNIQUE (AD_AttachmentFile_UU))
+-- Dec 23, 2025, 10:13:52 PM CET
+CREATE TABLE AD_AttachmentFile (AD_AttachmentFile_UU UUID DEFAULT NULL , AD_Attachment_ID NUMERIC(10) DEFAULT NULL , AD_Client_ID NUMERIC(10) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, Created TIMESTAMP NOT NULL, CreatedBy NUMERIC(10) NOT NULL, FileName VARCHAR(1000) DEFAULT NULL , FileSize NUMERIC(10) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, SHA256Checksum VARCHAR(64) DEFAULT NULL , MIMEType VARCHAR(1000) DEFAULT NULL , SeqNo NUMERIC(10) DEFAULT NULL , Updated TIMESTAMP NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, CONSTRAINT AD_AttachmentFile_UU_idx PRIMARY KEY (AD_AttachmentFile_UU))
 ;
 
 -- Jul 31, 2025, 6:33:54 PM CEST
@@ -168,7 +165,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 ;
 
 -- Jul 31, 2025, 6:36:44 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208840,'MD5 Checksum',200398,217155,'Y',32,70,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-07-31 18:36:44','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 18:36:44','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','64310170-e745-401b-b0f7-26aab1696595','Y',60,2)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208840,'SHA256 Checksum',200398,217155,'Y',64,70,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-07-31 18:36:44','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-07-31 18:36:44','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','64310170-e745-401b-b0f7-26aab1696595','Y',60,2)
 ;
 
 -- Jul 31, 2025, 6:36:44 PM CEST
@@ -228,5 +225,105 @@ UPDATE AD_Field SET IsDisplayedGrid='Y', SeqNoGrid=50,Updated=TO_TIMESTAMP('2025
 
 -- Jul 31, 2025, 6:38:26 PM CEST
 UPDATE AD_Field SET IsDisplayedGrid='Y', SeqNoGrid=60,Updated=TO_TIMESTAMP('2025-07-31 18:38:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208842
+;
+
+-- Aug 5, 2025, 10:23:56 PM CEST
+INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU,ShowInactive) VALUES (200275,'AD_Attachment Title','L',0,0,'Y',TO_TIMESTAMP('2025-08-05 22:23:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:23:55','YYYY-MM-DD HH24:MI:SS'),100,'D','N','a2f51a49-358d-411a-b1cd-4a23bb7cfdb9','N')
+;
+
+-- Aug 5, 2025, 10:24:28 PM CEST
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200732,'None',200275,'.',0,0,'Y',TO_TIMESTAMP('2025-08-05 22:24:28','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:24:28','YYYY-MM-DD HH24:MI:SS'),100,'D','0406ec25-a7ef-450f-bae0-e5f2c25ff7bc')
+;
+
+-- Aug 5, 2025, 10:24:38 PM CEST
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200733,'Zip',200275,'zip',0,0,'Y',TO_TIMESTAMP('2025-08-05 22:24:38','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:24:38','YYYY-MM-DD HH24:MI:SS'),100,'D','47a244f5-666e-40be-be27-1bf55365ee5b')
+;
+
+-- Aug 5, 2025, 10:24:49 PM CEST
+UPDATE AD_Ref_List SET Name='XML', Value='xml',Updated=TO_TIMESTAMP('2025-08-05 22:24:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Ref_List_ID=200733
+;
+
+-- Aug 5, 2025, 10:25:06 PM CEST
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200734,'List in Attachment File',200275,'laf',0,0,'Y',TO_TIMESTAMP('2025-08-05 22:25:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:25:05','YYYY-MM-DD HH24:MI:SS'),100,'D','a1d12235-a0ca-46f9-9377-cc2e49a0cc37')
+;
+
+-- Aug 5, 2025, 10:25:23 PM CEST
+UPDATE AD_Ref_List SET Name='List in XML',Updated=TO_TIMESTAMP('2025-08-05 22:25:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Ref_List_ID=200733
+;
+
+-- Aug 5, 2025, 10:25:34 PM CEST
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200735,'List in ZIP file',200275,'zip',0,0,'Y',TO_TIMESTAMP('2025-08-05 22:25:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:25:33','YYYY-MM-DD HH24:MI:SS'),100,'D','63365afc-26c3-462b-aad7-58199cca473c')
+;
+
+-- Aug 5, 2025, 10:26:06 PM CEST
+UPDATE AD_Column SET AD_Reference_ID=17, AD_Reference_Value_ID=200275,Updated=TO_TIMESTAMP('2025-08-05 22:26:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=4822
+;
+
+-- Aug 5, 2025, 10:27:09 PM CEST
+UPDATE AD_Field SET Name='List of Files', Description='Where to find the list of files on this attachment', Help='Where to find the list of files on this attachment, it can be ZIP, XML or in Attachment File', IsCentrallyMaintained='N',Updated=TO_TIMESTAMP('2025-08-05 22:27:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3819
+;
+
+-- Aug 5, 2025, 10:27:36 PM CEST
+UPDATE AD_Tab SET IsActive='N',Updated=TO_TIMESTAMP('2025-08-05 22:27:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=643
+;
+
+-- Aug 5, 2025, 10:49:56 PM CEST
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (204018,0,0,'Y',TO_TIMESTAMP('2025-08-05 22:49:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:49:34','YYYY-MM-DD HH24:MI:SS'),100,'FilePath','File Path','Path where the file can be found',NULL,'File Path','D','c4f22c17-654d-4374-8cdf-8dbe29e3217b')
+;
+
+-- Aug 5, 2025, 10:50:35 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217157,0,'File Path','Path where the file can be found',200432,'FilePath',4000,'N','N','N','N','N',0,'N',10,0,0,'Y',TO_TIMESTAMP('2025-08-05 22:50:35','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:50:35','YYYY-MM-DD HH24:MI:SS'),100,204018,'Y','N','D','N','N','N','Y','8d4ed8cd-d247-4613-9bea-176a56cac690','Y',0,'N','N','N','N')
+;
+
+-- Aug 5, 2025, 10:50:41 PM CEST
+ALTER TABLE AD_AttachmentFile ADD COLUMN FilePath VARCHAR(4000) DEFAULT NULL 
+;
+
+-- Aug 5, 2025, 10:51:05 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208843,'File Path','Path where the file can be found',200398,217157,'Y',4000,100,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-08-05 22:51:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-08-05 22:51:04','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','9b0d3488-628d-4cf3-8b64-c35bc4b9bf41','Y',70,5)
+;
+
+-- Aug 5, 2025, 10:51:39 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=90, XPosition=1,Updated=TO_TIMESTAMP('2025-08-05 22:51:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208843
+;
+
+-- Aug 5, 2025, 10:51:39 PM CEST
+UPDATE AD_Field SET SeqNo=100,Updated=TO_TIMESTAMP('2025-08-05 22:51:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208842
+;
+
+-- Aug 5, 2025, 10:51:48 PM CEST
+UPDATE AD_Field SET IsDisplayedGrid='Y', SeqNoGrid=60,Updated=TO_TIMESTAMP('2025-08-05 22:51:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208843
+;
+
+-- Aug 5, 2025, 10:51:48 PM CEST
+UPDATE AD_Field SET IsDisplayedGrid='Y', SeqNoGrid=70,Updated=TO_TIMESTAMP('2025-08-05 22:51:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208842
+;
+
+-- Aug 5, 2025, 11:28:53 PM CEST
+UPDATE AD_Column SET AD_Reference_ID=22, FKConstraintType=NULL,Updated=TO_TIMESTAMP('2025-08-05 23:28:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217154
+;
+
+-- Aug 5, 2025, 11:28:57 PM CEST
+INSERT INTO t_alter_column values('ad_attachmentfile','FileSize','NUMERIC',null,'NULL')
+;
+
+-- Sep 30, 2025, 1:35:51 AM CEST
+UPDATE AD_Field SET SeqNo=70, ColumnSpan=5,Updated=TO_TIMESTAMP('2025-09-30 01:35:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208840
+;
+
+-- Sep 30, 2025, 1:38:48 AM CEST
+UPDATE AD_Column SET FormatPattern='#,##0',Updated=TO_TIMESTAMP('2025-09-30 01:38:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217154
+;
+
+-- Sep 30, 2025, 1:39:16 AM CEST
+UPDATE AD_Tab SET OrderByClause='AD_AttachmentFile.SeqNo',Updated=TO_TIMESTAMP('2025-09-30 01:39:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200398
+;
+
+-- Dec 24, 2025, 12:34:18 AM CET
+UPDATE AD_Column SET IsAllowLogging='N',Updated=TO_TIMESTAMP('2025-12-24 00:34:18','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217152
+;
+
+-- Dec 24, 2025, 1:02:53 AM CET
+UPDATE AD_Tab SET IsReadOnly='Y', IsInsertRecord='N',Updated=TO_TIMESTAMP('2025-12-24 01:02:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200398
 ;
 

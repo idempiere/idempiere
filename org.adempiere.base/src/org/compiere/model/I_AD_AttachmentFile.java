@@ -63,6 +63,7 @@ public interface I_AD_AttachmentFile
 	  */
 	public int getAD_Attachment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Attachment getAD_Attachment() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -115,18 +116,31 @@ public interface I_AD_AttachmentFile
 	  */
 	public String getFileName();
 
+    /** Column name FilePath */
+    public static final String COLUMNNAME_FilePath = "FilePath";
+
+	/** Set File Path.
+	  * Path where the file can be found
+	  */
+	public void setFilePath (String FilePath);
+
+	/** Get File Path.
+	  * Path where the file can be found
+	  */
+	public String getFilePath();
+
     /** Column name FileSize */
     public static final String COLUMNNAME_FileSize = "FileSize";
 
 	/** Set File Size.
 	  * Size of the File in bytes
 	  */
-	public void setFileSize (int FileSize);
+	public void setFileSize (BigDecimal FileSize);
 
 	/** Get File Size.
 	  * Size of the File in bytes
 	  */
-	public int getFileSize();
+	public BigDecimal getFileSize();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -141,15 +155,6 @@ public interface I_AD_AttachmentFile
 	  */
 	public boolean isActive();
 
-    /** Column name MD5Checksum */
-    public static final String COLUMNNAME_MD5Checksum = "MD5Checksum";
-
-	/** Set MD5 Checksum	  */
-	public void setMD5Checksum (String MD5Checksum);
-
-	/** Get MD5 Checksum	  */
-	public String getMD5Checksum();
-
     /** Column name MIMEType */
     public static final String COLUMNNAME_MIMEType = "MIMEType";
 
@@ -158,6 +163,15 @@ public interface I_AD_AttachmentFile
 
 	/** Get MIME Type	  */
 	public String getMIMEType();
+
+    /** Column name SHA256Checksum */
+    public static final String COLUMNNAME_SHA256Checksum = "SHA256Checksum";
+
+	/** Set SHA256 Checksum	  */
+	public void setSHA256Checksum (String SHA256Checksum);
+
+	/** Get SHA256 Checksum	  */
+	public String getSHA256Checksum();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
