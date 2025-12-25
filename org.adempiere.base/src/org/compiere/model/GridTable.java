@@ -216,7 +216,9 @@ public class GridTable extends AbstractTableModel
 	/** The SELECT clause with FROM     */
 	private String 		        m_SQL_Select;
 	/** The static where clause         */
-	private SQLFragment 		        m_whereClause = new SQLFragment("2=3");
+	private SQLFragment 		m_whereClause = new SQLFragment("2=3");
+	/** Parameters for where clause (after parsing of context)    */
+	private List<Object>		m_whereParams = new ArrayList<Object>();
 	/** Show only Processed='N' and last 24h records    */
 	private boolean		        m_onlyCurrentRows = false;
 	/** Show only Not processed and x days				*/
@@ -309,6 +311,8 @@ public class GridTable extends AbstractTableModel
 		}
 		//
 		m_whereClause = newWhereClause;
+		// set in #createSelectSql
+		m_whereParams.clear();
 		m_onlyCurrentRows = onlyCurrentRows;
 		m_onlyCurrentDays = onlyCurrentDays;
 		return true;
@@ -404,15 +408,17 @@ public class GridTable extends AbstractTableModel
 		
 		StringBuilder where = new StringBuilder("");
 		//	WHERE
+		m_whereParams = new ArrayList<Object>();
 		if (!Util.isEmpty(m_whereClause.sqlClause(), true))
 		{
+			m_whereParams.addAll(m_whereClause.parameters());
 			String whereClause = m_whereClause.sqlClause();
 			where.append(" WHERE (");
 			if (whereClause.indexOf('@') == -1)
 				where.append(whereClause);
 			else    //  replace variables
 			{
-				String context = Env.parseContext(m_ctx, m_WindowNo, whereClause, false);
+				String context = Env.parseContextForSql(m_ctx, m_WindowNo, whereClause, false, m_whereParams);
 				if(context != null && context.trim().length() > 0)
 				{
 					where.append(context);
@@ -421,6 +427,7 @@ public class GridTable extends AbstractTableModel
 				{
 					log.log(Level.WARNING, "Failed to parse where clause. whereClause="+m_whereClause);
 					where.append(" 1 = 2 ");
+					m_whereParams.clear();
 				}
 			}
 			where.append(")");
@@ -2469,7 +2476,6 @@ public class GridTable extends AbstractTableModel
 		close(false);
 		if (retainedWhere != null)
 		{
-			SQLFragment currentWhere = m_whereClause;
 			String tempWhere = m_whereClause != null ? m_whereClause.sqlClause() : "";
 			if (!Util.isEmpty(tempWhere, true))
 			{
@@ -2477,15 +2483,8 @@ public class GridTable extends AbstractTableModel
 				if (! tempWhere.contains(orRetainedWhere.toString()))
 					tempWhere = "((" + tempWhere + orRetainedWhere.toString();
 			}
-			else
-			{
-				StringBuilder orRetainedWhere = new StringBuilder(") OR (").append(retainedWhere).append(")) ");
-				if (! tempWhere.contains(orRetainedWhere.toString()))
-					tempWhere = "((" + tempWhere + orRetainedWhere.toString();
-			}
 			m_whereClause = new SQLFragment(tempWhere, m_whereClause != null ? m_whereClause.parameters() : null);
 			open(m_maxRows);
-			m_whereClause = currentWhere;
 		}
 		else
 		{
@@ -3293,14 +3292,14 @@ public class GridTable extends AbstractTableModel
 		 */
 		private void setParameter (PreparedStatement pstmt, boolean countSQL)
 		{
-			if (m_whereClause == null || m_whereClause.parameters() == null || m_whereClause.parameters().isEmpty())
+			if (m_whereParams == null || m_whereParams.isEmpty())
 				return;
 			
 			try
 			{
 				int pos = 1;	//	position in Statement
 				//	Select Clause Parameters
-				for (Object para : m_whereClause.parameters())
+				for (Object para : m_whereParams)
 				{
 					if (para == null)
 						;
