@@ -88,6 +88,10 @@ public class AttachmentFileSystem implements IAttachmentStore {
     			attach.setBinaryData(null);
     			attach.setTitle(MAttachment.LIST_IN_ATTACHMENT_FILE);
     		}
+    		String oldTitle = attach.get_ValueOld(MAttachment.COLUMNNAME_Title).toString();
+    		if (! MAttachment.XML.equals(oldTitle))
+    			return true;
+
     		NodeList xmlEntries = null;
        		// get list of old entries
        		byte[] data = (byte[]) attach.get_ValueOld(MAttachment.COLUMNNAME_BinaryData);

@@ -338,3 +338,7 @@ INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated
 UPDATE AD_SysConfig SET ConfigurationLevel='C',Description='It specifies the maximum allowed size, in kilobytes, to upload a file from the client. A zero or negative value uses the zk default limit (5MB). Max size is 2147483647 KB',Updated=TO_TIMESTAMP('2025-12-24 20:46:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_SysConfig_ID=200028
 ;
 
+-- Dec 25, 2025, 8:59:41 PM CET
+UPDATE AD_Tab SET DisplayLogic='@Title@=laf',Updated=TO_TIMESTAMP('2025-12-25 20:59:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200398
+;
+
