@@ -35,6 +35,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -81,7 +82,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			return true;
 		}
 
-		boolean saveInADAttachmentFile = MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true);
+		boolean saveInADAttachmentFile = MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()));
     	if (beforeSave) {
     		if (saveInADAttachmentFile) {
     			attach.setBinaryData(null);
@@ -180,10 +181,10 @@ public class AttachmentFileSystem implements IAttachmentStore {
     			xformer.transform(source, result);
     			final byte[] xmlData = bos.toByteArray();
     			if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
-        		if (! saveInADAttachmentFile) {
-        			attach.setBinaryData(xmlData);
-        			attach.setTitle(MAttachment.XML);
-        		}
+    			if (! saveInADAttachmentFile) {
+    				attach.setBinaryData(xmlData);
+    				attach.setTitle(MAttachment.XML);
+    			}
     			return true;
     		} catch (Exception e) {
     			log.log(Level.SEVERE, "saveLOBData", e);

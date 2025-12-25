@@ -47,6 +47,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -138,7 +139,7 @@ public class AttachmentDBLOB implements IAttachmentStore
      */
     private boolean saveEntries(MAttachment attach, boolean beforeSave) {
     	if (beforeSave) {
-    		if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true)) {
+    		if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()))) {
     			attach.setBinaryData(null);
     			attach.setTitle(MAttachment.LIST_IN_ATTACHMENT_FILE);
     			return true;
@@ -177,7 +178,7 @@ public class AttachmentDBLOB implements IAttachmentStore
     			return false;
     		}
     	} else {
-    		if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true)) {
+    		if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()))) {
     			for (int i = 0; i < attach.m_items.size(); i++) {
     				MAttachmentEntry entry = attach.m_items.get(i);
     				if (log.isLoggable(Level.FINE)) log.fine(entry.toString());
@@ -202,15 +203,15 @@ public class AttachmentDBLOB implements IAttachmentStore
 					}
 				}
 
-    			try {
-    				for (int i = 0; i < attach.m_items.size(); i++) {
-    					insertOrReplace(attach, i);
-    				}
-    			} catch (Exception e) {
-    				log.log(Level.SEVERE, e.getMessage(), e);
-    				return false;
-    			}
     		}
+			try {
+				for (int i = 0; i < attach.m_items.size(); i++) {
+					insertOrReplace(attach, i);
+				}
+			} catch (Exception e) {
+				log.log(Level.SEVERE, e.getMessage(), e);
+				return false;
+			}
     		return true;
     	}
     }
@@ -253,146 +254,132 @@ public class AttachmentDBLOB implements IAttachmentStore
         if (DB.isOracle())
             sql += " FOR UPDATE ";
         boolean updateBlob = false;
-        try (PreparedStatement pstmt = conn != null
-                ? DB.prepareStatement(conn, sql)
-                : DB.prepareStatement(sql, attach.get_TrxName())) {
-            pstmt.setInt(1, attach.getAD_Attachment_ID());
-            pstmt.setInt(2, index);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    if (attach.m_items.get(index).isUpdated()) {
-                        File entryFile = attach.m_items.get(index).getFile();
-                        if (entryFile == null) {
-                            throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
-                        }
-                        updateBlob = true;
-                        Blob blob = rs.getBlob(1);
-                        try (ZipOutputStream zos = new ZipOutputStream(blob.setBinaryStream(1));
-                             InputStream inputStream = new FileInputStream(entryFile)) {
-                            ZipEntry zipEntry = new ZipEntry(entryFile.getName());
-                            zipEntry.setSize(entryFile.length());
-                            zos.putNextEntry(zipEntry);
-                            byte[] buffer = new byte[2048];
-                            int length;
-                            while ((length = inputStream.read(buffer)) != -1) {
-                                zos.write(buffer, 0, length);
-                            }
-                        } finally {
-                            blob.free();
-                        }
-                    }
-                    if (updateBlob && conn != null)
-                    {
-                        try {
-                            conn.commit();
-                        } catch (SQLException e) {
-                            throw new DBException(e);
-                        }
-                    }
-                    return;
-                }
-            }
-        } catch (Exception e) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    log.log(Level.WARNING, ex.getMessage(), ex);
-                }
-            }
-            throw new AdempiereException(e);
-        } finally {
-            if (conn != null)
-            {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-            }
-        }
-
-        // no existing blob found, create a new one
-        sql = AD_ATTACHMENT_ENTRY_INSERT;
-        File entryFile = attach.m_items.get(index).getFile();
-        if (entryFile == null) {
-            throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
-        }
-
-        // compress to temp file
-        Path tempFile = null;
+    	Path tempFile = null;
         try {
-            try {
-                Path tempDir = Files.createTempDirectory("attachment_");
-                tempFile = tempDir.resolve(entryFile.getName() + ".zip");
-                try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile))) {
-                    ZipEntry zipEntry = new ZipEntry(entryFile.getName());
-                    zipEntry.setSize(entryFile.length());
-                    zos.putNextEntry(zipEntry);
-                    byte[] buffer = new byte[2048];
-                    int length;
-                    try (InputStream inputStream = new FileInputStream(entryFile)) {
-                        while ((length = inputStream.read(buffer)) != -1) {
-                            zos.write(buffer, 0, length);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                throw new AdempiereException(e);
-            }
-            // insert compress temp file to db
-            try (PreparedStatement pstmt = conn != null
-                    ? DB.prepareStatement(conn, sql)
-                    : DB.prepareStatement(sql, attach.get_TrxName())) {
-                pstmt.setInt(1, attach.getAD_Attachment_ID());
-                pstmt.setInt(2, index);
-                try (FileInputStream inputStream = new FileInputStream(tempFile.toFile())) {
-                    pstmt.setBlob(3, inputStream);
-                    pstmt.executeUpdate();
-                }
-            } catch (Exception e) {
-                if (conn != null) {
-                    try {
-                        conn.rollback();
-                    } catch (SQLException ex) {
-                        log.log(Level.WARNING, ex.getMessage(), ex);
-                    }
-                }
-                throw new AdempiereException(e);
-            }
-            if (conn != null) {
-                try {
-                    conn.commit();
-                } catch (SQLException e) {
-                    throw new DBException(e);
-                }
-            }
+        	try (PreparedStatement pstmt = conn != null
+        			? DB.prepareStatement(conn, sql)
+        					: DB.prepareStatement(sql, attach.get_TrxName())) {
+        		pstmt.setInt(1, attach.getAD_Attachment_ID());
+        		pstmt.setInt(2, index);
+        		try (ResultSet rs = pstmt.executeQuery()) {
+        			if (rs.next()) {
+        				if (attach.m_items.get(index).isUpdated()) {
+        					File entryFile = attach.m_items.get(index).getFile();
+        					if (entryFile == null) {
+        						throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
+        					}
+        					updateBlob = true;
+        					Blob blob = rs.getBlob(1);
+        					try (ZipOutputStream zos = new ZipOutputStream(blob.setBinaryStream(1));
+        							InputStream inputStream = new FileInputStream(entryFile)) {
+        						ZipEntry zipEntry = new ZipEntry(entryFile.getName());
+        						zipEntry.setSize(entryFile.length());
+        						zos.putNextEntry(zipEntry);
+        						byte[] buffer = new byte[2048];
+        						int length;
+        						while ((length = inputStream.read(buffer)) != -1) {
+        							zos.write(buffer, 0, length);
+        						}
+        					} finally {
+        						blob.free();
+        					}
+        				}
+        				if (updateBlob && conn != null)
+        				{
+        					try {
+        						conn.commit();
+        					} catch (SQLException e) {
+        						throw new DBException(e);
+        					}
+        				}
+        				return;
+        			}
+        		}
+        	} catch (Exception e) {
+        		if (conn != null) {
+        			try {
+        				conn.rollback();
+        			} catch (SQLException ex) {
+        				log.log(Level.WARNING, ex.getMessage(), ex);
+        			}
+        		}
+        		throw new AdempiereException(e);
+        	}
+
+        	// no existing blob found, create a new one
+        	sql = AD_ATTACHMENT_ENTRY_INSERT;
+        	File entryFile = attach.m_items.get(index).getFile();
+        	if (entryFile == null) {
+        		throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
+        	}
+
+        	// compress to temp file
+        	try {
+        		Path tempDir = Files.createTempDirectory("attachment_");
+        		tempFile = tempDir.resolve(entryFile.getName() + ".zip");
+        		try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile))) {
+        			ZipEntry zipEntry = new ZipEntry(entryFile.getName());
+        			zipEntry.setSize(entryFile.length());
+        			zos.putNextEntry(zipEntry);
+        			byte[] buffer = new byte[2048];
+        			int length;
+        			try (InputStream inputStream = new FileInputStream(entryFile)) {
+        				while ((length = inputStream.read(buffer)) != -1) {
+        					zos.write(buffer, 0, length);
+        				}
+        			}
+        		}
+        	} catch (Exception e) {
+        		throw new AdempiereException(e);
+        	}
+        	// insert compress temp file to db
+        	try (PreparedStatement pstmt = conn != null
+        			? DB.prepareStatement(conn, sql)
+        					: DB.prepareStatement(sql, attach.get_TrxName())) {
+        		pstmt.setInt(1, attach.getAD_Attachment_ID());
+        		pstmt.setInt(2, index);
+        		try (FileInputStream inputStream = new FileInputStream(tempFile.toFile())) {
+        			pstmt.setBlob(3, inputStream);
+        			pstmt.executeUpdate();
+        		}
+        	} catch (Exception e) {
+        		if (conn != null) {
+        			try {
+        				conn.rollback();
+        			} catch (SQLException ex) {
+        				log.log(Level.WARNING, ex.getMessage(), ex);
+        			}
+        		}
+        		throw new AdempiereException(e);
+        	}
+        	if (conn != null) {
+        		try {
+        			conn.commit();
+        		} catch (SQLException e) {
+        			throw new DBException(e);
+        		}
+        	}
         } finally {
-            if (conn != null)
-            {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-            }
-            if (tempFile != null) {
-                File f = tempFile.toFile();
-                if (f.exists()) {
-                    if (!f.delete())
-                        f.deleteOnExit();
-                }
-            }
+        	if (conn != null)
+        	{
+        		try {
+        			conn.setAutoCommit(true);
+        		} catch (SQLException e) {
+        			log.log(Level.WARNING, e.getMessage(), e);
+        		}
+        		try {
+        			conn.close();
+        		} catch (SQLException e) {
+        			log.log(Level.WARNING, e.getMessage(), e);
+        		}
+        	}
+        	if (tempFile != null) {
+        		File f = tempFile.toFile();
+        		if (f.exists()) {
+        			if (!f.delete())
+        				f.deleteOnExit();
+        		}
+        	}
         }
     }
 

@@ -42,6 +42,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
@@ -650,13 +651,27 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	 */
 	@Override
 	public boolean save() {
-		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
-			saveLOBData(true);		//	save in BinaryData
-		boolean success = super.save();
-        if (success) {
-    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
-    			return saveLOBData(false);
-        }
+		String local_trxName = null;
+		boolean success = false;
+		try {
+			if (get_TrxName() == null) {
+				local_trxName = Trx.createTrxName("MAttachmentSave");
+				set_TrxName(local_trxName);
+			}
+			if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+				saveLOBData(true);		//	save in BinaryData
+			success = super.save();
+	        if (success) {
+	    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+	    			return saveLOBData(false);
+	        }
+		} finally {
+	        if (local_trxName != null) {
+	        	Trx.get(local_trxName, false).commit();
+	        	Trx.get(local_trxName, false).close();
+	        	set_TrxName(null);
+	        }
+		}
        	return success;
 	}
 
