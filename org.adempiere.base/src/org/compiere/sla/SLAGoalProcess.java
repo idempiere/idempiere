@@ -38,7 +38,6 @@ import org.compiere.util.AdempiereUserError;
  */
 @Deprecated (since="13", forRemoval=true)
 @org.adempiere.base.annotation.Process
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class SLAGoalProcess extends SvrProcess
 {

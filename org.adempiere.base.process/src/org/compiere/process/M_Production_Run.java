@@ -48,7 +48,6 @@ import org.eevolution.model.MPPProductBOMLine;
  * @contributor: Carlos Ruiz (globalqss) - review backward compatibility - implement mustBeStocked properly
  */
 @Deprecated (since="13", forRemoval=true) // replaced by ProductionProcess
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 @org.adempiere.base.annotation.Process
 public class M_Production_Run extends SvrProcess {

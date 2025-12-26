@@ -377,7 +377,6 @@ public class MIssue extends X_AD_Issue
 	 *  @deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	@SuppressWarnings("removal")
 	@GeneratedCodeCoverageExclusion
 	public String process()
 	{

@@ -29,7 +29,6 @@ import org.adempiere.base.GeneratedCodeCoverageExclusion;
  *  @deprecated not fully implemented
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class MRegistrationValue extends X_A_RegistrationValue
 	implements Comparable<Object>

@@ -36,7 +36,6 @@ import org.compiere.util.Util;
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class MSLAGoal extends X_PA_SLA_Goal
 {

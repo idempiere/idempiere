@@ -31,7 +31,6 @@ import org.compiere.print.MPrintGraph;
  *  @deprecated not fully implemented
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class GraphElement extends PrintElement
 {
