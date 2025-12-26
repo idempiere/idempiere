@@ -213,6 +213,8 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	/** Indicator for list of files in AD_AttachmentFile */
 	public static final String 	LIST_IN_ATTACHMENT_FILE = TITLE_ListInAttachmentFile;
 
+	public static final String MIGRATE_STORAGE_DELETING_OLD_PROVIDER = "MIGRATE_STORAGE_DELETING_OLD_PROVIDER";
+
 	/**	List of Entry Data		*/
 	public ArrayList<MAttachmentEntry> m_items = null;
 
@@ -658,11 +660,13 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 				local_trxName = Trx.createTrxName("MAttachmentSave");
 				set_TrxName(local_trxName);
 			}
-			if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile)
+					&& !"Y".equals(get_Attribute(MIGRATE_STORAGE_DELETING_OLD_PROVIDER)))
 				saveLOBData(true);		//	save in BinaryData
 			success = super.save();
 	        if (success) {
-	    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+	    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile)
+	    				&& !"Y".equals(get_Attribute(MIGRATE_STORAGE_DELETING_OLD_PROVIDER)))
 	    			return saveLOBData(false);
 	        }
 		} finally {

@@ -58,168 +58,116 @@ public class AttachmentFileSystem implements IAttachmentStore {
     }
 
 	@Override
-    public boolean save(MAttachment attach, MStorageProvider prov, boolean beforeSave) {
-        if (attach.m_items == null || attach.m_items.isEmpty()) {
-            if (beforeSave)
-                attach.setBinaryData(null);
-            return true;
-        }
-
-        String attachmentPathRoot = getAttachmentPathRoot(prov);
-        return saveEntries(attach, beforeSave, attachmentPathRoot);
-    }
-
-    /**
-     * Save attachment entries as XML and store the actual binary data to ad_attachment_entry, or to AD_AttachmentFile
-     * @param attach attachment record
-     * @param beforeSave true if calling from beforeSave of attachment record, false if calling from afterSave
-     * @param attachmentPathRoot
-     * @return true if success, false otherwise
-     */
-    private boolean saveEntries(MAttachment attach, boolean beforeSave, String attachmentPathRoot) {
+	public boolean save(MAttachment attach, MStorageProvider prov, boolean beforeSave) {
+		String attachmentPathRoot = getAttachmentPathRoot(prov);
 		if (attach.m_items == null || attach.m_items.isEmpty()) {
 			attach.setBinaryData(null);
 			return true;
 		}
 
-		boolean saveInADAttachmentFile = MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()));
-    	if (beforeSave) {
-    		if (saveInADAttachmentFile) {
-    			attach.setBinaryData(null);
-    			attach.setTitle(MAttachment.LIST_IN_ATTACHMENT_FILE);
-    		}
-    		String oldTitle = attach.get_ValueOld(MAttachment.COLUMNNAME_Title).toString();
-    		if (! MAttachment.XML.equals(oldTitle))
-    			return true;
+		if (beforeSave) {
+			if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()))) {
+				attach.setBinaryData(null);
+				attach.setTitle(MAttachment.LIST_IN_ATTACHMENT_FILE);
+			} else {
+				// save as XML in AD_Attachment.BinaryData
+				// get list of old entries
+				byte[] data = (byte[]) attach.get_ValueOld(MAttachment.COLUMNNAME_BinaryData);
+				NodeList xmlEntries = null;
+	    		String oldTitle = attach.get_ValueOld(MAttachment.COLUMNNAME_Title).toString();
+				if (data != null && data.length > 0 && MAttachment.XML.equals(oldTitle))
+					xmlEntries = getEntriesFromXML(data);
 
-    		NodeList xmlEntries = null;
-       		// get list of old entries
-       		byte[] data = (byte[]) attach.get_ValueOld(MAttachment.COLUMNNAME_BinaryData);
-       		if (data != null && data.length > 0)
-       			xmlEntries = getEntriesFromXML(data);
+				final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				try {
+					final DocumentBuilder builder = factory.newDocumentBuilder();
+					final Document document = builder.newDocument();
+					final Element root = document.createElement("attachments");
+					document.appendChild(root);
+					document.setXmlStandalone(true);
+					// create xml entries
+					for (int i = 0; i < attach.m_items.size(); i++) {
+						if (log.isLoggable(Level.FINE)) log.fine(attach.m_items.get(i).toString());
+						File entryFile = attach.m_items.get(i).getFile();
+						if (entryFile == null) {
+							String itemName = attach.m_items.get(i).getName();
+							if (itemName.startsWith("~") && itemName.endsWith("~")) {
+								itemName = itemName.substring(1, itemName.length()-1);
+								if (xmlEntries != null) {
+									for (int x = 0; x < xmlEntries.getLength(); x++) {
+										final Node entryNode = xmlEntries.item(x);
+										final NamedNodeMap attributes = entryNode.getAttributes();
+										final Node fileNode = attributes.getNamedItem("file");
+										final Node nameNode = attributes.getNamedItem("name");
+										if (itemName.equals(nameNode.getNodeValue())) {
+											// file was not found but we preserve the old location just in case is temporary
+											final Element entry = document.createElement("entry");
+											entry.setAttribute("name", itemName);
+											entry.setAttribute("file", fileNode.getNodeValue());
+											root.appendChild(entry);
+											break;
+										}
+									}
+								}
+								continue;
+							}
+							else
+								throw new AdempiereException("Attachment file not found: " + itemName);
+						}
+						entryFile = copyToAttachFolder(attach, attachmentPathRoot, entryFile);
+						final Element entry = document.createElement("entry");
+						entry.setAttribute("name", attach.getEntryName(i));
+						String filePathToStore = entryFile.getAbsolutePath();
+						filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
+		                if (log.isLoggable(Level.FINE))
+						    log.fine(filePathToStore);
+						entry.setAttribute("file", filePathToStore);
+						root.appendChild(entry);
+					}
 
-    		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    		try {
-    			final DocumentBuilder builder = factory.newDocumentBuilder();
-    			final Document document = builder.newDocument();
-    			final Element root = document.createElement("attachments");
-    			document.appendChild(root);
-    			document.setXmlStandalone(true);
-    			// create xml entries
-    			for (int i = 0; i < attach.m_items.size(); i++) {
-    				if (log.isLoggable(Level.FINE)) log.fine(attach.m_items.get(i).toString());
-    				File entryFile = attach.m_items.get(i).getFile();
-    				if (entryFile == null) {
-    					String itemName = attach.m_items.get(i).getName();
-    					if (itemName.startsWith("~") && itemName.endsWith("~")) {
-    						itemName = itemName.substring(1, itemName.length()-1);
-    						if (xmlEntries != null) {
-    							for (int x = 0; x < xmlEntries.getLength(); x++) {
-    								final Node entryNode = xmlEntries.item(x);
-    								final NamedNodeMap attributes = entryNode.getAttributes();
-    								final Node fileNode = attributes.getNamedItem("file");
-    								final Node nameNode = attributes.getNamedItem("name");
-    								if (itemName.equals(nameNode.getNodeValue())) {
-    									// file was not found but we preserve the old location just in case is temporary
-    									final Element entry = document.createElement("entry");
-    									entry.setAttribute("name", itemName);
-    									entry.setAttribute("file", fileNode.getNodeValue());
-    									root.appendChild(entry);
-    									break;
-    								}
-    							}
-    						}
-    						continue;
-    					}
-    					else
-    						throw new AdempiereException("Attachment file not found: " + itemName);
-    				}
-    				final String path = entryFile.getAbsolutePath();
-    				// if local file - copy to central attachment folder
-    				if (log.isLoggable(Level.FINE)) log.fine(path + " - " + attachmentPathRoot);
-    				if (!path.startsWith(attachmentPathRoot)) {
-    					if (log.isLoggable(Level.FINE)) log.fine("move file: " + path);
-    					try {
-    						//create destination folder
-    						StringBuilder msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet(attach));
-    						final File destFolder = new File(msgfile.toString());
-    						if(!destFolder.exists()){
-    							if(!destFolder.mkdirs()){
-    								log.warning("unable to create folder: " + destFolder.getPath());
-    							}
-    						}
-    						msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator)
-    								.append(getAttachmentPathSnippet(attach)).append(File.separator).append(entryFile.getName());
-    						final File destFile = new File(msgfile.toString());
-    						boolean copyOrReplace = true;
-    						if (destFile.exists()) {
-    							if (destFile.length() == entryFile.length()) {
-    								if (Files.mismatch(entryFile.toPath(), destFile.toPath()) == -1L)
-    									copyOrReplace = false;
-    							}
-    						}
-    						if (copyOrReplace)
-    							Files.copy(entryFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    						entryFile = destFile;
-    					} catch (IOException e) {
-    						log.log(Level.SEVERE, "unable to copy file " + entryFile.getAbsolutePath() + " to "
-    								+ attachmentPathRoot + File.separator + 
-    								getAttachmentPathSnippet(attach) + File.separator + entryFile.getName(), e);
-    					}
-    				}
-    				final Element entry = document.createElement("entry");
-    				entry.setAttribute("name", attach.getEntryName(i));
-    				String filePathToStore = entryFile.getAbsolutePath();
-    				filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
-    				if (log.isLoggable(Level.FINE))
-    					log.fine(filePathToStore);
-    				entry.setAttribute("file", filePathToStore);
-    				root.appendChild(entry);
-    				attach.m_items.get(i).setFile(entryFile);
-    			}
+					final Source source = new DOMSource(document);
+					final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					final Result result = new StreamResult(bos);
+					final Transformer xformer = TransformerFactory.newInstance().newTransformer();
+					xformer.transform(source, result);
+					final byte[] xmlData = bos.toByteArray();
+					if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
+					attach.setBinaryData(xmlData);
+					attach.setTitle(MAttachment.XML);
+					return true;
+				} catch (Exception e) {
+					log.log(Level.SEVERE, "saveLOBData", e);
+				}
+				attach.setBinaryData(null);
+				return false;
+			}
+		} else {
+			if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()))) {
+				for (int i = 0; i < attach.m_items.size(); i++) {
+					MAttachmentEntry entry = attach.m_items.get(i);
+					File entryFile = entry.getFile();
+					entryFile = copyToAttachFolder(attach, attachmentPathRoot, entryFile);
+					String itemName = entry.getName();
+					if (itemName.startsWith("~") && itemName.endsWith("~"))
+						itemName = itemName.substring(1, itemName.length()-1);
+					String filePathToStore = entryFile.getAbsolutePath();
+					filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
+	                if (log.isLoggable(Level.FINE))
+					    log.fine(filePathToStore);
+					if (log.isLoggable(Level.FINE)) log.fine(entry.toString());
+					MAttachmentFile af = MAttachmentFile.get(attach, itemName);
+					af.setFilePath(filePathToStore);
+					af.setFileSize(BigDecimal.valueOf(entry.getSize()));
+					af.setSeqNo(i+1);
+					af.setSHA256Checksum(entry.getSHA256Sum());
+					af.setMIMEType(entry.getContentType());
+					af.saveEx(attach.get_TrxName());
 
-    			final Source source = new DOMSource(document);
-    			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    			final Result result = new StreamResult(bos);
-    			final Transformer xformer = TransformerFactory.newInstance().newTransformer();
-    			xformer.transform(source, result);
-    			final byte[] xmlData = bos.toByteArray();
-    			if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
-    			if (! saveInADAttachmentFile) {
-    				attach.setBinaryData(xmlData);
-    				attach.setTitle(MAttachment.XML);
-    			}
-    			return true;
-    		} catch (Exception e) {
-    			log.log(Level.SEVERE, "saveLOBData", e);
-    		}
-    		attach.setBinaryData(null);
-    		return false;
-    	} else {
-    		if (saveInADAttachmentFile) {
-    			for (int i = 0; i < attach.m_items.size(); i++) {
-    				MAttachmentEntry entry = attach.m_items.get(i);
-    				if (log.isLoggable(Level.FINE)) log.fine(entry.toString());
-    				MAttachmentFile af = MAttachmentFile.get(attach, entry.getName());
-    				af.setAD_Attachment_ID(attach.getAD_Attachment_ID());
-    				af.setFileSize(BigDecimal.valueOf(entry.getSize()));
-    				af.setSeqNo(i+1);
-    				af.setSHA256Checksum(entry.getSHA256Sum());
-    				af.setMIMEType(entry.getContentType());
-    				File entryFile = attach.m_items.get(i).getFile();
-    				String filePathToStore = entryFile.getAbsolutePath();
-    				filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
-    				af.setFilePath(filePathToStore);
-    				af.saveEx(attach.get_TrxName());
-    			}
-    			for (MAttachmentFile oldAF : attach.getAttachmentFiles()) {
+				}
+				for (MAttachmentFile oldAF : attach.getAttachmentFiles()) {
 					boolean found = false;
 					for (MAttachmentEntry entry : attach.m_items) {
-						File entryFile = entry.getFile();
-						String filePathToStore = entryFile.getAbsolutePath();
-	    				filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
-						if (oldAF.getFilePath() != null && filePathToStore != null &&
-								oldAF.getFilePath().equals(filePathToStore)) {
+						if (oldAF.getFileName() != null && oldAF.getFileName().equals(entry.getName())) {
 							found = true;
 							break;
 						}
@@ -229,21 +177,65 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						oldAF.deleteEx(true, attach.get_TrxName());
 					}
 				}
-    		}
-    		return true;
-    	}
-
+				attach.setBinaryData(null);
+				attach.setTitle(MAttachment.LIST_IN_ATTACHMENT_FILE);
+			}
+		}
+		return true;
 	}
-	
-	@Override
-	public boolean loadLOBData(MAttachment attach,MStorageProvider prov) {
+
+	/**
+	 * if local file - copy to central attachment folder
+	 * @param attach
+	 * @param attachmentPathRoot
+	 * @param entryFile
+	 * @return
+	 */
+	private File copyToAttachFolder(MAttachment attach, String attachmentPathRoot, File entryFile) {
+		final String path = entryFile.getAbsolutePath();
+ 		if (log.isLoggable(Level.FINE)) log.fine(path + " - " + attachmentPathRoot);
+		if (!path.startsWith(attachmentPathRoot)) {
+			if (log.isLoggable(Level.FINE)) log.fine("move file: " + path);
+			try {
+				//create destination folder
+				StringBuilder msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator).append(getAttachmentPathSnippet(attach));
+				final File destFolder = new File(msgfile.toString());
+				if(!destFolder.exists()){
+					if(!destFolder.mkdirs()){
+						log.warning("unable to create folder: " + destFolder.getPath());
+					}
+				}
+				msgfile = new StringBuilder().append(attachmentPathRoot).append(File.separator)
+						.append(getAttachmentPathSnippet(attach)).append(File.separator).append(entryFile.getName());
+				final File destFile = new File(msgfile.toString());
+		        boolean copyOrReplace = true;
+		        if (destFile.exists()) {
+		            if (destFile.length() == entryFile.length()) {
+		                if (Files.mismatch(entryFile.toPath(), destFile.toPath()) == -1L)
+		                    copyOrReplace = false;
+		            }
+		        }
+		        if (copyOrReplace)
+		            Files.copy(entryFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				entryFile = destFile;
+			} catch (IOException e) {
+				log.log(Level.SEVERE, "unable to copy file " + entryFile.getAbsolutePath() + " to "
+						+ attachmentPathRoot + File.separator + 
+						getAttachmentPathSnippet(attach) + File.separator + entryFile.getName(), e);
+			}
+		}
+		return entryFile;
+	}
+
+    @Override
+    public boolean loadLOBData(MAttachment attach, MStorageProvider prov) {
 		String attachmentPathRoot = getAttachmentPathRoot(prov);
 		if (Util.isEmpty(attachmentPathRoot)) {
 			log.severe("no attachmentPath defined");
 			return false;
 		}
-		// Reset
-		attach.m_items = new ArrayList<>();
+        //	Reset
+        attach.m_items = new ArrayList<>();
         byte[] data = null;
     	if (! MAttachment.LIST_IN_ATTACHMENT_FILE.equals(attach.getTitle())) {
             data = attach.getBinaryData();
@@ -252,9 +244,9 @@ public class AttachmentFileSystem implements IAttachmentStore {
     	}
 
         return loadEntries(attach, data, attachmentPathRoot);
-	}
+    }
 
-	/**
+    /**
      * Load attachment entries from XML or from AD_AttachmentFile
      * @param attach attachment record
      * @param data xml meta data
@@ -265,20 +257,24 @@ public class AttachmentFileSystem implements IAttachmentStore {
     	if (MAttachment.LIST_IN_ATTACHMENT_FILE.equals(attach.getTitle())) {
     		for (MAttachmentFile attachFile : attach.getAttachmentFiles()) {
     			String filePath = attachFile.getFilePath();
-				if (filePath != null) {
-					filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\", "\\\\\\\\"));
-					String replaceSeparator = File.separator;
-					if (!replaceSeparator.equals("/")) {
-						replaceSeparator = "\\\\";
-					}
-					filePath = filePath.replaceAll("/", replaceSeparator);
-					filePath = filePath.replaceAll("\\\\", replaceSeparator);
-				}
+    			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+    			if(filePath!=null){
+    				filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
+    				//just to be sure...
+    				String replaceSeparator = File.separator;
+    				if(!replaceSeparator.equals("/")){
+    					replaceSeparator = "\\\\";
+    				}
+    				filePath = filePath.replaceAll("/", replaceSeparator);
+    				filePath = filePath.replaceAll("\\\\", replaceSeparator);
+    			}
+    			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
     			final File file = new File(filePath);
     			if (file.exists()) {
     				// file data read delayed
     				IAttachmentLazyDataSource ds = new AttachmentFileLazyDataSource(file);
     				final MAttachmentEntry entry = new MAttachmentEntry(file.getName(), attach.m_items.size() + 1, ds);
+    				entry.setSHA256Sum(attachFile.getSHA256Checksum());
     				attach.m_items.add(entry);
     			} else {
     				log.severe("file not found: " + file.getAbsolutePath());
@@ -287,6 +283,12 @@ public class AttachmentFileSystem implements IAttachmentStore {
     		}
     	} else {
     		// XML
+    		if (data == null)
+    			return true;
+    		if (log.isLoggable(Level.FINE)) log.fine("TextFileSize=" + data.length);
+    		if (data.length == 0)
+    			return true;
+
     		NodeList entries = getEntriesFromXML(data);
     		for (int i = 0; i < entries.getLength(); i++) {
     			final Node entryNode = entries.item(i);
@@ -323,9 +325,9 @@ public class AttachmentFileSystem implements IAttachmentStore {
     				attach.m_items.add(new MAttachmentEntry("~" + file.getName()  + "~", "".getBytes(), attach.m_items.size() + 1));
     			}
     		}
-    	}
-        return true;
+		}
 
+		return true;
 	}
 
 	/**
