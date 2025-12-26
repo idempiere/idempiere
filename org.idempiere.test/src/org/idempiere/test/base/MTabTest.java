@@ -23,7 +23,9 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,6 +38,9 @@ import java.util.Properties;
 
 import org.compiere.model.MField;
 import org.compiere.model.MTab;
+import org.compiere.model.MUser;
+import org.compiere.model.MWindow;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -56,8 +61,8 @@ import org.junit.jupiter.api.TestInstance;
 public class MTabTest extends AbstractTestCase {
 
 	private final Properties ctx = Env.getCtx();
-	private final int testWindowId = DictionaryIDs.AD_Window.USER.id;
-	private final int testTabId = DictionaryIDs.AD_Tab.USER_CONTACT.id;
+	private final int testWindowId = DictionaryIDs.AD_Window.TEST.id;
+	private final int testTabId = DictionaryIDs.AD_Tab.TEST_TEST.id;
 	private String testTabUUID;
 
 	@Override
@@ -96,6 +101,20 @@ public class MTabTest extends AbstractTestCase {
 		MTab tab = new MTab(ctx, testTabUUID, getTrxName());
 		assertNotNull(tab, "MTab constructed by UUID should not be null");
 		assertEquals(testTabId, tab.getAD_Tab_ID(), "MTab loaded by UUID should map to same AD_Tab_ID");
+		
+		tab = new MTab(ctx, PO.UUID_NEW_RECORD, getTrxName());
+		assertNotNull(tab, "MTab constructed by UUID should not be null");
+		assertEquals(0, tab.getAD_Tab_ID(), "AD_Tab_ID should be 0 for new record");
+		assertEquals(MTab.ENTITYTYPE_UserMaintained, tab.getEntityType());
+		assertFalse(tab.isHasTree());
+		assertFalse(tab.isReadOnly());
+		assertFalse(tab.isSingleRow());
+		assertFalse(tab.isSortTab());
+		assertFalse(tab.isTranslationTab());
+		assertEquals(0, tab.getSeqNo());
+		assertEquals(0, tab.getTabLevel());
+		assertTrue(tab.isInsertRecord());
+		assertFalse(tab.isAdvancedTab());
 	}
 
 	/**
@@ -117,31 +136,40 @@ public class MTabTest extends AbstractTestCase {
 			assertNotNull(tab, "MTab constructed from ResultSet should not be null");
 			assertEquals(testTabId, tab.getAD_Tab_ID(), "MTab(ResultSet) must have expected AD_Tab_ID");
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-				} catch (SQLException ignored) {}
-			if (pstmt != null)
-				try {
-					pstmt.close();
-				} catch (SQLException ignored) {}
+			DB.close(rs, pstmt);
 		}
 	}
 
 	/**
-	 * Test copy constructors available in MTab: MTab(ctx, copy) and MTab(ctx, copy,
-	 * trxName)
+	 * Test copy constructors available in MTab: MTab(ctx, copy), MTab(ctx, copy, trxName) and MTab(copy)
 	 */
 	@Test
 	public void testConstructor_Copy() {
 		MTab original = new MTab(ctx, testTabId, getTrxName());
-		MTab copy1 = new MTab(ctx, original);
-		assertNotNull(copy1, "Copy constructor MTab(ctx, original) should produce an instance");
-		assertEquals(original.getName(), copy1.getName(), "Copied MTab should keep the same Name");
+		MField[] originalFields = original.getFields(false, getTrxName());
+		MTab copy = new MTab(ctx, original);
+		MField[] copyFields = copy.getFields(false, getTrxName());
+		assertNotNull(copy, "Copy constructor MTab(ctx, original) should produce an instance");
+		assertEquals(original.getName(), copy.getName(), "Copied MTab should keep the same Name");
+		assertEquals(originalFields.length, copyFields.length, "Copied MTab should keep the same number of fields");
+		for (int i = 0; i < originalFields.length; i++) 
+			assertEquals(originalFields[i].getName(), copyFields[i].getName(), "Copied MTab should keep the same field name");
 
-		MTab copy2 = new MTab(ctx, original, getTrxName());
-		assertNotNull(copy2, "Copy constructor MTab(ctx, original, trxName) should produce an instance");
-		assertEquals(original.getAD_Table_ID(), copy2.getAD_Table_ID(), "Copied MTab should keep the same AD_Table_ID");
+		copy = new MTab(ctx, original, getTrxName());
+		copyFields = copy.getFields(false, getTrxName());
+		assertNotNull(copy, "Copy constructor MTab(ctx, original, trxName) should produce an instance");
+		assertEquals(original.getAD_Table_ID(), copy.getAD_Table_ID(), "Copied MTab should keep the same AD_Table_ID");
+		assertEquals(originalFields.length, copyFields.length, "Copied MTab should keep the same number of fields");
+		for (int i = 0; i < originalFields.length; i++) 
+			assertEquals(originalFields[i].getName(), copyFields[i].getName(), "Copied MTab should keep the same field name");
+		
+		copy = new MTab(original);
+		copyFields = copy.getFields(false, getTrxName());
+		assertNotNull(copy, "Copy constructor MTab(original) should produce an instance");
+		assertEquals(original.getAD_Table_ID(), copy.getAD_Table_ID(), "Copied MTab should keep the same AD_Table_ID");
+		assertEquals(originalFields.length, copyFields.length, "Copied MTab should keep the same number of fields");
+		for (int i = 0; i < originalFields.length; i++) 
+			assertEquals(originalFields[i].getName(), copyFields[i].getName(), "Copied MTab should keep the same field name");
 	}
 
 	/**
@@ -195,29 +223,22 @@ public class MTabTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test creating a persistent AD_Tab record and cleanup.
-	 * <p>
-	 * Sets minimal likely mandatory fields (AD_Window_ID, AD_Table_ID, Name, SeqNo)
-	 * and attempts to save.
+	 * Test creating a persistent AD_Tab record
 	 */
 	@Test
 	public void testCreatePersistentObjectAndCleanup() {
-		MTab newTab = new MTab(ctx, 0, getTrxName());
-		String unique = "T_TEST_TAB_" + System.currentTimeMillis();
-		int adTableId = DB.getSQLValue(getTrxName(), "SELECT AD_Table_ID FROM AD_Table WHERE TableName=?", "AD_Table");
 		try {
+			MTab newTab = new MTab(ctx, 0, getTrxName());
+			String unique = "T_" + System.currentTimeMillis();
 			newTab.setAD_Window_ID(testWindowId);
-			newTab.setAD_Table_ID(adTableId);
+			newTab.setAD_Table_ID(MUser.Table_ID);
 			newTab.setName("Test Tab " + unique);
 			newTab.setSeqNo(10);
 			boolean saved = newTab.save();
 			assertTrue(saved, "New AD_Tab should save when minimal mandatory fields are provided");
 			assertTrue(newTab.get_ID() > 0, "Saved AD_Tab must have assigned AD_Tab_ID");
 		} finally {
-			try {
-				if (newTab.get_ID() > 0)
-					newTab.delete(true, getTrxName());
-			} catch (Exception e) {}
+			rollback();
 		}
 	}
 
@@ -248,5 +269,75 @@ public class MTabTest extends AbstractTestCase {
 			assertTrue(notFound.getAD_Tab_ID() == 0 || notFound.getAD_Tab_ID() == -999999, "Non-existing get() should return null or a placeholder");
 		}
 	}
-
+	
+	/**
+	 * Test cases for MTab(MWindow parent) and MTab(MWindow parent, MTab from)
+	 */
+	@Test
+	public void testConstructor_CopyWithParent() {
+		try {
+			MWindow window = new MWindow(ctx, 0, getTrxName());
+			String unique = "T_" + System.currentTimeMillis();
+			window.setName("Test Window " + unique);
+			window.setWindowType(MWindow.WINDOWTYPE_Maintain);
+			assertTrue(window.save());
+			
+			MTab tab = new MTab(window);
+			assertEquals(0, tab.get_ID(), "New tab should be unsaved (ID=0)");
+	        assertEquals(window.getAD_Window_ID(), tab.getAD_Window_ID(), "AD_Window_ID should match parent");
+	        assertEquals(window.getAD_Client_ID(), tab.getAD_Client_ID(), "Client should match parent");
+	        assertEquals(window.getAD_Org_ID(), tab.getAD_Org_ID(), "Org should match parent");
+	        assertEquals(window.getEntityType(), tab.getEntityType(), "EntityType should match parent");
+	        
+	        MWindow parent = new MWindow(ctx, 0, getTrxName());
+			unique = "T_" + System.currentTimeMillis();
+			parent.setName("Test Window " + unique);
+			parent.setWindowType(MWindow.WINDOWTYPE_Maintain);
+			assertTrue(parent.save());
+	        
+	        MTab originalTab = new MTab(ctx, DictionaryIDs.AD_Tab.TEST_TEST.id, getTrxName());
+	        MTab copyTab = new MTab(parent, originalTab);
+	        assertEquals(originalTab.getName(), copyTab.getName());
+	        assertEquals(originalTab.getSeqNo(), copyTab.getSeqNo());
+	        assertEquals(parent.getAD_Client_ID(), copyTab.getAD_Client_ID());
+	        assertEquals(parent.getAD_Org_ID(), copyTab.getAD_Org_ID());
+	        assertEquals(parent.getAD_Window_ID(), copyTab.getAD_Window_ID());
+	        assertEquals(parent.getEntityType(), copyTab.getEntityType());
+	        assertNotSame(originalTab, copyTab, "Copy should be a new object");
+		} finally {
+			rollback();
+		}
+	}
+	
+	/**
+	 * Test cases for MTab.getParentTabID()
+	 */
+	@Test
+	public void testGetParentTabID() {
+		MTab rootTab = new MTab(ctx, DictionaryIDs.AD_Tab.USER_CONTACT.id, getTrxName());
+		int parentID = rootTab.getParentTabID();
+		assertEquals(-1, parentID, "TabLevel=0 should return -1 for parent");
+		
+		MTab childTab = new MTab(ctx, DictionaryIDs.AD_Tab.USER_USER_MAIL.id, getTrxName());
+		parentID = childTab.getParentTabID();
+		assertEquals(rootTab.getAD_Tab_ID(), parentID, "Should return parent tab ID");
+	}
+	
+	/**
+	 * Test cases for MTab.markImmutable()
+	 */
+	@Test
+	public void testMarkImmutable() {
+		MTab tab = new MTab(ctx, DictionaryIDs.AD_Tab.USER_CONTACT.id, getTrxName());
+		assertFalse(tab.is_Immutable(), "Tab should initially be mutable");
+		
+		MTab returned = tab.markImmutable();
+        assertSame(tab, returned, "Should return self");
+        assertTrue(tab.is_Immutable(), "Tab should be marked immutable");
+        
+        returned = tab.markImmutable();
+        assertSame(tab, returned, "Immutable tab should return self");
+        assertTrue(tab.is_Immutable(), "Tab remains immutable");
+	}
+	
 }
