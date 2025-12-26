@@ -74,7 +74,8 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				// get list of old entries
 				byte[] data = (byte[]) attach.get_ValueOld(MAttachment.COLUMNNAME_BinaryData);
 				NodeList xmlEntries = null;
-	    		String oldTitle = attach.get_ValueOld(MAttachment.COLUMNNAME_Title).toString();
+	    		Object oldTitleObj = attach.get_ValueOld(MAttachment.COLUMNNAME_Title);
+	    		String oldTitle = oldTitleObj != null ? oldTitleObj.toString() : null;
 				if (data != null && data.length > 0 && MAttachment.XML.equals(oldTitle))
 					xmlEntries = getEntriesFromXML(data);
 
@@ -256,19 +257,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
     private boolean loadEntries(MAttachment attach, byte[] data, String attachmentPathRoot) {
     	if (MAttachment.LIST_IN_ATTACHMENT_FILE.equals(attach.getTitle())) {
     		for (MAttachmentFile attachFile : attach.getAttachmentFiles()) {
-    			String filePath = attachFile.getFilePath();
-    			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
-    			if(filePath!=null){
-    				filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
-    				//just to be sure...
-    				String replaceSeparator = File.separator;
-    				if(!replaceSeparator.equals("/")){
-    					replaceSeparator = "\\\\";
-    				}
-    				filePath = filePath.replaceAll("/", replaceSeparator);
-    				filePath = filePath.replaceAll("\\\\", replaceSeparator);
-    			}
-    			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+    			String filePath = replaceFolderPlaceHolder(attach, attachmentPathRoot, attachFile.getFilePath());
     			final File file = new File(filePath);
     			if (file.exists()) {
     				// file data read delayed
@@ -301,7 +290,7 @@ public class AttachmentFileSystem implements IAttachmentStore {
     				return false;
     			}
     			if (log.isLoggable(Level.FINE)) log.fine("name: " + nameNode.getNodeValue());
-    			String filePath = fileNode.getNodeValue();
+    			String filePath = replaceFolderPlaceHolder(attach, attachmentPathRoot, fileNode.getNodeValue());
     			if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
     			if(filePath!=null){
     				filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
@@ -328,6 +317,29 @@ public class AttachmentFileSystem implements IAttachmentStore {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Replace the folder placeholder with the actual attachment path root
+	 * @param attach
+	 * @param attachmentPathRoot
+	 * @param filePath
+	 * @return
+	 */
+	private String replaceFolderPlaceHolder(MAttachment attach, String attachmentPathRoot, String filePath) {
+		if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+		if(filePath!=null){
+			filePath = filePath.replaceFirst(attach.ATTACHMENT_FOLDER_PLACEHOLDER, attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"));
+			//just to be sure...
+			String replaceSeparator = File.separator;
+			if(!replaceSeparator.equals("/")){
+				replaceSeparator = "\\\\";
+			}
+			filePath = filePath.replaceAll("/", replaceSeparator);
+			filePath = filePath.replaceAll("\\\\", replaceSeparator);
+		}
+		if (log.isLoggable(Level.FINE)) log.fine("filePath: " + filePath);
+		return filePath;
 	}
 
 	/**

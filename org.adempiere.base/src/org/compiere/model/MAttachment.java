@@ -671,8 +671,12 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	        }
 		} finally {
 	        if (local_trxName != null) {
-	        	Trx.get(local_trxName, false).commit();
-	        	Trx.get(local_trxName, false).close();
+	        	Trx trx = Trx.get(local_trxName, false);
+	        	if (success)
+	        		trx.commit();
+	        	else
+	        		trx.rollback();
+	        	trx.close();
 	        	set_TrxName(null);
 	        }
 		}

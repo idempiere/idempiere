@@ -381,6 +381,12 @@ public class AttachmentDBLOB implements IAttachmentStore
         			if (!f.delete())
         				f.deleteOnExit();
         		}
+        		// Clean up temp directory
+        		File tempDir = f.getParentFile();
+        		if (tempDir != null && tempDir.exists() && tempDir.list().length == 0) {
+        			if (!tempDir.delete())
+        				tempDir.deleteOnExit();
+        		}
         	}
         }
     }
