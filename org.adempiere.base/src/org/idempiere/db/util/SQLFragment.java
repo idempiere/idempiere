@@ -66,11 +66,11 @@ public record SQLFragment(String sqlClause, List<Object> parameters) {
 	}
 	
 	/**
-	 * Convert to WHERE clause by replacing ? parameters.
-	 * This is subjected to SQL injection attack, should be used only for backward compatibility.
-	 * @return where clause
+	 * Convert to SQL clause with embedded parameters from {@link #parameters} (replacing ? with parameter value). <br/>
+	 * Warning: This is subject to SQL injection attack, use with care.
+	 * @return SQL clause with embedded parameters
 	 */
-	public String toWhereClause() {
+	public String toSQLWithParameters() {
 		if (parameters.isEmpty()) {
 			return sqlClause;
 		}

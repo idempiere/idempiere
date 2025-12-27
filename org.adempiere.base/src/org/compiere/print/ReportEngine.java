@@ -1753,7 +1753,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereExtended() {
-		return m_extendedFilter != null ? m_extendedFilter.toWhereClause() : null;
+		return m_extendedFilter != null ? m_extendedFilter.toSQLWithParameters() : null;
 	}
 	
 	/**

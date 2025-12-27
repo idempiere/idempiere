@@ -326,7 +326,7 @@ public class GridTable extends AbstractTableModel
 	@Deprecated(since="13", forRemoval=true)
 	public String getSelectWhereClause()
 	{
-		return m_whereClause.toWhereClause();
+		return m_whereClause.toSQLWithParameters();
 	}	//	getWhereClause
 
 	/**

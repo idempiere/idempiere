@@ -1739,7 +1739,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereExtended()
 	{
-		return m_extendedFilter != null ? m_extendedFilter.toWhereClause() : "";
+		return m_extendedFilter != null ? m_extendedFilter.toSQLWithParameters() : "";
 	}	//	getWhereExtended
 
 	/**

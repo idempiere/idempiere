@@ -1952,7 +1952,7 @@ class Restriction  implements Serializable
 	public String getSQL (String tableName)
 	{
 		if (DirectWhereClauseRecord != null)
-			return DirectWhereClauseRecord.toWhereClause();
+			return DirectWhereClauseRecord.toSQLWithParameters();
 		
 		if(ExistsClause != null){
 			StringBuilder sb = new StringBuilder();
