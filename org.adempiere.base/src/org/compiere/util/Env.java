@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
@@ -1671,9 +1672,16 @@ public final class Env
 	{
 		if (value == null || value.length() == 0)
 			return "";
-
+		
 		String token;
 		String inStr = new String(value);
+		String QUOTED_BIND_VARIABLE = "'?'";
+		String randomPlaceHolder = null;				
+		if (inStr.contains(QUOTED_BIND_VARIABLE)) {
+			// to avoid replacing '?' inside quotes, we replace it with a random place holder first
+			randomPlaceHolder = UUID.randomUUID().toString();
+			inStr = inStr.replace(QUOTED_BIND_VARIABLE, randomPlaceHolder);
+		}
 		StringBuilder outStr = new StringBuilder();
 
 		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, WindowNo, 0, onlyWindow);
@@ -1728,8 +1736,12 @@ public final class Env
 		outStr.append(inStr);						// add the rest of the string
 
 		String result = outStr.toString();
-		if (result.contains("'?'"))
-			result = result.replace("'?'", "?");
+		// '@ContextVariable@' -> ?
+		if (result.contains(QUOTED_BIND_VARIABLE))
+			result = result.replace(QUOTED_BIND_VARIABLE, "?");
+		if (randomPlaceHolder != null) {
+			result = result.replace(randomPlaceHolder, QUOTED_BIND_VARIABLE);
+		}
 		return result;
 	}
 	
@@ -2079,6 +2091,13 @@ public final class Env
 
 		String token;
 		String inStr = new String(expression);
+		String QUOTED_BIND_VARIABLE = "'?'";
+		String randomPlaceHolder = null;				
+		if (inStr.contains(QUOTED_BIND_VARIABLE)) {
+			// to avoid replacing '?' inside quotes, we replace it with a random place holder first
+			randomPlaceHolder = UUID.randomUUID().toString();
+			inStr = inStr.replaceAll(QUOTED_BIND_VARIABLE, randomPlaceHolder);
+		}
 		StringBuilder outStr = new StringBuilder();
 		
 		int i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
@@ -2130,8 +2149,12 @@ public final class Env
 		outStr.append(inStr);						// add the rest of the string
 
 		String result = outStr.toString();
-		if (result.contains("'?'"))
-			result = result.replace("'?'", "?");
+		// '@ContextVariable@' -> ?
+		if (result.contains(QUOTED_BIND_VARIABLE))
+			result = result.replace(QUOTED_BIND_VARIABLE, "?");
+		if (randomPlaceHolder != null) {
+			result = result.replace(randomPlaceHolder, QUOTED_BIND_VARIABLE);
+		}
 		return result;
 	}
 
