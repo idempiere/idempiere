@@ -3341,7 +3341,7 @@ public class GridTable extends AbstractTableModel
 								//	do nothing, set as string
 							}
 						}
-						pstmt.setString(pos++, str);
+						pstmt.setString(pos++, str != null ? str : "");
 					}
 				}
 			}

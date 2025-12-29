@@ -300,10 +300,10 @@ public class GenericZoomProvider implements IZoomProvider {
 	 * @param object
 	 * @param sql
 	 * @param timeOut
-	 * @param list 
+	 * @param parameters 
 	 * @return sql value from DB
 	 */
-	private int getSQLValueTimeout(Object object, String sql, int timeOut, List<Object> list) {
+	private int getSQLValueTimeout(Object object, String sql, int timeOut, List<Object> parameters) {
     	int retValue = -1;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
@@ -311,8 +311,8 @@ public class GenericZoomProvider implements IZoomProvider {
     		pstmt = DB.prepareStatement(sql, null);
 			if (timeOut > 0)
 				pstmt.setQueryTimeout(timeOut);
-			if (list != null && !list.isEmpty()) {
-				DB.setParameters(pstmt, list);
+			if (parameters != null && !parameters.isEmpty()) {
+				DB.setParameters(pstmt, parameters);
 			}
     		rs = pstmt.executeQuery();
     		if (rs.next())

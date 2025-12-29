@@ -1642,7 +1642,7 @@ public class MQuery implements Serializable, Cloneable
 			if (m_list != null) {
 				clone.m_list = new ArrayList<>();
 				for (Restriction r : m_list) {
-					clone.m_list.add(r); // Restrictions are immutable, no need to clone
+					clone.m_list.add(r); // Shallow copy - restrictions typically not modified after creation
 				}
 			}
 			if (m_reportProcessQuery != null)

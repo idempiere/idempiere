@@ -27,6 +27,7 @@ package org.idempiere.db.util;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
 
 import org.compiere.util.DB;
 
@@ -85,7 +86,7 @@ public record SQLFragment(String sqlClause, List<Object> parameters) {
 			} else {
 				paramStr = param != null ? param.toString() : "";
 			}
-			whereClause = whereClause.replaceFirst("\\?", paramStr);			
+			whereClause = whereClause.replaceFirst("\\?", Matcher.quoteReplacement(paramStr));
 		}
 		return whereClause;
 	}

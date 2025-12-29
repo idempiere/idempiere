@@ -488,16 +488,23 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		String parsedWhere = Env.parseContextForSql(Env.getCtx(), targetWindowNo, instanceWhere, false, instanceParams);
     		instanceFilter = new SQLFragment(parsedWhere, instanceParams);
     	}
-    	if ((inputFilter == null && instanceFilter != null) || (inputFilter != null && instanceFilter == null) 
-    		|| !(inputFilter.equals(instanceFilter))) 
-    		return false;
+    	if (inputFilter != instanceFilter) {
+    	    if (inputFilter == null || instanceFilter == null 
+    	        || !inputFilter.equals(instanceFilter)) {
+    	        return false;
+    	    }
+    	}
     	if (adTabId != m_AD_Tab_ID) return false;
-    	if ((findFields == null && m_findFields != null) || (findFields != null && m_findFields == null) || (findFields.length != m_findFields.length)) return false;
+    	if ((findFields == null && m_findFields != null) 
+    		|| (findFields != null && m_findFields == null) 
+    		|| (findFields != null && m_findFields != null && findFields.length != m_findFields.length)) 
+    		return false;
     	if (findFields != null && findFields.length > 0) 
     	{
     		for(int i = 0; i < findFields.length; i++)
     		{
-    			if (m_findFields[i] != null && findFields[i].getAD_Field_ID() != m_findFields[i].getAD_Field_ID()) return false;
+    			if (m_findFields[i] != null && findFields[i].getAD_Field_ID() != m_findFields[i].getAD_Field_ID()) 
+    				return false;
     		}
     	}
     	
