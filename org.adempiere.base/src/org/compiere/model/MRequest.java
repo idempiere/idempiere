@@ -1054,7 +1054,7 @@ public class MRequest extends X_R_Request
 		
 		int[] counts = new int[] {0, 0};
 
-		whereClause.append("(AD_Table_ID=?)");
+		whereClause.append("(AD_Table_ID=?");
 		params.add(Integer.valueOf(AD_Table_ID));
 		
 		if (Util.isEmpty(Record_UU)) {
