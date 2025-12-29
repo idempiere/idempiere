@@ -93,7 +93,7 @@ public class Core {
 
 	public static final String SCRIPT_ENGINE_FACTORY_CACHE_TABLE_NAME = "_ScriptEngineFactory_Cache";
 
-	public static final String COMPILED_SCRIPT_CACHE_TABLE_NAME = "AD_Rule";
+	public static final String COMPILED_SCRIPT_CACHE_TABLE_NAME = "_Compiled_Script_Rule_Cache";
 
 	public static final String IPROCESS_FACTORY_CACHE_TABLE_NAME = "_IProcessFactory_Cache";
 
@@ -1240,20 +1240,6 @@ public class Core {
 			return null;
 		}
 	} // getCompiledScript
-
-	/**
-	 * Invalidate cached compiled script for the given rule.
-	 * Should be called when a rule's script is modified.
-	 *
-	 * @param ruleID AD_Rule_ID of the rule to invalidate
-	 */
-	public static void invalidateCompiledScript(int ruleID)
-	{
-	    Integer key = Integer.valueOf(ruleID);
-	    s_compiledScriptCache.remove(key);
-	    if (s_log.isLoggable(Level.FINE))
-	        s_log.fine("Invalidated compiled script cache for AD_Rule_ID: " + ruleID);
-	} // invalidateCompiledScript
 
 	/**
 	 * Get markdown renderer service

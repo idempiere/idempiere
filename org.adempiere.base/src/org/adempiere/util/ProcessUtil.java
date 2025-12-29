@@ -318,10 +318,10 @@ public final class ProcessUtil {
 	 * The following objects are exposed to the script using the
 	 * {@link MRule#ARGUMENTS_PREFIX}:
 	 * <ul>
-	 * <li>{@code Ctx} – application context</li>
-	 * <li>{@code Trx} – current transaction</li>
-	 * <li>{@code ProcessInfo} – process execution metadata</li>
-	 * <li>{@code Parameter} – raw process parameters array</li>
+	 * <li>{@code Ctx} ï¿½ application context</li>
+	 * <li>{@code Trx} ï¿½ current transaction</li>
+	 * <li>{@code ProcessInfo} ï¿½ process execution metadata</li>
+	 * <li>{@code Parameter} ï¿½ raw process parameters array</li>
 	 * <li>Individual process parameters by name</li>
 	 * </ul>
 	 *
@@ -329,7 +329,7 @@ public final class ProcessUtil {
 	 *               Typically {@code Bindings::put} for compiled scripts or
 	 *               {@code ScriptEngine::put} for non-compiled scripts.
 	 * @param ctx    Application context.
-	 * @param trx    Transaction associated with the process execution (may be {@code null}).
+	 * @param trx    Transaction associated with the process execution
 	 * @param pi     Process information object containing metadata and parameters.
 	 * @param para   Array of process parameters (may be {@code null}).
 	 */
@@ -343,7 +343,7 @@ public final class ProcessUtil {
 		// now add the method arguments to the engine
 		putter.accept(MRule.ARGUMENTS_PREFIX + "Ctx", ctx);
 		putter.accept(MRule.ARGUMENTS_PREFIX + "Trx", trx);
-		putter.accept(MRule.ARGUMENTS_PREFIX + "TrxName", trx.getTrxName());
+		putter.accept(MRule.ARGUMENTS_PREFIX + "TrxName", trx != null ? trx.getTrxName() : null);
 		putter.accept(MRule.ARGUMENTS_PREFIX + "Record_ID", pi.getRecord_ID());
 		putter.accept(MRule.ARGUMENTS_PREFIX + "AD_Client_ID", pi.getAD_Client_ID());
 		putter.accept(MRule.ARGUMENTS_PREFIX + "AD_User_ID", pi.getAD_User_ID());
