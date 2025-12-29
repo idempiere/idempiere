@@ -1113,14 +1113,7 @@ public class MRequest extends X_R_Request
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
-			for (int i = 0; i < params.size(); i++)
-			{
-				Object param = params.get(i);
-				if (param instanceof Integer ip)
-					pstmt.setInt(i + 1, ip.intValue());
-				else
-					pstmt.setString(i + 1, param.toString());
-			}
+			DB.setParameters(pstmt, params);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
