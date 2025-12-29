@@ -577,7 +577,7 @@ public class MReportLine extends X_PA_ReportLine
 			else
 			{
 				MReportSource source = m_sources[0];
-				StringBuffer select = new StringBuffer("");
+				StringBuilder select = new StringBuilder();
 				if (source.getOrg_ID() != 0 || source.isIncludeNullsOrg())
 				{
 					select.append(" AND fb.").append(MReportSource.COLUMNNAME_AD_Org_ID).append("=x.").append(MReportSource.COLUMNNAME_AD_Org_ID);

@@ -154,11 +154,11 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public void list()
 	{
-		System.out.println("- " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("- " + toString());
 		if (m_sources == null)
 			return;
 		for (int i = 0; i < m_sources.length; i++)
-			System.out.println("  - " + m_sources[i].toString());
+			if (log.isLoggable(Level.INFO)) log.info("  - " + m_sources[i].toString());
 	} // list
 
 	/**

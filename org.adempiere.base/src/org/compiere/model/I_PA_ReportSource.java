@@ -466,6 +466,7 @@ public interface I_PA_ReportSource
 	  */
 	public int getPA_ReportColumn_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportColumn getPA_ReportColumn() throws RuntimeException;
 
     /** Column name PA_ReportLine_ID */

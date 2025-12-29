@@ -309,12 +309,12 @@ public class MReportSource extends X_PA_ReportSource
 	}	//	copy
 
 	/**
-	 * @param source
-	 * @return
+	 * Get Combination Key - a compact string representation of active elements
+	 * @return combination key string where each letter represents an active element or include-nulls flag
 	 */
 	public String getCombinationKey()
 	{
-		StringBuffer s = new StringBuffer("");
+		StringBuilder s = new StringBuilder();
 		if (isIncludeNullsElementValue())
 			s.append("A");
 		if (getOrg_ID() != 0)

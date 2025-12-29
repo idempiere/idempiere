@@ -1350,15 +1350,14 @@ public class FinReport extends SvrProcess
 			if (log.isLoggable(Level.FINE)) log.fine("Deleted empty #=" + no);
 		}
 		//
-		
+
 		//	Set SeqNo
 		StringBuilder sql = new StringBuilder ("UPDATE T_Report r1 "
-			+ "SET SeqNo = (SELECT SeqNo "
-				+ "FROM T_Report r2 "
-				+ "WHERE r1.AD_PInstance_ID=r2.AD_PInstance_ID AND r1.PA_ReportLine_ID=r2.PA_ReportLine_ID"
-				+ " AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0)"
-			+ " WHERE SeqNo IS NULL");
-		int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
+				+ " SET SeqNo = (SELECT SeqNo FROM T_Report r2 "
+				+ "				WHERE r1.AD_PInstance_ID=r2.AD_PInstance_ID AND r1.PA_ReportLine_ID=r2.PA_ReportLine_ID "
+				+ " 			AND r2.Record_ID=0 AND r2.Fact_Acct_ID=0) "
+				+ " WHERE SeqNo IS NULL AND r1.AD_PInstance_ID = ?");
+		int no = DB.executeUpdateEx(sql.toString(), new Object[] { getAD_PInstance_ID() }, get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("SeqNo #=" + no);
 
 		if (!m_report.isListTrx())
@@ -1372,8 +1371,7 @@ public class FinReport extends SvrProcess
 			+ "WHERE r.Fact_Acct_ID=fa.Fact_Acct_ID";
 		//	Translated Version ...
 		sql = new StringBuilder ("UPDATE T_Report r SET (Name,Description)=(")
-			.append(sql_select).append(") "
-			+ "WHERE Fact_Acct_ID <> 0 AND AD_PInstance_ID=")
+			.append(sql_select).append(") WHERE Fact_Acct_ID <> 0 AND AD_PInstance_ID=")
 			.append(getAD_PInstance_ID());
 		no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Trx Name #=" + no + " - " + sql.toString());
@@ -1729,7 +1727,7 @@ public class FinReport extends SvrProcess
 		//	Insert
 		StringBuilder insert = new StringBuilder("INSERT INTO T_Report "
 			+ "(AD_PInstance_ID, PA_ReportLine_ID, Record_ID,Fact_Acct_ID,LevelNo ");
-		boolean isCombination = variable.matches("[0-9]*") && whereComb != null;
+		boolean isCombination = variable.matches("[0-9]+") && whereComb != null;
 		if(isCombination)
 			insert.append(", C_ValidCombination_ID ");
 		for (int col = 0; col < m_columns.length; col++)
@@ -1821,8 +1819,8 @@ public class FinReport extends SvrProcess
 					{
 						String yearWhere = " BETWEEN " + DB.TO_DATE(frp.getYearStartDate()) + " AND " + DB.TO_DATE(frpTo.getEndDate());
 						String totalWhere = frpTo.getTotalWhere();
-						String bs = " EXISTS (SELECT C_ElementValue_ID FROM C_ElementValue WHERE C_ElementValue_ID = fa.Account_ID AND AccountType NOT IN ('R', 'E'))";
-						String full = totalWhere + " AND ( " + bs + " OR TRUNC(fa.DateAcct) " + yearWhere + " ) ";
+						String bs = " EXISTS (SELECT C_ElementValue_ID FROM C_ElementValue WHERE C_ElementValue_ID = fb.Account_ID AND AccountType NOT IN ('R', 'E'))";
+						String full = totalWhere + " AND ( " + bs + " OR TRUNC(fb.DateAcct) " + yearWhere + " ) ";
 						select.append(full);
 					}
 				}
