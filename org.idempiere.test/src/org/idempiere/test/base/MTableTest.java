@@ -35,6 +35,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,6 +47,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
+import org.compiere.model.MTableIndex;
 import org.compiere.model.MTablePartition;
 import org.compiere.model.MTest;
 import org.compiere.model.MTestUU;
@@ -874,12 +877,14 @@ public class MTableTest extends AbstractTestCase {
 	public void testPartitionRelatedProcesses() {
 		String uniqueSuffix = String.valueOf(System.currentTimeMillis());
 		String tableName = "T_" + uniqueSuffix;
+		List<PO> created = new ArrayList<>();
 		try {
 			MTable table = new MTable(Env.getCtx(), 0, getTrxName());
 			table.setTableName(tableName);
 			table.setName("Test MTable " + uniqueSuffix);
 			assertTrue(table.save(), "New AD_Table record should save when mandatory fields are provided");
 			assertTrue(table.get_ID() > 0, "Saved AD_Table must have an assigned AD_Table_ID");
+			created.add(table);
 			
 			MProcess process = MProcess.get(DictionaryIDs.AD_Process.CREATE_TABLE.id);
 			MPInstance pinstance = new MPInstance(process, MTable.Table_ID, table.get_ID(), table.get_UUID());
@@ -928,7 +933,9 @@ public class MTableTest extends AbstractTestCase {
 			
 			MColumn[] columns = table.getColumns(false);
 			assertNotNull(columns, "Columns should not be null");
-					    
+			for(PO po : columns)
+				created.add(po);
+			
 		    MColumn column = table.getColumn("AD_Client_ID");
 		    column.setIsPartitionKey(true);
 		    column.setPartitioningMethod(MColumn.PARTITIONINGMETHOD_List);
@@ -952,6 +959,12 @@ public class MTableTest extends AbstractTestCase {
  			assertTrue(!pi.isError(), pi.getSummary());
  			
  			commit();
+ 			
+ 			for( MTableIndex index : MTableIndex.get(table)) {
+ 				created.add(index);
+ 				for(PO po : index.getColumns(false))
+ 					created.add(po);
+ 			}
 		    
 		    // Create Partition
 		    process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_CREATE_PARTITION.id);
@@ -967,6 +980,8 @@ public class MTableTest extends AbstractTestCase {
 			assertTrue(partitions.size() > 0);
 			List<String> partitionNames = table.getTablePartitionNames(getTrxName());
 			assertEquals(partitions.size(), partitionNames.size());
+			for(PO po : partitions)
+				created.add(po);
 			
 			// Detach / Reattach Partition
 			process = MProcess.get(DictionaryIDs.AD_Process.DETACH_OR_REATTACH_PARTITION.id);
@@ -983,10 +998,14 @@ public class MTableTest extends AbstractTestCase {
 				String sql = "DROP TABLE " + tableName;
 				DB.executeUpdateEx(sql, null);
 				
-				MTable table = MTable.get(Env.getCtx(), tableName);
-				if (table != null && table.get_ID() > 0)
-					table.deleteEx(true, null);
-			} catch (Exception e) {}
+				Collections.reverse(created);
+				for(PO po : created) {
+					po.set_TrxName(null);
+					po.deleteEx(true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
