@@ -86,6 +86,10 @@ public class WZoomAcross
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("PO=" + po+", WindowID="+windowID);
 		
+		if (po == null) {
+			throw new IllegalArgumentException("PO is null");
+		}
+		
 		mkZoomTargets(po, windowID);
 				
 		for (final ZoomInfoFactory.ZoomInfo zoomInfo : zoomInfos) {

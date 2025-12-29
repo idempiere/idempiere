@@ -900,8 +900,8 @@ public class MQuery implements Serializable, Cloneable
 	 */
 	public void addRestriction (SQLFragment sqlFilter, boolean andCondition, int joinDepth)
 	{
-		if (sqlFilter == null || sqlFilter.sqlClause() == null)
-			return;
+		if (sqlFilter == null)
+			throw new IllegalArgumentException("WhereClause is null");
 		Restriction r = new Restriction (sqlFilter, andCondition, false, false, joinDepth);
 		m_list.add(r);
 		m_newRecord = sqlFilter.sqlClause().equals(NEWRECORD);

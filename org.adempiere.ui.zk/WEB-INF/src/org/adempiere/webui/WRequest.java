@@ -14,6 +14,7 @@
 
 package org.adempiere.webui;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
@@ -155,8 +156,8 @@ public class WRequest implements EventListener<Event>
 			if (e.getTarget() == m_active)
 			{
 				query = new MQuery("");
-				String where = "(" + m_where + ") AND Processed='N'";
-				query.addRestriction(new SQLFragment(where));
+				String where = "(" + m_where + ") AND Processed=?";
+				query.addRestriction(new SQLFragment(where, List.of("N")));
 				query.setRecordCount(0);
 			}
 			else if (e.getTarget() == m_all)

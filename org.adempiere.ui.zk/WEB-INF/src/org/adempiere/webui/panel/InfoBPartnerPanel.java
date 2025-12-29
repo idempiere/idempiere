@@ -332,7 +332,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 				where.append(" AND ").append(sqlFilter.sqlClause());
 			//
 
-			prepareTable(s_partnerLayout, s_partnerFROM, "C_BPartner.Value", new SQLFragment(where.toString(), sqlFilter.parameters()));
+			prepareTable(s_partnerLayout, s_partnerFROM, "C_BPartner.Value", new SQLFragment(where.toString(), sqlFilter != null ? sqlFilter.parameters() : null));
 
 			// Get indexes
             for (int i = 0; i < p_layout.length; i++)

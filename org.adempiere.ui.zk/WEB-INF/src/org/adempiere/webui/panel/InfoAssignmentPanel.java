@@ -292,7 +292,7 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 			where.append(" AND ").append(sqlFilter.sqlClause());
 		
 		prepareTable(s_assignmentLayout, s_assignmentFROM,
-			"rt.Name,r.Name,ra.AssignDateFrom", new SQLFragment(where.toString(), sqlFilter.parameters()));
+			"rt.Name,r.Name,ra.AssignDateFrom", new SQLFragment(where.toString(), sqlFilter != null ? sqlFilter.parameters() : null));
 	} // initInfo
 	
 	/*************************************************************************/

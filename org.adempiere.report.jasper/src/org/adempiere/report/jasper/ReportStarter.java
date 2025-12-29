@@ -655,10 +655,10 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		    				String newQueryText = null;
 		    				int index3 = originalQueryTemp.indexOf("WHERE");
 		    				if (index3 != -1)
-		    					newQueryText = originalQueryText + " AND " + query.toString();
+		    					newQueryText = originalQueryText + " AND " + query.getSQLFilter().toSQLWithParameters();
 		    				else
-		    					newQueryText = originalQueryText + " WHERE " + query.toString();
-		    				
+		    					newQueryText = originalQueryText + " WHERE " + query.getSQLFilter().toSQLWithParameters();
+
 		    			    File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
 		            		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
 		            		

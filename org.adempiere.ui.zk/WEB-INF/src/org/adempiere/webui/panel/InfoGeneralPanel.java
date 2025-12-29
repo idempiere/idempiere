@@ -366,7 +366,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 				where.append(" AND ");
 			where.append(" (").append(p_sqlFilter.sqlClause()).append(")");
 		}
-		prepareTable(m_generalLayout, p_tableName, "2", new SQLFragment(where.toString(), p_sqlFilter.parameters()));
+		prepareTable(m_generalLayout, p_tableName, "2", new SQLFragment(where.toString(),  p_sqlFilter != null ? p_sqlFilter.parameters() : null));
 		contentPanel.repaint();
 		
 		//	Set & enable Fields

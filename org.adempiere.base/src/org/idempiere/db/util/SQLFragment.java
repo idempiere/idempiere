@@ -39,6 +39,7 @@ public record SQLFragment(String sqlClause, List<Object> parameters) {
 	
 	public SQLFragment {
 		parameters = parameters != null ? List.copyOf(parameters) : List.of();
+		sqlClause = sqlClause != null ? sqlClause : "";
 	}
 	
 	/**
@@ -82,7 +83,7 @@ public record SQLFragment(String sqlClause, List<Object> parameters) {
 			} else if (param instanceof Timestamp ts) {
 				paramStr = DB.TO_DATE(ts);
 			} else {
-				paramStr = param.toString();
+				paramStr = param != null ? param.toString() : "";
 			}
 			whereClause = whereClause.replaceFirst("\\?", paramStr);			
 		}

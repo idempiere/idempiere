@@ -310,7 +310,7 @@ public class GridTable extends AbstractTableModel
 			return false;
 		}
 		//
-		m_whereClause = newWhereClause;
+		m_whereClause = (newWhereClause != null) ? newWhereClause : new SQLFragment("");
 		// set in #createSelectSql
 		m_whereParams.clear();
 		m_onlyCurrentRows = onlyCurrentRows;

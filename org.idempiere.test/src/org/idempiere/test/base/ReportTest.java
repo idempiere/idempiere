@@ -227,6 +227,7 @@ public class ReportTest extends AbstractTestCase {
 		File file = null;
 		try {
 			file = File.createTempFile("PrintDataTest", ".xml");
+			file.deleteOnExit();
 		} catch (IOException e) {
 			fail("Failed to create temp file: " + e.getMessage());
 		}

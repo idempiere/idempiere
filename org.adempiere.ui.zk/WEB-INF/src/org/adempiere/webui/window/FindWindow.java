@@ -407,7 +407,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     public boolean initialize() 
     {
     	m_query = new MQuery (m_tableName);
-        m_query.addRestriction(m_filterExtended);
+        if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+            m_query.addRestriction(m_filterExtended);
+        }
         //  Required for Column Validation
         Env.setContext(Env.getCtx(), m_targetWindowNo, "Find_Table_ID", m_AD_Table_ID);
         //
@@ -481,7 +483,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	if (instanceWhere.contains("@"))
     	{
     		List<Object> instanceParams = new ArrayList<Object>();
-    		instanceParams.addAll(instanceFilter.parameters());
+    		if (instanceFilter != null)
+    			instanceParams.addAll(instanceFilter.parameters());
     		String parsedWhere = Env.parseContextForSql(Env.getCtx(), targetWindowNo, instanceWhere, false, instanceParams);
     		instanceFilter = new SQLFragment(parsedWhere, instanceParams);
     	}
@@ -506,7 +509,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
     	
     	m_query = new MQuery (m_tableName);
-        m_query.addRestriction(m_filterExtended);
+    	if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+    		m_query.addRestriction(m_filterExtended);
+    	}
 
     	return true;
     }
@@ -2487,9 +2492,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		//
 		m_query = new MQuery(m_tableName);
 		List<Object> params = new ArrayList<Object>();
-		params.addAll(m_filterExtended.parameters());
-		String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
-		m_query.addRestriction(new SQLFragment(whereExtended, params));
+		if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+			params.addAll(m_filterExtended.parameters());		
+			String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
+			m_query.addRestriction(new SQLFragment(whereExtended, params));
+		}
 		
 		if (m_whereUserQuery == null) {
 			StringBuilder code = new StringBuilder();
@@ -2924,9 +2931,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //  Create Query String
         m_query = new MQuery(m_tableName);
         List<Object> params = new ArrayList<Object>();
-		params.addAll(m_filterExtended.parameters());
-		String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
-		m_query.addRestriction(new SQLFragment(whereExtended, params));
+        if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+			params.addAll(m_filterExtended.parameters());
+			String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
+			m_query.addRestriction(new SQLFragment(whereExtended, params));
+		}
 		StringBuilder code = new StringBuilder();
         //  Special Editors
         for (int i = 0; i < m_sEditors.size(); i++)
