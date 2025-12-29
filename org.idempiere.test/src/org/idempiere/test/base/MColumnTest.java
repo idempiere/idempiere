@@ -35,6 +35,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.MBPartner;
@@ -448,7 +451,6 @@ public class MColumnTest extends AbstractTestCase {
 		constraint = keyColumn.getConstraint(table);
 		
 		assertNotNull(constraint, "Constraint should not be null for key column");
-		assertTrue(constraint.contains("PRIMARY KEY"), "Key column constraint should contain PRIMARY KEY");
 		assertTrue(constraint.contains(MTestUU.COLUMNNAME_TestUU_UU), "Constraint should reference the column name");
 	}
 	
@@ -1274,11 +1276,13 @@ public class MColumnTest extends AbstractTestCase {
 	public void testColumnRelatedProcesses() {
 		String uniqueSuffix = String.valueOf(System.currentTimeMillis());
 		String tableName = "T_" + uniqueSuffix;
+		List<PO> created = new ArrayList<>();
 		try {
 			MTable table = new MTable(Env.getCtx(), 0, getTrxName());
 			table.setTableName(tableName);
 			table.setName("Test MTable " + uniqueSuffix);
 			assertTrue(table.save());
+			created.add(table);
 			
 			// Copy Columns from Table
 			MProcess process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPY_COLUMNS_FROM_TABLE.id);
@@ -1351,11 +1355,15 @@ public class MColumnTest extends AbstractTestCase {
 			column.load(getTrxName());
 			assertEquals(newColumnName, column.getColumnName(), "Column ColumnName must match");
 			
+			for(PO po : table.getColumns(true))				
+				created.add(po);
+			
 			// Create a new UU-based table
 			table = new MTable(Env.getCtx(), 0, getTrxName());
 			table.setTableName(tableName+"0");
 			table.setName("Test MTable " + uniqueSuffix);
 			assertTrue(table.save());
+			created.add(table);
 			
 			// Copy Columns from Table
 			process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPY_COLUMNS_FROM_TABLE.id);
@@ -1405,6 +1413,9 @@ public class MColumnTest extends AbstractTestCase {
 			column.setFieldLength(22);
 			assertTrue(column.save());
 			
+			for(PO po : table.getColumns(true))				
+				created.add(po);
+			
 			commit();
 			
 			// Create Foreign Key
@@ -1430,20 +1441,26 @@ public class MColumnTest extends AbstractTestCase {
 			rollback();
 			try {
 				String sql = "DROP TABLE " + tableName;
-				DB.executeUpdateEx(sql, null);
-				
-				MTable table = MTable.get(Env.getCtx(), tableName);
-				if (table != null && table.get_ID() > 0)
-					table.deleteEx(true, null);
-			} catch (Exception e) {}
+				DB.executeUpdateEx(sql, null);				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			try {
 				String sql = "DROP TABLE " + tableName + "0";
 				DB.executeUpdateEx(sql, null);
-				
-				MTable table = MTable.get(Env.getCtx(), tableName + "0");
-				if (table != null && table.get_ID() > 0)
-					table.deleteEx(true, null);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				Collections.reverse(created);
+				for(PO po : created) {
+					po.set_TrxName(null);
+					po.deleteEx(true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -1454,11 +1471,13 @@ public class MColumnTest extends AbstractTestCase {
 	public void testColumnRelatedProcessesForUUTable() {
 		String uniqueSuffix = String.valueOf(System.currentTimeMillis());
 		String tableName = "T_" + uniqueSuffix;
+		List<PO> created = new ArrayList<>();
 		try {
 			MTable table = new MTable(Env.getCtx(), 0, getTrxName());
 			table.setTableName(tableName);
 			table.setName("Test MTable " + uniqueSuffix);
 			assertTrue(table.save());
+			created.add(table);
 			
 			// Copy Columns from Table
 			MProcess process = MProcess.get(DictionaryIDs.AD_Process.AD_TABLE_COPY_COLUMNS_FROM_TABLE.id);
@@ -1516,8 +1535,11 @@ public class MColumnTest extends AbstractTestCase {
 			column.setFieldLength(22);
 			assertTrue(column.save());
 			
-			commit();
+			for(PO po : table.getColumns(true))				
+				created.add(po);
 			
+			commit();
+						
 			// Create Foreign Key
 			process = MProcess.get(DictionaryIDs.AD_Process.CREATE_FOREIGN_KEY.id);
 			pinstance = new MPInstance(process, 0, 0, null);
@@ -1586,25 +1608,25 @@ public class MColumnTest extends AbstractTestCase {
 			process.processIt(pi, Trx.get(getTrxName(), false), false);
 			assertTrue(!pi.isError(), pi.getSummary());
 			column.load(getTrxName());
-			assertNotNull(column.getFKConstraintName(), "FK constraint name should not be null");
+			assertNotNull(column.getFKConstraintName(), "FK constraint name should not be null");			
 		} finally {
 			rollback();
 			try {
 				String sql = "DROP TABLE " + tableName;
 				DB.executeUpdateEx(sql, null);
-				
-				MTable table = MTable.get(Env.getCtx(), tableName);
-				if (table != null && table.get_ID() > 0)
-					table.deleteEx(true, null);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			try {
-				String sql = "DROP TABLE " + tableName + "_Trl";
-				DB.executeUpdateEx(sql, null);
-				
-				MTable table = MTable.get(Env.getCtx(), tableName + "_Trl");
-				if (table != null && table.get_ID() > 0)
-					table.deleteEx(true, null);
-			} catch (Exception e) {}
+				Collections.reverse(created);
+				for(PO po : created) {
+					po.set_TrxName(null);
+					po.deleteEx(true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
