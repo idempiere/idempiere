@@ -1,8 +1,6 @@
-/*
-
-CREATE TABLE ad_attachment_entry (ad_attachment_id numeric(10, 0) not null references ad_attachment(ad_attachment_id) on delete cascade DEFERRABLE INITIALLY DEFERRED, seqno numeric(10, 0) not null, binarydata oid, unique(ad_attachment_id, seqno));
-
-*/
+-- IDEMPIERE-6640 DBA - Tuning AD_Attachment (FHCA-3962)
+-- Ignore error in function delete_ad_attachment_binary if the large object does not exist
+SELECT register_migration_script('202512252116_IDEMPIERE-6640.sql') FROM dual;
 
 CREATE OR REPLACE FUNCTION delete_ad_attachment_binary()
 RETURNS TRIGGER AS $$
@@ -19,9 +17,4 @@ BEGIN
     RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER trg_delete_ad_attachment_binary
-BEFORE DELETE ON ad_attachment_entry
-FOR EACH ROW
-EXECUTE FUNCTION delete_ad_attachment_binary();
 
