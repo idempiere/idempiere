@@ -345,20 +345,9 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		{
 			setProcessed(true);
 			updateBalanceAmt();
-			if (save(get_TrxName()))
-			{
-				return null;
-			}
-			else
-			{
-				// Project Issue is not complete
-				log.log(Level.SEVERE, Msg.getMsg(getCtx(), "ProjectIssueError"));
-				return "Issue not saved";
-			}
-
 		}
-		//
-		return null;		
+				
+		return null;
 	}
 	
 	/**
@@ -643,7 +632,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 * @param isCreaditAmt true than Reduce Project Balance Amt otherwise Project Balance Amt is Add
 	 *                     cost of Project Issue
 	 */
-	private BigDecimal updateBalanceAmt()
+	private void updateBalanceAmt()
 	{
 		BigDecimal cost = null;
 		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
@@ -687,7 +676,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			throw new IllegalArgumentException(	"Product: ("	+ product.getName() + ") is not present at Locator: (" + warehouse.getValue() + ") for ASI: ("
 												+ asi.getDescription() + ")");
 		}
-		return cost;
+		return;
 	} // updateBalanceAmt
 
 	/**
