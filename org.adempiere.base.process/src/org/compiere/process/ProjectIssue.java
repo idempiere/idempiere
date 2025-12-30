@@ -292,8 +292,8 @@ public class ProjectIssue extends SvrProcess
 	 */
 	private String issueInvoiceLine()
 	{
-		MInvoiceLine invLine = (MInvoiceLine) MTable.get(getCtx(), MInvoiceLine.Table_ID).getPO(m_C_InvoiceLine_ID, get_TrxName());
-		MInvoice inv = (MInvoice) MTable.get(getCtx(), MInvoice.Table_ID).getPO(invLine.getC_Invoice_ID(), get_TrxName());
+		MInvoiceLine invLine = new MInvoiceLine(getCtx(), m_C_InvoiceLine_ID, get_TrxName());
+		MInvoice inv = new MInvoice(getCtx(), invLine.getC_Invoice_ID(), get_TrxName());
 
 		if (inv.isSOTrx())
 			throw new IllegalArgumentException(Msg.getMsg(getCtx(), "InvoiceLineInvalid", new Object[] { invLine }));
@@ -316,10 +316,7 @@ public class ProjectIssue extends SvrProcess
 		// Need to have Charge
 		if (invLine.getC_Charge_ID() <= 0)
 			throw new IllegalArgumentException(Msg.getMsg(getCtx(), "InvoiceLineNeedsCharge", new Object[] { invLine }));
-		// Need to have Invoice Qty
-		if (invLine.getM_Product_ID() > 0	&&
-			(invLine.getQtyInvoiced() == null || invLine.getQtyInvoiced().signum() <= 0))
-			throw new IllegalArgumentException(Msg.getMsg(getCtx(), "InvoiceLineNeedsQuantity", new Object[] { invLine }));
+		
 		// Checked not any issued yet
 		if (MProjectIssue.getInvLineProjectIssue(m_C_InvoiceLine_ID, get_TrxName()) != null)
 			return Msg.getMsg(getCtx(), "ProjectIssueUsedInvLine", new Object[] { invLine });

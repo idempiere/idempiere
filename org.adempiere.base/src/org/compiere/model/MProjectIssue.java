@@ -168,6 +168,21 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		if (getC_InvoiceLine_ID() > 0)
+		{
+			MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
+			if (invLine.getC_Charge_ID() <= 0)
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "InvoiceLineNeedsCharge", new Object[] { invLine }));
+				return false;
+			}
+			if (invLine.getC_Project_ID() > 0 && invLine.getC_Project_ID() != getC_Project_ID())
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "ProjectInvoiceLineMismatch", new Object[] { invLine }));
+				return false;
+			}
+			setC_Charge_ID(invLine.getC_Charge_ID());
+		}
 		if (getM_Product_ID() <= 0 && getC_Charge_ID() <= 0)
 		{
 			log.saveError("Error", Msg.getMsg(getCtx(), "ChargeOrProductMandatory") + " [ " + getLine() + " ] ");
@@ -646,7 +661,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		else if (getC_InvoiceLine_ID() > 0)
 		{
 			MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
-			MInvoice inv = new MInvoice(getCtx(), invLine.getC_Project_ID(), get_TrxName());
+			MInvoice inv = new MInvoice(getCtx(), invLine.getC_Invoice_ID(), get_TrxName());
 			cost = MDocType.DOCBASETYPE_APCreditMemo.equals((inv.getDocBaseType())) ? invLine.getLineNetAmt().negate() : invLine.getLineNetAmt();
 		}
 		else if (getC_Charge_ID() > 0)
@@ -660,7 +675,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		if (cost != null)
 		{
-			MProject proj = (MProject) MTable.get(getCtx(), MProject.Table_ID).getPO(getC_Project_ID(), get_TrxName());
+			MProject proj = new MProject(getCtx(), getC_Project_ID(), get_TrxName());
 			proj.setProjectBalanceAmt(proj.getProjectBalanceAmt().add(cost));
 			proj.saveEx(get_TrxName());
 		}
@@ -713,6 +728,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		{
 			MInvoiceLine invLine = (MInvoiceLine) MTable.get(getCtx(), MInvoiceLine.Table_ID).getPO(getC_InvoiceLine_ID(), get_TrxName());
 			invLine.setC_Project_ID(0);
+			invLine.saveEx(invLine.get_TrxName());
 		}
 	} // afterReverseAction
 }	//	MProjectIssue

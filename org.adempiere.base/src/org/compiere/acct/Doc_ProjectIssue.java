@@ -79,7 +79,7 @@ public class Doc_ProjectIssue extends Doc
 
 		//	Pseudo Line Check
 		if (m_line.getM_Product_ID() == 0 && m_line.getC_Charge_ID() ==0)
-			log.warning(Msg.getMsg(getCtx(), "ChargeOrProductMandatory") + " [ " + m_issue + " ] ");
+			return Msg.getMsg(getCtx(), "ChargeOrProductMandatory") + " [ " + m_issue + " ] ";
 		if (log.isLoggable(Level.FINE)) log.fine(m_line.toString());
 		return null;
 	}   //  loadDocumentDetails

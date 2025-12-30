@@ -135,7 +135,7 @@ public class ProjectIssueTest extends AbstractTestCase
 		order.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		order.setDateOrdered(currentDate);
 		order.setIsSOTrx(false);
-		order.save();
+		order.saveEx();
 
 		// Add Order Line
 		MOrderLine orderLine = new MOrderLine(order);
@@ -144,7 +144,7 @@ public class ProjectIssueTest extends AbstractTestCase
 		orderLine.setQty(BigDecimal.TEN);
 		orderLine.setQtyInvoiced(BigDecimal.TEN);
 		orderLine.setPrice(BigDecimal.TEN);
-		orderLine.save();
+		orderLine.saveEx();
 
 		// Complete Order
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
@@ -162,7 +162,6 @@ public class ProjectIssueTest extends AbstractTestCase
 		invoiceLine.setC_OrderLine_ID(orderLine.get_ID());
 		invoiceLine.setLine(orderLine.getLine());
 		invoiceLine.setC_Charge_ID(orderLine.getC_Charge_ID());
-		;
 		invoiceLine.setQty(orderLine.getQtyEntered());
 		invoiceLine.setQtyInvoiced(orderLine.getQtyInvoiced());
 		invoiceLine.setPriceEntered(orderLine.getPriceEntered());
@@ -183,7 +182,7 @@ public class ProjectIssueTest extends AbstractTestCase
 		proj.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		proj.setPlannedAmt(Env.ONE);
 		proj.setCommittedQty(Env.ONE);
-		proj.save();
+		proj.saveEx();
 		assertTrue(Env.ZERO.compareTo(proj.getProjectBalanceAmt()) == 0, "Initial Project Balance is not Zero");
 
 		// Create Project Issue
@@ -195,7 +194,7 @@ public class ProjectIssueTest extends AbstractTestCase
 		projIssue.setC_InvoiceLine_ID(invoiceLine.get_ID());
 		projIssue.setC_Charge_ID(invoiceLine.getC_Charge_ID());
 		projIssue.setAmt(invoiceLine.getLineTotalAmt());
-		projIssue.save();
+		projIssue.saveEx();
 
 		// Complete Project Issue
 		info = MWorkflow.runDocumentActionWorkflow(projIssue, DocAction.ACTION_Complete);
