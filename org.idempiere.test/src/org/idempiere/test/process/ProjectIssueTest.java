@@ -292,5 +292,5 @@ public class ProjectIssueTest extends AbstractTestCase
 			return;
 		}
 		assertTrue(false, "Project Issue creation did not fail as expected");
-	} // testProdInvLineFalis
+	} // testProdInvLineFails
 }
