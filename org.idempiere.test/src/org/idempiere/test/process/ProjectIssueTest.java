@@ -210,7 +210,7 @@ public class ProjectIssueTest extends AbstractTestCase
 	} // testChargeProjBalanceUpdate
 
 	@Test
-	public void testProdInvLineFalis()
+	public void testProdInvLineFails()
 	{
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
@@ -250,7 +250,6 @@ public class ProjectIssueTest extends AbstractTestCase
 		invoiceLine.setC_OrderLine_ID(orderLine.get_ID());
 		invoiceLine.setLine(orderLine.getLine());
 		invoiceLine.setM_Product_ID(orderLine.getM_Product_ID());
-		;
 		invoiceLine.setQty(orderLine.getQtyEntered());
 		invoiceLine.setQtyInvoiced(orderLine.getQtyInvoiced());
 		invoiceLine.setPriceEntered(orderLine.getPriceEntered());

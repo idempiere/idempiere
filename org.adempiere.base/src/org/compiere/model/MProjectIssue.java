@@ -346,7 +346,8 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			setProcessed(true);
 			updateBalanceAmt();
 		}
-				
+		saveEx();
+		
 		return null;
 	}
 	
