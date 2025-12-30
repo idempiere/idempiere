@@ -71,7 +71,7 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		super(info.DisplayType, info.WindowNo);
 		m_info = info;
-		m_tabNo = TabNo;
+		m_info.tabNo = TabNo;
 		if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn);
 
 		//  Don't load Search or CreatedBy/UpdatedBy
@@ -96,8 +96,6 @@ public final class MLookup extends Lookup implements Serializable
 
 	/** The Lookup Info Value Object        */
 	private MLookupInfo         m_info = null;
-
-	private int 				m_tabNo = 0;
 
 	/** Storage of data  Key-NamePair	*/
 	private volatile LinkedHashMap<Object,Object>	m_lookup = new LinkedHashMap<Object,Object>();
