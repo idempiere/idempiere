@@ -1442,12 +1442,17 @@ public class FinReport extends SvrProcess
 			int combinationID = 0;
 			if (isCombination)
 			{
-				combinationID = MAccount.get(getCtx(), getAD_Client_ID(), sources[lsIdx].getAD_Org_ID(), Env.getContextAsInt(getCtx(), "$C_AcctSchema_ID"),
+				MAccount account = MAccount.get(getCtx(), getAD_Client_ID(), sources[lsIdx].getAD_Org_ID(), Env.getContextAsInt(getCtx(), "$C_AcctSchema_ID"),
 						sources[lsIdx].getC_ElementValue_ID(), 0, sources[lsIdx].getM_Product_ID(), sources[lsIdx].getC_BPartner_ID(), sources[lsIdx].getAD_OrgTrx_ID(),
 						sources[lsIdx].getC_Location_ID(), 0, sources[lsIdx].getC_SalesRegion_ID(), sources[lsIdx].getC_Project_ID(), sources[lsIdx].getC_Campaign_ID(),
 						sources[lsIdx].getC_Activity_ID(), sources[lsIdx].getUser1_ID(), sources[lsIdx].getUser2_ID(), sources[lsIdx].getUserElement1_ID(),
-						sources[lsIdx].getUserElement2_ID(), get_TrxName()).getC_ValidCombination_ID();
-				insert.append("," + combinationID + " ");
+						sources[lsIdx].getUserElement2_ID(), get_TrxName());
+				
+				 if (account != null)
+				 {
+					 combinationID = account.getC_ValidCombination_ID();
+					 insert.append("," + combinationID + " ");
+				 }
 			}
 
 			String numericType = DB.getDatabase().getNumericDataType();
