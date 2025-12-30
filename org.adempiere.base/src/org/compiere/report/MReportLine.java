@@ -633,6 +633,11 @@ public class MReportLine extends X_PA_ReportLine
 					select.append(" AND fb.").append(MReportSource.COLUMNNAME_UserElement1_ID).append("=x.").append(MReportSource.COLUMNNAME_UserElement1_ID);
 					combinationGroupBy.add(MReportSource.COLUMNNAME_UserElement1_ID);
 				}
+				if (source.getUserElement2_ID() != 0 || source.isIncludeNullsUserElement2())
+				{
+					select.append(" AND fb.").append(MReportSource.COLUMNNAME_UserElement2_ID).append("=x.").append(MReportSource.COLUMNNAME_UserElement2_ID);
+					combinationGroupBy.add(MReportSource.COLUMNNAME_UserElement2_ID);
+				}
 				if (source.getUser1_ID() != 0 || source.isIncludeNullsUserList1())
 				{
 					select.append(" AND fb.").append(MReportSource.COLUMNNAME_User1_ID).append("=x.").append(MReportSource.COLUMNNAME_User1_ID);

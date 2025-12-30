@@ -51,6 +51,8 @@ public class MReportColumn extends X_PA_ReportColumn
         super(ctx, PA_ReportColumn_UU, trxName);
 		if (Util.isEmpty(PA_ReportColumn_UU))
 			setInitialDefaults();
+		else
+			loadSources();
     }
 
 	/**
@@ -65,9 +67,7 @@ public class MReportColumn extends X_PA_ReportColumn
 		if (PA_ReportColumn_ID == 0)
 			setInitialDefaults();
 		else
-		{
 			loadSources();
-		}
 	}	//	MReportColumn
 
 	/**
@@ -146,7 +146,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public boolean isWithSources()
 	{
-		return m_sources.length > 0;
+		return m_sources != null && m_sources.length > 0;
 	}
 
 	/**
