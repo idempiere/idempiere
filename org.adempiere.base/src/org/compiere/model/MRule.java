@@ -20,6 +20,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.script.Bindings;
@@ -272,8 +273,8 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 	public static void setContext(ScriptEngine engine, Properties ctx, int windowNo) {
 		Bindings bindings = engine.createBindings();
 		setContext(bindings, ctx, windowNo);
-		for (String key : bindings.keySet()) {
-			engine.put(key, bindings.get(key));
+		for (Map.Entry<String, Object> entry : bindings.entrySet()) {
+			engine.put(entry.getKey(), entry.getValue());
 		}
 	}
 

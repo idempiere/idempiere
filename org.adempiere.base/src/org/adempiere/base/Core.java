@@ -93,8 +93,6 @@ public class Core {
 
 	public static final String SCRIPT_ENGINE_FACTORY_CACHE_TABLE_NAME = "_ScriptEngineFactory_Cache";
 
-	public static final String COMPILED_SCRIPT_CACHE_TABLE_NAME = "_Compiled_Script_Rule_Cache";
-
 	public static final String IPROCESS_FACTORY_CACHE_TABLE_NAME = "_IProcessFactory_Cache";
 
 	public static final String IRESOURCE_FINDER_CACHE_TABLE_NAME = "_IResourceFinder_Cache";
@@ -1178,7 +1176,7 @@ public class Core {
 	}
 
 	/** Cache for compiled scripts, keyed by AD_Rule_ID */
-	private final static CCache<Integer, CompiledScript> s_compiledScriptCache = new CCache<>(COMPILED_SCRIPT_CACHE_TABLE_NAME, "CompiledScript", 100, false);
+	private final static CCache<Integer, CompiledScript> s_compiledScriptCache = new CCache<>(MRule.Table_Name, "CompiledScript", 100, false);
 
 	/**
 	 * Get a compiled script for the given rule.
