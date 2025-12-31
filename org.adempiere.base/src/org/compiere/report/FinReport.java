@@ -1574,8 +1574,8 @@ public class FinReport extends SvrProcess
 			}
 			// WHERE (sources, posting type)
 
-			StringBuffer where = new StringBuffer("");
-			StringBuffer whereComb = new StringBuffer("");
+			StringBuilder where = new StringBuilder("");
+			StringBuilder whereComb = new StringBuilder("");
 
 			if (isCombination)
 			{
@@ -1655,7 +1655,7 @@ public class FinReport extends SvrProcess
 			if (isCombination)
 			{
 				List<String> colNames = m_lines[line].getCombinationGroupByColumns();
-				StringBuffer groupBy = new StringBuffer("");
+				StringBuilder groupBy = new StringBuilder("");
 				for (int j = 0; j < colNames.size(); j++)
 				{
 					groupBy.append(", " + colNames.get(j));
