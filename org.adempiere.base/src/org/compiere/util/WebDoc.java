@@ -307,7 +307,6 @@ public class WebDoc
 	 *  @deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	@SuppressWarnings("removal")
 	@GeneratedCodeCoverageExclusion
 	public td[] addPopupClose(Properties ctx)
 	{

@@ -31,10 +31,9 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFProcess;
-
 import org.idempiere.cache.ImmutableIntPOCache;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Process Model
@@ -311,7 +310,6 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 *	@return Process Instance
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	@SuppressWarnings("removal")
 	@GeneratedCodeCoverageExclusion
 	public MPInstance processIt (int Record_ID, Trx trx, boolean managedTrx)
 	{

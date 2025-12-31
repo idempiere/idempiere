@@ -46,7 +46,6 @@ import org.zkoss.zul.Vbox;
  * Deepak Pansheriya - showing only notes message
  */
 @Deprecated (since="13", forRemoval=true) // replaced with DPDocumentStatus
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class DPActivities extends DashboardPanel implements EventListener<Event> {
 	/**

@@ -56,7 +56,6 @@ import org.zkoss.zul.North;
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInvoiceGen")
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class WInvoiceGen extends InvoiceGen implements IFormController, EventListener<Event>, ValueChangeListener
 {

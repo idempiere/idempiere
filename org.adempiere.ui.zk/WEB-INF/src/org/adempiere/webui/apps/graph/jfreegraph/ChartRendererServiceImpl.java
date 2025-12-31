@@ -50,7 +50,6 @@ import org.zkoss.zul.Imagemap;
  * @deprecated replace by billboard based implementation
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class ChartRendererServiceImpl implements IChartRendererService {
 

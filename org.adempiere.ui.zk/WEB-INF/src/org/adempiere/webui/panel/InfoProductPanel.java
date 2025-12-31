@@ -99,7 +99,6 @@ import org.zkoss.zul.South;
  */
 
 @Deprecated (since="13", forRemoval=true) // replaced with InfoProductWindow IDEMPIERE-325
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 {

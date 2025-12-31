@@ -38,7 +38,6 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class MSLACriteria extends X_PA_SLA_Criteria implements ImmutablePOSupport
 {

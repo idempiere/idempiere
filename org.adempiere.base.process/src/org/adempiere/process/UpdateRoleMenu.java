@@ -13,7 +13,6 @@ import org.compiere.util.DB;
 
 @org.adempiere.base.annotation.Process
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class UpdateRoleMenu extends SvrProcess
 {

@@ -39,7 +39,6 @@ import org.compiere.util.WebUtil;
  *  @deprecated not fully implemented
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class MRegistration extends X_A_Registration
 {

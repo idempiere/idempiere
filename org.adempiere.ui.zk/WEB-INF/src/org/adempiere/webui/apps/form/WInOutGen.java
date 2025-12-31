@@ -56,7 +56,6 @@ import org.zkoss.zul.North;
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInOutGen")
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class WInOutGen extends InOutGen implements IFormController, EventListener<Event>, ValueChangeListener
 {

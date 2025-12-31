@@ -46,7 +46,6 @@ import org.compiere.util.Trx;
  * @deprecated ticket IDEMPIERE-1963 replaced this with an Info Window
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class InOutGen extends GenForm
 {

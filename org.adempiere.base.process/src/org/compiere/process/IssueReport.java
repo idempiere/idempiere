@@ -31,7 +31,6 @@ import org.compiere.util.AdempiereSystemError;
  *  @deprecated not fully implemented
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 @org.adempiere.base.annotation.Process
 public class IssueReport extends SvrProcess

@@ -44,7 +44,6 @@ import org.compiere.util.Env;
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
 @Deprecated (since="13", forRemoval=true)
-@SuppressWarnings("removal")
 @GeneratedCodeCoverageExclusion
 public class DeliveryAccuracy extends SLACriteria
 {

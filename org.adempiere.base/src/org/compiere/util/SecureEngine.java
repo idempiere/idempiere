@@ -140,7 +140,6 @@ public class SecureEngine
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	@SuppressWarnings("removal")
 	@GeneratedCodeCoverageExclusion
 	public static String getDigest (String value)
 	{

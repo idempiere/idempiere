@@ -964,7 +964,6 @@ public final class WebUtil
 	 *  @deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	@SuppressWarnings("removal")
 	@GeneratedCodeCoverageExclusion
 	public static boolean updateFields (HttpServletRequest request, WebUser wu, boolean updateEMailPwd)
 	{
