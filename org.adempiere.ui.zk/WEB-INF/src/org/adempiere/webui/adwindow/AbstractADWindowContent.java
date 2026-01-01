@@ -3452,7 +3452,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						Env.getContext(ctx, curWindowNo, link));
 			}
 			new WZoomAcross(toolbar.getToolbarItem("ZoomAcross"), adTabbox.getSelectedGridTab()
-					.getTableName(), adTabbox.getSelectedGridTab().getAD_Window_ID(), query);
+					.getTableName(), adTabbox.getSelectedGridTab().getAD_Window_ID(), query,adTabbox.getSelectedGridTab().getWindowNo());
 		}
 	}
 
