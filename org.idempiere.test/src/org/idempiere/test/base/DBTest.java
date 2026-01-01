@@ -625,6 +625,9 @@ public class DBTest extends AbstractTestCase
 	 */
 	@Test
 	public void testCreateConnectionReadUncommitted() throws Exception {
+		if (DB.isOracle())
+			return; // Oracle does not support READ_UNCOMMITTED
+		
 		java.sql.Connection conn = null;
 		try {
 			conn = DB.createConnection(true, java.sql.Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -646,6 +649,9 @@ public class DBTest extends AbstractTestCase
 	 */
 	@Test
 	public void testCreateConnectionRepeatableRead() throws Exception {
+		if (DB.isOracle())
+			return; // Oracle does not support REPEATABLE_READ
+		
 		java.sql.Connection conn = null;
 		try {
 			conn = DB.createConnection(false, java.sql.Connection.TRANSACTION_REPEATABLE_READ);
@@ -696,7 +702,8 @@ public class DBTest extends AbstractTestCase
 		java.sql.Connection conn2 = null;
 		try {
 			conn1 = DB.createConnection(true, java.sql.Connection.TRANSACTION_READ_COMMITTED);
-			conn2 = DB.createConnection(false, java.sql.Connection.TRANSACTION_REPEATABLE_READ);
+			// TRANSACTION_REPEATABLE_READ not supported by Oracle
+			conn2 = DB.isOracle() ? DB.createConnection(false, java.sql.Connection.TRANSACTION_SERIALIZABLE) : DB.createConnection(false, java.sql.Connection.TRANSACTION_REPEATABLE_READ);
 			
 			assertNotNull(conn1, "Connection 1 should not be null");
 			assertNotNull(conn2, "Connection 2 should not be null");
