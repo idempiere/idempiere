@@ -41,7 +41,7 @@ Author URI: https://zuhriutama.com
                     <a class="nav-link" href="<%=Prop.getProperty(Prop.FELIX_LINK)%>"><%=Prop.getProperty(Prop.FELIX_TEXT)%></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" aria-disabled="true" href="<%=Prop.getProperty(Prop.MONITOR_LINK)%>"><%=Prop.getProperty(Prop.MONITOR_TEXT)%></a>
+                    <a class="nav-link" href="<%=Prop.getProperty(Prop.MONITOR_LINK)%>"><%=Prop.getProperty(Prop.MONITOR_TEXT)%></a>
                   </li>
                 </ul>
               </div>
