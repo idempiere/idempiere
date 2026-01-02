@@ -27,12 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.Properties;
 
 import org.compiere.model.MColumnAccess;
 import org.compiere.model.MRecordAccess;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTableAccess;
 import org.compiere.model.X_AD_Alert;
 import org.compiere.model.X_AD_Color;
@@ -48,6 +52,8 @@ import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.DictionaryIDs.AD_Org;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 
 public class MRoleTest extends AbstractTestCase {
@@ -265,8 +271,23 @@ public class MRoleTest extends AbstractTestCase {
 		role.loadAccess(true);
 
 		assertTrue(role.isTableAccess(RV_BPartner_TABLE_ID, false), "Table is included, should be accessible");
-		assertFalse(role.isTableAccess(X_C_Order.Table_ID, false), "One table is included, all the others should not be accessible");
-		assertFalse(role.isTableAccess(X_C_Order.Table_ID, true), "One table is included, all the others should not be accessible - even in read only");
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(eq(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST), anyBoolean(), anyInt()))
+				.thenReturn(false);
+			assertFalse(role.isTableAccess(X_C_Order.Table_ID, false), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, One table is included, all the others should not be accessible for r/w");
+			assertFalse(role.isTableAccess(X_C_Order.Table_ID, true), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, One table is included, all the others should not be accessible for read only too");
+			assertFalse(role.isCanReport(X_C_Order.Table_ID), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, One table is included, all the others should not be accessible for reporting too");
+			assertFalse(role.isCanExport(X_C_Order.Table_ID), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, One table is included, all the others should not be accessible for export too");
+		}
+		
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(eq(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST), anyBoolean(), anyInt()))
+				.thenReturn(true);
+			assertFalse(role.isTableAccess(X_C_Order.Table_ID, false), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, One table is included, all the others should not be accessible for r/w");
+			assertTrue(role.isTableAccess(X_C_Order.Table_ID, true), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, One table is included, all the others is accessible for read only");
+			assertTrue(role.isCanReport(X_C_Order.Table_ID), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, One table is included, all the others is accessible for reporting too");
+			assertTrue(role.isCanExport(X_C_Order.Table_ID), "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, One table is included, all the others is accessible for exporting too");
+		}
 	}
 
 	/** Column Access **/
