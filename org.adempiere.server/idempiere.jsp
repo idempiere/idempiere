@@ -8,11 +8,10 @@ Author URI: https://zuhriutama.com
 -->
 <html>
 <% Prop.load(); %>
-<%if(Prop.getProperty(Prop.OLD_HOMEPAGE).equals("true")){%>
-    <script language="JavaScript" type="text/javascript">
-	document.location='idempiere-old.jsp';
-	</script>
-<%}%>
+<%if(Prop.getProperty(Prop.OLD_HOMEPAGE).equalsIgnoreCase("true")){
+    response.sendRedirect("idempiere-old.jsp");
+    return;
+}%>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -128,7 +127,7 @@ Author URI: https://zuhriutama.com
                         </a>
                     <%} if(!Prop.getProperty(Prop.SOC_6).equals("") && !Prop.getProperty(Prop.SOC_6).equals("NONE")){%>
                         <a id="soc6" href="<%=Prop.getProperty(Prop.SOC_6)%>" target="_blank">
-                            <img name="img_soc5" src="<%=Prop.getImage("img_soc6.png")%>" border="0"/>
+                            <img name="img_soc6" src="<%=Prop.getImage("img_soc6.png")%>" border="0"/>
                         </a>
                     <%} if(!Prop.getProperty(Prop.SOC_7).equals("") && !Prop.getProperty(Prop.SOC_7).equals("NONE")){%>
                         <a id="soc7" href="<%=Prop.getProperty(Prop.SOC_7)%>" target="_blank">
