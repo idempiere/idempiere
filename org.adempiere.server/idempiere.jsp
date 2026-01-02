@@ -89,13 +89,13 @@ Author URI: https://zuhriutama.com
                 </div>
                 <div class="col-12 col-md-4 d-flex justify-content-center align-items-center gap-2">
                     <%if(!Prop.getProperty(Prop.SOC_FACEBOOK).equals("") && !Prop.getProperty(Prop.SOC_FACEBOOK).equals("NONE")){%>
-                        <a id="facebook" href="<%=Prop.getProperty(Prop.SOC_FACEBOOK)%>" target="_blank">
+                        <a id="facebook" href="<%=Prop.getProperty(Prop.SOC_FACEBOOK)%>" target="_blank" aria-label="Facebook" title="Facebook">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 24 24">
 	                            <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.406.595 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.312h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.406 24 22.674V1.326C24 .592 23.406 0 22.675 0"/>
 	                        </svg>
                         </a>
                     <%} if(!Prop.getProperty(Prop.SOC_TWITTER).equals("") && !Prop.getProperty(Prop.SOC_TWITTER).equals("NONE")){%>
-                        <a id="twitter" href="<%=Prop.getProperty(Prop.SOC_TWITTER)%>" target="_blank">
+                        <a id="twitter" href="<%=Prop.getProperty(Prop.SOC_TWITTER)%>" target="_blank" aria-label="Twitter" title="Twitter">
                             <svg fill="#DC7633" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
 	                        zoomAndPan="magnify" viewBox="0 0 375 374.9999" height="32" preserveAspectRatio="xMidYMid meet" version="1.0">
 	                        <defs>
@@ -116,7 +116,7 @@ Author URI: https://zuhriutama.com
 	                        </svg>
                         </a>
                     <%} if(!Prop.getProperty(Prop.SOC_LINKEDIN).equals("") && !Prop.getProperty(Prop.SOC_LINKEDIN).equals("NONE")){%>
-                        <a id="linkedin" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                        <a id="linkedin" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank" aria-label="LinkedIn" title="LinkedIn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#0077b5" viewBox="0 0 24 24">
 	                            <path d="M22.23 0H1.77C.792 0 0 .775 0 1.729V22.27C0 23.225.792 24 1.77 24h20.46c.978 0 1.77-.775 1.77-1.729V1.729C24 .775 23.208 0 22.23 0zM7.12 20.452H3.56V9h3.56v11.452zM5.34 7.658c-1.145 0-2.07-.927-2.07-2.069 0-1.143.925-2.069 2.07-2.069s2.07.926 2.07 2.069c0 1.142-.925 2.069-2.07 2.069zM20.452 20.452h-3.56v-5.605c0-1.336-.024-3.054-1.863-3.054-1.863 0-2.148 1.453-2.148 2.956v5.703h-3.559V9h3.419v1.561h.048c.476-.9 1.637-1.849 3.37-1.849 3.604 0 4.27 2.37 4.27 5.455v6.285z"/>
 	                        </svg>
