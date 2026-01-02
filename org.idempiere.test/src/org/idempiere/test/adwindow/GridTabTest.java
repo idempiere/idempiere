@@ -1917,8 +1917,13 @@ public class GridTabTest extends AbstractTestCase {
 		assertNotNull(gTab.getLastDataStatusEvent(), "DataStatusEvent should not be null after external change");
 		//Oracle might return SaveErrorDataChanged instead of CurrentRecordModified
 		//This is due to we are using Date data type for the Updated field and precision for Oracle Date data type is up to seconds only
-		assertTrue("CurrentRecordModified".equals(gTab.getLastDataStatusEvent().getAD_Message())
-				|| "SaveErrorDataChanged".equals(gTab.getLastDataStatusEvent().getAD_Message()), "AD_Message should indicate record modified externally");
+		String actualMessage = gTab.getLastDataStatusEvent().getAD_Message();
+		if (DB.isOracle()) {
+			assertTrue("CurrentRecordModified".equals(actualMessage)
+				|| "SaveErrorDataChanged".equals(actualMessage), "AD_Message should indicate record modified externally");
+		} else {
+			assertEquals("CurrentRecordModified", actualMessage, "AD_Message should indicate record modified externally");
+		}
 		
 		// refresh and save should work now
 		gTab.dataRefresh(gTab.getCurrentRow(), true);

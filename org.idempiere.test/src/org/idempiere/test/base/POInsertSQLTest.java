@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -437,9 +436,10 @@ class POInsertSQLTest extends AbstractTestCase {
 				String plsqlPart = insertSQL.substring(idx + 1);
 				DB.executeUpdateEx(insertPart, getTrxName());				
 				plsqlPart = plsqlPart.trim();
-				plsqlPart = plsqlPart.substring(0,  plsqlPart.length() - 1); // remove /
-				try {
-					DB.prepareCall(plsqlPart, ResultSet.CONCUR_READ_ONLY, getTrxName()).execute();
+				if (plsqlPart.endsWith("/"))
+					plsqlPart = plsqlPart.substring(0,  plsqlPart.length() - 1); // remove /
+				try (var pstmt = DB.prepareStatement(plsqlPart, getTrxName())) {
+					pstmt.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();
 					fail("Failed to execute PL/SQL part of insert SQL for Oracle:\n" + plsqlPart);

@@ -83,6 +83,9 @@ import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
 /**
  *  Abstract base class for Persistent Object.
  *
@@ -6519,6 +6522,9 @@ public abstract class PO
 	 * @return subquery string - (SELECT TableName_ID FROM TableName WHERE TableName_UU = 'uuidValue')
 	 */
 	public static String buildUUIDSubquery(String tableName, String uuidValue) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(tableName), "Table name is required");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(uuidValue), "UUID value is required");
+		
 	    MTable table = MTable.get(Env.getCtx(), tableName);
 	    if (table == null) {
 	    	throw new AdempiereException("Table not found: " + tableName);
