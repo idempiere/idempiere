@@ -8,6 +8,11 @@ Author URI: https://zuhriutama.com
 -->
 <html>
 <% Prop.load(); %>
+<%if(Prop.getProperty(Prop.OLD_HOMEPAGE).equals("true")){%>
+    <script language="JavaScript" type="text/javascript">
+	document.location='idempiere-old.jsp';
+	</script>
+<%}%>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

@@ -37,6 +37,7 @@ public final class Prop implements Serializable {
 	public static final String	CREDITS_TXT 		=	"Credits";
 	public static final String	COPYRIGHT_TXT 		=	"Copyright";
 	public static final	String CUSTOM_IMAGE_PATH	= "CustomImagePath";
+	public static final	String OLD_HOMEPAGE	        = "OldHomepage";
 	
 	/**	Customizable Links    */
 	public static final String	WEBUI_LINK 			=	"WebUiLink";
@@ -154,6 +155,8 @@ public final class Prop implements Serializable {
 			s_prop.setProperty(CLIENT_NAME, "iDempiere Server");
 		if(s_prop.getProperty(CREDITS_TXT)==null||s_prop.getProperty(CREDITS_TXT).length()<=0)
 			s_prop.setProperty(CREDITS_TXT, CREDITS);
+		if(s_prop.getProperty(OLD_HOMEPAGE)==null||s_prop.getProperty(OLD_HOMEPAGE).length()<=0)
+			s_prop.setProperty(OLD_HOMEPAGE, "false");
 		//LINKS
 		if(s_prop.getProperty(FELIX_LINK)==null||s_prop.getProperty(FELIX_LINK).length()<=0)
 			s_prop.setProperty(FELIX_LINK, DEF_FELIX_LINK);
