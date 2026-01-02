@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
@@ -240,6 +241,15 @@ public final class Prop implements Serializable {
 		if (value == null)
 			return "";
 		return value;
+	}
+	
+	public static String getPropertyEscaped(String key) {
+	    String value = getProperty(key);
+	    if (value == null || value.isEmpty()) {
+	        return "";
+	    }
+	    // Escape HTML/XML special characters
+	    return StringEscapeUtils.escapeHtml4(value);
 	}
 	
 	public static String getFileName (boolean tryUserHome)
