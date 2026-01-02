@@ -1,8 +1,8 @@
 <%@ page import="org.bmlaurus.home.Prop" %>
 <!--
-Theme Name: iDempiere 2025 Theme
+Theme Name: iDempiere 2026 Theme
 Version: 3.0
-Description: iDempiere 2025 Theme
+Description: iDempiere 2026 Theme
 Author: Zuhri Utama
 Author URI: https://zuhriutama.com
 -->
@@ -12,9 +12,9 @@ Author URI: https://zuhriutama.com
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=Prop.getProperty(Prop.TITLE) %></title>
-    <link href="resources/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/resources/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="<%=Prop.loadCss()%>">
-	<script type="text/javascript" src="resources/jquery/jquery.js"></script>
+	<script type="text/javascript" src="/resources/jquery/jquery.js"></script>
 </head>
 
 <body>
@@ -137,7 +137,7 @@ Author URI: https://zuhriutama.com
             </div>
         </footer>
     </div>
-    <script src="resources/bootstrap/bootstrap.bundle.min.js" type="text/javascript">
+    <script src="/resources/bootstrap/bootstrap.bundle.min.js" type="text/javascript">
     </script>
 </body>
 
