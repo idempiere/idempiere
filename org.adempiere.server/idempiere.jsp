@@ -57,23 +57,23 @@ Author URI: https://zuhriutama.com
                 </div>
                 <div class="col-12 text-center">
                     <div class="d-flex justify-content-between flex-wrap gap-3 my-4">
-                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORT_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORT_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
                             <img src="<%=Prop.getImage("support.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.LOCAL_TEXT)%>" class="mb-2">
                             <span><%=Prop.getPropertyEscaped(Prop.LOCAL_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.RESOURCE_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                        <a href="<%=Prop.getPropertyEscaped(Prop.RESOURCE_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
                             <img src="<%=Prop.getImage("resource.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.RESOURCE_TEXT)%>" class="mb-2">
                             <span><%=Prop.getPropertyEscaped(Prop.RESOURCE_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.WIKI_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                        <a href="<%=Prop.getPropertyEscaped(Prop.WIKI_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
                             <img src="<%=Prop.getImage("wiki.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.WIKI_TEXT)%>" class="mb-2">
                             <span><%=Prop.getPropertyEscaped(Prop.WIKI_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.FORUMS_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                        <a href="<%=Prop.getPropertyEscaped(Prop.FORUMS_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
                             <img src="<%=Prop.getImage("forum.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.FORUMS_TEXT)%>" class="mb-2">
                             <span><%=Prop.getPropertyEscaped(Prop.FORUMS_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORTREQ_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill" style="min-width:100px;">
+                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORTREQ_LINK)%>" target="_blank" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
                             <img src="<%=Prop.getImage("issue.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.SUPPORTREQUEST_TEXT)%>" class="mb-2">
                             <span><%=Prop.getPropertyEscaped(Prop.SUPPORTREQUEST_TEXT)%></span>
                         </a>
@@ -83,10 +83,10 @@ Author URI: https://zuhriutama.com
         </main>
         <footer class="">
             <div class="row">
-                <div class="col-12 col-md-4">
-                    <p class="text-center text-md-start fs-5">iDempiere license is <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPLv2</a> <%=Prop.getPropertyEscaped(Prop.COPYRIGHT_TXT)%></p>
+                <div class="col-12 col-md-5">
+                    <p class="text-center text-md-start fs-6">iDempiere license is <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPLv2</a> <%=Prop.getPropertyEscaped(Prop.COPYRIGHT_TXT)%></p>
                 </div>
-                <div class="col-12 col-md-4 d-flex justify-content-center align-items-center gap-2">
+                <div class="col-12 col-md-2 d-flex justify-content-center align-items-center gap-2">
                     <%if(!Prop.getPropertyEscaped(Prop.SOC_FACEBOOK).equals("") && !Prop.getPropertyEscaped(Prop.SOC_FACEBOOK).equals("NONE")){%>
                         <a id="facebook" href="<%=Prop.getPropertyEscaped(Prop.SOC_FACEBOOK)%>" target="_blank" aria-label="Facebook" title="Facebook">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 24 24">
@@ -134,8 +134,8 @@ Author URI: https://zuhriutama.com
                         </a>
                     <%}%>
                 </div>
-                <div class="col-12 col-md-4">
-                    <p class="text-center text-md-end fs-5">&copy; Copyright 2013-<%=Prop.getYear()%> iDempiere - All rights reserved</p>
+                <div class="col-12 col-md-5">
+                    <p class="text-center text-md-end fs-6 mt-2 mt-md-0">&copy; Copyright 2013-<%=Prop.getYear()%> iDempiere - All rights reserved</p>
                 </div>
             </div>
         </footer>
