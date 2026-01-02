@@ -18,7 +18,6 @@ Author URI: https://zuhriutama.com
     <title><%=Prop.getProperty(Prop.TITLE) %></title>
     <link href="/resources/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="<%=Prop.loadCss()%>">
-	<script type="text/javascript" src="/resources/jquery/jquery.js"></script>
 </head>
 
 <body>
