@@ -897,9 +897,7 @@ public final class DB
 			setParameters(cs, params);
 			if (timeOut > 0)
 			{
-				{
-					cs.setQueryTimeout(timeOut);
-				}
+				cs.setQueryTimeout(timeOut);
 			}
 			no = cs.executeUpdate();
 		}

@@ -1608,14 +1608,32 @@ public class MColumnTest extends AbstractTestCase {
 			process.processIt(pi, Trx.get(getTrxName(), false), false);
 			assertTrue(!pi.isError(), pi.getSummary());
 			column.load(getTrxName());
-			assertNotNull(column.getFKConstraintName(), "FK constraint name should not be null");			
+			assertNotNull(column.getFKConstraintName(), "FK constraint name should not be null");
+			
+			// Sync column will commit in Oracle, so need to keep it for cleanup
+			if (DB.isOracle()) {
+				created.add(table);
+				for(PO po : table.getColumns(true))				
+					created.add(po);
+			}
+				
 		} finally {
 			rollback();
 			try {
-				String sql = "DROP TABLE " + tableName;
+				String sql = "DROP TABLE " + tableName + (DB.isOracle() ? " CASCADE CONSTRAINTS" : " CASCADE");
 				DB.executeUpdateEx(sql, null);
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+			
+			// Sync column will commit in Oracle, so need to drop translation table explicitly
+			if (DB.isOracle()) {
+				try {
+					String sql = "DROP TABLE " + tableName + "_Trl CASCADE CONSTRAINTS";
+					DB.executeUpdateEx(sql, null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			try {
