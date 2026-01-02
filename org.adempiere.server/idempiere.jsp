@@ -118,15 +118,15 @@ Author URI: https://zuhriutama.com
 	                        </svg>
                         </a>
                     <%} if(!Prop.getProperty(Prop.SOC_5).equals("") && !Prop.getProperty(Prop.SOC_5).equals("NONE")){%>
-                        <a id="soc5" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                        <a id="soc5" href="<%=Prop.getProperty(Prop.SOC_5)%>" target="_blank">
                             <img name="img_soc5" src="<%=Prop.getImage("img_soc5.png")%>" border="0"/>
                         </a>
                     <%} if(!Prop.getProperty(Prop.SOC_6).equals("") && !Prop.getProperty(Prop.SOC_6).equals("NONE")){%>
-                        <a id="soc6" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                        <a id="soc6" href="<%=Prop.getProperty(Prop.SOC_6)%>" target="_blank">
                             <img name="img_soc5" src="<%=Prop.getImage("img_soc6.png")%>" border="0"/>
                         </a>
                     <%} if(!Prop.getProperty(Prop.SOC_7).equals("") && !Prop.getProperty(Prop.SOC_7).equals("NONE")){%>
-                        <a id="soc7" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+                        <a id="soc7" href="<%=Prop.getProperty(Prop.SOC_7)%>" target="_blank">
                             <img name="img_soc7" src="<%=Prop.getImage("img_soc7.png")%>" border="0"/>
                         </a>
                     <%}%>
