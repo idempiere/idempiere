@@ -82,6 +82,14 @@ public class MRoleIncluded extends X_AD_Role_Included
 		{
 			throw new AdempiereException("@AD_Role_ID@ == @Included_Role_ID@");
 		}
+		
+		if (getSeqNo() == 0)
+		{
+			// Set SeqNo to last + 10
+			String sql = "SELECT COALESCE(MAX(SeqNo),0)+10 FROM AD_Role_Included WHERE AD_Role_ID=?";
+			int seqNo = DB.getSQLValueEx(get_TrxName(), sql, getAD_Role_ID());
+			setSeqNo(seqNo);
+		}
 		return true;
 	}
 	

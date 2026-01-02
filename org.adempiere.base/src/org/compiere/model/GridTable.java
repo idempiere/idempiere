@@ -2479,7 +2479,6 @@ public class GridTable extends AbstractTableModel
 		close(false);
 		if (retainedWhere != null)
 		{
-			String currentWhere = m_whereClause;
 			if (m_whereClause != null && m_whereClause.trim().length() > 0)
 			{
 				StringBuilder orRetainedWhere = new StringBuilder(") OR (").append(retainedWhere).append(")) ");
@@ -2487,7 +2486,6 @@ public class GridTable extends AbstractTableModel
 					m_whereClause = "((" + m_whereClause + orRetainedWhere.toString();
 			}
 			open(m_maxRows);
-			m_whereClause = currentWhere;
 		}
 		else
 		{
