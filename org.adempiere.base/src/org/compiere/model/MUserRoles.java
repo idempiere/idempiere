@@ -154,6 +154,13 @@ public class MUserRoles extends X_AD_User_Roles
 			}
 		}
 		
+		// Prevent assigning Role Template to user
+		MRole role = new MRole(getCtx(), getAD_Role_ID(), get_TrxName());
+		if (role.isMasterRole() ) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "CannotAssignRoleTemplateToUser"));
+			return false;
+		}
+		
 		return true;
 	}
 
