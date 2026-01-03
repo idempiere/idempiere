@@ -35,8 +35,11 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 
+import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.swing.event.EventListenerList;
 
@@ -671,8 +674,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (m_vo.onlyCurrentDays > 0)
 		{
 			if (where.length() > 0)
-				where.append(" AND ");
-			
+				where.append(" AND ");			
 			where.append("Created >= ").append("getDate()-?");
 			params.add(m_vo.onlyCurrentDays);
 		}
@@ -2941,7 +2943,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					if (currentValue != null && mLookup.containsKeyNoDirect(currentValue))
 						setValue(dependentField, currentValue);
 				}
-			});			
+			});
 		}   //  for all dependent fields
 	}   //  processDependencies
 
@@ -3003,16 +3005,16 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			while (st.hasMoreTokens())      //  for each callout
 			{
 				String cmd = st.nextToken().trim();
-	
+
 				//detect infinite loop
 				if (activeCallouts.contains(cmd)) continue;
-	
+
 				String retValue = "";
 				// FR [1877902]
 				// CarlosRuiz - globalqss - implement beanshell callout
 				// Victor Perez  - vpj-cd implement JSR 223 Scripting
 				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
-	
+
 					MRule rule = MRule.get(m_vo.ctx, cmd.substring(MRule.SCRIPT_PREFIX.length()));
 					if (rule == null) {
 						retValue = "Callout " + cmd + " not found";
@@ -3026,44 +3028,62 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 						log.log(Level.SEVERE, retValue);
 						return retValue;
 					}
-	
-					ScriptEngine engine = rule.getScriptEngine();
-					if (engine == null) {
-						retValue = 	"Callout Invalid, engine not found: " + rule.getEngineName();
-						log.log(Level.SEVERE, retValue);
-						return retValue;
-					}
-	
-					// Window context are    W_
-					// Login context  are    G_
-					MRule.setContext(engine, m_vo.ctx, m_vo.WindowNo);
-					// now add the callout parameters windowNo, tab, field, value, oldValue to the engine
-					// Method arguments context are A_
-					engine.put(MRule.ARGUMENTS_PREFIX + "WindowNo", m_vo.WindowNo);
-					engine.put(MRule.ARGUMENTS_PREFIX + "Tab", this);
-					engine.put(MRule.ARGUMENTS_PREFIX + "Field", field);
-					engine.put(MRule.ARGUMENTS_PREFIX + "Value", value);
-					engine.put(MRule.ARGUMENTS_PREFIX + "OldValue", oldValue);
-					engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", m_vo.ctx);
-	
-					try
-					{
-						activeCallouts.add(cmd);
-						retValue = engine.eval(rule.getScript()).toString();
-					}
-					catch (Exception e)
-					{
-						log.log(Level.SEVERE, "", e);
-						retValue = 	"Callout Invalid: " + e.toString();
-						return retValue;
-					}
-					finally
-					{
-						activeCallouts.remove(cmd);
-					}
-	
+
+					// Try cached compiled script for performance
+                    CompiledScript compiled = Core.getCompiledScript(rule);
+                    if (compiled != null) {
+                        Bindings bindings = compiled.getEngine().createBindings();
+                        // Window context are    W_
+						// Login context  are    G_
+                        MRule.setContext(bindings, m_vo.ctx, m_vo.WindowNo);
+                        setCalloutScriptContext(bindings::put, m_vo.WindowNo, field, value, oldValue);
+						try
+						{
+							activeCallouts.add(cmd);
+							Object result = compiled.eval(bindings);
+							retValue = result != null ? result.toString() : "";
+						}
+						catch (Exception e)
+						{
+							log.log(Level.SEVERE, "", e);
+							retValue = "Callout Invalid: " + e.getLocalizedMessage();
+							return retValue;
+						}
+						finally
+						{
+							activeCallouts.remove(cmd);
+						}
+                    } else {
+                        // Fallback to non-compiled execution for engines that don't support Compilable
+                        ScriptEngine engine = rule.getScriptEngine();
+						if (engine == null) {
+							retValue = 	"Callout Invalid, engine not found: " + rule.getEngineName();
+							log.log(Level.SEVERE, retValue);
+							return retValue;
+						}
+
+						// Window context are    W_
+						// Login context  are    G_
+						MRule.setContext(engine, m_vo.ctx, m_vo.WindowNo);
+						setCalloutScriptContext(engine::put, m_vo.WindowNo, field, value, oldValue);
+						try
+						{
+							activeCallouts.add(cmd);
+							Object result = engine.eval(rule.getScript());
+							retValue = result != null ? result.toString() : "";
+						}
+						catch (Exception e)
+						{
+							log.log(Level.SEVERE, "", e);
+							retValue = "Callout Invalid: " + e.getLocalizedMessage();
+							return retValue;
+						}
+						finally
+						{
+							activeCallouts.remove(cmd);
+						}
+                    }
 				} else {
-	
 					Callout call = null;
 					String method = null;
 					int methodStart = cmd.lastIndexOf('.');
@@ -3089,10 +3109,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 						log.log(Level.SEVERE, "class", e);
 						return "Callout Invalid: " + cmd + " (" + e.toString() + ")";
 					}
-	
+
 					if (call == null || method == null || method.length() == 0)
 						return "Callout Invalid: " + method;
-	
+
 					try
 					{
 						activeCallouts.add(cmd);
@@ -3110,9 +3130,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 						activeCallouts.remove(cmd);
 						activeCalloutInstance.remove(call);
 					}
-	
 				}
-	
+
 				if (!Util.isEmpty(retValue))		//	interrupt on first error
 				{
 					log.config(retValue); // no need to save an AD_Issue error on each callout
@@ -3155,6 +3174,51 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 
 		return "";
 	}	//	processCallout
+
+	/**
+	 * Populates the script execution context for callout rule execution.
+	 * <p>
+	 * This method binds standard callout-related variables into the script context
+	 * using a generic key/value consumer. It abstracts the difference between
+	 * compiled and non-compiled script execution by allowing the caller to supply
+	 * either {@link javax.script.Bindings} or {@link javax.script.ScriptEngine}
+	 * as the target context.
+	 * <p>
+	 * The following variables are exposed to the callout script using the
+	 * {@link MRule#ARGUMENTS_PREFIX}:
+	 * <ul>
+	 *   <li>{@code WindowNo} � current window number</li>
+	 *   <li>{@code Tab} � current {@link GridTab}</li>
+	 *   <li>{@code Field} � field that triggered the callout</li>
+	 *   <li>{@code Value} � new field value</li>
+	 *   <li>{@code OldValue} � previous field value</li>
+	 *   <li>{@code Ctx} � application context</li>
+	 * </ul>
+	 *
+	 * @param putter
+	 *            Consumer used to bind variables into the script context.
+	 *            Typically {@code Bindings::put} for compiled scripts or
+	 *            {@code ScriptEngine::put} for non-compiled scripts.
+	 * @param windowNo
+	 *            Window number in which the callout is executed.
+	 * @param field
+	 *            The {@link GridField} that triggered the callout.
+	 * @param value
+	 *            The new value of the field.
+	 * @param oldValue
+	 *            The previous value of the field.
+	 */
+	private void setCalloutScriptContext(BiConsumer<String, Object> putter, int windowNo, GridField field, Object value, Object oldValue)
+	{
+		// now add the callout parameters windowNo, tab, field, value, oldValue to the engine Method
+		// arguments context are A_
+		putter.accept(MRule.ARGUMENTS_PREFIX + "WindowNo", windowNo);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Tab", this);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Field", field);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Value", value);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "OldValue", oldValue);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Ctx", m_vo.ctx);
+	} // setCalloutScriptContext
 
 	/**
 	 *  Get Value of Field with columnName

@@ -72,7 +72,7 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		super(info.DisplayType, info.WindowNo);
 		m_info = info;
-		m_tabNo = TabNo;
+		m_info.tabNo = TabNo;
 		if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn);
 
 		//  Don't load Search or CreatedBy/UpdatedBy
@@ -97,8 +97,6 @@ public final class MLookup extends Lookup implements Serializable
 
 	/** The Lookup Info Value Object        */
 	private MLookupInfo         m_info = null;
-
-	private int 				m_tabNo = 0;
 
 	/** Storage of data  Key-NamePair	*/
 	private volatile LinkedHashMap<Object,Object>	m_lookup = new LinkedHashMap<Object,Object>();
@@ -923,7 +921,7 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		if (info.IsValidated) return true;
 		if (info.ValidationCode.length() == 0) return true;
-		String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_tabNo, m_info.ValidationCode, false);
+		String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_info.tabNo, m_info.ValidationCode, false);
 		if (validation.equals(info.parsedValidationCode)) return true;
 		return false;
 	}
@@ -1127,7 +1125,7 @@ public final class MLookup extends Lookup implements Serializable
 			//	not validated
 			if (!m_info.IsValidated)
 			{
-				String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_tabNo, m_info.ValidationCode, false);
+				String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_info.tabNo, m_info.ValidationCode, false);
 				m_info.parsedValidationCode = validation;
 				if (validation.length() == 0 && m_info.ValidationCode.length() > 0)
 				{

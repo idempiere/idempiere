@@ -26,9 +26,12 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.crypto.SecretKey;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.markdown.IMarkdownRenderer;
@@ -50,6 +53,7 @@ import org.compiere.model.MAuthorizationCredential;
 import org.compiere.model.MAuthorizationProvider;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
+import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTaxProvider;
 import org.compiere.model.ModelValidator;
@@ -1170,7 +1174,71 @@ public class Core {
 		}
 		return null;
 	}
-	
+
+	/** Cache for compiled scripts, keyed by AD_Rule_ID */
+	private final static CCache<Integer, CompiledScript> s_compiledScriptCache = new CCache<>(MRule.Table_Name, "CompiledScript", 100, false);
+
+	/**
+	 * Get a compiled script for the given rule.
+	 * Uses JSR-223 Compilable interface for caching pre-compiled scripts.
+	 * This significantly improves performance for repeatedly executed scripts
+	 * (e.g., table validators, callouts) by avoiding re-parsing and re-compilation.
+	 *
+	 * @param  rule MRule containing the script
+	 * @return      CompiledScript if engine supports compilation, null otherwise
+	 */
+	public static CompiledScript getCompiledScript(MRule rule)
+	{
+		if (rule == null || rule.getAD_Rule_ID() <= 0 || Util.isEmpty(rule.getScript(), true))
+			return null;
+
+		// Cache only supported for Groovy script engine
+		if (!"groovy".equalsIgnoreCase(rule.getEngineName()))
+		{
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("Script compilation caching is only supported for Groovy engine, skipping: " + rule.getEngineName());
+			return null;
+		}
+
+		Integer key = Integer.valueOf(rule.getAD_Rule_ID());
+
+		// Check cache first
+		CompiledScript compiled = s_compiledScriptCache.get(key);
+		if (compiled != null)
+			return compiled;
+
+		// Get script engine
+		ScriptEngine engine = getScriptEngine(rule.getEngineName());
+		if (engine == null)
+		{
+			s_log.log(Level.WARNING, "Script engine not found: " + rule.getEngineName());
+			return null;
+		}
+
+		// Check if engine supports compilation
+		if (!(engine instanceof Compilable))
+		{
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("Script engine " + rule.getEngineName() + " does not support compilation");
+			return null;
+		}
+
+		// Compile and cache
+		try
+		{
+			compiled = ((Compilable) engine).compile(rule.getScript());
+			s_compiledScriptCache.put(key, compiled);
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("Compiled and cached script: " + rule.getValue());
+			return compiled;
+		}
+		catch (ScriptException e)
+		{
+			s_log.log(Level.SEVERE, "Failed to compile script: " + rule.getValue() + ", Error: " + e.getLocalizedMessage(), e);
+			return null;
+		}
+	} // getCompiledScript
+
 	/**
 	 * Get markdown renderer service
 	 * @return markdown renderer service

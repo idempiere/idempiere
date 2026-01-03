@@ -1511,10 +1511,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 */
 	public void onAttributeForm()
 	{
-		new WTableAttribute(adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
-		
+		new WTableAttribute(adTabbox.getSelectedGridTab());
 	}
-	
+
     /**
      * @param event
      * @see EventListener#onEvent(Event)

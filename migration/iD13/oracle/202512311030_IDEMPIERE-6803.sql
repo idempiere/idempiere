@@ -1,3 +1,9 @@
+-- IDEMPIERE-6803 Fix unit test failures for Oracle
+SELECT register_migration_script('202512311030_IDEMPIERE-6803') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 CREATE OR REPLACE FUNCTION torecordid (
    p_tablename IN VARCHAR2,
    p_uu_value IN VARCHAR2
