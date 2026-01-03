@@ -732,7 +732,7 @@ public class DocumentSearchController implements EventListener<Event>{
 			boolean hasFullTextOperator = sql.indexOf("@@") >= 0;
 			if (hasFullTextOperator)
 				sql = sql.replace("@@", "~!#$*");
-			sql = Env.parseContext(Env.getCtx(), -1, sql, false, true);
+			sql = Env.parseContextForSql(Env.getCtx(), -1, sql, false, true, params);
 			if (hasFullTextOperator)
 				sql = sql.replace("~!#$*", "@@");
 			
