@@ -98,6 +98,8 @@ public class DocumentSearchController implements EventListener<Event>{
 	private int selected = -1;
 	/** True when showing transaction code available */
 	private boolean showingGuide = false;
+	
+	private static final CLogger logger = CLogger.getCLogger(DocumentSearchController.class);
 
 	/**
 	 * default constructor
@@ -645,7 +647,8 @@ public class DocumentSearchController implements EventListener<Event>{
 				} else {
 					sql.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
 				}
-				sql.append(" AND AD_Client_ID=@#AD_Client_ID@  ");
+				sql.append(" AND AD_Client_ID=? ");
+				params.add(Env.getAD_Client_ID(Env.getCtx()));
 
 				// search for a Integer
 				if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
@@ -732,7 +735,47 @@ public class DocumentSearchController implements EventListener<Event>{
 			boolean hasFullTextOperator = sql.indexOf("@@") >= 0;
 			if (hasFullTextOperator)
 				sql = sql.replace("@@", "~!#$*");
-			sql = Env.parseContextForSql(Env.getCtx(), -1, sql, false, true, params);
+			if (sql.contains("@")) {
+				if (params.isEmpty()) {
+					sql = Env.parseContextForSql(Env.getCtx(), -1, sql, false, true, params);
+				} else {
+					List<Object> contextParams = new ArrayList<Object>();
+					List<Integer> paramPositions = new ArrayList<Integer>();
+					int pos = 0;					
+					boolean open = false;
+					for (char c : sql.toString().toCharArray()) {
+						if (c == '?') {
+							pos++;
+						}
+						if (c == '@') {
+							open = !open;
+							if (!open)
+								paramPositions.add(Integer.valueOf(++pos));
+						}
+					}
+					String beforeParseSql = sql;
+					sql = Env.parseContextForSql(Env.getCtx(), -1, sql, false, true, contextParams);
+					if (contextParams.size() != paramPositions.size()) {
+						logger.severe("Parameter size mismatch after context parsing: " + beforeParseSql);
+						return;
+					}
+					if (contextParams.size() + params.size() != pos) {
+						logger.severe("Total parameter size mismatch after context parsing: " + beforeParseSql);
+						return;
+					}
+						
+					List<Object> newParams = new ArrayList<Object>();
+					for(int i = 0; i < pos; i++) {
+						if (paramPositions.get(0).intValue() == (i+1)) {
+							newParams.add(contextParams.remove(0));
+							paramPositions.remove(0);
+						} else {
+							newParams.add(params.remove(0));
+						}
+					}
+					params = newParams;
+				}
+			}			
 			if (hasFullTextOperator)
 				sql = sql.replace("~!#$*", "@@");
 			
