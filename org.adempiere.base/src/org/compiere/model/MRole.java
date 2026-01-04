@@ -480,14 +480,18 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return success;
 		if (newRecord && success)
 		{
-			// Assign Role to SuperUser
-			MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
-			su.saveEx();
-			// Assign Role to Created By user
-			if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
+			// Don't assign Role Template
+			if (!isMasterRole())
 			{
-				MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
-				ur.saveEx();
+				// Assign Role to SuperUser
+				MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
+				su.saveEx();
+				// Assign Role to Created By user
+				if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
+				{
+					MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
+					ur.saveEx();
+				}
 			}
 			updateAccessRecords();
 		}
