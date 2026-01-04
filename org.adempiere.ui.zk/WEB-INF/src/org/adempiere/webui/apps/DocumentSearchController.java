@@ -647,9 +647,7 @@ public class DocumentSearchController implements EventListener<Event>{
 				} else {
 					sql.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
 				}
-				sql.append(" AND AD_Client_ID=? ");
-				params.add(Env.getAD_Client_ID(Env.getCtx()));
-
+				
 				// search for a Integer
 				if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
 					params.add(Integer.valueOf(searchString.replaceAll("\\D", "")));
@@ -660,6 +658,8 @@ public class DocumentSearchController implements EventListener<Event>{
 					else
 						params.add(searchString+"%");
 				}
+				sql.append(" AND AD_Client_ID=? ");
+				params.add(Env.getAD_Client_ID(Env.getCtx()));
 				// SearchDefinition with a special query
 			} else if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_QUERY)) {
 				sql = new StringBuilder().append(msd.getQuery());
@@ -766,7 +766,7 @@ public class DocumentSearchController implements EventListener<Event>{
 						
 					List<Object> newParams = new ArrayList<Object>();
 					for(int i = 0; i < pos; i++) {
-						if (paramPositions.get(0).intValue() == (i+1)) {
+						if (!paramPositions.isEmpty() && paramPositions.get(0).intValue() == (i+1)) {
 							newParams.add(contextParams.remove(0));
 							paramPositions.remove(0);
 						} else {
