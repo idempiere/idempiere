@@ -45,6 +45,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
@@ -378,7 +379,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		return prepareTable(layout, from, where, multiSelection, tableName, true);
 	}   //  prepareTable
 
-    /**
+	/**
      *  Prepare Table and return SQL to get ResultSet to
      *  populate table
      *
@@ -389,13 +390,37 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      * @param tableName         multiple selections
      * @param addAccessSQL      specifies whether to addAcessSQL
      * @return  SQL statement to use to get resultset to populate table
+     * @deprecated use {@link #prepareTable(ColumnInfo[], String, boolean, String, boolean, SQLFragment)} instead
      */
-    public String prepareTable(ColumnInfo[] layout,
+	@Deprecated
+	public String prepareTable(ColumnInfo[] layout,
             String from,
             String where,
             boolean multiSelection,
             String tableName,
             boolean addAccessSQL)
+	{
+		return prepareTable(layout, from, multiSelection, tableName, addAccessSQL, new SQLFragment(where)).toSQLWithParameters();
+	}
+	
+    /**
+     *  Prepare Table and return SQL to get ResultSet to
+     *  populate table
+     *
+     * @param layout            array of column info
+     * @param from              SQL FROM content
+     * @param multiSelection    multiple selections
+     * @param tableName         multiple selections
+     * @param addAccessSQL      specifies whether to addAcessSQL
+     * @param sqlFilter        additional SQL filter
+     * @return  SQL statement to use to get resultset to populate table
+     */
+    public SQLFragment prepareTable(ColumnInfo[] layout,
+            String from,
+            boolean multiSelection,
+            String tableName,
+            boolean addAccessSQL,
+            SQLFragment sqlFilter)
     {
         int columnIndex = 0;
         StringBuilder sql = new StringBuilder ("SELECT ");
@@ -445,11 +470,11 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
         }
 
         sql.append( " FROM ").append(from);
-        sql.append(" WHERE ").append(where);
+        sql.append(" WHERE ").append(sqlFilter.sqlClause());
 
         if (from.length() == 0)
         {
-            return sql.toString();
+        	return new SQLFragment(sql.toString(), sqlFilter.parameters());
         }
         //
         if (addAccessSQL)
@@ -461,11 +486,11 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
             if (logger.isLoggable(Level.FINEST)) logger.finest(finalSQL);
 
-            return finalSQL;
+            return new SQLFragment(finalSQL, sqlFilter.parameters());
         }
         else
         {
-            return sql.toString();
+            return new SQLFragment(sql.toString(), sqlFilter.parameters());
         }
     }   // prepareTable
 

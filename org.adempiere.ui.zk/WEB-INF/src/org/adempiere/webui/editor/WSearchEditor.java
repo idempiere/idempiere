@@ -20,6 +20,8 @@ package org.adempiere.webui.editor;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -62,6 +64,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -282,7 +285,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		
 		autoCompleteListener = e -> {
 				if (!e.isChangingBySelectBack()) {
-					listModel.setWhereClause(getWhereClause());
+					listModel.setSQLFilter(getSQLFilter());
 					String s = e.getValue();					
 					getComponent().getCombobox().setModel(listModel.getSubModel(s, maxRows));
 				}
@@ -519,7 +522,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			setTableAndKeyColumn();
 		
 		// process input text with infopanel/infowindow
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getWhereClause());
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getSQLFilter());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
 			if (ip.getFirstRowKey() instanceof Integer)
@@ -737,7 +740,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		 */
 
 		//  Zoom / Validation
-		String whereClause = getWhereClause();
+		SQLFragment whereClause = getSQLFilter();
 
 		if (log.isLoggable(Level.FINE))
 			log.fine(lookup.getColumnName() + ", Zoom=" + lookup.getZoom() + " (" + whereClause + ")");
@@ -850,17 +853,22 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	/**
 	 * Parse where clause from lookup validation code.
-	 * @return where clause
+	 * @return sql filter
 	 */
-	private String getWhereClause()
+	private SQLFragment getSQLFilter()
 	{
-		String whereClause = "";
+		String whereClause = null;
+		List<Object> params = new ArrayList<>();
 
 		if (lookup == null)
-			return "";
+			return null;
 
 		if (lookup.getZoomQuery() != null)
-			whereClause = lookup.getZoomQuery().getWhereClause();
+		{
+			SQLFragment filter = lookup.getZoomQuery().getSQLFilter();
+			whereClause = filter.sqlClause();
+			params.addAll(filter.parameters());
+		}
 
 		String validation = lookup.getValidation();
 
@@ -874,7 +882,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		if (whereClause.indexOf('@') != -1)
 		{
-			String validated = Env.parseContext(Env.getCtx(), lookup.getWindowNo(), whereClause, false);
+			String validated = Env.parseContextForSql(Env.getCtx(), lookup.getWindowNo(), whereClause, false, params);
 
 			if (validated.length() == 0)
 				log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
@@ -882,11 +890,11 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			{
 				if (log.isLoggable(Level.FINE))
 					log.fine(getColumnName() + " - Parsed: " + validated);
-				return validated;
+				whereClause = validated;
 			}
 		}
-		return whereClause;
-	}	//	getWhereClause
+		return new SQLFragment(whereClause, params);
+	}
 
 	@Override
 	public String[] getEvents()

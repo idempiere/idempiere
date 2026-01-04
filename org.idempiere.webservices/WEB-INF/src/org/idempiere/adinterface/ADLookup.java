@@ -322,7 +322,7 @@ public class ADLookup {
 			return "";
 
 		if (lookup.getZoomQuery() != null)
-			whereClause = lookup.getZoomQuery().getWhereClause();
+			whereClause = lookup.getZoomQuery().getSQLFilter().toSQLWithParameters();
 
 		String validation = lookup.getValidation();
 

@@ -49,6 +49,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MDashboardContent;
 import org.compiere.util.CCache;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
@@ -441,5 +442,25 @@ public class Extensions {
 		
 	}
 	
-	
+	/**
+	 * Get find window
+	 * @param targetWindowNo
+	 * @param targetTabNo
+	 * @param title
+	 * @param AD_Table_ID
+	 * @param tableName
+	 * @param filterExtended
+	 * @param findFields
+	 * @param minRecords
+	 * @param adTabId
+	 * @param windowPanel
+	 * @return {@link FindWindow} instance
+	 */
+	public static FindWindow getFindWindow(int targetWindowNo, int targetTabNo, String title, int AD_Table_ID, String tableName, 
+			SQLFragment filterExtended, GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel) {
+		
+		IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
+	    return findWindowFactory.getInstance(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, filterExtended, findFields, minRecords, adTabId, windowPanel);
+		
+	}
 }

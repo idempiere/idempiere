@@ -1548,7 +1548,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 			//check out if parent keys were completed properly 
 			if (gridTab.isDetail()){
 				for(String linkColumn : gridTab.getParentColumnNames()){
-					if(!pquery.getWhereClause().contains(linkColumn)){
+					if(!pquery.getSQLFilter().sqlClause().contains(linkColumn)){
 						Object value = masterRecord!=null
 								    ? masterRecord.get_Value(linkColumn)
 									: gridTab.getParentTab() != null ? gridTab.getParentTab().getValue(linkColumn) : null;
@@ -1587,7 +1587,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 					}
 				}	
 			}
-			gridTab.getTableModel().dataRequery(pquery.getWhereClause(), false, 0, false);
+			gridTab.getTableModel().dataRequery(pquery.getSQLFilter(), false, 0, false);
 	    	if (isInsertMode()){
 				if(gridTab.getTableModel().getRowCount()>=1)
 				   logMsg = Msg.getMsg(Env.getCtx(), "AlreadyExists")+" "+pquery;

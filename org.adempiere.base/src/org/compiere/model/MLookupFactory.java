@@ -31,6 +31,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Factory to create MLookup instance.
@@ -575,15 +576,15 @@ public class MLookupFactory
 		
 		//	add WHERE clause
 		MQuery zoomQuery = null;
+		List<Object> params = new ArrayList<Object>();
 		if (WhereClause != null && WhereClause.length() > 0)
 		{
-			String where = WhereClause;
+			String where = WhereClause;			
 			if (where.indexOf('@') != -1)
-				where = Env.parseContext(ctx, WindowNo, where, false);
+				where = Env.parseContextForSql(ctx, WindowNo, where, false, params);
 			if (where.length() == 0 && WhereClause.length() != 0)
 				s_log.severe ("Could not resolve: " + WhereClause);
 
-			//	We have no context
 			if (where.length() != 0)
 			{
 				realSQL.append(" WHERE ").append(where);
@@ -591,7 +592,7 @@ public class MLookupFactory
 					s_log.log(Level.SEVERE, "getLookup_Table - " + TableName
 						+ ": WHERE should be fully qualified: " + WhereClause);
 				zoomQuery = new MQuery (TableName);
-				zoomQuery.addRestriction(where);
+				zoomQuery.addRestriction(new SQLFragment(where, params));
 			}
 		}
 
@@ -619,7 +620,7 @@ public class MLookupFactory
 		}
 		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		retValue = new MLookupInfo (realSQL.toString(), TableName,
-			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
+			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery, params);
 		retValue.DisplayColumn = lookupDisplayColumn;		
 		retValue.InfoWindowId = infoWindowId;
 		retValue.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);

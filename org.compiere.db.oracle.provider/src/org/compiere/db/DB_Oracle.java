@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -55,6 +56,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
+import org.idempiere.db.util.SQLFragment;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -991,6 +993,18 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 	
 	@Override
+	public SQLFragment subsetFilterForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("toTableOfVarchar2(")
+			.append(columnName)
+			.append(")");
+		builder.append(" submultiset of ")
+			.append("toTableOfVarchar2(?)");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
+	}
+	
+	@Override
 	public String intersectClauseForCSV(String columnName, String csv) {
 		return intersectClauseForCSV(columnName, csv, false);
 	}
@@ -1013,6 +1027,28 @@ public class DB_Oracle implements AdempiereDatabase
 		return builder.toString();
 	}
 
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv) {
+		return intersectFilterForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("toTableOfVarchar2(")
+			.append(columnName)
+			.append(")");
+		builder.append(" MULTISET INTERSECT ")
+			.append("toTableOfVarchar2(?) IS ");
+		
+		if(!isNotClause)
+			builder.append("NOT "); 
+			
+		builder.append("EMPTY");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
+	}
+	
 	@Override
 	public String getNumericDataType() {
 		return "NUMBER";
