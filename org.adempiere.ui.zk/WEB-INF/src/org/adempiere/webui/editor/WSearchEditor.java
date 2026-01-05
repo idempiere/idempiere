@@ -877,7 +877,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		if (Util.isEmpty(whereClause, true))
 			whereClause = validation;
-		else if (validation.length() > 0)
+		else if (!Util.isEmpty(validation, true))
 			whereClause += " AND " + validation;
 
 		if (whereClause.indexOf('@') != -1)
