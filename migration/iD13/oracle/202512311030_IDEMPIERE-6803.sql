@@ -1,5 +1,5 @@
 -- IDEMPIERE-6803 Fix unit test failures for Oracle
-SELECT register_migration_script('202512311030_IDEMPIERE-6803') FROM dual;
+SELECT register_migration_script('202512311030_IDEMPIERE-6803.sql') FROM dual;
 
 SET SQLBLANKLINES ON
 SET DEFINE OFF
@@ -46,3 +46,4 @@ BEGIN
   RETURN o_id;
 END;
 /
+
