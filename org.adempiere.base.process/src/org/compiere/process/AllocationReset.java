@@ -27,6 +27,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
@@ -51,6 +52,8 @@ public class AllocationReset extends SvrProcess
 	private int			p_C_AllocationHdr_ID = 0;
 	/** All Allocations */
 	private boolean		p_AllAllocations = false;
+	/** Delete Reconciliation */
+	private boolean		p_IsDeleteFactReconciled = false;
 	/** Transaction				*/
 	private Trx			m_trx = null;
 	
@@ -79,6 +82,8 @@ public class AllocationReset extends SvrProcess
 			}
 			else if (name.equals("AllAllocations"))
 				p_AllAllocations = "Y".equals(para[i].getParameter());
+			else if (name.equals("IsDeleteFactReconciled"))
+				p_IsDeleteFactReconciled = "Y".equals(para[i].getParameter());
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
@@ -169,7 +174,9 @@ public class AllocationReset extends SvrProcess
 	
 	private boolean delete(MAllocationHdr hdr)
 	{
-	//	m_trx.start();
+		if (p_IsDeleteFactReconciled)
+			DB.executeUpdateEx("DELETE FROM Fact_Reconciliation WHERE Fact_Acct_ID IN (SELECT Fact_Acct_ID FROM Fact_Acct WHERE AD_Table_ID = ? AND Record_ID = ?)", new Object[] {MAllocationHdr.Table_ID,	hdr.getC_AllocationHdr_ID()}, m_trx.getTrxName());
+
 		boolean success = false;
 		if (hdr.delete(true, m_trx.getTrxName()))
 		{
