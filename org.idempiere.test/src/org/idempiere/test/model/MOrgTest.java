@@ -157,11 +157,11 @@ public class MOrgTest extends AbstractTestCase {
 	public void testNonExistingUUID() {
 		String nonExistingUU = "00000000-0000-0000-0000-000000000000";
 		MOrg org = new MOrg(Env.getCtx(), nonExistingUU, getTrxName());
-		assertTrue(org.getAD_Org_ID() == 0);
+		assertEquals(0, org.getAD_Org_ID(), "Non-existing UUID should result in new record with ID 0");
 	}
 
 	@Test
-	public void testSummary() {
+	public void testNameAndToString() {
 		MOrg org = new MOrg(Env.getCtx(), ORG_ID, getTrxName());
 		assertNotNull(org.getName());
 		assertTrue(org.getName().length() > 0);
@@ -256,7 +256,7 @@ public class MOrgTest extends AbstractTestCase {
 		        	return true;
 		        }
 		    };
-		    org.set_TrxName("TEST_TRX");  // simulate transaction name
+		    org.set_TrxName(getTrxName());
 		    assertTrue(org.save(), "save() should return true");
 		    int orgID = org.get_ID();
 		    assertTrue(orgID > 0, "saveEx() should return new ID for new record");

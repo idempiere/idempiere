@@ -72,7 +72,7 @@ import org.mockito.Mockito;
  */
 public class MClientTest extends AbstractTestCase {
 
-	private static int CLIENT_ID = DictionaryIDs.AD_Client.GARDEN_WORLD.id;
+	private static final int CLIENT_ID = DictionaryIDs.AD_Client.GARDEN_WORLD.id;
 	private static String CLIENT_UU;
 
 	@BeforeAll
@@ -151,7 +151,6 @@ public class MClientTest extends AbstractTestCase {
 		    assertNotNull(loaded1);
 		    assertEquals(clientId, loaded1.getAD_Client_ID());
 	    } finally {
-	    	rollback();
 	    	PO.clearCrossTenantSafe();
 	    	
 	    	if (client != null && client.get_ID() > 0) {
@@ -440,13 +439,13 @@ public class MClientTest extends AbstractTestCase {
         assertNull(acctSchema, "Should return null when no accounting schema is defined");
 
         // Case 2: m_info exists but C_AcctSchema1_ID == 0
-        MClientInfo info = client.getInfo();
+        client.getInfo(); // trigger lazy init
         acctSchema = client.getAcctSchema();
         assertNull(acctSchema, "Should return null when accounting schema ID is zero");
 
         // Case 3: m_info exists and C_AcctSchema1_ID is valid
         client = MClient.get(Env.getCtx(), CLIENT_ID);
-        info = client.getInfo();
+        MClientInfo info = client.getInfo();
         int validAcctSchemaId = info.getC_AcctSchema1_ID();
         acctSchema = client.getAcctSchema();
         assertNotNull(acctSchema, "Should return accounting schema when ID is valid");
@@ -631,7 +630,7 @@ public class MClientTest extends AbstractTestCase {
         assertFalse(client.isAutoArchive(), "AutoArchive 'None' should return false");
 
         // Case 3: auto archive set to other value
-        client.setAutoArchive("Daily");
+        client.setAutoArchive(MClient.AUTOARCHIVE_Documents);
         assertTrue(client.isAutoArchive(), "AutoArchive other than 'None' should return true");
     }
 	
@@ -915,7 +914,6 @@ public class MClientTest extends AbstractTestCase {
 		    assertFalse(client.sendEMailAttachments(from, to, "S", "M", list));
 		    client.sendThrowsException = false;
 	    } finally {
-	    	rollback();
 	    	PO.clearCrossTenantSafe();
 	    	
 	    	if (from != null && from.get_ID() > 0)
@@ -973,7 +971,6 @@ public class MClientTest extends AbstractTestCase {
 		    assertTrue(info.getAD_Tree_Org_ID() > 0);
 		    assertTrue(info.getAD_Tree_BPartner_ID() > 0);
 		} finally {
-			rollback();
 			PO.clearCrossTenantSafe();
 			
 			if (client1 != null && client1.get_ID() > 0) {

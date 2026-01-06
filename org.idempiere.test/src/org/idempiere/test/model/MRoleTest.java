@@ -859,13 +859,13 @@ public class MRoleTest extends AbstractTestCase {
         String whereNoMatch = "Name='NonExistingRoleXYZ'";
         MRole[] noRoles = MRole.getOf(Env.getCtx(), whereNoMatch);
         assertNotNull(noRoles);
-        assertTrue(noRoles.length == 0, "No roles should be returned");
+        assertEquals(0, noRoles.length, "No roles should be returned");
 
         // 5. Malformed whereClause (SQL error)
         String whereInvalid = "INVALID SQL SYNTAX";
         MRole[] invalidRoles = MRole.getOf(Env.getCtx(), whereInvalid);
         assertNotNull(invalidRoles);
-        assertTrue(invalidRoles.length == 0, "Invalid SQL should return empty array safely");
+        assertEquals(0, invalidRoles.length, "Invalid SQL should return empty array safely");
     }
     
     /**
@@ -1193,15 +1193,15 @@ public class MRoleTest extends AbstractTestCase {
         // 1. UUID path (non-empty UUID)
         boolean resultUuid = role.checkAccessSQL(table, ROLE_ID, ROLE_UU, true);
         // Result may be true/false depending on role permissions, but call must succeed
-        assertNotNull(resultUuid, "checkAccessSQL with UUID must return a boolean");
-
+        assertTrue(resultUuid || !resultUuid, "checkAccessSQL with UUID should succeed");
+        
         // 2. RecordId path (empty UUID)
         boolean resultId = role.checkAccessSQL(table, ROLE_ID, "", true);
-        assertNotNull(resultId, "checkAccessSQL with recordId must return a boolean");
+        assertTrue(resultId || !resultId, "checkAccessSQL with recordId should succeed");
 
         // 3. Null UUID path
         boolean resultNullUuid = role.checkAccessSQL(table, ROLE_ID, null, false);
-        assertNotNull(resultNullUuid, "checkAccessSQL with null UUID must return a boolean");
+        assertTrue(resultNullUuid || !resultNullUuid, "checkAccessSQL with null UUID should succeed");
     }
     
     /**
@@ -1897,7 +1897,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
     void testGetDependentRecordWhereColumn() throws Exception {
-        MRole role = new MRole(Env.getCtx(), 0, null);
+    	MRole role = new MRole(Env.getCtx(), 0, getTrxName());
         Method method = MRole.class.getDeclaredMethod("getDependentRecordWhereColumn", String.class, String.class);
         method.setAccessible(true);
 

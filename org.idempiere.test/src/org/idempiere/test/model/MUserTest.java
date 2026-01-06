@@ -634,7 +634,7 @@ public class MUserTest extends AbstractTestCase {
 	}
 	
 	/**
-	 * 
+	 * Test cases for MUser.getInternetAddress()
 	 */
 	@Test
     public void testInternetAddress() {
