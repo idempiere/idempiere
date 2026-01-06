@@ -736,7 +736,7 @@ public class MUserTest extends AbstractTestCase {
 	        access = user.getBPAccess(true);
 	        assertNotNull(access, "BP access array should be initialized");
 	
-	        // Case 3: m_bpAccess non-empty, add a BP access with matching type
+	        // Case 5: m_bpAccess non-empty, add a BP access with matching type
 	        userBPAccess = new MUserBPAccess(user.getCtx(), 0, getTrxName());
 	        userBPAccess.setAD_User_ID(user.getAD_User_ID());
 	        userBPAccess.setIsActive(true);
@@ -750,7 +750,7 @@ public class MUserTest extends AbstractTestCase {
 	        assertTrue(requeryAccess.length > 0, "Requery should return at least one BP access");
 	        assertTrue(user.hasBPAccess(MUserBPAccess.BPACCESSTYPE_Requests, null), "User should have access to existing BPAccessType");
 
-	        // Case 4: Check for non-existing BPAccessType
+	        // Case 6: Check for non-existing BPAccessType
 	        assertFalse(user.hasBPAccess(MUserBPAccess.BPACCESSTYPE_AssetsDownload, null), "User should not have access to non-existing BPAccessType");        
 		} finally {
 			if (userBPAccess != null && userBPAccess.get_ID() > 0)
@@ -887,7 +887,7 @@ public class MUserTest extends AbstractTestCase {
         assertTrue(user.isMenuAutoExpand(), "IS_MENU_AUTO_EXPAND='Y' should return true");
 
         // Case 2: getIsMenuAutoExpand() returns "N"
-        user.setIsMenuAutoExpand("N");
+        user.setIsMenuAutoExpand(MUser.ISMENUAUTOEXPAND_No);
         assertFalse(user.isMenuAutoExpand(), "IS_MENU_AUTO_EXPAND='N' should return false");
 
         // Case 3: getIsMenuAutoExpand() is null, uses MRole default

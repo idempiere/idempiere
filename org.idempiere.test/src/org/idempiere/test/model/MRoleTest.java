@@ -887,7 +887,7 @@ public class MRoleTest extends AbstractTestCase {
 	        // Check that each role belongs to the current client
 	        int currentClientId = Env.getAD_Client_ID(Env.getCtx());
 	        for (MRole role : roles) {
-	            assertTrue(role.getAD_Client_ID() == currentClientId, "Role should belong to current client");
+	            assertEquals(currentClientId, role.getAD_Client_ID(), "Role should belong to current client");
 	        }
     	}
 
@@ -902,7 +902,7 @@ public class MRoleTest extends AbstractTestCase {
 	    	};
 	    	for (MRole[] noRoles : rolesArray) {
 		        assertNotNull(noRoles);
-		        assertTrue(noRoles.length == 0, "No roles should be returned for invalid client");
+		        assertEquals(0, noRoles.length, "No roles should be returned for invalid client");
 	    	}
     	} finally {
     		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, originalClientId); // restore
@@ -1324,7 +1324,7 @@ public class MRoleTest extends AbstractTestCase {
         for (MRole included : includedRoles) {
             assertTrue(resultAll.contains("INCLUDED_VAR=" + included.getAD_Role_ID()), "Result must contain included role variable");
         }
-        if (includedRoles.size() > 0) {
+        if (!includedRoles.isEmpty()) {
         	assertTrue(resultAll.contains("\n"), "Variables should be separated by newline");
         }
     }
@@ -1766,14 +1766,7 @@ public class MRoleTest extends AbstractTestCase {
         Object[] orgArray1 = new Object[]{oa1};
         Object[] orgArray2 = new Object[]{oa2, oa3};
 
-        // --- MTableAccess ---
-        MTableAccess tableAccess3 = new MTableAccess(ctx, 0, trxName);
-        tableAccess3.setAD_Role_ID(role.get_ID());
-        tableAccess3.setAD_Table_ID(MProduct.Table_ID);
-        tableAccess3.setAccessTypeRule(MTableAccess.ACCESSTYPERULE_Accessing);
-        tableAccess3.setIsExclude(false);
-        tableAccess3.setIsReadOnly(true);
-        
+        // TableAccess      
         MTableAccess ta1 = new MTableAccess(ctx, 0, trxName);
         ta1.setIsExclude(true);
         MTableAccess ta2 = new MTableAccess(ctx, 0, trxName);
