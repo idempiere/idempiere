@@ -620,52 +620,57 @@ public class POTest extends AbstractTestCase
 			lotLevel.deleteEx(true);
 		}
 		
-		// log migration script for update of lookup fields
-		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
-		testPO.setName("testPO1");
-		testPO.setT_Integer(100);
-		testPO.saveEx();
-		
-		MTest testPO1 = new MTest(Env.getCtx(), 0, getTrxName());
-		testPO1.setName("testPO2");
-		testPO1.setT_Integer(100);
-		testPO1.saveEx();
-		
-		MUOM testUOM = new MUOM(Env.getCtx(), 0, getTrxName());
-		testUOM.setName("testUOM1");
-		testUOM.setX12DE355("testUOM1");
-		testUOM.saveEx();
-		testPO1.setAD_Table_ID(MTest.Table_ID);
-		testPO1.setRecord_ID(testPO.get_ID());
-		testPO1.setC_UOM_ID(testUOM.get_ID());
-		testPO1.setIsActive(false);
-		testPO1.setT_DateTime(new Timestamp(System.currentTimeMillis()));
-		testPO1.setT_Number(BigDecimal.TEN);
-		testPO1.saveEx();
-		
-		// test change log for insert
-		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
-			mocked.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
-				.thenReturn("K");
-			MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
-			t1.saveEx();
-			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+		try {
+			// log migration script for update of lookup fields
+			MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+			testPO.setName("testPO1");
+			testPO.setT_Integer(100);
+			testPO.saveEx();
+			
+			MTest testPO1 = new MTest(Env.getCtx(), 0, getTrxName());
+			testPO1.setName("testPO2");
+			testPO1.setT_Integer(100);
+			testPO1.saveEx();
+			
+			MUOM testUOM = new MUOM(Env.getCtx(), 0, getTrxName());
+			testUOM.setName("testUOM1");
+			testUOM.setX12DE355("testUOM1");
+			testUOM.saveEx();
+			testPO1.setAD_Table_ID(MTest.Table_ID);
+			testPO1.setRecord_ID(testPO.get_ID());
+			testPO1.setC_UOM_ID(testUOM.get_ID());
+			testPO1.setIsActive(false);
+			testPO1.setT_DateTime(new Timestamp(System.currentTimeMillis()));
+			testPO1.setT_Number(BigDecimal.TEN);
+			testPO1.saveEx();
+			
+			testPO1.load(getTrxName());
+			assertEquals(testPO1.getRecord_ID(), testPO.get_ID());
+			
+			// test change log for insert
+			try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+				mocked.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
+					.thenReturn("K");
+				MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+				t1.saveEx();
+				Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
 				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_ID + "=?", getTrxName());
-			MChangeLog changeLog = query.setParameters(MTest.Table_ID, t1.get_ID()).first();
-			assertNotNull(changeLog, "No change log found for inserted record");
-			assertTrue(changeLog.get_ID() > 0, "Change log ID is invalid");
+				MChangeLog changeLog = query.setParameters(MTest.Table_ID, t1.get_ID()).first();
+				assertNotNull(changeLog, "No change log found for inserted record");
+				assertTrue(changeLog.get_ID() > 0, "Change log ID is invalid");
+			}
+		} finally {	
+			String fileName = Convert.getGeneratedMigrationScriptFileName();
+			String folderPg = Convert.getMigrationScriptFolder("postgresql");
+			String folderOr = Convert.getMigrationScriptFolder("oracle");
+			Convert.closeLogMigrationScript();
+			File file = new File(folderPg + fileName);
+			assertTrue(file.exists(), "Not found: " + folderPg + fileName);
+			file.delete();
+			file = new File(folderOr + fileName);
+			assertTrue(file.exists(), "Not found: " + folderOr + fileName);
+			file.delete();			
 		}
-				
-		String fileName = Convert.getGeneratedMigrationScriptFileName();
-		String folderPg = Convert.getMigrationScriptFolder("postgresql");
-		String folderOr = Convert.getMigrationScriptFolder("oracle");
-		Convert.closeLogMigrationScript();
-		File file = new File(folderPg + fileName);
-		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
-		file.delete();
-		file = new File(folderOr + fileName);
-		assertTrue(file.exists(), "Not found: " + folderOr + fileName);
-		file.delete();
 	}
 	
 	@Test
@@ -2098,6 +2103,10 @@ public class POTest extends AbstractTestCase
 	
 	@Test
 	void TestUseTimeoutForUpdate() {
+		// Skip for Oracle as it does not provide reliable query timeout support for update statements
+		if (DB.isOracle())
+			return;
+		
 		try (MockedStatic<SystemProperties> mocked = Mockito.mockStatic(SystemProperties.class, Mockito.CALLS_REAL_METHODS)) {
 			mocked.when(() -> SystemProperties.isUseTimeoutForUpdate())
 				.thenReturn(true);

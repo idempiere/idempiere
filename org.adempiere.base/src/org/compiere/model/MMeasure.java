@@ -25,9 +25,12 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 
 import org.adempiere.apps.graph.GraphColumn;
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.MeasureInterface;
 import org.compiere.util.DB;
@@ -664,25 +667,46 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 						log.log(Level.SEVERE, retValue.toString());
 						break;
 					}
-					ScriptEngine engine = rule.getScriptEngine();
-					if (engine == null) {
-						throw new AdempiereException("Engine not found: " + rule.getEngineName());
+
+					// Try to use cached compiled script for better performance
+					CompiledScript compiled = Core.getCompiledScript(rule);
+					if (compiled != null) {
+						Bindings bindings = compiled.getEngine().createBindings();
+						MRule.setContext(bindings, po.getCtx(), 0);
+						bindings.put(MRule.ARGUMENTS_PREFIX + "Ctx", po.getCtx());
+						bindings.put(MRule.ARGUMENTS_PREFIX + "PO", po);
+						try
+						{
+							Object value =  compiled.eval(bindings);
+							amt = (BigDecimal)value;
+						}
+						catch (Exception e)
+						{
+							log.log(Level.SEVERE, "", e);
+							retValue = 	new StringBuilder("Script Invalid: ").append(e.getLocalizedMessage());
+							return false;
+						}
+					} else {
+						ScriptEngine engine = rule.getScriptEngine();
+						if (engine == null) {
+							throw new AdempiereException("Engine not found: " + rule.getEngineName());
+						}
+						MRule.setContext(engine, po.getCtx(), 0);
+						engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", po.getCtx());
+						engine.put(MRule.ARGUMENTS_PREFIX + "PO", po);
+						try
+						{
+							Object value =  engine.eval(rule.getScript());
+							amt = (BigDecimal)value;
+						}
+						catch (Exception e)
+						{
+							log.log(Level.SEVERE, "", e);
+							retValue = 	new StringBuilder("Script Invalid: ").append(e.getLocalizedMessage());
+							return false;
+						}
 					}
-					MRule.setContext(engine, po.getCtx(), 0);
-					engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", po.getCtx());
-					engine.put(MRule.ARGUMENTS_PREFIX + "PO", po);
-					try 
-					{
-						Object value =  engine.eval(rule.getScript());
-						amt = (BigDecimal)value;
-					}
-					catch (Exception e)
-					{
-						log.log(Level.SEVERE, "", e);
-						retValue = 	new StringBuilder("Script Invalid: ").append(e.toString());
-						return false;
-					}	
-				} 
+				}
 				else 
 				{
 					MeasureInterface custom = null;
