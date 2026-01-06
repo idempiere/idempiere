@@ -842,8 +842,6 @@ public class MUserTest extends AbstractTestCase {
 	        user.setEMailUserPW("secret");
 	        assertTrue(user.isCanSendEMail(), "Non-empty SMTP password should return true");
 		} finally {
-			rollback();
-			
 			client.setIsSmtpAuthorization(originalIsStmpAuthorization);
 	        client.saveEx(null);
 	        CacheMgt.get().reset(MClient.Table_Name);

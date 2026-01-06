@@ -259,16 +259,16 @@ public class MOrgTest extends AbstractTestCase {
 		    org.set_TrxName(getTrxName());
 		    assertTrue(org.save(), "save() should return true");
 		    int orgID = org.get_ID();
-		    assertTrue(orgID > 0, "saveEx() should return new ID for new record");
+		    assertTrue(orgID > 0, "save() should generate new ID for new record");
 	
 		    // Modify Value and Name to trigger is_ValueChanged branch in afterSave
 		    org.setName("TEST_ORG_UPDATED");
 		    org.setValue("TEST_ORG_UPDATED");
 		    assertTrue(org.save(), "save() should return true");
 		    int updatedID = org.get_ID();
-		    assertEquals(orgID, updatedID, "saveEx() should return same ID for update");
-		    
-		    assertTrue(org.delete(true), "deleteEx() should return true for successful deletion");
+		    assertEquals(orgID, updatedID, "save() should return same ID for update");
+		    		    
+		    assertTrue(org.delete(true), "delete() should return true for successful deletion");
 	    } finally {
 	    	rollback();
 	    }

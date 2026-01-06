@@ -21,6 +21,7 @@
  **********************************************************************/
 package org.idempiere.test.model;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -1191,17 +1192,13 @@ public class MRoleTest extends AbstractTestCase {
     	MTable table = MTable.get(Env.getCtx(), MRole.Table_ID);
     	
         // 1. UUID path (non-empty UUID)
-        boolean resultUuid = role.checkAccessSQL(table, ROLE_ID, ROLE_UU, true);
-        // Result may be true/false depending on role permissions, but call must succeed
-        assertTrue(resultUuid || !resultUuid, "checkAccessSQL with UUID should succeed");
+        assertDoesNotThrow(() -> role.checkAccessSQL(table, ROLE_ID, ROLE_UU, true));
         
         // 2. RecordId path (empty UUID)
-        boolean resultId = role.checkAccessSQL(table, ROLE_ID, "", true);
-        assertTrue(resultId || !resultId, "checkAccessSQL with recordId should succeed");
+        assertDoesNotThrow(() -> role.checkAccessSQL(table, ROLE_ID, "", true));
 
         // 3. Null UUID path
-        boolean resultNullUuid = role.checkAccessSQL(table, ROLE_ID, null, false);
-        assertTrue(resultNullUuid || !resultNullUuid, "checkAccessSQL with null UUID should succeed");
+        assertDoesNotThrow(() -> role.checkAccessSQL(table, ROLE_ID, null, false));
     }
     
     /**
