@@ -88,7 +88,8 @@ public final class DictionaryIDs {
 		GARDEN_WORLD_ADMIN(102),
 		GARDEN_WORLD_USER(103),
 		GARDEN_WORLD_ADMIN_NOT_ADVANCED(200001),
-		SYSTEM_ADMINISTRATOR(0);
+		SYSTEM_ADMINISTRATOR(0),
+		WEB_SERVICE_EXECUTION(50004);
 		
 		public final int id;
 
@@ -164,6 +165,7 @@ public final class DictionaryIDs {
 		COLOR_INC(50001,"6e967db4-e6a9-488f-ae76-f811fb86186e"),
 		CHROME_INC(50002,"e1b92d09-ca76-4326-aa45-449e0c4509a3"),
 		CHEMICAL_INC(50003,"26abfd12-5aa2-4668-b0c7-76d680ccfb10"),
+		STORE_CENTRAL(50004, "04dcc5f6-a2e1-48ef-8b8d-c0d758f09a53"),
 		AGRI_TECH(200000,"605450c7-24a7-4da9-990d-a8e5e7dd57eb");
 
 		public final int id;
@@ -889,6 +891,26 @@ public final class DictionaryIDs {
 		public final int id;
 
 		private AD_Menu(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_InfoWindow {
+		PRODUCT_INFO(200000);
+		
+		public final int id;
+
+		private AD_InfoWindow(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Task {
+		JAVA_VERSION(102);
+		
+		public final int id;
+
+		private AD_Task(int id) {
 			this.id = id;
 		}
 	}
