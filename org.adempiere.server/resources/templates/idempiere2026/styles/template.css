@@ -1,0 +1,32 @@
+.bg-button {
+    background-color: #f0f0f0;
+}
+.bg-button:hover {
+    border-color: #f0f0f0 !important;
+}
+.bg-button span {
+    color: #474747 !important;
+}
+.secondary-button {
+    min-height: 100px;
+    min-width: 100px;
+}
+.secondary-button span {
+    color: #474747 !important;
+    font-size: 1.5em;
+}
+.navbar-brand {
+    color: #474747 !important;
+    font-size: 1.5em;
+}
+.nav-link {
+    color: #0080af !important;
+    font-size: 1.2em;
+}
+.nav-link:hover {
+    color: #474747 !important;
+    text-decoration: underline;
+}
+.content {
+    min-height: calc(100vh - 250px);
+}
