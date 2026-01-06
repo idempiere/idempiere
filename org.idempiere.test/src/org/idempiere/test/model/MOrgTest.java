@@ -234,7 +234,7 @@ public class MOrgTest extends AbstractTestCase {
 	}
 	
 	@Test
-	public void testSaveExAndDeleteEx() {
+	public void testSaveAndDelete() {
 	    Properties ctx = Env.getCtx();
 	    MClient client = MClient.get(ctx);
 	    MOrg org = null;

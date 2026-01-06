@@ -827,9 +827,8 @@ public class MRoleTest extends AbstractTestCase {
     public void testManualAndMasterFlags()
     {
 	    MRole role = new MRole(Env.getCtx(), ROLE_ID, getTrxName());
-	    // These flags should be explicitly accessible and stable
-	    assertTrue(!role.isManual() || role.isManual(), "Manual flag should be accessible");
-	    assertTrue(!role.isMasterRole() || role.isMasterRole(), "Master role flag should be accessible");
+	    assertFalse(role.isManual(), "GardenWorld Admin should not be a manual role");
+	    assertFalse(role.isMasterRole(), "GardenWorld Admin should not be a master role");
     }
     
     /**
@@ -1267,12 +1266,7 @@ public class MRoleTest extends AbstractTestCase {
         // Included roles are dynamically retrieved; check that their IDs appear
         List<MRole> includedRoles = role.getIncludedRoles(true);
         for (MRole r : includedRoles) {
-            if (params != null) {
-                assertTrue(params.contains(r.getAD_Role_ID()), "Params must include included role ID " + r.getAD_Role_ID());
-            } else {
-                assertTrue(whereLiteral.contains(String.valueOf(r.getAD_Role_ID())), 
-                		"Literal where clause must include included role ID " + r.getAD_Role_ID());
-            }
+        	assertTrue(params.contains(r.getAD_Role_ID()), "Params must include included role ID " + r.getAD_Role_ID());
         }
     }
     

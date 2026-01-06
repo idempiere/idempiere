@@ -418,7 +418,7 @@ public class MUserTest extends AbstractTestCase {
 	    assertNotNull(pairsWithEmpty, "Result array must not be null");
 	    assertTrue(pairsWithEmpty.length >= pairs.length, "Result array with empty element should be larger or equal in size");
 	    assertEquals("", pairsWithEmpty[0].getName(), "First element should be empty string when withEmptyElement is true");
-	    assertEquals(-1, pairsWithEmpty[0].getKey(), "Key of empty element should be 0");
+	    assertEquals(-1, pairsWithEmpty[0].getKey(), "Key of empty element should be -1");
 	}
 	
 	/**
@@ -563,11 +563,14 @@ public class MUserTest extends AbstractTestCase {
 	        config.setValue("U");
 			config.saveEx(null);
 			CacheMgt.get().reset(MSysConfig.Table_Name);
-
-	        String fallbackUser = user.getEMailUser();
-	        assertEquals(user.getEMailUser(), fallbackUser, "When no credential flags are enabled, fallback email user must be returned");
-	        String fallbackUserPW = user.getEMailUserPW();
-	        assertEquals(user.getEMailUserPW(), fallbackUserPW, "When no credential flags are enabled, fallback email user password must be returned");
+			
+			// Retrieve expected fallback values directly from the superclass methods
+			String expectedFallbackUser = DB.getSQLValueString(getTrxName(), "SELECT EMailUser FROM AD_User WHERE AD_User_ID=?", USER_ID);
+			String fallbackUser = user.getEMailUser();
+			assertEquals(expectedFallbackUser, fallbackUser, "When no credential flags are enabled, fallback email user must be returned");
+			String expectedFallbackUserPW = DB.getSQLValueString(getTrxName(), "SELECT EMailUserPW FROM AD_User WHERE AD_User_ID=?", USER_ID);
+			String fallbackUserPW = user.getEMailUserPW();
+			assertEquals(expectedFallbackUserPW, fallbackUserPW, "When no credential flags are enabled, fallback email user password must be returned");
 	    } finally {
 	        rollback();
 	        
@@ -750,8 +753,6 @@ public class MUserTest extends AbstractTestCase {
 	        // Case 4: Check for non-existing BPAccessType
 	        assertFalse(user.hasBPAccess(MUserBPAccess.BPACCESSTYPE_AssetsDownload, null), "User should not have access to non-existing BPAccessType");        
 		} finally {
-			rollback();
-			
 			if (userBPAccess != null && userBPAccess.get_ID() > 0)
 				userBPAccess.deleteEx(true, null);
 			if (user != null && user.get_ID() > 0)
