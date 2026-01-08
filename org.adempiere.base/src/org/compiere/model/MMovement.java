@@ -567,7 +567,16 @@ public class MMovement extends X_M_Movement implements DocAction
 						
 						//Update Storage 
 						Timestamp effDateMPolicy = dateMPolicy;
-						if (dateMPolicy == null && line.getMovementQty().negate().signum() > 0)
+						if (effDateMPolicy == null && line.getMovementQty().negate().signum() > 0 && product.getM_AttributeSet_ID() > 0) {
+							MAttributeSet as = MAttributeSet.get(getCtx(), product.getM_AttributeSet_ID());
+							if (as.isUseGuaranteeDateForMPolicy()) {
+								MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), line.getM_AttributeSetInstance_ID(), get_TrxName());
+								if (asi != null && asi.getGuaranteeDate() != null) {
+									effDateMPolicy = asi.getGuaranteeDate();
+								}
+							}
+						}
+						if (effDateMPolicy == null && line.getMovementQty().negate().signum() > 0)
 							effDateMPolicy = getMovementDate();
 						if (!MStorageOnHand.add(getCtx(),
 								line.getM_Locator_ID(),
@@ -582,7 +591,16 @@ public class MMovement extends X_M_Movement implements DocAction
 	
 						//Update Storage
 						effDateMPolicy = dateMPolicy;
-						if (dateMPolicy == null && line.getMovementQty().signum() > 0)
+						if (effDateMPolicy == null && line.getMovementQty().signum() > 0 && product.getM_AttributeSet_ID() > 0) {
+							MAttributeSet as = MAttributeSet.get(getCtx(), product.getM_AttributeSet_ID());
+							if (as.isUseGuaranteeDateForMPolicy()) {
+								MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), line.getM_AttributeSetInstanceTo_ID(), get_TrxName());
+								if (asi != null && asi.getGuaranteeDate() != null) {
+									effDateMPolicy = asi.getGuaranteeDate();
+								}
+							}
+						}
+						if (effDateMPolicy == null && line.getMovementQty().signum() > 0)
 							effDateMPolicy = getMovementDate();
 						if (!MStorageOnHand.add(getCtx(),
 								line.getM_LocatorTo_ID(),
