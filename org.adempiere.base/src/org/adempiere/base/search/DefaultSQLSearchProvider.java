@@ -95,7 +95,10 @@ public class DefaultSQLSearchProvider implements ISearchProvider {
             
             // search for a Integer
             if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
-                params.add(Integer.valueOf(searchString.replaceAll("\\D", "")));
+                String digitsOnly = searchString.replaceAll("\\D", "");
+                if (Util.isEmpty(digitsOnly))
+                    return list; // No valid integer to search
+                params.add(Integer.valueOf(digitsOnly));
                 // search for a String
             } else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
                 if (searchString.endsWith("%"))
@@ -117,7 +120,10 @@ public class DefaultSQLSearchProvider implements ISearchProvider {
             }
             for (int i = 1; i < count; i++) {
                 if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
-                    params.add(Integer.valueOf(searchString.replaceAll("\\D", "")));
+                    String digitsOnly = searchString.replaceAll("\\D", "");
+                    if (Util.isEmpty(digitsOnly))
+                        return list; // No valid integer to search
+                    params.add(Integer.valueOf(digitsOnly));
                 } else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
                     if (searchString.endsWith("%"))
                         params.add(searchString);
@@ -197,7 +203,7 @@ public class DefaultSQLSearchProvider implements ISearchProvider {
                 result.setWindowId(window.getAD_Window_ID());
 
                 result.setTableName(tableName);
-                if (rs.getMetaData().getColumnCount() > 1) {
+                if (metaData.getColumnCount() > 1) {
                     result.setName(rs.getString(2));
                 }
                 Map<String, Object> valueMap = new HashMap<String, Object>();

@@ -36,7 +36,7 @@ public class SearchResult {
     private int recordId;
     private String label;
     private String name;
-    private Object[] valus;
+    private Object[] values;
     private Map<String, Object> valueMap = null;
     private int AD_Message_ID = 0;
     private int AD_Style_ID = 0;
@@ -132,7 +132,7 @@ public class SearchResult {
      * @param values
      */
     public void setValues(Object[] values) {
-        this.valus = values;
+        this.values = values;
     }
 
     /**
@@ -141,7 +141,7 @@ public class SearchResult {
      * @return value array
      */
     public Object[] getValues() {
-        return this.valus;
+        return this.values;
     }
 
     /**
