@@ -1462,15 +1462,14 @@ public class MCostDetail extends X_M_CostDetail
 					if (mpo.getC_InvoiceLine_ID() == getC_InvoiceLine_ID() 
 							&& mpo.getDateAcct().compareTo(getDateAcct()) == 0
 							&& mpo.getQty().compareTo(il.getQtyInvoiced()) != 0) { 
-						// partial MR, get the cost info from previous order
+						// partial MR, get the cost info from previous cost detail
 						StringBuilder whereClause = new StringBuilder();
-						whereClause.append("C_OrderLine_ID = ? ");
-						whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+						whereClause.append("TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
 						whereClause.append(" AND M_AttributeSetInstance_ID = ?");
 						whereClause.append(" AND C_AcctSchema_ID = ?");
 						whereClause.append(" AND M_CostDetail_ID < ?");
 						cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-								.setParameters(mpo.getC_OrderLine_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+								.setParameters(M_ASI_ID, as.get_ID(), this.get_ID())
 								.setOrderBy("M_CostDetail_ID DESC")
 								.first();
 						break;
