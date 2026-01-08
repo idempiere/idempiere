@@ -32,6 +32,8 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 
@@ -1897,6 +1899,41 @@ public final class Env
 	{
 		return parseContextForSql(ctx, WindowNo, value, onlyWindow, false, false, parameters);
 	}
+	
+	/**
+	 * Merge initial parameters and extracted parameters according to the SQL string.
+	 * @param sql SQL with both '?' and '@var@' context variables
+	 * @param initialParams parameters for '?'
+	 * @param extractedParams parameters for '@var@'
+	 * @return
+	 */
+	public static List<Object> mergeParameters(String sql, Object[] initialParams, Object[] extractedParams) {
+        // Regex to find BOTH '?' and '@var@'
+        // We use | (OR) to find either one as we scan the string
+        Pattern pattern = Pattern.compile("\\?|@([^@]+)@");
+        Matcher matcher = pattern.matcher(sql);
+
+        List<Object> combined = new ArrayList<>();
+        int questionMarkPointer = 0;
+        int extractedPointer = 0;
+
+        while (matcher.find()) {
+            String match = matcher.group();
+            
+            if (match.equals("?")) {
+                // If we hit a '?', take from the original parameter array
+                if (questionMarkPointer < initialParams.length) {
+                    combined.add(initialParams[questionMarkPointer++]);
+                }
+            } else {
+                // If we hit an '@v@', take from your parse() result array
+                if (extractedPointer < extractedParams.length) {
+                    combined.add(extractedParams[extractedPointer++]);
+                }
+            }
+        }
+        return combined;
+    }
 	
 	/**
 	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.

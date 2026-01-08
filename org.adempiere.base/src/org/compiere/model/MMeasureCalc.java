@@ -290,8 +290,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 				trunc = "W";
 
 			sql.append(" AND TRUNC(").append(getDateColumn()).append(",'").append(trunc)
-				.append("')=TRUNC(?,'").append(trunc).append("')");
-			params.add(date);
+				.append("')=TRUNC(").append(DB.TO_DATE(date)).append(",'").append(trunc).append("')");
 		}
 		String finalSQL = addRestrictions(sql.toString(), restrictions, role, params);
 		if (finalSQL.indexOf("@") >= 0) {
