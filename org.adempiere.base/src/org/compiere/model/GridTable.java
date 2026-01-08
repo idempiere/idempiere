@@ -3326,8 +3326,7 @@ public class GridTable extends AbstractTableModel
 							}
 							else
 							{
-								log.log(Level.WARNING, "Failed to parse where clause. whereClause="+m_whereClause);
-								str = null;
+								log.log(Level.WARNING, "Failed to parse where clause param. param="+str);
 							}
 						}
 						if (hasId && str != null)

@@ -294,9 +294,16 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		}
 		String finalSQL = addRestrictions(sql.toString(), restrictions, role, params);
 		if (finalSQL.indexOf("@") >= 0) {
-			List<Object> ctxParams = new ArrayList<Object>(params);
+			List<Object> ctxParams = new ArrayList<Object>();
+			String orginalSQL = finalSQL;
 			finalSQL = Env.parseContextForSql(getCtx(), 0, finalSQL, false, false, ctxParams);
-			params.addAll(ctxParams);
+			if (!ctxParams.isEmpty())
+			{
+				if (!params.isEmpty())
+					params = Env.mergeParameters(orginalSQL, params.toArray(), ctxParams.toArray());
+				else
+					params.addAll(ctxParams);
+			}
 		}
 		//	Execute
 		StringBuilder where = new StringBuilder();
