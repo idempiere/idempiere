@@ -1034,7 +1034,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				infoWindowListItemRenderer.addTableValueChangeListener(contentPanel); // Replicated from WListbox constructor
 			}					
 			
-			StringBuilder builder = new StringBuilder(p_sqlFilter.sqlClause() != null ? p_sqlFilter.sqlClause().trim() : "");
+			StringBuilder builder = new StringBuilder(p_sqlFilter != null && p_sqlFilter.sqlClause() != null ? p_sqlFilter.sqlClause().trim() : "");
 			String infoWhereClause = infoWindow.getWhereClause();
 			List<Object> infoWhereClauseParams = new ArrayList<>();
 			if (infoWhereClause != null && infoWhereClause.indexOf("@") >= 0) {
@@ -1050,7 +1050,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				builder.append(infoWhereClause);
 				builder.append(")");
 				List<Object> params = new ArrayList<>();
-				params.addAll(p_sqlFilter.parameters());
+				if (p_sqlFilter != null)
+					params.addAll(p_sqlFilter.parameters());
 				params.addAll(infoWhereClauseParams);
 				p_sqlFilter = new SQLFragment(builder.toString(), params);
 				p_whereClause = p_sqlFilter.toSQLWithParameters();
@@ -1427,14 +1428,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (cnt > 0)
 					{
 						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString);
-						builder.append(filter.sqlClause());
-						parameters.addAll(filter.parameters());
+						builder.append(filter.toSQLWithParameters());
 					}
 					else
 					{
 						SQLFragment filter = DB.inFilterForCSV(columnName, pString);
-						builder.append(filter.sqlClause());
-						parameters.addAll(filter.parameters());
+						builder.append(filter.toSQLWithParameters());
 					}
 				} 
 				else if (InfoColumnVO.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable || InfoColumnVO.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch)
@@ -1443,14 +1442,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (columnName.endsWith("_ID"))
 					{						
 						SQLFragment filter = DB.inFilterForCSV(columnName, pString);
-						builder.append(filter.sqlClause());
-						parameters.addAll(filter.parameters());
+						builder.append(filter.toSQLWithParameters());
 					}
 					else
 					{
 						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString);
-						builder.append(filter.sqlClause());
-						parameters.addAll(filter.parameters());
+						builder.append(filter.toSQLWithParameters());
 					}
 				}
 				else

@@ -470,11 +470,11 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
         }
 
         sql.append( " FROM ").append(from);
-        sql.append(" WHERE ").append(sqlFilter.sqlClause());
+        sql.append(" WHERE ").append(sqlFilter != null ? sqlFilter.sqlClause() : "");
 
         if (from.length() == 0)
         {
-        	return new SQLFragment(sql.toString(), sqlFilter.parameters());
+        	return new SQLFragment(sql.toString(), sqlFilter != null ? sqlFilter.parameters() : List.of());
         }
         //
         if (addAccessSQL)
@@ -486,11 +486,11 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
             if (logger.isLoggable(Level.FINEST)) logger.finest(finalSQL);
 
-            return new SQLFragment(finalSQL, sqlFilter.parameters());
+            return new SQLFragment(finalSQL, sqlFilter != null ? sqlFilter.parameters() : List.of());
         }
         else
         {
-            return new SQLFragment(sql.toString(), sqlFilter.parameters());
+            return new SQLFragment(sql.toString(), sqlFilter != null ? sqlFilter.parameters() : List.of());
         }
     }   // prepareTable
 

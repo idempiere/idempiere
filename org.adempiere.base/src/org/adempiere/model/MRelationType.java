@@ -523,7 +523,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			StringBuilder sqlFirstKey = new StringBuilder("SELECT ").append(query.getZoomColumnName())
 					.append(sqlCommon);
 
-			final int firstKey = DB.getSQLValueEx(null, sqlFirstKey.toString());
+			final int firstKey = DB.getSQLValueEx(null, sqlFirstKey.toString(), filter.parameters());
 			query.setZoomValue(firstKey);
 		}
 	}

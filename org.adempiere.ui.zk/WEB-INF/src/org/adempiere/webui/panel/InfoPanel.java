@@ -1224,15 +1224,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
     	PreparedStatement m_pstmt = null;
 		ResultSet m_rs = null;
-		String dataSql = null;
+		SQLFragment dataSql = null;
 		
 		long startTime = System.currentTimeMillis();
 			//
 
-        dataSql = buildDataSQL(start, end);
+        dataSql = buildDataSQLFragment(start, end);
         isHasNextPage = false;
         if (log.isLoggable(Level.FINER))
-        	log.finer(dataSql);
+        	log.finer(dataSql.sqlClause());
         Trx trx = null;
 		try
 		{
@@ -1240,7 +1240,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			String trxName = Trx.createTrxName("InfoPanelLoad:");
 			trx  = Trx.get(trxName, true);
 			trx.setDisplayName(getClass().getName()+"_readLine");
-			m_pstmt = DB.prepareStatement(dataSql, trxName);
+			m_pstmt = DB.prepareStatement(dataSql.sqlClause(), trxName);
 			if (queryTimeout > 0)
 				m_pstmt.setQueryTimeout(queryTimeout);
 			setParameters (m_pstmt, false);	//	no count
@@ -1286,12 +1286,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			if (DB.getDatabase().isQueryTimeout(e))
 			{
 				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, dataSql, e);
+					log.log(Level.INFO, dataSql.sqlClause(), e);
 				Dialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
 			}
 			else
 			{
-				log.log(Level.SEVERE, dataSql, e);
+				log.log(Level.SEVERE, dataSql.sqlClause(), e);
 				Dialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
 			}
 		}
