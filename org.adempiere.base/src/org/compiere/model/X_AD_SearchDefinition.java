@@ -30,7 +30,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260108L;
 
     /** Standard Constructor */
     public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName)
@@ -448,11 +448,18 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 		return (String)get_Value(COLUMNNAME_Query);
 	}
 
+	/** SearchType AD_Reference_ID=53291 */
+	public static final int SEARCHTYPE_AD_Reference_ID=53291;
+	/** Query = Q */
+	public static final String SEARCHTYPE_Query = "Q";
+	/** Table = T */
+	public static final String SEARCHTYPE_Table = "T";
 	/** Set Search Type.
 		@param SearchType Which kind of search is used (Query or Table)
 	*/
 	public void setSearchType (String SearchType)
 	{
+
 		set_Value (COLUMNNAME_SearchType, SearchType);
 	}
 

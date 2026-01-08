@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.search.ISearchProvider;
+
 import javax.crypto.SecretKey;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -1243,6 +1245,25 @@ public class Core {
 	 * Get markdown renderer service
 	 * @return markdown renderer service
 	 */
+
+	/**
+	 * @return list of search providers
+	 */
+	public static List<ISearchProvider> getSearchProviders() {
+		List<ISearchProvider> providers = new ArrayList<>();
+		List<IServiceReferenceHolder<ISearchProvider>> refs = Service.locator().list(ISearchProvider.class)
+				.getServiceReferences();
+		if (refs != null) {
+			for (IServiceReferenceHolder<ISearchProvider> ref : refs) {
+				ISearchProvider provider = ref.getService();
+				if (provider != null) {
+					providers.add(provider);
+				}
+			}
+		}
+		return providers;
+	}
+
 	public static IMarkdownRenderer getMarkdownRenderer() {
 		IServiceReferenceHolder<IMarkdownRenderer> holder = Service.locator().locate(IMarkdownRenderer.class).getServiceReference();
 		return holder != null ? holder.getService() : null; 
