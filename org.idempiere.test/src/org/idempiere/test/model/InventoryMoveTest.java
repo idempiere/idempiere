@@ -24,18 +24,28 @@
  **********************************************************************/
 package org.idempiere.test.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Properties;
 
+import org.compiere.model.MAttributeSet;
+import org.compiere.model.MAttributeSetInstance;
+import org.compiere.model.MClient;
 import org.compiere.model.MMovement;
 import org.compiere.model.MMovementLine;
+import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MUOMConversion;
 import org.compiere.model.MWarehouse;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
@@ -170,5 +180,80 @@ public class InventoryMoveTest extends AbstractTestCase {
 		assertFalse(success);
 
 		rollback();
+	}
+	
+	/**
+	 * IDEMPIERE-6737
+	 * Attribute Set with "Use Guarantee Date for Material Policy" = "Y"
+	 */
+	@Test
+	public void testAttributeSetWithGuaranteeDateForMaterialPolicy() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		
+		MProduct product = new MProduct(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id, trxName);
+		MAttributeSet attributeSet = MAttributeSet.get(ctx, product.getM_AttributeSet_ID());
+		boolean originalUseGuaranteeDateForMPolicy = attributeSet.isUseGuaranteeDateForMPolicy();
+		
+		String sql = "UPDATE " + MAttributeSet.Table_Name 
+				+ " SET " + MAttributeSet.COLUMNNAME_UseGuaranteeDateForMPolicy + "=?"
+				+ " WHERE " + MAttributeSet.COLUMNNAME_M_AttributeSet_ID + "=?";
+		try {
+			// set MAttributeSet.isUseGuaranteeDateForMPolicy = Y
+			DB.executeUpdateEx(sql, new Object[] {"Y", attributeSet.get_ID()}, null);
+			attributeSet.load(null);
+			
+			Timestamp today = TimeUtil.getDay(null);
+			Timestamp tomorrow = TimeUtil.addDays(today, 1);
+			
+			MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+			asi.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+			asi.setLot("8888");
+			asi.setGuaranteeDate(tomorrow);
+			asi.saveEx();					
+			
+			// Inventory Move
+			MMovement mh = new MMovement (Env.getCtx(), 0, getTrxName());
+			mh.setM_Warehouse_ID(HQ_WAREHOUSE_ID);
+			mh.setM_WarehouseTo_ID(STORE_WAREHOUSE_ID);
+			mh.saveEx();
+			
+			MMovementLine ml = new MMovementLine(mh);
+			ml.setM_Product_ID(product.get_ID());
+			ml.setM_Locator_ID(MWarehouse.get(HQ_WAREHOUSE_ID).getDefaultLocator().get_ID());
+			ml.setM_LocatorTo_ID(MWarehouse.get(STORE_WAREHOUSE_ID).getDefaultLocator().get_ID());
+			ml.setM_AttributeSetInstance_ID(asi.get_ID());
+			ml.setM_AttributeSetInstanceTo_ID(asi.get_ID());
+			BigDecimal qtyMove = Env.ONEHUNDRED;
+			ml.setMovementQty(qtyMove);	
+			ml.saveEx();
+
+			assertTrue(ml.getQtyEntered().compareTo(ml.getMovementQty()) == 0);
+			mh.processIt(MMovement.ACTION_Complete);
+			
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
+					product.get_ID(), asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+					0, trxName);
+			assertEquals(1, storages.length);
+			MStorageOnHand storage = storages[0];
+			assertEquals(qtyMove.negate().intValue(), storage.getQtyOnHand().intValue());
+			assertEquals(today, storage.getDateMaterialPolicy()); // not equals to guarantee date because inventory is not increasing
+			
+			storages = MStorageOnHand.getWarehouse(ctx, STORE_WAREHOUSE_ID,
+					product.get_ID(), asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+					0, trxName);
+			assertEquals(1, storages.length);
+			storage = storages[0];
+			assertEquals(qtyMove.intValue(), storage.getQtyOnHand().intValue());
+			assertEquals(tomorrow, storage.getDateMaterialPolicy());
+		} finally {
+			rollback();
+			
+			// reset MAttributeSet.isUseGuaranteeDateForMPolicy
+			DB.executeUpdateEx(sql, new Object[] {originalUseGuaranteeDateForMPolicy ? "Y" : "N", attributeSet.get_ID()}, null);
+			attributeSet.load(null);
+		}
 	}
 }
