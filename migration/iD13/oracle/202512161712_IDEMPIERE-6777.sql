@@ -45,12 +45,79 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Dec 16, 2025, 5:16:05 PM IST
-UPDATE AD_ViewComponent SET OtherClause='GROUP BY fact_acct.ad_client_id, fact_acct.ad_org_id, fact_acct.c_acctschema_id, fact_acct.account_id, fact_acct.c_period_id, fact_acct.gl_category_id, fact_acct.gl_budget_id, fact_acct.c_tax_id, fact_acct.m_locator_id, fact_acct.postingtype, fact_acct.c_currency_id, fact_acct.m_product_id, fact_acct.c_bpartner_id, fact_acct.ad_orgtrx_id, fact_acct.c_locfrom_id, fact_acct.c_locto_id, fact_acct.c_salesregion_id, fact_acct.c_project_id, fact_acct.c_campaign_id, fact_acct.c_activity_id, fact_acct.user1_id, fact_acct.user2_id, fact_acct.a_asset_id, fact_acct.customfieldtext1, fact_acct.customfieldtext2, fact_acct.customfieldtext3, fact_acct.customfieldtext4, fact_acct.M_AttributeSetInstance_ID, fact_acct.C_Charge_ID, fact_acct.C_CostCenter_ID, fact_acct.C_Department_ID, fact_acct.C_Employee_ID, fact_acct.M_Warehouse_ID',Updated=TO_TIMESTAMP('2025-12-16 17:16:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ViewComponent_ID=200140
-;
+UPDATE AD_ViewComponent
+SET OtherClause =
+'GROUP BY fact_acct.ad_client_id, fact_acct.ad_org_id, ' ||
+'fact_acct.c_acctschema_id, fact_acct.account_id, ' ||
+'fact_acct.c_period_id, fact_acct.gl_category_id, ' ||
+'fact_acct.gl_budget_id, fact_acct.c_tax_id, ' ||
+'fact_acct.m_locator_id, fact_acct.postingtype, ' ||
+'fact_acct.c_currency_id, fact_acct.m_product_id, ' ||
+'fact_acct.c_bpartner_id, fact_acct.ad_orgtrx_id, ' ||
+'fact_acct.c_locfrom_id, fact_acct.c_locto_id, ' ||
+'fact_acct.c_salesregion_id, fact_acct.c_project_id, ' ||
+'fact_acct.c_campaign_id, fact_acct.c_activity_id, ' ||
+'fact_acct.user1_id, fact_acct.user2_id, ' ||
+'fact_acct.a_asset_id, fact_acct.customfieldtext1, ' ||
+'fact_acct.customfieldtext2, fact_acct.customfieldtext3, ' ||
+'fact_acct.customfieldtext4, ' ||
+'fact_acct.M_AttributeSetInstance_ID, fact_acct.C_Charge_ID, ' ||
+'fact_acct.C_CostCenter_ID, fact_acct.C_Department_ID, ' ||
+'fact_acct.C_Employee_ID, fact_acct.M_Warehouse_ID',
+Updated   = TO_TIMESTAMP('2025-12-16 17:16:05','YYYY-MM-DD HH24:MI:SS'),
+UpdatedBy = 100
+WHERE AD_ViewComponent_ID = 200140;
+
 
 -- Dec 16, 2025, 5:16:15 PM IST
-CREATE OR REPLACE VIEW RV_Fact_Acct_Period(AD_Client_ID, AD_Org_ID, C_AcctSchema_ID, Account_ID, C_Period_ID, GL_Category_ID, GL_Budget_ID, C_Tax_ID, M_Locator_ID, PostingType, C_Currency_ID, AmtSourceDr, AmtSourceCr, AmtSource, AmtAcctDr, AmtAcctCr, AmtAcct, Rate, M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID, User1_ID, User2_ID, A_Asset_ID, customfieldtext1, customfieldtext2, customfieldtext3, customfieldtext4, M_AttributeSetInstance_ID, C_Charge_ID, C_CostCenter_ID, C_Department_ID, C_Employee_ID, M_Warehouse_ID) AS SELECT fact_acct.ad_client_id AS AD_Client_ID, fact_acct.ad_org_id AS AD_Org_ID, fact_acct.c_acctschema_id AS C_AcctSchema_ID, fact_acct.account_id AS Account_ID, fact_acct.c_period_id AS C_Period_ID, fact_acct.gl_category_id AS GL_Category_ID, fact_acct.gl_budget_id AS GL_Budget_ID, fact_acct.c_tax_id AS C_Tax_ID, fact_acct.m_locator_id AS M_Locator_ID, fact_acct.postingtype AS PostingType, fact_acct.c_currency_id AS C_Currency_ID, sum(fact_acct.amtsourcedr) AS AmtSourceDr, sum(fact_acct.amtsourcecr) AS AmtSourceCr, sum(fact_acct.amtsourcedr - fact_acct.amtsourcecr) AS AmtSource, sum(fact_acct.amtacctdr) AS AmtAcctDr, sum(fact_acct.amtacctcr) AS AmtAcctCr, sum(fact_acct.amtacctdr - fact_acct.amtacctcr) AS AmtAcct, CASE WHEN sum(fact_acct.amtsourcedr - fact_acct.amtsourcecr) = 0 THEN 0 ELSE sum(fact_acct.amtacctdr - fact_acct.amtacctcr) / sum(fact_acct.amtsourcedr - fact_acct.amtsourcecr) END AS Rate, fact_acct.m_product_id AS M_Product_ID, fact_acct.c_bpartner_id AS C_BPartner_ID, fact_acct.ad_orgtrx_id AS AD_OrgTrx_ID, fact_acct.c_locfrom_id AS C_LocFrom_ID, fact_acct.c_locto_id AS C_LocTo_ID, fact_acct.c_salesregion_id AS C_SalesRegion_ID, fact_acct.c_project_id AS C_Project_ID, fact_acct.c_campaign_id AS C_Campaign_ID, fact_acct.c_activity_id AS C_Activity_ID, fact_acct.user1_id AS User1_ID, fact_acct.user2_id AS User2_ID, fact_acct.a_asset_id AS A_Asset_ID, fact_acct.customfieldtext1 AS customfieldtext1, fact_acct.customfieldtext2 AS customfieldtext2, fact_acct.customfieldtext3 AS customfieldtext3, fact_acct.customfieldtext4 AS customfieldtext4, fact_acct.M_AttributeSetInstance_ID AS M_AttributeSetInstance_ID, fact_acct.C_Charge_ID AS C_Charge_ID, fact_acct.C_CostCenter_ID AS C_CostCenter_ID, fact_acct.C_Department_ID AS C_Department_ID, fact_acct.C_Employee_ID AS C_Employee_ID, fact_acct.M_Warehouse_ID AS M_Warehouse_ID FROM fact_acct GROUP BY fact_acct.ad_client_id, fact_acct.ad_org_id, fact_acct.c_acctschema_id, fact_acct.account_id, fact_acct.c_period_id, fact_acct.gl_category_id, fact_acct.gl_budget_id, fact_acct.c_tax_id, fact_acct.m_locator_id, fact_acct.postingtype, fact_acct.c_currency_id, fact_acct.m_product_id, fact_acct.c_bpartner_id, fact_acct.ad_orgtrx_id, fact_acct.c_locfrom_id, fact_acct.c_locto_id, fact_acct.c_salesregion_id, fact_acct.c_project_id, fact_acct.c_campaign_id, fact_acct.c_activity_id, fact_acct.user1_id, fact_acct.user2_id, fact_acct.a_asset_id, fact_acct.customfieldtext1, fact_acct.customfieldtext2, fact_acct.customfieldtext3, fact_acct.customfieldtext4, fact_acct.M_AttributeSetInstance_ID, fact_acct.C_Charge_ID, fact_acct.C_CostCenter_ID, fact_acct.C_Department_ID, fact_acct.C_Employee_ID, fact_acct.M_Warehouse_ID
-;
+CREATE OR REPLACE VIEW RV_Fact_Acct_Period (
+AD_Client_ID, AD_Org_ID, C_AcctSchema_ID, Account_ID, C_Period_ID,
+GL_Category_ID, GL_Budget_ID, C_Tax_ID, M_Locator_ID, PostingType,
+C_Currency_ID, AmtSourceDr, AmtSourceCr, AmtSource, AmtAcctDr,
+AmtAcctCr, AmtAcct, Rate, M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID,
+C_LocFrom_ID, C_LocTo_ID, C_SalesRegion_ID, C_Project_ID,
+C_Campaign_ID, C_Activity_ID, User1_ID, User2_ID, A_Asset_ID,
+customfieldtext1, customfieldtext2, customfieldtext3, customfieldtext4,
+M_AttributeSetInstance_ID, C_Charge_ID, C_CostCenter_ID,
+C_Department_ID, C_Employee_ID, M_Warehouse_ID
+)
+AS
+SELECT
+fa.ad_client_id, fa.ad_org_id, fa.c_acctschema_id, fa.account_id,
+fa.c_period_id, fa.gl_category_id, fa.gl_budget_id, fa.c_tax_id,
+fa.m_locator_id, fa.postingtype, fa.c_currency_id,
+SUM(fa.amtsourcedr) AmtSourceDr, SUM(fa.amtsourcecr) AmtSourceCr,
+SUM(fa.amtsourcedr - fa.amtsourcecr) AmtSource,
+SUM(fa.amtacctdr) AmtAcctDr, SUM(fa.amtacctcr) AmtAcctCr,
+SUM(fa.amtacctdr - fa.amtacctcr) AmtAcct,
+CASE
+  WHEN SUM(fa.amtsourcedr - fa.amtsourcecr) = 0 THEN 0
+  ELSE SUM(fa.amtacctdr - fa.amtacctcr)
+       / SUM(fa.amtsourcedr - fa.amtsourcecr)
+END Rate,
+fa.m_product_id, fa.c_bpartner_id, fa.ad_orgtrx_id,
+fa.c_locfrom_id, fa.c_locto_id, fa.c_salesregion_id,
+fa.c_project_id, fa.c_campaign_id, fa.c_activity_id,
+fa.user1_id, fa.user2_id, fa.a_asset_id,
+fa.customfieldtext1, fa.customfieldtext2,
+fa.customfieldtext3, fa.customfieldtext4,
+fa.m_attributesetinstance_id, fa.c_charge_id,
+fa.c_costcenter_id, fa.c_department_id,
+fa.c_employee_id, fa.m_warehouse_id
+FROM fact_acct fa
+GROUP BY
+fa.ad_client_id, fa.ad_org_id, fa.c_acctschema_id, fa.account_id,
+fa.c_period_id, fa.gl_category_id, fa.gl_budget_id, fa.c_tax_id,
+fa.m_locator_id, fa.postingtype, fa.c_currency_id,
+fa.m_product_id, fa.c_bpartner_id, fa.ad_orgtrx_id,
+fa.c_locfrom_id, fa.c_locto_id, fa.c_salesregion_id,
+fa.c_project_id, fa.c_campaign_id, fa.c_activity_id,
+fa.user1_id, fa.user2_id, fa.a_asset_id,
+fa.customfieldtext1, fa.customfieldtext2,
+fa.customfieldtext3, fa.customfieldtext4,
+fa.m_attributesetinstance_id, fa.c_charge_id,
+fa.c_costcenter_id, fa.c_department_id,
+fa.c_employee_id, fa.m_warehouse_id;
 
 -- Dec 16, 2025, 5:16:25 PM IST
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton,FKConstraintType) VALUES (217338,0.0,'Text Column 1','User defined accounting Element','A user defined accounting element referres to a iDempiere table. This allows to use any table content as an accounting dimension (e.g. Description).  Note that User Elements are optional and are populated from the context of the document (i.e. not requested)',655,'CustomFieldText1',255,'N','N','N','N','N','N',14,0,0,'Y',TO_TIMESTAMP('2025-12-16 17:16:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-12-16 17:16:24','YYYY-MM-DD HH24:MI:SS'),100,203894,'N','N','D','N','019b26fb-a9b5-7af1-93e5-a4cb3b1cf941','N','N')
