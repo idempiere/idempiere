@@ -470,6 +470,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
         }
 
         sql.append( " FROM ").append(from);
+        // Note: WHERE clause is appended even when empty for legacy compatibility
         sql.append(" WHERE ").append(sqlFilter != null ? sqlFilter.sqlClause() : "");
 
         if (from.length() == 0)

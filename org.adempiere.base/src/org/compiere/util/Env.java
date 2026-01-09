@@ -1904,35 +1904,42 @@ public final class Env
 	
 	/**
 	 * Merge initial parameters and extracted parameters according to the SQL string.
-	 * @param sql SQL with both '?' and '@var@' context variables
-	 * @param initialParams parameters for '?'
-	 * @param extractedParams parameters for '@var@'
+	 * @param preParseSQL SQL with both '?' and '@var@' context variables
+	 * @param postParseSQL SQL after parsing context variables, only with '?'
+	 * @param sqlParams parameters for '?'
+	 * @param contextParams parameters for '@var@'
 	 * @return
 	 */
-	public static List<Object> mergeParameters(String sql, Object[] initialParams, Object[] extractedParams) {
+	public static List<Object> mergeParameters(String preParseSQL, String postParseSQL, Object[] sqlParams, Object[] contextParams) {
         // Regex to find BOTH '?' and '@var@'
         // We use | (OR) to find either one as we scan the string
         Pattern pattern = Pattern.compile("\\?|@([^@]+)@");
-        Matcher matcher = pattern.matcher(sql);
+        Matcher matcher = pattern.matcher(preParseSQL);
 
         List<Object> combined = new ArrayList<>();
         int questionMarkPointer = 0;
-        int extractedPointer = 0;
+        int contextPointer = 0;
 
         while (matcher.find()) {
             String match = matcher.group();
             
             if (match.equals("?")) {
                 // If we hit a '?', take from the original parameter array
-                if (questionMarkPointer < initialParams.length) {
-                    combined.add(initialParams[questionMarkPointer++]);
+                if (questionMarkPointer < sqlParams.length) {
+                    combined.add(sqlParams[questionMarkPointer++]);
                 }
-            } else {
+            } else if (!postParseSQL.contains(match)) {
                 // If we hit an '@v@', take from your parse() result array
-                if (extractedPointer < extractedParams.length) {
-                    combined.add(extractedParams[extractedPointer++]);
+                if (contextPointer < contextParams.length) {
+                    combined.add(contextParams[contextPointer++]);
                 }
             }
+        }
+        
+        if (questionMarkPointer != sqlParams.length || contextPointer != contextParams.length) {
+        	log.warning("mergeParameters mismatch: sql=" + preParseSQL
+        		+ " sqlParameters=" + questionMarkPointer + "/" + sqlParams.length
+        		+ " contextParameters=" + contextPointer + "/" + contextParams.length);
         }
         return combined;
     }
@@ -2135,7 +2142,7 @@ public final class Env
 		if (inStr.contains(QUOTED_BIND_VARIABLE)) {
 			// to avoid replacing '?' inside quotes, we replace it with a random place holder first
 			randomPlaceHolder = UUID.randomUUID().toString();
-			inStr = inStr.replaceAll(QUOTED_BIND_VARIABLE, randomPlaceHolder);
+			inStr = inStr.replace(QUOTED_BIND_VARIABLE, randomPlaceHolder);
 		}
 		StringBuilder outStr = new StringBuilder();
 		

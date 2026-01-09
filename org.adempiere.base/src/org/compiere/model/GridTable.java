@@ -423,7 +423,7 @@ public class GridTable extends AbstractTableModel
 				if(context != null && context.trim().length() > 0)
 				{
 					where.append(context);
-					m_whereParams = Env.mergeParameters(m_whereClause.sqlClause(), m_whereParams.toArray(), tempParams.toArray());
+					m_whereParams = Env.mergeParameters(m_whereClause.sqlClause(), context, m_whereParams.toArray(), tempParams.toArray());
 				}
 				else
 				{
