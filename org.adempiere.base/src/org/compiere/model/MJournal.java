@@ -947,9 +947,9 @@ public class MJournal extends X_GL_Journal implements DocAction
 
 		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), "SELECT DISTINCT ev.Value FROM C_ElementValue ev, Fact_Acct fa, Fact_Reconciliation fr"
 				+ " WHERE fa.Account_ID = ev.C_ElementValue_ID AND fa.Fact_Acct_ID = fr.Fact_Acct_ID"
-				+ " AND fa.Fact_Acct_ID IN (SELECT Fact_Acct_ID FROM Fact_Acct WHERE AD_Table_ID = ? AND Record_ID = ?)", Table_ID, getGL_Journal_ID());
+				+ " AND fa.AD_Table_ID = ? AND fa.Record_ID = ?", Table_ID, getGL_Journal_ID());
 		if (list != null && list.size() > 0) {
-			StringBuilder accounts = new StringBuilder("");
+			StringBuilder accounts = new StringBuilder();
 
 			for (List<Object> row : list) {
 				String accountValue = (String) row.get(0);
