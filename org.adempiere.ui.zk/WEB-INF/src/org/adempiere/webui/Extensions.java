@@ -434,7 +434,9 @@ public class Extensions {
 	 * @param adTabId
 	 * @param windowPanel
 	 * @return {@link FindWindow} instance
+	 * @deprecated use {@link #getFindWindow(int, int, String, int, String, SQLFragment, GridField[], int, int, AbstractADWindowContent)} instead
 	 */
+	@Deprecated
 	public static FindWindow getFindWindow(int targetWindowNo, int targetTabNo, String title, int AD_Table_ID, String tableName, String whereExtended, GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel) {
 		
 		IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();

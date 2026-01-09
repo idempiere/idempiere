@@ -944,7 +944,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();
             
-            FindWindow findWindow = Extensions.getFindWindow(curWindowNo, 0, title, mTab.getAD_Table_ID(), mTab.getTableName(), where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this);
+            FindWindow findWindow = Extensions.getFindWindow(curWindowNo, 0, title, mTab.getAD_Table_ID(), mTab.getTableName(), new SQLFragment(where.toString(), params), findFields, 10, mTab.getAD_Tab_ID(), this);
             
            	tabFindWindowHashMap.put(mTab, findWindow);
             setupEmbeddedFindwindow(findWindow);

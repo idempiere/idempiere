@@ -3328,7 +3328,8 @@ public class GridTable extends AbstractTableModel
 							else
 							{
 								log.log(Level.WARNING, "Failed to parse where clause param. param="+preParse);
-								str = null;
+								if (hasId)
+									str = null;
 							}
 						}
 						if (hasId && str != null)
