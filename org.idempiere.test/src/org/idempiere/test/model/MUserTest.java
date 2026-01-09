@@ -41,6 +41,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserBPAccess;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CacheMgt;
@@ -809,7 +810,15 @@ public class MUserTest extends AbstractTestCase {
     public void testIsCanSendEMail() {
 		MClient client = new MClient(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()), getTrxName());
 		boolean originalIsStmpAuthorization = client.isSmtpAuthorization();
+		MSysConfig sc = new Query(Env.getCtx(), MSysConfig.Table_Name, "AD_Client_ID=0 AND Name=?", getTrxName())
+				.setParameters(MSysConfig.MAIL_SEND_CREDENTIALS)
+				.first();
+		String originalSysCfg = sc.getValue();
 		try {
+			sc.setValue("U");
+			sc.saveCrossTenantSafeEx(null);
+			CacheMgt.get().reset(MSysConfig.Table_Name);
+
 	        MUser user = new MUser(Env.getCtx(), 0, getTrxName());
 	
 	        // Case 1: getEMailUser() returns null
@@ -845,6 +854,9 @@ public class MUserTest extends AbstractTestCase {
 			client.setIsSmtpAuthorization(originalIsStmpAuthorization);
 	        client.saveEx(null);
 	        CacheMgt.get().reset(MClient.Table_Name);
+			sc.setValue(originalSysCfg);
+			sc.saveCrossTenantSafeEx(null);
+			CacheMgt.get().reset(MSysConfig.Table_Name);
 		}
     }
 	
