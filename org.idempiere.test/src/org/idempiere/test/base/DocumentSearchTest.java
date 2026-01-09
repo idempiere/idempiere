@@ -37,7 +37,6 @@ import org.adempiere.base.search.SearchResult;
 import org.compiere.model.MColumn;
 import org.compiere.model.MSearchDefinition;
 import org.compiere.model.MTable;
-import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.junit.jupiter.api.Test;
 import org.idempiere.test.AbstractTestCase;

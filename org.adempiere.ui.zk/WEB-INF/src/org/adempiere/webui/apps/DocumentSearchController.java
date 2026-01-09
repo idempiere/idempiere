@@ -175,7 +175,10 @@ public class DocumentSearchController implements EventListener<Event> {
 				public int compare(SearchResult o1, SearchResult o2) {
 					int r = o1.getWindowName().compareTo(o2.getWindowName());
 					if (r == 0) {
-						if (o1.getAD_Message_ID() > 0 && o2.getAD_Message_ID() > 0)
+						// if using relevance score, sort by relevance score descending
+						if (o1.getRelevanceScore() != 0.0 || o2.getRelevanceScore() != 0.0) 
+							r = Double.compare(o2.getRelevanceScore(), o1.getRelevanceScore());
+						else if (o1.getAD_Message_ID() > 0 && o2.getAD_Message_ID() > 0)
 							r = o1.getAD_Message_ID() - o2.getAD_Message_ID();
 						else
 							r = o1.getLabel().compareTo(o2.getLabel());

@@ -41,6 +41,7 @@ public class SearchResult {
     private int AD_Message_ID = 0;
     private int AD_Style_ID = 0;
     private int row = -1;
+    private double relevanceScore = 0.0;
 
     /**
      * @return the windowId
@@ -207,4 +208,13 @@ public class SearchResult {
     public int getRow() {
         return this.row;
     }
+    
+    public void setRelevanceScore(double relevanceScore) {
+		this.relevanceScore = relevanceScore;
+    }
+    
+    public double getRelevanceScore() {
+    	return this.relevanceScore;
+    }
+   
 }
