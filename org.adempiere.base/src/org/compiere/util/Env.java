@@ -1722,10 +1722,12 @@ public final class Env
 				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
 				if (!ignoreUnparsable)
 					return "";						//	token not found
+				else
+					outStr.append(Evaluator.VARIABLE_START_END_MARKER).append(token).append(Evaluator.VARIABLE_START_END_MARKER); // add back unparsed context
 			}
 			else
 			{
-				outStr.append("?"); // replace context with Context
+				outStr.append("?"); // replace context with parameter
 				if (token.endsWith("_ID"))
 					parameters.add(Integer.valueOf(ctxInfo));
 				else
@@ -1897,7 +1899,7 @@ public final class Env
 	public static String parseContextForSql(Properties ctx, int WindowNo, String value,
 			boolean onlyWindow, List<Object> parameters)
 	{
-		return parseContextForSql(ctx, WindowNo, value, onlyWindow, false, false, parameters);
+		return parseContextForSql(ctx, WindowNo, value, onlyWindow, true, false, parameters);
 	}
 	
 	/**

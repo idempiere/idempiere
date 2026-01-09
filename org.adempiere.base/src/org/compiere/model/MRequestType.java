@@ -562,8 +562,8 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 				trunc = "W";
 
 			where = "TRUNC(" + dateColumn + ",'" + trunc
-				+ "')=TRUNC(?,'" + trunc + "')";
-			params.add(date);
+				+ "')=TRUNC(" + DB.TO_DATE(date)
+				+ ",'" + trunc + "')";
 		}
 		String whereRestriction = MMeasureCalc.addRestrictions(where + " AND Processed<>'Y' ",
 			true, restrictions, role, 

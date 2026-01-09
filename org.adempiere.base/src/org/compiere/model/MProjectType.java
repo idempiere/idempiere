@@ -344,8 +344,8 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 				trunc = "W";
 
 			where = "TRUNC(" + dateColumn + ",'" + trunc
-				+ "')=TRUNC(?,'" + trunc + "')";
-			params.add(date);
+				+ "')=TRUNC(" + DB.TO_DATE(date)
+				+ ",'" + trunc + "')";
 		}
 		String sql = MMeasureCalc.addRestrictions(where + " AND Processed<>'Y' ",
 			true, restrictions, role, 

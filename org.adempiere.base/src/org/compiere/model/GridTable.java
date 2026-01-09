@@ -3318,6 +3318,7 @@ public class GridTable extends AbstractTableModel
 						boolean hasId = false;
 						if (str.indexOf('@') >= 0)
 						{
+							String preParse = str;
 							hasId = str.contains("_ID");
 							String context = Env.parseContext(m_ctx, m_WindowNo, str, false);
 							if(context != null && context.trim().length() > 0)
@@ -3326,7 +3327,8 @@ public class GridTable extends AbstractTableModel
 							}
 							else
 							{
-								log.log(Level.WARNING, "Failed to parse where clause param. param="+str);
+								log.log(Level.WARNING, "Failed to parse where clause param. param="+preParse);
+								str = null;
 							}
 						}
 						if (hasId && str != null)

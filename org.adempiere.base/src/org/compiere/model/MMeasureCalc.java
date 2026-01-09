@@ -338,7 +338,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		//
 		StringBuilder whereClause = new StringBuilder (getKeyColumn())
 			.append(" IN (").append(where).append(")");
-		query.addRestriction(new SQLFragment(whereClause.toString(), params));
+		query.addRestriction(new SQLFragment(whereClause.toString()));
 		query.setRecordCount(1);
 		return query;
 	}	//	getQuery
