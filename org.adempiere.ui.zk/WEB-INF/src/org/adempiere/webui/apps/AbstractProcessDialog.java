@@ -78,6 +78,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -1442,6 +1443,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	@Override
 	public void showInfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue,
 			boolean multipleSelection, String whereClause, Integer AD_InfoWindow_ID, boolean lookup) {
+		showInfoWindow(WindowNo, tableName, keyColumn, queryValue, multipleSelection, AD_InfoWindow_ID, lookup, 
+				whereClause == null ? null : new SQLFragment(whereClause));
+	}
+	
+	@Override
+	public void showInfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue,
+			boolean multipleSelection, Integer AD_InfoWindow_ID, boolean lookup, SQLFragment sqlFilter) {
 
 		if (AD_InfoWindow_ID <= 0)
 			return;
@@ -1451,7 +1459,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			public void run() {
 				try {
 					Window win = new InfoWindow(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
-							whereClause, AD_InfoWindow_ID, lookup);
+							AD_InfoWindow_ID, lookup, sqlFilter);
 
 					SessionManager.getAppDesktop().showWindow(win, "center");
 				} catch (Exception e) {

@@ -14,6 +14,8 @@
 
 package org.adempiere.webui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
@@ -28,6 +30,7 @@ import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -93,7 +96,8 @@ public class WRequest implements EventListener<Event>
 	private Menuitem 	m_active = null;
 	private Menuitem 	m_all = null;
 	/** Where Clause					*/
-	protected StringBuilder 		m_where = null;
+	protected StringBuilder 	m_where = null;
+	protected List<Object>		m_parameters = null;
 	
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (WRequest.class);
@@ -113,7 +117,8 @@ public class WRequest implements EventListener<Event>
 		m_popup.appendChild(m_new);
 		//
 		m_where = new StringBuilder();
-		int[] counts = MRequest.getRequestCount(m_AD_Table_ID, m_Record_ID, m_Record_UU, m_where, null);
+		m_parameters = new ArrayList<Object>();
+		int[] counts = MRequest.getRequestCount(m_AD_Table_ID, m_Record_ID, m_Record_UU, m_where, m_parameters, null);
 		int activeCount = counts[1];
 		int inactiveCount = counts[0];
 		if (activeCount > 0)
@@ -154,20 +159,23 @@ public class WRequest implements EventListener<Event>
 			if (e.getTarget() == m_active)
 			{
 				query = new MQuery("");
-				String where = "(" + m_where + ") AND Processed='N'";
-				query.addRestriction(where);
+				String where = "(" + m_where + ") AND Processed=?";
+				List<Object> params = new ArrayList<Object>();
+				params.addAll(m_parameters);
+				params.add("N");
+				query.addRestriction(new SQLFragment(where, params));
 				query.setRecordCount(0);
 			}
 			else if (e.getTarget() == m_all)
 			{
 				query = new MQuery("");
-				query.addRestriction(m_where.toString());
+				query.addRestriction(new SQLFragment(m_where.toString(), m_parameters));
 				query.setRecordCount(0);
 			}
 			else if (e.getTarget() == m_new)
 			{
 				query = new MQuery("");
-				query.addRestriction("1=2");
+				query.addRestriction(new SQLFragment("1=2"));
 				query.setRecordCount(0);
 			}
 			
