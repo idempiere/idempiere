@@ -908,8 +908,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         //
         List<Object> params = new ArrayList<Object>();
         SQLFragment extendedFilter = mTab.getExtendedFilter();
-        params.addAll(extendedFilter.parameters());
-		StringBuffer where = new StringBuffer(Env.parseContextForSql(ctx, curWindowNo, extendedFilter.sqlClause(), false, params));
+        String preParseWhere = extendedFilter != null ? extendedFilter.sqlClause() : "";
+        StringBuffer where = new StringBuffer(extendedFilter != null ? Env.parseContextForSql(ctx, curWindowNo, extendedFilter.sqlClause(), false, params) : "");
+        if (extendedFilter != null && extendedFilter.parameters().size() > 0)
+        {
+        	params = Env.mergeParameters(preParseWhere, where.toString(), extendedFilter.parameters().toArray(), params.toArray());
+        }
         // Query automatically if high volume and no query
         boolean require = mTab.isHighVolume();
         if (!require && !m_onlyCurrentRows) // No Trx Window
@@ -922,8 +926,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
                 if (wh2.length() > 0)
                 {
                     if (where.length() > 0)
-                        where.append(" AND ");
-                    where.append(wh2);
+                        where.append(" AND (").append(wh2).append(") ");
+                    else
+                    	where.append(wh2);
                 }
             }
             //

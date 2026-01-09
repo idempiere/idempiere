@@ -360,7 +360,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		else if (sqlFilter != null)
 		{
 			List<Object> params = new ArrayList<Object>();
-			params.addAll(sqlFilter.parameters());
+			String preParsedWhere = whereClause;
 			whereClause = Env.parseContextForSql(Env.getCtx(), p_WindowNo, whereClause, false, false, params);
 			if (whereClause.length() == 0)
 			{
@@ -368,7 +368,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				p_sqlFilter = null;
 			}
 			else
+			{
+				if (sqlFilter.parameters().size() > 0)
+				{
+					params = Env.mergeParameters(preParsedWhere, whereClause, sqlFilter.parameters().toArray(), params.toArray());
+				}
 				p_sqlFilter = new SQLFragment(whereClause, params);
+			}
 		}
 		else
 		{

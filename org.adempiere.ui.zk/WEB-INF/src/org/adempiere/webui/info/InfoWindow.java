@@ -1348,8 +1348,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (!isQueryByUser && prevWhereClause != null && prevSQLFilter != null) {
 			return prevSQLFilter;
 		}
-		
-		List<Object> parameters = new ArrayList<Object>();
+				
 		StringBuilder builder = new StringBuilder();
 		MTable table = MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID());
 		MReference ref = m_gridfield != null && m_gridfield.getAD_Reference_Value_ID() > 0 ? MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID()) : null;
@@ -1516,6 +1515,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			builder.append(" ) ");
 		}
 		String sql = builder.toString();
+		List<Object> parameters = new ArrayList<Object>();
 		if (sql.indexOf("@") >= 0) {
 			sql = Env.parseContextForSql(infoContext, p_WindowNo, sql, true, true, parameters);
 		}

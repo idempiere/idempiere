@@ -882,7 +882,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		if (whereClause.indexOf('@') != -1)
 		{
-			String validated = Env.parseContextForSql(Env.getCtx(), lookup.getWindowNo(), whereClause, false, params);
+			List<Object> contextParams = new ArrayList<>();
+			String validated = Env.parseContextForSql(Env.getCtx(), lookup.getWindowNo(), whereClause, false, contextParams);
 
 			if (validated.length() == 0)
 				log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
@@ -890,6 +891,15 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			{
 				if (log.isLoggable(Level.FINE))
 					log.fine(getColumnName() + " - Parsed: " + validated);
+				if (params.size() > 0)
+				{
+					if (contextParams.size() > 0)
+						params = Env.mergeParameters(whereClause, validated, params.toArray(), contextParams.toArray());
+				}
+				else
+				{
+					params = contextParams;
+				}
 				whereClause = validated;
 			}
 		}

@@ -474,8 +474,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	String inputWhere = inputFilter != null ? inputFilter.sqlClause() : "";
     	if (inputWhere.contains("@")) {
     		List<Object> params = new ArrayList<Object>();
-    		params.addAll(inputFilter.parameters());
     		inputWhere = Env.parseContextForSql(Env.getCtx(), targetWindowNo, inputWhere, false, params);
+    		if (inputFilter.parameters().size() > 0) {
+    			if (params.size() > 0)
+    				params = Env.mergeParameters(inputFilter.sqlClause(), inputWhere, inputFilter.parameters().toArray(), params.toArray());
+    			else
+    				params.addAll(inputFilter.parameters());
+    		}
     		inputFilter = new SQLFragment(inputWhere, params);
     	}
     	String instanceWhere = m_filterExtended != null ? m_filterExtended.sqlClause() : "";
@@ -483,9 +488,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	if (instanceWhere.contains("@"))
     	{
     		List<Object> instanceParams = new ArrayList<Object>();
-    		if (instanceFilter != null)
-    			instanceParams.addAll(instanceFilter.parameters());
     		String parsedWhere = Env.parseContextForSql(Env.getCtx(), targetWindowNo, instanceWhere, false, instanceParams);
+    		if (instanceFilter.parameters().size() > 0)
+    		{
+    			if (instanceParams.size() > 0)
+    				instanceParams = Env.mergeParameters(instanceFilter.sqlClause(), parsedWhere, instanceFilter.parameters().toArray(), instanceParams.toArray());
+				else
+					instanceParams.addAll(instanceFilter.parameters());
+    		}
     		instanceFilter = new SQLFragment(parsedWhere, instanceParams);
     	}
     	if (inputFilter != instanceFilter) {
@@ -2500,8 +2510,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		m_query = new MQuery(m_tableName);
 		List<Object> params = new ArrayList<Object>();
 		if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
-			params.addAll(m_filterExtended.parameters());		
 			String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
+			if (m_filterExtended.parameters().size() > 0) {
+				if (params.size() > 0)
+					params = Env.mergeParameters(m_filterExtended.sqlClause(), whereExtended, m_filterExtended.parameters().toArray(), params.toArray());
+				else
+					params.addAll(m_filterExtended.parameters());
+			}
 			m_query.addRestriction(new SQLFragment(whereExtended, params));
 		}
 		
@@ -2939,8 +2954,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_query = new MQuery(m_tableName);
         List<Object> params = new ArrayList<Object>();
         if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
-			params.addAll(m_filterExtended.parameters());
 			String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
+			if (m_filterExtended.parameters().size() > 0) {
+				if (params.size() > 0)
+					params = Env.mergeParameters(m_filterExtended.sqlClause(), whereExtended, m_filterExtended.parameters().toArray(), params.toArray());
+				else
+					params.addAll(m_filterExtended.parameters());
+			}
 			m_query.addRestriction(new SQLFragment(whereExtended, params));
 		}
 		StringBuilder code = new StringBuilder();
@@ -3450,19 +3470,32 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         if (query != null && query.isActive())
         {
             if (hasWhere)
-                sql.append(" AND ");
+                sql.append(" AND (");
             else
                 sql.append(" WHERE ");
             SQLFragment filter = query.getSQLFilter();
             sql.append(filter.sqlClause());
+            if (hasWhere)
+				sql.append(") ");
             params.addAll(filter.parameters());
         }
         //  Add Access
         String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
             m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-        finalSQL = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, finalSQL, false, params);
+        String preParse = finalSQL;
+        List<Object> contextParams = new ArrayList<Object>();
+        finalSQL = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, finalSQL, false, contextParams);
         if (log.isLoggable(Level.INFO))
         	Env.setContext(Env.getCtx(), m_targetWindowNo, TABNO, GridTab.CTX_FindSQL, finalSQL);
+        if (params.size() > 0) 
+        {
+        	if (contextParams.size() > 0)
+        		params = Env.mergeParameters(preParse, finalSQL, params.toArray(), contextParams.toArray());
+        }
+        else
+        {
+        	params = contextParams;
+        }
 
         //  Execute Query
         int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 

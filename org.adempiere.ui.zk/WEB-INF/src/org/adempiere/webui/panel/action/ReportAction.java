@@ -332,12 +332,20 @@ public class ReportAction implements EventListener<Event>
 		{
 			if (whereClause.indexOf("@") != -1) //replace variables in context
 			{
-				List<Object> tempParams = new ArrayList<Object>(params);
+				List<Object> tempParams = new ArrayList<Object>();
 				String context = Env.parseContextForSql(Env.getCtx(), panel.getWindowNo(), whereClause.toString(), false, tempParams);
 				if(context != null && context.trim().length() > 0)
 				{
+					if (params.size() > 0)
+					{
+						if (tempParams.size() > 0)
+							params = Env.mergeParameters(whereClause.toString(), context, params.toArray(), tempParams.toArray());
+					}
+					else
+					{
+						params = tempParams;
+					}
 					whereClause = new StringBuilder(context);
-					params.addAll(tempParams);
 				}
 				else
 				{
