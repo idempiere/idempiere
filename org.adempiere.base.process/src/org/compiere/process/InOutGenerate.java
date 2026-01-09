@@ -279,7 +279,7 @@ public class InOutGenerate extends SvrProcess
 						.subtract(line.getQtyDelivered());
 					MProduct product = line.getProduct();
 					//	Nothing to Deliver
-					if (product != null && toDeliver.signum() == 0)
+					if (product != null && (toDeliver.signum() == 0 || (toDeliver.signum() < 0 && line.getQtyOrdered().signum() > 0)))
 						continue;
 					
 					// or it's a charge - Bug#: 1603966 
