@@ -1463,13 +1463,16 @@ public class MCostDetail extends X_M_CostDetail
 							&& mpo.getDateAcct().compareTo(getDateAcct()) == 0
 							&& mpo.getQty().compareTo(il.getQtyInvoiced()) != 0) { 
 						// partial MR, get the cost info from previous cost detail
+						// if the previous cost detail is linked to an order/invoice line, it must match the order/invoice line of the match po
 						StringBuilder whereClause = new StringBuilder();
-						whereClause.append("TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+						whereClause.append("(CASE WHEN C_OrderLine_ID IS NOT NULL THEN C_OrderLine_ID = ? ELSE 1=1 END) ");
+						whereClause.append("AND (CASE WHEN C_InvoiceLine_ID IS NOT NULL THEN C_InvoiceLine_ID = ? ELSE 1=1 END) ");
+						whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
 						whereClause.append(" AND M_AttributeSetInstance_ID = ?");
 						whereClause.append(" AND C_AcctSchema_ID = ?");
 						whereClause.append(" AND M_CostDetail_ID < ?");
 						cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-								.setParameters(M_ASI_ID, as.get_ID(), this.get_ID())
+								.setParameters(mpo.getC_OrderLine_ID(), mpo.getC_InvoiceLine_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
 								.setOrderBy("M_CostDetail_ID DESC")
 								.first();
 						break;
