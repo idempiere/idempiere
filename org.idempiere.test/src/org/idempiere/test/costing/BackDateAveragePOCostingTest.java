@@ -8161,6 +8161,196 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		}
 	}
 	
+	/**
+	 * IDEMPIERE-6800
+	 * Opening stock = 7 (Date1)
+	 * PO Qty=20, Price=3.15 (Date2)
+	 * MR Qty=19, Stock/Costing Qty=26 (Date2)
+	 * SH Qty=2, Stock/Costing Qty=24 (Date2)
+	 * PI Qty=20, Stock/Costing Qty=24 (Date2)
+	 */
+	@Test
+	public void testPartialMRShipment() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			backDateDays = configureAcctSchema(ass);
+			MProduct product = createProduct("testPartialMRShipment", new BigDecimal(3.15));
+			mockProductGet(productMock, product);
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// Opening stock
+			createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(7), new BigDecimal(3.15));
+			product.set_TrxName(getTrxName());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("7").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// Purchase Order
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.setDateAcct(backDate2);
+			order.setDateOrdered(backDate2);
+			order.setDatePromised(backDate2);		
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			orderLine.setQty(new BigDecimal(20));
+			orderLine.setDatePromised(backDate2);
+			orderLine.setPrice(new BigDecimal(3.15));
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+			// Material Receipt
+			createMRForPO(orderLine, backDate2, new BigDecimal(19));
+			
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("26").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+
+			// Shipment
+			createSOAndSHForProduct(backDate2, product.get_ID(), new BigDecimal(2), new BigDecimal(3.15));
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+ 			assertEquals(new BigDecimal("24").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// Purchase invoice
+			createInvoiceForPO(orderLine, backDate2, orderLine.getQtyOrdered());
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+ 			assertEquals(new BigDecimal("24").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
+	/**
+	 * IDEMPIERE-6800
+	 * Opening stock = 7 (Date1)
+	 * PO Qty=20, Price=3.15 (Date2)
+	 * MR1 Qty=19, Stock/Costing Qty=26 (Date2)
+	 * MR2 Qty=1, Stock/Costing Qty=27 (Date 2)
+	 * SH Qty=2, Stock/Costing Qty=25 (Date2)
+	 * PI Qty=20, Stock/Costing Qty=25 (Date2)
+	 */
+	@Test
+	public void testPartialMultiMRShipment() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			backDateDays = configureAcctSchema(ass);
+			MProduct product = createProduct("testPartialMultiMRShipment", new BigDecimal(3.15));
+			mockProductGet(productMock, product);
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			
+			// Opening stock
+			createPOAndMRForProduct(backDate1, product.getM_Product_ID(), new BigDecimal(7), new BigDecimal(3.15));
+			product.set_TrxName(getTrxName());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("7").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// Purchase Order
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.setDateAcct(backDate2);
+			order.setDateOrdered(backDate2);
+			order.setDatePromised(backDate2);		
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			orderLine.setQty(new BigDecimal(20));
+			orderLine.setDatePromised(backDate2);
+			orderLine.setPrice(new BigDecimal(3.15));
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+			// Material Receipt 1
+			createMRForPO(orderLine, backDate2, new BigDecimal(19));
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("26").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// Material Receipt 2
+			createMRForPO(orderLine, backDate2, new BigDecimal(1));
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("27").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+
+			// Shipment
+			createSOAndSHForProduct(backDate2, product.get_ID(), new BigDecimal(2), new BigDecimal(3.15));
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+ 			assertEquals(new BigDecimal("25").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// Purchase invoice
+			createInvoiceForPO(orderLine, backDate2, orderLine.getQtyOrdered());
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+ 			assertEquals(new BigDecimal("25").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
 	private MProduct createProduct(String name, BigDecimal price) {
 		return createProduct(name, price, DictionaryIDs.M_Product_Category.STANDARD.id);
 	}
@@ -8548,7 +8738,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	private MInOutLine createMRForPO(MOrderLine orderLine, Timestamp movementDate, BigDecimal qty) {
 		MOrder order = orderLine.getParent();
 		
-		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, movementDate);
 		receipt.setDocStatus(DocAction.STATUS_Drafted);
 		receipt.setDocAction(DocAction.ACTION_Complete);
 		receipt.saveEx();
