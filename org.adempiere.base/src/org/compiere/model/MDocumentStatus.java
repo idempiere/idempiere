@@ -197,7 +197,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		String where = sqlf.sqlClause();
 		if (where != null && where.trim().length() > 0)
 			sql.append(" WHERE " ).append(where);
-		String sqlS = MRole.getDefault().addAccessSQL(sql.toString(), tableName, false, true);
+		String sqlS = MRole.getDefault().addAccessSQL(sql.toString(), tableName, false, false);
 		return DB.getSQLValue(null, sqlS, sqlf.parameters());
 	}
 
