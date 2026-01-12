@@ -205,6 +205,7 @@ public class InventoryMoveTest extends AbstractTestCase {
 			
 			Timestamp today = TimeUtil.getDay(null);
 			Timestamp tomorrow = TimeUtil.addDays(today, 1);
+			Timestamp theDayAfterTomorrow = TimeUtil.addDays(today, 2);
 			
 			MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
 			asi.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
@@ -212,7 +213,7 @@ public class InventoryMoveTest extends AbstractTestCase {
 			asi.setGuaranteeDate(tomorrow);
 			asi.saveEx();					
 			
-			// Inventory Move
+			// Inventory Move (HQ > Store)
 			MMovement mh = new MMovement (Env.getCtx(), 0, getTrxName());
 			mh.setM_Warehouse_ID(HQ_WAREHOUSE_ID);
 			mh.setM_WarehouseTo_ID(STORE_WAREHOUSE_ID);
@@ -232,22 +233,68 @@ public class InventoryMoveTest extends AbstractTestCase {
 			mh.processIt(MMovement.ACTION_Complete);
 			
 			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
-					product.get_ID(), asi.getM_AttributeSetInstance_ID(), null,
+					product.get_ID(), ml.getM_AttributeSetInstance_ID(), null,
 					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
 					0, trxName);
 			assertEquals(1, storages.length);
 			MStorageOnHand storage = storages[0];
+			assertEquals(ml.getM_Locator_ID(), storage.getM_Locator_ID());
+			assertEquals(ml.getM_AttributeSetInstance_ID(), storage.getM_AttributeSetInstance_ID());
 			assertEquals(qtyMove.negate().intValue(), storage.getQtyOnHand().intValue());
 			assertEquals(today, storage.getDateMaterialPolicy()); // not equals to guarantee date because inventory is not increasing
 			
 			storages = MStorageOnHand.getWarehouse(ctx, STORE_WAREHOUSE_ID,
-					product.get_ID(), asi.getM_AttributeSetInstance_ID(), null,
+					product.get_ID(), ml.getM_AttributeSetInstanceTo_ID(), null,
 					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
 					0, trxName);
 			assertEquals(1, storages.length);
 			storage = storages[0];
+			assertEquals(ml.getM_LocatorTo_ID(), storage.getM_Locator_ID());
+			assertEquals(ml.getM_AttributeSetInstanceTo_ID(), storage.getM_AttributeSetInstance_ID());
 			assertEquals(qtyMove.intValue(), storage.getQtyOnHand().intValue());
 			assertEquals(tomorrow, storage.getDateMaterialPolicy());
+			
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(ctx, 0, trxName);
+			asi2.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+			asi2.setLot("9999");
+			asi2.setGuaranteeDate(theDayAfterTomorrow);
+			asi2.saveEx();
+			
+			// Inventory Move (Store > Fertilizer)
+			MMovement mh2 = new MMovement (Env.getCtx(), 0, getTrxName());
+			mh2.setM_Warehouse_ID(STORE_WAREHOUSE_ID);
+			mh2.setM_WarehouseTo_ID(DictionaryIDs.M_Warehouse.FERTILIZER.id);
+			mh2.saveEx();
+			
+			MMovementLine ml2 = new MMovementLine(mh2);
+			ml2.setM_Product_ID(product.get_ID());
+			ml2.setM_Locator_ID(MWarehouse.get(STORE_WAREHOUSE_ID).getDefaultLocator().get_ID());
+			ml2.setM_LocatorTo_ID(MWarehouse.get(DictionaryIDs.M_Warehouse.FERTILIZER.id).getDefaultLocator().get_ID());
+			ml2.setM_AttributeSetInstance_ID(asi.get_ID());
+			ml2.setM_AttributeSetInstanceTo_ID(asi2.get_ID());
+			BigDecimal qtyMove2 = Env.ONEHUNDRED;
+			ml2.setMovementQty(qtyMove2);	
+			ml2.saveEx();
+
+			assertTrue(ml2.getQtyEntered().compareTo(ml2.getMovementQty()) == 0);
+			mh2.processIt(MMovement.ACTION_Complete);
+			
+			storages = MStorageOnHand.getWarehouse(ctx, STORE_WAREHOUSE_ID,
+					product.get_ID(), ml2.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+					0, trxName);
+			assertEquals(0, storages.length);
+			
+			storages = MStorageOnHand.getWarehouse(ctx, DictionaryIDs.M_Warehouse.FERTILIZER.id,
+					product.get_ID(), ml2.getM_AttributeSetInstanceTo_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+					0, trxName);
+			assertEquals(1, storages.length);
+			storage = storages[0];
+			assertEquals(ml2.getM_LocatorTo_ID(), storage.getM_Locator_ID());
+			assertEquals(ml2.getM_AttributeSetInstanceTo_ID(), storage.getM_AttributeSetInstance_ID());
+			assertEquals(qtyMove2.intValue(), storage.getQtyOnHand().intValue());
+			assertEquals(theDayAfterTomorrow, storage.getDateMaterialPolicy());
 		} finally {
 			rollback();
 			
