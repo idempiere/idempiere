@@ -524,7 +524,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						.append(" FROM ").append(gTab.getTableName())
 						.append(" WHERE ")
 						.append(filter.sqlClause());
-				List<List<Object>> parentIds = DB.getSQLArrayObjectsEx(null, sql.toString(), filter.parameters());
+				List<List<Object>> parentIds = DB.getSQLArrayObjectsEx(null, sql.toString(), filter.parameters().toArray());
 				if (parentIds!=null && parentIds.size() > 0)
 				{
 					//Tab Index:MQuery

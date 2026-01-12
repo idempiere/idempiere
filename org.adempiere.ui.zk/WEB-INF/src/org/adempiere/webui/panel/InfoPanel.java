@@ -800,7 +800,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         p_layout = contentPanel.getLayout();
         m_sqlFragmentMain = sqlFragment;
 		m_sqlMain = m_sqlFragmentMain.toSQLWithParameters();
-		m_sqlFragmentCount = new SQLFragment("SELECT COUNT(*) FROM " + from + " WHERE " + sqlFragment.sqlClause(), sqlFragment.parameters());
+		m_sqlFragmentCount = new SQLFragment("SELECT COUNT(*) FROM " + from + " WHERE " + (sqlFilter != null ? sqlFilter.sqlClause() : ""), 
+				sqlFilter != null ? sqlFilter.parameters() : List.of());
 		m_sqlCount = m_sqlFragmentCount.toSQLWithParameters();
 		//
 		m_sqlOrder = "";

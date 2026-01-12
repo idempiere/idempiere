@@ -2422,6 +2422,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     }   //  saveSelectionDetail
     
     @Override
+    @Deprecated
     protected String buildDataSQL(int start, int end) {
     	return buildDataSQLFragment(start, end).toSQLWithParameters();
     }
@@ -3572,9 +3573,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		public void doExport() throws Exception
 		{
 			int originalCount = m_count;
-			
-			String dataSql = buildDataSQL(0, 0);
-			
+
+			SQLFragment dataSql = buildDataSQLFragment(0, 0);
+
 			File file = File.createTempFile(infoWindow.get_Translation("Name")+"_", ".xlsx");
 			
 			testCount();
@@ -3592,7 +3593,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					String trxName = Trx.createTrxName("InfoPanelLoad:");
 					trx  = Trx.get(trxName, true);
 					trx.setDisplayName(getClass().getName()+"_exportXlsx");
-					pstmt = DB.prepareStatement(dataSql, trxName);
+					pstmt = DB.prepareStatement(dataSql.sqlClause(), trxName);
 					setParameters (pstmt, false);	//	no count
 
 					pstmt.setFetchSize(100);
@@ -3602,7 +3603,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				catch(SQLException e)
 				{
-					log.log(Level.SEVERE, dataSql, e);
+					log.log(Level.SEVERE, dataSql.sqlClause(), e);
 				}
 				finally
 				{

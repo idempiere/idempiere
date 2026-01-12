@@ -193,11 +193,12 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		sql.append(tableName);
-		String where = getWhereClause(documentStatus);
+		SQLFragment sqlf = getSQLFilter(documentStatus);
+		String where = sqlf.sqlClause();
 		if (where != null && where.trim().length() > 0)
 			sql.append(" WHERE " ).append(where);
 		String sqlS = MRole.getDefault().addAccessSQL(sql.toString(), tableName, false, true);
-		return DB.getSQLValue(null, sqlS);
+		return DB.getSQLValue(null, sqlS, sqlf.parameters());
 	}
 
 	/**
