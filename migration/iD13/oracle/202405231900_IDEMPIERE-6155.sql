@@ -148,10 +148,6 @@ UPDATE AD_Process_Para SET AD_Reference_ID=30,Updated=TO_DATE('2024-06-05 19:03:
 UPDATE AD_Val_Rule SET Code='C_InvoiceLine.C_InvoiceLine_ID In ((SELECT cil.C_InvoiceLine_ID from C_InvoiceLine cil Inner Join C_Invoice ci On ci.C_Invoice_ID=cil.C_Invoice_ID Where ci.DocStatus In ( ''CL'', ''CO'') And ci.IsSOTrx=''N'' And cil.C_Charge_ID Is Not Null And cil.A_CreateAsset!=''Y'') Minus (SELECT DISTINCT C_INVOICELINE_ID from C_PROJECTISSUE Where C_INVOICELINE_ID Is Not Null))',Updated=TO_DATE('2024-06-10 10:44:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200190
 ;
 
--- Jun 7, 2024, 5:46:39 PM IST
-UPDATE AD_Process_Para SET AD_Reference_ID=30,Updated=TO_DATE('2024-06-07 17:46:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200483
-;
-
 -- Jul 16, 2024, 6:49:53 PM IST
 UPDATE AD_Field SET AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, MandatoryLogic='@C_Charge_ID@=0', IsToolbarButton=NULL,Updated=TO_DATE('2024-07-16 18:49:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8223
 ;

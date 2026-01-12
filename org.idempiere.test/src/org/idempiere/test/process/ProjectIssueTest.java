@@ -3,6 +3,7 @@ package org.idempiere.test.process;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -24,7 +25,6 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
-import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
@@ -206,7 +206,7 @@ public class ProjectIssueTest extends AbstractTestCase
 
 		BigDecimal cost = invoiceLine.getQtyEntered().multiply(invoiceLine.getPriceEntered());
 
-		assertTrue(proj.getProjectBalanceAmt().compareTo(cost) == 0, "Project Issue Amount is not added in project balance");
+		assertEquals(0, proj.getProjectBalanceAmt().compareTo(cost), "Project balance mismatch: expected " + cost + " but was " + proj.getProjectBalanceAmt());
 	} // testChargeProjBalanceUpdate
 
 	@Test
@@ -257,7 +257,7 @@ public class ProjectIssueTest extends AbstractTestCase
 		invoiceLine.setLineTotalAmt(orderLine.getLineNetAmt());
 		invoiceLine.saveEx();
 
-		// Complete Receipt
+		// Complete Invoice
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
 		assertFalse(info.isError(), info.getSummary());
@@ -288,9 +288,10 @@ public class ProjectIssueTest extends AbstractTestCase
 		}
 		catch (Exception e)
 		{
-			assertTrue(!Util.isEmpty(e.getMessage(), true), "Exception message is not as expected: " + e.getMessage());
+			assertTrue(	e.getMessage().contains("InvoiceLineNeedsCharge")	|| e.getMessage().contains("ChargeOrProductMandatory"),
+						"Exception message is not as expected: " + e.getMessage());
 			return;
 		}
-		assertTrue(false, "Project Issue creation did not fail as expected");
+		fail("Project Issue creation did not fail as expected");
 	} // testProdInvLineFails
 }

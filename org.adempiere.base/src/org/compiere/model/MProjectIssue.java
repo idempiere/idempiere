@@ -273,7 +273,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			boolean ok = true;
 			try
 			{
-				if (getMovementQty().negate().signum() < 0)
+				if (getMovementQty().signum() > 0)
 				{
 					String MMPolicy = product.getMMPolicy();
 					Timestamp minGuaranteeDate = getMovementDate();
@@ -328,6 +328,8 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 				{
 					setProcessed(true);
 					updateBalanceAmt();
+					saveEx();
+					return null;
 				}
 				else
 				{
@@ -345,6 +347,8 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		{
 			setProcessed(true);
 			updateBalanceAmt();
+			saveEx();
+			return null;
 		}
 		saveEx();
 		
@@ -637,7 +641,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	{
 		BigDecimal cost = null;
 		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
-		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
+		MProduct product = getM_Product_ID() > 0 ? new MProduct(getCtx(), getM_Product_ID(), get_TrxName()) : null;
 		if (getM_InOutLine_ID() > 0)
 		{
 			MInOutLine inOutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -660,6 +664,11 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		else
 		{
+			if (product == null)
+			{
+				log.warning("No product for cost calculation");
+				return;
+			}
  			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
 									false, get_TrxName());
 		}
@@ -669,7 +678,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			proj.setProjectBalanceAmt(proj.getProjectBalanceAmt().add(cost));
 			proj.saveEx(get_TrxName());
 		}
-		if (getReversal_ID() < 0 && (cost == null || cost.signum() <= 0))
+		if (getReversal_ID() <= 0 && getM_Product_ID() > 0 && (cost == null || cost.signum() <= 0))
 		{
 			MLocator locator = new MLocator(getCtx(), getM_Locator_ID(), get_TrxName());
 			MWarehouse warehouse = new MWarehouse(getCtx(), locator.getM_Warehouse_ID(), get_TrxName());
@@ -685,7 +694,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 */
 	private void deleteProjectLine()
 	{
-		if (DB.executeUpdate("Delete From C_ProjectLine Where C_ProjectIssue_ID = ?", get_ID(), get_TrxName()) > 0)
+		if (DB.executeUpdate("DELETE FROM C_ProjectLine WHERE C_ProjectIssue_ID = ?", get_ID(), get_TrxName()) > 0)
 			// "Project Line delete for Project Issue (" + this + ")"
 			log.info(Msg.getMsg(getCtx(), "ProjectLineDelete"));
 	} // deleteProjectLine
@@ -699,7 +708,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 */
 	public static MProjectIssue getInvLineProjectIssue(int invLineID, String trxName)
 	{
-		String whereClause = " C_InvoiceLine_ID = ? AND DocStatus NOT IN ('RE', 'VO') ";
+		String whereClause = " C_InvoiceLine_ID = ? AND DocStatus NOT IN (" + DocAction.STATUS_Reversed + "', '" + DocAction.STATUS_Voided + "') ";
 		Query query = new Query(Env.getCtx(), Table_Name, whereClause, trxName);
 		query.setClient_ID(true);
 		query.setOnlyActiveRecords(true);

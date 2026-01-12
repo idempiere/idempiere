@@ -30,7 +30,6 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MProjectLine;
 import org.compiere.model.MStorageOnHand;
-import org.compiere.model.MTable;
 import org.compiere.model.MTimeExpense;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.util.Env;
@@ -309,7 +308,7 @@ public class ProjectIssue extends SvrProcess
 		}
 		else if (invLine.getC_Project_ID() != m_C_Project_ID)
 		{
-			MProject project = (MProject) MTable.get(getCtx(), MProject.Table_ID).getPO(invLine.getC_Project_ID(), get_TrxName());
+			MProject project = new MProject(invLine.getCtx(), invLine.getC_Project_ID(), get_TrxName());
 			throw new IllegalArgumentException(Msg.getMsg(getCtx(), "InvoiceLineAnotherProject", new Object[] { project }));
 		}
 
@@ -350,7 +349,7 @@ public class ProjectIssue extends SvrProcess
 
 		// Create Project Line
 		MProjectLine pl = new MProjectLine(m_project);
-		pl.setC_ProjectIssue_ID(pi.get_ID());
+		pl.setMProjectIssue(pi);
 		pl.saveEx();
 
 		addLog(pi.getLine(), pi.getMovementDate(), pi.getMovementQty(), "Created Project Issue Line: " + pi.getLine());
