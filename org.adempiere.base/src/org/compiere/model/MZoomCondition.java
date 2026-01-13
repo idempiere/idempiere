@@ -16,6 +16,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,6 +28,7 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *  Zoom Condition model
@@ -166,7 +168,8 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 					}
 				}
 
-				boolean evaluation = condition.evaluate(query.getWhereClause(true));
+				SQLFragment filter = query.getSQLFilter(true);
+				boolean evaluation = condition.evaluate(filter.sqlClause(), filter.parameters());
 				
 				if (evaluation)
 				{
@@ -252,11 +255,14 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 					GridTab parentTab = gTab.getParentTab();
 					Object parentId = null;
 					if (!Util.isEmpty(gTab.getLinkColumnName())) {
-						StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName()).append(" FROM ").append(gTab.getTableName()).append(" WHERE ").append(query.getWhereClause());
+						SQLFragment filter = query.getSQLFilter();
+						StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName())
+								.append(" FROM ").append(gTab.getTableName())
+								.append(" WHERE ").append(filter.sqlClause());
 						if (gTab.getLinkColumnName().endsWith("_UU")) {
-							parentId = DB.getSQLValueString(null, sql.toString());
+							parentId = DB.getSQLValueString(null, sql.toString(), filter.parameters());
 						} else {
-							int tmpId = DB.getSQLValue(null, sql.toString());
+							int tmpId = DB.getSQLValue(null, sql.toString(), filter.parameters());
 							if (tmpId > 0)
 								parentId = Integer.valueOf(tmpId);
 						}
@@ -269,13 +275,14 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 						if (! Util.isEmpty(parentctxid)) {
 							StringBuilder sql = new StringBuilder("SELECT ").append(parentTab.getKeyColumnName())
 									.append(" FROM ").append(parentTab.getTableName())
-									.append(" WHERE ").append(parentTab.getKeyColumnName()).append("=");
+									.append(" WHERE ").append(parentTab.getKeyColumnName()).append("=?");
 							if (parentTab.getKeyColumnName().endsWith("_UU")) {
-								sql.append(DB.TO_STRING(parentctxid));
-								parentId = DB.getSQLValueStringEx(null, sql.toString());
+								parentId = DB.getSQLValueStringEx(null, sql.toString(), parentctxid);
 							} else {
-								sql.append(parentctxid);
-								parentId = DB.getSQLValueEx(null, sql.toString());
+								if (parentTab.getKeyColumnName().endsWith("_ID"))
+									parentId = DB.getSQLValueEx(null, sql.toString(), Integer.valueOf(parentctxid));
+								else
+									parentId = DB.getSQLValueStringEx(null, sql.toString(), parentctxid);
 							}
 						}
 						if (parentId == null)
@@ -291,16 +298,19 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 									.append(" FROM ").append(parentTab.getTableName())
 									.append(" WHERE ");
 							MTable parentTable = MTable.get(Env.getCtx(), parentTab.getTableName());
+							Object id = null;
 							if (parentTable.isUUIDKeyTable()) {
-								sql.append(PO.getUUIDColumnName(parentTab.getTableName())).append("=").append(DB.TO_STRING(parentId.toString()));
+								sql.append(PO.getUUIDColumnName(parentTab.getTableName())).append("=?");
+								id = parentId.toString();
 							} else {
-								sql.append(parentTab.getTableName()).append("_ID=").append(parentId);
+								sql.append(parentTab.getTableName()).append("_ID=?");
+								id = Integer.valueOf(parentId.toString());
 							}
 							parentId = null;
 							if (parentTab.getLinkColumnName().endsWith("_UU")) {
-								parentId = DB.getSQLValueString(null, sql.toString());
+								parentId = DB.getSQLValueString(null, sql.toString(), id);
 							} else {
-								int tmpId = DB.getSQLValue(null, sql.toString());
+								int tmpId = DB.getSQLValue(null, sql.toString(), id);
 								if (tmpId > 0)
 									parentId = Integer.valueOf(tmpId);
 							}
@@ -406,9 +416,20 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 	 */
 	public boolean evaluate(String whereClause)
 	{
+		return evaluate(whereClause, List.of());
+	}
+	
+	/**
+	 * Evaluate a where clause 
+	 * @param whereClause filter to get record for evaluation
+	 * @return true if the condition is empty (applies for all records) or if the condition is true for &gt;= 1 record   
+	 */
+	public boolean evaluate(String whereClause, List<Object> parameters)
+	{
 		if (Util.isEmpty(getWhereClause()))
 			return true;
 		
+		List<Object> params = new ArrayList<Object>(parameters);
 		MTable table = MTable.get(Env.getCtx(), getAD_Table_ID());
 		String tableName = table.getTableName();
 		StringBuilder builder = new StringBuilder("SELECT 1 FROM ");
@@ -416,10 +437,10 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 			.append(" WHERE ")
 			.append(whereClause)
 			.append(" AND (")
-			.append(Env.parseContext(Env.getCtx(), 0, getWhereClause(), false, true))
+			.append(Env.parseContextForSql(Env.getCtx(), 0, getWhereClause(), false, true, params))
 			.append(")");
 		
-		int no = DB.getSQLValue(null, builder.toString());		
+		int no = DB.getSQLValue(null, builder.toString(), params);		
 		return no == 1;
 	}
 	
