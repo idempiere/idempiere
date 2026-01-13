@@ -68,12 +68,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Comprehensive JUnit 5 tests for {@link MTable}.
  * 
  * @author etantg
  */
+@Isolated
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MTableTest extends AbstractTestCase {
 

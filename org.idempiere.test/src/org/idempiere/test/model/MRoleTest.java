@@ -75,17 +75,16 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.DictionaryIDs.AD_Org;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
  * Comprehensive JUnit 5 tests for {@link MRole}.
  */
+@Isolated
 public class MRoleTest extends AbstractTestCase {
-
-	private MRole defaultRole;
 
 	// Add static variables for table IDs
 	private static final int CLIENT_LEVEL_TABLE_ID = X_AD_WizardProcess.Table_ID;
@@ -107,13 +106,9 @@ public class MRoleTest extends AbstractTestCase {
 		ROLE_UU = DB.getSQLValueString(null, "SELECT AD_Role_UU FROM AD_Role WHERE AD_Role_ID=?", ROLE_ID);
 	}
 	
-	@BeforeEach
-	public void setup() {
-		defaultRole = MRole.getDefault(); //GardenAdmin role
-	}
-
 	@Test
 	void testGetDefault() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		assertNotNull(defaultRole);
 
 		// Based on the login credentials from Abstract Test Case, default login should be GardenAdmin
@@ -157,6 +152,7 @@ public class MRoleTest extends AbstractTestCase {
 	@Test
 	void testClientAccess() {
 
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		// Test same client access
 		assertTrue(defaultRole.isClientAccess(11, false));
 		assertTrue(defaultRole.isClientAccess(11, true));
@@ -172,6 +168,7 @@ public class MRoleTest extends AbstractTestCase {
 	@Test
 	void testOrgAccess() {
 
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		// GardenAdmin has explicit access to all organizations 
 		for (AD_Org org : AD_Org.values()) {
 			assertTrue(defaultRole.isOrgAccess(org.id, true));
@@ -198,11 +195,13 @@ public class MRoleTest extends AbstractTestCase {
 	/** Table Access Level **/
 	@Test
 	public void testIsTableAccess_WrongID() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		assertFalse(defaultRole.isTableAccess(1234, false));
 	}
 
 	@Test
 	public void testIsTableAccess_SystemOnly() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		defaultRole.setUserLevel(MRole.USERLEVEL_System);
 
 		assertFalse(defaultRole.isTableAccess(CLIENT_LEVEL_TABLE_ID, false), 
@@ -226,6 +225,7 @@ public class MRoleTest extends AbstractTestCase {
 
 	@Test
 	public void testIsTableAccess_ClientOnly() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		defaultRole.setUserLevel(MRole.USERLEVEL_Client);
 
 		assertTrue(defaultRole.isTableAccess(CLIENT_LEVEL_TABLE_ID, false), 
@@ -249,6 +249,7 @@ public class MRoleTest extends AbstractTestCase {
 
 	@Test
 	public void testIsTableAccess_OrganizationOnly() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		defaultRole.setUserLevel(MRole.USERLEVEL_Organization);
 
 		assertFalse(defaultRole.isTableAccess(CLIENT_LEVEL_TABLE_ID, false), 
@@ -272,6 +273,7 @@ public class MRoleTest extends AbstractTestCase {
 
 	@Test
 	public void testIsTableAccess_ClientPlusOrganization() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		assertTrue(defaultRole.isTableAccess(CLIENT_LEVEL_TABLE_ID, false),
 				"Client level tables must work with both Client and Organization");
 
@@ -344,6 +346,7 @@ public class MRoleTest extends AbstractTestCase {
 	/** Column Access **/
 	@Test
 	void testColumnAccess_CheckAccess() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		assertTrue(defaultRole.isColumnAccess(X_AD_Color.Table_ID, 6230, true), 
 				"System level columns should always be accessible in read only mode");
 		assertFalse(defaultRole.isColumnAccess(X_AD_Color.Table_ID, 6230, false), 
@@ -352,6 +355,7 @@ public class MRoleTest extends AbstractTestCase {
 
 	@Test
 	void testColumnAccess_NoExistingColumn() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		assertTrue(defaultRole.isColumnAccess(X_C_Order.Table_ID, 6230, true), 
 				"System level columns should always be accessible in read only mode");
 	}
@@ -465,6 +469,7 @@ public class MRoleTest extends AbstractTestCase {
 	 */
 	@Test
 	void testCanUpdate() {
+		MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		defaultRole.setUserLevel(MRole.USERLEVEL_System);
 		boolean result = defaultRole.canUpdate(0, 0, CLIENT_ORGANIZATION_LEVEL_TABLE_ID, 0, false);
 		assertTrue(result, "System-level access should allow updates.");
@@ -506,6 +511,7 @@ public class MRoleTest extends AbstractTestCase {
 	
     @Test
     void testCanUpdate_ClientLevelAccess() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		defaultRole.setUserLevel(MRole.USERLEVEL_Client);
 
         boolean result = defaultRole.canUpdate(0, 0, CLIENT_LEVEL_TABLE_ID, 0, false);
@@ -518,6 +524,7 @@ public class MRoleTest extends AbstractTestCase {
 
     @Test
     void testCanUpdate_OrganizationLevelAccess() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		defaultRole.setUserLevel(MRole.USERLEVEL_Organization);
         boolean result = defaultRole.canUpdate(0, 0, CLIENT_LEVEL_TABLE_ID, 0, false);
         assertFalse(result, "Organization-level access should not allow updates for system tenant");
@@ -543,6 +550,7 @@ public class MRoleTest extends AbstractTestCase {
     /** canView **/
     @Test
 	public void testCanView_SystemOnly() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		defaultRole.setUserLevel(MRole.USERLEVEL_System);
 
 		assertTrue(defaultRole.canView(Env.getCtx(), X_AD_Table.ACCESSLEVEL_All), 
@@ -565,6 +573,7 @@ public class MRoleTest extends AbstractTestCase {
 	}
     @Test
     public void testCanView_ClientOnly() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
         defaultRole.setUserLevel(MRole.USERLEVEL_Client);
 
         assertTrue(defaultRole.canView(Env.getCtx(), X_AD_Table.ACCESSLEVEL_All), 
@@ -588,6 +597,7 @@ public class MRoleTest extends AbstractTestCase {
 
     @Test
     public void testCanView_OrganizationOnly() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
         defaultRole.setUserLevel(MRole.USERLEVEL_Organization);
 
         assertTrue(defaultRole.canView(Env.getCtx(), X_AD_Table.ACCESSLEVEL_All), 
@@ -611,6 +621,7 @@ public class MRoleTest extends AbstractTestCase {
 
     @Test
     public void testCanView_ClientPlusOrganization() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
         defaultRole.setUserLevel(MRole.USERLEVEL_ClientPlusOrganization);
 
         assertTrue(defaultRole.canView(Env.getCtx(), X_AD_Table.ACCESSLEVEL_All), 
@@ -954,6 +965,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
 	public void testCopyConstructor() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
 		MRole original = defaultRole;
 		assertNotNull(original);
 
@@ -1117,6 +1129,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
 	public void testSaveAndDelete() {
+    	MRole defaultRole = MRole.getDefault(); //GardenAdmin role
     	MSysConfig config = null;
     	try {
 			// 1. Default role should always pass
@@ -1188,7 +1201,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
     public void testCheckAccessSQL() {
-    	MRole role = defaultRole;
+    	MRole role = MRole.getDefault();
     	MTable table = MTable.get(Env.getCtx(), MRole.Table_ID);
     	
         // 1. UUID path (non-empty UUID)
@@ -1206,7 +1219,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
     public void testCheckActionAccess() {
-    	MRole role = defaultRole;
+    	MRole role = MRole.getDefault();
     	
         // 1. maxIndex <= 0
     	int docTypeId = DictionaryIDs.C_DocType.STANDARD_ORDER.id;
@@ -1241,7 +1254,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
     public void testGetIncludedRolesWhereClause() {
-    	MRole role = defaultRole;
+    	MRole role = MRole.getDefault();
         String columnSQL = "AD_Role_ID";
 
         // 1. params == null (literal role IDs)
@@ -1272,7 +1285,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
     public void testGetInfoAccess() {
-    	MRole role = defaultRole;
+    	MRole role = MRole.getDefault();
     	
     	int infoWindowId = DictionaryIDs.AD_InfoWindow.PRODUCT_INFO.id;
         // 1. Initial call (m_infoAccess == null) should initialize map
@@ -1293,7 +1306,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
     public void testGetPredefinedContextVariables() {
-    	MRole role = defaultRole;
+    	MRole role = MRole.getDefault();
         List<MRole> includedRoles = role.getIncludedRoles(false);
     	
         // 1. Included roles have no variables, current role has no variable
@@ -1367,7 +1380,7 @@ public class MRoleTest extends AbstractTestCase {
      */
     @Test
     public void testGetWindowAccess() {
-    	MRole role = defaultRole;
+    	MRole role = MRole.getDefault();
     	int windowId = DictionaryIDs.AD_Window.USER.id;
     	
         // 1. Initial call (m_windowAccess == null) should initialize map

@@ -124,6 +124,7 @@ import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -132,6 +133,7 @@ import org.mockito.Mockito;
  * @author hengsin
  *
  */
+@Isolated
 public class GridTabTest extends AbstractTestCase {
 
 	private static final int FIELD_ORDERLINE_SHIPPER = 1135;
