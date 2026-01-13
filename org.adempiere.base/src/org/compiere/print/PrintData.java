@@ -39,6 +39,7 @@ import org.compiere.report.MReportLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Trace;
+import org.idempiere.db.util.SQLFragment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -83,14 +84,14 @@ public class PrintData implements Serializable
 		if (name == null)
 			throw new IllegalArgumentException("Name cannot be null");
 		m_ctx = ctx;
-		m_name = name;		
+		m_name = name;
 		m_matrix = new SerializableMatrixImpl<Serializable>(name);
 		if (nodes != null)
 			addRow(false, 0, nodes);
 	}	//	PrintData
 
 	private SerializableMatrix<Serializable> m_matrix;
-	
+
 	/**	Context						*/
 	private Properties	m_ctx;
 	/**	Data Structure Name			*/
@@ -106,7 +107,7 @@ public class PrintData implements Serializable
 	/**	Optional Column Meta Data	*/
 	private PrintDataColumn[]	m_columnInfo = null;
 	/**	Optional sql				*/
-	private String				m_sql = null;
+	private SQLFragment			m_sql = null;
 	/** Optional TableName			*/
 	private String				m_TableName = null;
 
@@ -125,7 +126,7 @@ public class PrintData implements Serializable
 
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(PrintData.class);
-	
+
 	/**
 	 * 	Get Context
 	 * 	@return context
@@ -165,20 +166,42 @@ public class PrintData implements Serializable
 	/**
 	 * 	Set SQL (optional)
 	 * 	@param sql SQL
+	 *  @deprecated use {@link #setSQLClause(SQLFragment)} instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public void setSQL (String sql)
 	{
-		m_sql = sql;
+		setSQLClause(new SQLFragment(sql));
 	}	//	setSQL
 
 	/**
 	 * 	Get optional SQL
 	 * 	@return SQL
+	 *  @deprecated use {@link #getSQLClause()} instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getSQL()
 	{
-		return m_sql;
+		return m_sql != null ? m_sql.toSQLWithParameters() : null;
 	}	//	getSQL
+
+	/**
+	 * Set SQL clause (optional)
+	 * @param sqlClause SQL clause and parameters
+	 */
+	public void setSQLClause(SQLFragment sqlClause)
+	{
+		m_sql = sqlClause;
+	}
+
+	/**
+	 * Get optional SQL clause
+	 * @return SQL clause and parameters
+	 */
+	public SQLFragment getSQLClause()
+	{
+		return m_sql;
+	}
 
 	/**
 	 * 	Set TableName (optional)
@@ -242,7 +265,7 @@ public class PrintData implements Serializable
 	{
 		addRow(functionRow, levelNo, new ArrayList<Serializable>());
 	}
-	
+
 	/**
 	 * 	Add Data Row
 	 *  @param functionRow true if function row
@@ -293,7 +316,7 @@ public class PrintData implements Serializable
 	public int getRowCount(boolean includeFunctionRows) {
 		return includeFunctionRows ? m_matrix.getRowCount() : m_matrix.getRowCount() - m_functionRows.size();
 	}
-	
+
 	/**
 	 * 	Get Current Row Index
 	 * 	@return row index
@@ -455,7 +478,7 @@ public class PrintData implements Serializable
 	 * 	@return PrintData(Element) with AD_Column_ID or null
 	 *  @deprecated replace by {@link #getNodeByPrintFormatItemId(int)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public Object getNode (Integer AD_Column_ID)
 	{
 		int index = getIndex (AD_Column_ID.intValue());
@@ -474,7 +497,7 @@ public class PrintData implements Serializable
 	{
 		return getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 	}
-	
+
 	/**
 	 * 	Get Node with AD_PrintFormatItem_ID in current row
 	 * 	@param AD_PrintFormatItem_ID AD_PrintFormatItem_ID
@@ -488,7 +511,7 @@ public class PrintData implements Serializable
 		List<Serializable> nodes = m_matrix.getRowData();
 		return nodes.get(index);
 	}	//	getNode
-	
+
 	/**
 	 * 	Get Primary Key node in current row
 	 * 	@return PK or null
@@ -546,7 +569,7 @@ public class PrintData implements Serializable
 	 * 	@param AD_Column_ID AD_Column_ID
 	 * 	@return index or -1
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public int getIndex (int AD_Column_ID)
 	{
 		if (m_columnInfo == null)
@@ -590,7 +613,7 @@ public class PrintData implements Serializable
 		//	As Data is stored sparse, there might be lots of NULL values
 		return -1;
 	}
-	
+
 	/**
 	 * 	Dump All Data - header and rows
 	 */
@@ -706,7 +729,7 @@ public class PrintData implements Serializable
 			document.appendChild(root);
 			processXML (this, document, root);
 		}
-		
+
 		return document;
 	}	//	getDocument
 
@@ -802,7 +825,7 @@ public class PrintData implements Serializable
 		}
 		return true;
 	}	//	createXMLFile
-	
+
 	/**
 	 *	Create PrintData from XML
 	 *	@param ctx context
@@ -870,5 +893,4 @@ public class PrintData implements Serializable
 		if (m_hasLevelNo && reportLineID != 0)
 			addNode(new PrintDataElement(0, "PA_ReportLine_ID", reportLineID, DisplayType.Integer, null));
 	}
-
 }	//	PrintData

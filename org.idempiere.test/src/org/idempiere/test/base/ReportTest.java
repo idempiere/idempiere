@@ -85,12 +85,13 @@ public class ReportTest extends AbstractTestCase {
 		MPInstance instance = new MPInstance(orderReport, order.get_Table_ID(), order.getC_Order_ID(), order.getC_Order_UU());
 		instance.saveEx();
 		ServerProcessCtl.process(pi, null);
+		assertFalse(pi.isError(), pi.getSummary());
 		File file = pi.getPDFReport();
 
 		assertEquals(file.getName(), fileName);
-
+		assertTrue(file.length() > 0, "Generated PDF file is empty");
 	}
-	
+
 	@Test
 	public void testBackgroundJob() {
 		//Storage Detail report
@@ -99,7 +100,7 @@ public class ReportTest extends AbstractTestCase {
 		pi.setReportType("PDF");
 		pi.setAD_Client_ID(getAD_Client_ID());
 		pi.setAD_User_ID(getAD_User_ID());
-		
+
 		Callback<Integer> createParaCallback = id -> {
 			if (id > 0) {
 				MPInstancePara para = new MPInstancePara(Env.getCtx(), id, 10);
@@ -107,18 +108,18 @@ public class ReportTest extends AbstractTestCase {
 				para.saveEx();
 			}
 		};
-		
+
 		ScheduledFuture<ProcessInfo> future = BackgroundJob.create(pi)
 			.withNotificationType(MUser.NOTIFICATIONTYPE_Notice)
 			.withInitialDelay(10)
 			.run(createParaCallback);
-		
+
 		assertNotNull(future, "Failed to schedule background job");
-		
+
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {}
-		
+
 		assertTrue(pi.getAD_PInstance_ID() > 0, "Failed to create background process instance");
 		assertFalse(pi.isError(), "Error creating background job: " + pi.getSummary());
 		MPInstance pinstance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
@@ -131,7 +132,7 @@ public class ReportTest extends AbstractTestCase {
 		assertFalse(pi.isError(), "Error running background job: " + pi.getSummary());
 		pinstance.load((String)null);
 		assertFalse(pinstance.isProcessing(), "Timeout waiting for background job to complete");
-		
+
 		Query query = new Query(Env.getCtx(), MNote.Table_Name, "AD_Table_ID=? AND Record_ID=?", null);
 		MNote note = query.setParameters(MPInstance.Table_ID, pinstance.getAD_PInstance_ID()).first();
 		assertNotNull(note, "Failed to retrieve notice");

@@ -63,6 +63,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -1137,6 +1138,18 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	@Override
+	public SQLFragment subsetFilterForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("string_to_array(")
+			.append(columnName)
+			.append(",',')");
+		builder.append(" <@ "); //is contained by
+		builder.append("string_to_array(?,',')");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
+	}
+	
+	@Override
 	public String quoteColumnName(String columnName) {
 		if (!isNativeMode()) {
 			return columnName;
@@ -1171,6 +1184,25 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			.append(",','))");
 
 		return builder.toString();
+	}
+	
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv) {
+		return intersectFilterForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
+		StringBuilder builder = new StringBuilder();
+		if(isNotClause)
+			builder.append("NOT");
+		builder.append("(string_to_array(")
+			.append(columnName)
+			.append(",',')");
+		builder.append(" && "); //intersect
+		builder.append("string_to_array(?,','))");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
 	}
 	
 	@Override

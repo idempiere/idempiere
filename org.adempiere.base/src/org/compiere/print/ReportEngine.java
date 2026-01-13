@@ -82,6 +82,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.eevolution.model.MDDOrder;
 import org.eevolution.model.X_PP_Order;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.print.renderer.CSVReportRenderer;
 import org.idempiere.print.renderer.CSVReportRendererConfiguration;
 import org.idempiere.print.renderer.HTMLReportRenderer;
@@ -239,7 +240,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	/** Transaction Name 		*/
 	private String 			m_trxName = null;
 	/** Where filter */
-	private String 			m_whereExtended = null;
+	private SQLFragment 	m_extendedFilter = null;
 	/** Window */
 	private int m_windowNo = 0;
 	
@@ -1741,16 +1742,34 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 * Set extended where clause
 	 * @param whereExtended
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public void setWhereExtended(String whereExtended) {
-		m_whereExtended = whereExtended;
+		m_extendedFilter = new SQLFragment(whereExtended);
 	}
 
 	/**
 	 * Get extended where clause
 	 * @return extended where clause
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereExtended() {
-		return m_whereExtended;
+		return m_extendedFilter != null ? m_extendedFilter.toSQLWithParameters() : null;
+	}
+	
+	/**
+	 * Set extended filter
+	 * @param filter
+	 */
+	public void setExtendedFilter(SQLFragment filter) {
+		m_extendedFilter = filter;
+	}
+	
+	/**
+	 * Get extended filter
+	 * @return extended filter
+	 */
+	public SQLFragment getExtendedFilter() {
+		return m_extendedFilter;
 	}
 
 	/**

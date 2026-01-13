@@ -31,7 +31,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 
@@ -55,6 +58,7 @@ import org.compiere.model.MZoomCondition;
 import org.compiere.model.PO;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.SvrProcess;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *  Static constants for environment context attribute key.<br/>
@@ -69,12 +73,12 @@ import org.compiere.process.SvrProcess;
  * 			<li>FR [ 2392044 ] Introduce Env.WINDOW_MAIN
  */
 public final class Env
-{	
+{
 	//Environments Constants
 	public static final String AD_CLIENT_ID = "#AD_Client_ID";
 	public static final String AD_CLIENT_NAME = "#AD_Client_Name";
-	public static final String AD_ORG_ID = "#AD_Org_ID";		
-	public static final String AD_ORG_NAME = "#AD_Org_Name";	
+	public static final String AD_ORG_ID = "#AD_Org_ID";
+	public static final String AD_ORG_NAME = "#AD_Org_Name";
 	public static final String AD_PRINTCOLOR_ID = "#AD_PrintColor_ID";
 	public static final String AD_PRINTFONT_ID = "#AD_PrintFont_ID";
 	public static final String AD_PRINTPAPER_ID = "#AD_PrintPaper_ID";
@@ -119,7 +123,7 @@ public final class Env
 	public static final String LOCALE = "#Locale";
 	public static final String M_PRICELIST_ID = "#M_PriceList_ID";
 	public static final String M_PRODUCT_CATEGORY_ID = "#M_Product_Category_ID";
-	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";	
+	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";
 	/** Context for multi factor authentication */
 	public static final String MFA_Registration_ID = "#MFA_Registration_ID";
 	/** Context for POS ID */
@@ -140,16 +144,16 @@ public final class Env
 	public static final String USER_ORG = "#User_Org";
 
 	public static final String PREFIX_SYSTEM_VARIABLE = "$env.";
-	
+
 	public static final String PREFIX_SYSCONFIG_VARIABLE = "$sysconfig.";
 
 	@Deprecated
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
-	
+
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
-	public static int adWindowDummyID =200054; 
-	
+	public static int adWindowDummyID =200054;
+
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(Env.class);
 
@@ -246,11 +250,11 @@ public final class Env
 					getCtx().remove(keys[i]);
 			}
 		}
-		
-		if (Ini.isClient()) {			
+
+		if (Ini.isClient()) {
 			DB.closeTarget();
 		}
-		
+
 		//	Reset Role Access
 		if (!finalCall)
 		{
@@ -300,11 +304,11 @@ public final class Env
 	{
 		if (ctx == null)
 			throw new IllegalArgumentException ("Require Context");
-		
+
 		//nothing to do if ctx is already the current context
 		if (ServerContext.getCurrentInstance() == ctx)
 			return;
-		
+
 		getCtx().clear();
 		getCtx().putAll(ctx);
 	}   //  setCtx
@@ -421,7 +425,7 @@ public final class Env
 		}
 		else
 		{	//	JDBC Format	2005-05-09 00:00:00.0
-			// BUG:3075946 KTU, Fix Thai year 
+			// BUG:3075946 KTU, Fix Thai year
 			//String stringValue = value.toString();
 			String stringValue = "";
 			Calendar c1 = Calendar.getInstance();
@@ -434,7 +438,7 @@ public final class Env
 			if (log.isLoggable(Level.FINER)) log.finer("Context("+WindowNo+") " + context + "==" + stringValue);
 		}
 	}	//	setContext
-	
+
 	/**
 	 *	Set Context for WindowNo to int Value
 	 *  @param ctx context
@@ -501,7 +505,7 @@ public final class Env
 	{
 		setContext (ctx, WindowNo, TabNo, context, convert(value));
 	}	//	setContext
-	
+
 	/**
 	 *	Set Context for WindowNo and TabNo to Value
 	 *  @param ctx context
@@ -638,7 +642,7 @@ public final class Env
 				int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, Env.AD_ORG_ID, false);
 				return getSysConfigValue(context, AD_Org_ID);
 			}
-			//	Explicit Base Values			
+			//	Explicit Base Values
 			if (Env.isGlobalVariable(context) || Env.isPreference(context))
 				return getContext(ctx, context);
 			if (onlyWindow)			//	no Default values
@@ -876,7 +880,7 @@ public final class Env
 	}	//	isAutoCommit
 
 	/**
-	 * Is Show Technical Information 
+	 * Is Show Technical Information
 	 * @param ctx context
 	 * @return true if IsShowTechnicalInfOnHelp on User Preference
 	 */
@@ -994,7 +998,7 @@ public final class Env
 		}
 
 		Timestamp timeStampDate = new Timestamp(date.getTime());
-		
+
 		return timeStampDate;
 	}	//	getContextAsDate
 
@@ -1091,12 +1095,12 @@ public final class Env
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
 		String retValue = null;
-		
+
 		retValue = ctx.getProperty("P"+AD_Window_ID+"|"+ AD_InfoWindow + "|" + AD_Process_ID_Of_Panel + "|" + context);
 
 		return (retValue == null ? "" : retValue);
 	}	//	getPreference
-	
+
 	/**
 	 * Get preference of info window from environment context
 	 * @param ctx
@@ -1110,12 +1114,12 @@ public final class Env
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
 		String retValue = null;
-		
+
 		retValue = ctx.getProperty("P"+AD_Window_ID+"|"+ AD_InfoWindow + "|" + context);
 
 		return (retValue == null ? "" : retValue);
 	}	//	getPreference
-	
+
 	/**
 	 *  Is login language Base Language
 	 *  @param ctx context
@@ -1233,7 +1237,7 @@ public final class Env
 		}
 		return language;
 	}
-	
+
 	/**
 	 * Get locale value in context
 	 * @param ctx context
@@ -1291,7 +1295,7 @@ public final class Env
 	}
 
 	/**
-	 * Get list of active login languages  
+	 * Get list of active login languages
 	 * @return list of active login languages
 	 */
 	public static ArrayList<String> getLoginLanguages()
@@ -1320,11 +1324,11 @@ public final class Env
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}
-		
-		
+
+
 		return AD_Languages;
 	}
-	
+
 	/**
 	 *  Verify Language.<br/>
 	 *  Check that language is supported by the system.
@@ -1497,7 +1501,7 @@ public final class Env
 			}
 		}
 	}
-	
+
 	/**
 	 *	Clean up all context (i.e. delete it)
 	 *  @param ctx context
@@ -1520,9 +1524,9 @@ public final class Env
 	 *	@param WindowNo	Number of Window
 	 *	@param value Expression to be parsed
 	 *  @param onlyWindow if true, do not use global context value
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
-	 *  If false, return "" if there are context variable that's not resolvable.  
+	 * 	@param ignoreUnparsable
+	 *  If true, just skip context variable that's not resolvable.
+	 *  If false, return "" if there are context variable that's not resolvable.
 	 *	@return parsed expression
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, String value,
@@ -1542,8 +1546,31 @@ public final class Env
 	 *	@param WindowNo	Number of Window
 	 *	@param value Expression to be parsed
 	 *  @param onlyWindow if true, do not use global context value
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
+	 * 	@param ignoreUnparsable
+	 *  @param parameters list to collect parameters for prepared statement
+	 *  If true, just skip context variable that's not resolvable.
+	 *  If false, return "" if there are context variable that's not resolvable.
+	 *	@return parsed expression
+	 */
+	public static String parseContextForSql(Properties ctx, int WindowNo, String value,
+			boolean onlyWindow, boolean ignoreUnparsable, List<Object> parameters)
+	{
+		return parseContextForSql(ctx, WindowNo, value, onlyWindow, ignoreUnparsable, false, parameters);
+	}
+
+	/**
+	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
+	 *  Note that this method replaces all quote with quote-quote  ' -> ''
+	 *    as this is mostly intended for SQL parsing, if parsing a nonSQL String you must use the method
+	 *    parseContext (Properties, int, String, boolean, boolean, boolean, boolean)
+	 *    with the last parameter forSQL as false
+	 *
+	 *  @param ctx context
+	 *	@param WindowNo	Number of Window
+	 *	@param value Expression to be parsed
+	 *  @param onlyWindow if true, do not use global context value
+	 * 	@param ignoreUnparsable
+	 *  If true, just skip context variable that's not resolvable.
 	 *  If false, return "" if there are context variable that's not resolvable.
 	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
 	 *	@return parsed expression
@@ -1561,8 +1588,8 @@ public final class Env
 	 *	@param WindowNo	Number of Window
 	 *	@param value Expression to be parsed
 	 *  @param onlyWindow if true, do not use global context value
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
+	 * 	@param ignoreUnparsable
+	 *  If true, just skip context variable that's not resolvable.
 	 *  If false, return "" if there are context variable that's not resolvable.
 	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
   	 *  @param forSQL if true, the parsed value is intended for SQL statement, so it replaces quotes accordingly
@@ -1626,8 +1653,102 @@ public final class Env
 		outStr.append(inStr);						// add the rest of the string
 
 		return outStr.toString();
-	}	//	parseContext
-	
+	} //	parseContext
+
+	/**
+	 *	Parse expression and replaces global or Window context @tag@ with actual value.<br/>
+	 *
+	 *  @param ctx context
+	 *	@param WindowNo	Number of Window
+	 *	@param value Expression to be parsed
+	 *  @param onlyWindow if true, do not use global context value
+	 * 	@param ignoreUnparsable
+	 *  If true, just skip context variable that's not resolvable.
+	 *  If false, return "" if there are context variable that's not resolvable.
+	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+  	 *  @param parameters list to collect parameters for prepared statement
+	 *	@return parsed expression
+	 */
+	public static String parseContextForSql(Properties ctx, int WindowNo, String value,
+			boolean onlyWindow, boolean ignoreUnparsable, boolean keepEscapeSequence, List<Object> parameters)
+	{
+		if (value == null || value.length() == 0)
+			return "";
+
+		String token;
+		String inStr = new String(value);
+		String QUOTED_BIND_VARIABLE = "'?'";
+		String randomPlaceHolder = null;
+		if (inStr.contains(QUOTED_BIND_VARIABLE)) {
+			// to avoid replacing '?' inside quotes, we replace it with a random place holder first
+			randomPlaceHolder = UUID.randomUUID().toString();
+			inStr = inStr.replace(QUOTED_BIND_VARIABLE, randomPlaceHolder);
+		}
+		StringBuilder outStr = new StringBuilder();
+
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, WindowNo, 0, onlyWindow);
+		int i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
+		while (i != -1)
+		{
+			outStr.append(inStr.substring(0, i));			// up to @
+			inStr = inStr.substring(i+1, inStr.length());	// from first @
+
+			int j = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);						// next @
+			if (j < 0)
+			{
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
+				//not context variable, add back @ and break
+				outStr.append(Evaluator.VARIABLE_START_END_MARKER);
+				break;
+			}
+
+			if (j == 0)
+			{
+				if (keepEscapeSequence) {
+					outStr.append(Evaluator.VARIABLE_START_END_MARKER).append(Evaluator.VARIABLE_START_END_MARKER);
+				} else {
+					outStr.append(Evaluator.VARIABLE_START_END_MARKER);
+				}
+				inStr = inStr.substring(1);
+				i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
+				continue;
+			}
+
+			token = inStr.substring(0, j);
+
+			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);
+			if (ctxInfo.isEmpty())
+			{
+				if (log.isLoggable(Level.CONFIG)) log.config("No Context Win=" + WindowNo + " for: " + token);
+				if (!ignoreUnparsable)
+					return "";						//	token not found
+				else
+					outStr.append(Evaluator.VARIABLE_START_END_MARKER).append(token).append(Evaluator.VARIABLE_START_END_MARKER); // add back unparsed context
+			}
+			else
+			{
+				outStr.append("?"); // replace context with parameter
+				if (token.endsWith("_ID"))
+					parameters.add(Integer.valueOf(ctxInfo));
+				else
+					parameters.add(ctxInfo);
+			}
+
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+			i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
+		}
+		outStr.append(inStr);						// add the rest of the string
+
+		String result = outStr.toString();
+		// '@ContextVariable@' -> ?
+		if (result.contains(QUOTED_BIND_VARIABLE))
+			result = result.replace(QUOTED_BIND_VARIABLE, "?");
+		if (randomPlaceHolder != null) {
+			result = result.replace(randomPlaceHolder, QUOTED_BIND_VARIABLE);
+		}
+		return result;
+	}
+
 	/**
 	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
 	 *  Note that this method replaces all quote with quote-quote  ' -> ''
@@ -1640,8 +1761,8 @@ public final class Env
 	 *	@param tabNo	Number of Tab
 	 *	@param value Expression to be parsed
 	 *  @param onlyTab if true, only context for tabNo are used
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
+	 * 	@param ignoreUnparsable
+	 *  If true, just skip context variable that's not resolvable.
 	 *  If false, return "" if there are context variable that's not resolvable.
 	 *	@return parsed expression
 	 */
@@ -1663,8 +1784,8 @@ public final class Env
 	 *	@param tabNo	Number of Tab
 	 *	@param value Expression to be parsed
 	 *  @param onlyTab if true, only context for tabNo are used
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
+	 * 	@param ignoreUnparsable
+	 *  If true, just skip context variable that's not resolvable.
 	 *  If false, return "" if there are context variable that's not resolvable.
 	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
 	 *	@return parsed expression
@@ -1683,11 +1804,11 @@ public final class Env
 	 *	@param tabNo	Number of Tab
 	 *	@param value Expression to be parsed
 	 *  @param onlyTab if true, only context for tabNo are used
-	 * 	@param ignoreUnparsable 
-	 *  If true, just skip context variable that's not resolvable. 
+	 * 	@param ignoreUnparsable
+	 *  If true, just skip context variable that's not resolvable.
 	 *  If false, return "" if there are context variable that's not resolvable.
 	 *  @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
- 	 *  @param forSQL if true, the parsed value is intended for SQL statement, so it replaces quotes accordingly
+		 *  @param forSQL if true, the parsed value is intended for SQL statement, so it replaces quotes accordingly
 	 *	@return parsed expression
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
@@ -1730,7 +1851,7 @@ public final class Env
 
 			token = inStr.substring(0, j);
 
-			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);			
+			String ctxInfo = evaluatee.get_ValueAsString(ctx, token);
 			if (forSQL && ctxInfo.contains("'"))
 				ctxInfo = ctxInfo.replace("'", "''");
 			if (Util.isEmpty(ctxInfo))
@@ -1764,7 +1885,65 @@ public final class Env
 	{
 		return parseContext(ctx, WindowNo, value, onlyWindow, false, false, true);
 	}	//	parseContext
-	
+
+	/**
+	 *	Parse expression and replaces global or Window context @tag@ with actual value.
+	 *
+	 *  @param ctx context
+	 *	@param	WindowNo	Number of Window
+	 *	@param	value		Expression to be parsed
+	 *  @param  onlyWindow  if true, no defaults are used
+	 *  @param  parameters list to collect parameters for prepared statement
+	 *  @return parsed expression or "" if not successful
+	 */
+	public static String parseContextForSql(Properties ctx, int WindowNo, String value,
+			boolean onlyWindow, List<Object> parameters)
+	{
+		return parseContextForSql(ctx, WindowNo, value, onlyWindow, true, false, parameters);
+	}
+
+	/**
+	 * Merge initial parameters and extracted parameters according to the SQL string.
+	 * @param preParseSQL SQL with both '?' and '@var@' context variables
+	 * @param postParseSQL SQL after parsing context variables, only with '?'
+	 * @param sqlParams parameters for '?'
+	 * @param contextParams parameters for '@var@'
+	 * @return
+	 */
+	public static List<Object> mergeParameters(String preParseSQL, String postParseSQL, Object[] sqlParams, Object[] contextParams) {
+        // Regex to find BOTH '?' and '@var@'
+        // We use | (OR) to find either one as we scan the string
+        Pattern pattern = Pattern.compile("\\?|@([^@]+)@");
+        Matcher matcher = pattern.matcher(preParseSQL);
+
+        List<Object> combined = new ArrayList<>();
+        int questionMarkPointer = 0;
+        int contextPointer = 0;
+
+        while (matcher.find()) {
+            String match = matcher.group();
+
+            if (match.equals("?")) {
+                // If we hit a '?', take from the original parameter array
+                if (questionMarkPointer < sqlParams.length) {
+                    combined.add(sqlParams[questionMarkPointer++]);
+                }
+            } else if (!postParseSQL.contains(match)) {
+                // If we hit an '@v@', take from your parse() result array
+                if (contextPointer < contextParams.length) {
+                    combined.add(contextParams[contextPointer++]);
+                }
+            }
+        }
+
+        if (questionMarkPointer != sqlParams.length || contextPointer != contextParams.length) {
+        	log.warning("mergeParameters mismatch: sql=" + preParseSQL
+        		+ " sqlParameters=" + questionMarkPointer + "/" + sqlParams.length
+        		+ " contextParameters=" + contextPointer + "/" + contextParams.length);
+        }
+        return combined;
+    }
+
 	/**
 	 *	Parse expression and replaces global, window or tab context @tag@ with actual value.
 	 *
@@ -1792,7 +1971,20 @@ public final class Env
 	public static String parseVariable(String expression, PO po, String trxName, boolean keepUnparseable) {
 		return parseVariable(expression, po, trxName, false, false, keepUnparseable);
 	}
-	
+
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param po
+	 * @param trxName
+	 * @param keepUnparseable
+	 * @param parameters list to collect parameters for prepared statement
+	 * @return String
+	 */
+	public static String parseVariableForSql(String expression, PO po, String trxName, boolean keepUnparseable, List<Object> parameters) {
+		return parseVariableForSql(expression, po, trxName, false, false, keepUnparseable, parameters);
+	}
+
 	/**
 	 * Parse expression, replaces global or PO properties @tag@ with actual value.
 	 * @param expression
@@ -1803,7 +1995,7 @@ public final class Env
 	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
 	 * @return Parsed expression
 	 */
-	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat, 
+	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat,
 			boolean useMsgForBoolean, boolean keepUnparseable) {
 		return parseVariable(expression, po, trxName, useColumnDateFormat, useMsgForBoolean, keepUnparseable, false);
 	}
@@ -1816,10 +2008,27 @@ public final class Env
 	 * @param useMsgForBoolean
 	 * @param trxName
 	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
+	 * @param parameters list to collect parameters for prepared statement
+	 * @return Parsed expression
+	 */
+	public static String parseVariableForSql(String expression, PO po, String trxName, boolean useColumnDateFormat,
+			boolean useMsgForBoolean, boolean keepUnparseable, List<Object> parameters) {
+		return parseVariableForSql(expression, po, trxName, useColumnDateFormat, useMsgForBoolean, keepUnparseable, false, parameters);
+	}
+
+
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param po
+	 * @param trxName
+	 * @param useColumnDateFormat
+	 * @param useMsgForBoolean
+	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
 	 * @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
 	 * @return Parsed expression
 	 */
-	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat, 
+	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat,
 			boolean useMsgForBoolean, boolean keepUnparseable, boolean keepEscapeSequence) {
 		DefaultEvaluatee evaluatee = new DefaultEvaluatee(po);
 		evaluatee.setUseColumnDateFormat(useColumnDateFormat);
@@ -1827,7 +2036,29 @@ public final class Env
 		evaluatee.setTrxName(trxName);
 		return parseVariable(expression, evaluatee, keepUnparseable, keepEscapeSequence);
 	}
-	
+
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param po
+	 * @param trxName`
+	 * @param useColumnDateFormat
+	 * @param useMsgForBoolean
+	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
+	 * @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+	 * @param parameters list to collect parameters for prepared statement
+	 * @return Parsed expression
+	 */
+	public static String parseVariableForSql(String expression, PO po, String trxName, boolean useColumnDateFormat,
+			boolean useMsgForBoolean, boolean keepUnparseable, boolean keepEscapeSequence, List<Object> parameters) {
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(po);
+		evaluatee.setUseColumnDateFormat(useColumnDateFormat);
+		evaluatee.setUseMsgForBoolean(useMsgForBoolean);
+		evaluatee.setTrxName(trxName);
+		return parseVariableForSql(expression, evaluatee, keepUnparseable, keepEscapeSequence, parameters);
+	}
+
+
 	/**
 	 * Parse expression, replaces global or PO properties @tag@ with actual value.
 	 * @param expression
@@ -1843,7 +2074,7 @@ public final class Env
 		String token;
 		String inStr = new String(expression);
 		StringBuilder outStr = new StringBuilder();
-		
+
 		int i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
 		while (i != -1)
 		{
@@ -1882,13 +2113,95 @@ public final class Env
 			} else {
 				outStr.append(value);
 			}
-			
+
 			inStr = inStr.substring(j+1, inStr.length());	// from second @
 			i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
 		}
 		outStr.append(inStr);						// add the rest of the string
 
 		return outStr.toString();
+	}
+
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with '?' and add the parsed value to parameters list.
+	 * @param expression
+	 * @param evaluatee
+	 * @param keepUnparseable
+	 * @param keepEscapeSequence
+	 * @param parameters list to collect parameters for prepared statement
+	 * @return Parsed expression
+	 */
+	public static String parseVariableForSql(String expression, DefaultEvaluatee evaluatee, boolean keepUnparseable, boolean keepEscapeSequence, List<Object> parameters) {
+		if (expression == null || expression.length() == 0)
+			return "";
+
+		String token;
+		String inStr = new String(expression);
+		String QUOTED_BIND_VARIABLE = "'?'";
+		String randomPlaceHolder = null;
+		if (inStr.contains(QUOTED_BIND_VARIABLE)) {
+			// to avoid replacing '?' inside quotes, we replace it with a random place holder first
+			randomPlaceHolder = UUID.randomUUID().toString();
+			inStr = inStr.replace(QUOTED_BIND_VARIABLE, randomPlaceHolder);
+		}
+		StringBuilder outStr = new StringBuilder();
+
+		int i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
+		while (i != -1)
+		{
+			outStr.append(inStr.substring(0, i));			// up to @
+			inStr = inStr.substring(i+1, inStr.length());	// from first @
+
+			int j = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);						// next @
+			if (j < 0)
+			{
+				log.log(Level.SEVERE, "No second tag: " + inStr);
+				return "";						// no second tag
+			}
+
+			if (j == 0)
+			{
+				if (keepEscapeSequence) {
+					outStr.append(Evaluator.VARIABLE_START_END_MARKER).append(Evaluator.VARIABLE_START_END_MARKER);
+				} else {
+					outStr.append(Evaluator.VARIABLE_START_END_MARKER);
+				}
+				inStr = inStr.substring(1);
+				i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
+				continue;
+			}
+
+			token = inStr.substring(0, j);
+
+			Properties ctx = evaluatee.getPO() != null ? evaluatee.getPO().getCtx() : Env.getCtx();
+			String value = evaluatee.get_ValueAsString(ctx, token);
+			if (Util.isEmpty(value)) {
+				if (keepUnparseable) {
+					outStr.append(Evaluator.VARIABLE_START_END_MARKER)
+						.append(token)
+						.append(Evaluator.VARIABLE_START_END_MARKER);
+				}
+			} else {
+				outStr.append("?");
+				if (token.endsWith("_ID"))
+					parameters.add(Integer.valueOf(value));
+				else
+					parameters.add(value);
+			}
+
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+			i = inStr.indexOf(Evaluator.VARIABLE_START_END_MARKER);
+		}
+		outStr.append(inStr);						// add the rest of the string
+
+		String result = outStr.toString();
+		// '@ContextVariable@' -> ?
+		if (result.contains(QUOTED_BIND_VARIABLE))
+			result = result.replace(QUOTED_BIND_VARIABLE, "?");
+		if (randomPlaceHolder != null) {
+			result = result.replace(randomPlaceHolder, QUOTED_BIND_VARIABLE);
+		}
+		return result;
 	}
 
 	/**
@@ -1907,7 +2220,7 @@ public final class Env
 	{
 		getCtx().clear();
 	}	//	clearContext
-		
+
 	/**
 	 *  Get ImageIcon.
 	 *
@@ -2054,7 +2367,7 @@ public final class Env
 	{
 		return (IProcessUI) ctx.get(SvrProcess.PROCESS_UI_CTX_KEY);
 	}
-	
+
 	/**
 	 * Get process info instance from context
 	 * @param ctx context
@@ -2064,7 +2377,7 @@ public final class Env
 	{
 		return (ProcessInfo) ctx.get(SvrProcess.PROCESS_INFO_CTX_KEY);
 	}
-	
+
 	/**
 	 * Get footer trademark text for report
 	 * @return trademark text for standard report footer
@@ -2077,7 +2390,7 @@ public final class Env
 			s = Adempiere.ADEMPIERE_R;
 		return s;
 	}
-	
+
 	/**
 	 * Get zoom AD_Window_ID
 	 * @param query
@@ -2117,12 +2430,13 @@ public final class Env
 			//  Nothing to Zoom to
 			if (AD_Window_ID == 0)
 				return AD_Window_ID;
-	
+
 			//	PO Zoom ?
 			boolean isSOTrx = true;
 			if (PO_Window_ID != 0)
 			{
-				isSOTrx = DB.isSOTrx(TableName, query.getWhereClause(false));
+				SQLFragment filter = query.getSQLFilter(true);
+				isSOTrx = DB.isSOTrx(TableName, filter.sqlClause(), filter.parameters());
 				if (!isSOTrx)
 					AD_Window_ID = PO_Window_ID;
 			}
@@ -2131,7 +2445,7 @@ public final class Env
 		}
 		return AD_Window_ID;
 	}
-	
+
 	/**
 	 * Get zoom AD_Window_ID
 	 * @param AD_Table_ID
@@ -2193,12 +2507,12 @@ public final class Env
 			MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 			AD_Window_ID = table.getAD_Window_ID();
 			//  Nothing to Zoom to
-			if (AD_Window_ID == 0) 
+			if (AD_Window_ID == 0)
 			{
 				AD_Window_ID = table.getWindowIDFromMenu();
 				return AD_Window_ID > 0 ? AD_Window_ID : 0;
 			}
-			
+
 			//	PO Zoom ?
 			boolean isSOTrx = true;
 			if (table.getPO_Window_ID() != 0 && ((Record_ID > 0 || Record_UU != null)))
@@ -2217,7 +2531,7 @@ public final class Env
 		}
 		return AD_Window_ID;
 	}
-	
+
 	/**	Big Decimal 0	 */
 	static final public BigDecimal ZERO = BigDecimal.valueOf(0.0);
 	/**	Big Decimal 1	 */
@@ -2290,10 +2604,10 @@ public final class Env
 			String sysProperty = Env.getCtx().getProperty(Ini.P_LOGMIGRATIONSCRIPT, "N");
 			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		}
-		
+
 		return logMigrationScript ? !Convert.isDontLogTable(tableName) : false;
 	}
-	
+
 	/**
 	 * Is use centralized id from id server
 	 * @return true if centralized id is turn on and should be used for tableName
@@ -2304,7 +2618,7 @@ public final class Env
 		boolean adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
 			adempiereSys = false;
-		
+
 		if (adempiereSys)
 		{
 			boolean b = MSysConfig.getBooleanValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, true);

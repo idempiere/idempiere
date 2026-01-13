@@ -30,6 +30,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Factory to create MLookup instance.
@@ -97,7 +98,7 @@ public class MLookupFactory
 	{
 		return 	getLookupInfo(ctx, WindowNo, 0, Column_ID, AD_Reference_ID);
 	}
-	
+
 	/**
 	 * @param ctx
 	 * @param WindowNo
@@ -168,7 +169,7 @@ public class MLookupFactory
 				          language, ColumnName, AD_Reference_Value_ID,
 				          IsParent, ValidationCode);
 	}	//	getLookupInfo
-	
+
 	/**
 	 *  Get Information for Lookups based on Column_ID for Table Columns or Process Parameters.
 	 *  @param ctx context for access
@@ -297,7 +298,7 @@ public class MLookupFactory
 		}
 
 		boolean orderByValue = MReference.get(AD_Reference_Value_ID).isOrderByValue();
-		
+
 		StringBuilder realSQL = new StringBuilder ("SELECT NULL, AD_Ref_List.Value,");
 		MClient client = MClient.get(Env.getCtx());
 		StringBuilder AspFilter = new StringBuilder();
@@ -312,7 +313,7 @@ public class MLookupFactory
         			 .append(" AND li.IsActive='Y'")
         			 .append(" AND c.AD_Client_ID=").append(client.getAD_Client_ID())
         			 .append(" AND li.ASP_Status='H')");
-			
+
 		}
 		if (Env.isBaseLanguage(language, "AD_Ref_List"))
 			realSQL.append("AD_Ref_List.Name,AD_Ref_List.IsActive FROM AD_Ref_List ");
@@ -322,9 +323,9 @@ public class MLookupFactory
 				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 					.append(language.getAD_Language()).append("')");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID);
-		
+
 		String directSql = realSQL.toString() + " AND AD_Ref_List.Value=?";
-				
+
 		realSQL.append(AspFilter.toString());
 		if (orderByValue)
 			realSQL.append(" ORDER BY 2");
@@ -334,9 +335,9 @@ public class MLookupFactory
 		MLookupInfo info = new MLookupInfo(realSQL.toString(), "AD_Ref_List", "AD_Ref_List.Value",
 			101,101, MQuery.getEqualQuery("AD_Reference_ID", AD_Reference_Value_ID));	//	Zoom Window+Query
 		info.QueryDirect = directSql;
-		
+
 		s_cacheRefList.put(key.toString(), info.cloneIt());
-		
+
 		return info;
 	}	//	getLookup_List
 
@@ -466,9 +467,9 @@ public class MLookupFactory
 		StringBuilder realSQL = new StringBuilder("SELECT ");
 		if (!KeyColumn.endsWith("_ID") && !KeyColumn.endsWith("_UU"))
 			realSQL.append("NULL,");
-		
+
 		boolean showID = DisplayColumn.equals(TableName+"_ID") || DisplayColumn.equals(PO.getUUIDColumnName(TableName));
-		
+
 		ArrayList<LookupDisplayColumn> list = null;
 		if (showID) {
 			list = getListIdentifiers(TableName);
@@ -551,18 +552,18 @@ public class MLookupFactory
 		}
 
 		String directQuery = realSQL.toString() + " WHERE " + TableName + "." + KeyColumn + "=?";
-		
+
 		//	add WHERE clause
 		MQuery zoomQuery = null;
+		List<Object> params = new ArrayList<Object>();
 		if (WhereClause != null && WhereClause.length() > 0)
 		{
 			String where = WhereClause;
 			if (where.indexOf('@') != -1)
-				where = Env.parseContext(ctx, WindowNo, where, false);
+				where = Env.parseContextForSql(ctx, WindowNo, where, false, params);
 			if (where.length() == 0 && WhereClause.length() != 0)
 				s_log.severe ("Could not resolve: " + WhereClause);
 
-			//	We have no context
 			if (where.length() != 0)
 			{
 				realSQL.append(" WHERE ").append(where);
@@ -570,7 +571,7 @@ public class MLookupFactory
 					s_log.log(Level.SEVERE, "getLookup_Table - " + TableName
 						+ ": WHERE should be fully qualified: " + WhereClause);
 				zoomQuery = new MQuery (TableName);
-				zoomQuery.addRestriction(where);
+				zoomQuery.addRestriction(new SQLFragment(where, params));
 			}
 		}
 
@@ -598,8 +599,8 @@ public class MLookupFactory
 		}
 		StringBuilder msginf = new StringBuilder().append(TableName).append(".").append(KeyColumn);
 		retValue = new MLookupInfo (realSQL.toString(), TableName,
-			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery);
-		retValue.DisplayColumn = lookupDisplayColumn;		
+			msginf.toString(), ZoomWindow, ZoomWindowPO, zoomQuery, params);
+		retValue.DisplayColumn = lookupDisplayColumn;
 		retValue.InfoWindowId = infoWindowId;
 		retValue.QueryDirect = MRole.getDefault().addAccessSQL(directQuery, TableName, true, false);
 		List<String> lookupDisplayColumns = new ArrayList<String>();
@@ -615,7 +616,7 @@ public class MLookupFactory
 				retValue.lookupDisplayColumnNames.add(ldc.ColumnName);
 			}
 		} else {
-			retValue.lookupDisplayColumnNames = new ArrayList<>(retValue.lookupDisplayColumns); 
+			retValue.lookupDisplayColumnNames = new ArrayList<>(retValue.lookupDisplayColumns);
 		}
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
@@ -711,7 +712,7 @@ public class MLookupFactory
 			return null;
 		}
 
-		boolean translated = false; 
+		boolean translated = false;
 		//	Translated
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
 		{
@@ -744,7 +745,7 @@ public class MLookupFactory
 		}
 
 		embedSQL.append(" WHERE ");
-		
+
 		// If is not virtual column - teo_sarca [ 1739530 ]
 		if (!column.isVirtualColumn())
 		{
@@ -794,7 +795,7 @@ public class MLookupFactory
 			return s_cacheRefTable.get(cacheKey.toString()).cloneIt();
 
 		ArrayList<LookupDisplayColumn> list = getListIdentifiers(TableName);
-		
+
 		//  Do we have columns ?
 		if (list == null || list.size() == 0)
 		{
@@ -815,7 +816,7 @@ public class MLookupFactory
 				break;
 			}
 		}
-		
+
 		MTable table = MTable.get(ctx, TableName);
 		ZoomWindow = table.getAD_Window_ID();
 		ZoomWindowPO = table.getPO_Window_ID();
@@ -845,7 +846,7 @@ public class MLookupFactory
 		{
 			realSQL.append(" FROM ").append(TableName);
 		}
-		
+
 		String directQuery = realSQL.toString() + " WHERE " + TableName + "." + KeyColumn + "=?";
 
 		//	Order by Display
@@ -1023,7 +1024,7 @@ public class MLookupFactory
 				break;
 			}
 		}
-		
+
 		//
 		StringBuilder embedSQL = new StringBuilder("SELECT ");
 

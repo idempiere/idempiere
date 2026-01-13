@@ -85,14 +85,14 @@ public class DBTest extends AbstractTestCase
 		assertThrows(DBException.class, () -> {
 			DB.getSQLValueEx(null, "SELECT 10 FROM INEXISTENT_TABLE");
 		});
-		
+
 		int t_integer = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", TEST_RECORD_ID);
 		assertThrows(DBException.class, () -> {
 			DB.getSQLValueEx(null, "update test set t_integer=1 where test_id=?", TEST_RECORD_ID);
 		});
 		int t_integer1 = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", TEST_RECORD_ID);
 		assertEquals(t_integer, t_integer1, "test.t_integer wrongly updated");
-		
+
 		assertThrows(DBException.class, () -> {
 			DB.getSQLValueEx(getTrxName(), "update test set t_integer=1 where test_id=?;select t_integer from test where test_id=?", TEST_RECORD_ID);
 		});
@@ -100,7 +100,7 @@ public class DBTest extends AbstractTestCase
 		t_integer1 = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", TEST_RECORD_ID);
 		assertEquals(t_integer, t_integer1, "test.t_integer wrongly updated");
 	}
-	
+
 	@Test
 	public void test_getSQLValue() throws Exception
 	{
@@ -113,7 +113,7 @@ public class DBTest extends AbstractTestCase
 		result = DB.getSQLValue(null, "SELECT 10 FROM INEXISTENT_TABLE");
 		assertEquals(-1, result, "Error should be signaled");
 	}
-	
+
 	@Test
 	public void test_getSQLValueBDEx() throws Exception
 	{
@@ -140,7 +140,7 @@ public class DBTest extends AbstractTestCase
 		result = DB.getSQLValueBD(null, "SELECT 10 FROM INEXISTENT_TABLE");
 		assertNull(result, "Error should be signaled");
 	}
-	
+
 	@Test
 	public void test_getSQLValueStringEx() throws Exception
 	{
@@ -154,7 +154,7 @@ public class DBTest extends AbstractTestCase
 			DB.getSQLValueStringEx(null, "SELECT 'string' FROM INEXISTENT_TABLE");
 		});
 	}
-	
+
 	@Test
 	public void test_getSQLValueString() throws Exception
 	{
@@ -183,7 +183,7 @@ public class DBTest extends AbstractTestCase
 			DB.getSQLValueTSEx(null, "SELECT TO_DATE('2008-01-01','YYYY-MM-DD') FROM INEXISTENT_TABLE");
 		});
 	}
-	
+
 	@Test
 	public void test_getSQLValueTS() throws Exception
 	{
@@ -198,7 +198,7 @@ public class DBTest extends AbstractTestCase
 		result = DB.getSQLValueTS(null, "SELECT TO_DATE('2008-01-01','YYYY-MM-DD') FROM INEXISTENT_TABLE");
 		assertNull(result, "Error should be signaled");
 	}
-	
+
 	@Test
 	public void test_getValueNamePairs() throws Exception
 	{
@@ -225,7 +225,7 @@ public class DBTest extends AbstractTestCase
 		assertEquals(arr[4].getValue(), "6");
 		assertEquals(arr[5].getValue(), "7");
 	}
-	
+
 	@Test
 	public void test_getKeyNamePairs() throws Exception
 	{
@@ -266,13 +266,13 @@ public class DBTest extends AbstractTestCase
 		X_Test test = new X_Test(Env.getCtx(), TEST_RECORD_ID, getTrxName());
 		assertEquals(test.get_ID(), ((Number)objects.get(0)).intValue());
 		assertEquals(test.getTest_UU(), objects.get(1));
-		
+
 		objects = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(), TEST_RECORD_ID);
 		assertEquals(2, objects.size());
 		assertEquals(test.get_ID(), ((Number)objects.get(0)).intValue());
 		assertEquals(test.getTest_UU(), objects.get(1));
 	}
-	
+
 	@Test
 	public void test_getSQLArrayObjectsEx()
 	{
@@ -283,21 +283,21 @@ public class DBTest extends AbstractTestCase
 		for(List<Object> row : rows) {
 			assertEquals(2, row.size());
 			Number id = (Number)row.get(0);
-			if (id.intValue() == DictionaryIDs.M_Product.AZALEA_BUSH.id || 
-				id.intValue() == DictionaryIDs.M_Product.MULCH.id || 
+			if (id.intValue() == DictionaryIDs.M_Product.AZALEA_BUSH.id ||
+				id.intValue() == DictionaryIDs.M_Product.MULCH.id ||
 				id.intValue() == DictionaryIDs.M_Product.FERTILIZER_50.id)
 				match++;
 		}
 		assertEquals(3, match);
-		
+
 		rows = DB.getSQLArrayObjectsEx(getTrxName(), sql, DictionaryIDs.M_Product.AZALEA_BUSH.id, DictionaryIDs.M_Product.MULCH.id, DictionaryIDs.M_Product.FERTILIZER_50.id);
 		assertEquals(3, rows.size());
 		match = 0;
 		for(List<Object> row : rows) {
 			assertEquals(2, row.size());
 			Number id = (Number)row.get(0);
-			if (id.intValue() == DictionaryIDs.M_Product.AZALEA_BUSH.id || 
-				id.intValue() == DictionaryIDs.M_Product.MULCH.id || 
+			if (id.intValue() == DictionaryIDs.M_Product.AZALEA_BUSH.id ||
+				id.intValue() == DictionaryIDs.M_Product.MULCH.id ||
 				id.intValue() == DictionaryIDs.M_Product.FERTILIZER_50.id)
 				match++;
 		}
@@ -318,14 +318,14 @@ public class DBTest extends AbstractTestCase
 		String resultStr = DB.getSQLValueStringEx(null, "SELECT NVL(Description, C_Charge_ID||' ') FROM C_Charge WHERE C_Charge_ID=101");
 		assertTrue(resultStr != null);
 	}
-	
+
 	@Test
-	public void testForUpdateAndForeignKey() 
+	public void testForUpdateAndForeignKey()
 	{
 		try {
 			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 			DB.getDatabase().forUpdate(bp, 0);
-			
+
 			SQLException sqlException = null;
 			Trx trx2 = Trx.get(Trx.createTrxName(), true);
 			MOrder order = null;
@@ -334,7 +334,7 @@ public class DBTest extends AbstractTestCase
 				order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
 				order.setC_BPartner_ID(bp.get_ID());
 				order.setDateOrdered(getLoginDate());
-				Thread thread = new Thread (() -> { 
+				Thread thread = new Thread (() -> {
 					try {
 						Thread.sleep(15 * 1000);
 					} catch (InterruptedException e) {
@@ -342,7 +342,7 @@ public class DBTest extends AbstractTestCase
 					if (trx2.isActive()) trx2.rollbackAndCloseOnTimeout();
 				});
 				thread.start();
-				order.saveEx();		
+				order.saveEx();
 				trx2.commit(true);
 			} catch (SQLException e) {
 				sqlException = e;
@@ -357,20 +357,20 @@ public class DBTest extends AbstractTestCase
 			}
 		} finally {
 			rollback();
-		}				
+		}
 	}
 
 	@Test
 	public void testPostgreSQLSyncColumn() {
 		if (!DB.isPostgreSQL() || !DB.getDatabase().isNativeMode())
 			return;
-		
+
 		MTable table = MTable.get(MOrder.Table_ID);
 		MColumn column = table.getColumn("Description");
 		MColumn description = new MColumn(Env.getCtx(), column.getAD_Column_ID(), getTrxName());
 		description.setFieldLength(description.getFieldLength()+1);
 		description.saveEx();
-		
+
 		String error = null;
 		String sql = description.getSQLModify(table, false);
 		try {
@@ -384,7 +384,7 @@ public class DBTest extends AbstractTestCase
 	@Override
 	protected LoginDetails newLoginDetails(TestInfo testInfo) {
 		if (testInfo.getTestMethod().get().getName().equals("testPostgreSQLSyncColumn")) {
-			return new LoginDetails(DictionaryIDs.AD_Client.SYSTEM.id, 0, DictionaryIDs.AD_User.SUPER_USER.id, DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id, 
+			return new LoginDetails(DictionaryIDs.AD_Client.SYSTEM.id, 0, DictionaryIDs.AD_User.SUPER_USER.id, DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id,
 					DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id, new Timestamp(System.currentTimeMillis()), Language.getLanguage("en_US"));
 		} else {
 			return super.newLoginDetails(testInfo);
@@ -392,17 +392,17 @@ public class DBTest extends AbstractTestCase
 	}
 
 	@Test
-	public void testTrxTimeout() 
+	public void testTrxTimeout()
 	{
 		try {
 			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 			DB.getDatabase().forUpdate(bp, 0);
-			
+
 			Exception exception = null;
 			Trx trx2 = Trx.get(Trx.createTrxName(), true);
 			MBPartner bp2 = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, trx2.getTrxName());
 			try {
-				Thread thread = new Thread (() -> { 
+				Thread thread = new Thread (() -> {
 					try {
 						Thread.sleep(5 * 1000);
 					} catch (InterruptedException e) {
@@ -420,15 +420,15 @@ public class DBTest extends AbstractTestCase
 			assertTrue(exception instanceof DBException, "Exception not instanceof DBException");
 		} finally {
 			rollback();
-		}				
+		}
 	}
 
 	public static Pattern REG_ACTIVE_CONNECT = Pattern.compile("# Busy Connections:\\s*(\\d+)\\s*,", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-	
+
 	public static int getNumConnectPerStatus (String poolStatus, Pattern patternStatus) {
 		int numActiveConn = -1;
 		try {
-			
+
 			Matcher regexMatcher = patternStatus.matcher(poolStatus);
 			if (regexMatcher.find()) {
 				String activeConnectionStr = regexMatcher.group(1);
@@ -439,7 +439,7 @@ public class DBTest extends AbstractTestCase
 		}
 		return numActiveConn;
 	}
-	
+
 	/**
 	 * test case to simulate transaction timeouts and ensure no open connections remain afterwards
 	 */
@@ -450,20 +450,20 @@ public class DBTest extends AbstractTestCase
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 		}
-		
+
 		//create a short duration monitor for testing
 		Trx.TrxMonitor monitor = new Trx.TrxMonitor();
 		ScheduledFuture<?> future = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(monitor, 0, 6, TimeUnit.SECONDS);
 		int beforeActiveConnection = getNumConnectPerStatus(DB.getDatabase().getStatus(), REG_ACTIVE_CONNECT);
-		
+
 		Trx trx2 = Trx.get(Trx.createTrxName(), true);
 		trx2.setTimeout(3);// timeout after 3s
-		
+
 		DB.getSQLValueEx(trx2.getTrxName(), "SELECT 1 FROM DUAL");// to make transaction start
-		
+
 		try {
 			Thread.sleep(8000);//Wait for the transaction monitor to complete its task
-			
+
 			int afterActiveConnection = getNumConnectPerStatus(DB.getDatabase().getStatus(), REG_ACTIVE_CONNECT);
 			assertEquals(beforeActiveConnection, afterActiveConnection);
 		} catch (InterruptedException e) {
@@ -488,7 +488,7 @@ public class DBTest extends AbstractTestCase
 		assertEquals(MTable.getUUIDIndexName("XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName"     ), "XYZCUSTOM_ThisIsAVeryLongTableNameWith56CharactersOnName_UU_idx");
 		assertEquals(MTable.getUUIDIndexName("XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName"    ), "XYZACUSTOM_ThisIsAVeryLongTableNameWith57CharactersOnName_uuidx");
 	}
-	
+
 	@Test
 	public void testGetKeyNamePairs() {
 		TreeMaintenance tm = new TreeMaintenance();
@@ -496,12 +496,12 @@ public class DBTest extends AbstractTestCase
 		assertTrue(treeKeyNamePairs.length > 0, "Failed to retrieve tree records");
 		Optional<KeyNamePair> optional = Arrays.stream(treeKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_Tree.GARDENWORLD_ORGANIZATION.id).findFirst();
 		assertTrue(optional.isPresent(), "Failed to find Garden World Organization tree");
-		
+
 		KeyNamePair[] wfKeyNamePairs = MWorkflow.getWorkflowKeyNamePairs(false);
 		assertTrue(wfKeyNamePairs.length > 0, "Failed to retrieve workflow records");
 		optional = Arrays.stream(wfKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_Workflow.PROCESS_ORDER.id).findFirst();
 		assertTrue(optional.isPresent(), "Failed to find Process Order workflow");
-		
+
 		KeyNamePair[] asiKeyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id, false);
 		assertTrue(asiKeyNamePairs.length > 0, "Failed to retrieve Attribute Set Instance records");
 		optional = Arrays.stream(asiKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.M_AttributeSetInstance.MEDIUM.id).findFirst();
@@ -511,21 +511,21 @@ public class DBTest extends AbstractTestCase
 		assertTrue(asiKeyNamePairs[0].getKey()==-1, "First element of return array is not en empty element as expected");
 		asiKeyNamePairs = MAttributeSetInstance.getWithProductAttributeKeyNamePairs(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, false);
 		assertTrue(asiKeyNamePairs.length == 0, "Unexpected number of Attribute Set Instance records");
-		
+
 		KeyNamePair[] roleKeyNamePairs = MRole.getRoleKeyNamePairs();
 		assertTrue(roleKeyNamePairs.length > 0, "Failed to retrieve Role records");
 		optional = Arrays.stream(roleKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id).findFirst();
 		assertTrue(optional.isPresent(), "Failed to find Garden World User role record");
-		
+
 		KeyNamePair[] tableKeyNamePairs = MTable.getWithWindowAccessKeyNamePairs(false, null);
 		assertTrue(tableKeyNamePairs.length > 0, "Failed to retrieve Table records");
 		optional = Arrays.stream(tableKeyNamePairs).filter(e -> e.getKey() == MOrder.Table_ID).findFirst();
 		assertTrue(optional.isPresent(), "Failed to find C_Order table record");
-		
+
 		KeyNamePair[] userKeyNamePairs = MUser.getWithRoleKeyNamePairs(false, null);
 		assertTrue(userKeyNamePairs.length > 0, "Failed to retrieve User records");
 		optional = Arrays.stream(userKeyNamePairs).filter(e -> e.getKey() == DictionaryIDs.AD_User.GARDEN_USER.id).findFirst();
 		assertTrue(optional.isPresent(), "Failed to find Garden_User user record");
 	}
-	
+
 }

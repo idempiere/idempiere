@@ -66,13 +66,16 @@ Export-Package: bsh,
  org.eevolution.model,
  org.idempiere.broadcast,
  org.idempiere.cache,
+ org.idempiere.db.util,
  org.idempiere.distributed,
+ org.idempiere.exceptions,
  org.idempiere.expression.logic,
  org.idempiere.fa.service.api,
  org.idempiere.model,
  org.idempiere.print,
  org.idempiere.print.renderer,
- org.idempiere.process
+ org.idempiere.process,
+ org.idempiere.util
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: com.github.benmanes.caffeine;version="3.1.8",
