@@ -284,6 +284,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	 *	@return true, if success
 	 */
 
+	@SuppressWarnings("removal")
 	private boolean initInfo ()
 	{
 		//  Set Defaults

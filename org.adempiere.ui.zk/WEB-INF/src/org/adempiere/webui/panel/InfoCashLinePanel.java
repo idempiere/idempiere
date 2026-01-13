@@ -299,6 +299,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	 *	General Init
 	 *	@return true, if success
 	 */
+	@SuppressWarnings("removal")
 	private boolean initInfo ()
 	{
 		// Prepare table

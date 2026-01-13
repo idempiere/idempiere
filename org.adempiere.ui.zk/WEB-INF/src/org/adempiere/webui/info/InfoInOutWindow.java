@@ -47,6 +47,7 @@ public class InfoInOutWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoInOutWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
@@ -80,6 +81,7 @@ public class InfoInOutWindow extends InfoWindow {
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoInOutWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
@@ -117,6 +119,7 @@ public class InfoInOutWindow extends InfoWindow {
 	 * @param field
 	 * @param predefinedContextVariables
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoInOutWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,

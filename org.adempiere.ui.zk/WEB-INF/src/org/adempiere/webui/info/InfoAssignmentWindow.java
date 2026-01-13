@@ -48,6 +48,7 @@ public class InfoAssignmentWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoAssignmentWindow(int WindowNo, String tableName,
 			String keyColumn, String queryValue, boolean multipleSelection,
@@ -82,6 +83,7 @@ public class InfoAssignmentWindow extends InfoWindow {
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoAssignmentWindow(int WindowNo, String tableName,
 			String keyColumn, String queryValue, boolean multipleSelection,
@@ -119,6 +121,7 @@ public class InfoAssignmentWindow extends InfoWindow {
 	 * @param field
 	 * @param predefinedContextVariables
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoAssignmentWindow(int WindowNo, String tableName,
 			String keyColumn, String queryValue, boolean multipleSelection,

@@ -912,7 +912,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * load info window definition
 	 * @return true if loaded ok
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	protected boolean loadInfoDefinition() {
 		if (infoWindow != null) {
 			String tableName = null;
@@ -1339,7 +1339,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return getSQLFilter().toSQLWithParameters();
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	protected SQLFragment getSQLFilter() {
 		/**
 		 * when query not by click re-query button, reuse previous where clause
@@ -1716,7 +1716,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	};
 	
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	@Override
 	protected void prepareTable(ColumnInfo[] layout, String from, String orderBy, SQLFragment sqlFilter) {
 		super.prepareTable(layout, from, orderBy, sqlFilter);
@@ -1758,11 +1758,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 		if (m_sqlFragmentMain.sqlClause().indexOf("@") >= 0) {
 			List<Object> params = new ArrayList<Object>();
-			params.addAll(m_sqlFragmentMain.parameters());
 			String sql = Env.parseContextForSql(infoContext, p_WindowNo, m_sqlFragmentMain.sqlClause(), true, params);
 			if (sql == null || sql.length() == 0) {
 				log.severe("Failed to parsed sql. sql=" + m_sqlFragmentMain.sqlClause());
 			} else {
+				if (m_sqlFragmentMain.parameters().size() > 0) {
+					if (params.size() > 0) {
+						params = Env.mergeParameters(m_sqlFragmentMain.sqlClause(), sql, m_sqlFragmentMain.parameters().toArray(), params.toArray());
+					} else {
+						params.addAll(m_sqlFragmentMain.parameters());
+					}
+				}
 				m_sqlFragmentMain = new SQLFragment(sql, params);
 				m_sqlMain = m_sqlFragmentMain.toSQLWithParameters();
 			}
@@ -1789,7 +1795,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * Add all ViewID in each MInfoProcess to query.<br/>
 	 * @param from
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	protected void addViewIDToQuery (String from) {
 		if (m_sqlFragmentMain != null && m_sqlFragmentMain.sqlClause().length() > 0) {
 			String sql = addMoreColumnToQuery (m_sqlFragmentMain.sqlClause(), infoProcessList, from);
@@ -1804,7 +1810,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * If {@link #keyColumnOfView} not null and not display, add {@link #keyColumnOfView} to query
 	 * @param from
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	protected void addKeyViewToQuery (String from) {
 		if (m_sqlFragmentMain != null && m_sqlFragmentMain.sqlClause().length() > 0 && isNeedAppendKeyViewData()){
 			String sql = addMoreColumnToQuery (m_sqlFragmentMain.sqlClause(), new IInfoColumn [] {keyColumnOfView}, from);

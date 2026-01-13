@@ -155,6 +155,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
@@ -191,6 +192,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param lookup
 	 * @param field
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
@@ -229,6 +231,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param field
 	 * @param predefinedContextVariables
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
@@ -256,7 +259,7 @@ public class InfoProductWindow extends InfoWindow {
 				AD_InfoWindow_ID, lookup, field, predefinedContextVariables, sqlFilter);
 	}
 	
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("removal")
 	@Override
 	protected SQLFragment getSQLFilter() {
 		/**

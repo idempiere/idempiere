@@ -52,6 +52,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
@@ -86,6 +87,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 	 * @param lookup
 	 * @param field
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
@@ -124,6 +126,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 	 * @param field
 	 * @param predefinedContextVariables
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated (since="13", forRemoval=true)
 	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,

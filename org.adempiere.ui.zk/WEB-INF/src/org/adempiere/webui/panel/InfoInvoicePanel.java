@@ -316,7 +316,8 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
      *  General Init
      *  @return true, if success
      */
-    private boolean initInfo ()
+    @SuppressWarnings("removal")
+	private boolean initInfo ()
     {
         //  Set Defaults
         String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");

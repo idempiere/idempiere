@@ -291,6 +291,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	 *	@return true, if success
 	 */
 
+	@SuppressWarnings("removal")
 	private boolean initInfo ()
 	{
 		//  Set Defaults
