@@ -44,6 +44,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
+import org.adempiere.report.jasper.ProcessFactory;
 import org.adempiere.util.Callback;
 import org.adempiere.util.ProcessUtil;
 import org.adempiere.webui.ClientInfo;
@@ -1944,7 +1945,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
 						jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
 						if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
-							if (!ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())) {
+							if (   !ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())
+								&& !ProcessFactory.JASPER_STARTER_CLASS_DEPRECATED.equals(jasperProcess.getClassname())) {
 								jasperProcessInfo.setClassName (jasperProcess.getClassname());
 								MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
 										jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
