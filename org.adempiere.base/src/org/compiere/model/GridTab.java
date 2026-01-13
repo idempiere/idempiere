@@ -3187,12 +3187,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 * The following variables are exposed to the callout script using the
 	 * {@link MRule#ARGUMENTS_PREFIX}:
 	 * <ul>
-	 *   <li>{@code WindowNo} � current window number</li>
-	 *   <li>{@code Tab} � current {@link GridTab}</li>
-	 *   <li>{@code Field} � field that triggered the callout</li>
-	 *   <li>{@code Value} � new field value</li>
-	 *   <li>{@code OldValue} � previous field value</li>
-	 *   <li>{@code Ctx} � application context</li>
+	 *   <li>{@code WindowNo} current window number</li>
+	 *   <li>{@code Tab} current {@link GridTab}</li>
+	 *   <li>{@code Field} field that triggered the callout</li>
+	 *   <li>{@code Value} new field value</li>
+	 *   <li>{@code OldValue} previous field value</li>
+	 *   <li>{@code Ctx} application context</li>
 	 * </ul>
 	 *
 	 * @param putter

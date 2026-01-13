@@ -538,7 +538,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/** Enable more than one selection  */
 	protected boolean			p_multipleSelection;
 	/** Initial WHERE Clause    */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected String			p_whereClause = "";
 	protected SQLFragment		p_sqlFilter = null;
 	protected StatusBarPanel statusBar = new StatusBarPanel();
@@ -556,11 +556,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/** Layout of {@link #contentPanel}     */
 	protected ColumnInfo[]     p_layout;
 	/** Main SQL Statement      */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected String              m_sqlMain;
 	protected SQLFragment         m_sqlFragmentMain;
 	/** Count SQL Statement		*/
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected String              m_sqlCount;
 	protected SQLFragment         m_sqlFragmentCount;
 	/** Order By Clause         */
@@ -616,7 +616,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * saved where clause of previous query
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected String prevWhereClause = null;
 	protected SQLFragment prevSQLFilter = null;
 	/**
@@ -769,7 +769,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @param orderBy
 	 * @deprecated use {@link #prepareTable(ColumnInfo[], String, String, SQLFragment)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected void prepareTable (ColumnInfo[] layout,
             String from,
             String where,
@@ -1416,7 +1416,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      * @return sql clause
      * @deprecated use {@link #buildDataSQLFragment(int, int)} instead
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
 	protected String buildDataSQL(int start, int end) {
 		return buildDataSQLFragment(start, end).toSQLWithParameters();
 	}

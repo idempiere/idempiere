@@ -888,6 +888,7 @@ public class MQuery implements Serializable, Cloneable
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
 			return;
+		@SuppressWarnings("removal")
 		Restriction r = new Restriction (whereClause, andCondition, false, false, joinDepth);
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
@@ -920,6 +921,7 @@ public class MQuery implements Serializable, Cloneable
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
 			return;
+		@SuppressWarnings("removal")
 		Restriction r = new Restriction (whereClause, andCondition, notCondition, false, joinDepth);
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
@@ -951,6 +953,7 @@ public class MQuery implements Serializable, Cloneable
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
 			return;
+		@SuppressWarnings("removal")
 		Restriction r = new Restriction (whereClause, andCondition, notCondition, existsCondition, joinDepth);
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
@@ -985,6 +988,7 @@ public class MQuery implements Serializable, Cloneable
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
 			return;
+		@SuppressWarnings("removal")
 		Restriction r = new Restriction (whereClause, andOrCondition, joinDepth);
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
@@ -1015,6 +1019,7 @@ public class MQuery implements Serializable, Cloneable
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
 			return;
+		@SuppressWarnings("removal")
 		Restriction r = new Restriction (whereClause, true, 0);
 		m_list.add(r);
 		m_newRecord = whereClause.equals(NEWRECORD);
@@ -1046,6 +1051,7 @@ public class MQuery implements Serializable, Cloneable
 	{
 		if (whereClause == null || whereClause.trim().length() == 0)
 			return;
+		@SuppressWarnings("removal")
 		Restriction r = new Restriction (whereClause, true, 0);
 		r.Operator = Operator;
 		if (InfoName != null)
@@ -1103,6 +1109,7 @@ public class MQuery implements Serializable, Cloneable
 	 * 	@return Where Clause
 	 *  @deprecated Use getSQLFilter(boolean fullyQualified)
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereClause (boolean fullyQualified)
 	{
@@ -1259,6 +1266,7 @@ public class MQuery implements Serializable, Cloneable
 	 * 	@return Where Clause or "" if not valid
 	 *  @deprecated Use getSQLFilter(int index)
 	 */
+	@SuppressWarnings("removal")
 	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereClause (int index)
 	{
@@ -1579,7 +1587,8 @@ public class MQuery implements Serializable, Cloneable
 	 * @param depth number of parenthesis
 	 * @return SQL
 	 */
-	@Deprecated
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public static String getRestrictionSQL (String ColumnName, String Operator,
 			Object Code, String InfoName, String InfoDisplay, boolean andCondition, int depth)
 	{
@@ -1617,7 +1626,8 @@ public class MQuery implements Serializable, Cloneable
 	 * @param depth number of parenthesis
 	 * @return SQL
 	 */
-	@Deprecated
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public static String getRestrictionSQL (String ColumnName, 
 			Object Code, Object Code_To, String InfoName, String InfoDisplay, String InfoDisplay_To, boolean andCondition, int depth)
 	{
@@ -1841,7 +1851,7 @@ class Restriction  implements Serializable
 	 * 	@param andCondition true->AND false->OR
 	 *  @param depth number of parenthesis
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	Restriction (String whereClause, boolean andCondition, int depth)
 	{
 		this(whereClause, andCondition ? "AND" : "OR", depth);
@@ -1858,7 +1868,7 @@ class Restriction  implements Serializable
 	 * 	@param andOrCondition AND/OR/AND NOT/OR NOT - concatenation of parenthesis
 	 *  @param depth number of parenthesis
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	Restriction (String whereClause, String andOrCondition, int depth)
 	{
 		DirectWhereClauseRecord = new SQLFragment(whereClause);
@@ -1885,7 +1895,7 @@ class Restriction  implements Serializable
 	 *  @param existsCondition true=exists
 	 *  @param depth number of parenthesis
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	Restriction (String whereClause, boolean andCondition, boolean notCondition, boolean existsCondition, int depth)
 	{
 		DirectWhereClauseRecord = new SQLFragment(whereClause);
@@ -1948,7 +1958,7 @@ class Restriction  implements Serializable
 	 *  @param tableName optional table name
 	 * 	@return SQL WHERE clause
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String getSQL (String tableName)
 	{
 		if (DirectWhereClauseRecord != null)

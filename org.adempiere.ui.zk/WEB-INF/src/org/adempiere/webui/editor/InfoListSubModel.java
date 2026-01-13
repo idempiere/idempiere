@@ -72,7 +72,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	 * @param whereClause
 	 * @deprecated use setSQLFilter(SQLFragment sqlFilter) instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void setWhereClause(String whereClause) {
 		this.sqlFilter = new SQLFragment(whereClause);
 	}
@@ -82,7 +82,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	 * @return where clause
 	 * @deprecated use getSQLFilter() instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String getWhereClause() {
 		return sqlFilter != null ? sqlFilter.toSQLWithParameters() : null;
 	}

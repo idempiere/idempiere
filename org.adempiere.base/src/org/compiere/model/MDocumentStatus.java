@@ -206,7 +206,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	 * @return where clause to find matching records
 	 * @deprecated use getSQLFilter
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static String getWhereClause(MDocumentStatus documentStatus) {
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		StringBuilder where = new StringBuilder(" ").append(tableName).append(".AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );

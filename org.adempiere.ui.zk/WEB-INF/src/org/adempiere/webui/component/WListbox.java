@@ -392,7 +392,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      * @return  SQL statement to use to get resultset to populate table
      * @deprecated use {@link #prepareTable(ColumnInfo[], String, boolean, String, boolean, SQLFragment)} instead
      */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String prepareTable(ColumnInfo[] layout,
             String from,
             String where,

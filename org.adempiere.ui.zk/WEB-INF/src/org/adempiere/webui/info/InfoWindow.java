@@ -247,7 +247,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID) {
 		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, true);
@@ -277,7 +277,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup) {
 		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, lookup, null);		
@@ -309,7 +309,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param lookup
 	 * @param field
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field) {
 		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, lookup, field, null);		
@@ -343,7 +343,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param field
 	 * @param predefinedContextVariables
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
 		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, 
@@ -2422,7 +2422,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     }   //  saveSelectionDetail
     
     @Override
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     protected String buildDataSQL(int start, int end) {
     	return buildDataSQLFragment(start, end).toSQLWithParameters();
     }
