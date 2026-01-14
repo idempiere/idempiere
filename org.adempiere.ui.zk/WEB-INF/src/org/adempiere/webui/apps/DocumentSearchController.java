@@ -588,15 +588,46 @@ public class DocumentSearchController implements EventListener<Event> {
 	 * @return window name
 	 */
 	protected String renderSearchResult(String matchString, String windowName, SearchResult result) {
+		// if have style, use div and @scope style
+		Div div = null;
+		if (result.getAD_Style_ID() > 0) {
+			MStyle style = MStyle.get(result.getAD_Style_ID());
+			String css = style.buildStyle(ThemeManager.getTheme(), new DefaultEvaluatee(), false);
+			if (!Util.isEmpty(css, true)) {
+				div = new Div();
+				div.setSclass("search-result-box");
+				Style htmlStyle = new Style();
+				htmlStyle.setContent("@scope {\n" + css + "\n}\n");
+				div.appendChild(htmlStyle);
+				layout.appendChild(htmlStyle);
+			}
+		}
+		
 		if (windowName == null || !windowName.equals(result.getWindowName())) {
 			windowName = result.getWindowName();
 			Label label = new Label(windowName);
 			LayoutUtils.addSclass("window-name", label);
-			layout.appendChild(label);
+			if (div == null)
+				layout.appendChild(label);
+			else
+				div.appendChild(label);
 		}
+		
+		String content = result.getLabel();
+		if (content.indexOf(MARKDOWN_OPENING_TAG) >= 0 && content.indexOf(MARKDOWN_CLOSING_TAG) > 0) {
+			content = Core.getMarkdownRenderer().renderToHtml(content.replace(MARKDOWN_OPENING_TAG, "").replace(
+					MARKDOWN_CLOSING_TAG, "").trim());
+			addHtmlResult(result, content);
+			return windowName;
+		}
+		
 		A a = new A();
 		a.setAttribute(SEARCH_RESULT, result);
-		layout.appendChild(a);
+		if (div == null) {
+			layout.appendChild(a);
+		} else {
+			div.appendChild(a);
+		}
 		LayoutUtils.addSclass("search-result", a);
 		a.addEventListener(Events.ON_CLICK, this);
 		String label = result.getLabel();
