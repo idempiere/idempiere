@@ -662,7 +662,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					if (mtrx == null)
 					{
 						Timestamp dateMPolicy = null;
-						if (dateMPolicy == null && qtyDiff.signum() > 0 && product.getM_AttributeSet_ID() > 0) {
+						if (qtyDiff.signum() > 0 && product.getM_AttributeSet_ID() > 0 && line.getM_AttributeSetInstance_ID() > 0) {
 							MAttributeSet as = MAttributeSet.get(getCtx(), product.getM_AttributeSet_ID());
 							if (as.isUseGuaranteeDateForMPolicy()) {
 								MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), line.getM_AttributeSetInstance_ID(), get_TrxName());
