@@ -22,7 +22,7 @@
  **********************************************************************/
 package org.idempiere.test.base;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,6 +46,7 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
@@ -123,31 +124,41 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testGetOpenTransactions() {
-	    Trx[] initial = Trx.getOpenTransactions();
-	    assertNotNull(initial, "Returned array must not be null");
-	    int initialSize = initial.length;
-
-	    // create first transaction
-	    String trxName1 = "JUnit_OpenTrx_1";
-	    Trx trx1 = Trx.get(trxName1, true);
-	    assertNotNull(trx1, "First transaction should be created");
-
-	    Trx[] afterFirst = Trx.getOpenTransactions();
-	    assertEquals(initialSize + 1, afterFirst.length, "Open transactions count should increase by 1");
-	    assertTrue(Arrays.stream(afterFirst).anyMatch(t -> trxName1.equals(t.getTrxName())), "Created transaction should be present in open transactions");
-
-	    // create second transaction
-	    String trxName2 = "JUnit_OpenTrx_2";
-	    Trx trx2 = Trx.get(trxName2, true);
-	    assertNotNull(trx2, "Second transaction should be created");
-
-	    Trx[] afterSecond = Trx.getOpenTransactions();
-	    assertEquals(initialSize + 2, afterSecond.length, "Open transactions count should increase by 2");
-	    assertTrue(Arrays.stream(afterSecond).anyMatch(t -> trxName2.equals(t.getTrxName())), "Second transaction should be present in open transactions");
-
-	    // ensure same instances are returned
-	    assertTrue(Arrays.stream(afterSecond).anyMatch(t -> t == trx1), "Returned array should contain the same trx1 instance");
-	    assertTrue(Arrays.stream(afterSecond).anyMatch(t -> t == trx2), "Returned array should contain the same trx2 instance");
+		Trx trx1 = null;
+		Trx trx2 = null;
+		try {
+		    Trx[] initial = Trx.getOpenTransactions();
+		    assertNotNull(initial, "Returned array must not be null");
+		    int initialSize = initial.length;
+	
+		    // create first transaction
+		    String trxName1 = "JUnit_OpenTrx_1";
+		    trx1 = Trx.get(trxName1, true);
+		    assertNotNull(trx1, "First transaction should be created");
+	
+		    Trx[] afterFirst = Trx.getOpenTransactions();
+		    assertEquals(initialSize + 1, afterFirst.length, "Open transactions count should increase by 1");
+		    assertTrue(Arrays.stream(afterFirst).anyMatch(t -> trxName1.equals(t.getTrxName())), "Created transaction should be present in open transactions");
+	
+		    // create second transaction
+		    String trxName2 = "JUnit_OpenTrx_2";
+		    trx2 = Trx.get(trxName2, true);
+		    assertNotNull(trx2, "Second transaction should be created");
+	
+		    Trx[] afterSecond = Trx.getOpenTransactions();
+		    assertEquals(initialSize + 2, afterSecond.length, "Open transactions count should increase by 2");
+		    assertTrue(Arrays.stream(afterSecond).anyMatch(t -> trxName2.equals(t.getTrxName())), "Second transaction should be present in open transactions");
+	
+		    // ensure same instances are returned
+		    List<Trx> list = Arrays.asList(afterSecond);
+		    assertTrue(list.contains(trx1), "Returned array should contain the same trx1 instance");
+		    assertTrue(list.contains(trx2), "Returned array should contain the same trx2 instance");
+		} finally {
+			if (trx1 != null)
+				trx1.close();
+			if (trx2 != null)
+				trx2.close();
+		}
 	}
 	
 	/**
@@ -360,20 +371,23 @@ public class TrxTest extends AbstractTestCase {
 	    // Verify getter returns the same savepoint
 	    assertEquals(mockSavepoint, trx.getLastWFSavepoint(), "Getter should return the savepoint set by setter");
 
-	    // Integration test: use rollback(Savepoint) with the set savepoint
-	    // Spy trx to stub the private m_connection and log
+	    // Spy trx to stub behavior
 	    Trx spyTrx = spy(trx);
+
+	    // Create a mock Connection
 	    Connection mockConn = mock(Connection.class);
-	    doReturn(mockConn).when(spyTrx).getConnection(); // assuming getConnection() sets m_connection
+
+	    // Inject the mock Connection into the private m_connection field using reflection
+	    Field connField = Trx.class.getDeclaredField("m_connection");
+	    connField.setAccessible(true);
+	    connField.set(spyTrx, mockConn);
 
 	    // Simulate rollback using the savepoint
 	    spyTrx.setLastWFSavepoint(mockSavepoint);
 	    doNothing().when(mockConn).rollback(mockSavepoint);
 
 	    boolean rollbackResult = spyTrx.rollback(mockSavepoint);
-	    assertFalse(rollbackResult, "rollback(Savepoint) should return false if no real connection rollback occurs");
-
-	    // Verify getter still returns the savepoint
+	    assertTrue(rollbackResult, "rollback(Savepoint) should return true when m_connection is set, even if it's a mock");
 	    assertEquals(mockSavepoint, spyTrx.getLastWFSavepoint(), "Savepoint should remain after rollback attempt");
 	}
 
@@ -399,7 +413,8 @@ public class TrxTest extends AbstractTestCase {
 	    assertEquals(currentTime, startTime.getTime(), "Start time should match the value set in m_startTime");
 
 	    // Ensure that a new Date object is returned (not the same reference)
-	    assertNotSame(startTimeField.get(trx), startTime, "getStartTime should return a new Date object");
+	    Date startTime2 = trx.getStartTime();
+	    assertNotSame(startTime, startTime2, "getStartTime should return a new Date object each call");
 	}
 
 	/**
@@ -490,31 +505,52 @@ public class TrxTest extends AbstractTestCase {
 	@Test
 	public void testReleaseSavepoint() throws Exception {
 	    Connection realConn = DB.getConnection(false);
-	    Trx trx = Trx.get(Trx.createTrxName("TestReleaseSP"), true);
-
-	    // Inject real connection into private m_connection
+	    Trx trx = null;
+	    
+	    // Prepare reflection Field
 	    Field connField = Trx.class.getDeclaredField("m_connection");
 	    connField.setAccessible(true);
-	    connField.set(trx, realConn);
+	    
+	    try {
+	    	trx = Trx.get(Trx.createTrxName("TestReleaseSP"), true);
+	    	
+		    // Inject real connection into private m_connection		    
+		    connField.set(trx, realConn);
 
-	    // Create a Savepoint
-	    Savepoint sp = realConn.setSavepoint("SP1");
+		    // Create a Savepoint
+		    Savepoint sp = realConn.setSavepoint("SP1");
 
-	    // Should not throw for normal DB connection
-	    assertDoesNotThrow(() -> trx.releaseSavepoint(sp), "releaseSavepoint should succeed with real connection");
+		    // Should not throw for normal DB connection
+		    try {
+		        trx.releaseSavepoint(sp);
+		    } catch (Exception e) {
+		        fail("releaseSavepoint should succeed with real connection, but threw: " + e);
+		    }
 
-	    // Exception path: mock Connection that throws SQLException
-	    Connection mockConn = mock(Connection.class);
-	    doThrow(new SQLException("Simulated releaseSavepoint error")).when(mockConn).releaseSavepoint(any(Savepoint.class));
+		    // Exception path: mock Connection that throws SQLException
+		    Connection mockConn = mock(Connection.class);
+		    doThrow(new SQLException("Simulated releaseSavepoint error")).when(mockConn).releaseSavepoint(any(Savepoint.class));
 
-	    // Inject mock connection
-	    connField.set(trx, mockConn);
+		    // Inject mock connection
+		    connField.set(trx, mockConn);
 
-	    // Should throw SQLException
-	    Savepoint spMock = mock(Savepoint.class);
-	    assertThrows(SQLException.class, () -> trx.releaseSavepoint(spMock), "releaseSavepoint should throw SQLException");
+		    // Should throw SQLException
+		    Savepoint spMock = mock(Savepoint.class);
+		    try {
+		        trx.releaseSavepoint(spMock);
+		        fail("releaseSavepoint should throw SQLException");
+		    } catch (SQLException e) {
+		        // expected exception, test passes
+		    }
+	    } finally {
+	    	if (trx != null) {
+			    connField.set(trx, null);
+	    		trx.close();
+	    	}
+	    	if (realConn != null)
+	    		realConn.close();
+	    }
 
-	    connField.set(trx, null);
 	}
 
 	
@@ -525,47 +561,68 @@ public class TrxTest extends AbstractTestCase {
 	@Test
 	public void testRollbackMethods() throws Exception {
 	    Connection realConn = DB.getConnection(false);
-	    String trxName = Trx.createTrxName("TestRollbackDB");
-	    Trx trx = Trx.get(trxName, true);
-
-	    // Inject private m_connection via reflection
+	    Trx trx = null;
+	    
+	    // Prepare reflection Field
 	    Field connField = Trx.class.getDeclaredField("m_connection");
 	    connField.setAccessible(true);
-	    connField.set(trx, realConn);
 
-	    // rollback(boolean throwException) normal path
-	    assertTrue(trx.rollback(false), "rollback(false) should succeed with real connection");
-	    assertTrue(trx.rollback(true), "rollback(true) should succeed with real connection");
-
-	    // rollback() convenience method
-	    assertTrue(trx.rollback(), "rollback() should succeed with real connection");
-
-	    // rollback(Savepoint savepoint) normal path
-	    Savepoint sp = realConn.setSavepoint();
-	    assertTrue(trx.rollback(sp), "rollback(savepoint) should succeed with real connection");
-
-	    // Mock Connection for SQLException paths
-	    Connection mockConn = mock(Connection.class);
-	    doThrow(new SQLException("Simulated rollback error")).when(mockConn).rollback();
-	    doThrow(new SQLException("Simulated savepoint rollback")).when(mockConn).rollback(any(Savepoint.class));
-
-	    // Inject mock connection
-	    connField.set(trx, mockConn);
-
-	    // rollback(false) should catch SQLException and return false
-	    assertFalse(trx.rollback(false), "rollback(false) with exception should return false");
-
-	    // rollback() convenience
-	    assertFalse(trx.rollback(), "rollback() with exception should return false");
-
-	    // rollback(boolean throwException=true) should throw SQLException
-	    assertThrows(SQLException.class, () -> trx.rollback(true));
-
-	    // rollback(Savepoint) should throw SQLException
-	    Savepoint spMock = mock(Savepoint.class);
-	    assertThrows(SQLException.class, () -> trx.rollback(spMock));
-
-	    connField.set(trx, null);
+	    try {
+		    String trxName = Trx.createTrxName("TestRollbackDB");
+		    trx = Trx.get(trxName, true);
+	
+		    // Inject real connection into Trx
+		    connField.set(trx, realConn);
+	
+		    // rollback(boolean throwException) normal path
+		    assertTrue(trx.rollback(false), "rollback(false) should succeed with real connection");
+		    assertTrue(trx.rollback(true), "rollback(true) should succeed with real connection");
+	
+		    // rollback() convenience method
+		    assertTrue(trx.rollback(), "rollback() should succeed with real connection");
+	
+		    // rollback(Savepoint savepoint) normal path
+		    Savepoint sp = realConn.setSavepoint();
+		    assertTrue(trx.rollback(sp), "rollback(savepoint) should succeed with real connection");
+	
+		    // Mock Connection for SQLException paths
+		    Connection mockConn = mock(Connection.class);
+		    doThrow(new SQLException("Simulated rollback error")).when(mockConn).rollback();
+		    doThrow(new SQLException("Simulated savepoint rollback")).when(mockConn).rollback(any(Savepoint.class));
+	
+		    // Inject mock connection
+		    connField.set(trx, mockConn);
+	
+		    // rollback(false) should catch SQLException and return false
+		    assertFalse(trx.rollback(false), "rollback(false) with exception should return false");
+	
+		    // rollback() convenience
+		    assertFalse(trx.rollback(), "rollback() with exception should return false");
+	
+		    // rollback(boolean throwException=true) should throw SQLException
+		    try {
+		        trx.rollback(true);
+		        fail("rollback(true) should throw SQLException");
+		    } catch (SQLException e) {
+		        // Expected exception, test passes
+		    }
+	
+		    // rollback(Savepoint) should throw SQLException
+		    Savepoint spMock = mock(Savepoint.class);
+		    try {
+		        trx.rollback(spMock);
+		        fail("rollback(Savepoint) should throw SQLException");
+		    } catch (SQLException e) {
+		        // Expected exception, test passes
+		    }
+	    } finally {
+	    	if (trx != null) {
+	    		connField.set(trx, null);
+	    		trx.close();
+	    	}
+	    	if (realConn != null)
+	    		realConn.close();
+	    }
 	}
 
 	/**

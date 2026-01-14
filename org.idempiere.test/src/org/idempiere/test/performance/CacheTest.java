@@ -37,7 +37,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1369,28 +1368,21 @@ public class CacheTest extends AbstractTestCase {
 	@Test
 	public void testSizeNoExpire() throws Exception {
 	    CCache<String, String> cache = new CCache<>("TestTable", "TestSizeNoExpire", 10, 0, false, 100);
-
-	    // Access protected fields
-	    Field cacheField = CCache.class.getDeclaredField("cache");
-	    cacheField.setAccessible(true);
-	    Map<String, String> internalCache = new HashMap<>();
-	    cacheField.set(cache, internalCache);
-
-	    Field nullListField = CCache.class.getDeclaredField("nullList");
-	    nullListField.setAccessible(true);
-	    Set<String> internalNullList = new HashSet<>();
-	    nullListField.set(cache, internalNullList);
-
+	    
 	    // Initially empty → size should be 0
 	    assertEquals(0, cache.sizeNoExpire());
 
-	    // Add entries to cache
-	    internalCache.put("k1", "v1");
-	    internalCache.put("k2", "v2");
+	    // Add entries to cache via public API
+	    cache.put("k1", "v1");
+	    cache.put("k2", "v2");
 	    assertEquals(2, cache.sizeNoExpire());
 
-	    // Add entries to nullList
-	    internalNullList.add("k3");
+	    // For nullList, reflection is still needed to test that aspect
+	    Field nullListField = CCache.class.getDeclaredField("nullList");
+	    nullListField.setAccessible(true);
+	    @SuppressWarnings("unchecked")
+		Set<String> nullList = (Set<String>) nullListField.get(cache);
+	    nullList.add("k3");
 	    assertEquals(3, cache.sizeNoExpire());
 	}
 
