@@ -108,6 +108,9 @@ public class DefaultSQLSearchProvider implements ISearchProvider {
             }
             sql.append(" AND AD_Client_ID=? ");
             params.add(Env.getAD_Client_ID(Env.getCtx()));
+            if (!Util.isEmpty(msd.getQuery(), true)) {
+            	sql.append(" AND (").append(msd.getQuery()).append(") ");
+            }
             // SearchDefinition with a special query
         } else if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_Query)) {
             sql = new StringBuilder().append(msd.getQuery());
