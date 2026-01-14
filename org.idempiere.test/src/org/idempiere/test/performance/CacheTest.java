@@ -1398,8 +1398,8 @@ public class CacheTest extends AbstractTestCase {
 	    cache.putAll(data);
 
 	    // Access cache to generate some hit/miss statistics
-	    cache.containsValue("One"); // should count as a hit
-	    cache.containsValue("Three"); // should count as a miss
+	    cache.get(1); // generates a hit
+	    cache.get(999); // generates a miss
 
 	    String str = cache.toString();
 	    assertNotNull(str, "toString should not return null");
