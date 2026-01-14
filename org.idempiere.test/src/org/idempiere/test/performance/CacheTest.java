@@ -1284,8 +1284,8 @@ public class CacheTest extends AbstractTestCase {
 	    // Scenario 6: firstKey not an Integer → delegates to reset()
 	    CCache<String, String> stringCache = new CCache<>("TestTable", "TestResetString", 10, 0, false, 100);
 	    stringCache.put("A", "alpha");
-	    // reset with recordId integer, but first key is String
-	    assertEquals(1, stringCache.reset(1)); // delegates to reset(), removes one element
+	    // reset(int) with String-keyed cache delegates to full reset()
+	    assertEquals(1, stringCache.reset(1)); // delegates to reset(), clears all entries (only 1 present)
 	}
 	
 	/**
@@ -1337,7 +1337,7 @@ public class CacheTest extends AbstractTestCase {
 	    CCache<Integer, String> intCache = new CCache<>("TestTable", "TestResetInt", 10, 0, false, 100);
 	    intCache.put(1, "one");
 	    intCache.put(2, "two");
-	    assertEquals(2, intCache.resetByStringKey("one")); // delegates to reset(), removes one element
+	    assertEquals(2, intCache.resetByStringKey("one")); // delegates to reset(), clears all 2 entries
 	}
 
 	/**

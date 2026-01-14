@@ -66,27 +66,36 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testCreateTrxNameMethods() {
-	    String trxNameDefault = Trx.createTrxName();
-	    assertNotNull(trxNameDefault, "Transaction name should not be null");
-	    assertTrue(trxNameDefault.startsWith("Trx_"), "Default transaction name should start with 'Trx_'");
-
-	    String[] defaultParts = trxNameDefault.split("_", 2);
-	    assertEquals(2, defaultParts.length, "Default transaction name should contain prefix and UUID");
-
-	    Trx defaultTrx = Trx.get(trxNameDefault, false);
-	    assertNotNull(defaultTrx, "Trx instance should be created for default transaction name");
-
-	    String prefix = "JUnitTest";
-	    String trxNamePrefixed = Trx.createTrxName(prefix);
-
-	    assertNotNull(trxNamePrefixed, "Prefixed transaction name should not be null");
-	    assertTrue(trxNamePrefixed.startsWith(prefix + "_"), "Prefixed transaction name should start with provided prefix");
-
-	    String[] prefixedParts = trxNamePrefixed.split("_", 2);
-	    assertEquals(2, prefixedParts.length, "Prefixed transaction name should contain prefix and UUID");
-
-	    Trx prefixedTrx = Trx.get(trxNamePrefixed, false);
-	    assertNotNull(prefixedTrx, "Trx instance should be created for prefixed transaction name");
+		Trx defaultTrx = null;
+		Trx prefixedTrx = null;
+		try {
+		    String trxNameDefault = Trx.createTrxName();
+		    assertNotNull(trxNameDefault, "Transaction name should not be null");
+		    assertTrue(trxNameDefault.startsWith("Trx_"), "Default transaction name should start with 'Trx_'");
+	
+		    String[] defaultParts = trxNameDefault.split("_", 2);
+		    assertEquals(2, defaultParts.length, "Default transaction name should contain prefix and UUID");
+	
+		    defaultTrx = Trx.get(trxNameDefault, false);
+		    assertNotNull(defaultTrx, "Trx instance should be created for default transaction name");
+	
+		    String prefix = "JUnitTest";
+		    String trxNamePrefixed = Trx.createTrxName(prefix);
+	
+		    assertNotNull(trxNamePrefixed, "Prefixed transaction name should not be null");
+		    assertTrue(trxNamePrefixed.startsWith(prefix + "_"), "Prefixed transaction name should start with provided prefix");
+	
+		    String[] prefixedParts = trxNamePrefixed.split("_", 2);
+		    assertEquals(2, prefixedParts.length, "Prefixed transaction name should contain prefix and UUID");
+	
+		    prefixedTrx = Trx.get(trxNamePrefixed, false);
+		    assertNotNull(prefixedTrx, "Trx instance should be created for prefixed transaction name");
+		} finally {
+			if (defaultTrx != null)
+				defaultTrx.close();
+			if (prefixedTrx != null)
+				prefixedTrx.close();
+		}
 	}
 	
 	/**
@@ -94,29 +103,44 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testGet() {
-	    // invalid trx name
-	    assertThrows(IllegalArgumentException.class, () -> Trx.get(null, true), "Null transaction name should throw exception");
-	    assertThrows(IllegalArgumentException.class, () -> Trx.get("", true), "Empty transaction name should throw exception");
-
-	    // not existing, createNew = false
-	    String trxNameNoCreate = "JUnit_NoCreate";
-	    Trx noCreateTrx = Trx.get(trxNameNoCreate, false);
-	    assertNull(noCreateTrx, "Should return null when transaction does not exist and createNew=false");
-
-	    // not existing, createNew = true
-	    String trxNameCreate = "JUnit_Create";
-	    Trx createdTrx = Trx.get(trxNameCreate, true);
-	    assertNotNull(createdTrx, "Should create and return transaction when createNew=true");
-	    assertEquals(trxNameCreate, createdTrx.getTrxName(), "Transaction name should match input");
-
-	    // existing trx, createNew = false
-	    Trx cachedTrx = Trx.get(trxNameCreate, false);
-	    assertNotNull(cachedTrx, "Should return cached transaction");
-	    assertSame(createdTrx, cachedTrx, "Cached transaction instance should be returned");
-
-	    // existing trx, createNew = true
-	    Trx cachedTrxCreateNew = Trx.get(trxNameCreate, true);
-	    assertSame(createdTrx, cachedTrxCreateNew, "Should not create a new instance when transaction already exists");
+		Trx noCreateTrx = null;
+		Trx createdTrx = null;
+		Trx cachedTrx = null;
+		Trx cachedTrxCreateNew = null;
+		try {
+		    // invalid trx name
+		    assertThrows(IllegalArgumentException.class, () -> Trx.get(null, true), "Null transaction name should throw exception");
+		    assertThrows(IllegalArgumentException.class, () -> Trx.get("", true), "Empty transaction name should throw exception");
+	
+		    // not existing, createNew = false
+		    String trxNameNoCreate = "JUnit_NoCreate";
+		    noCreateTrx = Trx.get(trxNameNoCreate, false);
+		    assertNull(noCreateTrx, "Should return null when transaction does not exist and createNew=false");
+	
+		    // not existing, createNew = true
+		    String trxNameCreate = "JUnit_Create";
+		    createdTrx = Trx.get(trxNameCreate, true);
+		    assertNotNull(createdTrx, "Should create and return transaction when createNew=true");
+		    assertEquals(trxNameCreate, createdTrx.getTrxName(), "Transaction name should match input");
+	
+		    // existing trx, createNew = false
+		    cachedTrx = Trx.get(trxNameCreate, false);
+		    assertNotNull(cachedTrx, "Should return cached transaction");
+		    assertSame(createdTrx, cachedTrx, "Cached transaction instance should be returned");
+	
+		    // existing trx, createNew = true
+		    cachedTrxCreateNew = Trx.get(trxNameCreate, true);
+		    assertSame(createdTrx, cachedTrxCreateNew, "Should not create a new instance when transaction already exists");
+		} finally {
+			if (noCreateTrx != null)
+				noCreateTrx.close();
+			if (createdTrx != null)
+				createdTrx.close();
+			if (cachedTrx != null)
+				cachedTrx.close();
+			if (cachedTrxCreateNew != null)
+				cachedTrxCreateNew.close();
+		}
 	}
 
 	/**
@@ -166,31 +190,44 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testRegisterNullTrx() {
-	    Trx[] before = Trx.getOpenTransactions();
-	    int beforeSize = before.length;
-
-	    String nullTrxName = Trx.registerNullTrx();
-	    
-	    // returned name checks
-	    assertNotNull(nullTrxName, "Returned transaction name must not be null");
-	    assertTrue(nullTrxName.startsWith("NullTrx_"), "Transaction name must start with 'NullTrx_'");
-
-	    // verify transaction is cached
-	    Trx nullTrx = Trx.get(nullTrxName, false);
-	    assertNotNull(nullTrx, "Transaction must be retrievable from cache");
-
-	    // displayName checks (public API)
-	    String displayName = nullTrx.getDisplayName();
-	    if (displayName != null) {
-	        assertFalse(displayName.isEmpty(), "Display name must not be empty if set");
-	    }
-
-	    // verify open transactions increased
-	    Trx[] after = Trx.getOpenTransactions();
-	    assertEquals(beforeSize + 1, after.length, "Open transactions count must increase by 1");
-
-	    // verify new transaction is in the open transactions
-	    assertTrue(Arrays.stream(after).anyMatch(t -> t == nullTrx), "Registered transaction must appear in open transactions");
+		Trx nullTrx = null;
+		try {
+		    Trx[] before = Trx.getOpenTransactions();
+		    int beforeSize = before.length;
+	
+		    String nullTrxName = Trx.registerNullTrx();
+		    
+		    // returned name checks
+		    assertNotNull(nullTrxName, "Returned transaction name must not be null");
+		    assertTrue(nullTrxName.startsWith("NullTrx_"), "Transaction name must start with 'NullTrx_'");
+	
+		    // verify transaction is cached
+		    nullTrx = Trx.get(nullTrxName, false);
+		    assertNotNull(nullTrx, "Transaction must be retrievable from cache");
+	
+		    // displayName checks (public API)
+		    String displayName = nullTrx.getDisplayName();
+		    if (displayName != null) {
+		        assertFalse(displayName.isEmpty(), "Display name must not be empty if set");
+		    }
+	
+		    // verify open transactions increased
+		    Trx[] after = Trx.getOpenTransactions();
+		    assertEquals(beforeSize + 1, after.length, "Open transactions count must increase by 1");
+	
+		    // verify new transaction is in the open transactions
+		    boolean found = false;
+		    for (Trx t : after) {
+		        if (t == nullTrx) {
+		            found = true;
+		            break;
+		        }
+		    }
+		    assertTrue(found, "Registered transaction must appear in open transactions");
+		} finally {
+			if (nullTrx != null)
+				nullTrx.close();
+		}
 	}
 	
 	/**
@@ -198,48 +235,54 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testRunMethods() {
-	    int openBefore = Trx.getOpenTransactions().length;
-
-	    // normal execution with provided trxName
-	    String trxName = Trx.createTrxName("TestRun");
-	    final boolean[] ran = {false};
-	    Trx.run(trxName, name -> {
-	        ran[0] = true;
-	        assertEquals(trxName, name, "TrxRunnable should receive correct trxName");
-	    });
-	    assertTrue(ran[0], "TrxRunnable must have executed");
-
-	    // verify transaction exists and is open
-	    Trx t1 = Trx.get(trxName, false);
-	    assertNotNull(t1, "Transaction must be in cache");
-
-	    // normal execution without trxName (auto-created localTrx)
-	    final boolean[] ranLocal = {false};
-	    Trx.run(trx -> {
-	        ranLocal[0] = true;
-	        assertNotNull(trx, "TrxRunnable should receive non-null trxName even for localTrx");
-	    });
-	    assertTrue(ranLocal[0], "Local TrxRunnable must have executed");
-
-	    // exception handling: runtime exception
-	    RuntimeException rex = assertThrows(RuntimeException.class, () ->
-	        Trx.run(name -> {
-	            throw new RuntimeException("Test RuntimeException");
-	        })
-	    );
-	    assertEquals("Test RuntimeException", rex.getMessage());
-
-	    // exception handling: checked exception wrapped in AdempiereException
-	    AdempiereException aex = assertThrows(AdempiereException.class, () ->
-	        Trx.run(name -> {
-	            throw new AdempiereException("Test CheckedException");
-	        })
-	    );
-	    assertTrue(aex.getMessage().contains("Test CheckedException"));
-
-	    // verify open transactions count did not decrease unexpectedly
-	    int openAfter = Trx.getOpenTransactions().length;
-	    assertTrue(openAfter >= openBefore, "Open transactions should not decrease");
+		Trx t1 = null;
+		try {
+		    int openBefore = Trx.getOpenTransactions().length;
+	
+		    // normal execution with provided trxName
+		    String trxName = Trx.createTrxName("TestRun");
+		    final boolean[] ran = {false};
+		    Trx.run(trxName, name -> {
+		        ran[0] = true;
+		        assertEquals(trxName, name, "TrxRunnable should receive correct trxName");
+		    });
+		    assertTrue(ran[0], "TrxRunnable must have executed");
+	
+		    // verify transaction exists and is open
+		    t1 = Trx.get(trxName, false);
+		    assertNotNull(t1, "Transaction must be in cache");
+	
+		    // normal execution without trxName (auto-created localTrx)
+		    final boolean[] ranLocal = {false};
+		    Trx.run(trx -> {
+		        ranLocal[0] = true;
+		        assertNotNull(trx, "TrxRunnable should receive non-null trxName even for localTrx");
+		    });
+		    assertTrue(ranLocal[0], "Local TrxRunnable must have executed");
+	
+		    // exception handling: runtime exception
+		    RuntimeException rex = assertThrows(RuntimeException.class, () ->
+		        Trx.run(name -> {
+		            throw new RuntimeException("Test RuntimeException");
+		        })
+		    );
+		    assertEquals("Test RuntimeException", rex.getMessage());
+	
+		    // exception handling: checked exception wrapped in AdempiereException
+		    AdempiereException aex = assertThrows(AdempiereException.class, () ->
+		        Trx.run(name -> {
+		            throw new AdempiereException("Test CheckedException");
+		        })
+		    );
+		    assertTrue(aex.getMessage().contains("Test CheckedException"));
+	
+		    // verify open transactions count did not decrease unexpectedly
+		    int openAfter = Trx.getOpenTransactions().length;
+		    assertTrue(openAfter >= openBefore, "Open transactions should not decrease");
+		} finally {
+			if (t1 != null)
+				t1.close();
+		}
 	}
 
 	/**
@@ -248,29 +291,38 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testUnregisterNullTrx() throws Exception {
-	    String nullTrxName = Trx.registerNullTrx();
-	    assertNotNull(nullTrxName, "registerNullTrx should return a non-null name");
-
-	    Trx nullTrx = Trx.get(nullTrxName, false);
-	    assertNotNull(nullTrx, "Null transaction should exist in cache");
-	    assertNotNull(nullTrx.getDisplayName(), "DisplayName should be set");
-
-	    // check protected trace field via reflection
-	    Field traceField = Trx.class.getDeclaredField("trace");
-	    traceField.setAccessible(true);
-	    Object traceValue = traceField.get(nullTrx);
-	    assertNotNull(traceValue, "Trace should be set for nullTrx");
-
-	    // unregister the null transaction
-	    Trx.unregisterNullTrx(nullTrxName);
-
-	    // verify removed from cache
-	    Trx removed = Trx.get(nullTrxName, false);
-	    assertNull(removed, "Null transaction should be removed from cache");
-
-	    // trace should be null
-	    Object traceAfter = traceField.get(nullTrx);
-	    assertNull(traceAfter, "Trace should be null after unregister");
+		Trx nullTrx = null;
+		Trx removed = null;
+		try {
+		    String nullTrxName = Trx.registerNullTrx();
+		    assertNotNull(nullTrxName, "registerNullTrx should return a non-null name");
+	
+		    nullTrx = Trx.get(nullTrxName, false);
+		    assertNotNull(nullTrx, "Null transaction should exist in cache");
+		    assertNotNull(nullTrx.getDisplayName(), "DisplayName should be set");
+	
+		    // check protected trace field via reflection
+		    Field traceField = Trx.class.getDeclaredField("trace");
+		    traceField.setAccessible(true);
+		    Object traceValue = traceField.get(nullTrx);
+		    assertNotNull(traceValue, "Trace should be set for nullTrx");
+	
+		    // unregister the null transaction
+		    Trx.unregisterNullTrx(nullTrxName);
+	
+		    // verify removed from cache
+		    removed = Trx.get(nullTrxName, false);
+		    assertNull(removed, "Null transaction should be removed from cache");
+	
+		    // trace should be null
+		    Object traceAfter = traceField.get(nullTrx);
+		    assertNull(traceAfter, "Trace should be null after unregister");
+		} finally {
+			if (nullTrx != null)
+				nullTrx.close();
+			if (removed != null)
+				removed.close();
+		}
 	}
 
 	/**
@@ -280,47 +332,56 @@ public class TrxTest extends AbstractTestCase {
 	@Test
 	public void testClose() throws Exception {
 	    String trxName = Trx.createTrxName("TestClose");
-	    Trx trx = Trx.get(trxName, true);
-	    assertNotNull(trx, "Transaction should exist");
-
-	    // set private m_connection via reflection
-	    Connection mockConn = mock(Connection.class);
-	    Field connField = Trx.class.getDeclaredField("m_connection");
-	    connField.setAccessible(true);
-	    connField.set(trx, mockConn);
-
-	    // set trace (protected) via reflection
-	    Field traceField = Trx.class.getDeclaredField("trace");
-	    traceField.setAccessible(true);
-	    traceField.set(trx, new Exception());
-
-	    // simulate active transaction
-	    Field activeField = Trx.class.getDeclaredField("m_active");
-	    activeField.setAccessible(true);
-	    activeField.set(trx, true);
-
-	    // simulate connection not read-only
-	    when(mockConn.isReadOnly()).thenReturn(false);
-
-	    // call close
-	    boolean result = trx.close();
-	    assertTrue(result, "Close should return true");
-
-	    // verify commit called
-	    verify(mockConn).setAutoCommit(true);
-	    verify(mockConn).close();
-
-	    // verify cache removed
-	    Trx cached = Trx.get(trxName, false);
-	    assertNull(cached, "Transaction should be removed from cache");
-
-	    // verify internal fields cleared
-	    Object traceValue = traceField.get(trx);
-	    assertNull(traceValue, "Trace should be null after close");
-	    Connection connValue = (Connection) connField.get(trx);
-	    assertNull(connValue, "m_connection should be null after close");
-	    boolean activeValue = (boolean) activeField.get(trx);
-	    assertFalse(activeValue, "m_active should be false after close");
+	    Trx trx = null;
+	    Trx cached = null;
+	    try {
+		    trx = Trx.get(trxName, true);
+		    assertNotNull(trx, "Transaction should exist");
+	
+		    // set private m_connection via reflection
+		    Connection mockConn = mock(Connection.class);
+		    Field connField = Trx.class.getDeclaredField("m_connection");
+		    connField.setAccessible(true);
+		    connField.set(trx, mockConn);
+	
+		    // set trace (protected) via reflection
+		    Field traceField = Trx.class.getDeclaredField("trace");
+		    traceField.setAccessible(true);
+		    traceField.set(trx, new Exception());
+	
+		    // simulate active transaction
+		    Field activeField = Trx.class.getDeclaredField("m_active");
+		    activeField.setAccessible(true);
+		    activeField.set(trx, true);
+	
+		    // simulate connection not read-only
+		    when(mockConn.isReadOnly()).thenReturn(false);
+	
+		    // call close
+		    boolean result = trx.close();
+		    assertTrue(result, "Close should return true");
+	
+		    // verify commit called
+		    verify(mockConn).setAutoCommit(true);
+		    verify(mockConn).close();
+	
+		    // verify cache removed
+		    cached = Trx.get(trxName, false);
+		    assertNull(cached, "Transaction should be removed from cache");
+	
+		    // verify internal fields cleared
+		    Object traceValue = traceField.get(trx);
+		    assertNull(traceValue, "Trace should be null after close");
+		    Connection connValue = (Connection) connField.get(trx);
+		    assertNull(connValue, "m_connection should be null after close");
+		    boolean activeValue = (boolean) activeField.get(trx);
+		    assertFalse(activeValue, "m_active should be false after close");
+	    } finally {
+	    	if (trx != null)
+	    		trx.close();
+	    	if (cached != null)
+	    		cached.close();
+	    }
 	}
 
 	/**
@@ -330,25 +391,31 @@ public class TrxTest extends AbstractTestCase {
 	@Test
 	public void testCommitMethods() throws Exception {
 	    String trxName = Trx.createTrxName("TestCommit");
-	    Trx trx = Trx.get(trxName, true);
-	    assertNotNull(trx);
-
-	    // set private m_connection via reflection
-	    Connection mockConn = mock(Connection.class);
-	    Field connField = Trx.class.getDeclaredField("m_connection");
-	    connField.setAccessible(true);
-	    connField.set(trx, mockConn);
-
-	    // set protected m_active via reflection
-	    Field activeField = Trx.class.getDeclaredField("m_active");
-	    activeField.setAccessible(true);
-	    activeField.set(trx, true);
-
-	    // normal commit without exception
-	    boolean result = trx.commit();
-	    assertTrue(result, "commit() should return true");
-	    verify(mockConn).commit();
-	    assertFalse((boolean) activeField.get(trx), "m_active should be false after commit");
+	    Trx trx = null;
+	    try {
+		    trx = Trx.get(trxName, true);
+		    assertNotNull(trx);
+	
+		    // set private m_connection via reflection
+		    Connection mockConn = mock(Connection.class);
+		    Field connField = Trx.class.getDeclaredField("m_connection");
+		    connField.setAccessible(true);
+		    connField.set(trx, mockConn);
+	
+		    // set protected m_active via reflection
+		    Field activeField = Trx.class.getDeclaredField("m_active");
+		    activeField.setAccessible(true);
+		    activeField.set(trx, true);
+	
+		    // normal commit without exception
+		    boolean result = trx.commit();
+		    assertTrue(result, "commit() should return true");
+		    verify(mockConn).commit();
+		    assertFalse((boolean) activeField.get(trx), "m_active should be false after commit");
+	    } finally {
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 
 	/**
@@ -357,38 +424,48 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testLastWFSavepoint() throws Exception {
-	    Trx trx = Trx.get(Trx.createTrxName("TestLastWFSavepoint"), true);
-
-	    // Initially, last WF savepoint should be null
-	    assertNull(trx.getLastWFSavepoint(), "Initially, last WF savepoint should be null");
-
-	    // Create a mock Savepoint
-	    Savepoint mockSavepoint = mock(Savepoint.class);
-
-	    // Set the last WF savepoint
-	    trx.setLastWFSavepoint(mockSavepoint);
-
-	    // Verify getter returns the same savepoint
-	    assertEquals(mockSavepoint, trx.getLastWFSavepoint(), "Getter should return the savepoint set by setter");
-
-	    // Spy trx to stub behavior
-	    Trx spyTrx = spy(trx);
-
-	    // Create a mock Connection
-	    Connection mockConn = mock(Connection.class);
-
-	    // Inject the mock Connection into the private m_connection field using reflection
-	    Field connField = Trx.class.getDeclaredField("m_connection");
-	    connField.setAccessible(true);
-	    connField.set(spyTrx, mockConn);
-
-	    // Simulate rollback using the savepoint
-	    spyTrx.setLastWFSavepoint(mockSavepoint);
-	    doNothing().when(mockConn).rollback(mockSavepoint);
-
-	    boolean rollbackResult = spyTrx.rollback(mockSavepoint);
-	    assertTrue(rollbackResult, "rollback(Savepoint) should return true when m_connection is set, even if it's a mock");
-	    assertEquals(mockSavepoint, spyTrx.getLastWFSavepoint(), "Savepoint should remain after rollback attempt");
+		Trx trx = null;
+		Trx spyTrx = null;
+	    Field connField = null;
+		try {
+		    trx = Trx.get(Trx.createTrxName("TestLastWFSavepoint"), true);
+	
+		    // Initially, last WF savepoint should be null
+		    assertNull(trx.getLastWFSavepoint(), "Initially, last WF savepoint should be null");
+	
+		    // Create a mock Savepoint
+		    Savepoint mockSavepoint = mock(Savepoint.class);
+	
+		    // Set the last WF savepoint
+		    trx.setLastWFSavepoint(mockSavepoint);
+	
+		    // Verify getter returns the same savepoint
+		    assertEquals(mockSavepoint, trx.getLastWFSavepoint(), "Getter should return the savepoint set by setter");
+	
+		    // Spy trx to stub behavior
+		    spyTrx = spy(trx);
+	
+		    // Create a mock Connection
+		    Connection mockConn = mock(Connection.class);
+	
+		    // Inject the mock Connection into the private m_connection field using reflection
+		    connField = Trx.class.getDeclaredField("m_connection");
+		    connField.setAccessible(true);
+		    connField.set(spyTrx, mockConn);
+	
+		    // Simulate rollback using the savepoint
+		    spyTrx.setLastWFSavepoint(mockSavepoint);
+		    doNothing().when(mockConn).rollback(mockSavepoint);
+	
+		    boolean rollbackResult = spyTrx.rollback(mockSavepoint);
+		    assertTrue(rollbackResult, "rollback(Savepoint) should return true when m_connection is set, even if it's a mock");
+		    assertEquals(mockSavepoint, spyTrx.getLastWFSavepoint(), "Savepoint should remain after rollback attempt");
+		} finally {
+			if (connField != null && spyTrx != null)
+	            connField.set(spyTrx, null);
+			if (trx != null)
+	    		trx.close();
+		}
 	}
 
 	/**
@@ -398,23 +475,29 @@ public class TrxTest extends AbstractTestCase {
 	@Test
 	public void testGetStartTime() throws Exception {
 	    String trxName = Trx.createTrxName("TestStartTime");
-	    Trx trx = Trx.get(trxName, true);
-	    assertNotNull(trx);
-
-	    // Set m_startTime via reflection
-	    long currentTime = System.currentTimeMillis();
-	    Field startTimeField = Trx.class.getDeclaredField("m_startTime");
-	    startTimeField.setAccessible(true);
-	    startTimeField.setLong(trx, currentTime);
-
-	    // Verify getStartTime() returns the correct Date
-	    Date startTime = trx.getStartTime();
-	    assertNotNull(startTime);
-	    assertEquals(currentTime, startTime.getTime(), "Start time should match the value set in m_startTime");
-
-	    // Ensure that a new Date object is returned (not the same reference)
-	    Date startTime2 = trx.getStartTime();
-	    assertNotSame(startTime, startTime2, "getStartTime should return a new Date object each call");
+	    Trx trx = null;
+	    try {
+		    trx = Trx.get(trxName, true);
+		    assertNotNull(trx);
+	
+		    // Set m_startTime via reflection
+		    long currentTime = System.currentTimeMillis();
+		    Field startTimeField = Trx.class.getDeclaredField("m_startTime");
+		    startTimeField.setAccessible(true);
+		    startTimeField.setLong(trx, currentTime);
+	
+		    // Verify getStartTime() returns the correct Date
+		    Date startTime = trx.getStartTime();
+		    assertNotNull(startTime);
+		    assertEquals(currentTime, startTime.getTime(), "Start time should match the value set in m_startTime");
+	
+		    // Ensure that a new Date object is returned (not the same reference)
+		    Date startTime2 = trx.getStartTime();
+		    assertNotSame(startTime, startTime2, "getStartTime should return a new Date object each call");
+	    } finally {
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 
 	/**
@@ -424,26 +507,32 @@ public class TrxTest extends AbstractTestCase {
 	@Test
 	public void testGetStrackTrace() throws Exception {
 	    String trxName = Trx.createTrxName("TestTrace");
-	    Trx trx = Trx.get(trxName, true);
-	    assertNotNull(trx);
-
-	    // Case 1: trace is null
-	    Field traceField = Trx.class.getDeclaredField("trace");
-	    traceField.setAccessible(true);
-	    traceField.set(trx, null);
-
-	    String traceStr = trx.getStrackTrace();
-	    assertNotNull(traceStr);
-	    assertEquals("", traceStr, "Should return empty string when trace is null");
-
-	    // Case 2: trace is set to an exception
-	    Exception ex = new Exception("Test Exception");
-	    traceField.set(trx, ex);
-
-	    traceStr = trx.getStrackTrace();
-	    assertNotNull(traceStr);
-	    assertTrue(traceStr.contains("Test Exception"), "Returned stack trace should contain the exception message");
-	    assertTrue(traceStr.contains("java.lang.Exception"), "Returned stack trace should include exception class");
+	    Trx trx = null;
+	    try {
+		    trx = Trx.get(trxName, true);
+		    assertNotNull(trx);
+	
+		    // Case 1: trace is null
+		    Field traceField = Trx.class.getDeclaredField("trace");
+		    traceField.setAccessible(true);
+		    traceField.set(trx, null);
+	
+		    String traceStr = trx.getStrackTrace();
+		    assertNotNull(traceStr);
+		    assertEquals("", traceStr, "Should return empty string when trace is null");
+	
+		    // Case 2: trace is set to an exception
+		    Exception ex = new Exception("Test Exception");
+		    traceField.set(trx, ex);
+	
+		    traceStr = trx.getStrackTrace();
+		    assertNotNull(traceStr);
+		    assertTrue(traceStr.contains("Test Exception"), "Returned stack trace should contain the exception message");
+		    assertTrue(traceStr.contains("java.lang.Exception"), "Returned stack trace should include exception class");
+	    } finally {
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 
 	/**
@@ -452,17 +541,23 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testTimeout() {
-	    Trx trx = Trx.get(Trx.createTrxName("TestTimeout"), true);
-
-	    // Initially, timeout should be 7200
-	    assertEquals(7200, trx.getTimeout(), "Initially, timeout should be 7200");
-
-	    // Set timeout and verify getter
-	    trx.setTimeout(5000);
-	    assertEquals(5000, trx.getTimeout(), "Getter should return the timeout set by setter");
-
-	    trx.setTimeout(0);
-	    assertEquals(0, trx.getTimeout(), "Timeout can be reset to 0");
+		Trx trx = null;
+		try {
+		    trx = Trx.get(Trx.createTrxName("TestTimeout"), true);
+	
+		    // Initially, timeout should be 7200
+		    assertEquals(7200, trx.getTimeout(), "Initially, timeout should be 7200");
+	
+		    // Set timeout and verify getter
+		    trx.setTimeout(5000);
+		    assertEquals(5000, trx.getTimeout(), "Getter should return the timeout set by setter");
+	
+		    trx.setTimeout(0);
+		    assertEquals(0, trx.getTimeout(), "Timeout can be reset to 0");
+		} finally {
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 	
 	/**
@@ -471,31 +566,37 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testChangesMadeByEventListener() throws Exception {
-	    Trx trx = Trx.get(Trx.createTrxName("TestChangesMade"), true);
-
-	    // Initially, m_changesMadeByEventListener should be false
-	    assertFalse(trx.hasChangesMadeByEventListener(), "Initially, no changes should be made by event listener");
-
-	    // Set to true
-	    trx.setChangesMadeByEventListener(true);
-	    assertTrue(trx.hasChangesMadeByEventListener(), "After setting true, hasChangesMadeByEventListener should return true");
-
-	    // Set back to false
-	    trx.setChangesMadeByEventListener(false);
-	    assertFalse(trx.hasChangesMadeByEventListener(), "After setting false, hasChangesMadeByEventListener should return false");
-
-	    // Integration with rollbackAndCloseOnTimeout
-	    // Spy trx to stub rollbackAndCloseOnTimeout
-	    Trx spyTrx = spy(trx);
-	    doReturn(true).when(spyTrx).rollbackAndCloseOnTimeout();
-
-	    // Set changes, then call rollbackAndCloseOnTimeout
-	    spyTrx.setChangesMadeByEventListener(true);
-	    boolean result = spyTrx.rollbackAndCloseOnTimeout();
-	    assertTrue(result, "rollbackAndCloseOnTimeout should return true");
-
-	    // Verify that changesMadeByEventListener flag remains true (rollbackAndCloseOnTimeout does not reset it)
-	    assertTrue(spyTrx.hasChangesMadeByEventListener(), "Changes flag should remain true after rollbackAndCloseOnTimeout");
+		Trx trx = null;
+		try {
+		    trx = Trx.get(Trx.createTrxName("TestChangesMade"), true);
+	
+		    // Initially, m_changesMadeByEventListener should be false
+		    assertFalse(trx.hasChangesMadeByEventListener(), "Initially, no changes should be made by event listener");
+	
+		    // Set to true
+		    trx.setChangesMadeByEventListener(true);
+		    assertTrue(trx.hasChangesMadeByEventListener(), "After setting true, hasChangesMadeByEventListener should return true");
+	
+		    // Set back to false
+		    trx.setChangesMadeByEventListener(false);
+		    assertFalse(trx.hasChangesMadeByEventListener(), "After setting false, hasChangesMadeByEventListener should return false");
+	
+		    // Integration with rollbackAndCloseOnTimeout
+		    // Spy trx to stub rollbackAndCloseOnTimeout
+		    Trx spyTrx = spy(trx);
+		    doReturn(true).when(spyTrx).rollbackAndCloseOnTimeout();
+	
+		    // Set changes, then call rollbackAndCloseOnTimeout
+		    spyTrx.setChangesMadeByEventListener(true);
+		    boolean result = spyTrx.rollbackAndCloseOnTimeout();
+		    assertTrue(result, "rollbackAndCloseOnTimeout should return true");
+	
+		    // Verify that changesMadeByEventListener flag remains true (rollbackAndCloseOnTimeout does not reset it)
+		    assertTrue(spyTrx.hasChangesMadeByEventListener(), "Changes flag should remain true after rollbackAndCloseOnTimeout");
+		} finally {
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 	
 	/**
@@ -631,42 +732,55 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testRollbackAndCloseOnTimeout() throws Exception {
-	    Trx trx = Trx.get(Trx.createTrxName("TestRollbackClose"), true);
-
-	    // Access private m_connection
-	    Field connField = Trx.class.getDeclaredField("m_connection");
-	    connField.setAccessible(true);
-
-	    // Mock Connection
-	    Connection mockConn = mock(Connection.class);
-	    connField.set(trx, mockConn);
-
-	    // Normal path: rollback succeeds, close succeeds
-	    Trx spyTrx = spy(trx);
-
-	    // Stub rollback(boolean) to return true
-	    doReturn(true).when(spyTrx).rollback(true);
-	    // Stub close() to return true
-	    doReturn(true).when(spyTrx).close();
-
-	    assertTrue(spyTrx.rollbackAndCloseOnTimeout(), "rollbackAndCloseOnTimeout should return true when rollback and close succeed");
-
-	    verify(spyTrx).rollback(true);
-	    verify(spyTrx).close();
-
-	    // Exception path: rollback throws SQLException
-	    Trx spyTrx2 = spy(trx);
-
-	    doThrow(new SQLException("Simulated rollback error")).when(spyTrx2).rollback(true);
-	    doReturn(true).when(spyTrx2).close();
-
-	    // Should not throw, close() still called
-	    assertTrue(spyTrx2.rollbackAndCloseOnTimeout(), "rollbackAndCloseOnTimeout should return true even if rollback throws");
-
-	    verify(spyTrx2).rollback(true);
-	    verify(spyTrx2).close();
-
-	    connField.set(trx, null);
+		Trx trx = null;
+		Trx spyTrx = null;
+		Trx spyTrx2 = null;
+		Field connField = null;
+		try {
+		    trx = Trx.get(Trx.createTrxName("TestRollbackClose"), true);
+	
+		    // Access private m_connection
+		    connField = Trx.class.getDeclaredField("m_connection");
+		    connField.setAccessible(true);
+	
+		    // Mock Connection
+		    Connection mockConn = mock(Connection.class);
+		    connField.set(trx, mockConn);
+	
+		    // Normal path: rollback succeeds, close succeeds
+		    spyTrx = spy(trx);
+	
+		    // Stub rollback(boolean) to return true
+		    doReturn(true).when(spyTrx).rollback(true);
+		    // Stub close() to return true
+		    doReturn(true).when(spyTrx).close();
+	
+		    assertTrue(spyTrx.rollbackAndCloseOnTimeout(), "rollbackAndCloseOnTimeout should return true when rollback and close succeed");
+	
+		    verify(spyTrx).rollback(true);
+		    verify(spyTrx).close();
+	
+		    // Exception path: rollback throws SQLException
+		    spyTrx2 = spy(trx);
+	
+		    doThrow(new SQLException("Simulated rollback error")).when(spyTrx2).rollback(true);
+		    doReturn(true).when(spyTrx2).close();
+	
+		    // Should not throw, close() still called
+		    assertTrue(spyTrx2.rollbackAndCloseOnTimeout(), "rollbackAndCloseOnTimeout should return true even if rollback throws");
+	
+		    verify(spyTrx2).rollback(true);
+		    verify(spyTrx2).close();
+	
+		    connField.set(trx, null);
+		} finally {
+			if (connField != null && spyTrx != null)
+				connField.set(spyTrx, null);
+			if (connField != null && spyTrx2 != null)
+				connField.set(spyTrx2, null);
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 	
 	/**
@@ -675,26 +789,32 @@ public class TrxTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testStart() throws Exception {
-	    Trx trx = Trx.get(Trx.createTrxName("TestStart"), true);
-
-	    // Initially, should not be active
-	    assertFalse(trx.isActive(), "Trx should initially be inactive");
-
-	    // First start: should activate trx
-	    long beforeStart = System.currentTimeMillis();
-	    boolean started = trx.start();
-	    long afterStart = System.currentTimeMillis();
-
-	    assertTrue(started, "Trx.start() should return true when starting inactive trx");
-	    assertTrue(trx.isActive(), "Trx should be active after start");
-	    assertFalse(trx.hasChangesMadeByEventListener(), "ChangesMadeByEventListener should be false after start");
-
-	    long startTime = trx.getStartTime().getTime();
-	    assertTrue(startTime >= beforeStart && startTime <= afterStart, "Start time should be set between beforeStart and afterStart timestamps");
-
-	    // Second start: should fail, already active
-	    boolean startedAgain = trx.start();
-	    assertFalse(startedAgain, "Trx.start() should return false if already active");
+		Trx trx = null;
+		try {
+		    trx = Trx.get(Trx.createTrxName("TestStart"), true);
+	
+		    // Initially, should not be active
+		    assertFalse(trx.isActive(), "Trx should initially be inactive");
+	
+		    // First start: should activate trx
+		    long beforeStart = System.currentTimeMillis();
+		    boolean started = trx.start();
+		    long afterStart = System.currentTimeMillis();
+	
+		    assertTrue(started, "Trx.start() should return true when starting inactive trx");
+		    assertTrue(trx.isActive(), "Trx should be active after start");
+		    assertFalse(trx.hasChangesMadeByEventListener(), "ChangesMadeByEventListener should be false after start");
+	
+		    long startTime = trx.getStartTime().getTime();
+		    assertTrue(startTime >= beforeStart && startTime <= afterStart, "Start time should be set between beforeStart and afterStart timestamps");
+	
+		    // Second start: should fail, already active
+		    boolean startedAgain = trx.start();
+		    assertFalse(startedAgain, "Trx.start() should return false if already active");
+		} finally {
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 	
 	/**
@@ -704,24 +824,30 @@ public class TrxTest extends AbstractTestCase {
 	@Test
 	public void testToString() throws Exception {
 	    String trxName = Trx.createTrxName("TestToString");
-	    Trx trx = Trx.get(trxName, true);
-
-	    // Initially, inactive with no display name
-	    trx.setDisplayName(null);
-	    trx.rollback(); // ensure inactive
-	    String str = trx.toString();
-	    assertTrue(str.contains("Trx[") && str.contains("Active=false"), "toString should reflect inactive state");
-
-	    // Set display name and start
-	    trx.setDisplayName("MyDisplayName");
-	    trx.start();
-	    str = trx.toString();
-	    assertTrue(str.contains("Trx[MyDisplayName") && str.contains("Active=true"), "toString should include display name and active state");
-
-	    // Set display name to empty string
-	    trx.setDisplayName("");
-	    str = trx.toString();
-	    assertTrue(str.contains("Trx[") && str.contains("Active=true"), "toString should handle empty display name");
+	    Trx trx = null;
+	    try {
+		    trx = Trx.get(trxName, true);
+	
+		    // Initially, inactive with no display name
+		    trx.setDisplayName(null);
+		    trx.rollback(); // ensure inactive
+		    String str = trx.toString();
+		    assertTrue(str.contains("Trx[") && str.contains("Active=false"), "toString should reflect inactive state");
+	
+		    // Set display name and start
+		    trx.setDisplayName("MyDisplayName");
+		    trx.start();
+		    str = trx.toString();
+		    assertTrue(str.contains("Trx[MyDisplayName") && str.contains("Active=true"), "toString should include display name and active state");
+	
+		    // Set display name to empty string
+		    trx.setDisplayName("");
+		    str = trx.toString();
+		    assertTrue(str.contains("Trx[") && str.contains("Active=true"), "toString should handle empty display name");
+	    } finally {
+	    	if (trx != null)
+	    		trx.close();
+	    }
 	}
 
 }
