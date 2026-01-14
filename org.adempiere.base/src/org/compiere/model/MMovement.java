@@ -600,13 +600,13 @@ public class MMovement extends X_M_Movement implements DocAction
 								storages = MStorageOnHand.getWarehouse(getCtx(), 0,
 										line.getM_Product_ID(), line.getM_AttributeSetInstanceTo_ID(), null,
 										MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-										line.getM_Locator_ID(), get_TrxName());
+										line.getM_LocatorTo_ID(), get_TrxName());
 							} else {
 								// Case of reversal
 								storages = MStorageOnHand.getWarehouse(getCtx(), 0,
 										line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), null,
 										MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
-										line.getM_LocatorTo_ID(), get_TrxName());
+										line.getM_Locator_ID(), get_TrxName());
 							}
 							for (MStorageOnHand storage : storages) {
 								if (storage.getQtyOnHand().add(line.getMovementQty()).compareTo(Env.ZERO) >= 0) {
