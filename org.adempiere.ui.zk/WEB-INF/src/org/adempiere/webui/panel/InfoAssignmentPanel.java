@@ -51,6 +51,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -127,19 +128,26 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 		this(WindowNo, value, multiSelection, whereClause, true);
 	}
 	
+	public InfoAssignmentPanel (int WindowNo,
+			String value, boolean multiSelection, String whereClause, boolean lookup)
+	{
+		this(WindowNo, value, multiSelection, lookup, whereClause != null ? new SQLFragment(whereClause) : null);
+	}
+	
 	/**
 	 *  Constructor
 	 *
 	 *  @param WindowNo WindowNo
 	 *  @param  value   Query value Name or Value if contains numbers
 	 *  @param multiSelection multiple selection
-	 *  @param whereClause where clause
+	 *  @param lookup true if lookup
+	 *  @param sqlFilter sql filter
 	 */
 	public InfoAssignmentPanel (int WindowNo,
-		String value, boolean multiSelection, String whereClause, boolean lookup)
+		String value, boolean multiSelection, boolean lookup, SQLFragment sqlFilter)
 	{
 		super (WindowNo, "ra", "S_ResourceAssignment_ID",
-			multiSelection, whereClause, lookup);
+			multiSelection, lookup, sqlFilter);
 		log.info(value);
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoAssignment"));
 
@@ -147,7 +155,7 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 			return;
 		
 		statInit();
-		initInfo (value, whereClause);
+		initInfo (value, sqlFilter);
 
 		int no = contentPanel.getRowCount();
 		setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
@@ -269,10 +277,10 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 	/**
 	 *	Dynamic Init
 	 *  @param value value
-	 *  @param whereClause where clause
+	 *  @param sqlFilter where clause
 	 */
 	
-	private void initInfo(String value, String whereClause)
+	private void initInfo(String value, SQLFragment sqlFilter)
 	{
 		//  C_BPartner bp, AD_User c, C_BPartner_Location l, C_Location a
 
@@ -280,11 +288,11 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 		
 		StringBuilder where = new StringBuilder(s_assignmentWHERE);
 		
-		if (whereClause != null && whereClause.length() > 0)
-			where.append(" AND ").append(whereClause);
+		if (sqlFilter != null && sqlFilter.sqlClause().length() > 0)
+			where.append(" AND ").append(sqlFilter.sqlClause());
 		
 		prepareTable(s_assignmentLayout, s_assignmentFROM,
-			where.toString(), "rt.Name,r.Name,ra.AssignDateFrom");
+			"rt.Name,r.Name,ra.AssignDateFrom", new SQLFragment(where.toString(), sqlFilter != null ? sqlFilter.parameters() : null));
 	} // initInfo
 	
 	/*************************************************************************/

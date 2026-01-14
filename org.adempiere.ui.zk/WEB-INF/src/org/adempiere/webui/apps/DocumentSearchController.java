@@ -95,7 +95,7 @@ public class DocumentSearchController implements EventListener<Event> {
 	private int selected = -1;
 	/** True when showing transaction code available */
 	private boolean showingGuide = false;
-
+	
 	/**
 	 * default constructor
 	 */

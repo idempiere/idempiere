@@ -178,7 +178,17 @@ public class DefaultSQLSearchProvider implements ISearchProvider {
             boolean hasFullTextOperator = sql.indexOf("@@") >= 0;
             if (hasFullTextOperator)
                 sql = sql.replace("@@", "~!#$*");
-            sql = Env.parseContext(Env.getCtx(), -1, sql, false, true);
+            if (sql.contains("@")) {
+				if (params.isEmpty()) {
+					sql = Env.parseContextForSql(Env.getCtx(), -1, sql, false, true, params);
+				} else {
+					List<Object> contextParams = new ArrayList<Object>();
+					String beforeParseSql = sql;
+					sql = Env.parseContextForSql(Env.getCtx(), -1, sql, false, true, contextParams);
+					if (contextParams.size() > 0)
+						params = Env.mergeParameters(beforeParseSql, sql, params.toArray(), contextParams.toArray());						
+				}
+			}
             if (hasFullTextOperator)
                 sql = sql.replace("~!#$*", "@@");
 

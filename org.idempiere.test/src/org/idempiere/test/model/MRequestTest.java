@@ -28,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MBPartner;
@@ -35,6 +38,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRequest;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -44,6 +48,7 @@ public class MRequestTest extends AbstractTestCase {
 	public MRequestTest() {
 	}
 
+	@SuppressWarnings("removal")
 	@Test
 	public void testRequestCount() {
 		int[] counts = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, new StringBuilder(), getTrxName());
@@ -62,12 +67,24 @@ public class MRequestTest extends AbstractTestCase {
 		assertEquals(counts[0], counts1[0], "Unexpected processed request count");
 		assertEquals(counts[1]+1, counts1[1], "Unexpected not processed request count");
 		
+		List<Object> params = new ArrayList<>();
+		counts1 = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, new StringBuilder(), params, getTrxName());
+		assertEquals(counts[0], counts1[0], "Unexpected processed request count");
+		assertEquals(counts[1]+1, counts1[1], "Unexpected not processed request count");
+		assertTrue(!params.isEmpty(), "Parameters list is expected to be not empty");
+		
 		req.setProcessed(true);
 		req.saveEx();
 		
 		counts1 = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, new StringBuilder(), getTrxName());
 		assertEquals(counts[0]+1, counts1[0], "Unexpected processed request count");
 		assertEquals(counts[1], counts1[1], "Unexpected not processed request count");
+		
+		params = new ArrayList<>();
+		counts1 = MRequest.getRequestCount(MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, new StringBuilder(), params, getTrxName());
+		assertEquals(counts[0]+1, counts1[0], "Unexpected processed request count");
+		assertEquals(counts[1], counts1[1], "Unexpected not processed request count");
+		assertTrue(!params.isEmpty(), "Parameters list is expected to be not empty");
 	}
 	
 	@Test
@@ -77,7 +94,7 @@ public class MRequestTest extends AbstractTestCase {
 		gridWindow.initTab(0);
 		GridTab gridTab = gridWindow.getTab(0);
 		MQuery query = new MQuery(MRequest.Table_ID);
-		query.addRestriction("1=2");
+		query.addRestriction(new SQLFragment("1=2"));
 		gridTab.setQuery(query);
 		gridTab.query(false);
 		MRequest.newRequest(gridTab, MBPartner.Table_ID, DictionaryIDs.C_BPartner.PATIO.id, DictionaryIDs.C_BPartner.PATIO.uuid, DictionaryIDs.C_BPartner.PATIO.id);

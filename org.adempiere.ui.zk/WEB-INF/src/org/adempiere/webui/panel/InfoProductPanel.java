@@ -79,6 +79,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -198,6 +199,22 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 	 * 	@param M_PriceList_ID price list
 	 *  @param multipleSelection
 	 * 	@param value    Query Value or Name if enclosed in @
+	 * 	@param sqlFilter
+	 */
+	public InfoProductPanel(int windowNo,
+		int M_Warehouse_ID, int M_PriceList_ID, boolean multipleSelection,String value,
+		 SQLFragment sqlFilter)
+	{
+		this(windowNo, M_Warehouse_ID, M_PriceList_ID, multipleSelection, value, true, sqlFilter);
+	}
+	
+	/**
+	 *	Standard Constructor
+	 * 	@param windowNo window no
+	 * 	@param M_Warehouse_ID warehouse
+	 * 	@param M_PriceList_ID price list
+	 *  @param multipleSelection
+	 * 	@param value    Query Value or Name if enclosed in @
 	 * 	@param whereClause where clause
 	 *  @param lookup
 	 */
@@ -205,8 +222,25 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		int M_Warehouse_ID, int M_PriceList_ID, boolean multipleSelection,String value,
 		 String whereClause, boolean lookup)
 	{
-		super (windowNo, "p", "M_Product_ID",multipleSelection, whereClause, lookup);
-		log.info(value + ", Wh=" + M_Warehouse_ID + ", PL=" + M_PriceList_ID + ", WHERE=" + whereClause);
+		this (windowNo, M_Warehouse_ID, M_PriceList_ID, multipleSelection, value, lookup, new SQLFragment(whereClause));
+	}
+	
+	/**
+	 *	Standard Constructor
+	 * 	@param windowNo window no
+	 * 	@param M_Warehouse_ID warehouse
+	 * 	@param M_PriceList_ID price list
+	 *  @param multipleSelection
+	 * 	@param value    Query Value or Name if enclosed in @
+	 *  @param lookup
+	 *  @param sqlFilter
+	 */
+	public InfoProductPanel(int windowNo,
+		int M_Warehouse_ID, int M_PriceList_ID, boolean multipleSelection,String value,
+		 boolean lookup, SQLFragment sqlFilter)
+	{
+		super (windowNo, "p", "M_Product_ID",multipleSelection, lookup, sqlFilter);
+		log.info(value + ", Wh=" + M_Warehouse_ID + ", PL=" + M_PriceList_ID + ", WHERE=" + sqlFilter);
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoProduct"));
 		//
 		initComponents();

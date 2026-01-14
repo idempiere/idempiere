@@ -22,55 +22,72 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.webui.info;
+package org.idempiere.db.util;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+
+import org.compiere.util.DB;
 
 /**
+ * SQL fragment with SQL clause and parameters
+ * 
  * @author hengsin
- * @deprecated not use
  */
-@Deprecated (since="13", forRemoval=true)
-public class InfoPAttributeWindow extends InfoWindow {
-
+public record SQLFragment(String sqlClause, List<Object> parameters) {
+	
+	public SQLFragment {
+		parameters = parameters != null ? List.copyOf(parameters) : List.of();
+		sqlClause = sqlClause != null ? sqlClause : "";
+	}
+	
 	/**
-	 * 
+	 * @param sqlClause
 	 */
-	private static final long serialVersionUID = -4554543873526769338L;
-
-	/**
-	 * @param WindowNo
-	 * @param tableName
-	 * @param keyColumn
-	 * @param queryValue
-	 * @param multipleSelection
-	 * @param whereClause
-	 * @param AD_InfoWindow_ID
-	 */
-	@SuppressWarnings("removal")
-	public InfoPAttributeWindow(int WindowNo, String tableName,
-			String keyColumn, String queryValue, boolean multipleSelection,
-			String whereClause, int AD_InfoWindow_ID) {
-		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
-				whereClause, AD_InfoWindow_ID);
-
+	public SQLFragment(String sqlClause) {
+		this(sqlClause, List.of());
 	}
 
-	/**
-	 * @param WindowNo
-	 * @param tableName
-	 * @param keyColumn
-	 * @param queryValue
-	 * @param multipleSelection
-	 * @param whereClause
-	 * @param AD_InfoWindow_ID
-	 * @param lookup
-	 */
-	@SuppressWarnings("removal")
-	public InfoPAttributeWindow(int WindowNo, String tableName,
-			String keyColumn, String queryValue, boolean multipleSelection,
-			String whereClause, int AD_InfoWindow_ID, boolean lookup) {
-		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
-				whereClause, AD_InfoWindow_ID, lookup);
-
+	@Override
+	public int hashCode() {
+		return Objects.hash(parameters, sqlClause);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SQLFragment other = (SQLFragment) obj;
+		return Objects.equals(parameters, other.parameters) && Objects.equals(sqlClause, other.sqlClause);
+	}
+	
+	/**
+	 * Convert to SQL clause with embedded parameters from {@link #parameters} (replacing ? with parameter value). <br/>
+	 * Warning: This is subject to SQL injection attack, use with care.
+	 * @return SQL clause with embedded parameters
+	 */
+	public String toSQLWithParameters() {
+		if (parameters.isEmpty()) {
+			return sqlClause;
+		}
+		String whereClause = sqlClause;
+		for(Object param : parameters) {
+			String paramStr = "";
+			if (param instanceof String s) {
+				paramStr = DB.TO_STRING(s);
+			} else if (param instanceof Timestamp ts) {
+				paramStr = DB.TO_DATE(ts);
+			} else {
+				paramStr = param != null ? param.toString() : "";
+			}
+			whereClause = whereClause.replaceFirst("\\?", Matcher.quoteReplacement(paramStr));
+		}
+		return whereClause;
+	}
 }
