@@ -1944,7 +1944,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
 						jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
 						if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
-							if (!ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())) {
+							if (   !ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())
+								&& !ProcessUtil.JASPER_STARTER_CLASS_DEPRECATED.equals(jasperProcess.getClassname())) {
 								jasperProcessInfo.setClassName (jasperProcess.getClassname());
 								MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
 										jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
