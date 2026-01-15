@@ -21,8 +21,8 @@ import java.util.logging.Level;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
-import org.compiere.model.MRule;
 import org.compiere.model.MPInstance.PInstanceInfo;
+import org.compiere.model.MRule;
 import org.compiere.print.ReportCtl;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -188,7 +188,8 @@ public abstract class AbstractProcessCtl implements Runnable
 		boolean isJasper = false;
 		if (JasperReport != null && JasperReport.trim().length() > 0) {
 			isJasper = true;
-			if (ProcessUtil.JASPER_STARTER_CLASS.equals(m_pi.getClassName())) {
+			if (   ProcessUtil.JASPER_STARTER_CLASS.equals(m_pi.getClassName())
+				|| ProcessUtil.JASPER_STARTER_CLASS_DEPRECATED.equals(m_pi.getClassName())) {
 				m_pi.setClassName(null);
 			}
 		}
