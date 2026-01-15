@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -51,17 +52,20 @@ import org.compiere.model.MStorageOnHand;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Carlos Ruiz - globalqss
  */
+@Isolated
 public class InventoryTest extends AbstractTestCase {
 
 	public InventoryTest() {
@@ -215,15 +219,19 @@ public class InventoryTest extends AbstractTestCase {
 		
 		MProduct product = new MProduct(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id, trxName);
 		MAttributeSet attributeSet = MAttributeSet.get(ctx, product.getM_AttributeSet_ID());
-		boolean originalUseGuaranteeDateForMPolicy = attributeSet.isUseGuaranteeDateForMPolicy();
 		
-		String sql = "UPDATE " + MAttributeSet.Table_Name 
-				+ " SET " + MAttributeSet.COLUMNNAME_UseGuaranteeDateForMPolicy + "=?"
-				+ " WHERE " + MAttributeSet.COLUMNNAME_M_AttributeSet_ID + "=?";
-		try {
-			// set MAttributeSet.isUseGuaranteeDateForMPolicy = Y
-			DB.executeUpdateEx(sql, new Object[] {"Y", attributeSet.get_ID()}, null);
-			attributeSet.load(null);
+		// Mock only the attribute set
+	    MAttributeSet attributeSetMock = Mockito.mock(MAttributeSet.class);
+	    Mockito.when(attributeSetMock.get_ID()).thenReturn(product.getM_AttributeSet_ID());
+	    Mockito.when(attributeSetMock.isUseGuaranteeDateForMPolicy()).thenReturn(true); // simulate "Y"
+	    Mockito.when(attributeSetMock.getM_AttributeSet_ID()).thenReturn(product.getM_AttributeSet_ID());
+	    
+	    try (MockedStatic<MAttributeSet> attributeSetStaticMock = Mockito.mockStatic(MAttributeSet.class)) {
+	        attributeSetStaticMock.when(() -> MAttributeSet.get(ctx, product.getM_AttributeSet_ID()))
+	                              .thenReturn(attributeSetMock);
+
+	        attributeSet = MAttributeSet.get(ctx, product.getM_AttributeSet_ID());
+	        assertTrue(attributeSet.isUseGuaranteeDateForMPolicy());
 			
 			Timestamp today = TimeUtil.getDay(null);
 			Timestamp tomorrow = TimeUtil.addDays(today, 1);
@@ -263,10 +271,6 @@ public class InventoryTest extends AbstractTestCase {
 			assertEquals(tomorrow, storage.getDateMaterialPolicy());
 		} finally {
 			rollback();
-			
-			// reset MAttributeSet.isUseGuaranteeDateForMPolicy
-			DB.executeUpdateEx(sql, new Object[] {originalUseGuaranteeDateForMPolicy ? "Y" : "N", attributeSet.get_ID()}, null);
-			attributeSet.load(null);
 		}
 	}
 	
