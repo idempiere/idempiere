@@ -73,11 +73,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Tests for {@link MColumn} class.
  * @author d-ruiz
  */
+@Isolated
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MColumnTest extends AbstractTestCase {
 

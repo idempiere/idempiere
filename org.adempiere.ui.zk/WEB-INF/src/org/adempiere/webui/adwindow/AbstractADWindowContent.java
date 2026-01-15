@@ -129,6 +129,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
@@ -429,7 +430,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		{
     			detailQuery = query;
     			query = new MQuery();
-    			query.addRestriction("1=2");
+    			query.addRestriction(new SQLFragment("1=2"));
     			query.setRecordCount(0);
     		}
     	}
@@ -518,8 +519,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				gridWindow.initTab(tabIndex);
 				//init parent tab by parent ids
-				StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName()).append(" FROM ").append(gTab.getTableName()).append(" WHERE ").append(query.getWhereClause());
-				List<List<Object>> parentIds = DB.getSQLArrayObjectsEx(null, sql.toString());
+				SQLFragment filter = query.getSQLFilter();
+				StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName())
+						.append(" FROM ").append(gTab.getTableName())
+						.append(" WHERE ")
+						.append(filter.sqlClause());
+				List<List<Object>> parentIds = DB.getSQLArrayObjectsEx(null, sql.toString(), filter.parameters().toArray());
 				if (parentIds!=null && parentIds.size() > 0)
 				{
 					//Tab Index:MQuery
@@ -901,23 +906,33 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         }
 
         //
-		StringBuffer where = new StringBuffer(Env.parseContext(ctx, curWindowNo, mTab.getWhereExtended(), false));
+        List<Object> params = new ArrayList<Object>();
+        SQLFragment extendedFilter = mTab.getExtendedFilter();
+        String preParseWhere = extendedFilter != null ? extendedFilter.sqlClause() : "";
+        StringBuffer where = new StringBuffer(extendedFilter != null ? Env.parseContextForSql(ctx, curWindowNo, extendedFilter.sqlClause(), false, params) : "");
+        if (extendedFilter != null && extendedFilter.parameters().size() > 0)
+        {
+        	params = Env.mergeParameters(preParseWhere, where.toString(), extendedFilter.parameters().toArray(), params.toArray());
+        }
         // Query automatically if high volume and no query
         boolean require = mTab.isHighVolume();
         if (!require && !m_onlyCurrentRows) // No Trx Window
-        {
+        {        	
             if (query != null)
             {
-                String wh2 = query.getWhereClause();
+            	SQLFragment filter = query.getSQLFilter();
+            	params.addAll(filter.parameters());
+                String wh2 = filter.sqlClause();
                 if (wh2.length() > 0)
                 {
                     if (where.length() > 0)
-                        where.append(" AND ");
-                    where.append(wh2);
+                        where.append(" AND (").append(wh2).append(") ");
+                    else
+                    	where.append(wh2);
                 }
             }
             //
-            int no = getRecordCount(mTab, where);
+            int no = getRecordCount(mTab, where, params);
             // show find dialog if count timeout/exception
             require = no == -1 ? true : mTab.isQueryRequire(no);
         }
@@ -929,7 +944,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         	m_findCreateNew = false;
             GridField[] findFields = mTab.getFields();
             
-            FindWindow findWindow = Extensions.getFindWindow(curWindowNo, 0, title, mTab.getAD_Table_ID(), mTab.getTableName(), where.toString(), findFields, 10, mTab.getAD_Tab_ID(), this);
+            FindWindow findWindow = Extensions.getFindWindow(curWindowNo, 0, title, mTab.getAD_Table_ID(), mTab.getTableName(), new SQLFragment(where.toString(), params), findFields, 10, mTab.getAD_Tab_ID(), this);
             
            	tabFindWindowHashMap.put(mTab, findWindow);
             setupEmbeddedFindwindow(findWindow);
@@ -979,9 +994,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      * Get record count
      * @param mTab
      * @param where
+     * @param params 
      * @return record count
      */
-	private int getRecordCount(GridTab mTab, StringBuffer where) {
+	private int getRecordCount(GridTab mTab, StringBuffer where, List<Object> params) {
 		StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM ")
 		        .append(mTab.getTableName());
 		if (where.length() > 0)
@@ -994,6 +1010,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		try (PreparedStatement stmt = DB.prepareStatement(finalSQL, null)) {
 			if (timeout > 0)
 				stmt.setQueryTimeout(timeout);
+			if (params != null && !params.isEmpty()) {
+				DB.setParameters(stmt, params);
+			}
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next())
 				no = rs.getInt(1);
@@ -2682,7 +2701,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				adTabbox.getSelectedGridTab().getName(),
 	            adTabbox.getSelectedGridTab().getAD_Table_ID(), 
 	            adTabbox.getSelectedGridTab().getTableName(),
-	            adTabbox.getSelectedGridTab().getWhereExtended(), 
+	            adTabbox.getSelectedGridTab().getExtendedFilter(), 
 	            findFields, 
 	            1, 
 	            adTabbox.getSelectedGridTab().getAD_Tab_ID());
@@ -4580,7 +4599,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 			findWindow = Extensions.getFindWindow(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
+					adTabbox.getSelectedGridTab().getExtendedFilter(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
 			
 			setupEmbeddedFindwindow(findWindow);
 			if (!findWindow.initialize()) {

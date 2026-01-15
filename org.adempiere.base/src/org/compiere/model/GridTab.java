@@ -21,7 +21,6 @@ package org.compiere.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,6 +62,7 @@ import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *	Tab Model.
@@ -175,7 +175,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	private String 				m_linkColumnName = "";
 
 	private String m_parentColumnName = "";
-	private String				m_extendedWhere;
+	/** Full where clause (including parent link for detail tab) **/
+	private SQLFragment			m_extendedFilter;
 	/** Locks		        */
 	private ArrayList<Integer>	m_Lock = null;
 
@@ -190,7 +191,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
     protected EventListenerList m_listenerList = new EventListenerList();
 	/**	Query							*/
 	private MQuery 				m_query = new MQuery();
-	private String 				m_oldQuery = "0=9";
+	private SQLFragment 		m_oldQuery = new SQLFragment("0=9");
 	private String 				m_linkValue = "999999";
 
 	/** Order By Array if SortNo 1..3   */
@@ -321,7 +322,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	protected boolean loadTab()
 	{
-		m_extendedWhere = m_vo.WhereClause;
+		m_extendedFilter = new SQLFragment(m_vo.WhereClause);
 
 		//	Get Field Data
 		if (!loadFields())
@@ -660,7 +661,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo
 			+ " - Only Current Rows=" + onlyCurrentRows
 			+ ", Days=" + onlyCurrentDays + ", Detail=" + isDetail());
-		m_oldQuery = m_query.getWhereClause();
+		m_oldQuery = m_query.getSQLFilter();
 		m_vo.onlyCurrentRows = onlyCurrentRows;
 		m_vo.onlyCurrentDays = onlyCurrentDays;
 
@@ -668,13 +669,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		 *	Set Where Clause
 		 */
 		//	Tab Where Clause
+		List<Object> params = new ArrayList<Object>();
 		StringBuilder where = new StringBuilder(m_vo.WhereClause);
 		if (m_vo.onlyCurrentDays > 0)
 		{
 			if (where.length() > 0)
-				where.append(" AND ");
-			where.append("Created >= ");
-			where.append("getDate()-").append(m_vo.onlyCurrentDays);
+				where.append(" AND ");			
+			where.append("Created >= ").append("getDate()-?");
+			params.add(m_vo.onlyCurrentDays);
 		}
 		//	Detail Query
 		if (isDetail())
@@ -721,26 +723,28 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					//	we have column and value
 					if (where.length() != 0)
 						where.append(" AND ");
-					where.append(getTableName()).append(".").append(lc).append("=");
+					
+					where.append(getTableName()).append(".").append(lc).append("=?");
 					if (lc.endsWith("_ID"))
-						where.append(DB.TO_NUMBER(new BigDecimal(value), DisplayType.ID));
+						params.add(Integer.valueOf(value.trim()));
 					else
-						where.append(DB.TO_STRING(value));
+						params.add(value);					
 				}
 			}
 		}	//	isDetail
 
-		m_extendedWhere = where.toString();
+		m_extendedFilter = new SQLFragment(where.toString(), params);
 		
 		//	Final Query
 		if (m_query.isActive())
 		{
-			String q = validateQuery(m_query);
+			SQLFragment q = validateQuery(m_query);
 			if (q != null)
 			{
 				if (where.length() > 0 )
 					where.append(" AND ");
-				where.append(" (").append(q).append(")");
+				where.append(" (").append(q.sqlClause()).append(")");
+				params.addAll(q.parameters());
 			}
 		}
 
@@ -751,11 +755,11 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_vo.TabNo + " - " + where);
 		if (m_mTable.isOpen())
 		{
-			m_mTable.dataRequery(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
+			m_mTable.dataRequery(new SQLFragment(where.toString(), params), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
 		}
 		else
 		{
-			m_mTable.setSelectWhereClause(where.toString(), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
+			m_mTable.setSQLFilter(new SQLFragment(where.toString(), params), m_vo.onlyCurrentRows && !isDetail(), onlyCurrentDays);
 			m_mTable.open(maxRows);
 		}
 		//  Go to Record 0
@@ -770,8 +774,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public void resetDetailForNewParentRecord() {
 		if (m_mTable.isOpen())
 		{
-			String where = "2=3";
-			m_extendedWhere = where;
+			SQLFragment where = new SQLFragment("2=3");
+			m_extendedFilter = where;
 			m_oldQuery = where;
 			m_parentNeedSave = true;
 			
@@ -793,7 +797,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 * 	@param query query
 	 * 	@return where clause
 	 */
-	private String validateQuery (MQuery query)
+	private SQLFragment validateQuery (MQuery query)
 	{
 		if (query == null || query.getRestrictionCount() == 0)
 			return null;
@@ -802,20 +806,20 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (query.getRestrictionCount() != 1)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(More than 1 Restriction): " + query);
-			return query.getWhereClause(true);
+			return query.getSQLFilter(true);
 		}
 
 		String colName = query.getColumnName(0);
 		if (colName == null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(No Column): " + query);
-			return query.getWhereClause(true);
+			return query.getSQLFilter(true);
 		}
 		//	a '(' in the name = function - don't try to resolve
 		if (colName.indexOf('(') != -1)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Ignored(Function): " + colName);
-			return query.getWhereClause(true);
+			return query.getSQLFilter(true);
 		}
 		//	OK - Query is valid
 
@@ -823,7 +827,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (getField(colName) != null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("Field Found: " + colName);
-			return query.getWhereClause(true);
+			return query.getSQLFilter(true);
 		}
 
 		//	Find Reference Column e.g. Bill_Location_ID -> C_BPartner_Location_ID
@@ -841,7 +845,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (getField(refColName) != null)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("Column " + colName + " replaced with " + refColName);
-				return query.getWhereClause(true);
+				return query.getSQLFilter(true);
 			}
 			colName = refColName;
 		}
@@ -863,19 +867,20 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			if (log.isLoggable(Level.INFO)) log.info ("Not successful - Column="
 				+ colName + ", Key=" + tabKeyColumn
 				+ ", Query=" + query);
-			return query.getWhereClause(true);
+			return query.getSQLFilter(true);
 		}
 
 		query.setTableName("xx");
 		// use IN instead of EXISTS as subquery should be highly selective
+		SQLFragment sqlFilter = query.getSQLFilter(true);
 		StringBuilder result = new StringBuilder (getTableName()).append(".").append(tabKeyColumn)
 			.append(" IN (SELECT xx.").append(tabKeyColumn)
 			.append(" FROM ")
 			.append(tableName).append(" xx WHERE ")
-			.append(query.getWhereClause(true))
+			.append(sqlFilter.sqlClause())
 			.append(")");
 		if (log.isLoggable(Level.FINE)) log.fine(result.toString());
-		return result.toString();
+		return new SQLFragment(result.toString(), sqlFilter.parameters());
 	}	//	validateQuery
 
 	/**
@@ -1350,7 +1355,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (!m_mTable.isOpen())
 			return false;
 		//	Same Query
-		if (!m_oldQuery.equals(m_query.getWhereClause()))
+		if (!m_oldQuery.equals(m_query.getSQLFilter()))
 			return false;
 		//	Detail?
 		if (!isDetail())
@@ -1731,12 +1736,22 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 *	Get extended Where Clause (parent link)
 	 *  @return parent link
+	 *  @deprecated use getExtendedFilter() instead
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String getWhereExtended()
 	{
-		return m_extendedWhere;
+		return m_extendedFilter != null ? m_extendedFilter.toSQLWithParameters() : "";
 	}	//	getWhereExtended
 
+	/**
+	 * Get extended SQL Filter (parent link)
+	 * @return parent link
+	 */
+	public SQLFragment getExtendedFilter() {
+		return m_extendedFilter;
+	}
+	
 	/**
 	 *	Get Order By Clause
 	 *  @param onlyCurrentRows only current rows
@@ -3172,12 +3187,12 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 * The following variables are exposed to the callout script using the
 	 * {@link MRule#ARGUMENTS_PREFIX}:
 	 * <ul>
-	 *   <li>{@code WindowNo} – current window number</li>
-	 *   <li>{@code Tab} – current {@link GridTab}</li>
-	 *   <li>{@code Field} – field that triggered the callout</li>
-	 *   <li>{@code Value} – new field value</li>
-	 *   <li>{@code OldValue} – previous field value</li>
-	 *   <li>{@code Ctx} – application context</li>
+	 *   <li>{@code WindowNo} current window number</li>
+	 *   <li>{@code Tab} current {@link GridTab}</li>
+	 *   <li>{@code Field} field that triggered the callout</li>
+	 *   <li>{@code Value} new field value</li>
+	 *   <li>{@code OldValue} previous field value</li>
+	 *   <li>{@code Ctx} application context</li>
 	 * </ul>
 	 *
 	 * @param putter

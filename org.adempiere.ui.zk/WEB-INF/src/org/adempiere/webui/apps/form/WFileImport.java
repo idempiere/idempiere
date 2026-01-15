@@ -29,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
@@ -53,6 +54,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -606,7 +608,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			    result -> {
 			        if (importedFinal > 0) {
 			            MQuery query = new MQuery(m_format.getAD_Table_ID());
-			            query.addRestriction("I_IsImported='N'");
+			            query.addRestriction(new SQLFragment("I_IsImported=?", List.of("N")));
 			            AEnv.zoom(m_format.getAD_Table_ID(), 0, query);
 			        }
 			    });

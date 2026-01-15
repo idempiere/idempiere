@@ -63,6 +63,7 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.Mockito;
 
 /**
@@ -70,6 +71,7 @@ import org.mockito.Mockito;
  * 
  * @author etantg
  */
+@Isolated
 public class MClientTest extends AbstractTestCase {
 
 	private static final int CLIENT_ID = DictionaryIDs.AD_Client.GARDEN_WORLD.id;
@@ -971,6 +973,8 @@ public class MClientTest extends AbstractTestCase {
 		    assertTrue(info.getAD_Tree_Org_ID() > 0);
 		    assertTrue(info.getAD_Tree_BPartner_ID() > 0);
 		} finally {
+			rollback();
+			
 			PO.clearCrossTenantSafe();
 			
 			if (client1 != null && client1.get_ID() > 0) {
