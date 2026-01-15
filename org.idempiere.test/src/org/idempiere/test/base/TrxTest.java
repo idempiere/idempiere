@@ -132,14 +132,8 @@ public class TrxTest extends AbstractTestCase {
 		    cachedTrxCreateNew = Trx.get(trxNameCreate, true);
 		    assertSame(createdTrx, cachedTrxCreateNew, "Should not create a new instance when transaction already exists");
 		} finally {
-			if (noCreateTrx != null)
-				noCreateTrx.close();
 			if (createdTrx != null)
 				createdTrx.close();
-			if (cachedTrx != null)
-				cachedTrx.close();
-			if (cachedTrxCreateNew != null)
-				cachedTrxCreateNew.close();
 		}
 	}
 
@@ -562,16 +556,15 @@ public class TrxTest extends AbstractTestCase {
 	
 	/**
 	 * Test cases for Trx.hasChangesMadeByEventListener() and Trx.setChangesMadeByEventListener(boolean)
-	 * @throws Exception
 	 */
 	@Test
-	public void testChangesMadeByEventListener() throws Exception {
+	public void testChangesMadeByEventListener() {
 		Trx trx = null;
 		try {
 		    trx = Trx.get(Trx.createTrxName("TestChangesMade"), true);
 	
-		    // Initially, m_changesMadeByEventListener should be false
-		    assertFalse(trx.hasChangesMadeByEventListener(), "Initially, no changes should be made by event listener");
+		    // Initially false
+		    assertFalse(trx.hasChangesMadeByEventListener(), "Initially, changesMadeByEventListener should be false");
 	
 		    // Set to true
 		    trx.setChangesMadeByEventListener(true);
@@ -580,19 +573,6 @@ public class TrxTest extends AbstractTestCase {
 		    // Set back to false
 		    trx.setChangesMadeByEventListener(false);
 		    assertFalse(trx.hasChangesMadeByEventListener(), "After setting false, hasChangesMadeByEventListener should return false");
-	
-		    // Integration with rollbackAndCloseOnTimeout
-		    // Spy trx to stub rollbackAndCloseOnTimeout
-		    Trx spyTrx = spy(trx);
-		    doReturn(true).when(spyTrx).rollbackAndCloseOnTimeout();
-	
-		    // Set changes, then call rollbackAndCloseOnTimeout
-		    spyTrx.setChangesMadeByEventListener(true);
-		    boolean result = spyTrx.rollbackAndCloseOnTimeout();
-		    assertTrue(result, "rollbackAndCloseOnTimeout should return true");
-	
-		    // Verify that changesMadeByEventListener flag remains true (rollbackAndCloseOnTimeout does not reset it)
-		    assertTrue(spyTrx.hasChangesMadeByEventListener(), "Changes flag should remain true after rollbackAndCloseOnTimeout");
 		} finally {
 	    	if (trx != null)
 	    		trx.close();

@@ -964,6 +964,8 @@ public class CacheTest extends AbstractTestCase {
 		assertFalse(testCache.containsValue(null));
 		testCache.put("TestNull", null);
 		assertFalse(testCache.containsValue(null)); // still false because null is an unknown value
+		
+		CacheMgt.get().unregister(testCache);
 	}
 
 	@Test
@@ -1049,6 +1051,10 @@ public class CacheTest extends AbstractTestCase {
 	    // maxSize fallback when getCacheMaxSize(name) < 0
 	    CCache<String, String> cache3 = new CCache<String, String>(tableName, name, initialCapacity, expireMinutes, false, 50);
 	    assertEquals(50, cache3.getMaxSize());
+	    
+	    CacheMgt.get().unregister(cache);
+	    CacheMgt.get().unregister(cache2);
+	    CacheMgt.get().unregister(cache3);
 	}
 	
 	/**
@@ -1070,6 +1076,8 @@ public class CacheTest extends AbstractTestCase {
 
 	    // Case 4: different value not present
 	    assertFalse(cache.containsValue("V2"), "Different value must return false");
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 	
 	/**
@@ -1097,6 +1105,8 @@ public class CacheTest extends AbstractTestCase {
 	    }
 	    assertEquals("V1", mapView.get("K1"));
 	    assertEquals("V2", mapView.get("K2"));
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 
 	/**
@@ -1134,6 +1144,8 @@ public class CacheTest extends AbstractTestCase {
 	    expireField.setInt(cache, 10);
 	    timeExpField.setLong(cache, now - 1);
 	    assertTrue(cache.isExpire(), "Should expire when m_timeExp is in the past");
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 	
 	/**
@@ -1154,6 +1166,8 @@ public class CacheTest extends AbstractTestCase {
 	    // Case 2: m_justReset = true
 	    justResetField.setBoolean(cache, true);
 	    assertTrue(cache.isReset(), "Should return true when m_justReset is true");
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 
 	/**
@@ -1192,6 +1206,8 @@ public class CacheTest extends AbstractTestCase {
 
 	    // 4. Size check (implicit cache.putAll delegation)
 	    assertEquals(3, cache.size());
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 
 	/**
@@ -1229,6 +1245,8 @@ public class CacheTest extends AbstractTestCase {
 
 	    // 4. Remove key that was in nullList before → already removed, now should delegate to cache
 	    assertNull(cache.remove("C"));
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 	
 	/**
@@ -1286,6 +1304,9 @@ public class CacheTest extends AbstractTestCase {
 	    stringCache.put("A", "alpha");
 	    // reset(int) with String-keyed cache delegates to full reset()
 	    assertEquals(1, stringCache.reset(1)); // delegates to reset(), clears all entries (only 1 present)
+	    
+	    CacheMgt.get().unregister(cache);
+	    CacheMgt.get().unregister(stringCache);
 	}
 	
 	/**
@@ -1338,6 +1359,9 @@ public class CacheTest extends AbstractTestCase {
 	    intCache.put(1, "one");
 	    intCache.put(2, "two");
 	    assertEquals(2, intCache.resetByStringKey("one")); // delegates to reset(), clears all 2 entries
+	    
+	    CacheMgt.get().unregister(cache);
+	    CacheMgt.get().unregister(intCache);
 	}
 
 	/**
@@ -1359,6 +1383,8 @@ public class CacheTest extends AbstractTestCase {
 	    // Call setUsed() → should set m_justReset to false
 	    cache.setUsed();
 	    assertFalse(cache.isReset());
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 	
 	/**
@@ -1384,6 +1410,8 @@ public class CacheTest extends AbstractTestCase {
 		Set<String> nullList = (Set<String>) nullListField.get(cache);
 	    nullList.add("k3");
 	    assertEquals(3, cache.sizeNoExpire());
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 
 	/**
@@ -1408,6 +1436,8 @@ public class CacheTest extends AbstractTestCase {
 	    assertTrue(str.contains("#2"), "Cache size should appear in string");
 	    assertTrue(str.contains("Hit="), "Hit counter should appear");
 	    assertTrue(str.contains("Miss="), "Miss counter should appear");
+	    
+	    CacheMgt.get().unregister(cache);
 	}
 
 }
