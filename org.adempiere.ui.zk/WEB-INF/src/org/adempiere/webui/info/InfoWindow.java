@@ -130,6 +130,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.Medias;
 import org.idempiere.ui.zk.media.WMediaOptions;
@@ -246,6 +247,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID) {
 		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, true);
@@ -257,10 +259,25 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param keyColumn
 	 * @param queryValue
 	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param sqlFilter
+	 */
+	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
+			boolean multipleSelection, int AD_InfoWindow_ID, SQLFragment sqlFilter) {
+		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, AD_InfoWindow_ID, true, sqlFilter);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup) {
 		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, lookup, null);		
@@ -272,16 +289,67 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param keyColumn
 	 * @param queryValue
 	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param sqlFilter
+	 */
+	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
+			boolean multipleSelection, int AD_InfoWindow_ID, boolean lookup, SQLFragment sqlFilter) {
+		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, AD_InfoWindow_ID, lookup, null, sqlFilter);		
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 * @param field
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
 			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field) {
 		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, whereClause, AD_InfoWindow_ID, lookup, field, null);		
 	}
 
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param field
+	 * @param sqlFilter 
+	 */
+	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
+			boolean multipleSelection, int AD_InfoWindow_ID, boolean lookup, GridField field, SQLFragment sqlFilter) {
+		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, AD_InfoWindow_ID, lookup, field, null, sqlFilter);		
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param whereClause
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param field
+	 * @param predefinedContextVariables
+	 */
+	@Deprecated (since="13", forRemoval=true)
+	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
+			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
+		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, AD_InfoWindow_ID, lookup, field, predefinedContextVariables, 
+			(!Util.isEmpty(whereClause, true) ? new SQLFragment(whereClause) : null));
+	}
+	
 	/**
 	 * @param WindowNo
 	 * @param tableName
@@ -295,9 +363,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param predefinedContextVariables
 	 */
 	public InfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, 
-			boolean multipleSelection, String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
-		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
-				lookup, AD_InfoWindow_ID, queryValue);		
+			boolean multipleSelection, int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables, SQLFragment sqlFilter) {
+		super(WindowNo, tableName, keyColumn, multipleSelection, lookup, AD_InfoWindow_ID, queryValue, sqlFilter);		
 		this.m_gridfield = field;
 		this.autoCollapsedParameterPanel = ClientInfo.isMobile()
 				? MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_MOBILE_AUTO_COLLAPSED_PARAMETER_PANEL, true, Env.getAD_Client_ID(Env.getCtx()))
@@ -845,6 +912,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * load info window definition
 	 * @return true if loaded ok
 	 */
+	@SuppressWarnings("removal")
 	protected boolean loadInfoDefinition() {
 		if (infoWindow != null) {
 			String tableName = null;
@@ -853,8 +921,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			tableInfos = infoWindow.getTableInfos();
 			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0) {
 				p_tableName = tableInfos[0].getSynonym().trim();
-				if (p_whereClause != null && p_whereClause.trim().length() > 0) {
-					p_whereClause = p_whereClause.replace(tableName+".", p_tableName+".");
+				if (p_sqlFilter != null && p_sqlFilter.sqlClause().trim().length() > 0) {
+					String filter = p_sqlFilter.sqlClause().replace(tableName+".", p_tableName+".");
+					p_sqlFilter = new SQLFragment(filter, p_sqlFilter.parameters());
+					p_whereClause = p_sqlFilter.toSQLWithParameters();
 				}					
 			}
 			
@@ -964,10 +1034,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				infoWindowListItemRenderer.addTableValueChangeListener(contentPanel); // Replicated from WListbox constructor
 			}					
 			
-			StringBuilder builder = new StringBuilder(p_whereClause != null ? p_whereClause.trim() : "");
+			StringBuilder builder = new StringBuilder(p_sqlFilter != null && p_sqlFilter.sqlClause() != null ? p_sqlFilter.sqlClause().trim() : "");
 			String infoWhereClause = infoWindow.getWhereClause();
+			List<Object> infoWhereClauseParams = new ArrayList<>();
 			if (infoWhereClause != null && infoWhereClause.indexOf("@") >= 0) {
-				infoWhereClause = Env.parseContext(Env.getCtx(), p_WindowNo, infoWhereClause, true, false);
+				infoWhereClause = Env.parseContextForSql(Env.getCtx(), p_WindowNo, infoWhereClause, true, false, infoWhereClauseParams);
 				if (infoWhereClause.length() == 0)
 					log.log(Level.SEVERE, "Cannot parse context= " + infoWindow.getWhereClause());
 			}
@@ -978,7 +1049,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				builder.append("(");
 				builder.append(infoWhereClause);
 				builder.append(")");
-				p_whereClause = builder.toString();
+				List<Object> params = new ArrayList<>();
+				if (p_sqlFilter != null)
+					params.addAll(p_sqlFilter.parameters());
+				params.addAll(infoWhereClauseParams);
+				p_sqlFilter = new SQLFragment(builder.toString(), params);
+				p_whereClause = p_sqlFilter.toSQLWithParameters();
 			}
 			
 			return true;
@@ -1165,7 +1241,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if(infoWindowListItemRenderer != null)
 			infoWindowListItemRenderer.setGridDisplaydInfoColumns(gridDisplayedInfoColumns,columnInfos);
 		
-		prepareTable(columnInfos, infoWindow.getFromClause(), p_whereClause, infoWindow.getOrderByClause());		
+		prepareTable(columnInfos, infoWindow.getFromClause(), infoWindow.getOrderByClause(), p_sqlFilter);		
 	}
 
 	/**
@@ -1260,20 +1336,25 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	@Override
 	protected String getSQLWhere() {
+		return getSQLFilter().toSQLWithParameters();
+	}
+
+	@SuppressWarnings("removal")
+	protected SQLFragment getSQLFilter() {
 		/**
 		 * when query not by click re-query button, reuse previous where clause
 		 * IDEMPIERE-1979  
 		 */
-		if (!isQueryByUser && prevWhereClause != null){
-			return prevWhereClause;
+		if (!isQueryByUser && prevWhereClause != null && prevSQLFilter != null) {
+			return prevSQLFilter;
 		}
-		
+				
 		StringBuilder builder = new StringBuilder();
 		MTable table = MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID());
 		MReference ref = m_gridfield != null && m_gridfield.getAD_Reference_Value_ID() > 0 ? MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID()) : null;
 		boolean onlyActive = ref == null || !ref.isShowInactiveRecords();
 		if (!hasIsActiveEditor() && table.get_ColumnIndex("IsActive") >= 0 && onlyActive) {
-			if (p_whereClause != null && p_whereClause.trim().length() > 0) {
+			if (p_sqlFilter != null && p_sqlFilter.sqlClause().trim().length() > 0) {
 				builder.append(" AND ");
 			}
 			String qualifiedTable = tableInfos[0].getSynonym();
@@ -1300,7 +1381,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						if (builder.length() > 0) {
 							builder.append(" AND ");
 							if (!checkAND.isChecked()) builder.append(" ( ");
-						} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
+						} else if (p_sqlFilter != null && p_sqlFilter.sqlClause().trim().length() > 0) {
 							builder.append(" AND ");
 							if (!checkAND.isChecked()) builder.append(" ( ");
 						}	
@@ -1326,7 +1407,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (builder.length() > 0) {
 						builder.append(" AND ");
 						if (!checkAND.isChecked()) builder.append(" ( ");
-					} else if (p_whereClause != null && p_whereClause.trim().length() > 0) {
+					} else if (p_sqlFilter != null && p_sqlFilter.sqlClause().trim().length() > 0) {
 						builder.append(" AND ");
 						if (!checkAND.isChecked()) builder.append(" ( ");
 					} else if (hasIsActiveEditor() && !checkAND.isChecked()) {
@@ -1344,26 +1425,36 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						column = column.substring(column.indexOf(".")+1);
 					int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=? AND AD_Reference_ID=?", column.toUpperCase(), DisplayType.ChosenMultipleSelectionList);
 					if (cnt > 0)
-						builder.append(DB.intersectClauseForCSV(columnName, pString));
+					{
+						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString);
+						builder.append(filter.toSQLWithParameters());
+					}
 					else
-						builder.append(DB.inClauseForCSV(columnName, pString));
+					{
+						SQLFragment filter = DB.inFilterForCSV(columnName, pString);
+						builder.append(filter.toSQLWithParameters());
+					}
 				} 
 				else if (InfoColumnVO.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionTable || InfoColumnVO.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionSearch)
 				{
 					String pString = editor.getValue().toString();
 					if (columnName.endsWith("_ID"))
 					{						
-						builder.append(DB.inClauseForCSV(columnName, pString));
+						SQLFragment filter = DB.inFilterForCSV(columnName, pString);
+						builder.append(filter.toSQLWithParameters());
 					}
 					else
 					{
-						builder.append(DB.intersectClauseForCSV(columnName, pString));
+						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString);
+						builder.append(filter.toSQLWithParameters());
 					}
 				}
 				else
 				{
 					String columnClause = null;
 					if (InfoColumnVO.getQueryFunction() != null && InfoColumnVO.getQueryFunction().trim().length() > 0) {
+						//can't use parseContextForSql here since context variable can resolve to function name with ? as place holder
+						//for column name
 						String function = InfoColumnVO.getQueryFunction();
 						if (function.indexOf("@") >= 0) {
 							String s = Env.parseContext(infoContext, p_WindowNo, function, true, false);
@@ -1424,14 +1515,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			builder.append(" ) ");
 		}
 		String sql = builder.toString();
+		List<Object> parameters = new ArrayList<Object>();
 		if (sql.indexOf("@") >= 0) {
-			sql = Env.parseContext(infoContext, p_WindowNo, sql, true, true);
+			sql = Env.parseContextForSql(infoContext, p_WindowNo, sql, true, true, parameters);
 		}
 		
+		SQLFragment filter = new SQLFragment(sql, parameters);
 		// IDEMPIERE-1979
-		prevWhereClause = sql;
-		
-		return sql;
+		prevSQLFilter = filter;
+		prevWhereClause = prevSQLFilter.toSQLWithParameters(); //for backward compatibility
+
+		return filter;
 	}
 
 	/**
@@ -1508,7 +1602,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// when query not by click requery button, reuse parameter value
 		if (!isQueryByUser && prevParameterValues != null){
 			for (int parameterIndex = 0; parameterIndex < prevParameterValues.size(); parameterIndex++){
-				setParameter (pstmt, parameterIndex + 1, prevParameterValues.get(parameterIndex), prevQueryOperators.get(parameterIndex));
+				if (prevQueryOperators.get(parameterIndex) == null && prevRefParmeterEditor.get(parameterIndex) == null)
+					pstmt.setObject (parameterIndex + 1, prevParameterValues.get(parameterIndex));
+				else
+					setParameter (pstmt, parameterIndex + 1, prevParameterValues.get(parameterIndex), prevQueryOperators.get(parameterIndex));
 			}
 			return;
 		}
@@ -1525,6 +1622,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 
 		int parameterIndex = 0;
+		for (Object p : m_sqlFragmentMain.parameters()) {
+			parameterIndex++;
+			prevParameterValues.add(p);
+			prevQueryOperators.add(null);
+			prevRefParmeterEditor.add(null);
+			pstmt.setObject(parameterIndex, p);
+		}
+		
 		int idx = 0;
 		for(WEditor editor : editors) {
 			InfoColumnVO infoColumnVO = findInfoColumnParameter(editor.getGridField());
@@ -1611,10 +1716,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	};
 	
+	@SuppressWarnings("removal")
 	@Override
-	protected void prepareTable(ColumnInfo[] layout, String from, String where,
-			String orderBy) {
-		super.prepareTable(layout, from, where, orderBy);
+	protected void prepareTable(ColumnInfo[] layout, String from, String orderBy, SQLFragment sqlFilter) {
+		super.prepareTable(layout, from, orderBy, sqlFilter);
 
 		ListitemRenderer<?> renderer = contentPanel.getItemRenderer();
 		if (renderer instanceof WListItemRenderer lir) {
@@ -1651,18 +1756,29 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		addViewIDToQuery(from);
 		addKeyViewToQuery(from);
 
-		if (m_sqlMain.indexOf("@") >= 0) {
-			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlMain, true);
+		if (m_sqlFragmentMain.sqlClause().indexOf("@") >= 0) {
+			List<Object> params = new ArrayList<Object>();
+			String sql = Env.parseContextForSql(infoContext, p_WindowNo, m_sqlFragmentMain.sqlClause(), true, params);
 			if (sql == null || sql.length() == 0) {
-				log.severe("Failed to parsed sql. sql=" + m_sqlMain);
+				log.severe("Failed to parsed sql. sql=" + m_sqlFragmentMain.sqlClause());
 			} else {
-				m_sqlMain = sql;
+				if (m_sqlFragmentMain.parameters().size() > 0) {
+					if (params.size() > 0) {
+						params = Env.mergeParameters(m_sqlFragmentMain.sqlClause(), sql, m_sqlFragmentMain.parameters().toArray(), params.toArray());
+					} else {
+						params.addAll(m_sqlFragmentMain.parameters());
+					}
+				}
+				m_sqlFragmentMain = new SQLFragment(sql, params);
+				m_sqlMain = m_sqlFragmentMain.toSQLWithParameters();
 			}
 		}
 
-		if (m_sqlMain.length() > 0 &&  infoWindow.isDistinct()) {
-			m_sqlMain = m_sqlMain.substring("SELECT ".length());
-			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;			
+		if (m_sqlFragmentMain != null && m_sqlFragmentMain.sqlClause().length() > 0 &&  infoWindow.isDistinct()) {
+			String sql = m_sqlFragmentMain.sqlClause().substring("SELECT ".length());
+			sql = "SELECT DISTINCT " + sql;
+			m_sqlFragmentMain = new SQLFragment(sql, m_sqlFragmentMain.parameters());
+			m_sqlMain = m_sqlFragmentMain.toSQLWithParameters();
 		}	
 		
 		if (m_sqlOrder != null && m_sqlOrder.indexOf("@") >= 0) {
@@ -1679,17 +1795,29 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * Add all ViewID in each MInfoProcess to query.<br/>
 	 * @param from
 	 */
+	@SuppressWarnings("removal")
 	protected void addViewIDToQuery (String from) {
-		m_sqlMain = addMoreColumnToQuery (m_sqlMain, infoProcessList, from);
+		if (m_sqlFragmentMain != null && m_sqlFragmentMain.sqlClause().length() > 0) {
+			String sql = addMoreColumnToQuery (m_sqlFragmentMain.sqlClause(), infoProcessList, from);
+			if (!Util.isEmpty(sql, true)) {
+				m_sqlFragmentMain = new SQLFragment(sql, m_sqlFragmentMain.parameters());
+				m_sqlMain = m_sqlFragmentMain.toSQLWithParameters();
+			}
+		}
 	}
 	
 	/**
 	 * If {@link #keyColumnOfView} not null and not display, add {@link #keyColumnOfView} to query
 	 * @param from
 	 */
+	@SuppressWarnings("removal")
 	protected void addKeyViewToQuery (String from) {
-		if (isNeedAppendKeyViewData()){
-			m_sqlMain = addMoreColumnToQuery (m_sqlMain, new IInfoColumn [] {keyColumnOfView}, from);
+		if (m_sqlFragmentMain != null && m_sqlFragmentMain.sqlClause().length() > 0 && isNeedAppendKeyViewData()){
+			String sql = addMoreColumnToQuery (m_sqlFragmentMain.sqlClause(), new IInfoColumn [] {keyColumnOfView}, from);
+			if (!Util.isEmpty(sql, true)) {
+				m_sqlFragmentMain = new SQLFragment(sql, m_sqlFragmentMain.parameters());
+				m_sqlMain = m_sqlFragmentMain.toSQLWithParameters();
+			}
 		}
 	}
 	
@@ -1704,20 +1832,20 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * or as parentLink of infoRelateWindow. This function is use to append the hidden column to main query.
 	 * <p/>
 	 * Append info window column to query.
-	 * @param sqlMain main SQL to append column
+	 * @param sqlClause main SQL to append column
 	 * @param listInfoColumn list of info column to add to query
 	 * @param from original from, used to look where to add the additional column
 	 * @return SQL after append column
 	 */
-	protected String addMoreColumnToQuery (String sqlMain, IInfoColumn [] listInfoColumn, String from) {
-		if (sqlMain == null || sqlMain.length() == 0 || listInfoColumn == null || listInfoColumn.length == 0){
-			return sqlMain;
+	protected String addMoreColumnToQuery (String sqlClause, IInfoColumn [] listInfoColumn, String from) {
+		if (sqlClause == null || sqlClause.length() == 0 || listInfoColumn == null || listInfoColumn.length == 0){
+			return sqlClause;
 		}
 				
-		int fromIndex = sqlMain.indexOf("FROM " + from);
+		int fromIndex = sqlClause.indexOf("FROM " + from);
 		// split Select and from clause
-		String selectClause = sqlMain.substring(0, fromIndex);
-		String fromClause = sqlMain.substring(fromIndex);
+		String selectClause = sqlClause.substring(0, fromIndex);
+		String fromClause = sqlClause.substring(fromIndex);
 		
 		// get alias of main table
 		StringBuilder sqlBuilder = new StringBuilder(selectClause);
@@ -2300,11 +2428,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     }   //  saveSelectionDetail
     
     @Override
+    @Deprecated (since="13", forRemoval=true)
     protected String buildDataSQL(int start, int end) {
+    	return buildDataSQLFragment(start, end).toSQLWithParameters();
+    }
+    
+    @Override
+    protected SQLFragment buildDataSQLFragment(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
 		String orderClause = getUserOrderClause();
-        StringBuilder sql = new StringBuilder (m_sqlMain);
+        StringBuilder sql = new StringBuilder (m_sqlFragmentMain.sqlClause());
         
         // add dynamic WHERE clause
         if (dynWhere.length() > 0)
@@ -2341,7 +2475,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         {
         	dataSql = DB.getDatabase().addPagingSQL(dataSql, getCacheStart(), getCacheEnd());
         }
-		return dataSql;
+		return new SQLFragment(dataSql, m_sqlFragmentMain.parameters());
 	}
 
     /**
@@ -2679,7 +2813,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		long start = System.currentTimeMillis();
 		String dynWhere = getSQLWhere();
-		StringBuilder sql = new StringBuilder (m_sqlMain);
+		StringBuilder sql = new StringBuilder (m_sqlFragmentMain.sqlClause());
 
 		if (dynWhere.length() > 0)
 			sql.append(dynWhere);   //  includes first AND
@@ -3445,9 +3579,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		public void doExport() throws Exception
 		{
 			int originalCount = m_count;
-			
-			String dataSql = buildDataSQL(0, 0);
-			
+
+			SQLFragment dataSql = buildDataSQLFragment(0, 0);
+
 			File file = File.createTempFile(infoWindow.get_Translation("Name")+"_", ".xlsx");
 			
 			testCount();
@@ -3465,7 +3599,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					String trxName = Trx.createTrxName("InfoPanelLoad:");
 					trx  = Trx.get(trxName, true);
 					trx.setDisplayName(getClass().getName()+"_exportXlsx");
-					pstmt = DB.prepareStatement(dataSql, trxName);
+					pstmt = DB.prepareStatement(dataSql.sqlClause(), trxName);
 					setParameters (pstmt, false);	//	no count
 
 					pstmt.setFetchSize(100);
@@ -3475,7 +3609,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				catch(SQLException e)
 				{
-					log.log(Level.SEVERE, dataSql, e);
+					log.log(Level.SEVERE, dataSql.sqlClause(), e);
 				}
 				finally
 				{

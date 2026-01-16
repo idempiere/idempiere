@@ -32,11 +32,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
@@ -960,6 +964,8 @@ public class CacheTest extends AbstractTestCase {
 		assertFalse(testCache.containsValue(null));
 		testCache.put("TestNull", null);
 		assertFalse(testCache.containsValue(null)); // still false because null is an unknown value
+		
+		CacheMgt.get().unregister(testCache);
 	}
 
 	@Test
@@ -1003,4 +1009,435 @@ public class CacheTest extends AbstractTestCase {
 			po.saveEx();
 		}
 	}
+	
+	/**
+	 * Test cases for constructor
+	 * @throws Exception
+	 */
+	@Test
+	public void testConstructor() throws Exception {
+		String tableName = "TestTable";
+	    String name = "TestCache";
+	    int initialCapacity = 10;
+	    int expireMinutes = 5;
+	    boolean distributed = true;
+	    int maxSize = 100;
+
+	    // Create cache with distributed = true
+	    CCache<String, String> cache = new CCache<String, String>(tableName, name, initialCapacity, expireMinutes, distributed, maxSize);
+
+	    // Accessible fields
+	    assertEquals(name, cache.getName());
+	    assertEquals(tableName, cache.getTableName());
+	    assertEquals(expireMinutes, cache.getExpireMinutes());
+	    assertEquals(distributed, cache.isDistributed());
+	    assertEquals(maxSize, cache.getMaxSize());
+
+	    // Protected fields: use reflection
+	    Field fCache = CCache.class.getDeclaredField("cache");
+	    fCache.setAccessible(true);
+	    assertNotNull(fCache.get(cache), "cache should be initialized");
+
+	    Field fNullList = CCache.class.getDeclaredField("nullList");
+	    fNullList.setAccessible(true);
+	    assertNotNull(fNullList.get(cache), "nullList should always be initialized");
+
+	    // Non-distributed = false
+	    CCache<String, String> cache2 = new CCache<String, String>(tableName, name, initialCapacity, expireMinutes, false, maxSize);
+	    assertFalse(cache2.isDistributed());
+	    fNullList.setAccessible(true);
+	    assertNotNull(fNullList.get(cache2), "nullList should be initialized even if not distributed");
+
+	    // maxSize fallback when getCacheMaxSize(name) < 0
+	    CCache<String, String> cache3 = new CCache<String, String>(tableName, name, initialCapacity, expireMinutes, false, 50);
+	    assertEquals(50, cache3.getMaxSize());
+	    
+	    CacheMgt.get().unregister(cache);
+	    CacheMgt.get().unregister(cache2);
+	    CacheMgt.get().unregister(cache3);
+	}
+	
+	/**
+	 * Test cases for CCache.containsValue(Object)
+	 */
+	@Test
+	public void testContainsValue() {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestCache", 10, 0, false, 100);
+
+	    // Case 1: null value
+	    assertFalse(cache.containsValue(null), "Null value must return false");
+
+	    // Case 2: non-null value, cache empty
+	    assertFalse(cache.containsValue("V1"), "Value not in cache must return false");
+
+	    // Case 3: non-null value exists in cache
+	    cache.put("K1", "V1");
+	    assertTrue(cache.containsValue("V1"), "Existing value must return true");
+
+	    // Case 4: different value not present
+	    assertFalse(cache.containsValue("V2"), "Different value must return false");
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+	
+	/**
+	 * Test cases for CCache.entrySet()
+	 */
+	@Test
+	public void testEntrySet() {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestCacheEntrySet", 10, 0, false, 100);
+
+	    // Case 1: empty cache
+	    Set<Map.Entry<String, String>> emptySet = cache.entrySet();
+	    assertNotNull(emptySet, "entrySet must not return null");
+	    assertTrue(emptySet.isEmpty(), "entrySet must be empty for empty cache");
+
+	    // Case 2: cache with entries
+	    cache.put("K1", "V1");
+	    cache.put("K2", "V2");
+	    Set<Map.Entry<String, String>> entrySet = cache.entrySet();
+	    assertEquals(2, entrySet.size(), "entrySet size must match cache size");
+
+	    // Case 3: verify actual content
+	    Map<String, String> mapView = new HashMap<>();
+	    for (Map.Entry<String, String> entry : entrySet) {
+	        mapView.put(entry.getKey(), entry.getValue());
+	    }
+	    assertEquals("V1", mapView.get("K1"));
+	    assertEquals("V2", mapView.get("K2"));
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+
+	/**
+	 * Test cases for CCache.isExpire()
+	 * @throws Exception
+	 */
+	@Test
+	public void testIsExpire() throws Exception {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestCacheExpire", 10, 0, false, 100);
+
+	    Field expireField = CCache.class.getDeclaredField("m_expire");
+	    expireField.setAccessible(true);
+
+	    Field timeExpField = CCache.class.getDeclaredField("m_timeExp");
+	    timeExpField.setAccessible(true);
+
+	    long now = System.currentTimeMillis();
+
+	    // Case 1: m_expire <= 0  → false
+	    expireField.setInt(cache, 0);
+	    timeExpField.setLong(cache, now - 1000);
+	    assertFalse(cache.isExpire(), "Should not expire when m_expire <= 0");
+
+	    // Case 2: m_expire > 0, m_timeExp <= 0 → false
+	    expireField.setInt(cache, 10);
+	    timeExpField.setLong(cache, 0);
+	    assertFalse(cache.isExpire(), "Should not expire when m_timeExp <= 0");
+
+	    // Case 3: m_expire > 0, m_timeExp > now → false
+	    expireField.setInt(cache, 10);
+	    timeExpField.setLong(cache, now + 60_000);
+	    assertFalse(cache.isExpire(), "Should not expire when expiration time is in the future");
+
+	    // Case 4: m_expire > 0, m_timeExp < now → true
+	    expireField.setInt(cache, 10);
+	    timeExpField.setLong(cache, now - 1);
+	    assertTrue(cache.isExpire(), "Should expire when m_timeExp is in the past");
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+	
+	/**
+	 * Test cases for CCache.isReset()
+	 * @throws Exception
+	 */
+	@Test
+	public void testIsReset() throws Exception {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestCacheReset", 10, 0, false, 100);
+
+	    Field justResetField = CCache.class.getDeclaredField("m_justReset");
+	    justResetField.setAccessible(true);
+
+	    // Case 1: m_justReset = false
+	    justResetField.setBoolean(cache, false);
+	    assertFalse(cache.isReset(), "Should return false when m_justReset is false");
+
+	    // Case 2: m_justReset = true
+	    justResetField.setBoolean(cache, true);
+	    assertTrue(cache.isReset(), "Should return true when m_justReset is true");
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+
+	/**
+	 * Test cases for CCache.putAll(Map)
+	 * @throws Exception
+	 */
+	@Test
+	public void testPutAll() throws Exception {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestCachePutAll", 10, 0, false, 100);
+
+	    // Access protected/internal fields
+	    Field justResetField = CCache.class.getDeclaredField("m_justReset");
+	    justResetField.setAccessible(true);
+
+	    // Simulate cache was just reset
+	    justResetField.setBoolean(cache, true);
+
+	    // Pre-existing entry
+	    cache.put("A", "1");
+
+	    // Map to putAll
+	    Map<String, String> values = new HashMap<>();
+	    values.put("B", "2");
+	    values.put("C", "3");
+	    cache.putAll(values);
+
+	    // 1. m_justReset must be cleared
+	    assertFalse(cache.isReset(), "putAll() must reset m_justReset to false");
+
+	    // 2. Existing entries remain
+	    assertEquals("1", cache.get("A"));
+
+	    // 3. New entries are added
+	    assertEquals("2", cache.get("B"));
+	    assertEquals("3", cache.get("C"));
+
+	    // 4. Size check (implicit cache.putAll delegation)
+	    assertEquals(3, cache.size());
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+
+	/**
+	 * Test cases for CCache.remove(Object)
+	 * @throws Exception
+	 */
+	@Test
+	public void testRemove() throws Exception {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestCacheRemove", 10, 0, false, 100);
+
+	    // Access protected nullList field
+	    Field nullListField = CCache.class.getDeclaredField("nullList");
+	    nullListField.setAccessible(true);
+
+	    // Add entries to cache
+	    cache.put("A", "1");
+	    cache.put("B", "2");
+
+	    // Add "C" to nullList
+	    @SuppressWarnings("unchecked")
+	    Set<String> nullList = (Set<String>) nullListField.get(cache);
+	    nullList.add("C");
+
+	    // 1. Remove key in nullList → returns null, removes from nullList
+	    assertTrue(nullList.contains("C"));
+	    assertNull(cache.remove("C"));
+	    assertFalse(nullList.contains("C"));
+
+	    // 2. Remove key in cache → returns value, removes from cache
+	    assertEquals("1", cache.remove("A"));
+	    assertNull(cache.get("A"));
+
+	    // 3. Remove non-existing key → returns null
+	    assertNull(cache.remove("Z"));
+
+	    // 4. Remove key that was in nullList before → already removed, now should delegate to cache
+	    assertNull(cache.remove("C"));
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+	
+	/**
+	 * Test cases for CCache.reset(int)
+	 * @throws Exception
+	 */
+	@Test
+	public void testResetByRecordId() throws Exception {
+	    CCache<Integer, String> cache = new CCache<>("TestTable", "TestReset", 10, 0, false, 100);
+
+	    // Access protected nullList field
+	    Field nullListField = CCache.class.getDeclaredField("nullList");
+	    nullListField.setAccessible(true);
+	    @SuppressWarnings("unchecked")
+	    Set<Integer> nullList = (Set<Integer>) nullListField.get(cache);
+
+	    // Add entries to cache and nullList
+	    cache.put(1, "one");
+	    cache.put(2, "two");
+	    nullList.add(3);
+	    nullList.add(4);
+
+	    // Scenario 1: recordId <= 0 → delegates to reset()
+	    cache.put(100, "hundred"); // ensure cache is not empty
+	    assertEquals(5, cache.reset(0)); // expect all entries cleared, see note below
+
+	    // Restore entries
+	    cache.put(1, "one");
+	    cache.put(2, "two");
+	    nullList.add(3);
+	    nullList.add(4);
+
+	    // Scenario 2: recordId in nullList → returns 1, removed
+	    assertTrue(nullList.contains(3));
+	    assertEquals(1, cache.reset(3));
+	    assertFalse(nullList.contains(3));
+
+	    // Scenario 3: recordId in cache → returns 1, removed
+	    assertTrue(cache.containsValue("one"));
+	    assertEquals(1, cache.reset(1));
+	    assertFalse(cache.containsValue("one"));
+
+	    // Scenario 4: recordId not in cache or nullList → returns 0
+	    assertEquals(0, cache.reset(999));
+
+	    // Scenario 5: cache empty, nullList empty → returns 0
+	    cache.reset(2); // remove 2 from cache
+	    cache.reset(4); // remove 4 from nullList
+	    assertTrue(cache.isEmpty());
+	    assertTrue(nullList.isEmpty());
+	    assertEquals(0, cache.reset(1));
+
+	    // Scenario 6: firstKey not an Integer → delegates to reset()
+	    CCache<String, String> stringCache = new CCache<>("TestTable", "TestResetString", 10, 0, false, 100);
+	    stringCache.put("A", "alpha");
+	    // reset(int) with String-keyed cache delegates to full reset()
+	    assertEquals(1, stringCache.reset(1)); // delegates to reset(), clears all entries (only 1 present)
+	    
+	    CacheMgt.get().unregister(cache);
+	    CacheMgt.get().unregister(stringCache);
+	}
+	
+	/**
+	 * Test cases for CCache.resetByStringKey(String)
+	 * @throws Exception
+	 */
+	@Test
+	public void testResetByStringKey() throws Exception {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestResetStringKey", 10, 0, false, 100);
+
+	    // Access protected fields
+	    Field nullListField = CCache.class.getDeclaredField("nullList");
+	    nullListField.setAccessible(true);
+	    @SuppressWarnings("unchecked")
+	    Set<String> nullList = (Set<String>) nullListField.get(cache);
+
+	    // Fill cache and nullList
+	    cache.put("A", "alpha");
+	    cache.put("B", "beta");
+	    nullList.add("C");
+	    nullList.add("D");
+
+	    // Scenario 1: empty key → delegates to reset()
+	    cache.put("Z", "zeta");
+	    assertEquals(5, cache.resetByStringKey("")); // resets all (delegates)
+	    cache.put("A", "alpha"); cache.put("B", "beta"); nullList.add("C"); nullList.add("D");
+
+	    // Scenario 2: key in nullList → returns 1, removed
+	    assertTrue(nullList.contains("C"));
+	    assertEquals(1, cache.resetByStringKey("C"));
+	    assertFalse(nullList.contains("C"));
+
+	    // Scenario 3: key in cache → returns 1, removed
+	    assertTrue(cache.containsValue("alpha"));
+	    assertEquals(1, cache.resetByStringKey("A"));
+	    assertFalse(cache.containsValue("alpha"));
+
+	    // Scenario 4: key not in cache or nullList → returns 0
+	    assertEquals(0, cache.resetByStringKey("NonExist"));
+
+	    // Scenario 5: cache empty, nullList empty → returns 0
+	    cache.resetByStringKey("B"); // remove B from cache
+	    cache.resetByStringKey("D"); // remove D from nullList
+	    assertTrue(cache.isEmpty());
+	    assertTrue(nullList.isEmpty());
+	    assertEquals(0, cache.resetByStringKey("AnyKey"));
+
+	    // Scenario 6: firstKey not a String → delegates to reset()
+	    CCache<Integer, String> intCache = new CCache<>("TestTable", "TestResetInt", 10, 0, false, 100);
+	    intCache.put(1, "one");
+	    intCache.put(2, "two");
+	    assertEquals(2, intCache.resetByStringKey("one")); // delegates to reset(), clears all 2 entries
+	    
+	    CacheMgt.get().unregister(cache);
+	    CacheMgt.get().unregister(intCache);
+	}
+
+	/**
+	 * Test cases for CCache.setUsed()
+	 * @throws Exception
+	 */
+	@Test
+	public void testSetUsed() throws Exception {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestSetUsed", 10, 0, false, 100);
+
+	    // Access protected field
+	    Field justResetField = CCache.class.getDeclaredField("m_justReset");
+	    justResetField.setAccessible(true);
+
+	    // Set it to true initially
+	    justResetField.setBoolean(cache, true);
+	    assertTrue(cache.isReset());
+
+	    // Call setUsed() → should set m_justReset to false
+	    cache.setUsed();
+	    assertFalse(cache.isReset());
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+	
+	/**
+	 * Test cases for CCache.sizeNoExpire()
+	 * @throws Exception
+	 */
+	@Test
+	public void testSizeNoExpire() throws Exception {
+	    CCache<String, String> cache = new CCache<>("TestTable", "TestSizeNoExpire", 10, 0, false, 100);
+	    
+	    // Initially empty → size should be 0
+	    assertEquals(0, cache.sizeNoExpire());
+
+	    // Add entries to cache via public API
+	    cache.put("k1", "v1");
+	    cache.put("k2", "v2");
+	    assertEquals(2, cache.sizeNoExpire());
+
+	    // For nullList, reflection is still needed to test that aspect
+	    Field nullListField = CCache.class.getDeclaredField("nullList");
+	    nullListField.setAccessible(true);
+	    @SuppressWarnings("unchecked")
+		Set<String> nullList = (Set<String>) nullListField.get(cache);
+	    nullList.add("k3");
+	    assertEquals(3, cache.sizeNoExpire());
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+
+	/**
+	 * Test cases for CCache.toString()
+	 */
+	@Test
+	public void testToString() {
+	    CCache<Integer, String> cache = new CCache<>("TestTable", "TestCache", 10, 60, false, 100);
+
+	    // Use putAll to populate cache (m_justReset is handled inside)
+	    Map<Integer, String> data = Map.of(1, "One", 2, "Two");
+	    cache.putAll(data);
+
+	    // Access cache to generate some hit/miss statistics
+	    cache.get(1); // generates a hit
+	    cache.get(999); // generates a miss
+
+	    String str = cache.toString();
+	    assertNotNull(str, "toString should not return null");
+	    assertTrue(str.contains("TestCache"), "Name should appear in string");
+	    assertTrue(str.contains("Exp=60"), "Expire minutes should appear in string");
+	    assertTrue(str.contains("#2"), "Cache size should appear in string");
+	    assertTrue(str.contains("Hit="), "Hit counter should appear");
+	    assertTrue(str.contains("Miss="), "Miss counter should appear");
+	    
+	    CacheMgt.get().unregister(cache);
+	}
+
 }

@@ -55,6 +55,7 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.LoginDetails;
@@ -1049,6 +1050,7 @@ public class DBTest extends AbstractTestCase
 	/**
 	 * Test DB.inClauseForCSV with ID columns (numeric)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_IDColumns() {
 		// Single ID
@@ -1072,9 +1074,33 @@ public class DBTest extends AbstractTestCase
 				"Large list of IDs should work correctly");
 	}
 	
+	@Test
+	public void testInFilterForCSV_IDColumns() {
+		// Single ID
+		SQLFragment result = DB.inFilterForCSV("AD_Client_ID", "11");
+		assertEquals(new SQLFragment("AD_Client_ID IN (?)", List.of(11)), result, 
+				"Single ID should create simple IN clause");
+		
+		// Multiple IDs
+		result = DB.inFilterForCSV("AD_Client_ID", "11,0,1000");
+		assertEquals(new SQLFragment("AD_Client_ID IN (?,?,?)", List.of(11, 0, 1000)), result, 
+				"Multiple IDs should be comma-separated without quotes");
+		
+		// ID with spaces after commas (spaces are preserved in split)
+		result = DB.inFilterForCSV("AD_Client_ID", "11, 0, 1000");
+		assertEquals(new SQLFragment("AD_Client_ID IN (?,?,?)", List.of(11, 0, 1000)), result, 
+				"Spaces after commas in CSV should be preserved for IDs");
+		
+		// Large list of IDs
+		result = DB.inFilterForCSV("M_Product_ID", "100,101,102,103,104,105");
+		assertEquals(new SQLFragment("M_Product_ID IN (?,?,?,?,?,?)", List.of(100, 101, 102, 103, 104, 105)), result, 
+				"Large list of IDs should work correctly");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV with string columns
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_StringColumns() {
 		// Single string value
@@ -1098,9 +1124,33 @@ public class DBTest extends AbstractTestCase
 				"Empty values should be converted to NULL by TO_STRING");
 	}
 	
+	@Test
+	public void testInFilterForCSV_StringColumns() {
+		// Single string value
+		SQLFragment result = DB.inFilterForCSV("Name", "Test");
+		assertEquals(new SQLFragment("Name IN (?)", List.of("Test")), result, 
+				"Single string should be quoted");
+		
+		// Multiple string values
+		result = DB.inFilterForCSV("Name", "Test1,Test2,Test3");
+		assertEquals(new SQLFragment("Name IN (?,?,?)", List.of("Test1", "Test2", "Test3")), result, 
+				"Multiple strings should be quoted and comma-separated");
+		
+		// String values containing spaces
+		result = DB.inFilterForCSV("Value", "Garden World,Joe Block,Standard");
+		assertEquals(new SQLFragment("Value IN (?,?,?)", List.of("Garden World", "Joe Block", "Standard")), result, 
+				"String values containing spaces should be properly quoted");
+		
+		// Empty string in CSV - converts empty strings to NULL
+		result = DB.inFilterForCSV("Status", "Active,,Inactive");
+		assertEquals(new SQLFragment("Status IN (?,NULL,?)", List.of("Active", "Inactive")), result, 
+				"Empty values should be converted to NULL by TO_STRING");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV with quoted strings in CSV
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_QuotedStrings() {
 		// Double-quoted strings should have quotes removed
@@ -1120,9 +1170,29 @@ public class DBTest extends AbstractTestCase
 				"Double-quoted strings should have quotes removed");
 	}
 	
+	@Test
+	public void testInFilterForCSV_QuotedStrings() {
+		// Double-quoted strings should have quotes removed
+		SQLFragment result = DB.inFilterForCSV("Name", "\"Test1\",\"Test2\"");
+		assertEquals(new SQLFragment("Name IN (?,?)", List.of("Test1", "Test2")), result, 
+				"Double quotes in CSV should be removed before adding SQL quotes");
+		
+		// Mix of quoted and unquoted
+		result = DB.inFilterForCSV("Value", "\"Garden World\",Standard,\"Joe Block\"");
+		assertEquals(new SQLFragment("Value IN (?,?,?)", List.of("Garden World", "Standard", "Joe Block")), result, 
+				"Mix of quoted and unquoted should work correctly");
+		
+		// String with comma inside quotes - NOTE: quotes don't protect from split
+		// The method splits by comma first, so "Test, with comma" becomes two values
+		result = DB.inFilterForCSV("Description", "\"Test\",\"with comma\"");
+		assertEquals(new SQLFragment("Description IN (?,?)", List.of("Test", "with comma")), result, 
+				"Double-quoted strings should have quotes removed");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV with NOT IN clause
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_NotInClause() {
 		// NOT IN with IDs
@@ -1146,9 +1216,33 @@ public class DBTest extends AbstractTestCase
 				"false parameter should create regular IN clause");
 	}
 	
+	@Test
+	public void testInFilterForCSV_NotInClause() {
+		// NOT IN with IDs
+		SQLFragment result = DB.inFilterForCSV("AD_Client_ID", "11,0", true);
+		assertEquals(new SQLFragment("AD_Client_ID NOT IN (?,?)", List.of(11, 0)), result, 
+				"NOT IN clause should include NOT keyword for IDs");
+		
+		// NOT IN with strings
+		result = DB.inFilterForCSV("Status", "Draft,Invalid", true);
+		assertEquals(new SQLFragment("Status NOT IN (?,?)", List.of("Draft", "Invalid")), result, 
+				"NOT IN clause should include NOT keyword for strings");
+		
+		// NOT IN with single value
+		result = DB.inFilterForCSV("DocStatus", "VO", true);
+		assertEquals(new SQLFragment("DocStatus NOT IN (?)", List.of("VO")), result, 
+				"NOT IN with single value should work");
+		
+		// Regular IN (false parameter)
+		result = DB.inFilterForCSV("AD_Org_ID", "100,200", false);
+		assertEquals(new SQLFragment("AD_Org_ID IN (?,?)", List.of(100, 200)), result, 
+				"false parameter should create regular IN clause");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV with convenience method (no isNotClause parameter)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_ConvenienceMethod() {
 		// Should default to regular IN clause (not NOT IN)
@@ -1161,9 +1255,22 @@ public class DBTest extends AbstractTestCase
 				"Convenience method with strings should work");
 	}
 	
+	@Test
+	public void testInFilterForCSV_ConvenienceMethod() {
+		// Should default to regular IN clause (not NOT IN)
+		SQLFragment result = DB.inFilterForCSV("AD_Table_ID", "100,200,300");
+		assertEquals(new SQLFragment("AD_Table_ID IN (?,?,?)", List.of(100, 200, 300)), result, 
+				"Convenience method should create regular IN clause");
+		
+		result = DB.inFilterForCSV("EntityType", "D,U");
+		assertEquals(new SQLFragment("EntityType IN (?,?)", List.of("D", "U")), result, 
+				"Convenience method with strings should work");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV with edge cases
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_EdgeCases() {
 		// Single value
@@ -1187,9 +1294,33 @@ public class DBTest extends AbstractTestCase
 				"Single quotes should be escaped by doubling them");
 	}
 	
+	@Test
+	public void testInFilterForCSV_EdgeCases() {
+		// Single value
+		SQLFragment result = DB.inFilterForCSV("AD_Client_ID", "11");
+		assertEquals(new SQLFragment("AD_Client_ID IN (?)", List.of(11)), result, 
+				"Single value should work");
+		
+		// Value with leading/trailing spaces in column name
+		result = DB.inFilterForCSV("AD_User_ID", "100");
+		assertEquals(new SQLFragment("AD_User_ID IN (?)", List.of(100)), result, 
+				"Column name should be used as-is");
+		
+		// Numeric strings for non-ID column
+		result = DB.inFilterForCSV("Code", "123,456");
+		assertEquals(new SQLFragment("Code IN (?,?)", List.of("123", "456")), result, 
+				"Numeric values for non-ID columns should be quoted");
+		
+		// Special characters in string values - single quotes are escaped by doubling
+		result = DB.inFilterForCSV("Value", "Test's,Another");
+		assertEquals(new SQLFragment("Value IN (?,?)", List.of("Test's", "Another")), result, 
+				"Single quotes should be escaped by doubling them");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV with different column name patterns
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_ColumnNamePatterns() {
 		// Columns ending with _ID
@@ -1216,9 +1347,36 @@ public class DBTest extends AbstractTestCase
 				"Column with _ID not at end should quote values");
 	}
 	
+	@Test
+	public void testInFilterForCSV_ColumnNamePatterns() {
+		// Columns ending with _ID
+		SQLFragment result = DB.inFilterForCSV("C_BPartner_ID", "100,200");
+		assertEquals(new SQLFragment("C_BPartner_ID IN (?,?)", List.of(100, 200)), result, 
+				"Column ending with _ID should not quote values");
+		
+		result = DB.inFilterForCSV("Record_ID", "1,2,3");
+		assertEquals(new SQLFragment("Record_ID IN (?,?,?)", List.of(1, 2, 3)), result, 
+				"Any column ending with _ID should treat values as numeric");
+		
+		// Columns NOT ending with _ID
+		result = DB.inFilterForCSV("Name", "100,200");
+		assertEquals(new SQLFragment("Name IN (?,?)", List.of("100", "200")), result, 
+				"Column not ending with _ID should quote values");
+		
+		result = DB.inFilterForCSV("Value", "Test");
+		assertEquals(new SQLFragment("Value IN (?)", List.of("Test")), result, 
+				"String column should quote values");
+		
+		// Column with ID in the middle (not at end)
+		result = DB.inFilterForCSV("ID_Column", "100");
+		assertEquals(new SQLFragment("ID_Column IN (?)", List.of("100")), result, 
+				"Column with _ID not at end should quote values");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV with real-world scenarios
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_RealWorldScenarios() {
 		// Client IDs
@@ -1252,9 +1410,43 @@ public class DBTest extends AbstractTestCase
 				"Table names should be quoted");
 	}
 	
+	@Test
+	public void testInFilterForCSV_RealWorldScenarios() {
+		// Client IDs
+		SQLFragment result = DB.inFilterForCSV("AD_Client_ID", "0,11");
+		assertEquals(new SQLFragment("AD_Client_ID IN (?,?)", List.of(0, 11)), result, 
+				"System and GardenWorld client IDs");
+		
+		// Document statuses
+		result = DB.inFilterForCSV("DocStatus", "CO,CL");
+		assertEquals(new SQLFragment("DocStatus IN (?,?)", List.of("CO", "CL")), result, 
+				"Completed and Closed document statuses");
+		
+		// Entity types
+		result = DB.inFilterForCSV("EntityType", "D,U");
+		assertEquals(new SQLFragment("EntityType IN (?,?)", List.of("D", "U")), result, 
+				"Dictionary and User entity types");
+		
+		// Product IDs
+		result = DB.inFilterForCSV("M_Product_ID", "123,124,125,126,127");
+		assertEquals(new SQLFragment("M_Product_ID IN (?,?,?,?,?)", List.of(123, 124, 125, 126, 127)), result, 
+				"Multiple product IDs");
+		
+		// NOT IN for excluding certain values
+		result = DB.inFilterForCSV("DocStatus", "VO,RE,IN", true);
+		assertEquals(new SQLFragment("DocStatus NOT IN (?,?,?)", List.of("VO", "RE", "IN")), result, 
+				"Exclude voided, reversed, and invalid statuses");
+		
+		// Table names with mixed case
+		result = DB.inFilterForCSV("TableName", "AD_Client,AD_Org,C_BPartner");
+		assertEquals(new SQLFragment("TableName IN (?,?,?)", List.of("AD_Client", "AD_Org", "C_BPartner")), result, 
+				"Table names should be quoted");
+	}
+	
 	/**
 	 * Test DB.inClauseForCSV verifying actual SQL usage
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testInClauseForCSV_ActualSQLUsage() {
 		// Build a WHERE clause using inClauseForCSV and execute it
@@ -1279,4 +1471,27 @@ public class DBTest extends AbstractTestCase
 		assertTrue(count >= 2, "NOT IN with non-existent ID should return all clients");
 	}
 	
+	@Test
+	public void testInFilterForCSV_ActualSQLUsage() {
+		// Build a WHERE clause using inClauseForCSV and execute it
+		SQLFragment inClause = DB.inFilterForCSV("AD_Client_ID", "0,11");
+		String sql = "SELECT COUNT(*) FROM AD_Client WHERE " + inClause.sqlClause();
+		
+		int count = DB.getSQLValue(null, sql, inClause.parameters());
+		assertTrue(count >= 2, "Should find at least System and GardenWorld clients");
+		
+		// Test with string column
+		inClause = DB.inFilterForCSV("EntityType", "D");
+		sql = "SELECT COUNT(*) FROM AD_Table WHERE " + inClause.sqlClause();
+
+		count = DB.getSQLValue(null, sql, inClause.parameters());
+		assertTrue(count > 0, "Should find Dictionary tables");
+		
+		// Test NOT IN clause
+		inClause = DB.inFilterForCSV("AD_Client_ID", "999999", true);
+		sql = "SELECT COUNT(*) FROM AD_Client WHERE " + inClause.sqlClause();
+		
+		count = DB.getSQLValue(null, sql, inClause.parameters());
+		assertTrue(count >= 2, "NOT IN with non-existent ID should return all clients");
+	}
 }

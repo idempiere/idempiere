@@ -45,10 +45,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  *
  */
+@Isolated
 public class PrintWithinProcess extends AbstractTestCase {
 
 	/**

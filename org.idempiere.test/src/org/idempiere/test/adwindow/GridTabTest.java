@@ -120,9 +120,11 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -131,6 +133,7 @@ import org.mockito.Mockito;
  * @author hengsin
  *
  */
+@Isolated
 public class GridTabTest extends AbstractTestCase {
 
 	private static final int FIELD_ORDERLINE_SHIPPER = 1135;
@@ -1292,9 +1295,9 @@ public class GridTabTest extends AbstractTestCase {
         GridTab contactsTab = window.getTab(1);  // Child Tab (Contact)
         
         // Setup: Ensure we have at least 2 records in the parent tab to switch between.
-        String whereClause = "Value IN ('C&W', 'SeedFarm')";
+        String whereClause = "Value IN (?, ?)";
         MQuery query = new MQuery(MBPartner.Table_Name);
-        query.addRestriction(whereClause);
+        query.addRestriction(new SQLFragment(whereClause, List.of("C&W", "SeedFarm")));
         bpTab.setQuery(query);
         bpTab.query(false);
         

@@ -778,7 +778,7 @@ public class MUserTest extends AbstractTestCase {
 	        assertFalse(user.hasURLFormAccess(fakeURL), "Non-existing form URL should return false");
 
 	        // Case 3: URL matches a form and at least one role has access
-	        MForm form = new MForm(Env.getCtx(), SystemIDs.FORM_ACCOUNT_INFO, getTrxName());	
+	        MForm form = new MForm(Env.getCtx(), SystemIDs.FORM_ARCHIVEVIEWER, getTrxName());	
 	        assertTrue(user.hasURLFormAccess(form.getClassname()), "User should have access if at least one role grants access");
 		} finally {
 			rollback();

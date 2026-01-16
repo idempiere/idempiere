@@ -515,7 +515,7 @@ public final class AEnv
 			}
 		}
 		else
-			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+			log.warning("No Table found for " + data.getQuery().getSQLFilter(true));
     }
     
     /**
