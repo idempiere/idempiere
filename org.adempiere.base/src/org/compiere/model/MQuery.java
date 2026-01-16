@@ -2110,10 +2110,7 @@ class Restriction  implements Serializable
 			}
 		} else
 			sb.append(virtualColumn ? ColumnName : DB.getDatabase().quoteColumnName(ColumnName));
-		if (MQuery.ILIKE.equals(Operator))
-			sb.append(MQuery.LIKE);
-		else
-			sb.append(Operator);
+		sb.append(Operator);
 		if (!(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))) {
 			boolean useUpper = (Code instanceof String) && ColumnName.toUpperCase().startsWith("UPPER(");
 			if (useUpper)
