@@ -41,6 +41,7 @@ import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
+import org.adempiere.webui.session.SessionFingerprint;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
@@ -313,9 +314,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
-        
+
+        String sessionId;
+        if (MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_JSESSIONID, false))
+        	sessionId = httpSess.getId();
+        else
+        	sessionId = "zkwebui";
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
-			Executions.getCurrent().getRemoteHost(), httpSess.getId());
+			Executions.getCurrent().getRemoteHost(), sessionId);
 		if (clientInfo.userAgent != null) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();
@@ -607,6 +613,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
     	//logout ad_session
     	AEnv.logout();
+
+    	// Invalidate HTTP session and create new one with new JSESSIONID
+    	// This prevents session fixation attacks
+    	HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+    	SessionFingerprint.invalidateAndCreateNewSession(request);
+
 		return session;
 	}
 
