@@ -41,6 +41,7 @@ import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
+import org.adempiere.webui.session.SessionFingerprint;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
@@ -607,6 +608,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
     	//logout ad_session
     	AEnv.logout();
+
+    	// Invalidate HTTP session and create new one with new JSESSIONID
+    	// This prevents session fixation attacks
+    	HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+    	SessionFingerprint.invalidateAndCreateNewSession(request);
+
 		return session;
 	}
 
