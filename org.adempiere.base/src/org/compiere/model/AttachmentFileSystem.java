@@ -172,7 +172,10 @@ public class AttachmentFileSystem implements IAttachmentStore {
 				for (MAttachmentFile oldAF : attach.getAttachmentFiles()) {
 					boolean found = false;
 					for (MAttachmentEntry entry : attach.m_items) {
-						if (oldAF.getFileName() != null && oldAF.getFileName().equals(entry.getName())) {
+						String entryName = entry.getName();
+						if (entryName != null && entryName.startsWith("~") && entryName.endsWith("~"))
+							entryName = entryName.substring(1, entryName.length() - 1);
+						if (oldAF.getFileName() != null && oldAF.getFileName().equals(entryName)) {							
 							found = true;
 							break;
 						}
