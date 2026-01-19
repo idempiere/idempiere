@@ -43,7 +43,7 @@ import org.compiere.util.Util;
  * <p>Implementation follows NIST SP 800-63B guidelines for session management:</p>
  * <ul>
  *   <li>Binds session to client network identity (IP address)</li>
- *   <li>Binds session to device identity (User-Agent)</li>
+ *   <li>Binds session to device identity (User-Agent + Accept-Language)</li>
  *   <li>Session tokens are regenerated on logout to prevent session fixation</li>
  * </ul>
  * 
@@ -51,7 +51,7 @@ import org.compiere.util.Util;
  * <ul>
  *   <li>ZK_SESSION_FINGERPRINT_ENABLED: Enable/disable fingerprint validation (default: Y)</li>
  *   <li>ZK_SESSION_FINGERPRINT_CHECK_IP: Include IP address in fingerprint (default: Y)</li>
- *   <li>ZK_SESSION_FINGERPRINT_CHECK_USER_AGENT: Include User-Agent in fingerprint (default: Y)</li>
+ *   <li>ZK_SESSION_FINGERPRINT_CHECK_USER_AGENT: Include User-Agent + Accept-Language in fingerprint (default: Y)</li>
  * </ul>
  */
 public class SessionFingerprint implements Serializable {
@@ -118,9 +118,7 @@ public class SessionFingerprint implements Serializable {
 		fingerprint.ipAddress = getClientIP(request);
 		StringBuilder uaBuilder = new StringBuilder(request.getHeader("User-Agent"))
 				.append("|")
-				.append(request.getHeader("Accept-Language"))
-				.append("|")
-				.append(request.getHeader("Accept-Encoding"));
+				.append(request.getHeader("Accept-Language"));
 		fingerprint.userAgent =  uaBuilder.toString();
 
 		session.setAttribute(SESSION_FINGERPRINT_ATTR, fingerprint);
@@ -167,9 +165,7 @@ public class SessionFingerprint implements Serializable {
 		if (valid && isCheckUserAgent()) {
 			StringBuilder uaBuilder = new StringBuilder(request.getHeader("User-Agent"))
 					.append("|")
-					.append(request.getHeader("Accept-Language"))
-					.append("|")
-					.append(request.getHeader("Accept-Encoding"));
+					.append(request.getHeader("Accept-Language"));
 			currentUA = uaBuilder.toString();
 			if (!Util.isEmpty(stored.userAgent, true) || !Util.isEmpty(currentUA, true)) {
 				valid = valid && areEqual(stored.userAgent, currentUA);
