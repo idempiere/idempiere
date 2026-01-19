@@ -163,10 +163,7 @@ public class MAttachmentEntry
 		m_data = data;
         m_file = null;
 		m_isDataSet = true;
-		if (m_sha256sum == null) {
-			String sha256sum = calculateSHA256Sum(m_data);
-			setSHA256Sum(sha256sum);
-		}
+		setSHA256Sum(m_data != null ? calculateSHA256Sum(m_data) : null);
 	}
 
 	/**
@@ -192,13 +189,11 @@ public class MAttachmentEntry
     public void setFile(File file) {
         m_file = file;
         m_data = null;
-		if (m_sha256sum == null) {
-            try {
-                setData(Files.readAllBytes(m_file.toPath()));
-            } catch (IOException e) {
-                log.log(Level.WARNING, e.getMessage(), e);
-            }
-		}
+        try {
+        	setData(Files.readAllBytes(m_file.toPath()));
+        } catch (IOException e) {
+        	log.log(Level.WARNING, e.getMessage(), e);
+        }
         m_isDataSet = true;
     }
 

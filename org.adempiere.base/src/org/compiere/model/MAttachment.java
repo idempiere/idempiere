@@ -660,14 +660,16 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 				local_trxName = Trx.createTrxName("MAttachmentSave");
 				set_TrxName(local_trxName);
 			}
-			if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile)
-					&& !"Y".equals(get_Attribute(MIGRATE_STORAGE_DELETING_OLD_PROVIDER)))
-				saveLOBData(true);		//	save in BinaryData
+			if (   getTitle() != null
+				&& getTitle().equals(MAttachment.TITLE_ListInAttachmentFile)
+				&& !"Y".equals(get_Attribute(MIGRATE_STORAGE_DELETING_OLD_PROVIDER)))
+				if (!saveLOBData(true))		//	save in BinaryData
+					return false;
 			success = super.save();
-	        if (success) {
+			if (success) {
 	    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile)
 	    				&& !"Y".equals(get_Attribute(MIGRATE_STORAGE_DELETING_OLD_PROVIDER)))
-	    			return saveLOBData(false);
+	    			success = saveLOBData(false);
 	        }
 		} finally {
 	        if (local_trxName != null) {

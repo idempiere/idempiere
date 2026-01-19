@@ -146,11 +146,15 @@ public class AttachmentFileSystem implements IAttachmentStore {
 			if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()))) {
 				for (int i = 0; i < attach.m_items.size(); i++) {
 					MAttachmentEntry entry = attach.m_items.get(i);
-					File entryFile = entry.getFile();
-					entryFile = copyToAttachFolder(attach, attachmentPathRoot, entryFile);
 					String itemName = entry.getName();
 					if (itemName.startsWith("~") && itemName.endsWith("~"))
 						itemName = itemName.substring(1, itemName.length()-1);
+					File entryFile = entry.getFile();
+					if (entryFile == null) {
+						log.warning("Attachment file not found: " + itemName);
+						continue;
+					}
+					entryFile = copyToAttachFolder(attach, attachmentPathRoot, entryFile);
 					String filePathToStore = entryFile.getAbsolutePath();
 					filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);
 	                if (log.isLoggable(Level.FINE))

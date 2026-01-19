@@ -88,7 +88,9 @@ public class AttachmentDBLOB implements IAttachmentStore
     	if (MAttachment.LIST_IN_ATTACHMENT_FILE.equals(attach.getTitle())) {
 			int index = 0;
     		for (MAttachmentFile attachFile : attach.getAttachmentFiles()) {
-				IAttachmentLazyDataSource ds = new AttachmentDBLazyDataSource(attach.getAD_Attachment_ID(), index, attachFile.getFileName(), Long.toString(attachFile.getFileSize().longValue()));
+    			BigDecimal fileSize = attachFile.getFileSize();
+    			String sizeStr = fileSize != null ? fileSize.toPlainString() : "0";
+    			IAttachmentLazyDataSource ds = new AttachmentDBLazyDataSource(attach.getAD_Attachment_ID(), index, attachFile.getFileName(), sizeStr);
 				final MAttachmentEntry entry = new MAttachmentEntry(attachFile.getFileName(), attach.m_items.size() + 1, ds);
 				entry.setSHA256Sum(attachFile.getSHA256Checksum());
 				attach.m_items.add(entry);
