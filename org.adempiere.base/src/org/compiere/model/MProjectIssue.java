@@ -708,7 +708,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 */
 	public static MProjectIssue getInvLineProjectIssue(int invLineID, String trxName)
 	{
-		String whereClause = " C_InvoiceLine_ID = ? AND DocStatus NOT IN (" + DocAction.STATUS_Reversed + "', '" + DocAction.STATUS_Voided + "') ";
+		String whereClause = " C_InvoiceLine_ID = ? AND DocStatus NOT IN ('" + DocAction.STATUS_Reversed + "', '" + DocAction.STATUS_Voided + "') ";
 		Query query = new Query(Env.getCtx(), Table_Name, whereClause, trxName);
 		query.setClient_ID(true);
 		query.setOnlyActiveRecords(true);
