@@ -99,6 +99,11 @@ public class AttachmentDBLOB implements IAttachmentStore
     	} else {
     		// XML
             NodeList entries = getEntriesFromXML(data);
+            if (entries == null) {
+            	log.severe("Failed to parse XML attachment data");
+            	attach.m_items = null;
+            	return false;
+            }
             for (int i = 0; i < entries.getLength(); i++) {
                 final Node entryNode = entries.item(i);
                 final NamedNodeMap attributes = entryNode.getAttributes();
