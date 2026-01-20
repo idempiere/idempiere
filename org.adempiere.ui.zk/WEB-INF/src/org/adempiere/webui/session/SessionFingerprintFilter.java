@@ -125,12 +125,16 @@ public class SessionFingerprintFilter implements Filter {
 				|| path.endsWith(".woff2")
 				|| path.endsWith(".ttf")
 				|| path.endsWith(".eot")
-				|| path.startsWith("/zkau/") // ZK AJAX updates
 				|| path.startsWith("/images/")
 				|| path.startsWith("/css/")
 				|| path.startsWith("/js/")) {
 				return true;
 			}
+
+			// Skip ZK AU requests EXCEPT uploads (uploads should be validated)
+	        if (path.startsWith("/zkau/") && !path.contains("/upload")) {
+	            return true;
+	        }
 		}
 
 		// Skip for ping requests
