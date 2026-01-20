@@ -20,8 +20,6 @@ package org.adempiere.webui.editor;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -851,66 +849,18 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 	}
 
-	/**
-	 * Parse where clause from lookup validation code.
-	 * @return sql filter
-	 */
-	private SQLFragment getSQLFilter()
-	{
-		String whereClause = null;
-		List<Object> params = new ArrayList<>();
-
-		if (lookup == null)
-			return null;
-
-		if (lookup.getZoomQuery() != null)
-		{
-			SQLFragment filter = lookup.getZoomQuery().getSQLFilter();
-			whereClause = filter.sqlClause();
-			params.addAll(filter.parameters());
-		}
-
-		String validation = lookup.getValidation();
-
-		if (validation == null)
-			validation = "";
-
-		if (Util.isEmpty(whereClause, true))
-			whereClause = validation;
-		else if (!Util.isEmpty(validation, true))
-			whereClause += " AND " + validation;
-
-		if (whereClause.indexOf('@') != -1)
-		{
-			List<Object> contextParams = new ArrayList<>();
-			String validated = Env.parseContextForSql(Env.getCtx(), lookup.getWindowNo(), whereClause, false, contextParams);
-
-			if (validated.length() == 0)
-				log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
-			else
-			{
-				if (log.isLoggable(Level.FINE))
-					log.fine(getColumnName() + " - Parsed: " + validated);
-				if (params.size() > 0)
-				{
-					if (contextParams.size() > 0)
-						params = Env.mergeParameters(whereClause, validated, params.toArray(), contextParams.toArray());
-				}
-				else
-				{
-					params = contextParams;
-				}
-				whereClause = validated;
-			}
-		}
-		return new SQLFragment(whereClause, params);
-	}
-
 	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
     }
+
+	private SQLFragment getSQLFilter()
+	{
+		if (lookup == null)
+			return null;
+		return lookup.getSQLFilter();
+	}
 
 	@Override
 	public void valueChange(ValueChangeEvent evt)

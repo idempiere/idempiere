@@ -142,16 +142,35 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	}
 	
 	/**
-	 * 	Get SQL to return single value for the Performance Indicator
-	 *	@param restrictions array of goal restrictions
-	 *	@param MeasureScope scope of this value  
-	 *	@param MeasureDataType data type
-	 *	@param reportDate optional report date
-	 *	@param role role
-	 *	@return sql for performance indicator
+	 * Get SQL to return single value for the Performance Indicator
+	 * 
+	 * @param restrictions    array of goal restrictions
+	 * @param MeasureScope    scope of this value
+	 * @param MeasureDataType data type
+	 * @param reportDate      optional report date
+	 * @param role            role
+	 * @return sql for performance indicator
+	 * @deprecated use getSqlPIFragment
 	 */
-	public String getSqlPI (MGoalRestriction[] restrictions, 
-		String MeasureScope, String MeasureDataType, Timestamp reportDate, MRole role)
+	@Deprecated(since = "13", forRemoval = true)
+	public String getSqlPI(MGoalRestriction[] restrictions,
+			String MeasureScope, String MeasureDataType, Timestamp reportDate, MRole role) 
+	{
+		return getSqlPIFragment(restrictions, MeasureScope, MeasureDataType, reportDate, role).toSQLWithParameters();
+	}
+
+	/**
+	 * Get SQL to return single value for the Performance Indicator
+	 * 
+	 * @param restrictions    array of goal restrictions
+	 * @param MeasureScope    scope of this value
+	 * @param MeasureDataType data type
+	 * @param reportDate      optional report date
+	 * @param role            role
+	 * @return sql for performance indicator
+	 */
+	public SQLFragment getSqlPIFragment(MGoalRestriction[] restrictions,
+			String MeasureScope, String MeasureDataType, Timestamp reportDate, MRole role) 
 	{
 		StringBuilder sb = new StringBuilder(getSelectClause())
 			.append(" ")
@@ -181,23 +200,43 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 				.append(DB.TO_DATE(reportDate)).append(",'").append(trunc).append("')");
 		}	//	date
 		String sql = addRestrictions(sb.toString(), restrictions, role);
+		List<Object> params = new ArrayList<>();
 		if (sql.indexOf("@") >= 0)
-			sql = Env.parseContext(getCtx(), 0, sql.toString(), false, false);
-		
-		log.fine(sql);
-		return sql;
-	}	//	getSql
-	
+			sql = Env.parseContextForSql(getCtx(), 0, sql.toString(), false, true, params);
+
+		if (log.isLoggable(Level.FINE))
+			log.fine(sql);
+		return new SQLFragment(sql, params);
+	} // getSqlPIFragment
+
 	/**
-	 * 	Get SQL to retrieve value for bar chart
-	 *	@param restrictions array of goal restrictions
-	 *	@param MeasureDisplay scope of this value  
-	 *	@param startDate optional report start date
-	 *	@param role role
-	 *	@return sql for Bar Chart
+	 * Get SQL to retrieve value for bar chart
+	 * 
+	 * @param restrictions   array of goal restrictions
+	 * @param MeasureDisplay scope of this value
+	 * @param startDate      optional report start date
+	 * @param role           role
+	 * @return sql for Bar Chart
+	 * @deprecated use getSqlBarChartFragment instead
 	 */
-	public String getSqlBarChart (MGoalRestriction[] restrictions, 
-		String MeasureDisplay, Timestamp startDate, MRole role)
+	@Deprecated(since = "13", forRemoval = true)
+	public String getSqlBarChart(MGoalRestriction[] restrictions,
+			String MeasureDisplay, Timestamp startDate, MRole role) 
+	{
+		return getSqlBarChartFragment(restrictions, MeasureDisplay, startDate, role).toSQLWithParameters();
+	}
+
+	/**
+	 * Get SQL to retrieve value for bar chart
+	 * 
+	 * @param restrictions   array of goal restrictions
+	 * @param MeasureDisplay scope of this value
+	 * @param startDate      optional report start date
+	 * @param role           role
+	 * @return sql for Bar Chart
+	 */
+	public SQLFragment getSqlBarChartFragment(MGoalRestriction[] restrictions,
+			String MeasureDisplay, Timestamp startDate, MRole role) 
 	{
 		StringBuilder sb = new StringBuilder();
 		String dateCol = null;
@@ -247,13 +286,15 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		if (groupBy != null)
 			sql += " GROUP BY " + groupBy
 					+ " ORDER BY " + groupBy; // teo_sarca, [ 1665129 ] Bar Graph is not ordered
+		List<Object> params = new ArrayList<>();
 		if (sql.indexOf("@") >= 0)
-			sql = Env.parseContext(getCtx(), 0, sql, false, false);
+			sql = Env.parseContextForSql(getCtx(), 0, sql, false, true, params);
 		//
-		log.fine(sql);
-		return sql;
-	}	//	getSqlBarChart
-	
+		if (log.isLoggable(Level.FINE))
+			log.fine(sql);
+		return new SQLFragment(sql, params);
+	} // getSqlBarChartFragment
+
 	/**
 	 * 	Get Zoom Query
 	 * 	@param restrictions restrictions

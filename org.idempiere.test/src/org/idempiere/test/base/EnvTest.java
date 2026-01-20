@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -48,6 +49,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -1425,6 +1427,13 @@ public class EnvTest extends AbstractTestCase {
 		
 		int invoiceWindowId = Env.getZoomWindowID(invoiceQuery);
 		assertEquals(invoiceWindowId, DictionaryIDs.AD_Window.SALES_INVOICE.id, "Should return valid window ID or 0");
+
+		// Test condition zoom
+		query = new MQuery(MOrder.Table_Name);
+		query.addRestriction("IsSOTrx", MQuery.EQUAL, "Y");
+		query.addRestriction("C_Order_ID", MQuery.LESS, 1000000);
+		int soWindowId = Env.getZoomWindowID(query);
+		assertEquals(soWindowId, SystemIDs.WINDOW_SALES_ORDER, "Should return sales order window ID");
 	}
 
 	@Test
@@ -1632,5 +1641,74 @@ public class EnvTest extends AbstractTestCase {
 		// Verify the PREFIX_PREDEFINED_VARIABLE constant is "+"
 		assertEquals("+", Env.PREFIX_PREDEFINED_VARIABLE, 
 			"Predefined variable prefix should be +");
+	}
+
+	@Test
+	public void testParseContextForSql() {
+		Properties ctx = new Properties();
+		int windowNo = 100;
+		
+		// Setup context
+		Env.setContext(ctx, windowNo, "AD_Client_ID", 11);
+		Env.setContext(ctx, windowNo, "AD_Org_ID", 11);
+		Env.setContext(ctx, windowNo, "CreatedBy", 100);
+		Env.setContext(ctx, windowNo, "Name", "TestUser");
+		
+		List<Object> params = new ArrayList<>();
+		
+		// Test simple substitution
+		String sql = "SELECT * FROM AD_Client WHERE AD_Client_ID=@AD_Client_ID@";
+		String parsed = Env.parseContextForSql(ctx, windowNo, sql, true, false, params);
+		assertEquals("SELECT * FROM AD_Client WHERE AD_Client_ID=?", parsed, "SQL should use placeholder");
+		assertEquals(1, params.size(), "Should have 1 parameter");
+		assertEquals(11, params.get(0), "Parameter value should match context");
+		
+		// Test string parameter
+		params.clear();
+		sql = "SELECT * FROM AD_User WHERE Name=@Name@";
+		parsed = Env.parseContextForSql(ctx, windowNo, sql, true, false, params);
+		assertEquals("SELECT * FROM AD_User WHERE Name=?", parsed, "SQL should use placeholder");
+		assertEquals(1, params.size(), "Should have 1 parameter");
+		assertEquals("TestUser", params.get(0), "Parameter value should match context");
+		
+		// Test multiple parameters
+		params.clear();
+		sql = "UPDATE AD_Org SET CreatedBy=@CreatedBy@ WHERE AD_Client_ID=@AD_Client_ID@";
+		parsed = Env.parseContextForSql(ctx, windowNo, sql, true, false, params);
+		assertEquals("UPDATE AD_Org SET CreatedBy=? WHERE AD_Client_ID=?", parsed, "SQL should use placeholders");
+		assertEquals(2, params.size(), "Should have 2 parameters");
+		assertEquals(100, params.get(0), "First parameter should be CreatedBy");
+		assertEquals(11, params.get(1), "Second parameter should be AD_Client_ID");
+	}
+
+	@Test
+	public void testMergeParameters() {
+		Properties ctx = new Properties();
+		int windowNo = 100;
+		Env.setContext(ctx, windowNo, "ContextVar", "ContextValue");
+		
+		// SQL with mixed parameters: '?' and '@ContextVar@'
+		String preParseSQL = "SELECT * FROM Table WHERE Col1=? AND Col2=@ContextVar@ AND Col3=?";
+		
+		// Original parameters for '?'
+		Object[] sqlParams = new Object[] { 100, "AfterContext" };
+		
+		// Mock parse result (what parseContextForSql does)
+		// It replaces @ContextVar@ with ? and collects parameters
+		List<Object> contextParamsList = new ArrayList<>();
+		String postParseSQL = Env.parseContextForSql(ctx, windowNo, preParseSQL, true, false, contextParamsList);
+		
+		// Verify parse result first
+		assertEquals("SELECT * FROM Table WHERE Col1=? AND Col2=? AND Col3=?", postParseSQL, "Parsed SQL not as expected");
+		assertEquals(1, contextParamsList.size(), "Should have 1 context parameter");
+		assertEquals("ContextValue", contextParamsList.get(0), "Context parameter mismatch");
+		
+		// Now merge parameters
+		List<Object> merged = Env.mergeParameters(preParseSQL, postParseSQL, sqlParams, contextParamsList.toArray());
+		
+		assertEquals(3, merged.size(), "Should have 3 parameters total");
+		assertEquals(100, merged.get(0), "First param should be from sqlParams");
+		assertEquals("ContextValue", merged.get(1), "Second param should be from contextParams");
+		assertEquals("AfterContext", merged.get(2), "Third param should be from sqlParams");
 	}
 }

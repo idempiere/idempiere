@@ -40,6 +40,7 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * 	Performance Measure
@@ -169,17 +170,17 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 		if (MMeasure.MEASURETYPE_Calculated.equals(getMeasureType()))
 		{
 			MMeasureCalc mc = MMeasureCalc.get(getPA_MeasureCalc_ID());
-			String sql = mc.getSqlBarChart(goal.getRestrictions(false),
+			SQLFragment sql = mc.getSqlBarChartFragment(goal.getRestrictions(false),
 					goal.getMeasureDisplay(), goal.getDateFrom(),
-					MRole.getDefault());	//	logged in role
-			if (sql.indexOf("@") >= 0)
-				sql = Env.parseContext(getCtx(), 0, sql, false, false);
+					MRole.getDefault()); // logged in role
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			try
+			try 
 			{
-				pstmt = DB.prepareStatement (sql, null);
-				rs = pstmt.executeQuery ();
+				pstmt = DB.prepareStatement(sql.sqlClause(), null);
+				if (sql.parameters() != null && sql.parameters().size() > 0)
+					DB.setParameters(pstmt, sql.parameters());
+				rs = pstmt.executeQuery();
 				ArrayList<Timestamp> dataList = new ArrayList<Timestamp>();
 				while (rs.next ())
 				{
@@ -196,7 +197,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 			}
 			catch (Exception e)
 			{
-				log.log (Level.SEVERE, sql, e);
+				log.log (Level.SEVERE, sql.sqlClause(), e);
 			}
 			finally
 			{
@@ -525,14 +526,15 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 				log.log(Level.SEVERE, "Not found PA_MeasureCalc_ID=" + getPA_MeasureCalc_ID());
 				return false;
 			}
-			String sql = mc.getSqlPI(goal.getRestrictions(false), 
-				goal.getMeasureScope(), getMeasureDataType(), null, role);
-			BigDecimal ManualActual = DB.getSQLValueBD(null, sql, new Object[]{});
-			//	SQL may return no rows or null
-			if (ManualActual == null)
+			SQLFragment sql = mc.getSqlPIFragment(goal.getRestrictions(false),
+					goal.getMeasureScope(), getMeasureDataType(), null, role);
+			BigDecimal ManualActual = DB.getSQLValueBD(null, sql.sqlClause(), sql.parameters().toArray());
+			// SQL may return no rows or null
+			if (ManualActual == null) 
 			{
 				ManualActual = Env.ZERO;
-				if (log.isLoggable(Level.FINE)) log.fine("No Value = " + sql);
+				if (log.isLoggable(Level.FINE))
+					log.fine("No Value = " + sql);
 			}
 			goal.setMeasureActual(ManualActual);
 			goal.saveEx(get_TrxName());
