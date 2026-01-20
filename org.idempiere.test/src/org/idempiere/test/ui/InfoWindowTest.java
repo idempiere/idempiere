@@ -43,6 +43,7 @@ import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -58,6 +59,7 @@ import org.zkoss.zk.ui.util.Configuration;
  * Integration tests for InfoWindow with AD_InfoWindow_ID = 200001 (Business Partner Info)
  * @author hengsin
  */
+@Isolated
 public class InfoWindowTest extends AbstractTestCase {
 
 	private static final int AD_INFOWINDOW_ID = 200001;
