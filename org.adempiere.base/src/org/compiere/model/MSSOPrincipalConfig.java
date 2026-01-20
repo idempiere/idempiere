@@ -122,7 +122,7 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 
 		if (getSSO_LoginButtonImage_ID() > 0)
 		{
-			MImage image = (MImage) getSSO_LoginButtonImage();
+			MImage image = MImage.get(getSSO_LoginButtonImage_ID());
 			if (image.getBinaryData() != null)
 				imageBase64Src = "data:image;base64," + Base64.getEncoder().encodeToString(image.getBinaryData());
 			else if (!Util.isEmpty(image.getImageURL()))

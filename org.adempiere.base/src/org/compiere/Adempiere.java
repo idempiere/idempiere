@@ -61,7 +61,7 @@ import org.osgi.framework.Bundle;
 public final class Adempiere
 {
 	/** Timestamp                   */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
 	static public String	MAIN_VERSION	= "Release 13";
@@ -577,6 +577,9 @@ public final class Adempiere
 			if (key instanceof String)
 			{
 				String s = (String)key;
+				/* Special properties to set log level for specific packages, not encrypted, for example:
+				 * org.eclipse.jetty.ee8.annotations.AnnotationParser.TraceLevel=SEVERE
+				 */
 				if (s.endsWith("."+Ini.P_TRACELEVEL))
 				{
 					String level = properties.getProperty(s);
@@ -640,7 +643,16 @@ public final class Adempiere
 		}
 		
 		// start thread pool
-		return new ScheduledThreadPoolExecutor(max);								
+		return new ScheduledThreadPoolExecutor(max) {
+
+			@Override
+			protected void afterExecute(Runnable r, Throwable t) {
+				//clean up thread local variables
+				super.afterExecute(r, t);
+				CLogger.resetLast();
+			}
+			
+		};
 	}
 
 	/**

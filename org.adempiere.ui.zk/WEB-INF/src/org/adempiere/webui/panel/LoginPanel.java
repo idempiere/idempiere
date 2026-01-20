@@ -57,10 +57,12 @@ import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -480,7 +482,14 @@ public class LoginPanel extends Window implements EventListener<Event>
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
-        txtUserId.setMaxlength(40);
+
+        MTable userTable = MTable.get(ctx, MUser.Table_Name);
+        MColumn userNameOrEMailColumn = userTable.getColumn(email_login ? MUser.COLUMNNAME_EMail : MUser.COLUMNNAME_Name);
+        MColumn ldapColumn = userTable.getColumn(MUser.COLUMNNAME_LDAPUser);
+        int maxLengthTxtUserId = ldapColumn.getFieldLength();
+        if (userNameOrEMailColumn.getFieldLength() > maxLengthTxtUserId)
+        	maxLengthTxtUserId = userNameOrEMailColumn.getFieldLength();
+        txtUserId.setMaxlength(maxLengthTxtUserId);
         txtUserId.setClientAttribute("autocomplete", "username");
 
         txtPassword = new Textbox();
@@ -804,7 +813,6 @@ public class LoginPanel extends Window implements EventListener<Event>
 		if (Util.isEmpty(userId))
     		throw new IllegalArgumentException(Msg.getMsg(ctx, "FillMandatory") + " " + lblUserId.getValue());
 		
-		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
     	StringBuilder whereClause = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
 			whereClause.append("EMail=?");

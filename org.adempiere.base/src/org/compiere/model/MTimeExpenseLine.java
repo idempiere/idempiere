@@ -17,9 +17,11 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -312,5 +314,47 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		@SuppressWarnings("unused")
 		int no = DB.executeUpdate(sql, get_TrxName());
 	}	//	updateHeader
-	
+
+	/**
+	 * Get Labor Cost from Expense Report
+	 * 
+	 * @param  as Account Schema
+	 * @return    Unit Labor Cost
+	 */
+	public BigDecimal getLaborCost(MAcctSchema as)
+	{
+		// Todor Lulov 30.01.2008
+		BigDecimal retValue = Env.ZERO;
+		BigDecimal qty = Env.ZERO;
+
+		String sql = "SELECT ConvertedAmt, Qty FROM S_TimeExpenseLine " +
+				" WHERE S_TimeExpenseLine.S_TimeExpenseLine_ID = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, as.get_TrxName());
+			pstmt.setInt(1, getS_TimeExpenseLine_ID());
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				retValue = rs.getBigDecimal(1);
+				qty = rs.getBigDecimal(2);
+				retValue = retValue.multiply(qty);
+				if (log.isLoggable(Level.FINE)) log.fine("ExpLineCost = " + retValue);
+			}
+			else
+				log.warning("Not found for S_TimeExpenseLine_ID=" + getS_TimeExpenseLine_ID());
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			pstmt = null; rs = null;
+		}
+		return retValue;
+	}	//	getLaborCost
 }	//	MTimeExpenseLine

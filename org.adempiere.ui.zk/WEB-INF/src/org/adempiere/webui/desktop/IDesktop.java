@@ -139,7 +139,7 @@ public interface IDesktop extends UIPart {
 	 * @param query
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void showWindow(int window_ID, MQuery query);
 
 	/**

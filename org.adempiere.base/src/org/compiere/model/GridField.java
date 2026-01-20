@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,7 +35,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogMgt;
@@ -166,8 +170,10 @@ public class GridField
 	public static final String  INSERTING = "FieldValueInserting";
 
 	/** Error Value for HTML interface          */
+	@Deprecated(forRemoval = true, since = "13")
 	private String			m_errorValue = null;
 	/** Error Value indicator for HTML interface    */
+	@Deprecated(forRemoval = true, since = "13")
 	private boolean			m_errorValueFlag = false;
 
 	/**	Logger			*/
@@ -1227,7 +1233,8 @@ public class GridField
 	 *  @return true if valid
 	 *  @deprecated use validateValueNoDirect instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public boolean validateValue()
 	{
 		//  null
@@ -1384,7 +1391,10 @@ public class GridField
 	 *	Add display dependencies to given List.
 	 *  Source: DisplayLogic.
 	 *  @param list list to be added to
+	 *  @deprecated replace by {@link #getDependentOn()}
 	 */
+	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public void addDependencies (ArrayList<String> list)
 	{
 		//	nothing to parse
@@ -2026,6 +2036,8 @@ public class GridField
 	 *  Is this a long (string/text) field (over 60/2=30 characters)
 	 *  @return true if long field
 	 */
+	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public boolean isLongField()
 	{
 		return (m_vo.DisplayLength >= MAXDISPLAY_LENGTH/2);
@@ -2206,14 +2218,18 @@ public class GridField
 			//	Return BigDecimal
 			else if (DisplayType.isNumeric(dt))
 			{
-				BigDecimal value = (BigDecimal)DisplayType.getNumberFormat(dt).parse(newValue);
+				DecimalFormat format = DisplayType.getNumberFormat(dt);
+				format.setParseBigDecimal(true);
+				BigDecimal value = (BigDecimal)format.parse(newValue);
 				setValue (value, inserting);
 				return null;
 			}
 			//	Return Timestamp
 			else if (DisplayType.isDate(dt))
 			{
-				long time = DisplayType.getDateFormat_JDBC().parse(newValue).getTime();
+				var format = DisplayType.getDateFormat_JDBC();
+				format.setLenient(false);
+				long time = format.parse(newValue).getTime();
 				setValue (new Timestamp(time), inserting);
 				return null;
 			}
@@ -2287,6 +2303,8 @@ public class GridField
 	 *  Set Error Value (the value, which caused some Error)
 	 *  @param errorValue error value
 	 */
+	@Deprecated(since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public void setErrorValue (String errorValue)
 	{
 		m_errorValue = errorValue;
@@ -2297,6 +2315,8 @@ public class GridField
 	 *  Get Error Value (the value, which caused some Error) <b>AND</b> reset error value to null
 	 *  @return error value
 	 */
+	@Deprecated(since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public String getErrorValue ()
 	{
 		String s = m_errorValue;
@@ -2309,6 +2329,8 @@ public class GridField
 	 *  Get error value flag <b>AND</b> reset error value flag to false
 	 *  @return true if error value is set
 	 */
+	@Deprecated(since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public boolean isErrorValue()
 	{
 		boolean b = m_errorValueFlag;
@@ -2338,6 +2360,8 @@ public class GridField
 	 * 	Create Mnemonic for field
 	 *	@return no for r/o, client, org, document no
 	 */
+	@Deprecated(since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public boolean isCreateMnemonic()
 	{
 		if (isReadOnly() 
@@ -2352,6 +2376,8 @@ public class GridField
 	 * 	Get Label Mnemonic
 	 *	@return Mnemonic
 	 */
+	@Deprecated(since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public char getMnemonic()
 	{
 		return m_mnemonic;
@@ -2361,6 +2387,8 @@ public class GridField
 	 * 	Set Label Mnemonic
 	 *	@param mnemonic Mnemonic
 	 */
+	@Deprecated(since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public void setMnemonic (char mnemonic)
 	{
 		m_mnemonic = mnemonic;
@@ -2518,7 +2546,7 @@ public class GridField
 	}
 	
 	/**
-	 * Restore the backup value (if available)
+	 * Restore the backup value to context (if available)
 	 * author teo_sarca [ 1699826 ]
 	 */
 	public void restoreValue() {
@@ -2848,9 +2876,16 @@ public class GridField
 		if (dependentField.getLookup() instanceof MLookup mLookup)
 		{
 			//  if the lookup is dynamic (i.e. contains this columnName as variable)
-			if (mLookup.getValidation().indexOf("@"+columnName+"@") != -1
-					|| (tabNo >= 0 && mLookup.getValidation().matches(".*[@]"+tabNo+"[|]"+columnName+"([:].+)?[@].*"))
-					|| mLookup.getValidation().matches(".*[@][~]?"+columnName+"([:].+)?[@].*"))
+			String validation = mLookup.getValidation();
+
+			// Regex
+			String regex = ".*@(?:~|"+tabNo+"\\|)?"+columnName+"(:.+)?@.*";
+
+			// Pattern with DOTALL to match multiple lines
+			Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+			Matcher matcher = pattern.matcher(validation);
+			
+			if (matcher.find())
 			{
 				if (log.isLoggable(Level.FINE)) log.fine(columnName + " changed - "
 					+ dependentField.getColumnName() + " set to null");

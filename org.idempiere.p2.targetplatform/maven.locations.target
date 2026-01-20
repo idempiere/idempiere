@@ -1,0 +1,1703 @@
+<!-- location entries for maven artifacts. append to the end of the generated 
+	org.idempiere.p2.targetplatform.target target platform file -->
+<target name="idempiere-12-maven-locations" sequenceNumber="20251023">
+<locations>
+    <!-- com.google -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.2.1-jre</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.9.0</version>
+	  <type>jar</type>
+	</location>    
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.google.guava</groupId>
+	  <artifactId>failureaccess</artifactId>
+	  <version>1.0.1</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.google.http-client</groupId>
+	  <artifactId>google-http-client-gson</artifactId>
+	  <version>1.39.2-sp.1</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.google.j2objc</groupId>
+      <artifactId>j2objc-annotations</artifactId>
+      <version>1.3</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-api</artifactId>
+      <version>0.28.0</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-contrib-http-util</artifactId>
+      <version>0.28.0</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.google.zxing</groupId>
+	  <artifactId>javase</artifactId>
+	  <version>3.4.1</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<!-- com.fasterxml.jackson -->	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-guava</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-joda</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-json-org</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-base</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-xml-provider</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jsonSchema</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <version>6.7.0</version>
+	  <type>jar</type>
+	</location>	
+	<!-- dev.samstevens.totp -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>dev.samstevens.totp</groupId>
+	  <artifactId>totp</artifactId>
+	  <version>1.7.1</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>	
+	<!-- org.antlr -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.antlr</groupId>
+	  <artifactId>antlr4-runtime</artifactId>
+	  <version>4.9.2</version>
+      <type>jar</type>
+	</location>
+	<!-- com.github.librepdf -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.github.librepdf</groupId>
+      <artifactId>openpdf-fonts-extra</artifactId>
+      <version>1.3.39</version>
+      <type>jar</type>
+	</location>
+	<!-- com.sun -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.xml.fastinfoset</groupId>
+      <artifactId>FastInfoset</artifactId>
+      <version>2.0.0</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.org.apache.xml.internal</groupId>
+      <artifactId>resolver</artifactId>
+      <version>20050927</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+    </location>
+    <!-- com.sun.xml -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.istack</groupId>
+      <artifactId>istack-commons-runtime</artifactId>
+      <version>3.0.12</version>
+	  <type>jar</type>
+    </location>    
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>policy</artifactId>
+      <version>2.7.10</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.3.5</version>
+      <type>jar</type>
+    </location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.jvnet.mimepull</groupId>
+      <artifactId>mimepull</artifactId>
+      <version>1.9.14</version>
+	  <type>jar</type>
+	</location>	    
+    <location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.sun.net.httpserver</groupId>
+	  <artifactId>http</artifactId>
+	  <version>20070405</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;-noimport:=true
+]]></instructions>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.3.5</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.xml.stream.buffer</groupId>
+      <artifactId>streambuffer</artifactId>
+      <version>1.5.10</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.external</groupId>
+      <artifactId>management-api</artifactId>
+      <version>3.2.3</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.ha</groupId>
+      <artifactId>ha-api</artifactId>
+      <version>3.1.13</version>
+      <type>jar</type>
+    </location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.sun.xml.bind.external</groupId>
+      <artifactId>rngom</artifactId>
+      <version>2.3.5</version>
+      <type>jar</type>
+	</location>
+    <!-- com.sun.mail -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.mail</groupId>
+      <artifactId>gimap</artifactId>
+      <version>1.6.7</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.mail</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>1.6.7</version>
+      <type>jar</type>
+    </location>
+    <!-- org.glassfish -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>txw2</artifactId>
+      <version>2.3.5</version>
+	  <type>jar</type>
+    </location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.gmbal</groupId>
+      <artifactId>gmbal</artifactId>
+      <version>4.0.3</version>
+      <type>jar</type>
+    </location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.pfl</groupId>
+      <artifactId>pfl-tf</artifactId>
+      <version>4.1.2</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.pfl</groupId>
+      <artifactId>pfl-dynamic</artifactId>
+      <version>4.1.2</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.pfl</groupId>
+      <artifactId>pfl-basic</artifactId>
+      <version>4.1.2</version>
+      <type>jar</type>
+    </location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.pfl</groupId>
+      <artifactId>pfl-asm</artifactId>
+      <version>4.1.0</version>
+      <type>jar</type>
+    </location>        
+    <!-- javax -->	
+    <location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>javax.validation</groupId>
+	  <artifactId>validation-api</artifactId>
+	  <version>1.1.0.Final</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>2.0.SP1</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>javax.interceptor</groupId>
+      <artifactId>javax.interceptor-api</artifactId>
+      <version>1.2.2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>javax.websocket</groupId>
+      <artifactId>javax.websocket-api</artifactId>
+      <version>1.1</version>
+      <type>jar</type>
+	</location>	
+	<!-- jakarta -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jakarta.jws</groupId>
+      <artifactId>jakarta.jws-api</artifactId>
+      <version>2.1.0</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>2.2.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.3</version>
+	  <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>2.0.2</version>
+	  <type>jar</type>
+    </location>					
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.passay</groupId>
+      <artifactId>passay</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+	</location>	
+	<!-- com.diffplug.osgi -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.diffplug.osgi</groupId>
+      <artifactId>com.diffplug.osgi.extension.sun.misc</artifactId>
+      <version>0.0.0</version>
+	  <type>jar</type>
+	</location>
+	<!-- com.ibm.icu -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>69.1</version>
+	  <type>jar</type>
+	</location>
+	<!-- org.codehaus.groovy -->
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-console</artifactId>
+      <version>3.0.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-datetime</artifactId>
+      <version>3.0.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-json</artifactId>
+      <version>3.0.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-jsr223</artifactId>
+      <version>3.0.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-nio</artifactId>
+      <version>3.0.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-sql</artifactId>
+      <version>3.0.8</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-xml</artifactId>
+      <version>3.0.8</version>
+      <type>jar</type>
+	</location>
+	<!-- net.sf.jasperreports -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports</artifactId>
+      <version>6.21.0</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>2.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>net.sourceforge.barbecue</groupId>
+	  <artifactId>barbecue</artifactId>
+	  <version>1.5-beta1</version>
+	  <type>jar</type>
+	</location>
+	<!-- net.sf.supercsv -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>net.sf.supercsv</groupId>
+      <artifactId>super-csv</artifactId>
+      <version>2.4.0</version>
+      <type>jar</type>
+	</location>
+	<!-- org.apache.activemq -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-broker</artifactId>
+      <version>5.16.7</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-client</artifactId>
+      <version>5.16.7</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-j2ee-management_1.1_spec</artifactId>
+      <version>1.0.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
+      <version>1.1.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.fusesource.hawtbuf</groupId>
+      <artifactId>hawtbuf</artifactId>
+      <version>1.11</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="false" missingManifest="generate" type="Maven">
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.4.20</version>
+	  <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-jaas</artifactId>
+      <version>5.16.7</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-openwire-legacy</artifactId>
+      <version>5.16.7</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-kahadb-store</artifactId>
+      <version>5.16.7</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.activemq.protobuf</groupId>
+      <artifactId>activemq-protobuf</artifactId>
+      <version>1.1</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<!-- org.apache.aries -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.aries.spifly</groupId>
+      <artifactId>org.apache.aries.spifly.dynamic.bundle</artifactId>
+      <version>1.3.7</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bndlib</artifactId>
+      <version>5.3.0</version>
+      <type>jar</type>
+	</location>	
+	<!-- org.apache.commons -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.9.4</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.4</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.21</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-configuration2</artifactId>
+      <version>2.10.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.5</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-fileupload2-core</artifactId>
+      <version>2.0.0-M2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-fileupload2-javax</artifactId>
+      <version>2.0.0-M2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.15.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>3.8.0</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.10.0</version>
+      <type>jar</type>
+	</location>
+	<!-- org.apache.cxf -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-security</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.activation</groupId>
+      <artifactId>jakarta.activation</artifactId>
+      <version>1.2.2</version>
+      <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.sun.xml.messaging.saaj</groupId>
+      <artifactId>saaj-impl</artifactId>
+      <version>1.5.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-core</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-bindings-soap</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-bindings-xml</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-simple</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-ws-addr</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-wsdl</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-ws-policy</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.apache.ws.xmlschema</groupId>
+      <artifactId>xmlschema-core</artifactId>
+      <version>2.3.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.neethi</groupId>
+      <artifactId>neethi</artifactId>
+      <version>3.2.0</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>1.6.3</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.jboss.spec.javax.rmi</groupId>
+      <artifactId>jboss-rmi-api_1.0_spec</artifactId>
+      <version>1.0.6.Final</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+      <version>1.2</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+Require-Capability:    osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-service-description</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-ws-transfer</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-local</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-databinding-jaxb</artifactId>
+      <version>3.6.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.ws.xmlschema</groupId>
+      <artifactId>xmlschema-core</artifactId>
+      <version>2.2.5</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>stax2-api</artifactId>
+      <version>4.2.1</version>
+	  <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <version>1.5.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>2.1.3</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>	
+	<!-- org.apache.felix -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.service.obr</artifactId>
+      <version>1.0.2</version>
+      <type>jar</type>
+	</location>
+	<!-- org.apache.poi -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>5.2.2</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.zaxxer</groupId>
+      <artifactId>SparseBitSet</artifactId>
+      <version>1.2</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.16.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>5.2.2</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        org.bouncycastle.*;version="1.70";resolution:=optional, *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml-lite</artifactId>
+      <version>5.2.2</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.23.1</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-to-slf4j</artifactId>
+      <version>2.23.1</version>
+      <type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>5.0.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>com.github.virtuald</groupId>
+      <artifactId>curvesapi</artifactId>
+      <version>1.06</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>de.rototor.pdfbox</groupId>
+      <artifactId>graphics2d</artifactId>
+      <version>0.30</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>fontbox</artifactId>
+      <version>2.0.22</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.santuario</groupId>
+      <artifactId>xmlsec</artifactId>
+      <version>2.2.1</version>
+	  <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>xmlgraphics-commons</artifactId>
+      <version>2.6</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>	
+	<!-- org.apache.servicemix.bundles -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.cglib</artifactId>
+      <version>3.3.0_1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>2.0.0</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.rhino</artifactId>
+      <version>1.7.13_1</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
+      <version>2.12.1_1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.batik</artifactId>
+      <version>1.16_1</version>
+	  <type>jar</type>
+	</location>
+	<!-- org.springframework -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        org.apache.commons.logging;version="[1.2,2)";resolution:=optional,org.apache.commons.logging.impl;version="[1.1.1,2)";resolution:=optional,*;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>5.3.27</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>	
+	<!-- org.glassfish.jersey -->
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>2.34</version>
+      <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>2.34</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.jersey.ext</groupId>
+      <artifactId>jersey-entity-filtering</artifactId>
+      <version>2.34</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-json-jackson</artifactId>
+      <version>2.34</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet-core</artifactId>
+      <version>2.34</version>
+	  <type>jar</type>
+	</location>	
+	<!-- org.jfree -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      <version>1.0.19</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.jfree</groupId>
+      <artifactId>jcommon</artifactId>
+      <version>1.0.24</version>
+      <type>jar</type>
+      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<!-- org.zkoss -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.zkoss</groupId>
+      <artifactId>zsoup</artifactId>
+      <version>1.8.2.5</version>
+      <type>jar</type>
+	</location>
+	<!-- org.eclipse.jetty -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>1.3.5</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>jakarta.transaction</groupId>
+      <artifactId>jakarta.transaction-api</artifactId>
+      <version>1.3.3</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-servlet-api</artifactId>
+      <version>4.0.6</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-ee</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jndi</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-osgi</artifactId>
+	  <version>12.0.24</version>
+	  <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-security</artifactId>
+	  <version>12.0.24</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-xml</artifactId>
+	  <version>12.0.24</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty.ee8</groupId>
+	  <artifactId>jetty-ee8-nested</artifactId>
+	  <version>12.0.24</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-servlet</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-servlets</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-webapp</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-annotations</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-security</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.12</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>2.0.12</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-apache-jsp</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.http</artifactId>
+      <version>1.2.2</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.http.whiteboard</artifactId>
+      <version>1.1.1</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.osgi</groupId>
+      <artifactId>jetty-ee8-osgi-boot</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.osgi</groupId>
+      <artifactId>jetty-ee8-osgi-boot-jsp</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.mortbay.jasper</groupId>
+      <artifactId>apache-jsp</artifactId>
+      <version>9.0.107</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-glassfish-jstl</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>jakarta.servlet.jsp.jstl</groupId>
+      <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+      <version>1.2.7</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.glassfish.web</groupId>
+      <artifactId>javax.servlet.jsp.jstl</artifactId>
+      <version>1.2.5</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.mortbay.jasper</groupId>
+      <artifactId>apache-el</artifactId>
+      <version>9.0.107</version>
+	  <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-client</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jmx</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-plus</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-deploy</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util-ajax</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-jaspi</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>jakarta.security.auth.message</groupId>
+	  <artifactId>jakarta.security.auth.message-api</artifactId>
+	  <version>1.1.3</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-rewrite</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-jetty-server</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-jetty-api</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-jetty-common</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-server</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-server</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-client</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-javax-common</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
+      <artifactId>jetty-ee8-websocket-servlet</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-session</artifactId>
+	  <version>12.0.24</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http-spi</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-jndi</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-proxy</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-proxy</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>jetty-websocket-core-client</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>jetty-websocket-core-common</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>jetty-websocket-core-server</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-javax-websocket-api</artifactId>
+      <version>1.1.2</version>
+      <type>jar</type>
+	</location>	
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.http2</groupId>
+      <artifactId>jetty-http2-server</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.eclipse.jetty.http3</groupId>
+      <artifactId>jetty-http3-server</artifactId>
+      <version>12.0.24</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.util.tracker</artifactId>
+      <version>1.5.4</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-commons</artifactId>
+      <version>9.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
+      <version>9.8</version>
+      <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-util</artifactId>
+      <version>9.8</version>
+      <type>jar</type>
+	</location>	
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-analysis</artifactId>
+      <version>9.8</version>
+      <type>jar</type>
+	</location>	
+	<!-- org.apache.lucene -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>8.4.1</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+      <version>8.4.1</version>
+	  <type>jar</type>
+	  <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+	<!-- classgraph -->
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+      <version>4.8.147</version>
+      <type>jar</type>
+	</location>
+	<!-- AssertJ -->
+	<location includeSource="true" missingManifest="error" type="Maven">
+	  <groupId>org.assertj</groupId>
+	  <artifactId>assertj-core</artifactId>
+	  <version>3.22.0</version>
+	  <type>jar</type>
+	</location>
+	<!-- JUnit -->
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.jupiter</groupId>
+    	<artifactId>junit-jupiter-api</artifactId>
+    	<version>5.9.1</version>
+    	<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.jupiter</groupId>
+    	<artifactId>junit-jupiter-params</artifactId>
+    	<version>5.9.1</version>
+    	<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.jupiter</groupId>
+    	<artifactId>junit-jupiter-engine</artifactId>
+    	<version>5.9.1</version>
+    	<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.jupiter</groupId>
+    	<artifactId>junit-jupiter-migrationsupport</artifactId>
+    	<version>5.9.1</version>
+    	<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.vintage</groupId>
+    	<artifactId>junit-vintage-engine</artifactId>
+    	<version>5.9.1</version>
+    	<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-engine</artifactId>
+	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-commons</artifactId>
+	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-launcher</artifactId>
+	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-runner</artifactId>
+	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-suite-api</artifactId>
+	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-suite-commons</artifactId>
+	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-suite-engine</artifactId>
+	    <version>1.9.1</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpcore-osgi</artifactId>
+	    <version>4.4.14</version>
+		<type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+	 	<groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient-osgi</artifactId>
+	    <version>4.5.13</version>
+		<type>jar</type>
+	</location>
+	<!-- for jdbc driver -->
+	<location includeSource="true" missingManifest="error" type="Maven">
+		<groupId>com.zaxxer</groupId>
+	    <artifactId>HikariCP</artifactId>
+	    <version>7.0.2</version>
+	</location>
+	<location includeSource="true" missingManifest="error" type="Maven">
+	    <groupId>org.postgresql</groupId>
+    	<artifactId>postgresql</artifactId>
+    	<version>42.7.8</version>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+    	<groupId>com.oracle.database.jdbc</groupId>
+		<artifactId>ojdbc17</artifactId>
+		<version>23.26.0.0.0</version>
+		<type>jar</type>
+	  	<instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Export-Package:        *;version="${version}";-noimport:=true
+]]></instructions>
+	</location>
+    <!--for jdbc driver -->
+    <!-- cache (https://github.com/ben-manes/caffeine) -->
+    <location includeSource="true" missingManifest="generate" type="Maven">
+    	<groupId>com.github.ben-manes.caffeine</groupId>
+    	<artifactId>caffeine</artifactId>
+    	<version>3.1.8</version>
+    	<type>jar</type>
+    </location>
+    <location includeSource="true" missingManifest="generate" type="Maven">
+    	<groupId>xalan</groupId>
+    	<artifactId>xalan</artifactId>
+    	<version>2.7.3</version>
+    	<type>jar</type>
+    </location>
+</locations>
+</target>

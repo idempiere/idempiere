@@ -26,6 +26,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.I_AD_InfoColumn;
 import org.compiere.model.I_AD_InfoWindow;
 import org.compiere.model.MColumn;
+import org.compiere.model.MInfoWindow;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
 import org.compiere.model.X_AD_InfoColumn;
@@ -141,7 +142,8 @@ public class CalloutInfoWindow implements IColumnCallout {
 				infoColumn.setHelp(element.getHelp());
 				infoColumn.setName(element.getName());
 				if (infoColumn.getSelectClause() == null || infoColumn.getSelectClause().trim().length() == 0) {
-					String fromClause = infoColumn.getAD_InfoWindow().getFromClause();
+					MInfoWindow infoWindow = MInfoWindow.getInfoWindow(infoColumn.getAD_InfoWindow_ID());
+					String fromClause = infoWindow.getFromClause();
 					AccessSqlParser parser = new AccessSqlParser("SELECT * FROM " + fromClause);
 					TableInfo[] tableInfos = parser.getTableInfo(0);
 					Map<String, MTable> map = new HashMap<String, MTable>();

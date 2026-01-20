@@ -32,7 +32,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20251031L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -1270,6 +1270,31 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
+	/** PasswordHashAlgorithm AD_Reference_ID=200276 */
+	public static final int PASSWORDHASHALGORITHM_AD_Reference_ID=200276;
+	/** Argon2 = Argon2 */
+	public static final String PASSWORDHASHALGORITHM_Argon2 = "Argon2";
+	/** PBKDF2 = PBKDF2 */
+	public static final String PASSWORDHASHALGORITHM_PBKDF2 = "PBKDF2";
+	/** SHA-512 = SHA-512 */
+	public static final String PASSWORDHASHALGORITHM_SHA_512 = "SHA-512";
+	/** Set Password Hash Algorithm.
+		@param PasswordHashAlgorithm Algorithm use to perform hashing of password
+	*/
+	public void setPasswordHashAlgorithm (String PasswordHashAlgorithm)
+	{
+
+		set_Value (COLUMNNAME_PasswordHashAlgorithm, PasswordHashAlgorithm);
+	}
+
+	/** Get Password Hash Algorithm.
+		@return Algorithm use to perform hashing of password
+	  */
+	public String getPasswordHashAlgorithm()
+	{
+		return (String)get_Value(COLUMNNAME_PasswordHashAlgorithm);
+	}
+
 	/** Set Phone.
 		@param Phone Identifies a telephone number
 	*/
@@ -1395,6 +1420,22 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	public String getSalt()
 	{
 		return (String)get_Value(COLUMNNAME_Salt);
+	}
+
+	/** Set Salt Algorithm.
+		@param SaltAlgorithm Secure random algorithm use to generate password salt
+	*/
+	public void setSaltAlgorithm (String SaltAlgorithm)
+	{
+		set_Value (COLUMNNAME_SaltAlgorithm, SaltAlgorithm);
+	}
+
+	/** Get Salt Algorithm.
+		@return Secure random algorithm use to generate password salt
+	  */
+	public String getSaltAlgorithm()
+	{
+		return (String)get_Value(COLUMNNAME_SaltAlgorithm);
 	}
 
 	/** Set Security Question.

@@ -48,6 +48,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Executes search and opens windows for defined transaction codes
@@ -283,17 +284,20 @@ public abstract class AbstractDocumentSearch {
 			return;
 		}
 		StringBuilder whereString = new StringBuilder(" ").append(tableName).append("_ID");
+		List<Object> params = new ArrayList<Object>();
 		// create query string
 		if (ids.size() == 1) {
 			if (ids.get(0).intValue() == 0) {
 				whereString = null;
 			} else {
-				whereString.append("=").append(ids.get(0).intValue());
+				whereString.append("=?");
+				params.add(ids.get(0).intValue());
 			}
 		} else {
 			whereString.append(" IN (");
 			for (int i = 0; i < ids.size(); i++) {
-				whereString.append(ids.get(i).intValue());
+				whereString.append("?");
+				params.add(ids.get(i).intValue());
 				if (i < ids.size() - 1) {
 					whereString.append(",");
 				} else {
@@ -305,7 +309,7 @@ public abstract class AbstractDocumentSearch {
 		final MQuery query = new MQuery(tableName);
 		if (whereString != null) {
 			if (log.isLoggable(Level.FINE)) log.fine(whereString.toString());
-			query.addRestriction(whereString.toString());
+			query.addRestriction(new SQLFragment(whereString.toString(), params));
 		}
 		final boolean ok = openWindow(windowId, query);
 		if (!ok) {

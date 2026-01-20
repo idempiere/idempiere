@@ -372,7 +372,7 @@ public class ConfigOracle implements IDatabaseConfig
 				: "//" + databaseServer.getHostName() + ":" + databasePort + "/" + databaseName);
 		pass = testJDBC(url, p_db.getSystemUser(), systemPassword);
 		error = "Error connecting: " + url
-			+ " - as "+ p_db.getSystemUser() + "/" + systemPassword;
+			+ " - as "+ p_db.getSystemUser() + "/********";
 		if (monitor != null)
 			monitor.update(new DBConfigStatus(DBConfigStatus.DATABASE_SYSTEM_PASSWORD, "ErrorJDBC",
 				pass, true, error));
@@ -401,7 +401,7 @@ public class ConfigOracle implements IDatabaseConfig
 			return error;
 		//	Ignore result as it might not be imported
 		pass = testJDBC(url, databaseUser, databasePassword);
-		error = "Cannot connect to User: " + databaseUser + "/" + databasePassword + " - Database may not be imported yet (OK on initial run).";
+		error = "Cannot connect to User: " + databaseUser + "/******** - Database may not be imported yet (OK on initial run).";
 		if (monitor != null) {
 			boolean critical = true;
 			if (!isDBExists) {

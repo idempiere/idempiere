@@ -647,6 +647,63 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return po;
 	}	//	getPO
 
+	/**
+	 * 	Get PO Instance using uuid string contructor
+	 *	@param uuid record uuid. not null or empty string.
+	 *	@param trxName
+	 *	@return PO for uuid or null
+	 */
+	public PO getUUIDPOInstance (String uuid, String trxName)
+	{
+		String tableName = getTableName();
+		PO po = null;
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
+		if (cache != null)
+		{
+			IModelFactory service = cache.getService();
+			if (service != null && service.getClass(tableName) != null)
+			{
+				po = service.getPO(tableName, uuid, trxName);
+				if (po != null)
+				{
+					if (!UUID_NEW_RECORD.equals(uuid) && !uuid.equals(po.get_UUID()))
+						po = null;
+					return po;
+				}
+			}
+			s_modelFactoryCache.remove(tableName);
+		}
+		
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
+		if (factoryList != null)
+		{
+			for(IServiceReferenceHolder<IModelFactory> factory : factoryList)
+			{
+				IModelFactory service = factory.getService();
+				if (service != null && service.getClass(tableName) != null)
+				{
+					po = service.getPO(tableName, uuid, trxName);
+					if (po != null)
+					{
+						if (!UUID_NEW_RECORD.equals(uuid) && !uuid.equals(po.get_UUID()))
+							po = null;
+						s_modelFactoryCache.put(tableName, factory);
+						break;
+					}
+				}
+			}
+		}
+
+		if (po == null && s_modelFactoryCache.get(tableName) == null)
+		{
+			po = new GenericPO(tableName, getCtx(), uuid, trxName);
+			if (!UUID_NEW_RECORD.equals(uuid) && !uuid.equals(po.get_UUID()))
+				po = null;
+		}
+
+		return po;
+	}
+	
 	private static final ThreadLocal<Map<Integer, String[]>> partialPOResultSetColumns = new ThreadLocal<>();
 	
 	/**
@@ -738,10 +795,25 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public PO getPOByUU (String uuID, String trxName)
 	{
-		PO po = getPO(0, trxName);
-		po.loadByUU(uuID, trxName);
-
-		return po;
+		if (isUUIDKeyTable())
+			return getUUIDPOInstance(uuID, trxName);
+		
+		// create new record
+		if (PO.UUID_NEW_RECORD.equals(uuID))
+		{
+			PO po = getUUIDPOInstance(uuID, trxName);
+			// try id contructor if uuid constructor not found
+			if (po == null)
+				po = getPO(0, trxName);
+			return po;
+		}
+		
+		// not uuid key table and not create new record, fall backs to load by where clause
+		StringBuilder whereClause = new StringBuilder()
+			.append(PO.getUUIDColumnName(getTableName()))
+			.append("=")
+			.append(DB.TO_STRING(uuID));
+		return getPO(whereClause.toString(), trxName);
 	} // getPOByUU
 
 	/**

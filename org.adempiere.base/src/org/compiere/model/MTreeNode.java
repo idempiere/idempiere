@@ -436,7 +436,7 @@ public class MTreeNode extends DefaultMutableTreeNode
 	 *	@return true if Workbench
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isWorkbench()
 	{
 		return X_AD_Menu.ACTION_Workbench.equals(m_imageIndicator);

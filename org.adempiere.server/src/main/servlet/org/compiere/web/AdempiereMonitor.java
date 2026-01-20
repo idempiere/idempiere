@@ -46,6 +46,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adempiere.base.ComponentBlackListService;
+import org.adempiere.base.event.EventManager;
 import org.adempiere.util.ServerContext;
 import org.apache.ecs.HtmlColor;
 import org.apache.ecs.xhtml.a;
@@ -1181,6 +1183,44 @@ public class AdempiereMonitor extends HttpServlet
 		line.addElement(new td().addElement(cachePara));
 		table.addElement(line);
 		
+		// Blacklist Components
+		line = new tr();
+		line.addElement(new th().addElement("Disabled Components"));
+		p blackListPara = new p();
+		String[] blackListComponents = ComponentBlackListService.getBlackListComponentNames();
+		if (blackListComponents != null && blackListComponents.length > 0) {
+			java.util.Arrays.sort(blackListComponents, java.text.Collator.getInstance());
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < blackListComponents.length; i++) {
+				if (i > 0) sb.append(", ");
+				sb.append(blackListComponents[i]);
+			}
+			blackListPara.addElement(sb.toString());
+		} else {
+			blackListPara.addElement("No disabled components");
+		}
+		line.addElement(new td().addElement(blackListPara));
+		table.addElement(line);
+		
+		// Disabled Event Handlers
+		line = new tr();
+		line.addElement(new th().addElement("Disabled Event Handlers"));
+		p blackListHandler = new p();
+		String[] blackListHandlers = EventManager.getInstance().getDisabledEventHandlers();
+		if (blackListHandlers != null && blackListHandlers.length > 0) {
+			java.util.Arrays.sort(blackListHandlers, java.text.Collator.getInstance());
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < blackListHandlers.length; i++) {
+				if (i > 0) sb.append(", ");
+				sb.append(blackListHandlers[i]);
+			}
+			blackListHandler.addElement(sb.toString());
+		} else {
+			blackListHandler.addElement("No disabled event handlers");
+		}
+		line.addElement(new td().addElement(blackListHandler));
+		table.addElement(line);
+				
 		//	Trace Level
 		line = new tr();
 		line.addElement(new th().addElement(new label("TraceLevel").addElement("Trace Log Level")));

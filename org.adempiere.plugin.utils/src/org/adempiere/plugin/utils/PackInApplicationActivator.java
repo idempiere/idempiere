@@ -39,6 +39,7 @@ import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -97,6 +98,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 			return;
 		}
 
+		boolean cacheReset = false;
 		MSession localSession = null;
 		try {
 			if (getDBLock()) {
@@ -125,6 +127,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 					}
 					addLog(Level.INFO, "Successful application of " + zipFile);
 					filesToProcess.remove(zipFile);
+					cacheReset = true;
 				}
 			} else {
 				addLog(Level.WARNING, "Could not acquire the DB lock to automatically install the packins");
@@ -138,7 +141,10 @@ public class PackInApplicationActivator extends AbstractActivator{
 			if (localSession != null)
 				localSession.logout();
 		}
-		
+		logger.log(Level.INFO, "Cache Reset: " + cacheReset);
+		if (cacheReset)
+			CacheMgt.get().reset();
+
 		if (filesToProcess.size() > 0) {
 			StringBuilder pending = new StringBuilder("The following packages were not applied: ");
 			for (File file : filesToProcess) {

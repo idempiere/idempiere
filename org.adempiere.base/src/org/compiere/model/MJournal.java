@@ -582,7 +582,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	private String validatePeriod(Timestamp dateAcct) {
 		// Get Period
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		MPeriod period = (MPeriod) getC_Period();
+		MPeriod period = MPeriod.get(getC_Period_ID());
 		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
 
 		if (! period.isInPeriod(dateAcct)) {

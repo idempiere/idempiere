@@ -69,6 +69,7 @@ public class SystemIDs
 	public final static int FORM_SQL_QUERY = 200018;
 
 	public final static int MENU_NOTICE = 233;
+	public final static int MENU_TEST = 113;
 	
 	public final static int MESSAGE_REQUESTUPDATE = 834;
 	public final static int MESSAGE_WORKFLOWRESULT = 753;
@@ -224,13 +225,16 @@ public class SystemIDs
 	public final static int WINDOW_MY_REQUESTS = 237;
 	public final static int WINDOW_NOTICE = 193;
 	public final static int WINDOW_PAYMENTS_INTO_BATCH = 200031;
+	public final static int WINDOW_PRODUCT = 140;
 	public final static int WINDOW_REQUEST = 201;
 	public final static int WINDOW_REQUESTS_ALL = 232;
 	public final static int WINDOW_RESOURCE = 236;
 	public final static int WINDOW_RETURNTOVENDOR = 53098;
 	public final static int WINDOW_SALES_ORDER = 143;
 	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
+	public final static int WINDOW_TABLE_AND_COLUMN = 100;
 	public final static int WINDOW_TEST = 127;
+	public final static int WINDOW_TEST_UU = 200138;
 	public final static int WINDOW_USER_PREFERENCE = 200073;
 	public final static int WINDOW_VENDOR_RMA = 53099;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
@@ -240,6 +244,7 @@ public class SystemIDs
 	public final static int TAB_TAB = 106;
 
 	public final static int SYSCONFIG_USER_HASH_PASSWORD = 200013;
+	public final static int SYSCONFIG_USER_HASH_PASSWORD_ALGORITHM = 200285;
 	public final static int SYSCONFIG_SYSTEM_NATIVE_SEQUENCE = 50016;	
 	
 	public final static int SCHEDULE_10_MINUTES = 200002;

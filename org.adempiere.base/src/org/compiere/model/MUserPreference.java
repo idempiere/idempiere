@@ -27,6 +27,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 
@@ -102,17 +103,26 @@ public class MUserPreference extends X_AD_UserPreference {
 	 * @param trxName
 	 * @return MUserPreference or null
 	 */
-	public static MUserPreference getUserPreference(int AD_User_ID, int AD_Client_ID, String trxName){
+	public static MUserPreference getUserPreference(int AD_User_ID, int AD_Client_ID, String trxName) {
 		Query query = new Query(Env.getCtx(), MUserPreference.Table_Name, "AD_User_ID=? AND AD_Client_ID=?", trxName);
-		MUserPreference preferences = query.setParameters(new Object[]{AD_User_ID, AD_Client_ID}).firstOnly();
-		
-		if(preferences==null){
-			preferences = createUserPreferences(AD_User_ID, AD_Client_ID, trxName);
+		MUserPreference preferences = query.setParameters(new Object[] { AD_User_ID, AD_Client_ID }).firstOnly();
+
+		if (preferences == null) {
+			try {
+				preferences = createUserPreferences(AD_User_ID, AD_Client_ID, trxName);
+			} catch (RuntimeException e) {
+				if (e.getCause() instanceof Exception && DBException.isUniqueContraintError((Exception) e.getCause())) {
+					// in case of a unique constraint violation, another thread probably created the record
+					preferences = query.setParameters(new Object[] { AD_User_ID, AD_Client_ID }).firstOnly();
+				} else {
+					throw e;
+				}
+			}
 		}
-		
+
 		return preferences;
 	}
-	
+
 	/**
 	 * Convert boolean value to "Y" or "N"
 	 * @param value

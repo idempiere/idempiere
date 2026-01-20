@@ -36,6 +36,7 @@ import org.compiere.model.MAttribute;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MAttributeUse;
+import org.compiere.model.MLot;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
@@ -68,7 +69,8 @@ public class MAttributeSetTest extends AbstractTestCase {
 		int instance = 0;
 		int nonInstance = 0;
 		for (MAttributeUse use : uses) {
-			if (use.getM_Attribute().isInstanceAttribute())
+			
+			if (MAttribute.get(use.getCtx(), use.getM_Attribute_ID()).isInstanceAttribute())
 				instance++;
 			else
 				nonInstance++;
@@ -197,7 +199,7 @@ public class MAttributeSetTest extends AbstractTestCase {
 				atomic1.set(lot1);					
 			});
 			TrxRunnable runnable2 = (trxName -> {
-				MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trx2.getTrxName());
+				MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, mas.get_ID(), trxName);
 				String lot2 = asi2.getLot(true, DictionaryIDs.M_Product.FERTILIZER_50.id);
 				Trx.get(trxName, false).commit();
 				atomic2.set(lot2);
@@ -222,6 +224,25 @@ public class MAttributeSetTest extends AbstractTestCase {
 			assertNotNull(atomic2.get(), "Lot 2 not generated");
 			assertNotEquals(atomic1.get(), atomic2.get(), "Duplicate lot generated");
 		} finally {
+			rollback();
+			trx1.rollback();
+			trx2.rollback();
+			
+			//Delete Lot records from the DB
+			String lot1Value = atomic1.get();
+			if (lot1Value != null) {
+				MLot lot1 = MLot.getProductLot(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id, lot1Value, null);
+				if (lot1 != null) {
+					lot1.deleteEx(true);
+				}
+			}
+			String lot2Value = atomic2.get();
+			if (lot2Value != null) {
+				MLot lot2 = MLot.getProductLot(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id, lot2Value, null);
+				if (lot2 != null) {
+					lot2.deleteEx(true);
+				}
+			}
 			trx1.close();
 			trx2.close();
 		}			

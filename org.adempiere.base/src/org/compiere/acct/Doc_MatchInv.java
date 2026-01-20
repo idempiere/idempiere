@@ -31,8 +31,6 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
 import org.compiere.model.ICostInfo;
-import org.compiere.model.I_C_Order;
-import org.compiere.model.I_C_OrderLine;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
@@ -41,13 +39,17 @@ import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MCurrency;
+import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
+import org.compiere.model.MOrder;
+import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLandedCostAllocation;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MTax;
 import org.compiere.model.MUOM;
 import org.compiere.model.ProductCost;
@@ -187,7 +189,8 @@ public class Doc_MatchInv extends Doc
 				return createCreditMemoFacts(as);
 		}
 		
-		if (m_receiptLine.getParent().getC_DocType().getDocBaseType().equals(DOCTYPE_MatShipment))
+		MDocType dt = MDocType.get(m_receiptLine.getParent().getC_DocType_ID());
+		if (dt.getDocBaseType().equals(DOCTYPE_MatShipment))
 			return createMatShipmentFacts(as);
 					
 		//  create Fact Header
@@ -484,7 +487,8 @@ public class Doc_MatchInv extends Doc
 		else if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)  && m_invoiceLine.getM_Product_ID() > 0 && isReversal)
 		{
 			isStockCoverage = true;
-			if (matchInv.getReversal().getDateAcct().compareTo(getDateAcct()) != 0) { // reverse-accrual
+			MMatchInv originalMatchInv = new MMatchInv(getCtx(), matchInv.getReversal_ID(), getTrxName());
+			if (originalMatchInv.getDateAcct().compareTo(getDateAcct()) != 0) { // reverse-accrual
 				// If it is a reverse-accrual, perform a stock coverage check using the current stock quantity to prevent any leftover amount in the inventory GL
 				int AD_Org_ID = m_receiptLine.getAD_Org_ID();
 				int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
@@ -740,8 +744,9 @@ public class Doc_MatchInv extends Doc
 			int Ref_CostDetail_ID = 0;
 			if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
 			{
+				MMatchInv originalMatchInv = new MMatchInv(getCtx(), matchInv.getReversal_ID(), getTrxName());
 				MCostDetail cd = MCostDetail.getInvoice(as, getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
-						matchInv.getReversal().getC_InvoiceLine_ID(), 0, matchInv.getReversal().getDateAcct(), getTrxName());
+						originalMatchInv.getC_InvoiceLine_ID(), 0, originalMatchInv.getDateAcct(), getTrxName());
 				if (cd != null)
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			}		
@@ -755,8 +760,8 @@ public class Doc_MatchInv extends Doc
 			}
 			
 			Map<Integer, BigDecimal> landedCostMap = new LinkedHashMap<Integer, BigDecimal>();
-			I_C_OrderLine orderLine = m_receiptLine.getC_OrderLine();
-			if (orderLine == null)
+			MOrderLine orderLine = new MOrderLine(getCtx(), m_receiptLine.getC_OrderLine_ID(), getTrxName());
+			if (orderLine.getC_OrderLine_ID() == 0 || orderLine.getC_OrderLine_ID() != m_receiptLine.getC_OrderLine_ID())
 				return "";
 			
 			int C_OrderLine_ID = orderLine.getC_OrderLine_ID();
@@ -768,7 +773,7 @@ public class Doc_MatchInv extends Doc
 				BigDecimal amt = totalAmt.multiply(tQty).divide(totalQty, 12, RoundingMode.HALF_UP);			
 				if (orderLine.getC_Currency_ID() != as.getC_Currency_ID())
 				{
-					I_C_Order order = orderLine.getC_Order();
+					MOrder order = orderLine.getParent();
 					Timestamp dateAcct = order.getDateAcct();
 					BigDecimal rate = MConversionRate.getRate(
 						order.getC_Currency_ID(), as.getC_Currency_ID(),
@@ -783,7 +788,8 @@ public class Doc_MatchInv extends Doc
 					if (amt.scale() > as.getCostingPrecision())
 						amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 				}
-				int elementId = allocation.getC_OrderLandedCost().getM_CostElement_ID();
+				MOrderLandedCost olc = new MOrderLandedCost(getCtx(), allocation.getC_OrderLandedCost_ID(), getTrxName());
+				int elementId = olc.getM_CostElement_ID();
 				BigDecimal elementAmt = landedCostMap.get(elementId);
 				if (elementAmt == null) 
 				{
@@ -802,8 +808,9 @@ public class Doc_MatchInv extends Doc
 				Ref_CostDetail_ID = 0;
 				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
 				{
+					MMatchInv originalMatchInv = new MMatchInv(getCtx(), matchInv.getReversal_ID(), getTrxName());
 					MCostDetail cd = MCostDetail.getShipment(as, getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
-							matchInv.getReversal().getM_InOutLine_ID(), 0, getTrxName());
+							originalMatchInv.getM_InOutLine_ID(), 0, getTrxName());
 					if (cd != null)
 						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 				}

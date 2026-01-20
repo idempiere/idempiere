@@ -20,6 +20,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.Properties;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.print.MPrintGraph;
 
 /**
@@ -29,7 +30,9 @@ import org.compiere.print.MPrintGraph;
  * 	@version 	$Id: GraphElement.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
  *  @deprecated not fully implemented
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class GraphElement extends PrintElement
 {
 	/**

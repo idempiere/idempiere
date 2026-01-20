@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -55,6 +56,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
+import org.idempiere.db.util.SQLFragment;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -804,7 +806,7 @@ public class DB_Oracle implements AdempiereDatabase
      *  @return data type
      *  @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public String getDataType (String columnName, int displayType, int precision,
         boolean defaultValue)
     {
@@ -994,6 +996,18 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 	
 	@Override
+	public SQLFragment subsetFilterForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("toTableOfVarchar2(")
+			.append(columnName)
+			.append(")");
+		builder.append(" submultiset of ")
+			.append("toTableOfVarchar2(?)");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
+	}
+	
+	@Override
 	public String intersectClauseForCSV(String columnName, String csv) {
 		return intersectClauseForCSV(columnName, csv, false);
 	}
@@ -1016,6 +1030,28 @@ public class DB_Oracle implements AdempiereDatabase
 		return builder.toString();
 	}
 
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv) {
+		return intersectFilterForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("toTableOfVarchar2(")
+			.append(columnName)
+			.append(")");
+		builder.append(" MULTISET INTERSECT ")
+			.append("toTableOfVarchar2(?) IS ");
+		
+		if(!isNotClause)
+			builder.append("NOT "); 
+			
+		builder.append("EMPTY");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
+	}
+	
 	@Override
 	public String getNumericDataType() {
 		return "NUMBER";
@@ -1061,6 +1097,13 @@ public class DB_Oracle implements AdempiereDatabase
 	@Override
 	public String getTimestampWithTimezoneDataType() {
 		return "TIMESTAMP WITH TIME ZONE";
+	}
+
+	@Override
+	public String getUUIDDataType() {
+		// The comment /*UUID*/ is necessary for the ConvertMap_PostgreSQL to work
+		// this is still necessary because when generating migration scripts the convert layer is used
+		return "VARCHAR2/*UUID*/(36)";
 	}
 
 	@Override
@@ -1119,7 +1162,7 @@ public class DB_Oracle implements AdempiereDatabase
 		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
 			.append(table.getTableName())
 			.append(" ADD ").append(column.getSQLDDL());
-		String constraint = column.getConstraint(table.getTableName());
+		String constraint = column.getConstraint(table);
 		if (constraint != null && constraint.length() > 0) {
 			sql.append(DB.SQLSTATEMENT_SEPARATOR).append("ALTER TABLE ")
 			.append(table.getTableName())

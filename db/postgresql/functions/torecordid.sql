@@ -25,7 +25,7 @@ BEGIN
          INTO uu_column
          FROM AD_Column a 
         JOIN AD_Table b ON (a.AD_Table_ID=b.AD_Table_ID) 
-         WHERE a.IsActive='Y' AND a.FieldLength=36  AND lower(ColumnName) like (lower(substring(p_tablename from 0 for 27)) || '%UU')
+         WHERE a.IsActive='Y' AND lower(ColumnName) like (lower(substring(p_tablename from 0 for 27)) || '%UU')
          AND  lower(b.TableName) = lower(p_tablename);
      END IF;
      
@@ -33,7 +33,7 @@ BEGIN
          RAISE EXCEPTION 'UUID column not found for table %', p_tablename;
      END IF;
 
-     EXECUTE 'SELECT ' || quote_ident(lower(id_column)) || ' FROM ' || quote_ident(lower(p_tablename)) || ' WHERE ' ||  uu_column || '=$1'
+     EXECUTE 'SELECT ' || quote_ident(lower(id_column)) || ' FROM ' || quote_ident(lower(p_tablename)) || ' WHERE ' ||  uu_column || '=$1::uuid'
      INTO STRICT o_id
      USING p_uu_value;
 

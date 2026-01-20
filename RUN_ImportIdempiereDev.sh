@@ -103,11 +103,19 @@ ls -lsa "$IDEMPIERE_HOME"/data/seed/Adempiere${SUFFIX}.dmp
 echo Press enter to continue ...
 read -r _
 
+if [ -z "$ADEMPIERE_DB_SYSTEM_USER" ]; then
+    if [ "$ADEMPIERE_DB_PATH" = "postgresql" ]; then
+        ADEMPIERE_DB_SYSTEM_USER=postgres
+    else
+        ADEMPIERE_DB_SYSTEM_USER=SYSTEM
+    fi
+fi
+
 if [ "$ADEMPIERE_DB_PATH" = "postgresql" ]
 then
     cd "$IDEMPIERE_HOME"/.. || (echo "Cannot cd to $IDEMPIERE_HOME/.."; exit 1)
     echo "*** Importing postgresql seed into $ADEMPIERE_DB_NAME ***"
-    if ! bash "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/ImportIdempiere.sh" "$SYSUSER/$ADEMPIERE_DB_SYSTEM" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
+    if ! bash "org.adempiere.server-feature/utils.unix/$ADEMPIERE_DB_PATH/ImportIdempiere.sh" "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM_USER" "$ADEMPIERE_DB_SYSTEM" "$SUFFIX"
     then
         echo "Import failed, please verify"
         exit 1

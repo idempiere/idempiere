@@ -19,6 +19,8 @@ package org.compiere.util;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 
 /**
@@ -117,6 +119,7 @@ public interface SecureInterface
 	 *  @param value message
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getDigest (String value);
 
 	/**
@@ -124,7 +127,26 @@ public interface SecureInterface
 	 *  @param value digest string
 	 *  @return true if valid digest
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isDigest (String value);
+	
+	/**
+	 * Convert String to SHA-256 digest
+	 * @param value
+	 * @return HexString of digested message (length = 64 characters)
+	 */
+	default String getSHA256Digest(String value) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+	
+	/**
+	 * Check if value is a valid SHA-256 digest
+	 * @param value
+	 * @return true if valid SHA-256 digest
+	 */
+	default boolean isSHA256Digest(String value) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
 	
 	/**
 	 *  Convert String and salt to SHA-512 hash with iterations<br/>
@@ -136,5 +158,24 @@ public interface SecureInterface
 	 *  @throws UnsupportedEncodingException 
 	 */
 	public String getSHA512Hash (int iterations, String value, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException;
+
+	/**
+	 * Hash the password with the given salt and algorithm
+	 * @param password
+	 * @param salt
+	 * @param algorithm
+	 * @return HexString of hashed password
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchProviderException
+	 * @throws InvalidKeySpecException
+	 */
+	public String getPasswordHash(String password, byte[] salt, String algorithm) throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchProviderException, InvalidKeySpecException;
 	
+	/**
+	 * Check if the given password hash algorithm is supported
+	 * @param algorithm
+	 * @return true if supported, false otherwise
+	 */
+	public boolean isSupportedPaswordHashAlgorithm(String algorithm);
 }	//	SecureInterface

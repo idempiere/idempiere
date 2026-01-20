@@ -413,10 +413,11 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
-			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& !originalColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
+			&& !originalColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualDBColumn
 
 	/**
@@ -428,9 +429,10 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& originalColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}   //  isVirtualUIColumn
 	
 	/**
@@ -442,9 +444,10 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& originalColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualSearchColumn
 
 	/**

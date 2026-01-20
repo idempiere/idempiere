@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.model.MClient;
 import org.compiere.model.MLocator;
 import org.compiere.model.MProcessPara;
@@ -46,7 +47,9 @@ import org.eevolution.model.MPPProductBOMLine;
  * @author victor.perez@e-evolution.com
  * @contributor: Carlos Ruiz (globalqss) - review backward compatibility - implement mustBeStocked properly
  */
-@Deprecated // replaced by ProductionProcess
+@Deprecated (since="13", forRemoval=true) // replaced by ProductionProcess
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 @org.adempiere.base.annotation.Process
 public class M_Production_Run extends SvrProcess {
 
