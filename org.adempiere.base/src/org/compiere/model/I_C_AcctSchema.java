@@ -327,6 +327,19 @@ public interface I_C_AcctSchema
 	  */
 	public boolean isAllowNegativePosting();
 
+    /** Column name IsDeleteReverseCorrectPosting */
+    public static final String COLUMNNAME_IsDeleteReverseCorrectPosting = "IsDeleteReverseCorrectPosting";
+
+	/** Set Delete Reverse Correct Posting.
+	  * This flag controls if Adempiere must delete the posting line when reverse correct document.
+	  */
+	public void setIsDeleteReverseCorrectPosting (boolean IsDeleteReverseCorrectPosting);
+
+	/** Get Delete Reverse Correct Posting.
+	  * This flag controls if Adempiere must delete the posting line when reverse correct document.
+	  */
+	public boolean isDeleteReverseCorrectPosting();
+
     /** Column name IsDiscountCorrectsTax */
     public static final String COLUMNNAME_IsDiscountCorrectsTax = "IsDiscountCorrectsTax";
 
