@@ -44,7 +44,6 @@ import org.compiere.util.Util;
  * <ul>
  *   <li>Binds session to client network identity (IP address)</li>
  *   <li>Binds session to device identity (User-Agent + Accept-Language)</li>
- *   <li>Session tokens are regenerated on logout to prevent session fixation</li>
  * </ul>
  * 
  * <p>The fingerprint validation can be configured via AD_SysConfig:</p>
@@ -58,7 +57,7 @@ public class SessionFingerprint implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5710112124674857398L;
+	private static final long serialVersionUID = 5661059279871464411L;
 
 	private static final CLogger log = CLogger.getCLogger(SessionFingerprint.class);
 
@@ -207,44 +206,6 @@ public class SessionFingerprint implements Serializable {
 		if (session != null) {
 			session.removeAttribute(SESSION_FINGERPRINT_ATTR);
 		}
-	}
-
-	/**
-	 * Invalidate the current session and create a new one with a new JSESSIONID.
-	 * This should be called on logout to prevent session fixation attacks.
-	 * The new session will not have any attributes from the old session.
-	 * 
-	 * @param request the HTTP servlet request
-	 * @return the new HTTP session, or null if request is null
-	 */
-	public static HttpSession invalidateAndCreateNewSession(HttpServletRequest request) {
-		if (request == null) {
-			return null;
-		}
-
-		HttpSession oldSession = request.getSession(false);
-		if (oldSession != null) {
-			String oldSessionId = oldSession.getId();
-			try {
-				oldSession.invalidate();
-				if (log.isLoggable(Level.FINE)) {
-					log.fine("Session invalidated on logout: " + oldSessionId);
-				}
-			} catch (IllegalStateException e) {
-				// Session already invalidated
-				if (log.isLoggable(Level.FINE)) {
-					log.fine("Session already invalidated: " + oldSessionId);
-				}
-			}
-		}
-
-		// Create new session with new JSESSIONID
-		HttpSession newSession = request.getSession(true);
-		if (log.isLoggable(Level.FINE)) {
-			log.fine("New session created after logout: " + newSession.getId());
-		}
-
-		return newSession;
 	}
 
 	/**
