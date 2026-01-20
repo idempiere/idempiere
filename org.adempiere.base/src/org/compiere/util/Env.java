@@ -1728,7 +1728,7 @@ public final class Env
 			else
 			{
 				outStr.append("?"); // replace context with parameter
-				if (token.endsWith("_ID"))
+				if (token.endsWith("_ID") || "CreatedBy".equalsIgnoreCase(token) || "UpdatedBy".equalsIgnoreCase(token))
 					parameters.add(Integer.valueOf(ctxInfo));
 				else
 					parameters.add(ctxInfo);
@@ -2183,7 +2183,7 @@ public final class Env
 				}
 			} else {
 				outStr.append("?");
-				if (token.endsWith("_ID"))
+				if (token.endsWith("_ID") || "CreatedBy".equalsIgnoreCase(token) || "UpdatedBy".equalsIgnoreCase(token))
 					parameters.add(Integer.valueOf(value));
 				else
 					parameters.add(value);

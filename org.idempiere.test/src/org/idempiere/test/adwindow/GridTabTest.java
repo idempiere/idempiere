@@ -95,11 +95,81 @@ public class GridTabTest extends AbstractTestCase {
 		}
 
 		GridTab gTab = gridWindow.getTab(0);
-		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		assertTrue(gTab.getRowCount() == 1, "GridTab Row Count is not 1. GridTab=" + gTab.getName());
 
 		String name = (String) gTab.getValue("Name");
 		MBPartner bpartner = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		assertTrue(bpartner.getName().equals(name), "GridTab Name != MBPartner.getName(). GridTab.Name="+name + " MBPartner.getName="+bpartner.getName());
+		
+		//test query with no restriction
+		query = new MQuery(MBPartner.Table_Name);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 3);
+		assertTrue(gTab.getRowCount() >= 3, "GridTab Row Count is less than 3. GridTab="+gTab.getName());
+		
+		//test query with 2 restrictions
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_IsCustomer, MQuery.EQUAL, "Y");
+		query.addRestriction(MBPartner.COLUMNNAME_IsVendor, MQuery.EQUAL, "Y");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "GridTab Row Count is 0. GridTab="+gTab.getName());
+		int customerCount = 0;
+		int vendorCount = 0;
+		for(int row = 0; row < gTab.getRowCount(); row++) {
+			gTab.setCurrentRow(row);
+			Boolean isCustomer = (Boolean) gTab.getValue(MBPartner.COLUMNNAME_IsCustomer);
+			if (isCustomer != null && isCustomer.booleanValue())
+				customerCount++;
+			Boolean isVendor = (Boolean) gTab.getValue(MBPartner.COLUMNNAME_IsVendor);
+			if (isVendor != null && isVendor.booleanValue())
+				vendorCount++;
+		}
+		assertTrue(customerCount == vendorCount && customerCount == gTab.getRowCount(), "GridTab Row Count != Customer/Vendor count. GridTab="+gTab.getName()
+				+ " RowCount="+gTab.getRowCount() + " CustomerCount="+customerCount + " VendorCount="+vendorCount);
+		
+		// test with function
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction("Upper("+MBPartner.COLUMNNAME_Name+")", MQuery.EQUAL, bpartner.getName().toUpperCase());
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
+		assertEquals(bpartner.getName(), gTab.getValue(MBPartner.COLUMNNAME_Name), "GridTab Name != MBPartner.getName. GridTab.Name="+gTab.getValue(MBPartner.COLUMNNAME_Name) + " MBPartner.getName="+bpartner.getName());
+		
+		// test with reference column
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MOrder.COLUMNNAME_Bill_BPartner_ID, MQuery.EQUAL, DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
+		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(), "GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID="+gTab.getRecord_ID());
+		
+		// test with set negative current row
+		assertEquals(0, gTab.setCurrentRow(-1, true),
+				"Setting current row to -1 did not result in 0. GridTab=" + gTab.getName());
+		assertEquals(0, gTab.getCurrentRow(), "Current row is not 0 after setting to -1. GridTab=" + gTab.getName());
+
+		// test two email address don't confuse the parse context variable logic
+		bpartner.setDescription("test1@test.com,test2@test.com");
+		bpartner.saveEx();
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_Description, MQuery.EQUAL, "test1@test.com,test2@test.com");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() == 1, "GridTab Row Count is not 1. GridTab=" + gTab.getName());
+		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(),
+				"GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID=" + gTab.getRecord_ID());
+		
+		// test parsing of @CreatedBy@
+		Env.setContext(Env.getCtx(), gTab.getWindowNo(), "CreatedBy", DictionaryIDs.AD_User.SUPER_USER.id);
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_CreatedBy, MQuery.EQUAL, "@CreatedBy:0@");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "GridTab Row Count is not > 0. GridTab=" + gTab.getName());
+		assertEquals(DictionaryIDs.AD_User.SUPER_USER.id, gTab.getValue(MBPartner.COLUMNNAME_CreatedBy),
+				"GridTab CreatedBy != SUPER_USER id. GridTab.CreatedBy=" + gTab.getValue(MBPartner.COLUMNNAME_CreatedBy));
 	}
 
 	@Test

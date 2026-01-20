@@ -47,7 +47,16 @@ Require-Bundle: org.adempiere.base;bundle-version="12.0.0",
  org.compiere.db.postgresql.provider;bundle-version="12.0.0",
  org.idempiere.webservices;bundle-version="12.0.0",
  org.adempiere.ui.zk;bundle-version="12.0.0",
- org.adempiere.ui;bundle-version="12.0.0"
+ org.adempiere.ui;bundle-version="12.0.0",
+ zcommon;bundle-version="10.0.1",
+ zel;bundle-version="10.0.1",
+ zhtml;bundle-version="10.0.1",
+ zk;bundle-version="10.0.1",
+ zkbind;bundle-version="10.0.1",
+ zkplus;bundle-version="10.0.1",
+ zul;bundle-version="10.0.1",
+ zweb;bundle-version="10.0.1",
+ org.idempiere.zk.extra
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.idempiere.test.TestActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-17
