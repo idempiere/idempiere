@@ -115,17 +115,17 @@ public class SessionFingerprint implements Serializable {
 
 		SessionFingerprint fingerprint = new SessionFingerprint();
 		fingerprint.ipAddress = getClientIP(request);
-		StringBuilder uaBuilder = new StringBuilder(request.getHeader("User-Agent"))
+		String ua = request.getHeader("User-Agent");
+		String al = request.getHeader("Accept-Language");
+		StringBuilder uaBuilder = new StringBuilder(ua == null ? "" : ua)
 				.append("|")
-				.append(request.getHeader("Accept-Language"));
+				.append(al == null ? "" : al);
 		fingerprint.userAgent =  uaBuilder.toString();
 
 		session.setAttribute(SESSION_FINGERPRINT_ATTR, fingerprint);
 
-		if (log.isLoggable(Level.FINE)) {
-			log.fine("Session fingerprint created for session: " + session.getId() + 
-					", IP: " + fingerprint.ipAddress);
-		}
+		if (log.isLoggable(Level.FINE))
+			log.fine("Session fingerprint created for IP: " + fingerprint.ipAddress);
 
 		return fingerprint;
 	}
@@ -162,9 +162,11 @@ public class SessionFingerprint implements Serializable {
 		}
 
 		if (valid && isCheckUserAgent()) {
-			StringBuilder uaBuilder = new StringBuilder(request.getHeader("User-Agent"))
+			String ua = request.getHeader("User-Agent");
+			String al = request.getHeader("Accept-Language");
+			StringBuilder uaBuilder = new StringBuilder(ua == null ? "" : ua)
 					.append("|")
-					.append(request.getHeader("Accept-Language"));
+					.append(al == null ? "" : al);
 			currentUA = uaBuilder.toString();
 			if (!Util.isEmpty(stored.userAgent, true) || !Util.isEmpty(currentUA, true)) {
 				valid = valid && areEqual(stored.userAgent, currentUA);
@@ -172,9 +174,8 @@ public class SessionFingerprint implements Serializable {
 		}
 
 		if (!valid) {
-			log.warning("Session fingerprint mismatch detected! Session: " + session.getId() +
-					", Stored IP: " + stored.ipAddress + ", Current IP: " + currentIP +
-					", Stored UA: " + stored.userAgent + ", Current UA: " + currentUA);
+			log.warning("Session fingerprint mismatch detected! Stored IP: " + stored.ipAddress +
+					", Current IP: " + currentIP);
 		}
 
 		return valid;
