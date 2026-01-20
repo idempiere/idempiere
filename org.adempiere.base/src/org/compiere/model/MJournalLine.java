@@ -302,6 +302,10 @@ public class MJournalLine extends X_GL_JournalLine
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_Journal_ID"));
 			return false;
 		}
+		if(getM_AttributeSetInstance_ID() > 0 && getM_Product_ID() <= 0) {
+			log.saveError("SaveError", Msg.getMsg(getCtx(), "PAttributeNoSelection"));
+			return false;
+		}
 
 		if (getAD_Org_ID() <= 0) //	Set Line Org to Doc Org if still not set 
 			setAD_Org_ID(getParent().getAD_Org_ID()); 
