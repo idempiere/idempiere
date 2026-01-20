@@ -1444,11 +1444,12 @@ public class MCostDetail extends X_M_CostDetail
 			StringBuilder whereClause = new StringBuilder();
 			whereClause.append("C_OrderLine_ID = ? ");
 			whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+			whereClause.append(" AND M_Product_ID = ?");
 			whereClause.append(" AND M_AttributeSetInstance_ID = ?");
 			whereClause.append(" AND C_AcctSchema_ID = ?");
 			whereClause.append(" AND M_CostDetail_ID < ?");
 			cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-					.setParameters(getC_OrderLine_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+					.setParameters(getC_OrderLine_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
 					.setOrderBy("M_CostDetail_ID DESC")
 					.first();
 		}
@@ -1459,18 +1460,19 @@ public class MCostDetail extends X_M_CostDetail
 			if (!i.isSOTrx()) {
 				MMatchPO[] mpoList = MMatchPO.getInvoice(Env.getCtx(), i.getC_Invoice_ID(), get_TrxName());
 				for (MMatchPO mpo : mpoList) {
+					// more than one match po for the same invoice line and account date
 					if (mpo.getC_InvoiceLine_ID() == getC_InvoiceLine_ID() 
 							&& mpo.getDateAcct().compareTo(getDateAcct()) == 0
 							&& mpo.getQty().compareTo(il.getQtyInvoiced()) != 0) { 
-						// partial MR, get the cost info from previous order
+						// get the cost info from previous cost detail
 						StringBuilder whereClause = new StringBuilder();
-						whereClause.append("C_OrderLine_ID = ? ");
-						whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+						whereClause.append("TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+						whereClause.append(" AND M_Product_ID = ?");
 						whereClause.append(" AND M_AttributeSetInstance_ID = ?");
 						whereClause.append(" AND C_AcctSchema_ID = ?");
 						whereClause.append(" AND M_CostDetail_ID < ?");
 						cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-								.setParameters(mpo.getC_OrderLine_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+								.setParameters(product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
 								.setOrderBy("M_CostDetail_ID DESC")
 								.first();
 						break;
