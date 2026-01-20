@@ -315,6 +315,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(oLine.getAD_OrgTrx_ID());
 		setUser1_ID(oLine.getUser1_ID());
 		setUser2_ID(oLine.getUser2_ID());
+		setC_CostCenter_ID(oLine.getC_CostCenter_ID());
+		setC_Department_ID(oLine.getC_Department_ID());
 		//
 		setRRAmt(oLine.getRRAmt());
 		setRRStartDate(oLine.getRRStartDate());
@@ -391,6 +393,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setAD_OrgTrx_ID(sLine.getAD_OrgTrx_ID());
 		setUser1_ID(sLine.getUser1_ID());
 		setUser2_ID(sLine.getUser2_ID());
+		setC_CostCenter_ID(sLine.getC_CostCenter_ID());
+		setC_Department_ID(sLine.getC_Department_ID());
 	}	//	setShipLine
 
 	/**
@@ -898,7 +902,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					&&  Env.ZERO.compareTo(getPriceList()) == 0)
 					setPrice();
 				// Enforce PriceLimit
-				boolean enforce = m_IsSOTrx && getParent().getM_PriceList().isEnforcePriceLimit();
+				MPriceList pl = MPriceList.get(getCtx(), getParent().getM_PriceList_ID(), get_TrxName());
+				boolean enforce = m_IsSOTrx && pl.isEnforcePriceLimit();
 				if (enforce && MRole.getDefault().isOverwritePriceLimit())
 					enforce = false;
 				if (enforce && getPriceLimit() != Env.ZERO
@@ -943,7 +948,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			/* Carlos Ruiz - globalqss
 			 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
 			 */
-			if (getParent().getC_DocTypeTarget().isChargeOrProductMandatory()) {
+			MDocType dt = MDocType.get(getParent().getC_DocTypeTarget_ID());
+			if (dt.isChargeOrProductMandatory()) {
 				if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && (getPriceEntered().signum() != 0 || getQtyEntered().signum() != 0)) {
 					log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 					return false;
@@ -1128,7 +1134,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 					{
 						double result = getLineNetAmt().multiply(base).doubleValue();
 						result /= total.doubleValue();
-						lca.setAmt(result, getParent().getC_Currency().getStdPrecision());
+						MCurrency currency = MCurrency.get(getParent().getC_Currency_ID());
+						lca.setAmt(result, currency.getStdPrecision());
 					}
 					if (!lca.save()){
 						msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);
@@ -1172,15 +1179,20 @@ public class MInvoiceLine extends X_C_InvoiceLine
 				MLandedCostAllocation lca = new MLandedCostAllocation (this, lc.getM_CostElement_ID());
 				lca.setM_Product_ID(lc.getM_Product_ID());	//	No ASI
 				lca.setAmt(getLineNetAmt());
-				if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
-				{
+				if (lc.getQty().signum() <= 0) {
+					if (lc.getLandedCostDistribution().equals(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs))
+					{
+						lca.setBase(getLineNetAmt());
+						lca.setQty(getLineNetAmt());
+					}
+					else
+					{
+						lca.setBase(getQtyInvoiced());
+						lca.setQty(getQtyInvoiced());
+					}
+				} else {
 					lca.setBase(getLineNetAmt());
-					lca.setQty(getLineNetAmt());
-				}
-				else
-				{
-					lca.setBase(getQtyInvoiced());
-					lca.setQty(getQtyInvoiced());
+					lca.setQty(lc.getQty());
 				}
 				if (lca.save())
 					return "";
@@ -1260,7 +1272,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			{
 				double result = getLineNetAmt().multiply(base).doubleValue();
 				result /= total.doubleValue();
-				lca.setAmt(result, getParent().getC_Currency().getStdPrecision());
+				MCurrency currency = MCurrency.get(getParent().getC_Currency_ID());
+				lca.setAmt(result, currency.getStdPrecision());
 			}
 			if (!lca.save()){
 				msgreturn = new StringBuilder("Cannot save line Allocation = ").append(lca);

@@ -23,7 +23,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for AD_Ref_Table
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_Ref_Table")
 public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20251124L;
 
     /** Standard Constructor */
     public X_AD_Ref_Table (Properties ctx, int AD_Ref_Table_ID, String trxName)
@@ -45,6 +45,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -61,6 +63,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -77,6 +81,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -93,6 +99,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDisplayIdentifier (false);
+// N
 			setIsValueDisplayed (false);
         } */
     }
@@ -125,6 +133,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_Disp() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -150,6 +159,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
@@ -178,6 +188,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Column getAD_() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -218,6 +229,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_Ref_Table_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_ID)
@@ -254,6 +266,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
         return new ValueNamePair(get_UUID(), String.valueOf(getAD_Reference_ID()));
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -282,6 +295,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -310,6 +324,22 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Display SQL.
+		@param DisplaySQL SQL for display of lookup value
+	*/
+	public void setDisplaySQL (String DisplaySQL)
+	{
+		set_Value (COLUMNNAME_DisplaySQL, DisplaySQL);
+	}
+
+	/** Get Display SQL.
+		@return SQL for display of lookup value
+	  */
+	public String getDisplaySQL()
+	{
+		return (String)get_Value(COLUMNNAME_DisplaySQL);
+	}
+
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
@@ -327,6 +357,29 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
+	}
+
+	/** Set Display Identifier.
+		@param IsDisplayIdentifier Display the record identifier
+	*/
+	public void setIsDisplayIdentifier (boolean IsDisplayIdentifier)
+	{
+		set_Value (COLUMNNAME_IsDisplayIdentifier, Boolean.valueOf(IsDisplayIdentifier));
+	}
+
+	/** Get Display Identifier.
+		@return Display the record identifier
+	  */
+	public boolean isDisplayIdentifier()
+	{
+		Object oo = get_Value(COLUMNNAME_IsDisplayIdentifier);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Display Value.

@@ -28,6 +28,7 @@
 		<module>org.adempiere.server</module>		
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>
+		<module>javax.websocket-api.fragment</module>
 		<module>org.apache.ecs</module>
 		<module>org.compiere.db.oracle.provider</module>
 		<module>org.compiere.db.postgresql.provider</module>
@@ -68,6 +69,8 @@
 		<module>org.idempiere.zk.breeze.theme</module>
 		<module>org.idempiere.zk.iceblue_c.theme</module>
 		<module>org.idempiere.p2.targetplatform</module>		
+    <module>org.idempiere.bouncy.castle-feature</module>
+    <module>coverage-report</module>
 	</modules>
 
 </project>

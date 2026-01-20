@@ -28,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -59,6 +62,7 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
 
 /**
  * 
@@ -78,16 +82,14 @@ public class InventoryTestIsolated extends AbstractTestCase {
 		
 		MWarehouse wh = new MWarehouse(Env.getCtx(), DictionaryIDs.M_Warehouse.HQ.id, null);
 		boolean disallow = wh.isDisallowNegativeInv(); 
-		MProduct product = null;
-		try {
-			
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {			
 			if (!disallow) {
 				wh.setIsDisallowNegativeInv(true);
 				wh.saveEx();
 				CacheMgt.get().reset(MWarehouse.Table_Name, wh.get_ID());
 			}
 			
-			product = new MProduct(ctx, 0, null);
+			MProduct product = new MProduct(ctx, 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id);
 			product.setName("testSkipProductWithSerial");
 			product.setValue("testSkipProductWithSerial");
@@ -99,6 +101,7 @@ public class InventoryTestIsolated extends AbstractTestCase {
 			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id);
 			product.saveEx();
+			mockProductGet(productMock, product);
 	
 			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
 			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
@@ -138,9 +141,6 @@ public class InventoryTestIsolated extends AbstractTestCase {
 		} finally {
 			rollback();
 			
-			if (product != null) 
-				product.deleteEx(true);
-			
 			if (!disallow) {
 				wh.setIsDisallowNegativeInv(false);
 				wh.saveEx();
@@ -156,16 +156,14 @@ public class InventoryTestIsolated extends AbstractTestCase {
 		
 		MWarehouse wh = new MWarehouse(Env.getCtx(), DictionaryIDs.M_Warehouse.HQ.id, null);
 		boolean disallow = wh.isDisallowNegativeInv(); 
-		MProduct product = null;
-		try {
-			
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {			
 			if (!disallow) {
 				wh.setIsDisallowNegativeInv(true);
 				wh.saveEx();
 				CacheMgt.get().reset(MWarehouse.Table_Name, wh.get_ID());
 			}
 			
-			product = new MProduct(ctx, 0, null);
+			MProduct product = new MProduct(ctx, 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id);
 			product.setName("testSkipProductWithSerial2");
 			product.setValue("testSkipProductWithSerial2");
@@ -177,6 +175,7 @@ public class InventoryTestIsolated extends AbstractTestCase {
 			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id);
 			product.saveEx();
+			mockProductGet(productMock, product);
 	
 			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
 			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
@@ -238,9 +237,6 @@ public class InventoryTestIsolated extends AbstractTestCase {
 		} finally {
 			rollback();
 			
-			if (product != null) 
-				product.deleteEx(true);
-			
 			if (!disallow) {
 				wh.setIsDisallowNegativeInv(false);
 				wh.saveEx();
@@ -294,5 +290,11 @@ public class InventoryTestIsolated extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt1.getAD_Client_ID(), receipt1.get_Table_ID(), receipt1.get_ID(), false, getTrxName());
 			assertNull(error, error);
 		}
+	}
+	
+	private void mockProductGet(MockedStatic<MProduct> productMock, MProduct product) {
+		productMock.when(() -> MProduct.getCopy(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()), any())).thenReturn(product);
+		productMock.when(() -> MProduct.get(any(Properties.class), eq(product.get_ID()))).thenReturn(product);
 	}
 }

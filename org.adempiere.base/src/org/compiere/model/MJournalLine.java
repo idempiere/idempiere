@@ -409,7 +409,7 @@ public class MJournalLine extends X_GL_JournalLine
 			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
 
 			// Validate all mandatory combinations are set
-			MAcctSchema as = (MAcctSchema) getParent().getC_AcctSchema();
+			MAcctSchema as = MAcctSchema.get(getParent().getC_AcctSchema_ID());
 			String errorFields = "";
 			for (MAcctSchemaElement elem : MAcctSchemaElement.getAcctSchemaElements(as)) {
 				if (! elem.isMandatory())
@@ -437,6 +437,18 @@ public class MJournalLine extends X_GL_JournalLine
 					errorFields += "@" + COLUMNNAME_User1_ID + "@, ";
 				if (MAcctSchemaElement.ELEMENTTYPE_UserElementList2.equals(et) && getUser2_ID() == 0)
 					errorFields += "@" + COLUMNNAME_User2_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Department.equals(et) && getC_Department_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_Department_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_CostCenter.equals(et) && getC_CostCenter_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_CostCenter_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Employee.equals(et) && getC_Employee_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_Employee_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Warehouse.equals(et) && getM_Warehouse_ID() == 0)
+					errorFields += "@" + COLUMNNAME_M_Warehouse_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_Charge.equals(et) && getC_Charge_ID() == 0)
+					errorFields += "@" + COLUMNNAME_C_Charge_ID + "@, ";
+				if (MAcctSchemaElement.ELEMENTTYPE_AttributeSetInstance.equals(et) && getM_AttributeSetInstance_ID() == 0)
+					errorFields += "@" + COLUMNNAME_M_AttributeSetInstance_ID + "@, ";
 			}
 			if (errorFields.length() > 0)
 			{

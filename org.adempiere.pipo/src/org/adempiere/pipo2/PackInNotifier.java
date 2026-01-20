@@ -25,14 +25,21 @@
 
 package org.adempiere.pipo2;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -50,6 +57,7 @@ public class PackInNotifier {
 	private String pluginName;
 	private List<KeyNamePair> knpLines = new ArrayList<KeyNamePair>();
 	private PackIn packIn;
+	private Exception packInException = null;
 
 	public PackInNotifier(PackIn packIn) {
 		this.packIn = packIn;
@@ -65,6 +73,10 @@ public class PackInNotifier {
 
 	public void addFailureLine(String msg) {
 		addLine(LEVEL_FAILURE, msg);
+	}
+
+	public void addException(Exception e) {
+		this.packInException = e;
 	}
 
 	public void addSuccessLine(String msg) {
@@ -95,9 +107,10 @@ public class PackInNotifier {
 		// get list from current tenant
 		String emailList = MSysConfig.getValue(MSysConfig.EMAIL_NOTIFY_2PACK, "", Env.getAD_Client_ID(Env.getCtx())).trim();
 		String emailSys = MSysConfig.getValue(MSysConfig.EMAIL_NOTIFY_2PACK, "", 0).trim();
-		if (emailSys.length() > 0 && !emailList.equals(emailSys))
+		if (!emailSys.isEmpty() && !emailList.equals(emailSys))
 			emailList += "," + emailSys;
-		if (emailList.length() == 0)
+		boolean attachNotify = MSysConfig.getBooleanValue(MSysConfig.ATTACH_NOTIFY_2PACK, false, Env.getAD_Client_ID(Env.getCtx()));
+		if (emailList.isEmpty() && !attachNotify)
 			return;
 
 		// Compose Subject
@@ -135,7 +148,7 @@ public class PackInNotifier {
 
 		// --> if failed:
 		List<String> fLines = getLines(LEVEL_FAILURE);
-		if (fLines.size() > 0) {
+		if (!fLines.isEmpty()) {
 			message.append("Failed Objects:").append("\n");
 			for (String line : fLines) {
 				message.append(line).append("\n");
@@ -144,7 +157,7 @@ public class PackInNotifier {
 		}
 
 		List<String> sLines = getLines(LEVEL_SUCCESS);
-		if (sLines.size() > 0) {
+		if (!sLines.isEmpty()) {
 			message.append("Successful Objects:").append("\n");
 			for (String line : sLines) {
 				message.append(line).append("\n");
@@ -152,33 +165,72 @@ public class PackInNotifier {
 			message.append("===========================\n");
 		}
 
-		StringTokenizer st = new StringTokenizer(emailList, " ,;", false);
-		String to = st.nextToken();
-		String from = client.getRequestEMail();
-		if (from == null && client.getAD_Client_ID() != 0 && MClient.isSendCredentialsSystem()) {
-			MClient sysclient = MClient.get(Env.getCtx(), 0);
-			from = sysclient.getRequestEMail();
+		if (packInException != null) {
+			message.append("StackTrace:").append("\n");
+	        StringWriter sw = new StringWriter();
+	        PrintWriter pw = new PrintWriter(sw);
+	        packInException.printStackTrace(pw);
+			message.append(sw.toString());
+			message.append("===========================\n");
 		}
 
-		EMail email;
-		try {
-			email = client.createEMailFrom(from, to, subject.toString(), message.toString(), false);
-		} catch (Exception e) {
-			// ignore exceptions when the email cannot be created, just log it
-			e.printStackTrace();
-			email = null;
-		}
-		if (email != null)
-		{
-			if (!packIn.isSuccess()) {
-				email.setHeader("X-Priority", "1");
-				email.setHeader("Priority","Urgent");
-				email.setHeader("Importance","high");
+		/* Send EMail */
+		boolean mailOK = true;
+		if (!emailList.isEmpty()) {
+			StringTokenizer st = new StringTokenizer(emailList, " ,;", false);
+			String to = st.nextToken();
+			String from = client.getRequestEMail();
+			if (from == null && client.getAD_Client_ID() != 0 && MClient.isSendCredentialsSystem()) {
+				MClient sysclient = MClient.get(Env.getCtx(), 0);
+				from = sysclient.getRequestEMail();
 			}
-			while (st.hasMoreTokens())
-				email.addTo(st.nextToken());
-			status = email.send();
+
+			EMail email;
+			try {
+				email = client.createEMailFrom(from, to, subject.toString(), message.toString(), false);
+			} catch (Exception e) {
+				// ignore exceptions when the email cannot be created, just log it
+				e.printStackTrace();
+				email = null;
+			}
+			if (email != null)
+			{
+				if (!packIn.isSuccess()) {
+					email.setHeader("X-Priority", "1");
+					email.setHeader("Priority","Urgent");
+					email.setHeader("Importance","high");
+				}
+				while (st.hasMoreTokens())
+					email.addTo(st.nextToken());
+				String mailStatus = email.send();
+				mailOK = EMail.SENT_OK.equals(mailStatus);
+			}
 		}
+
+		/* Attach Error */
+		if (attachNotify || !mailOK) {
+			String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis()));
+			StringBuilder attachFileName = new StringBuilder();
+			if (packIn.isSuccess()) {
+				attachFileName.append("result_");
+			} else {
+				attachFileName.append("error_");
+			}
+			attachFileName.append(timestamp).append(".log");
+	        StringBuilder fullContent = new StringBuilder()
+	        		.append(subject)
+	        		.append("\n")
+	        		.append(message);
+	        if (! mailOK)
+	        	fullContent.append("Email notification failed");
+
+	        try (MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp_Proc.Table_ID, packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID());) {
+	        if (attachment != null) {
+		        attachment.addEntry(attachFileName.toString(), fullContent.toString().getBytes(StandardCharsets.UTF_8));
+		        attachment.saveEx();
+	        }}
+		}
+
 	}
 
 	private List<String> getLines(int levelStatus) {

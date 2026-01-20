@@ -44,7 +44,7 @@ public class MLookupInfo implements Serializable, Cloneable
 	 *  @return AD_Reference_ID
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int getAD_Reference_ID (String referenceName)
 	{
 		int retValue = 0;
@@ -97,7 +97,7 @@ public class MLookupInfo implements Serializable, Cloneable
 	 *  @return AD_Column_ID
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int getAD_Column_ID (String columnName)
 	{
 		int retValue = 0;
@@ -149,11 +149,27 @@ public class MLookupInfo implements Serializable, Cloneable
 	 *  @param zoomQuery zoom query
 	 */
 	public MLookupInfo (String sqlQuery, String tableName, String keyColumn, 
-		int zoomWindow, int zoomWindowPO, MQuery zoomQuery)
+			int zoomWindow, int zoomWindowPO, MQuery zoomQuery)
+	{
+		this(sqlQuery, tableName, keyColumn, zoomWindow, zoomWindowPO, zoomQuery, null);
+	}
+	
+	/**
+	 *  @param sqlQuery SQL query
+	 *  @param tableName table name
+	 *  @param keyColumn key column
+	 *  @param zoomWindow zoom window
+	 *  @param zoomWindowPO PO zoom window
+	 *  @param zoomQuery zoom query
+	 *  @param parameters optional parameters for sqlQuery
+	 */
+	public MLookupInfo (String sqlQuery, String tableName, String keyColumn, 
+		int zoomWindow, int zoomWindowPO, MQuery zoomQuery, List<Object> parameters)
 	{
 		if (sqlQuery == null)
 			throw new IllegalArgumentException("SqlQuery is null");
 		Query = sqlQuery;
+		Parameters = parameters;
 		if (keyColumn == null)
 			throw new IllegalArgumentException("KeyColumn is null");
 		TableName = tableName;
@@ -167,6 +183,8 @@ public class MLookupInfo implements Serializable, Cloneable
 
 	/** SQL Query       */
 	public String       Query = null;
+	/** SQL Query Parameters */
+	public List<Object> Parameters = null;
 	/** Table Name      */
 	public String       TableName = "";
 	/** Key Column      */

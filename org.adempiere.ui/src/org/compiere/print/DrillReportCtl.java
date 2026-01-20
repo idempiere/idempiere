@@ -484,12 +484,13 @@ public class DrillReportCtl {
 		boolean isKeyParameterSet = false;
 		MProcessDrillRulePara[] sParams = processDrillRule.getParameters (true);
 		ArrayList<ProcessInfoParameter> iParams = new ArrayList<ProcessInfoParameter>();
-		MProcess process = (MProcess) processDrillRule.getAD_Process();
+		MProcess process = MProcess.get(processDrillRule.getAD_Process_ID());
 		ArrayList<MProcessPara> processParasExclDrillRuleParas = new ArrayList<MProcessPara>(Arrays.asList(process.getParameters()));
 		
 		// Check for key parameter
 		for(int i = 0; i < sParams.length; i++) {
-			if(sParams[i].getAD_Process_Para().getColumnName().equals(m_ColumnName)) {
+			MProcessPara pp = MProcessPara.get(sParams[i].getAD_Process_Para_ID());
+			if(pp.getColumnName().equals(m_ColumnName)) {
 				isKeyParameterSet = true;
 			}
 		}
@@ -498,7 +499,7 @@ public class DrillReportCtl {
 			MProcessDrillRulePara keyPara = new MProcessDrillRulePara(Env.getCtx(), 0, null);
 			keyPara.setAD_Process_DrillRule_ID(processDrillRule.getAD_Process_DrillRule_ID());
 			keyPara.setAD_Process_Para_ID(processDrillRule.getAD_Process_Para_ID());
-			MProcessDrillRulePara[] sParamsTmp = Arrays.stream(sParams).toArray(MProcessDrillRulePara[]::new);;
+			MProcessDrillRulePara[] sParamsTmp = Arrays.stream(sParams).toArray(MProcessDrillRulePara[]::new);
 			sParams = new MProcessDrillRulePara[sParamsTmp.length+1];
 			int idx = 0;
 			for(idx = 0; idx < sParamsTmp.length; idx++) {
@@ -509,7 +510,7 @@ public class DrillReportCtl {
 		}
 		for (int p = 0; p < sParams.length; p++)
 		{
-			MProcessPara processPara = (MProcessPara) sParams[p].getAD_Process_Para();
+			MProcessPara processPara = MProcessPara.get(sParams[p].getAD_Process_Para_ID());
 			ProcessInfoParameter iPara = new ProcessInfoParameter(processPara.getColumnName(), null, null, null, null);
 			MProcessDrillRulePara sPara = sParams[p];
 			if(processPara.getColumnName().equals(m_ColumnName))

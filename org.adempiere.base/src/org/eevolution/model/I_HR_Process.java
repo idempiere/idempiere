@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for HR_Process
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_HR_Process 
@@ -77,6 +77,7 @@ public interface I_HR_Process
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Workflow_ID */
@@ -92,6 +93,7 @@ public interface I_HR_Process
 	  */
 	public int getAD_Workflow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException;
 
     /** Column name C_BPartner_ID */
@@ -107,6 +109,7 @@ public interface I_HR_Process
 	  */
 	public int getC_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name C_Charge_ID */
@@ -122,6 +125,7 @@ public interface I_HR_Process
 	  */
 	public int getC_Charge_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name C_DocTypeTarget_ID */
@@ -137,6 +141,7 @@ public interface I_HR_Process
 	  */
 	public int getC_DocTypeTarget_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeTarget() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -152,6 +157,7 @@ public interface I_HR_Process
 	  */
 	public int getC_DocType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_PaySelection_ID */
@@ -167,6 +173,7 @@ public interface I_HR_Process
 	  */
 	public int getC_PaySelection_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaySelection getC_PaySelection() throws RuntimeException;
 
     /** Column name ColumnSQL */
@@ -259,6 +266,7 @@ public interface I_HR_Process
 	/** Get Payroll Department	  */
 	public int getHR_Department_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException;
 
     /** Column name HR_Employee_ID */
@@ -270,6 +278,7 @@ public interface I_HR_Process
 	/** Get Payroll Employee	  */
 	public int getHR_Employee_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Employee getHR_Employee() throws RuntimeException;
 
     /** Column name HR_Job_ID */
@@ -281,6 +290,7 @@ public interface I_HR_Process
 	/** Get Payroll Job	  */
 	public int getHR_Job_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException;
 
     /** Column name HR_Payroll_ID */
@@ -292,6 +302,7 @@ public interface I_HR_Process
 	/** Get Payroll	  */
 	public int getHR_Payroll_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException;
 
     /** Column name HR_Period_ID */
@@ -303,6 +314,7 @@ public interface I_HR_Process
 	/** Get Payroll Period	  */
 	public int getHR_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Period getHR_Period() throws RuntimeException;
 
     /** Column name HR_Process_ID */
@@ -410,6 +422,7 @@ public interface I_HR_Process
 	  */
 	public int getReversal_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_HR_Process getReversal() throws RuntimeException;
 
     /** Column name Updated */

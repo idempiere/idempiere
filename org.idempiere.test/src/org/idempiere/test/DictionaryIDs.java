@@ -88,7 +88,8 @@ public final class DictionaryIDs {
 		GARDEN_WORLD_ADMIN(102),
 		GARDEN_WORLD_USER(103),
 		GARDEN_WORLD_ADMIN_NOT_ADVANCED(200001),
-		SYSTEM_ADMINISTRATOR(0);
+		SYSTEM_ADMINISTRATOR(0),
+		WEB_SERVICE_EXECUTION(50004);
 		
 		public final int id;
 
@@ -141,6 +142,17 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum C_BankAccount_Processor {
+		MONEYBANK_1234("f4a64026-bf68-4c8c-b238-8cdf006aae04"),
+		MONEYBANK_5678("f8f892f0-36ab-4b4d-9dd3-c3bbe12cf455");
+
+		public final String uuid;
+
+		private C_BankAccount_Processor(String uuid) {
+			this.uuid = uuid;
+		}
+	}
+
 	public enum C_BPartner {
 		STANDARD(112,"dc4962ad-066f-4ebf-88ac-545d12c9f1f0"),
 		TREE_FARM(114,"5c557ed6-c443-4b99-ae77-546ccd46bc1f"),
@@ -153,6 +165,7 @@ public final class DictionaryIDs {
 		COLOR_INC(50001,"6e967db4-e6a9-488f-ae76-f811fb86186e"),
 		CHROME_INC(50002,"e1b92d09-ca76-4326-aa45-449e0c4509a3"),
 		CHEMICAL_INC(50003,"26abfd12-5aa2-4668-b0c7-76d680ccfb10"),
+		STORE_CENTRAL(50004, "04dcc5f6-a2e1-48ef-8b8d-c0d758f09a53"),
 		AGRI_TECH(200000,"605450c7-24a7-4da9-990d-a8e5e7dd57eb");
 
 		public final int id;
@@ -174,6 +187,18 @@ public final class DictionaryIDs {
 		}
 	}
 
+	public enum C_BP_Group {
+		STANDARD_CUSTOMERS(103),
+		VENDORS(104),
+		STAFF(105);
+
+		public final int id;
+
+		private C_BP_Group(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum C_Calendar {
 		GARDENWORLD_CALENDAR(102);
 		
@@ -297,7 +322,8 @@ public final class DictionaryIDs {
 	}
 
 	public enum C_ElementValue {
-		CHECKING_IN_TRANSFER(509);
+		CHECKING_IN_TRANSFER(509),
+		DEFAULT_ACCOUNT(697);
 		
 		public final int id;
 		
@@ -744,4 +770,149 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
+
+	public enum C_Element {
+		GardenWorld_Account(105);
+		
+		public final int id;
+
+		private C_Element(int id) {
+			this.id = id;
+		}
+	}
+
+	public enum GL_Category {
+		AR_RECEIPT(110);
+		
+		public final int id;
+
+		private GL_Category(int id) {
+			this.id = id;
+		}
+	}
+  
+	public enum AD_Field {
+	  	USER_CONTACT_NAME(300),
+	  	TEST_TEST_NAME(417),
+		BPartner_PaymentRule(9624),
+		BPartner_Description(2133),
+		PackageInstallation_PackageVersion(203844);
+		
+		public final int id;
+
+		private AD_Field(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Column {
+		USER_NAME(213),
+		TEST_NAME(326),
+		VIRTUALCOLUMN_UPCEAN(14102),
+		REPORT_VIEW_ORDERBYCLAUSE(4396),
+		MULTISELECTCOLUMN_SCOPELIST(214414);
+		
+		public final int id;
+
+		private AD_Column(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Window {
+		USER(108),		
+		TEST(127),
+		SALES_INVOICE(167),
+		ORGANIZATION(110),
+		MESSAGE(104),
+		ROLE(111);
+		
+		public final int id;
+
+		private AD_Window(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Tab {
+		USER_CONTACT(118),
+		USER_USER_MAIL(709),
+		TEST_TEST(152);
+		
+		public final int id;
+
+		private AD_Tab(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Element {
+		NAME(469);
+		
+		public final int id;
+
+		private AD_Element(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Process {
+		CACHE_RESET(205),
+		C_ORDER_PROCESS(104),
+		DBA_RECOMPILE(185),
+		AD_COLUMN_SYNC(181),
+		AD_TABLE_COPY_COLUMNS_FROM_TABLE(50011),
+		CREATE_FOREIGN_KEY(200058),
+		CREATE_TABLE(200134),
+		AD_TABLE_CREATE_PARTITION(200157),
+		DETACH_OR_REATTACH_PARTITION(200158);
+		
+		public final int id;
+
+		private AD_Process(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_PrintFormat {
+		TEST_REPORT(142),
+		TEST_FORM(143);
+		
+		public final int id;
+
+		private AD_PrintFormat(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Menu {
+		CACHE_RESET(383);
+		
+		public final int id;
+
+		private AD_Menu(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_InfoWindow {
+		PRODUCT_INFO(200000);
+		
+		public final int id;
+
+		private AD_InfoWindow(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Task {
+		JAVA_VERSION(102);
+		
+		public final int id;
+
+		private AD_Task(int id) {
+			this.id = id;
+		}
+	}
+	
 }

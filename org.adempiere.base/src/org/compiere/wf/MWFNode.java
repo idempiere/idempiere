@@ -622,7 +622,7 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 	 * @return workflow
 	 * @deprecated please use {@link #getAD_Workflow()}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MWorkflow getWorkflow()
 	{
 		return getAD_Workflow();

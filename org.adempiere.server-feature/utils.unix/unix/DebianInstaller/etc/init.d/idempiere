@@ -193,7 +193,7 @@ EOF
 
 # configure_perform()
 # Create idempiereEnv.properties
-# RUN_silentsetup.sh
+# RUN silent-setup-alt.sh
 # Import database
 configure_perform()
 {
@@ -212,10 +212,10 @@ configure_perform()
     sed -i "s/:8080/:${ADEMPIERE_WEB_PORT}/g" /usr/share/applications/idempiere-homepage.desktop
     sed -i "s/:8443/:${ADEMPIERE_SSL_PORT}/g" /usr/share/applications/idempiere-webclient.desktop
 
-    if [ -f ${IDEMPIERE_HOME}/silent-setup.sh ]
+    if [ -f ${IDEMPIERE_HOME}/silent-setup-alt.sh ]
     then
      	echo -n "Deploying iDempiere ERP server..."
-       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}; ./silent-setup.sh"
+       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}; ./silent-setup-alt.sh"
 	echo "Done"
     fi
     grep "${ADEMPIERE_WEB_PORT}" ${IDEMPIERE_HOME}/jettyhome/etc/jetty-http.xml > /dev/null 2>&1
@@ -242,7 +242,7 @@ configure_perform()
        	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}/utils; ./RUN_SyncDB.sh" # > /dev/null 2>&1
 	echo "Done"
         echo -n "Signing DB ..."
-       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}; ./sign-database-build.sh" # > /dev/null 2>&1
+       	$SU ${IDEMPIERE_USER} -c "cd ${IDEMPIERE_HOME}; ./sign-database-build-alt.sh" # > /dev/null 2>&1
 	echo "Done"
     fi
     $SU ${IDEMPIERE_USER} -c "cd; export PGPASSWORD=${ADEMPIERE_DB_PASSWORD}; psql -d idempiere -U adempiere -h localhost -p 5432 -c ''" > /dev/null 2>&1

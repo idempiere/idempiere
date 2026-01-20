@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PriceList_Version
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_M_PriceList_Version 
 {
@@ -117,6 +117,7 @@ public interface I_M_PriceList_Version
 	  */
 	public int getM_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_PriceList_ID */
@@ -132,6 +133,7 @@ public interface I_M_PriceList_Version
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name M_PriceList_Version_ID */
@@ -169,6 +171,7 @@ public interface I_M_PriceList_Version
 	  */
 	public int getM_Pricelist_Version_Base_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList_Version getM_Pricelist_Version_Base() throws RuntimeException;
 
     /** Column name Name */

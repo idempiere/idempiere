@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for R_Status
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_R_Status 
 {
@@ -208,6 +208,7 @@ public interface I_R_Status
 	  */
 	public int getNext_Status_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Status getNext_Status() throws RuntimeException;
 
     /** Column name R_StatusCategory_ID */
@@ -223,6 +224,7 @@ public interface I_R_Status
 	  */
 	public int getR_StatusCategory_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_StatusCategory getR_StatusCategory() throws RuntimeException;
 
     /** Column name R_Status_ID */
@@ -288,6 +290,7 @@ public interface I_R_Status
 	  */
 	public int getUpdate_Status_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_Status getUpdate_Status() throws RuntimeException;
 
     /** Column name Updated */

@@ -346,7 +346,8 @@ public final class EMail implements Serializable
 				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), m_auth.getPasswordAuthentication().getPassword());
 			}
 			session = Session.getInstance(props);
-			session.setDebug(CLogMgt.isLevelFinest());
+			boolean isDebug = CLogMgt.isLevelFinest() || props.get("mail.debug") != null && props.get("mail.debug").toString().equals("true");
+			session.setDebug(isDebug);
 		}
 		catch (SecurityException se)
 		{

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SchedulerRecipient
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_SchedulerRecipient")
 public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipient, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
@@ -113,6 +113,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_AuthorizationAccount getAD_AuthorizationAccount() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_AuthorizationAccount)MTable.get(getCtx(), org.compiere.model.I_AD_AuthorizationAccount.Table_ID)
@@ -140,6 +141,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
@@ -205,6 +207,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 		return (String)get_Value(COLUMNNAME_AD_SchedulerRecipient_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_ID)
@@ -233,6 +236,7 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

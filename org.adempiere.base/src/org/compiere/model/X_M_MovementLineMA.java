@@ -26,7 +26,7 @@ import org.compiere.util.ValueNamePair;
 
 /** Generated Model for M_MovementLineMA
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementLineMA")
 public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_M_MovementLineMA (Properties ctx, int M_MovementLineMA_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_M_AttributeSetInstance getM_AttributeSetInstance() throws RuntimeException
 	{
 		return (I_M_AttributeSetInstance)MTable.get(getCtx(), I_M_AttributeSetInstance.Table_ID)
@@ -189,6 +190,7 @@ public class X_M_MovementLineMA extends PO implements I_M_MovementLineMA, I_Pers
 		return (String)get_Value(COLUMNNAME_M_MovementLineMA_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_MovementLine getM_MovementLine() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_MovementLine)MTable.get(getCtx(), org.compiere.model.I_M_MovementLine.Table_ID)

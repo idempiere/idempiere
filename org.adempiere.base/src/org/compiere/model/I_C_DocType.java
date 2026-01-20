@@ -75,6 +75,7 @@ public interface I_C_DocType
 	  */
 	public int getAD_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name C_DocTypeDifference_ID */
@@ -90,6 +91,7 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeDifference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeDifference() throws RuntimeException;
 
     /** Column name C_DocTypeInvoice_ID */
@@ -105,6 +107,7 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeInvoice_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeInvoice() throws RuntimeException;
 
     /** Column name C_DocTypeProforma_ID */
@@ -120,6 +123,7 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeProforma_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeProforma() throws RuntimeException;
 
     /** Column name C_DocTypeShipment_ID */
@@ -135,6 +139,7 @@ public interface I_C_DocType
 	  */
 	public int getC_DocTypeShipment_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_DocType getC_DocTypeShipment() throws RuntimeException;
 
     /** Column name C_DocType_ID */
@@ -184,6 +189,7 @@ public interface I_C_DocType
 	/** Get Definite Sequence	  */
 	public int getDefiniteSequence_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getDefiniteSequence() throws RuntimeException;
 
     /** Column name Description */
@@ -225,6 +231,7 @@ public interface I_C_DocType
 	  */
 	public int getDocNoSequence_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Sequence getDocNoSequence() throws RuntimeException;
 
     /** Column name DocSubTypeInv */
@@ -292,6 +299,7 @@ public interface I_C_DocType
 	  */
 	public int getGL_Category_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException;
 
     /** Column name HasCharges */
@@ -332,6 +340,23 @@ public interface I_C_DocType
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAlwaysPosted */
+    public static final String COLUMNNAME_IsAlwaysPosted = "IsAlwaysPosted";
+
+	/** Set Always Posted.
+	  * Posts the document if &quot;
+AlwaysPosted&quot;
+ is checked, regardless of accounting schema.
+	  */
+	public void setIsAlwaysPosted (boolean IsAlwaysPosted);
+
+	/** Get Always Posted.
+	  * Posts the document if &quot;
+AlwaysPosted&quot;
+ is checked, regardless of accounting schema.
+	  */
+	public boolean isAlwaysPosted();
 
     /** Column name IsAutoGenerateInout */
     public static final String COLUMNNAME_IsAutoGenerateInout = "IsAutoGenerateInout";

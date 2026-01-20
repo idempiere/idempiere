@@ -75,6 +75,7 @@ public interface I_AD_WF_Responsible
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -90,6 +91,7 @@ public interface I_AD_WF_Responsible
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_WF_Responsible_ID */
@@ -193,6 +195,7 @@ public interface I_AD_WF_Responsible
 	/** Get Overridden WF Responsible	  */
 	public int getOverride_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_WF_Responsible getOverride() throws RuntimeException;
 
     /** Column name ResponsibleType */

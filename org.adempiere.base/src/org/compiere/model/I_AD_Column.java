@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Column
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Column 
 {
@@ -50,6 +50,7 @@ public interface I_AD_Column
 	/** Get Chart	  */
 	public int getAD_Chart_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
 
     /** Column name AD_Client_ID */
@@ -95,6 +96,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_Element_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
 
     /** Column name AD_InfoWindow_ID */
@@ -110,6 +112,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_InfoWindow_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
 
     /** Column name AD_Org_ID */
@@ -138,6 +141,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_Process_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Reference_ID */
@@ -153,6 +157,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_Reference_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AD_Reference_Value_ID */
@@ -168,6 +173,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_Reference_Value_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Reference getAD_Reference_Value() throws RuntimeException;
 
     /** Column name AD_Table_ID */
@@ -183,6 +189,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_Table_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name AD_Val_Rule_ID */
@@ -198,6 +205,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_Val_Rule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
 
     /** Column name AD_Val_Rule_Lookup_ID */
@@ -213,6 +221,7 @@ public interface I_AD_Column
 	  */
 	public int getAD_Val_Rule_Lookup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
 
     /** Column name AlwaysUpdatableLogic */
@@ -337,6 +346,7 @@ s active status or processed status. This logic Applicable only if Always Updata
 	/** Get Constraint Message	  */
 	public int getFKConstraintMsg_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Message getFKConstraintMsg() throws RuntimeException;
 
     /** Column name FKConstraintName */
@@ -661,6 +671,7 @@ s active status or processed status. This logic Applicable only if Always Updata
 	/** Get Dashboard Content	  */
 	public int getPA_DashboardContent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_DashboardContent getPA_DashboardContent() throws RuntimeException;
 
     /** Column name PartitioningMethod */

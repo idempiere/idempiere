@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for U_RoleMenu
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_U_RoleMenu 
 {
@@ -75,6 +75,7 @@ public interface I_U_RoleMenu
 	  */
 	public int getAD_Role_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
 
     /** Column name Created */
@@ -133,6 +134,7 @@ public interface I_U_RoleMenu
 	/** Get Web Menu	  */
 	public int getU_WebMenu_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_U_WebMenu getU_WebMenu() throws RuntimeException;
 
     /** Column name Updated */

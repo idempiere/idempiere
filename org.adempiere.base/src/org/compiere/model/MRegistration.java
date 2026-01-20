@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 import org.compiere.util.WebUtil;
@@ -37,7 +38,9 @@ import org.compiere.util.WebUtil;
  *  @version $Id: MRegistration.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  *  @deprecated not fully implemented
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class MRegistration extends X_A_Registration
 {
 	/**

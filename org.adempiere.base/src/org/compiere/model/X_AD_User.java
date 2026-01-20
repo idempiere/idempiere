@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="AD_User")
 public class X_AD_User extends PO implements I_AD_User, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20251031L;
 
     /** Standard Constructor */
     public X_AD_User (Properties ctx, int AD_User_ID, String trxName)
@@ -353,6 +353,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (String)get_Value(COLUMNNAME_BPName);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getBP_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
@@ -397,6 +398,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_Birthday);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -425,6 +427,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
@@ -453,6 +456,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
@@ -481,6 +485,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Greeting)MTable.get(getCtx(), org.compiere.model.I_C_Greeting.Table_ID)
@@ -509,6 +514,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
@@ -537,6 +543,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException
 	{
 		return (I_C_Location)MTable.get(getCtx(), I_C_Location.Table_ID)
@@ -1263,6 +1270,31 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
+	/** PasswordHashAlgorithm AD_Reference_ID=200276 */
+	public static final int PASSWORDHASHALGORITHM_AD_Reference_ID=200276;
+	/** Argon2 = Argon2 */
+	public static final String PASSWORDHASHALGORITHM_Argon2 = "Argon2";
+	/** PBKDF2 = PBKDF2 */
+	public static final String PASSWORDHASHALGORITHM_PBKDF2 = "PBKDF2";
+	/** SHA-512 = SHA-512 */
+	public static final String PASSWORDHASHALGORITHM_SHA_512 = "SHA-512";
+	/** Set Password Hash Algorithm.
+		@param PasswordHashAlgorithm Algorithm use to perform hashing of password
+	*/
+	public void setPasswordHashAlgorithm (String PasswordHashAlgorithm)
+	{
+
+		set_Value (COLUMNNAME_PasswordHashAlgorithm, PasswordHashAlgorithm);
+	}
+
+	/** Get Password Hash Algorithm.
+		@return Algorithm use to perform hashing of password
+	  */
+	public String getPasswordHashAlgorithm()
+	{
+		return (String)get_Value(COLUMNNAME_PasswordHashAlgorithm);
+	}
+
 	/** Set Phone.
 		@param Phone Identifies a telephone number
 	*/
@@ -1317,6 +1349,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return false;
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getR_DefaultMailText() throws RuntimeException
 	{
 		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
@@ -1344,6 +1377,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -1388,6 +1422,22 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (String)get_Value(COLUMNNAME_Salt);
 	}
 
+	/** Set Salt Algorithm.
+		@param SaltAlgorithm Secure random algorithm use to generate password salt
+	*/
+	public void setSaltAlgorithm (String SaltAlgorithm)
+	{
+		set_Value (COLUMNNAME_SaltAlgorithm, SaltAlgorithm);
+	}
+
+	/** Get Salt Algorithm.
+		@return Secure random algorithm use to generate password salt
+	  */
+	public String getSaltAlgorithm()
+	{
+		return (String)get_Value(COLUMNNAME_SaltAlgorithm);
+	}
+
 	/** Set Security Question.
 		@param SecurityQuestion Security Question
 	*/
@@ -1403,6 +1453,7 @@ public class X_AD_User extends PO implements I_AD_User, I_Persistent
 		return (String)get_Value(COLUMNNAME_SecurityQuestion);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)

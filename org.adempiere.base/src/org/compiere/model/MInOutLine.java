@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
@@ -257,6 +258,8 @@ public class MInOutLine extends X_M_InOutLine
 		setAD_OrgTrx_ID(oLine.getAD_OrgTrx_ID());
 		setUser1_ID(oLine.getUser1_ID());
 		setUser2_ID(oLine.getUser2_ID());
+		setC_CostCenter_ID(oLine.getC_CostCenter_ID());
+		setC_Department_ID(oLine.getC_Department_ID());
 	}	//	setOrderLine
 
 	/**
@@ -299,6 +302,8 @@ public class MInOutLine extends X_M_InOutLine
 		setAD_OrgTrx_ID(iLine.getAD_OrgTrx_ID());
 		setUser1_ID(iLine.getUser1_ID());
 		setUser2_ID(iLine.getUser2_ID());
+		setC_CostCenter_ID(iLine.getC_CostCenter_ID());
+		setC_Department_ID(iLine.getC_Department_ID());
 	}	//	setInvoiceLine
 
 	/**
@@ -678,21 +683,23 @@ public class MInOutLine extends X_M_InOutLine
 		// Auto generate ASI Lot
 		I_M_AttributeSet attributeset = null;
 		if (getM_Product_ID() > 0)
-			attributeset = MProduct.get(getCtx(), getM_Product_ID()).getM_AttributeSet();
+			attributeset = MAttributeSet.get(MProduct.get(getCtx(), getM_Product_ID()).getM_AttributeSet_ID());
 		boolean isAutoGenerateLot = false;
 		if (attributeset != null)
 			isAutoGenerateLot = attributeset.isAutoGenerateLot();
 		if (getReversalLine_ID() == 0 && !getParent().isSOTrx() && !getParent().getMovementType().equals(MInOut.MOVEMENTTYPE_VendorReturns) && isAutoGenerateLot
 				&& getM_AttributeSetInstance_ID() == 0)
 		{
-			MAttributeSetInstance asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
+			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+			MAttributeSetInstance asi = MAttributeSetInstance.generateLot(getCtx(), product, get_TrxName());
 			setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 		}
 
 		/* Carlos Ruiz - globalqss
 		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
 		 */
-		if (getParent().getC_DocType().isChargeOrProductMandatory()) {
+		MDocType dt = MDocType.get(getParent().getC_DocType_ID());
+		if (dt.isChargeOrProductMandatory()) {
 			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0) {
 				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 				return false;
@@ -959,4 +966,74 @@ public class MInOutLine extends X_M_InOutLine
 		
 		return success;
 	}
+
+	/**
+	 * Check Storage On Hand Qty and Return
+	 *
+	 * @param  inOutLine
+	 * @param  requiredQty
+	 * @param  asiID
+	 * @return
+	 */
+	public static BigDecimal getInOutLineQTY(MInOutLine inOutLine, BigDecimal requiredQty, int asiID)
+	{
+		MStorageOnHand storageOnHand = MStorageOnHand.get(	inOutLine.getCtx(), inOutLine.getM_Locator_ID(), inOutLine.getM_Product_ID(), asiID, null,
+															inOutLine.get_TrxName());
+
+		if (storageOnHand != null)
+		{
+			if (requiredQty.compareTo(storageOnHand.getQtyOnHand()) > 0)
+				return storageOnHand.getQtyOnHand();
+			else
+				return requiredQty;
+		}
+		return Env.ZERO;
+	} // getInOutLineQTY
+
+	/**
+	 * Get PO Costs in Currency of AcctSchema
+	 * 
+	 * @param  as Account Schema
+	 * @return    Unit PO Cost
+	 */
+	public BigDecimal getPOCost(MAcctSchema as, BigDecimal lineQty)
+	{
+		BigDecimal retValue = null;
+		//	Uses PO Date
+		String sql = "SELECT currencyConvert(ol.PriceActual, o.C_Currency_ID, ?, o.DateOrdered, o.C_ConversionType_ID, ?, ?) "
+				+ "FROM C_OrderLine ol"
+				+ " INNER JOIN M_InOutLine iol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID)"
+				+ " INNER JOIN C_Order o ON (o.C_Order_ID=ol.C_Order_ID) "
+				+ "WHERE iol.M_InOutLine_ID=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, as.get_TrxName());
+			pstmt.setInt(1, as.getC_Currency_ID());
+			pstmt.setInt(2, as.getAD_Client_ID());
+			pstmt.setInt(3, as.getAD_Org_ID());
+			pstmt.setInt(4, getM_InOutLine_ID());
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				retValue = rs.getBigDecimal(1);
+				if (log.isLoggable(Level.FINE)) log.fine("POCost = " + retValue);
+			}
+			else
+				log.warning("Not found for M_InOutLine_ID=" + getM_InOutLine_ID());
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			pstmt = null; rs = null;
+		}
+		if (retValue != null)
+			retValue = retValue.multiply(lineQty);
+		return retValue;
+	}	//	getPOCost();
 }	//	MInOutLine

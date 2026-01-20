@@ -32,21 +32,21 @@ public interface ModelValidator
 	/** Model Change Type New		*/
 	public static final int TYPE_BEFORE_NEW = 1;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_NEW = 1;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final int	CHANGETYPE_NEW = 1;				// Compatibility with Compiere 260c
 	public static final int TYPE_AFTER_NEW = 4;			// teo_sarca [ 1675490 ]
 	public static final int TYPE_AFTER_NEW_REPLICATION = 7;	// @Trifon
 	/** Model Change Type Change	*/
 	public static final int	TYPE_BEFORE_CHANGE = 2;		// teo_sarca [ 1675490 ]
 	public static final int	TYPE_CHANGE = 2;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final int	CHANGETYPE_CHANGE = 2;			// Compatibility with Compiere 260c
 	public static final int	TYPE_AFTER_CHANGE = 5;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_AFTER_CHANGE_REPLICATION = 8; // @Trifon
 	/** Model Change Type Delete	*/
 	public static final int	TYPE_BEFORE_DELETE = 3;		// teo_sarca [ 1675490 ]
 	public static final int	TYPE_DELETE = 3;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final int	CHANGETYPE_DELETE = 3;			// Compatibility with Compiere 260c
 	public static final int	TYPE_AFTER_DELETE = 6;			// teo_sarca [ 1675490 ]
 	public static final int	TYPE_BEFORE_DELETE_REPLICATION = 9; // @Trifon
@@ -81,7 +81,7 @@ public interface ModelValidator
 
 	/** Called before document is prepared */
 	public static final int TIMING_BEFORE_PREPARE = 1;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final int DOCTIMING_BEFORE_PREPARE = 1; // Compatibility with Compiere 260c
 	/** Called before document is void */
 	public static final int TIMING_BEFORE_VOID = 2;
@@ -99,7 +99,7 @@ public interface ModelValidator
 	public static final int TIMING_AFTER_PREPARE = 8;
 	/** Called after document is completed */
 	public static final int TIMING_AFTER_COMPLETE = 9;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final int DOCTIMING_AFTER_COMPLETE = 9; // Compatibility with Compiere 260c
 	/** Called after document is void */
 	public static final int TIMING_AFTER_VOID = 10;

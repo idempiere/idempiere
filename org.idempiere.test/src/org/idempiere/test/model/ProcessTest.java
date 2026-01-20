@@ -48,6 +48,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_PInstance_Log;
+import org.compiere.print.MPrintFormat;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
@@ -62,11 +63,13 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * @author hengsin
  *
  */
+@Isolated
 public class ProcessTest extends AbstractTestCase {
 
 	/**
@@ -152,7 +155,7 @@ public class ProcessTest extends AbstractTestCase {
 		pi.setRecord_ID(Patio_Chair);
 		pi.setTransactionName(getTrxName());
 		if(process.getAD_PrintFormat_ID() > 0)
-			pi.setTransientObject(process.getAD_PrintFormat());
+			pi.setTransientObject(MPrintFormat.get(process.getAD_PrintFormat_ID()));
 		ServerProcessCtl.process(pi, getTrx());
 		if (pi.isError()) {
 			fail("Error running Verify BOM process" + (Util.isEmpty(pi.getSummary()) ? "" : " : "+pi.getSummary()));

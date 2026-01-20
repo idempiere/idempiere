@@ -44,7 +44,9 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.sys.ComponentCtrl;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Default editor for text display type (String, PrinterName, Text, TextLong and Memo).<br/>
@@ -206,6 +208,37 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	@Override
 	public void onEvent(Event event)
     {
+		if (Events.ON_OK.equals(event.getName())) {
+		    if (event instanceof KeyEvent) {
+		        KeyEvent keyEvent = (KeyEvent) event;
+		        if (keyEvent.isShiftKey() && getComponent().isMultiline() && tableEditor) {
+		            Component target = event.getTarget();
+		            if (target instanceof Textbox) {
+		                String uuid = target.getUuid();
+
+		                String script = String.format(
+		                	    "(function() {" +
+		                	    "  var cmp = zk.Widget.$('#%s');" +
+		                	    "  if (!cmp) return;" +
+		                	    "  var elem = cmp.$n();" +
+		                	    "  if (!elem || typeof elem.selectionStart === 'undefined') return;" +
+		                	    "  var start = elem.selectionStart;" +
+		                	    "  var end = elem.selectionEnd;" +
+		                	    "  var value = elem.value;" +
+		                	    "  elem.value = value.substring(0, start) + '\\n' + value.substring(end);" +
+		                	    "  elem.selectionStart = elem.selectionEnd = start + 1;" +
+		                	    "  cmp.fire('onChanging', {value: elem.value});" +
+		                	    "})();",
+		                	    uuid
+		                	);
+
+		                Clients.evalJavaScript(script);
+		                return; // prevent regular ON_OK handling
+		            }
+		        }
+		    }
+		}
+	    
 		boolean isStartEdit = INIT_EDIT_EVENT.equalsIgnoreCase (event.getName());
     	if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()) || isStartEdit)
     	{
@@ -218,13 +251,15 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 
 	        // Validate VFormat with regular expression
-	        if (!Util.isEmpty(vFormat) && vFormat.startsWith("~")) {
-	        	String regex = gridField.getVFormat().substring(1); // remove the initial ~
-	        	if (!newValue.matches(regex)) {
-	        		String msgregex = Msg.getMsg(Env.getCtx(), regex);
-	        		throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
-	        	}
-	        }
+			if (!Util.isEmpty(vFormat)) {
+				String regex = vFormatToRegex(vFormat);
+				if (!newValue.matches(regex)) {
+					String msgregex = Msg.getMsg(Env.getCtx(), regex);
+					newValue = oldValue;
+					getComponent().setValue(newValue);
+					throw new WrongValueException(component, Msg.getMsg(Env.getCtx(), "InvalidFormatRegExp", new Object[] {msgregex}));
+				}
+			}
 
 	        ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
 	        
@@ -379,6 +414,62 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 			parent = parent.getParent();
 		}
 		return null;
+	}
+	
+	/**
+	 * Convert vFormat to regular expression, see jquery.maskedinput.js
+	 * @param vFormat
+	 * @return
+	 */
+	private String vFormatToRegex(String vFormat) {
+		if (vFormat.startsWith("~"))
+			return gridField.getVFormat().substring(1); // remove the initial ~
+		StringBuilder regex = new StringBuilder();
+		for (char c : vFormat.toCharArray()) {
+			switch (c) {
+			case '0':
+				regex.append("[0-9]");
+				break;
+			case '9':
+				regex.append("[ 0-9]");
+				break;
+			case 'a':
+				regex.append("[A-Za-z0-9]");
+				break;
+			case 'A':
+				regex.append("[A-Z0-9]");
+				break;
+			case 'c':
+				regex.append("[ A-Za-z0-9]");
+				break;
+			case 'C':
+				regex.append("[ A-Z0-9]");
+				break;
+			case 'l':
+				regex.append("[A-Za-z]");
+				break;
+			case 'L':
+				regex.append("[A-Z]");
+				break;
+			case 'o':
+				regex.append("[ A-Za-z]");
+				break;
+			case 'O':
+				regex.append("[ A-Z]");
+				break;
+			case 'U':
+				regex.append("[^a-z]");
+				break;
+			default:
+				if ("()[]{}.+*?^$|\\".indexOf(c) != -1) {
+					regex.append("\\").append(c);
+				} else {
+					regex.append(c);
+				}
+				break;
+			}
+		}
+		return regex.toString();
 	}
 
 }

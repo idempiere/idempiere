@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Country
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_Country 
 {
@@ -123,6 +123,7 @@ public interface I_C_Country
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name CaptureSequence */
@@ -362,71 +363,6 @@ _lLoOaAcCa09&quot;
 	  * Print Address in reverse Order
 	  */
 	public boolean isAddressLinesReverse();
-
-    /** Column name IsPostcodeLookup */
-    public static final String COLUMNNAME_IsPostcodeLookup = "IsPostcodeLookup";
-
-	/** Set Use Postcode Lookup.
-	  * Does this country have a post code web service
-	  */
-	public void setIsPostcodeLookup (boolean IsPostcodeLookup);
-
-	/** Get Use Postcode Lookup.
-	  * Does this country have a post code web service
-	  */
-	public boolean isPostcodeLookup();
-
-    /** Column name LookupClassName */
-    public static final String COLUMNNAME_LookupClassName = "LookupClassName";
-
-	/** Set Lookup ClassName.
-	  * The class name of the postcode lookup plugin
-	  */
-	public void setLookupClassName (String LookupClassName);
-
-	/** Get Lookup ClassName.
-	  * The class name of the postcode lookup plugin
-	  */
-	public String getLookupClassName();
-
-    /** Column name LookupClientID */
-    public static final String COLUMNNAME_LookupClientID = "LookupClientID";
-
-	/** Set Lookup Tenant ID.
-	  * The Client ID or Login submitted to the Lookup URL
-	  */
-	public void setLookupClientID (String LookupClientID);
-
-	/** Get Lookup Tenant ID.
-	  * The Client ID or Login submitted to the Lookup URL
-	  */
-	public String getLookupClientID();
-
-    /** Column name LookupPassword */
-    public static final String COLUMNNAME_LookupPassword = "LookupPassword";
-
-	/** Set Lookup Password.
-	  * The password submitted to the Lookup URL
-	  */
-	public void setLookupPassword (String LookupPassword);
-
-	/** Get Lookup Password.
-	  * The password submitted to the Lookup URL
-	  */
-	public String getLookupPassword();
-
-    /** Column name LookupUrl */
-    public static final String COLUMNNAME_LookupUrl = "LookupUrl";
-
-	/** Set Lookup URL.
-	  * The URL of the web service that the plugin connects to in order to retrieve postcode data
-	  */
-	public void setLookupUrl (String LookupUrl);
-
-	/** Get Lookup URL.
-	  * The URL of the web service that the plugin connects to in order to retrieve postcode data
-	  */
-	public String getLookupUrl();
 
     /** Column name M49Code */
     public static final String COLUMNNAME_M49Code = "M49Code";

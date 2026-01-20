@@ -342,7 +342,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	 * 	@param setOrder set Order links
 	 *	@return Invoice
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MInvoice copyFrom (MInvoice from, Timestamp dateDoc,
 		int C_DocTypeTarget_ID, boolean isSOTrx, boolean counter,
 		String trxName, boolean setOrder)
@@ -555,6 +555,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setC_Activity_ID(line.getC_Activity_ID());
 		setUser1_ID(line.getUser1_ID());
 		setUser2_ID(line.getUser2_ID());
+		setC_CostCenter_ID(line.getC_CostCenter_ID());
+		setC_Department_ID(line.getC_Department_ID());
 		//
 		setC_DocTypeTarget_ID(line.getC_DocType_ID());
 		setDateInvoiced(line.getDateInvoiced());
@@ -708,6 +710,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setC_Activity_ID(order.getC_Activity_ID());
 		setUser1_ID(order.getUser1_ID());
 		setUser2_ID(order.getUser2_ID());
+		setC_CostCenter_ID(order.getC_CostCenter_ID());
+		setC_Department_ID(order.getC_Department_ID());
 	}	//	setOrder
 
 	/**
@@ -738,6 +742,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setC_Activity_ID(ship.getC_Activity_ID());
 		setUser1_ID(ship.getUser1_ID());
 		setUser2_ID(ship.getUser2_ID());
+		setC_CostCenter_ID(ship.getC_CostCenter_ID());
+		setC_Department_ID(ship.getC_Department_ID());
 		//
 		if (ship.getC_Order_ID() != 0)
 		{
@@ -1995,7 +2001,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		boolean fromPOS = false;
 		if ( getC_Order_ID() > 0 )
 		{
-			fromPOS = getC_Order().getC_POS_ID() > 0;
+			MOrder order = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			fromPOS = order.getC_POS_ID() > 0;
 		}
 
   		//	Create Cash Payment
@@ -2085,7 +2092,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 				if (receipt.isProcessed()){
 
-					BigDecimal movementQty = receiptLine.getM_InOut().getMovementType().charAt(1) == '-' ? receiptLine.getMovementQty().negate() : receiptLine.getMovementQty();
+					BigDecimal movementQty = receiptLine.getParent().getMovementType().charAt(1) == '-' ? receiptLine.getMovementQty().negate() : receiptLine.getMovementQty();
 					BigDecimal matchQty = isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced();
 
 					if (movementQty.compareTo(matchQty) < 0)
@@ -2907,6 +2914,22 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		updateProjectInvoiceAmt(true);
 
+		// Update qty invoiced on related order/rma lines 
+		for (MInvoiceLine line : getLines()) {
+
+			if (line.getC_OrderLine_ID() != 0) {
+				MOrderLine  ol = new MOrderLine (getCtx(), line.getC_OrderLine_ID(), get_TrxName());
+				ol.setQtyInvoiced(ol.getQtyInvoiced().subtract(line.getQtyInvoiced()));
+				ol.saveEx();
+			}
+
+			if (line.getM_RMALine_ID() != 0) {
+				MRMALine rmaLine = new MRMALine (getCtx(),line.getM_RMALine_ID(), get_TrxName());
+				rmaLine.setQtyInvoiced(rmaLine.getQtyInvoiced().subtract(line.getQtyInvoiced()));
+				rmaLine.saveEx();
+			}
+		}
+
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
@@ -2996,6 +3019,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
         setC_Campaign_ID(originalInvoice.getC_Campaign_ID());
         setUser1_ID(originalInvoice.getUser1_ID());
         setUser2_ID(originalInvoice.getUser2_ID());
+		setC_CostCenter_ID(originalInvoice.getC_CostCenter_ID());
+		setC_Department_ID(originalInvoice.getC_Department_ID());
 	}
 
 	/**
@@ -3421,9 +3446,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		MInvoiceLine[] lines = getLines();
 		for(MInvoiceLine line : lines) {
-			if (line.getC_OrderLine_ID() > 0)
-			     orderIDSet.add(line.getC_OrderLine().getC_Order_ID());
-		   }
+			if (line.getC_OrderLine_ID() > 0) {
+				MOrderLine orderLine = new MOrderLine(getCtx(), line.getC_OrderLine_ID(), get_TrxName());
+				orderIDSet.add(orderLine.getC_Order_ID());
+			}
+		}
 
 		if(orderIDSet.isEmpty())
 			return false;

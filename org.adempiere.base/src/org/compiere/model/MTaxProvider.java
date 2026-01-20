@@ -63,7 +63,8 @@ public class MTaxProvider extends X_C_TaxProvider
 	 */
 	public String getTaxProviderClass()
 	{
-		return getC_TaxProviderCfg().getTaxProviderClass();
+		MTaxProviderCfg cfg = new MTaxProviderCfg(getCtx(), getC_TaxProviderCfg_ID(), get_TrxName());
+		return cfg.getTaxProviderClass();
 	}
 	
 	/**
@@ -71,6 +72,7 @@ public class MTaxProvider extends X_C_TaxProvider
 	 */
 	public String getURL()
 	{
-		return getC_TaxProviderCfg().getURL();
+		MTaxProviderCfg cfg = new MTaxProviderCfg(getCtx(), getC_TaxProviderCfg_ID(), get_TrxName());
+		return cfg.getURL();
 	}
 }

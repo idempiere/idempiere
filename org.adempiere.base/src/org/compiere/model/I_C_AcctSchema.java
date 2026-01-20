@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_AcctSchema 
 {
@@ -136,6 +136,7 @@ public interface I_C_AcctSchema
 	  */
 	public int getC_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name C_Period_ID */
@@ -151,6 +152,7 @@ public interface I_C_AcctSchema
 	  */
 	public int getC_Period_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
     /** Column name CommitmentType */
@@ -220,6 +222,19 @@ public interface I_C_AcctSchema
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name EndDate */
+    public static final String COLUMNNAME_EndDate = "EndDate";
+
+	/** Set End Date.
+	  * Last effective date (inclusive)
+	  */
+	public void setEndDate (Timestamp EndDate);
+
+	/** Get End Date.
+	  * Last effective date (inclusive)
+	  */
+	public Timestamp getEndDate();
 
     /** Column name GAAP */
     public static final String COLUMNNAME_GAAP = "GAAP";
@@ -390,6 +405,7 @@ public interface I_C_AcctSchema
 	  */
 	public int getM_CostType_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_CostType getM_CostType() throws RuntimeException;
 
     /** Column name Name */
@@ -452,6 +468,19 @@ public interface I_C_AcctSchema
 	  * Element Separator
 	  */
 	public String getSeparator();
+
+    /** Column name StartDate */
+    public static final String COLUMNNAME_StartDate = "StartDate";
+
+	/** Set Start Date.
+	  * First effective day (inclusive)
+	  */
+	public void setStartDate (Timestamp StartDate);
+
+	/** Get Start Date.
+	  * First effective day (inclusive)
+	  */
+	public Timestamp getStartDate();
 
     /** Column name TaxCorrectionType */
     public static final String COLUMNNAME_TaxCorrectionType = "TaxCorrectionType";

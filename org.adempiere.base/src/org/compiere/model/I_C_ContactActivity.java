@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_ContactActivity
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_C_ContactActivity 
 {
@@ -75,6 +75,7 @@ public interface I_C_ContactActivity
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name C_ContactActivity_ID */
@@ -108,6 +109,7 @@ public interface I_C_ContactActivity
 	/** Get Sales Opportunity	  */
 	public int getC_Opportunity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException;
 
     /** Column name Comments */
@@ -217,6 +219,7 @@ public interface I_C_ContactActivity
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name StartDate */

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ClientInfo
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_ClientInfo 
 {
@@ -80,6 +80,7 @@ public interface I_AD_ClientInfo
 	/** Get Storage Provider	  */
 	public int getAD_StorageProvider_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StorageProvider getAD_StorageProvider() throws RuntimeException;
 
     /** Column name AD_Tree_Activity_ID */
@@ -95,6 +96,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_Activity_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_Activity() throws RuntimeException;
 
     /** Column name AD_Tree_BPartner_ID */
@@ -110,6 +112,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_BPartner() throws RuntimeException;
 
     /** Column name AD_Tree_Campaign_ID */
@@ -125,6 +128,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_Campaign_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_Campaign() throws RuntimeException;
 
     /** Column name AD_Tree_Menu_ID */
@@ -140,6 +144,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_Menu_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_Menu() throws RuntimeException;
 
     /** Column name AD_Tree_Org_ID */
@@ -155,6 +160,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_Org_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_Org() throws RuntimeException;
 
     /** Column name AD_Tree_Product_ID */
@@ -170,6 +176,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_Product_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_Product() throws RuntimeException;
 
     /** Column name AD_Tree_Project_ID */
@@ -185,6 +192,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_Project_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_Project() throws RuntimeException;
 
     /** Column name AD_Tree_SalesRegion_ID */
@@ -200,6 +208,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getAD_Tree_SalesRegion_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Tree getAD_Tree_SalesRegion() throws RuntimeException;
 
     /** Column name C_AcctSchema1_ID */
@@ -215,6 +224,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getC_AcctSchema1_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema1() throws RuntimeException;
 
     /** Column name C_BPartnerCashTrx_ID */
@@ -230,6 +240,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getC_BPartnerCashTrx_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BPartnerCashTrx() throws RuntimeException;
 
     /** Column name C_Calendar_ID */
@@ -245,6 +256,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getC_Calendar_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException;
 
     /** Column name C_ChargeFreight_ID */
@@ -256,6 +268,7 @@ public interface I_AD_ClientInfo
 	/** Get Charge for Freight	  */
 	public int getC_ChargeFreight_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Charge getC_ChargeFreight() throws RuntimeException;
 
     /** Column name C_UOM_Length_ID */
@@ -271,6 +284,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getC_UOM_Length_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Length() throws RuntimeException;
 
     /** Column name C_UOM_Time_ID */
@@ -286,6 +300,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getC_UOM_Time_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Time() throws RuntimeException;
 
     /** Column name C_UOM_Volume_ID */
@@ -301,6 +316,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getC_UOM_Volume_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Volume() throws RuntimeException;
 
     /** Column name C_UOM_Weight_ID */
@@ -316,6 +332,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getC_UOM_Weight_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_UOM getC_UOM_Weight() throws RuntimeException;
 
     /** Column name Created */
@@ -436,6 +453,7 @@ public interface I_AD_ClientInfo
 	/** Get Product for Freight	  */
 	public int getM_ProductFreight_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Product getM_ProductFreight() throws RuntimeException;
 
     /** Column name StorageArchive_ID */
@@ -447,6 +465,7 @@ public interface I_AD_ClientInfo
 	/** Get Archive Store	  */
 	public int getStorageArchive_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StorageProvider getStorageArchive() throws RuntimeException;
 
     /** Column name StorageImage_ID */
@@ -462,6 +481,7 @@ public interface I_AD_ClientInfo
 	  */
 	public int getStorageImage_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_StorageProvider getStorageImage() throws RuntimeException;
 
     /** Column name TimeZone */

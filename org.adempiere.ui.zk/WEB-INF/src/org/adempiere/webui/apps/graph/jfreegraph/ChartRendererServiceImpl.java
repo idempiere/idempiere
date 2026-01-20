@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 import org.adempiere.apps.graph.GraphBuilder;
 import org.adempiere.apps.graph.GraphColumn;
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.model.ChartModel;
@@ -48,7 +49,9 @@ import org.zkoss.zul.Imagemap;
  * @author hengsin
  * @deprecated replace by billboard based implementation
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class ChartRendererServiceImpl implements IChartRendererService {
 
 	private final static CLogger log = CLogger.getCLogger(ChartRendererServiceImpl.class);

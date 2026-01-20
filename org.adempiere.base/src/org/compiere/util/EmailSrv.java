@@ -108,7 +108,7 @@ public class EmailSrv {
 	 * @param imapUser
 	 * @param imapPass
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public EmailSrv (String imapHost, String  imapUser, String  imapPass){
 		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? true : false);
 	}
@@ -715,7 +715,7 @@ public class EmailSrv {
 			if (i == 0)
 				reconstructSign.append(lsPart.get(0));
 			
-			String imageBase64 = provideBase64Data.getBase64Data(lsImgSrc.get(i));;
+			String imageBase64 = provideBase64Data.getBase64Data(lsImgSrc.get(i));
 			
 			if (imageBase64 == null){
 				// no attach map with this src value 

@@ -92,6 +92,22 @@ public class FinStatement extends SvrProcess
 	private int					p_UserElement2_ID = 0;
 	/** Hierarchy						*/
 	private int					p_PA_Hierarchy_ID = 0;
+	/** BPartner Employee Parameter */
+	private int				p_C_Employee_ID				= 0;
+	/** Charge Parameter */
+	private int				p_C_Charge_ID				= 0;
+	/** Cost Center Parameter */
+	private int				p_C_CostCenter_ID			= 0;
+	/** Department Parameter */
+	private int				p_C_Department_ID			= 0;
+	/** Warehouse Parameter */
+	private int				p_M_Warehouse_ID			= 0;
+	/** Asset Parameter */
+	private int				p_A_Asset_ID				= 0;
+	/** Attribute Set Instance Parameter */
+	private int				p_M_AttributeSetInstance_ID	= 0;
+	/** Tax Parameter */
+	private int				p_C_Tax_ID					= 0;
 
 	/**	Parameter Where Clause			*/
 	private StringBuffer		m_parameterWhere = new StringBuffer();
@@ -153,6 +169,22 @@ public class FinStatement extends SvrProcess
 				p_UserElement1_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else if (name.equals("UserElement2_ID"))
 				p_UserElement2_ID = ((BigDecimal)para[i].getParameter()).intValue();
+			else if (name.equals("C_Employee_ID"))
+				p_C_Employee_ID = para[i].getParameterAsInt();
+			else if (name.equals("C_Charge_ID"))
+				p_C_Charge_ID = para[i].getParameterAsInt();
+			else if (name.equals("C_CostCenter_ID"))
+				p_C_CostCenter_ID = para[i].getParameterAsInt();
+			else if (name.equals("C_Department_ID"))
+				p_C_Department_ID = para[i].getParameterAsInt();
+			else if (name.equals("M_Warehouse_ID"))
+				p_M_Warehouse_ID = para[i].getParameterAsInt();
+			else if (name.equals("A_Asset_ID"))
+				p_A_Asset_ID = para[i].getParameterAsInt();
+			else if (name.equals("M_AttributeSetInstance_ID"))
+				p_M_AttributeSetInstance_ID = para[i].getParameterAsInt();
+			else if (name.equals("C_Tax_ID"))
+				p_C_Tax_ID = para[i].getParameterAsInt();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
@@ -206,6 +238,30 @@ public class FinStatement extends SvrProcess
 		//  Optional UserElement2_ID
 		if (p_UserElement2_ID != 0)
 			m_parameterWhere.append(" AND UserElement2_ID=").append(p_UserElement2_ID);	
+		//	Optional Employee
+		if (p_C_Employee_ID != 0)
+			m_parameterWhere.append(" AND C_Employee_ID = ").append(p_C_Employee_ID);
+		//	Optional Charge
+		if (p_C_Charge_ID != 0)
+			m_parameterWhere.append(" AND C_Charge_ID = ").append(p_C_Charge_ID);
+		//	Optional Cost Center
+		if (p_C_CostCenter_ID != 0)
+			m_parameterWhere.append(" AND C_CostCenter_ID = ").append(p_C_CostCenter_ID);
+		//	Optional Department
+		if (p_C_Department_ID != 0)
+			m_parameterWhere.append(" AND C_Department_ID = ").append(p_C_Department_ID);
+		//	Optional Warehouse
+		if (p_M_Warehouse_ID != 0)
+			m_parameterWhere.append(" AND M_Warehouse_ID = ").append(p_M_Warehouse_ID);
+		// Optional Asset
+		if (p_A_Asset_ID != 0)
+			m_parameterWhere.append(" AND A_Asset_ID = ").append(p_A_Asset_ID);
+		// Optional ASI
+		if (p_M_AttributeSetInstance_ID != 0)
+			m_parameterWhere.append(" AND M_AttributeSetInstance_ID = ").append(p_M_AttributeSetInstance_ID);
+		// Optional ASI
+		if (p_C_Tax_ID != 0)
+			m_parameterWhere.append(" AND C_Tax_ID = ").append(p_C_Tax_ID);
 		//
 		setDateAcct();
 		sb.append(" - DateAcct ").append(p_DateAcct_From).append("-").append(p_DateAcct_To);

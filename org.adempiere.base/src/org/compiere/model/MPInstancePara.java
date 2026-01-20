@@ -229,7 +229,8 @@ public class MPInstancePara extends X_AD_PInstance_Para
 	 */
 	public int getDisplayType() 
 	{
-		MProcess process = (MProcess) getAD_PInstance().getAD_Process();
+		MPInstance pInstance = new MPInstance(getCtx(), getAD_PInstance_ID(), get_TrxName());
+		MProcess process = MProcess.get(pInstance.getAD_Process_ID());
 		MProcessPara[] params = process.getParameters();
 		for(MProcessPara param : params)
 		{

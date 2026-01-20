@@ -134,9 +134,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 	private static final CLogger logger = CLogger.getCLogger(AdempiereWebUI.class);
 
-	@Deprecated(forRemoval = true, since = "11")
-	public static final String EXECUTION_CARRYOVER_SESSION_KEY = "execution.carryover";
-
 	/** Session attribute to hold {@link ClientInfo} reference */
 	private static final String CLIENT_INFO = "client.info";
 	
@@ -513,12 +510,14 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    	isAdminLogin  = (boolean)desktop.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
 	    
 	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
+		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
 	    String ssoLogoutURL = null;
 	    if (!isAdminLogin && isSSOLogin)
-	    {
-	    	ISSOPrincipalService service = SSOUtils.getSSOPrincipalService();
-	    	ssoLogoutURL = service.getLogoutURL();
-	    }
+		{
+			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider);
+			if (service != null)
+				ssoLogoutURL = service.getLogoutURL();
+		}
 	    
 	    final Session session = logout0();
 	    

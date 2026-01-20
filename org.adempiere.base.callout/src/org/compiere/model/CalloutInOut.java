@@ -69,6 +69,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("C_Project_ID", Integer.valueOf(order.getC_Project_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(order.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(order.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(order.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(order.getC_Department_ID()));
 			mTab.setValue("M_Warehouse_ID", Integer.valueOf(order.getM_Warehouse_ID()));
 			//
 			mTab.setValue("DeliveryRule", order.getDeliveryRule());
@@ -133,7 +135,7 @@ public class CalloutInOut extends CalloutEngine
 		//	Get Details
 		MRMA rma = new MRMA (ctx, M_RMA_ID.intValue(), null);
         MInOut originalReceipt = rma.getShipment();
-		if (rma.get_ID() != 0)
+		if (rma.get_ID() > 0)
 		{
 			mTab.setValue("DateOrdered", originalReceipt.getDateOrdered());
 			mTab.setValue("POReference", originalReceipt.getPOReference());
@@ -144,6 +146,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("C_Project_ID", Integer.valueOf(originalReceipt.getC_Project_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(originalReceipt.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(originalReceipt.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(originalReceipt.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(originalReceipt.getC_Department_ID()));
 			mTab.setValue("M_Warehouse_ID", Integer.valueOf(originalReceipt.getM_Warehouse_ID()));
 			//
 			mTab.setValue("DeliveryRule", originalReceipt.getDeliveryRule());
@@ -162,6 +166,12 @@ public class CalloutInOut extends CalloutEngine
 				mTab.setValue("AD_User_ID", Integer.valueOf(originalReceipt.getAD_User_ID()));
 			else
 				mTab.setValue("AD_User_ID", null);
+			
+	        //Set corresponding document type
+	        int docTypeId = rma.getC_DocType_ID();
+	        int relatedDocTypeId = MDocType.getShipmentReceiptDocType(docTypeId);
+	        if (relatedDocTypeId > 0)
+	        	mTab.setValue("C_DocType_ID", relatedDocTypeId);
 		}
 		return "";
 	}	//	rma
@@ -444,6 +454,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(ol.getAD_OrgTrx_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(ol.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(ol.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(ol.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(ol.getC_Department_ID()));
 		}
 		return "";
 	}	//	orderLine
@@ -492,6 +504,8 @@ public class CalloutInOut extends CalloutEngine
 			mTab.setValue("AD_OrgTrx_ID", Integer.valueOf(rl.getAD_OrgTrx_ID()));
 			mTab.setValue("User1_ID", Integer.valueOf(rl.getUser1_ID()));
 			mTab.setValue("User2_ID", Integer.valueOf(rl.getUser2_ID()));
+			mTab.setValue("C_CostCenter_ID", Integer.valueOf(rl.getC_CostCenter_ID()));  
+			mTab.setValue("C_Department_ID", Integer.valueOf(rl.getC_Department_ID()));  
 		}
 		return "";
 	}	//	rmaLine

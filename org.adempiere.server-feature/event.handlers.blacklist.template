@@ -1,0 +1,9 @@
+# Each line should be in the format of <event handler class name>[<comma separated event topic name>] (use * to match all event topics)
+#
+# Examples:
+# org.adempiere.base.event.RequestEventHandler[adempiere/po/afterChange]
+# org.adempiere.base.event.RequestEventHandler[*]
+# org.adempiere.base.event.delegate.AutoProduceEventDelegate[adempiere/doc/beforeComplete]
+#
+# The system will ignore any lines that start with a '#' and any blank lines.
+# Changes will take effect after server restart.

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for CM_ChatUpdate
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatUpdate")
 public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_CM_ChatUpdate (Properties ctx, int CM_ChatUpdate_ID, String trxName)
@@ -108,6 +108,7 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
       return sb.toString();
     }
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -151,6 +152,7 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 		return (String)get_Value(COLUMNNAME_CM_ChatUpdate_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_CM_Chat getCM_Chat() throws RuntimeException
 	{
 		return (org.compiere.model.I_CM_Chat)MTable.get(getCtx(), org.compiere.model.I_CM_Chat.Table_ID)

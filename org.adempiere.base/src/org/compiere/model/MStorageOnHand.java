@@ -55,7 +55,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * @deprecated
 	 * @return MStorageOnHand
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MStorageOnHand get (Properties ctx, int M_Locator_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID, String trxName) {
 		return get (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null, trxName);
@@ -328,7 +328,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MStorageOnHand[] getWarehouse (Properties ctx, int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, int M_AttributeSet_ID,
 		boolean allAttributeInstances, Timestamp minGuaranteeDate,
@@ -765,7 +765,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@return true if updated
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand, String trxName)
@@ -787,7 +787,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@return true if updated
 	 *  @deprecated
 	 */
-	@Deprecated	
+	@Deprecated (since="13", forRemoval=true)	
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
@@ -1282,6 +1282,38 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		params.add(M_Product_ID);
 		params.add(M_Locator_ID);
 
+		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		if (qty == null)
+			qty = Env.ZERO;
+
+		return qty;
+	}
+	
+	public static BigDecimal getQtyOnHandForLocatorWithASIMovementDate(int M_Product_ID, int M_Locator_ID, 
+			int M_AttributeSetInstance_ID, Timestamp MovementDate, String trxName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT NVL((")
+			.append("SELECT SUM(QtyOnHand) FROM M_StorageOnHand ")
+			.append("WHERE M_Product_ID=?")
+			.append(" AND M_Locator_ID=?")
+			.append(" AND M_AttributeSetInstance_ID=?")
+			.append("),0) - NVL((")
+			.append("SELECT SUM(MovementQty) FROM M_Transaction ")
+			.append("WHERE M_Product_ID=?")
+			.append(" AND M_Locator_ID=?")
+			.append(" AND M_AttributeSetInstance_ID=?")
+			.append(" AND MovementDate>?")
+			.append("),0) FROM DUAL");
+		
+		ArrayList<Object> params = new ArrayList<Object>();
+		params.add(M_Product_ID);
+		params.add(M_Locator_ID);
+		params.add(M_AttributeSetInstance_ID);
+		params.add(M_Product_ID);
+		params.add(M_Locator_ID);
+		params.add(M_AttributeSetInstance_ID);
+		params.add(MovementDate);
+		
 		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
 		if (qty == null)
 			qty = Env.ZERO;

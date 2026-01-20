@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for RV_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_RV_BPartner 
 {
@@ -119,6 +119,7 @@ public interface I_RV_BPartner
 	/** Get AD_User_C_BPartner_ID	  */
 	public int getAD_User_C_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getAD_User_C_BPartner() throws RuntimeException;
 
     /** Column name AD_User_C_BPartner_Location_ID */
@@ -130,6 +131,7 @@ public interface I_RV_BPartner
 	/** Get AD_User_C_BPartner_Location_ID	  */
 	public int getAD_User_C_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getAD_User_C_BPartner_Location() throws RuntimeException;
 
     /** Column name AD_User_CreatedBy */
@@ -141,6 +143,7 @@ public interface I_RV_BPartner
 	/** Get ad_user_createdby	  */
 	public int getAD_User_CreatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User_Create() throws RuntimeException;
 
     /** Column name AD_User_ID */
@@ -156,6 +159,7 @@ public interface I_RV_BPartner
 	  */
 	public int getAD_User_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name AD_User_UpdatedBy */
@@ -167,6 +171,7 @@ public interface I_RV_BPartner
 	/** Get ad_user_updatedby	  */
 	public int getAD_User_UpdatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getAD_User_Update() throws RuntimeException;
 
     /** Column name AcqusitionCost */
@@ -260,6 +265,7 @@ public interface I_RV_BPartner
 	  */
 	public int getBPContactGreeting();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Greeting getBPContactGreet() throws RuntimeException;
 
     /** Column name BPartner_Parent_ID */
@@ -275,6 +281,7 @@ public interface I_RV_BPartner
 	  */
 	public int getBPartner_Parent_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getBPartner_Parent() throws RuntimeException;
 
     /** Column name Birthday */
@@ -299,6 +306,7 @@ public interface I_RV_BPartner
 	/** Get c_bp_c_taxgroup_id	  */
 	public int getC_BP_C_TaxGroup_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_C_TaxGroup getC_BP_C_TaxGroup() throws RuntimeException;
 
     /** Column name C_BP_Group_ID */
@@ -314,6 +322,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_BP_Group_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException;
 
     /** Column name C_BP_Location_AD_Org_ID */
@@ -334,6 +343,7 @@ public interface I_RV_BPartner
 	/** Get c_bpartner_location_c_bpartner_id	  */
 	public int getC_BP_Location_C_BPartner_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner getC_BP_Location_C_BPartner() throws RuntimeException;
 
     /** Column name C_BP_Location_C_Location_ID */
@@ -345,6 +355,7 @@ public interface I_RV_BPartner
 	/** Get c_bp_location_c_location_id	  */
 	public int getC_BP_Location_C_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_BP_Location_C_Location() throws RuntimeException;
 
     /** Column name C_BP_Location_CreatedBy */
@@ -356,6 +367,7 @@ public interface I_RV_BPartner
 	/** Get c_bp_location_createdby	  */
 	public int getC_BP_Location_CreatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getC_BP_Location_Create() throws RuntimeException;
 
     /** Column name C_BP_Location_SalesRegion_ID */
@@ -367,6 +379,7 @@ public interface I_RV_BPartner
 	/** Get c_bp_location_salesregion_id	  */
 	public int getC_BP_Location_SalesRegion_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesRegion getC_BP_Location_SalesRegion() throws RuntimeException;
 
     /** Column name C_BP_Location_UpdatedBy */
@@ -378,6 +391,7 @@ public interface I_RV_BPartner
 	/** Get c_bp_location_updatedby	  */
 	public int getC_BP_Location_UpdatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getC_BP_Location_Update() throws RuntimeException;
 
     /** Column name C_BP_Logo_ID */
@@ -415,6 +429,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_BPartner_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException;
 
     /** Column name C_City_ID */
@@ -430,6 +445,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_City_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
 
     /** Column name C_Country_C_Currency_ID */
@@ -441,6 +457,7 @@ public interface I_RV_BPartner
 	/** Get c_country_c_currency_id	  */
 	public int getC_Country_C_Currency_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Currency getC_Country_C_Currency() throws RuntimeException;
 
     /** Column name C_Country_ID */
@@ -456,6 +473,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Country_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Country getC_Country() throws RuntimeException;
 
     /** Column name C_Dunning_ID */
@@ -471,6 +489,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Dunning_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException;
 
     /** Column name C_Greeting_ID */
@@ -486,6 +505,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Greeting_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Greeting getC_Greeting() throws RuntimeException;
 
     /** Column name C_InvoiceSchedule_ID */
@@ -501,6 +521,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_InvoiceSchedule_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_InvoiceSchedule getC_InvoiceSchedule() throws RuntimeException;
 
     /** Column name C_Location_AD_Org_ID */
@@ -521,6 +542,7 @@ public interface I_RV_BPartner
 	/** Get c_location_createdby	  */
 	public int getC_Location_CreatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getC_Location_Create() throws RuntimeException;
 
     /** Column name C_Location_ID */
@@ -536,6 +558,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Location_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public I_C_Location getC_Location() throws RuntimeException;
 
     /** Column name C_Location_UpdatedBy */
@@ -547,6 +570,7 @@ public interface I_RV_BPartner
 	/** Get c_location_updatedby	  */
 	public int getC_Location_UpdatedBy();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getC_Location_Update() throws RuntimeException;
 
     /** Column name C_PaymentTerm_ID */
@@ -562,6 +586,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_PaymentTerm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException;
 
     /** Column name C_Region_AD_Org_ID */
@@ -595,6 +620,7 @@ public interface I_RV_BPartner
 	  */
 	public int getC_Region_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
 
     /** Column name City */
@@ -653,12 +679,12 @@ public interface I_RV_BPartner
     public static final String COLUMNNAME_CountryCode = "CountryCode";
 
 	/** Set ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public void setCountryCode (String CountryCode);
 
 	/** Get ISO Country Code.
-	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	  * Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1
 	  */
 	public String getCountryCode();
 
@@ -888,6 +914,7 @@ public interface I_RV_BPartner
 	  */
 	public int getInvoice_PrintFormat_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_PrintFormat getInvoice_PrintFormat() throws RuntimeException;
 
     /** Column name IsActive */
@@ -1081,6 +1108,7 @@ public interface I_RV_BPartner
 	  */
 	public int getM_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getM_DiscountSchema() throws RuntimeException;
 
     /** Column name M_PriceList_ID */
@@ -1096,6 +1124,7 @@ public interface I_RV_BPartner
 	  */
 	public int getM_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException;
 
     /** Column name NAICS */
@@ -1189,6 +1218,7 @@ public interface I_RV_BPartner
 	  */
 	public int getPO_DiscountSchema_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_DiscountSchema getPO_DiscountSchema() throws RuntimeException;
 
     /** Column name PO_PaymentTerm_ID */
@@ -1204,6 +1234,7 @@ public interface I_RV_BPartner
 	  */
 	public int getPO_PaymentTerm_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_PaymentTerm getPO_PaymentTerm() throws RuntimeException;
 
     /** Column name PO_PriceList_ID */
@@ -1219,6 +1250,7 @@ public interface I_RV_BPartner
 	  */
 	public int getPO_PriceList_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_PriceList getPO_PriceList() throws RuntimeException;
 
     /** Column name PaymentRule */
@@ -1431,6 +1463,7 @@ s site
 	  */
 	public int getSalesRep_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException;
 
     /** Column name SalesVolume */
@@ -1500,6 +1533,7 @@ s business as a percentage
 	  */
 	public int getSupervisor_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException;
 
     /** Column name TaxID */

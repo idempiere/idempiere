@@ -1,0 +1,169 @@
+target "idempiere-12"
+
+with source configurePhase allEnvironments
+
+location zk "https://idempiere.github.io/binary.file/p2.zk/10.0.1" {
+	zcommon
+	zel
+	zhtml
+	zk
+	zkbind
+	zkplus
+	zkwebfragment
+	zul
+	zweb
+	zweb-dsp
+}
+
+//location repackaged "http://localhost:8083/p2.repackaged" {
+location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/12.0.1" {
+	// 2.3.3.v2021090100, dependency of com.sun.xml.ws.jaxws-rt_2.3.5, org.idempiere.webservices, 
+	// wrapped.org.apache.cxf.cxf-rt-ws-transfer_3.6.3
+	jakarta.xml.ws-api
+	// 2.7.2.v202109010034
+	org.atmosphere.runtime
+	// 1.44.2, repackage to fix dependency to guava
+	com.google.http-client.google-http-client
+	// 1.2.18.v202109010034, dependency of com.sun.xml.bind.jaxb-impl_2.3.5, com.sun.xml.messaging.saaj.impl_1.5.3,
+	// org.apache.cxf.cxf-core_3.6.3
+	com.sun.xml.fastinfoset.FastInfoset
+	// 4.6.4, dependency of org.idempiere.felix.webconsole
+	org.apache.felix.webconsole
+	// 1.36.0, repackage to fix dependency to guava
+	com.google.oauth-client
+	// Fragment to add Provide-Capability header to org.eclipse.jetty.servlet-api_4.0.6
+	org.eclipse.jetty.servlet-api.capability
+	// 3.6.3, updated with xmlbeans 5.0.3 support 
+	org.apache.cxf.cxf-rt-databinding-xmlbeans
+	// 3.6.3, updated with xmlbeans 5.0.3 support
+	org.apache.cxf.cxf-rt-rs-extension-providers
+	// 12.0.24, make import-package compatible with bc-fips
+	org.eclipse.jetty.keystore
+	// make import-package compatible with bc-fips
+	org.eclipse.equinox.p2.artifact.repository
+	org.eclipse.equinox.p2.repository
+	org.apache.pdfbox
+	com.github.librepdf.openpdf
+}
+
+location eclipse-2023-09 "https://download.eclipse.org/eclipse/updates/4.29" {
+	// equinox core framework
+	org.eclipse.osgi
+	org.osgi.annotation.bundle
+	org.osgi.annotation.versioning
+	org.osgi.service.cm
+	org.osgi.service.component
+	org.osgi.service.component.annotations
+	org.osgi.service.coordinator
+	org.osgi.service.device
+	org.osgi.service.event
+	org.osgi.service.log.stream
+	org.osgi.service.metatype
+	org.osgi.service.metatype.annotations
+	org.osgi.service.prefs
+	org.osgi.service.provisioning
+	org.osgi.service.upnp
+	org.osgi.service.useradmin
+	org.osgi.service.wireadmin
+	org.osgi.util.function
+	org.osgi.util.measurement
+	org.osgi.util.position
+	org.osgi.util.promise
+	org.osgi.util.pushstream
+	org.osgi.util.xml
+	// equinox framework starter kit
+	org.apache.felix.gogo.command
+	org.apache.felix.gogo.runtime
+	org.apache.felix.gogo.shell
+	org.apache.felix.scr
+	org.apache.httpcomponents.client5.httpclient5
+	org.apache.httpcomponents.core5.httpcore5
+	org.apache.httpcomponents.core5.httpcore5-h2
+	org.eclipse.core.jobs
+	org.eclipse.ecf
+	org.eclipse.ecf.filetransfer
+	org.eclipse.ecf.identity
+	org.eclipse.ecf.provider.filetransfer
+	org.eclipse.ecf.provider.filetransfer.httpclient5
+	org.eclipse.ecf.provider.filetransfer.ssl
+	org.eclipse.equinox.app
+	org.eclipse.equinox.common
+	org.eclipse.equinox.concurrent
+	org.eclipse.equinox.console
+	org.eclipse.equinox.frameworkadmin
+	org.eclipse.equinox.frameworkadmin.equinox
+	org.eclipse.equinox.launcher
+	org.eclipse.equinox.p2.console
+	org.eclipse.equinox.p2.core
+	org.eclipse.equinox.p2.director
+	org.eclipse.equinox.p2.engine
+	org.eclipse.equinox.p2.garbagecollector
+	org.eclipse.equinox.p2.jarprocessor
+	org.eclipse.equinox.p2.metadata
+	org.eclipse.equinox.p2.metadata.repository
+	org.eclipse.equinox.p2.operations
+	org.eclipse.equinox.p2.touchpoint.eclipse
+	org.eclipse.equinox.p2.touchpoint.natives
+	org.eclipse.equinox.p2.transport.ecf
+	org.eclipse.equinox.preferences
+	org.eclipse.equinox.registry
+	org.eclipse.equinox.security
+	org.eclipse.equinox.simpleconfigurator
+	org.eclipse.equinox.simpleconfigurator.manipulator
+	org.eclipse.osgi.util
+	org.sat4j.core
+	org.sat4j.pb
+	org.tukaani.xz
+	// equinox add-on
+	// launcher feature for all environment
+	org.eclipse.equinox.executable.feature.group
+	org.eclipse.equinox.http.registry
+	org.eclipse.osgi.compatibility.state
+	org.eclipse.core.runtime
+	org.eclipse.equinox.http.servlet
+	org.eclipse.equinox.servletbridge
+	org.eclipse.equinox.p2.director.app
+	org.eclipse.equinox.cm
+	org.eclipse.equinox.event
+	org.eclipse.equinox.http.servletbridge
+	org.eclipse.equinox.metatype
+	org.eclipse.ant.core
+	org.eclipse.core.commands
+	org.eclipse.core.contenttype
+	org.eclipse.core.expressions
+	org.eclipse.core.filesystem
+	org.eclipse.core.net
+	org.eclipse.core.resources
+	org.eclipse.core.variables
+	org.eclipse.jdt.core
+	org.eclipse.jdt.core.compiler.batch
+	org.eclipse.text	
+	// junit
+	org.opentest4j
+	org.apiguardian.api
+	org.junit
+	org.eclipse.pde.junit.runtime
+	org.eclipse.jdt.junit.runtime
+	org.eclipse.jdt.junit5.runtime
+}
+
+location orbit-2023-09 "https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0" {
+	org.apache.ant
+	org.apache.xml.resolver	
+	org.hamcrest.core [1.3.0.v20230809-1000,1.3.0.v20230809-1000]
+	org.apache.xml.serializer
+	org.apache.commons.discovery	
+}	
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository" {
+	org.w3c.css.sac
+	org.w3c.dom.smil
+	org.w3c.dom.svg
+	org.w3c.dom.events
+	// 1.3.4
+	javax.xml	
+}
+
+location jasperstudio "https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0" {
+    org.krysalis.barcode4j
+}

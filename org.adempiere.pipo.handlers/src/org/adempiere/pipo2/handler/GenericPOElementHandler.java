@@ -42,6 +42,7 @@ import org.compiere.model.I_AD_Form;
 import org.compiere.model.I_AD_InfoWindow;
 import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Role;
+import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.I_C_DocType;
 import org.compiere.model.MColumn;
@@ -63,7 +64,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class GenericPOElementHandler extends AbstractElementHandler {
 
-	private String m_tableName;
+	protected String m_tableName;
 
 	public GenericPOElementHandler() {
 	}
@@ -183,6 +184,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						&& ! IHandlerRegistry.TABLE_GENERIC_SINGLE_HANDLER.equals(ctx.packOut.getCurrentPackoutItem().getType())) {
 						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
 						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
+							ctx.packOut.getCtx().ctx.put("Table_Name",tableName);
 							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID(), po.get_UUID());
 							createElement = false;
 						}
@@ -196,7 +198,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 							filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
 							excludes.add("IsSyncDatabase");
 						}
-						filler.export(excludes, true);
+						filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 						ctx.packOut.getCtx().ctx.put("Table_Name",tableName);
 						try {
 							new CommonTranslationHandler().packOut(ctx.packOut, document, null, po.get_ID(), po.get_UUID());
@@ -204,6 +206,18 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 							if (log.isLoggable(Level.INFO)) log.info(e.toString());
 						}
 					}
+				}
+				
+				ctx.packOut.getCtx().ctx.put("Table_Name", tableName);
+				try
+				{
+					ElementHandler handler = ctx.packOut.getHandler(I_AD_TableAttribute.Table_Name);
+					handler.packOut(ctx.packOut, document, null, po.get_ID());
+				}
+				catch (Exception e)
+				{
+					if (log.isLoggable(Level.INFO))
+						log.info(e.toString());
 				}
 
 				for (int i = 1; i < components.length; i++) {
@@ -272,13 +286,25 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						addTypeName(atts, "table");
 						document.startElement("", "", mainTable, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
-						filler.export(excludes, true);
+						filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 						ctx.packOut.getCtx().ctx.put("Table_Name",mainTable);
 						try {
 							new CommonTranslationHandler().packOut(ctx.packOut, document, null, po.get_ID(), po.get_UUID());
 						} catch(Exception e) {
 							if (log.isLoggable(Level.INFO)) log.info(e.toString());
 						}
+					}
+					
+					ctx.packOut.getCtx().ctx.put("Table_Name", mainTable);
+					try
+					{
+						ElementHandler handlerTabAttr = ctx.packOut.getHandler(I_AD_TableAttribute.Table_Name);
+						handlerTabAttr.packOut(ctx.packOut, document, null, po.get_ID());
+					}
+					catch (Exception e)
+					{
+						if (log.isLoggable(Level.INFO))
+							log.info(e.toString());
 					}
 				}
 				for (int i=1; i<tables.length; i++) {

@@ -48,6 +48,7 @@ import org.compiere.model.PO;
  */
 public class DefaultEvaluatee implements Evaluatee {
 
+	private static final String REPLACEMENT_VALUE_FOR_SECURE_CONTENT = "********";
 	private DataProvider m_dataProvider;
 	private int m_windowNo;
 	private int m_tabNo;
@@ -186,8 +187,16 @@ public class DefaultEvaluatee implements Evaluatee {
 		String value = null;
 		boolean globalVariable = Env.isGlobalVariable(variableName);
 		boolean tabOnly = m_onlyTab != null ? m_onlyTab.booleanValue() : false;
+
+		// get value from data provider(usually PO or GridTab)
+		Object dataValue = null;
+		if (m_dataProvider != null && !globalVariable) {
+			dataValue = m_dataProvider.getValue(variableName);
+			value = dataValue != null ? dataValue.toString() : null;
+		}
+
 		// get value from window context or global
-		if (m_windowNo != 0)
+		if (value == null && m_windowNo != 0)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
@@ -215,7 +224,6 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 
 		// po property operator
-		Object dataValue = null;
 		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
 			if (variableName.startsWith(Evaluator.VARIABLE_PO_PROPERTY_OPERATOR)) {
 				variableName = variableName.substring(1);
@@ -228,7 +236,8 @@ public class DefaultEvaluatee implements Evaluatee {
 		boolean withTabNo = false;
 		if (globalVariable) {
 			variableName = variableName.substring(1);				
-		} else if (variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0) {
+		} else if (   variableName.indexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR) > 0
+				   && !variableName.startsWith(Env.TAB_INFO + Evaluator.VARIABLE_TAB_NO_SEPARATOR)) {
 			variableName = variableName.substring(variableName.lastIndexOf(Evaluator.VARIABLE_TAB_NO_SEPARATOR)+1);
 			withTabNo = true;
 		} else if (variableName.startsWith(Evaluator.VARIABLE_SELF_TAB_OPERATOR)) {
@@ -239,12 +248,6 @@ public class DefaultEvaluatee implements Evaluatee {
 		//try window context again after removal of tab no
 		if (!globalVariable && Util.isEmpty(value) && m_windowNo != 0 && withTabNo && !tabOnly) {
 			value = Env.getContext(ctx, m_windowNo, variableName);
-		}
-		
-		// get value from data provider(usually PO or GridTab)
-		if (Util.isEmpty(value) && m_dataProvider != null && !globalVariable) {
-			dataValue = m_dataProvider.getValue(variableName);
-			value = dataValue != null ? dataValue.toString() : "";
 		}
 		
 		//try context if no data provider and not only window and not only tab
@@ -309,7 +312,7 @@ public class DefaultEvaluatee implements Evaluatee {
 				foreignTable = getPO().get_TableName();
 			}
 			//no dot operator and variable name is *_ID
-			if (Util.isEmpty(foreignColumn) && variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX)) {
+			if (Util.isEmpty(foreignColumn) && (variableName.endsWith(Evaluator.ID_COLUMN_SUFFIX) || variableName.equals("CreatedBy") || variableName.equals("UpdatedBy"))) {
 				int id = 0;
 				try {
 					id = Integer.parseInt(value);
@@ -332,7 +335,7 @@ public class DefaultEvaluatee implements Evaluatee {
 							column = table.getColumn(format);
 							if (column != null) {
 								if (column.isSecure()) {
-									value = "********";
+									value = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
 								} else {
 									String trxName = m_trxName != null ? m_trxName : (m_dataProvider != null ? m_dataProvider.getTrxName() : null);
 									String keyCol = foreignTable + Evaluator.ID_COLUMN_SUFFIX;
@@ -360,7 +363,7 @@ public class DefaultEvaluatee implements Evaluatee {
 			}			
 		} else if (column != null) {
 			if (column.isSecure()) {
-				value = "********";
+				value = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
 			} else if (column != null && column.getAD_Reference_ID() == DisplayType.YesNo && dataValue != null && dataValue instanceof Boolean booleanValue) {
 				if (m_useMsgForBoolean ) {
 					if (booleanValue.booleanValue())
@@ -413,6 +416,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		Object returnValue = defaultValue; 
 		String key = foreignTable+"|"+id;
 		PO po = null;
+		MColumn column = table.getColumn(foreignColumn);
+		if (column != null && column.isSecure()) {
+			returnValue = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
+			return returnValue;
+		}
 		if (s_ReferenceCache.containsKey(key))
 		{
 			po = s_ReferenceCache.get(key);

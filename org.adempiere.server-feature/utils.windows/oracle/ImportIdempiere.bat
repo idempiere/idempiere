@@ -8,31 +8,32 @@
 @if (%ADEMPIERE_DB_NAME%) == () goto environment
 @if (%ADEMPIERE_DB_SERVER%) == () goto environment
 @if (%ADEMPIERE_DB_PORT%) == () goto environment
-@Rem Must have parameters systemAccount AdempiereID AdempierePwd
+@Rem Must have parameters AdempiereID AdempierePwd systemUser systemPwd
 @if (%1) == () goto usage
 @if (%2) == () goto usage
 @if (%3) == () goto usage
+@if (%4) == () goto usage
 
 @echo -------------------------------------
 @echo Re-Create DB user
 @echo -------------------------------------
-@sqlplus -S %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateUser.sql %2 %3
+@sqlplus -S %3/%4@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateUser.sql %1 %2
 
 @echo -------------------------------------
 @echo Re-Create DataPump directory
 @echo -------------------------------------
-@sqlplus -S %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data\seed
+@sqlplus -S %3/%4@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\CreateDataPumpDir.sql %IDEMPIERE_HOME%\data\seed
 
 @echo -------------------------------------
 @echo Import Adempiere.dmp
 @echo -------------------------------------
-@impdp %1@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp REMAP_SCHEMA=reference:%2
+@impdp %3/%4@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=Adempiere.dmp REMAP_SCHEMA=reference:%1
 
 @echo --------========--------========--------========--------
 @echo Check System
 @echo Import may show some warnings. This is OK as long as the following does not show errors
 @echo --------========--------========--------========--------
-@sqlplus -S %2/%3@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\AfterImport.sql
+@sqlplus -S %1/%2@%ADEMPIERE_DB_SERVER%:%ADEMPIERE_DB_PORT%/%ADEMPIERE_DB_NAME% @%IDEMPIERE_HOME%\Utils\%ADEMPIERE_DB_PATH%\AfterImport.sql
 
 @goto end
 
@@ -42,7 +43,7 @@
 @Echo		ADEMPIERE_DB_NAME	e.g. dev1.adempiere.org
 
 :usage
-@echo Usage:		%0 <systemAccount> <AdempiereID> <AdempierePwd>
-@echo Example:	%0 system/manager idempiere idempiere
+@echo Usage:		%0 <AdempiereID> <AdempierePwd> <systemUser> <systemPwd>
+@echo Example:	%0 idempiere idempiere system manager
 
 :end

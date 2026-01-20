@@ -31,7 +31,7 @@ public class X_AD_RequiredPlugin extends PO implements I_AD_RequiredPlugin, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250414L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_AD_RequiredPlugin (Properties ctx, String AD_RequiredPlugin_UU, String trxName)
@@ -41,6 +41,7 @@ public class X_AD_RequiredPlugin extends PO implements I_AD_RequiredPlugin, I_Pe
         {
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setPluginName (null);
         } */
     }
 
@@ -52,6 +53,7 @@ public class X_AD_RequiredPlugin extends PO implements I_AD_RequiredPlugin, I_Pe
         {
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setPluginName (null);
         } */
     }
 

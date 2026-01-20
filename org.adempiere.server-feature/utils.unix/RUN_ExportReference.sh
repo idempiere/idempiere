@@ -11,4 +11,11 @@ echo    Export idempiere Database - "$IDEMPIERE_HOME" \("$ADEMPIERE_DB_NAME"\)
 
 
 # Parameter: <adempiereDBuser>/<adempiereDBpassword>
-sh "$ADEMPIERE_DB_PATH"/ExportReference.sh "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" system/"$ADEMPIERE_DB_SYSTEM"
+if [ -z "$ADEMPIERE_DB_SYSTEM_USER" ]; then
+    if [ "$ADEMPIERE_DB_PATH" = "postgresql" ]; then
+        ADEMPIERE_DB_SYSTEM_USER=postgres
+    else
+        ADEMPIERE_DB_SYSTEM_USER=SYSTEM
+    fi
+fi
+sh "$ADEMPIERE_DB_PATH"/ExportReference.sh "$ADEMPIERE_DB_USER" "$ADEMPIERE_DB_PASSWORD" "$ADEMPIERE_DB_SYSTEM_USER" "$ADEMPIERE_DB_SYSTEM"

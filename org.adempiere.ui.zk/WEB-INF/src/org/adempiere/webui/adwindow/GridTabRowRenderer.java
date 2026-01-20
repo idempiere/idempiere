@@ -334,7 +334,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		} else if (gridField.getDisplayType() == DisplayType.Button) {
 			// Each row renderer --- ctx per row wise
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
+			WButtonEditor editor = (WButtonEditor) WebEditorFactory.getEditor(gridField, false);
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
 			editor.setReadWrite(gridField.isEditable(gridRowCtx, true,true));
 			editor.getComponent().setAttribute(GRID_ROW_INDEX_ATTR, rowIndex);

@@ -80,7 +80,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if created
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createOrder (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_OrderLine_ID, int M_CostElement_ID, 
@@ -175,7 +175,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if created
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createInvoice (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_InvoiceLine_ID, int M_CostElement_ID, 
@@ -271,7 +271,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if no error
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createShipment (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InOutLine_ID, int M_CostElement_ID, 
@@ -366,7 +366,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if no error
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createInventory (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InventoryLine_ID, int M_CostElement_ID, 
@@ -460,7 +460,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if no error
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createMovement (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_MovementLine_ID, int M_CostElement_ID, 
@@ -556,7 +556,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if no error
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createProduction (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_ProductionLine_ID, int M_CostElement_ID, 
@@ -648,7 +648,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if no error
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createMatchInvoice (MAcctSchema as, int AD_Org_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_MatchInv_ID, int M_CostElement_ID, 
@@ -740,7 +740,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return true if no error
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean createProjectIssue (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_ProjectIssue_ID, int M_CostElement_ID, 
@@ -899,7 +899,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@return cost detail
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MCostDetail get (Properties ctx, String whereClause,
 		int ID, int M_AttributeSetInstance_ID, String trxName)
 	{
@@ -998,7 +998,7 @@ public class MCostDetail extends X_M_CostDetail
 		List<MCostDetail> list = new Query(product.getCtx(),I_M_CostDetail.Table_Name,whereClause,trxName)
 		.addJoinClause(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=M_CostDetail.Ref_CostDetail_ID) ")
 		.setParameters(product.getM_Product_ID(),false)
-		.setOrderBy("M_CostDetail.C_AcctSchema_ID, M_CostDetail.M_CostElement_ID, M_CostDetail.AD_Org_ID, M_CostDetail.M_AttributeSetInstance_ID, M_CostDetail.DateAcct, "
+		.setOrderBy("M_CostDetail.C_AcctSchema_ID, M_CostDetail.AD_Org_ID, M_CostDetail.M_AttributeSetInstance_ID, M_CostDetail.DateAcct, "
 				+ "CASE WHEN COALESCE(refcd.DateAcct,M_CostDetail.DateAcct) = M_CostDetail.DateAcct THEN COALESCE(M_CostDetail.Ref_CostDetail_ID,M_CostDetail.M_CostDetail_ID) ELSE M_CostDetail.M_CostDetail_ID END, "
 				+ "M_CostDetail.M_CostDetail_ID")
 		.list();
@@ -1034,7 +1034,7 @@ public class MCostDetail extends X_M_CostDetail
 		List<MCostDetail> list = new Query(product.getCtx(),I_M_CostDetail.Table_Name,whereClause,trxName)
 		.addJoinClause(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=M_CostDetail.Ref_CostDetail_ID) ")
 		.setParameters(as.getC_AcctSchema_ID(), product.getM_Product_ID(), dateAcct, false)
-		.setOrderBy("M_CostDetail.M_CostElement_ID, M_CostDetail.AD_Org_ID, M_CostDetail.M_AttributeSetInstance_ID, M_CostDetail.DateAcct, "
+		.setOrderBy("M_CostDetail.AD_Org_ID, M_CostDetail.M_AttributeSetInstance_ID, M_CostDetail.DateAcct, "
 				+ "CASE WHEN COALESCE(refcd.DateAcct,M_CostDetail.DateAcct) = M_CostDetail.DateAcct THEN COALESCE(M_CostDetail.Ref_CostDetail_ID,M_CostDetail.M_CostDetail_ID) ELSE M_CostDetail.M_CostDetail_ID END, "
 				+ "M_CostDetail.M_CostDetail_ID")
 		.list();
@@ -1113,7 +1113,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MCostDetail (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
@@ -1308,6 +1308,8 @@ public class MCostDetail extends X_M_CostDetail
 			sb.append (",M_InventoryLine_ID=").append (getM_InventoryLine_ID());
 		if (getM_ProductionLine_ID() != 0)
 			sb.append (",M_ProductionLine_ID=").append (getM_ProductionLine_ID());
+		if (getM_MatchInv_ID() != 0)
+			sb.append (",M_MatchInv_ID=").append (getM_MatchInv_ID());
 		sb.append(",Amt=").append(getAmt())
 			.append(",Qty=").append(getQty());
 		if (isDelta())
@@ -1432,9 +1434,81 @@ public class MCostDetail extends X_M_CostDetail
 		}
 
 		MCost cost = MCost.get(product, M_ASI_ID, as, Org_ID, ce.getM_CostElement_ID(), get_TrxName());
+		MCostDetail cd = null;
+		boolean isOrderLandedCost = getC_OrderLine_ID() > 0 && getM_CostElement_ID() > 0;
+		boolean isReversedOrderLandedCost = isOrderLandedCost 
+				&& isDelta() && getDeltaQty().signum() == -1 && getDeltaAmt().signum() == -1
+				&& (ce.isAveragePO() || ce.isAverageInvoice());
+		if (isOrderLandedCost && !isReversedOrderLandedCost) {	
+			// order landed cost, get the cost info from previous order or order landed cost
+			StringBuilder whereClause = new StringBuilder();
+			whereClause.append("C_OrderLine_ID = ? ");
+			whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+			whereClause.append(" AND M_Product_ID = ?");
+			whereClause.append(" AND M_AttributeSetInstance_ID = ?");
+			whereClause.append(" AND C_AcctSchema_ID = ?");
+			whereClause.append(" AND M_CostDetail_ID < ?");
+			cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
+					.setParameters(getC_OrderLine_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+					.setOrderBy("M_CostDetail_ID DESC")
+					.first();
+		}
+		
+		if (getC_InvoiceLine_ID() > 0 && getM_CostElement_ID() == 0) {
+			MInvoiceLine il = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
+			MInvoice i = new MInvoice(getCtx(), il.getC_Invoice_ID(), get_TrxName());
+			if (!i.isSOTrx()) {
+				MMatchPO[] mpoList = MMatchPO.getInvoice(Env.getCtx(), i.getC_Invoice_ID(), get_TrxName());
+				for (MMatchPO mpo : mpoList) {
+					// more than one match po for the same invoice line and account date
+					if (mpo.getC_InvoiceLine_ID() == getC_InvoiceLine_ID() 
+							&& mpo.getDateAcct().compareTo(getDateAcct()) == 0
+							&& mpo.getQty().compareTo(il.getQtyInvoiced()) != 0) { 
+						// get the cost info from previous cost detail
+						StringBuilder whereClause = new StringBuilder();
+						whereClause.append("TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+						whereClause.append(" AND M_Product_ID = ?");
+						whereClause.append(" AND M_AttributeSetInstance_ID = ?");
+						whereClause.append(" AND C_AcctSchema_ID = ?");
+						whereClause.append(" AND M_CostDetail_ID < ?");
+						cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
+								.setParameters(product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+								.setOrderBy("M_CostDetail_ID DESC")
+								.first();
+						break;
+					}
+				}
+			}
+		}
+		
+		if (getM_InOutLine_ID() > 0) { // skip average costing qty check for reversed shipment
+			MInOutLine iol = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+			MInOut io = new MInOut(getCtx(), iol.getM_InOut_ID(), get_TrxName());
+			if (io.getReversal_ID() > 0)
+				cost.setSkipAverageCostingQtyCheck(io.getReversal_ID() > 0);
+			else { // skip average costing qty check for drop shipment
+				int C_Order_ID = io.getC_Order_ID();
+				if (C_Order_ID > 0) {
+					MOrder sOrder = new MOrder(getCtx(), C_Order_ID, get_TrxName());
+					int Link_Order_ID = sOrder.getLink_Order_ID();
+					if (Link_Order_ID > 0) {
+						MOrder lOrder = new MOrder(getCtx(), Link_Order_ID, get_TrxName());
+						cost.setSkipAverageCostingQtyCheck(lOrder.isDropShip());
+					}
+				}
+			}
+		} else if (getC_ProjectIssue_ID() > 0) { // skip average costing qty check for reversed project issue
+			MProjectIssue pi = new MProjectIssue(getCtx(), getC_ProjectIssue_ID(), get_TrxName());
+			cost.setSkipAverageCostingQtyCheck(pi.getReversal_ID() > 0);
+		} else if (getM_InventoryLine_ID() > 0) { // skip average costing qty check for reversed inventory
+			MInventoryLine il = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+			MInventory i = new MInventory(getCtx(), il.getM_Inventory_ID(), get_TrxName());
+			cost.setSkipAverageCostingQtyCheck(i.getReversal_ID() > 0);
+		}
 		
 		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
-				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), this, get_TrxName());
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
+					cd != null ? cd : this, get_TrxName());
 		if (costInfo != null)
 		{
 			cost.setCurrentQty(costInfo.getCurrentQty());
@@ -1454,8 +1528,18 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal amt = Env.ZERO;
 		if (isDelta())
 		{
-			qty = getDeltaQty();
-			amt = getDeltaAmt();
+			if (!isOrderLandedCost) {
+				qty = getDeltaQty();
+				amt = getDeltaAmt();
+			} else {
+				if (isReversedOrderLandedCost) {
+					qty = getDeltaQty();
+					amt = getDeltaAmt();
+				} else {
+					qty = getQty();
+					amt = getAmt();
+				}
+			}
 		}
 		else
 		{
@@ -1466,7 +1550,7 @@ public class MCostDetail extends X_M_CostDetail
 
 		//determine whether this is cost only adjustment entry
 		boolean costAdjustment = false;
-		if (this.getM_CostElement_ID() > 0 && this.getM_CostElement_ID() != ce.getM_CostElement_ID())
+		if (this.getM_CostElement_ID() > 0 && this.getM_CostElement_ID() != ce.getM_CostElement_ID() && !isReversedOrderLandedCost)
 		{
 			MCostElement thisCostElement = MCostElement.get(getCtx(), getM_CostElement_ID());
 			if (thisCostElement.getCostingMethod() == null && ce.getCostingMethod() != null)
@@ -1488,7 +1572,8 @@ public class MCostDetail extends X_M_CostDetail
 			
 			if (ce.isAveragePO())
 			{
-				cost.setWeightedAverage(amt, qty);
+				if (!(qty.signum() == 0 && cost.getCurrentQty().signum() <= 0))
+					cost.setWeightedAverage(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("PO - AveragePO - " + cost);
 			}
 			else if (ce.isLastPOPrice() && !costAdjustment)
@@ -1548,8 +1633,7 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				cost.setWeightedAverage(amt, qty);
 			}
-			else if (ce.isFifo()
-				|| ce.isLifo())
+			else if ((ce.isFifo() || ce.isLifo()))
 			{
 				//	Real ASI - costing level Org
 				MCostQueue cq = MCostQueue.get(product, getM_AttributeSetInstance_ID(), 
@@ -1629,7 +1713,8 @@ public class MCostDetail extends X_M_CostDetail
 				{
 					if (adjustment)
 					{
-						costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+						MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+						costingMethod = invLine.getParent().getCostingMethod();
 						if (MCostElement.COSTINGMETHOD_AverageInvoice.equals(costingMethod))
 						{
 							if (cost.getCurrentQty().signum() == 0 && qty.signum() == 0) {
@@ -1659,7 +1744,8 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (adjustment)
 				{
-					costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+					costingMethod = invLine.getParent().getCostingMethod();
 					if (MCostElement.COSTINGMETHOD_AveragePO.equals(costingMethod))
 					{
 						if (cost.getCurrentQty().signum() == 0 && qty.signum() == 0) {
@@ -1734,7 +1820,8 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (adjustment)
 				{
-					costingMethod = getM_InventoryLine().getM_Inventory().getCostingMethod();
+					MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+					costingMethod = invLine.getParent().getCostingMethod();
 					if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 					{
 						cost.add(amt.multiply(cost.getCurrentQty()), qty);					
@@ -1791,7 +1878,8 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			if (ce.isAveragePO())
 			{
-				cost.setWeightedAverage(amt, qty);
+				if (!(qty.signum() == 0 && cost.getCurrentQty().signum() <= 0))
+					cost.setWeightedAverage(amt, qty);
 			}			
 		}
 		else	//	unknown or no id
@@ -1840,11 +1928,20 @@ public class MCostDetail extends X_M_CostDetail
 		List<String> repostedRecordIds = new ArrayList<String>();
 		
 		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("WITH base_cd AS (");
+		selectSql.append(" SELECT cd.DateAcct, ");
+		selectSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct ");
+		selectSql.append(" THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END AS Ref_CostDetail_ID, ");
+		selectSql.append(" cd.M_CostDetail_ID ");
+		selectSql.append(" FROM M_CostDetail cd ");
+		selectSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+		selectSql.append(" WHERE cd.M_CostDetail_ID=? ");
+		selectSql.append(") ");
 		selectSql.append("SELECT mpo.M_MatchPO_ID, il.C_Invoice_ID, iol.M_InOut_ID, mi.M_MatchInv_ID, invl.M_Inventory_ID, ");
 		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID ");
 		selectSql.append("FROM M_CostDetail cd ");
 		selectSql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID) ");
+		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct) ");
 		selectSql.append("LEFT JOIN C_InvoiceLine il ON (il.C_InvoiceLine_ID = cd.C_InvoiceLine_ID) ");
 		selectSql.append("LEFT JOIN M_InOutLine iol ON (iol.M_InOutLine_ID = cd.M_InOutLine_ID) ");
 		selectSql.append("LEFT JOIN M_MatchInv mi ON (mi.M_MatchInv_ID = cd.M_MatchInv_ID) ");
@@ -1855,14 +1952,16 @@ public class MCostDetail extends X_M_CostDetail
 		selectSql.append("WHERE cd.AD_Client_ID=? ");
 		selectSql.append("AND cd.C_AcctSchema_ID=? ");
 		selectSql.append("AND cd.M_Product_ID=? ");
-		selectSql.append("AND (cd.DateAcct, COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID), cd.M_CostDetail_ID) > ("); 
-		selectSql.append(" SELECT cd.DateAcct, ");
-		selectSql.append(" CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct ");
-		selectSql.append(" THEN COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) ELSE cd.M_CostDetail_ID END, ");
-		selectSql.append(" cd.M_CostDetail_ID ");
-		selectSql.append(" FROM M_CostDetail cd ");
-		selectSql.append(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append(" WHERE cd.M_CostDetail_ID=? ");
+		selectSql.append("AND (cd.DateAcct > (SELECT DateAcct FROM base_cd)");
+		selectSql.append(" OR (");
+		selectSql.append("   cd.DateAcct = (SELECT DateAcct FROM base_cd) ");
+		selectSql.append("   AND COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) > (SELECT Ref_CostDetail_ID FROM base_cd) ");
+		selectSql.append(" ) ");
+		selectSql.append(" OR (");
+		selectSql.append("   cd.DateAcct = (SELECT DateAcct FROM base_cd) ");
+		selectSql.append("   AND COALESCE(cd.Ref_CostDetail_ID,cd.M_CostDetail_ID) = (SELECT Ref_CostDetail_ID FROM base_cd) ");
+		selectSql.append("   AND cd.M_CostDetail_ID > (SELECT M_CostDetail_ID FROM base_cd) ");
+		selectSql.append(" ) ");
 		selectSql.append(") ");
 		selectSql.append("AND cd.DateAcct >= ? "); 
 		selectSql.append("AND cd.Processed='Y' ");
@@ -1876,7 +1975,7 @@ public class MCostDetail extends X_M_CostDetail
     	try
     	{
     		pstmt = DB.prepareStatement(selectSql.toString(), trxName);
-    		DB.setParameters(pstmt, new Object[] {AD_Client_ID, C_AcctSchema_ID, M_Product_ID, M_CostDetail_ID, DateAcct});
+    		DB.setParameters(pstmt, new Object[] {M_CostDetail_ID, AD_Client_ID, C_AcctSchema_ID, M_Product_ID, DateAcct});
     		rs = pstmt.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
     		while (rs.next()) {
@@ -1931,13 +2030,26 @@ public class MCostDetail extends X_M_CostDetail
 				if (repostedRecordIds.contains(repostedRecordId))
 					continue;
 				repostedRecordIds.add(repostedRecordId);
-				if (!MPeriod.isOpen(Env.getCtx(), dateAcct, docBaseType, po.getAD_Org_ID(), true)) {
-					throw new PeriodClosedException(dateAcct, docBaseType);
+				
+				boolean skipPosting = false;
+				if (tableID == MInvoice.Table_ID) {
+					MInvoice i = new MInvoice(Env.getCtx(), recordID, trxName);
+					if (!i.isSOTrx())
+						if (i.getDateAcct().compareTo(DateAcct) < 0)
+							skipPosting = true;
+				}
+				
+				if (!skipPosting) {
+					if (!MPeriod.isOpen(Env.getCtx(), dateAcct, docBaseType, po.getAD_Org_ID(), true)) {
+						throw new PeriodClosedException(dateAcct, docBaseType);
+					}
 				}
 				
 				if (tableID == MInvoice.Table_ID) {
 					MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), recordID, trxName);
 					for (MMatchInv mi : miList) {
+						if (mi.getDateAcct().compareTo(DateAcct) < 0)
+							continue;
 						repostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
 						if (repostedRecordIds.contains(repostedRecordId))
 							continue;

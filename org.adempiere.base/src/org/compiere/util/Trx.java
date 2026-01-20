@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +88,7 @@ public class Trx
 	 *	@return Transaction or null
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static Trx get (String trxName, boolean createNew, Connection con)
 	{
 		if (trxName == null || trxName.length() == 0)
@@ -146,7 +145,7 @@ public class Trx
 				displayName = (stackName.orElse(null));
 			}
 		}
-		prefix += "_" + UUID.randomUUID(); //System.currentTimeMillis();
+		prefix += "_" + Util.generateUUIDv7(); //System.currentTimeMillis();
 		//create transaction entry
 		Trx trx = Trx.get(prefix, true);
 		if (displayName != null)
@@ -183,7 +182,7 @@ public class Trx
 	 * 	@param trxName unique name
 	 *  @param con optional connection ( ignore for remote transaction )
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	private Trx (String trxName, Connection con)
 	{
 		this(trxName);
@@ -423,15 +422,19 @@ public class Trx
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, m_trxName, e);
+			String msg = DBException.getDefaultDBExceptionMessage(e);
 			if (throwException) 
 			{
 				m_active = false;
 				fireAfterCommitEvent(false);
-				throw e;
+				if (msg != null)
+					msg = Msg.getMsg(Env.getCtx(), msg);
+				else
+					msg = e.getLocalizedMessage();
+				throw new AdempiereException(msg, e);
 			}
 			else
 			{
-				String msg = DBException.getDefaultDBExceptionMessage(e);
 				log.saveError(msg != null ? msg : e.getLocalizedMessage(), e);
 			}
 		}
@@ -653,7 +656,7 @@ public class Trx
 	 * @return Trx[]
 	 * @deprecated - wrong method name fixed with IDEMPIERE-5355 - please use getOpenTransactions
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static Trx[] getActiveTransactions()
 	{
 		return getOpenTransactions();
@@ -885,7 +888,7 @@ public class Trx
 	 * @return
 	 */
 	public static String registerNullTrx() {
-		String nullTrxName = "NullTrx_" + UUID.randomUUID().toString();
+		String nullTrxName = "NullTrx_" + Util.generateUUIDv7().toString();
 		Trx nullTrx = new Trx(nullTrxName);
 		nullTrx.trace = new Exception();
 		nullTrx.m_startTime = System.currentTimeMillis();

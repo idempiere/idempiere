@@ -198,7 +198,7 @@ public class Scheduler extends AdempiereServer
 		MScheduler scheduler = get(getCtx(), AD_Scheduler_ID);
 		
 		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
-		String schedulerName = Env.parseContext(getCtx(), -1, scheduler.getName(), false, true);
+		String schedulerName = Env.parseContext(getCtx(), -1, scheduler.getName(), false, true, false, false);
 		
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = scheduler.getAD_Table_ID();
@@ -273,6 +273,7 @@ public class Scheduler extends AdempiereServer
 						attachment.setTextMsg(schedulerName);
 						attachment.addEntry("ProcessLog.html", log.getBytes("UTF-8"));
 						attachment.saveEx();
+						attachment.close();
 					}
 				}
 			}
@@ -418,6 +419,7 @@ public class Scheduler extends AdempiereServer
 					MAuthorizationAccount account = new MAuthorizationAccount(Env.getCtx(), upload.getAD_AuthorizationAccount_ID(), null);
 					IUploadService service = Core.getUploadService(account);					
 					if (service != null) {
+						MUser user = MUser.get(upload.getAD_User_ID());
 						try {
 							IUploadHandler[] handlers = service.getUploadHandlers(contentType);
 							if (handlers.length > 0) {
@@ -432,13 +434,13 @@ public class Scheduler extends AdempiereServer
 								UploadResponse response = handlers[0].uploadMedia(new UploadMedia(fileName, contentType, new FileInputStream(file), file.length()), account);
 								if (response.getLink() != null) {
 									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadSuccess"));
-									pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail() + 
+									pLog.setTextMsg("User: " + user.getName() + " Account: " + account.getEMail() + 
 											" Link: " + response.getLink());
 									pLog.setIsError(false);
 									pLog.saveEx();
 								} else {
 									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadFailed"));
-									pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail());
+									pLog.setTextMsg("User: " + user.getName() + " Account: " + account.getEMail());
 									pLog.setIsError(true);
 									pLog.saveEx();
 									uploadErrors.add(pLog.getTextMsg());
@@ -447,7 +449,7 @@ public class Scheduler extends AdempiereServer
 						} catch (Throwable e) {
 							log.log(Level.WARNING, process.toString(), e);
 							MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadFailed"));
-							pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail() + 
+							pLog.setTextMsg("User: " + user.getName() + " Account: " + account.getEMail() + 
 									" Error: " + e.getMessage());
 							pLog.setIsError(true);
 							pLog.saveEx();

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_Exp
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_AD_Package_Exp 
 {
@@ -183,6 +183,19 @@ public interface I_AD_Package_Exp
 
 	/** Get Export Dictionary Entity	  */
 	public boolean isExportDictionaryEntity();
+
+    /** Column name IsIncludeOrganizationId */
+    public static final String COLUMNNAME_IsIncludeOrganizationId = "IsIncludeOrganizationId";
+
+	/** Set Include Organization Id.
+	  * Y/N field. When set to Y, include organization id reference in exported data.
+	  */
+	public void setIsIncludeOrganizationId (boolean IsIncludeOrganizationId);
+
+	/** Get Include Organization Id.
+	  * Y/N field. When set to Y, include organization id reference in exported data.
+	  */
+	public boolean isIncludeOrganizationId();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

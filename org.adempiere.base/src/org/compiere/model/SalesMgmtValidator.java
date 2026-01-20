@@ -87,7 +87,7 @@ public class SalesMgmtValidator implements ModelValidator
 		{			
 			MOrderLine line = (MOrderLine) po;
 			
-			MOrder order = (MOrder) line.getC_Order();
+			MOrder order = line.getParent();
 
 			syncOpportunity(order);
 		}

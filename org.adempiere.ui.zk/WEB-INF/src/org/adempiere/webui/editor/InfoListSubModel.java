@@ -35,6 +35,7 @@ import org.compiere.model.MLookup;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListSubModel;
@@ -49,7 +50,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	private GridField gridField;
 	private String tableName;
 	private String keyColumnName;
-	private String whereClause;
+	private SQLFragment sqlFilter = null;
 
 	private static final int AUTO_COMPLETE_QUERY_TIMEOUT = 1; //1 second
 	
@@ -69,17 +70,37 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	/**
 	 * Set where clause
 	 * @param whereClause
+	 * @deprecated use setSQLFilter(SQLFragment sqlFilter) instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public void setWhereClause(String whereClause) {
-		this.whereClause = whereClause;
+		this.sqlFilter = new SQLFragment(whereClause);
 	}
 	
 	/**
 	 * Get where clause
 	 * @return where clause
+	 * @deprecated use getSQLFilter() instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public String getWhereClause() {
-		return this.whereClause;
+		return sqlFilter != null ? sqlFilter.toSQLWithParameters() : null;
+	}
+	
+	/**
+	 * Set SQL filter
+	 * @param sqlFilter
+	 */
+	public void setSQLFilter(SQLFragment sqlFilter) {
+		this.sqlFilter = sqlFilter;
+	}
+	
+	/**
+	 * Get SQL filter
+	 * @return SQL filter
+	 */
+	public SQLFragment getSQLFilter() {
+		return this.sqlFilter;
 	}
 	
 	@Override

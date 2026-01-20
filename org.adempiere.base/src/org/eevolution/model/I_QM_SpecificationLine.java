@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for QM_SpecificationLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_QM_SpecificationLine 
@@ -119,6 +119,7 @@ public interface I_QM_SpecificationLine
 	  */
 	public int getM_Attribute_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException;
 
     /** Column name Operation */
@@ -161,6 +162,7 @@ public interface I_QM_SpecificationLine
 	/** Get Quality Specification	  */
 	public int getQM_Specification_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_QM_Specification getQM_Specification() throws RuntimeException;
 
     /** Column name SeqNo */

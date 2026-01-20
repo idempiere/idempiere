@@ -17,6 +17,8 @@
 package org.adempiere.webui.window;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,9 +42,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.pdf.Document;
 import org.adempiere.util.Callback;
+import org.adempiere.util.ProcessUtil;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
@@ -84,9 +87,11 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -608,27 +613,26 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			LayoutUtils.addSclass("medium-toolbarbutton", bRefresh);
 		
 		MPrintFormat pf = m_reportEngine.getPrintFormat();
-		if (pf != null) {
-			if((!pf.isForm()) && (pf.getAD_ReportView_ID() > 0)) {
-				bReRun.setName("ReRun");
-				if (ThemeManager.isUseFontIconForImage())
-					bReRun.setIconSclass(Icon.getIconSclass(Icon.RE_RUN));
-				else
-					bReRun.setImage(ThemeManager.getThemeResource("images/ReRun24.png"));
-				bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
-				if (toolbarPopup != null)
-				{
-					toolbarPopupLayout.appendChild(bReRun);
-					bReRun.setLabel(bReRun.getTooltiptext());
-				}
-				else
-					toolBar.appendChild(bReRun);
-				bReRun.addEventListener(Events.ON_CLICK, this);
-				if (ThemeManager.isUseFontIconForImage())
-					LayoutUtils.addSclass("medium-toolbarbutton", bReRun);
-			}
+		if (   pf != null
+			&& !pf.isForm()
+			&& pf.getAD_ReportView_ID() > 0
+			&& m_reportEngine.isReplaceTabContent()) {
+			bReRun.setName("ReRun");
+			if (ThemeManager.isUseFontIconForImage())
+				bReRun.setIconSclass(Icon.getIconSclass(Icon.RE_RUN));
+			else
+				bReRun.setImage(ThemeManager.getThemeResource("images/ReRun24.png"));
+			bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
+			if (toolbarPopup != null) {
+				toolbarPopupLayout.appendChild(bReRun);
+				bReRun.setLabel(bReRun.getTooltiptext());
+			} else
+				toolBar.appendChild(bReRun);
+			bReRun.addEventListener(Events.ON_CLICK, this);
+			if (ThemeManager.isUseFontIconForImage())
+				LayoutUtils.addSclass("medium-toolbarbutton", bReRun);
 		}
-					
+
 		bWizard.setName("Wizard");
 		if (ThemeManager.isUseFontIconForImage())
 			bWizard.setIconSclass(Icon.getIconSclass(Icon.WIZARD));
@@ -1259,7 +1263,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			new WReport (AD_Table_ID, data.getQuery(), component, m_WindowNo);
 		}
 		else
-			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+			log.warning("No Table found for " + data.getQuery().getSQLFilter(true));
 	}	//	executeDrill
 
 	/**
@@ -1309,13 +1313,17 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void cmd_archive ()
 	{
-		boolean success = false;
-		byte[] data = Document.getPDFAsArray(m_reportEngine.getLayout().getPageable(false));	//	No Copy
-		if (data != null)
+		boolean success = false;		
+		AMedia archiveMedia = getMedia(PDF_OUTPUT_TYPE);
+		if (archiveMedia != null)
 		{
 			MArchive archive = new MArchive (Env.getCtx(), m_reportEngine.getPrintInfo(), null);
-			archive.setBinaryData(data);
-			success = archive.save();
+			try (InputStream is = archiveMedia.getStreamData()) {
+				archive.setInputStream(is);
+				success = archive.save();
+			} catch (IOException e) {
+				log.log(Level.SEVERE, "Error reading archive media stream", e);
+			}			
 		}
 		if (success)
 			Dialog.info(m_WindowNo, "Archived");
@@ -1545,7 +1553,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void cmd_refresh() {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
-		if(AD_Process_ID <= 0 || m_reportEngine.getPrintInfo().getRecord_ID() > 0)
+		if(AD_Process_ID <= 0 || m_reportEngine.getPrintInfo().getRecord_ID() > 0 || !m_reportEngine.isReplaceTabContent())
 			this.cmd_report();
 		else
 			this.cmd_reRun(MProcess.SHOWHELP_RunSilently_TakeDefaults);
@@ -1726,7 +1734,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if (find == null) 
 			{
 
-				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID, null);
+				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getExtendedFilter(), findFields, 1, AD_Tab_ID, null);
 	            
 				if (!find.initialize()) 
 	            {
@@ -1930,7 +1938,37 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						PrintInfo printInfo = viewer.m_reportEngine.getPrintInfo();
 						ProcessInfo jasperProcessInfo = new ProcessInfo (viewer.getTitle(), format.getJasperProcess_ID());
 						jasperProcessInfo.setRecord_ID (printInfo.getRecord_ID());
+						jasperProcessInfo.setRecord_UU ( printInfo.getRecord_UU() );
 						jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
+						// if there's process, need to run it before preview
+						MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
+						jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
+						if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
+							if (   !ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())
+								&& !ProcessUtil.JASPER_STARTER_CLASS_DEPRECATED.equals(jasperProcess.getClassname())) {
+								jasperProcessInfo.setClassName (jasperProcess.getClassname());
+								MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
+										jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
+										jasperProcessInfo.getRecord_UU());
+								jasperInstance.saveEx();
+								jasperProcessInfo.setAD_PInstance_ID (jasperInstance.getAD_PInstance_ID());
+								boolean runOk = false;
+								if (jasperProcess.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+									runOk = ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
+								} else {
+									runOk = ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
+								}
+								if (!runOk || jasperProcessInfo.isError()) {
+									String msg = jasperProcessInfo.getSummary();
+									if (Util.isEmpty(msg, true)) {
+										msg = Msg.getMsg(Env.getCtx(), "ProcessRunError");
+									}
+									msg = msg + " (" + jasperProcessInfo.getTitle() + ")";
+									throw new AdempiereException(msg);
+								}
+							}							
+						}
+																		
 						jasperProcessInfo.setSerializableObject(format);
 						ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 						ProcessInfoParameter pip = new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_FORMAT, format, null, null, null);

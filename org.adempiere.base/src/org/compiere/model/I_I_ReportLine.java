@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_ReportLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_I_ReportLine 
 {
@@ -75,6 +75,7 @@ public interface I_I_ReportLine
 	  */
 	public int getC_ElementValue_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name CalculationType */
@@ -272,6 +273,7 @@ public interface I_I_ReportLine
 	/** Get Report Line Set	  */
 	public int getPA_ReportLineSet_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
 
     /** Column name PA_ReportLine_ID */
@@ -283,6 +285,7 @@ public interface I_I_ReportLine
 	/** Get Report Line	  */
 	public int getPA_ReportLine_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportLine getPA_ReportLine() throws RuntimeException;
 
     /** Column name PA_ReportSource_ID */
@@ -298,6 +301,7 @@ public interface I_I_ReportLine
 	  */
 	public int getPA_ReportSource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_PA_ReportSource getPA_ReportSource() throws RuntimeException;
 
     /** Column name PostingType */

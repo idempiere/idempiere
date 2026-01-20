@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Group
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 public interface I_A_Asset_Group 
 {
@@ -71,6 +71,7 @@ public interface I_A_Asset_Group
 	/** Get Asset class	  */
 	public int getA_Asset_Class_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Class getA_Asset_Class() throws RuntimeException;
 
     /** Column name A_Asset_Group_ID */
@@ -104,6 +105,7 @@ public interface I_A_Asset_Group
 	/** Get Asset Type	  */
 	public int getA_Asset_Type_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_A_Asset_Type getA_Asset_Type() throws RuntimeException;
 
     /** Column name Created */

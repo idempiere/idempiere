@@ -72,7 +72,7 @@ public class MCity extends X_C_City
 	}	//	get
 
 	/**	City Cache				*/
-	private static ImmutableIntPOCache<Integer,MCity> s_Cities =  new ImmutableIntPOCache<Integer,MCity>(Table_Name, 20);;
+	private static ImmutableIntPOCache<Integer,MCity> s_Cities =  new ImmutableIntPOCache<Integer,MCity>(Table_Name, 20);
 	/**	Static Logger				*/
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCity.class);

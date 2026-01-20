@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_NetworkDistributionLine
  *  @author iDempiere (generated) 
- *  @version Release 12
+ *  @version Release 13
  */
 @SuppressWarnings("all")
 public interface I_DD_NetworkDistributionLine 
@@ -107,6 +107,7 @@ public interface I_DD_NetworkDistributionLine
 	/** Get Network Distribution	  */
 	public int getDD_NetworkDistribution_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException;
 
     /** Column name IsActive */
@@ -135,6 +136,7 @@ public interface I_DD_NetworkDistributionLine
 	  */
 	public int getM_Shipper_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Shipper getM_Shipper() throws RuntimeException;
 
     /** Column name M_WarehouseSource_ID */
@@ -150,6 +152,7 @@ public interface I_DD_NetworkDistributionLine
 	  */
 	public int getM_WarehouseSource_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_WarehouseSource() throws RuntimeException;
 
     /** Column name M_Warehouse_ID */
@@ -165,6 +168,7 @@ public interface I_DD_NetworkDistributionLine
 	  */
 	public int getM_Warehouse_ID();
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
     /** Column name Percent */

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Attribute Use Model
@@ -33,7 +34,13 @@ public class MAttributeUse extends X_M_AttributeUse
 	/**
 	 * generated serial id 
 	 */
-	private static final long serialVersionUID = -9159120094145438975L;
+	private static final long	serialVersionUID				= -9159120094145438975L;
+
+	public static final String	SQL_GET_TA_DUPLICATE_ATTRIBUTE	= """
+					SELECT st.Name FROM M_Attribute a
+					INNER JOIN M_AttributeUse u  ON (u.M_Attribute_ID = a.M_Attribute_ID)
+					INNER JOIN M_AttributeSet st ON (st.M_AttributeSet_ID = u.M_AttributeSet_ID AND st.M_AttributeSet_Type = 'TA' )
+					WHERE a.AD_Client_ID IN (0, ?) AND UPPER(a.Name) = UPPER(?) """;
 
     /**
      * UUID based Constructor
@@ -73,8 +80,8 @@ public class MAttributeUse extends X_M_AttributeUse
 		// Not advanced roles cannot assign for use a reference attribute
 		if ((newRecord || is_ValueChanged(COLUMNNAME_M_Attribute_ID))
 				&& ! MRole.getDefault().isAccessAdvanced()) {			
-			MAttribute att = MAttribute.get(getCtx(), getM_Attribute_ID());
-			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(att.getAttributeValueType())) {
+			MAttribute attrib = new MAttribute(getCtx(), getM_Attribute_ID(), get_TrxName());
+			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(attrib.getAttributeValueType())) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
 				return false;
 			}
@@ -86,7 +93,21 @@ public class MAttributeUse extends X_M_AttributeUse
 			int seqNo = DB.getSQLValue (get_TrxName(), sql, getM_AttributeSet_ID());
 			setSeqNo(seqNo);
 		}
-			
+
+		if (getM_AttributeSet_ID() > 0
+			&& getM_Attribute_ID() > 0 && is_ValueChanged(COLUMNNAME_M_Attribute_ID))
+		{
+			MAttributeSet attribSet = new MAttributeSet(getCtx(), getM_AttributeSet_ID(), get_TrxName());
+			if (MAttributeSet.M_ATTRIBUTESET_TYPE_TableAttribute.equals(attribSet.getM_AttributeSet_Type())) {
+				MAttribute attrib = new MAttribute(getCtx(), getM_Attribute_ID(), get_TrxName());
+				String dupAttribSetName = DB.getSQLValueString(get_TrxName(), SQL_GET_TA_DUPLICATE_ATTRIBUTE, getAD_Client_ID(), attrib.getName());
+				if (!Util.isEmpty(dupAttribSetName, true))
+				{
+					log.saveError("Error", Msg.getMsg(getCtx(), "UniqueAttribute", new Object[] { attrib.getName(), dupAttribSetName }));
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 

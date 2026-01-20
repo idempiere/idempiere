@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxPostal
  *  @author iDempiere (generated)
- *  @version Release 12 - $Id$ */
+ *  @version Release 13 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxPostal")
 public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20241222L;
+	private static final long serialVersionUID = 20250805L;
 
     /** Standard Constructor */
     public X_C_TaxPostal (Properties ctx, int C_TaxPostal_ID, String trxName)
@@ -146,6 +146,7 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
 		return (String)get_Value(COLUMNNAME_C_TaxPostal_UU);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Tax getC_Tax() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Tax)MTable.get(getCtx(), org.compiere.model.I_C_Tax.Table_ID)

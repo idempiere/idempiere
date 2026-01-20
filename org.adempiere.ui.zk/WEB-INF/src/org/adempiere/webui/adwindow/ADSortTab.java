@@ -982,10 +982,6 @@ public class ADSortTab extends Panel implements IADTabpanel
 	public void dynamicDisplay(int i) {
 	}
 
-	@Deprecated(forRemoval = true, since = "11")
-	public void editRecord(boolean b) {
-	}
-
 	@Override
 	public String getDisplayLogic() {
 		return gridTab.getDisplayLogic();
