@@ -163,8 +163,9 @@ public class GridTabTest extends AbstractTestCase {
 		}
 		
 		GridTab gTab = gridWindow.getTab(0);
-		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
-		
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		assertTrue(gTab.getRowCount() == 1, "GridTab Row Count is not 1. GridTab=" + gTab.getName());
+
 		String name = (String) gTab.getValue("Name");
 		MBPartner bpartner = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		assertTrue(bpartner.getName().equals(name), "GridTab Name != MBPartner.getName(). GridTab.Name="+name + " MBPartner.getName="+bpartner.getName());
@@ -213,8 +214,20 @@ public class GridTabTest extends AbstractTestCase {
 		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(), "GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID="+gTab.getRecord_ID());
 		
 		// test with set negative current row
-		assertEquals(0, gTab.setCurrentRow(-1, true), "Setting current row to -1 did not result in 0. GridTab="+gTab.getName());
-		assertEquals(0, gTab.getCurrentRow(), "Current row is not 0 after setting to -1. GridTab="+gTab.getName());
+		assertEquals(0, gTab.setCurrentRow(-1, true),
+				"Setting current row to -1 did not result in 0. GridTab=" + gTab.getName());
+		assertEquals(0, gTab.getCurrentRow(), "Current row is not 0 after setting to -1. GridTab=" + gTab.getName());
+
+		// test two email address doesn't confuse the parse context variable logic
+		bpartner.setDescription("test1@test.com,test2@test.com");
+		bpartner.saveEx();
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_Description, MQuery.EQUAL, "test1@test.com,test2@test.com");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() == 1, "GridTab Row Count is not 1. GridTab=" + gTab.getName());
+		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(),
+				"GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID=" + gTab.getRecord_ID());
 	}
 	
 	@Test

@@ -3312,6 +3312,8 @@ public class GridTable extends AbstractTableModel
 					}
 					else if (para instanceof BigDecimal)
 						pstmt.setBigDecimal (pos++, (BigDecimal)para);
+					else if (para instanceof Timestamp)
+						pstmt.setTimestamp (pos++, (Timestamp)para);
 					else
 					{
 						String str = para.toString();
@@ -3319,7 +3321,7 @@ public class GridTable extends AbstractTableModel
 						if (str.indexOf('@') >= 0)
 						{
 							String preParse = str;
-							hasId = str.contains("_ID");
+							hasId = str.contains("_ID") || "CreatedBy".equalsIgnoreCase(str) || "UpdatedBy".equalsIgnoreCase(str);
 							String context = Env.parseContext(m_ctx, m_WindowNo, str, false);
 							if(context != null && context.trim().length() > 0)
 							{
