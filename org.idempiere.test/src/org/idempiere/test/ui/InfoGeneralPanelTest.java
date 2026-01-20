@@ -45,6 +45,7 @@ import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -60,6 +61,7 @@ import org.zkoss.zk.ui.util.Configuration;
  * Integration tests for InfoGeneralPanel using AD_User table (ID=114)
  * @author hengsin
  */
+@Isolated
 public class InfoGeneralPanelTest extends AbstractTestCase {
 
 	private static final int AD_USER_TABLE_ID = MUser.Table_ID;
