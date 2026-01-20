@@ -81,10 +81,7 @@ public class SessionFingerprintFilter implements Filter {
 			// Validate the fingerprint
 			if (!SessionFingerprint.validate(httpRequest, session)) {
 				log.warning("Session fingerprint validation failed - possible session hijacking attempt. " +
-						"Session ID: " + session.getId() + 
-						", Remote IP: " + httpRequest.getRemoteAddr() +
-						", User-Agent: " + httpRequest.getHeader("User-Agent"));
-
+						"Remote IP: " + httpRequest.getRemoteAddr());
 				// Invalidate the compromised session
 				try {
 					session.invalidate();
