@@ -59,7 +59,7 @@ public class MDocumentStatusTest extends AbstractTestCase {
         MDocumentStatus[] indicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(),
                 DictionaryIDs.AD_User.GARDEN_ADMIN.id, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id);
         assertNotNull(indicators, "DocumentStatus indicators should not be null");
-        assertTrue(indicators.length >= 0, "DocumentStatus indicators length should be non-negative");
+        assertTrue(indicators.length > 0, "DocumentStatus indicators should not be empty");
 
         boolean found = false;
         for (MDocumentStatus ds : indicators) {

@@ -34,6 +34,8 @@ import org.compiere.print.ServerReportCtl;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,12 +48,12 @@ public class ServerReportCtlTest extends AbstractTestCase {
 	public void testOrderPrint() {
 		// Verify MOrder 102 exists
 		MOrder order = new MOrder(Env.getCtx(), 102, getTrxName());
-		assertTrue(order.get_ID() == 102, "Order 102 not found");
+		assertEquals(102, order.get_ID(), "Order 102 not found");
 		
 		// Order_Header  ** TEMPLATE ** | C_Order_Header_v | 100
 		MPrintFormat format = MPrintFormat.get(100);				
 		assertNotNull(format, "Print Format 'Order_Header  ** TEMPLATE **' not found");
-        assertTrue(format.get_ID() == 100, "Print Format 'Order_Header  ** TEMPLATE **' not found");
+        assertEquals(100, format.get_ID(), "Print Format 'Order_Header  ** TEMPLATE **' not found");
 		
 		// Prepare ProcessInfo
 		ProcessInfo pi = new ProcessInfo("Test Order Print", 0);

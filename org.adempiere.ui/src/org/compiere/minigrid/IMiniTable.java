@@ -92,7 +92,6 @@ public interface IMiniTable
 	 * Prepare Table and return SQL to get resultset to populate table
 	 * @param layout
 	 * @param from
-	 * @param where
 	 * @param multiSelection
 	 * @param tableName
 	 * @param sqlFilter

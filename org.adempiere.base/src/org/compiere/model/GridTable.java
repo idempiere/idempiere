@@ -3321,7 +3321,7 @@ public class GridTable extends AbstractTableModel
 						if (str.indexOf('@') >= 0)
 						{
 							String preParse = str;
-							hasId = str.contains("_ID") || "CreatedBy".equalsIgnoreCase(str) || "UpdatedBy".equalsIgnoreCase(str);
+							hasId = str.contains("_ID") || str.contains("CreatedBy") || str.contains("UpdatedBy");
 							String context = Env.parseContext(m_ctx, m_WindowNo, str, false);
 							if(context != null && context.trim().length() > 0)
 							{
