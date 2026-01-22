@@ -27,6 +27,8 @@ package org.idempiere.felix.webconsole.servlet;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
@@ -152,7 +154,7 @@ public class LoginServlet extends HttpServlet {
 		loginAttempts.remove(clientIP);
 		
 		// Create new session to prevent session fixation attacks
-		// session.invalidate();
+		session.invalidate();
 		session = request.getSession(true);
 		
 		// Set secure session attributes
@@ -161,19 +163,7 @@ public class LoginServlet extends HttpServlet {
 		
 		// Set session timeout (15 minutes)
 		session.setMaxInactiveInterval(15 * 60);
-		
-		// Configure secure cookie attributes
-		if (session.getId() != null) {
-			// Note: Cookie security attributes are typically set in web.xml or programmatically
-			// For servlet 3.0+, we can set them here
-			try {
-				response.setHeader("Set-Cookie", 
-					session.getId() + "; HttpOnly; SameSite=Strict");
-			} catch (Exception e) {
-				log.log(Level.WARNING, "Could not set secure cookie attributes", e);
-			}
-		}
-		
+				
 		log.info("Successful login for user: " + username + " from IP: " + clientIP);
 		
 		// Redirect to original URL or default console page
@@ -211,8 +201,8 @@ public class LoginServlet extends HttpServlet {
 			return false;
 		}
 		
-		if (attempt.failedAttempts >= MAX_FAILED_ATTEMPTS) {
-			long timeSinceLockout = System.currentTimeMillis() - attempt.lastAttemptTime;
+		if (attempt.failedAttempts.get() >= MAX_FAILED_ATTEMPTS) {
+			long timeSinceLockout = System.currentTimeMillis() - attempt.lastAttemptTime.get();
 			if (timeSinceLockout < LOCKOUT_DURATION) {
 				return true;
 			} else {
@@ -229,10 +219,10 @@ public class LoginServlet extends HttpServlet {
 	 */
 	private void recordFailedAttempt(String ip) {
 		LoginAttempt attempt = loginAttempts.computeIfAbsent(ip, k -> new LoginAttempt());
-		attempt.failedAttempts++;
-		attempt.lastAttemptTime = System.currentTimeMillis();
+		attempt.failedAttempts.incrementAndGet();
+		attempt.lastAttemptTime.set(System.currentTimeMillis());
 		
-		if (attempt.failedAttempts >= MAX_FAILED_ATTEMPTS) {
+		if (attempt.failedAttempts.get() >= MAX_FAILED_ATTEMPTS) {
 			log.warning("IP " + ip + " has been locked out after " + MAX_FAILED_ATTEMPTS + " failed attempts");
 		}
 	}
@@ -252,7 +242,7 @@ public class LoginServlet extends HttpServlet {
 	 * Inner class to track login attempts
 	 */
 	private static class LoginAttempt {
-		int failedAttempts = 0;
-		long lastAttemptTime = 0;
+		AtomicInteger failedAttempts = new AtomicInteger(0);
+		AtomicLong lastAttemptTime = new AtomicLong(0);
 	}
 }

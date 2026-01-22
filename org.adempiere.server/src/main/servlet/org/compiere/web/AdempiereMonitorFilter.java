@@ -147,8 +147,10 @@ public class AdempiereMonitorFilter implements Filter
 				
 				// Check if this is a login or logout request (allow through)
 				String requestURI = req.getRequestURI();
-				if (requestURI.endsWith("/login") || requestURI.endsWith("/logout") || 
-					requestURI.endsWith("/login.jsp")) {
+				String contextPath = req.getContextPath();
+				if (requestURI.equals(contextPath + "/idempiereMonitor/login") || 
+					requestURI.equals(contextPath + "/idempiereMonitor/logout") || 
+					requestURI.equals(contextPath + "/login.jsp")) {
 					chain.doFilter(request, response);
 					return;
 				}
@@ -158,7 +160,7 @@ public class AdempiereMonitorFilter implements Filter
 					chain.doFilter(request, response);
 				} else {
 					// Not authenticated, redirect to login page
-					String returnUrl = req.getRequestURL().toString();
+					String returnUrl = req.getRequestURI();
 					if (req.getQueryString() != null) {
 						returnUrl += "?" + req.getQueryString();
 					}

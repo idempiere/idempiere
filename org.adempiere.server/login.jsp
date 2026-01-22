@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.UUID" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	// Generate CSRF token
 	String csrfToken = UUID.randomUUID().toString();
@@ -11,6 +12,7 @@
 	if (returnUrl == null || returnUrl.isEmpty()) {
 		returnUrl = request.getContextPath() + "/idempiereMonitor";
 	}
+	request.setAttribute("returnUrl", returnUrl);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -165,6 +167,19 @@
 			text-decoration: underline;
 		}
 	</style>
+	<script>
+		window.onload = function() {
+			if (window.location.hash) {				
+				// Find your hidden returnUrl input
+				const returnUrlInput = document.getElementsByName('returnUrl')[0];
+				
+				// Append the fragment if it's not already there
+				if (returnUrlInput && !returnUrlInput.value.includes('#')) {
+					returnUrlInput.value += window.location.hash;
+				}
+			}
+		};
+	</script>
 </head>
 <body>
 	<div class="login-container">
@@ -189,7 +204,7 @@
 		
 		<form method="POST" action="<%= request.getContextPath() %>/idempiereMonitor/login">
 			<input type="hidden" name="csrfToken" value="<%= csrfToken %>">
-			<input type="hidden" name="returnUrl" value="<%= returnUrl %>">
+			<input type="hidden" name="returnUrl" value="<c:out value='${returnUrl}'/>">
 			
 			<div class="form-group">
 				<label for="username">Username</label>

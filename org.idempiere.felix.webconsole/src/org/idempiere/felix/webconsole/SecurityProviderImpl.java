@@ -46,8 +46,16 @@ public class SecurityProviderImpl implements WebConsoleSecurityProvider3 {
 				return true;
 			}
 		}
+
+		// Not authenticated, redirect to login page
+		String returnUrl = request.getRequestURI();
+		if (request.getQueryString() != null) {
+			returnUrl += "?" + request.getQueryString();
+		}
+		
 		try {
-			response.sendRedirect(request.getContextPath() + "/login");
+			response.sendRedirect(request.getContextPath() + "/login.jsp?returnUrl=" + 
+						java.net.URLEncoder.encode(returnUrl, "UTF-8"));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -56,6 +64,10 @@ public class SecurityProviderImpl implements WebConsoleSecurityProvider3 {
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
+		var session = request.getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
 		try {
 			response.sendRedirect(request.getContextPath() + "/login");
 		} catch (IOException e) {
