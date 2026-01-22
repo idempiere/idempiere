@@ -52,6 +52,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.base.IPOAccountingService;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
@@ -413,6 +414,8 @@ public abstract class PO
 	protected static final Integer I_ZERO = Integer.valueOf(0);
 	/** Accounting Columns			*/
 	private ArrayList <String>	s_acctColumns = null;
+	/** Optional accounting service - injected via OSGi */
+    private static volatile IPOAccountingService s_accountingService = null;
 
 	/** Trifon - Indicates that this record is created by replication functionality.*/
 	private boolean m_isReplication = false;
@@ -4907,95 +4910,14 @@ public abstract class PO
 	protected boolean insert_Accounting (String acctTableName,
 		String acctBaseTable, String whereClause)
 	{
-		if (s_acctColumns == null	//	cannot cache C_BP_*_Acct as there are 3
-			|| acctTableName.startsWith("C_BP_"))
-		{
-			s_acctColumns = new ArrayList<String>();
-			String sql = "SELECT c.ColumnName "
-				+ "FROM AD_Column c INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
-				+ "WHERE t.TableName=? AND c.IsActive='Y' AND c.AD_Reference_ID=25 ORDER BY c.ColumnName";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement (sql, null);
-				pstmt.setString (1, acctTableName);
-				rs = pstmt.executeQuery ();
-				while (rs.next ())
-					s_acctColumns.add (rs.getString(1));
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, acctTableName, e);
-			}
-			finally {
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-			if (s_acctColumns.size() == 0)
-			{
-				log.severe ("No Columns for " + acctTableName);
-				return false;
-			}
-		}
-
-		//	Create SQL Statement - INSERT
-		StringBuilder sb = new StringBuilder("INSERT INTO ")
-			.append(acctTableName)
-			.append(" (").append(get_TableName())
-			.append("_ID, C_AcctSchema_ID, AD_Client_ID,AD_Org_ID,IsActive, Created,CreatedBy,Updated,UpdatedBy ");
-		for (int i = 0; i < s_acctColumns.size(); i++)
-			sb.append(",").append(s_acctColumns.get(i));
-
-		//check whether db have working generate_uuid function.
-		boolean uuidFunction = DB.isGenerateUUIDSupported();
-
-		MTable acctTable = MTable.get(getCtx(), acctTableName, get_TrxName());
-		if (acctTableName == null) {
-			throw new AdempiereException("Accounting table " + acctTableName + " does not exist");
-		}
-		MColumn uuidColumn = acctTable.getColumn(PO.getUUIDColumnName(acctTableName));
-		if (uuidColumn != null && uuidFunction)
-			sb.append(",").append(PO.getUUIDColumnName(acctTableName));
-		//	..	SELECT
-		sb.append(") SELECT ").append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
-				 ? PO.buildUUIDSubquery(get_TableName(), get_UUID()) 
-				 : get_ID())
-			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
-			.append(getUpdatedBy()).append(",getDate(),").append(getUpdatedBy());
-		for (int i = 0; i < s_acctColumns.size(); i++)
-			sb.append(",p.").append(s_acctColumns.get(i));
-		if (uuidColumn != null && uuidFunction)
-			sb.append(",generate_uuid()");
-		//	.. 	FROM
-		sb.append(" FROM ").append(acctBaseTable)
-			.append(" p WHERE p.AD_Client_ID=")
-			.append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-					? PO.buildUUIDSubquery("AD_Client", MClient.get(getAD_Client_ID()).getAD_Client_UU())
-					: getAD_Client_ID());
-		if (whereClause != null && whereClause.length() > 0)
-			sb.append (" AND ").append(whereClause);
-		sb.append(" AND NOT EXISTS (SELECT * FROM ").append(acctTableName)
-			.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
-			.append(get_TableName()).append("_ID=");
-		if (get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()))
-			sb.append(PO.buildUUIDSubquery(get_TableName(),get_UUID())).append(")");
-		else
-			sb.append(get_ID()).append(")");
-		//
-		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		if (no > 0) {
-			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
-		} else {
-			log.warning("#" + no
-					+ " - Table=" + acctTableName + " from " + acctBaseTable);
-		}
-
-		//fall back to the slow java client update code
-		if (uuidColumn != null && !uuidFunction) {
-			UUIDGenerator.updateUUID(uuidColumn, get_TrxName());
-		}
-		return no > 0;
+		if (isAccountingAvailable()) {
+	        return s_accountingService.insertAccounting(this, acctTableName, 
+	                acctBaseTable, whereClause);
+	    }
+	    
+	    if (log.isLoggable(Level.FINE))
+	        log.fine("Accounting service not available - skipping accounting");
+	    return true;
 	}	//	insert_Accounting
 
 	/**
@@ -5795,12 +5717,8 @@ public abstract class PO
 	/** Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
 	private Doc m_doc;
 
-	/**
-	 * Set the accounting document associated to the PO - for use in POST ModelValidator
-	 * @param doc Document
-	 */
 	public void setDoc(Doc doc) {
-		m_doc = doc;		
+	    m_doc = doc;		
 	}
 
 	/**
@@ -5821,12 +5739,8 @@ public abstract class PO
 		return m_isReplication;
 	}
 
-	/**
-	 * Get the accounting document associated to the PO - for use in POST ModelValidator
-	 * @return Doc Document
-	 */
 	public Doc getDoc() {
-		return m_doc;
+	    return m_doc;
 	}
 
 	/**
@@ -6514,6 +6428,22 @@ public abstract class PO
 	{
 		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", get_TrxName()).setParameters(get_Table_ID(), get_ID()).list();
 	}
+	
+	/**
+     * Set accounting service (called by OSGi Declarative Services)
+     * @param service accounting service implementation
+     */
+    public static void setAccountingService(IPOAccountingService service) {
+        s_accountingService = service;
+    }
+    
+    /**
+     * Check if accounting service is available
+     * @return true if ERP accounting module is loaded
+     */
+    public static boolean isAccountingAvailable() {
+        return s_accountingService != null;
+    }
 
 	/**
 	 * Create a subquery to get the record ID from a UUID value
