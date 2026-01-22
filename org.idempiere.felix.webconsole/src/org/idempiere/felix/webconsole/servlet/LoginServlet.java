@@ -22,7 +22,7 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.compiere.web;
+package org.idempiere.felix.webconsole.servlet;
 
 import java.io.IOException;
 import java.util.Map;
@@ -40,7 +40,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
- * Login Servlet for iDempiere Monitor
+ * Login Servlet for Felix Web Console
  * Handles form-based authentication with CSRF protection and rate limiting
  * 
  * @author iDempiere Community
@@ -140,9 +140,9 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		
-		// Check if user has access to monitor
-		if (!user.isAdministrator() && !user.hasURLFormAccess("/idempiereMonitor")) {
-			log.warning("User " + username + " attempted to access monitor without permission from IP: " + clientIP);
+		// Check if user is administrator
+		if (!user.isAdministrator()) {
+			log.warning("User " + username + " attempted to access console without permission from IP: " + clientIP);
 			recordFailedAttempt(clientIP);
 			response.sendRedirect(request.getContextPath() + "/login.jsp?error=access");
 			return;
@@ -176,11 +176,11 @@ public class LoginServlet extends HttpServlet {
 		
 		log.info("Successful login for user: " + username + " from IP: " + clientIP);
 		
-		// Redirect to original URL or default monitor page
+		// Redirect to original URL or default console page
 		if (returnUrl != null && !returnUrl.isEmpty() && isValidReturnUrl(returnUrl)) {
 			response.sendRedirect(returnUrl);
 		} else {
-			response.sendRedirect(request.getContextPath() + "/idempiereMonitor");
+			response.sendRedirect(request.getContextPath() + "/system/console");
 		}
 	}
 	
