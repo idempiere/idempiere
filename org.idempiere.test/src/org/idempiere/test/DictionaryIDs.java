@@ -88,7 +88,8 @@ public final class DictionaryIDs {
 		GARDEN_WORLD_ADMIN(102),
 		GARDEN_WORLD_USER(103),
 		GARDEN_WORLD_ADMIN_NOT_ADVANCED(200001),
-		SYSTEM_ADMINISTRATOR(0);
+		SYSTEM_ADMINISTRATOR(0),
+		WEB_SERVICE_EXECUTION(50004);
 		
 		public final int id;
 
@@ -164,6 +165,7 @@ public final class DictionaryIDs {
 		COLOR_INC(50001,"6e967db4-e6a9-488f-ae76-f811fb86186e"),
 		CHROME_INC(50002,"e1b92d09-ca76-4326-aa45-449e0c4509a3"),
 		CHEMICAL_INC(50003,"26abfd12-5aa2-4668-b0c7-76d680ccfb10"),
+		STORE_CENTRAL(50004, "04dcc5f6-a2e1-48ef-8b8d-c0d758f09a53"),
 		AGRI_TECH(200000,"605450c7-24a7-4da9-990d-a8e5e7dd57eb");
 
 		public final int id;
@@ -791,6 +793,7 @@ public final class DictionaryIDs {
   
 	public enum AD_Field {
 	  	USER_CONTACT_NAME(300),
+	  	TEST_TEST_NAME(417),
 		BPartner_PaymentRule(9624),
 		BPartner_Description(2133),
 		PackageInstallation_PackageVersion(203844);
@@ -803,7 +806,8 @@ public final class DictionaryIDs {
 	}
 	
 	public enum AD_Column {
-		COLUMN_NAME(213),
+		USER_NAME(213),
+		TEST_NAME(326),
 		VIRTUALCOLUMN_UPCEAN(14102),
 		REPORT_VIEW_ORDERBYCLAUSE(4396),
 		MULTISELECTCOLUMN_SCOPELIST(214414);
@@ -816,7 +820,8 @@ public final class DictionaryIDs {
 	}
 	
 	public enum AD_Window {
-		USER(108),
+		USER(108),		
+		TEST(127),
 		SALES_INVOICE(167),
 		ORGANIZATION(110),
 		MESSAGE(104),
@@ -830,7 +835,9 @@ public final class DictionaryIDs {
 	}
 	
 	public enum AD_Tab {
-		USER_CONTACT(118);
+		USER_CONTACT(118),
+		USER_USER_MAIL(709),
+		TEST_TEST(152);
 		
 		public final int id;
 
@@ -852,11 +859,58 @@ public final class DictionaryIDs {
 	public enum AD_Process {
 		CACHE_RESET(205),
 		C_ORDER_PROCESS(104),
-		DBA_RECOMPILE(185);
+		DBA_RECOMPILE(185),
+		AD_COLUMN_SYNC(181),
+		AD_TABLE_COPY_COLUMNS_FROM_TABLE(50011),
+		CREATE_FOREIGN_KEY(200058),
+		CREATE_TABLE(200134),
+		AD_TABLE_CREATE_PARTITION(200157),
+		DETACH_OR_REATTACH_PARTITION(200158);
 		
 		public final int id;
 
 		private AD_Process(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_PrintFormat {
+		TEST_REPORT(142),
+		TEST_FORM(143);
+		
+		public final int id;
+
+		private AD_PrintFormat(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Menu {
+		CACHE_RESET(383);
+		
+		public final int id;
+
+		private AD_Menu(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_InfoWindow {
+		PRODUCT_INFO(200000);
+		
+		public final int id;
+
+		private AD_InfoWindow(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum AD_Task {
+		JAVA_VERSION(102);
+		
+		public final int id;
+
+		private AD_Task(int id) {
 			this.id = id;
 		}
 	}

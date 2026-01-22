@@ -1,0 +1,7 @@
+-- IDEMPIERE-6799 Fix TabNo-Based Context Parsing for Table Attributes & Reference Support
+SELECT register_migration_script('202512261210_IDEMPIERE-6799.sql') FROM dual;
+
+-- Dec 26, 2025, 12:10:09 PM IST
+UPDATE AD_Val_Rule SET Code='AD_Reference.AD_Reference_ID IN (10,11,12,13,14,15,16,17,18,19,20,22,24,25,27,29,30,31,32,33,34,36,37,38,39,40,200161,200162,200163,200233,200234,200235)',Updated=TO_TIMESTAMP('2025-12-26 12:10:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200090
+;
+

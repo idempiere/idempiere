@@ -120,9 +120,11 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -131,6 +133,7 @@ import org.mockito.Mockito;
  * @author hengsin
  *
  */
+@Isolated
 public class GridTabTest extends AbstractTestCase {
 
 	private static final int FIELD_ORDERLINE_SHIPPER = 1135;
@@ -141,7 +144,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	public void testQuery() {		
 		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		int tabCount = gridWindow.getTabCount();
 		assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID="+AD_Window_ID);
 		
@@ -160,8 +163,9 @@ public class GridTabTest extends AbstractTestCase {
 		}
 		
 		GridTab gTab = gridWindow.getTab(0);
-		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
-		
+		gTab.getTableModel().setImportingMode(true, getTrxName());
+		assertTrue(gTab.getRowCount() == 1, "GridTab Row Count is not 1. GridTab=" + gTab.getName());
+
 		String name = (String) gTab.getValue("Name");
 		MBPartner bpartner = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		assertTrue(bpartner.getName().equals(name), "GridTab Name != MBPartner.getName(). GridTab.Name="+name + " MBPartner.getName="+bpartner.getName());
@@ -210,15 +214,37 @@ public class GridTabTest extends AbstractTestCase {
 		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(), "GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID="+gTab.getRecord_ID());
 		
 		// test with set negative current row
-		assertEquals(0, gTab.setCurrentRow(-1, true), "Setting current row to -1 did not result in 0. GridTab="+gTab.getName());
-		assertEquals(0, gTab.getCurrentRow(), "Current row is not 0 after setting to -1. GridTab="+gTab.getName());
+		assertEquals(0, gTab.setCurrentRow(-1, true),
+				"Setting current row to -1 did not result in 0. GridTab=" + gTab.getName());
+		assertEquals(0, gTab.getCurrentRow(), "Current row is not 0 after setting to -1. GridTab=" + gTab.getName());
+
+		// test two email address don't confuse the parse context variable logic
+		bpartner.setDescription("test1@test.com,test2@test.com");
+		bpartner.saveEx();
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_Description, MQuery.EQUAL, "test1@test.com,test2@test.com");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() == 1, "GridTab Row Count is not 1. GridTab=" + gTab.getName());
+		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, gTab.getRecord_ID(),
+				"GridTab Record_ID != BP_JOE_BLOCK id. GridTab.Record_ID=" + gTab.getRecord_ID());
+		
+		// test parsing of @CreatedBy@
+		Env.setContext(Env.getCtx(), gTab.getWindowNo(), "CreatedBy", DictionaryIDs.AD_User.SUPER_USER.id);
+		query = new MQuery(MBPartner.Table_Name);
+		query.addRestriction(MBPartner.COLUMNNAME_CreatedBy, MQuery.EQUAL, "@CreatedBy:0@");
+		gTab.setQuery(query);
+		gTab.query(false, 0, 0);
+		assertTrue(gTab.getRowCount() > 0, "GridTab Row Count is not > 0. GridTab=" + gTab.getName());
+		assertEquals(DictionaryIDs.AD_User.SUPER_USER.id, gTab.getValue(MBPartner.COLUMNNAME_CreatedBy),
+				"GridTab CreatedBy != SUPER_USER id. GridTab.CreatedBy=" + gTab.getValue(MBPartner.COLUMNNAME_CreatedBy));
 	}
 	
 	@Test
 	public void testCallout() {
 		//Sales Order
 		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		int tabCount = gridWindow.getTabCount();
 		assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID="+AD_Window_ID);
 		
@@ -261,7 +287,7 @@ public class GridTabTest extends AbstractTestCase {
 	public void testUpdate() {
 		//Business Partner
 		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		int tabCount = gridWindow.getTabCount();
 		assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID="+AD_Window_ID);
 		
@@ -335,7 +361,7 @@ public class GridTabTest extends AbstractTestCase {
 
 			// Sales Order
 			int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-			var gridWindow = createGridWindow(AD_Window_ID);
+			var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 			int tabCount = gridWindow.getTabCount();
 			assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID=" + AD_Window_ID);
 
@@ -385,7 +411,7 @@ public class GridTabTest extends AbstractTestCase {
 
 	}
 
-	private DataStatusListener newGridTabDataStatusListener(GridWindow gridWindow) {
+	static DataStatusListener newGridTabDataStatusListener(GridWindow gridWindow) {
 		return new DataStatusListener() {
 			@Override
 			public void dataStatusChanged(DataStatusEvent e) {
@@ -435,7 +461,7 @@ public class GridTabTest extends AbstractTestCase {
 
 		//Test window
 		int AD_Window_ID = SystemIDs.WINDOW_TEST;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		int tabCount = gridWindow.getTabCount();
 		assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID="+AD_Window_ID);
 				
@@ -540,7 +566,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	void testDetailTabQuery() {
 		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		int tabCount = gridWindow.getTabCount();
 		assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID=" + AD_Window_ID);
 
@@ -600,7 +626,7 @@ public class GridTabTest extends AbstractTestCase {
 			Env.setContext(ctx, prefKey, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
 			Env.setContext(Env.getCtx(), "IsSOTrx", true);
 			int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-			var gridWindow = createGridWindow(AD_Window_ID);
+			var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 
 			// Header tab - create new order
 			GridTab headerTab = gridWindow.getTab(0);
@@ -699,7 +725,7 @@ public class GridTabTest extends AbstractTestCase {
 			assertEquals(idRow0Before, idRow1After, "Row1 should now contain former Row0 line");
 
 			//test switch row without line and seqno field
-			gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+			gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 			GridTab bpTab = gridWindow.getTab(0);
 			bpTab.query(false, 0, 3);
 			assertTrue(bpTab.getRowCount() >= 2, "Need at least 2 rows for switchRows test");
@@ -718,7 +744,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	void testLocking() {
 		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gTab = gridWindow.getTab(0);
 
 		MQuery query = new MQuery(MBPartner.Table_Name);
@@ -759,7 +785,7 @@ public class GridTabTest extends AbstractTestCase {
     @Test
     public void testDataDelete_NewRecord() {
         int AD_Window_ID = 178; // AD_Greeting (Simple table for testing)
-        GridWindow gridWindow = createGridWindow(AD_Window_ID);
+        GridWindow gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
         GridTab gridTab = gridWindow.getTab(0);
         gridTab.addDataStatusListener(newGridTabDataStatusListener(gridWindow));
 
@@ -811,7 +837,7 @@ public class GridTabTest extends AbstractTestCase {
 	public void testDataRefreshAll_ResetSelection()
 	{
 		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-		GridWindow gw = createGridWindow(AD_Window_ID);
+		GridWindow gw = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gt = gw.getTab(0);
 
 		// 2. Execution: Load data
@@ -869,7 +895,7 @@ public class GridTabTest extends AbstractTestCase {
 		t2.setDescription(description);
 		t2.saveEx();
 		
-		GridWindow gw = createGridWindow(AD_Window_ID);
+		GridWindow gw = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gt = gw.getTab(0);
 		gt.getTableModel().setImportingMode(true, getTrxName());
 
@@ -893,12 +919,16 @@ public class GridTabTest extends AbstractTestCase {
 		gt.dataRefreshAll(true, true);
 		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., true), Row Count should still be 2");
 
-		// not retained t2
+		// still not retained t2
 		gt.dataRefreshAll(true, false);
-		assertEquals(1, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should be 1");
+		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should still be 2");
+
+		// not retained t2
+		gt.query(false);
+		assertEquals(1, gt.getRowCount(), "After query, Row Count should be 1");
 		
 		// test retain for multi-key tab
-		gw = createGridWindow(SystemIDs.WINDOW_PRODUCT);
+		gw = GridWindowTest.createGridWindow(SystemIDs.WINDOW_PRODUCT);
 		gt = gw.getTab(0);
 		gt.setUpdateWindowContext(true);
 		gt.getTableModel().setImportingMode(true, getTrxName());
@@ -944,7 +974,9 @@ public class GridTabTest extends AbstractTestCase {
 		stab.dataRefreshAll(true, true);
 		assertEquals(2, stab.getRowCount(), "Should retain 2 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=true");
 		stab.dataRefreshAll(true, false);
-		assertEquals(1, stab.getRowCount(), "Should retain 1 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=false");
+		assertEquals(2, stab.getRowCount(), "Should retain 2 record for substitute of Azalea Bush after dataRefreshAll with retainCurrentRow=false");
+		stab.query(false);
+		assertEquals(1, stab.getRowCount(), "Should retain 1 record for substitute of Azalea Bush after query");
 		PO po = stab.getTableModel().getPO(0);
 		assertNotNull(po, "PO should not be null for remaining substitute record");
 		assertInstanceOf(X_M_Substitute.class, po, "PO should be instance of X_M_Substitute");
@@ -974,7 +1006,7 @@ public class GridTabTest extends AbstractTestCase {
 		t2.setDescription(description);
 		t2.saveEx();
 		
-		GridWindow gw = createGridWindow(AD_Window_ID);
+		GridWindow gw = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gt = gw.getTab(0);
 		gt.getTableModel().setImportingMode(true, getTrxName());
 
@@ -998,9 +1030,13 @@ public class GridTabTest extends AbstractTestCase {
 		gt.dataRefreshAll(true, true);
 		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., true), Row Count should still be 2");
 
-		// not retained t2
+		// still retained t2
 		gt.dataRefreshAll(true, false);
-		assertEquals(1, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should be 1");
+		assertEquals(2, gt.getRowCount(), "After dataRefreshAll(..., false), Row Count should still be 2");
+
+		// not retained t2
+		gt.query(false);
+		assertEquals(1, gt.getRowCount(), "After query, Row Count should be 1");
 	}
 	
 	/**
@@ -1016,7 +1052,7 @@ public class GridTabTest extends AbstractTestCase {
 	public void testDataIgnore_RevertsChanges()
 	{
 		int AD_Window_ID = SystemIDs.WINDOW_TEST;
-		GridWindow gw = createGridWindow(AD_Window_ID);
+		GridWindow gw = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gt = gw.getTab(0);
 
 		// Load data
@@ -1049,7 +1085,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	void testStatusLineWidget() {
 		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-		GridWindow gw = createGridWindow(AD_Window_ID);
+		GridWindow gw = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gt = gw.getTab(0);
 
 		// Load data
@@ -1156,7 +1192,7 @@ public class GridTabTest extends AbstractTestCase {
 		try {
 			int testRecordID = mTest.get_ID();
 	
-			GridWindow gw = createGridWindow(SystemIDs.WINDOW_TEST);
+			GridWindow gw = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 			GridTab gt = gw.getTab(0);
 	
 			// Load data and find our record
@@ -1201,7 +1237,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	public void testResetDetailForNewParentRecord()
 	{
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_SALES_ORDER);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_SALES_ORDER);
 		
 		GridTab headerTab = gridWindow.getTab(0);
 		headerTab.query(false, 0, 3);
@@ -1221,7 +1257,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testGetDependentOn() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_PRODUCT);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_PRODUCT);
 		GridTab displayLogicTab = null;
 		for (int i = 0; i < gridWindow.getTabCount(); i++) {
 			GridTab gTab = gridWindow.getTab(i);
@@ -1241,7 +1277,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testLoadPhoneFormat() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		
 		GridTab gTab = gridWindow.getTab(0);
 		MQuery query = new MQuery(MBPartner.Table_Name);
@@ -1266,20 +1302,9 @@ public class GridTabTest extends AbstractTestCase {
 		assertTrue(!Util.isEmpty(fPhone.getVFormat(), true), "Phone Format is empty");
 	}
 
-	private GridWindow createGridWindow(int AD_Window_ID) {
-		var gWindowVO = GridWindowVO.create(Env.getCtx(), 1, AD_Window_ID);
-		var gridWindow = new GridWindow(gWindowVO, true);
-		for (int i = 0; i < gridWindow.getTabCount(); i++) {
-			gridWindow.initTab(i);
-			GridTab gTab = gridWindow.getTab(i);
-			gTab.addDataStatusListener(newGridTabDataStatusListener(gridWindow));
-		}
-		return gridWindow;
-	}
-	
 	@Test
 	void testGetNumColumns() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		GridTab gTab = gridWindow.getTab(0);
 		assertEquals(9, gTab.getNumColumns(), "Number of columns in Business Partner tab mismatch");
 	}
@@ -1288,14 +1313,14 @@ public class GridTabTest extends AbstractTestCase {
     void testIsCurrent() {
         int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
         
-        GridWindow window = createGridWindow(AD_Window_ID);
+        GridWindow window = GridWindowTest.createGridWindow(AD_Window_ID);
         GridTab bpTab = window.getTab(0);   // Parent Tab (Business Partner)
         GridTab contactsTab = window.getTab(1);  // Child Tab (Contact)
         
         // Setup: Ensure we have at least 2 records in the parent tab to switch between.
-        String whereClause = "Value IN ('C&W', 'SeedFarm')";
+        String whereClause = "Value IN (?, ?)";
         MQuery query = new MQuery(MBPartner.Table_Name);
-        query.addRestriction(whereClause);
+        query.addRestriction(new SQLFragment(whereClause, List.of("C&W", "SeedFarm")));
         bpTab.setQuery(query);
         bpTab.query(false);
         
@@ -1326,7 +1351,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testNavigate() {
-		GridWindow gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		GridWindow gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		GridTab gridTab = gridWindow.getTab(0);
 
 		// Test when gridTab is not initialized (no data queried yet)
@@ -1370,7 +1395,7 @@ public class GridTabTest extends AbstractTestCase {
 		line.saveEx();
 
 		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-		GridWindow gridWindow = createGridWindow(AD_Window_ID);
+		GridWindow gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		
 		GridTab parentTab = gridWindow.getTab(0); // Order Tab
 		parentTab.getTableModel().setImportingMode(true, getTrxName());
@@ -1434,7 +1459,7 @@ public class GridTabTest extends AbstractTestCase {
 
         try {
 	        // Initialize the GridWindow and GridTab
-	        GridWindow gridWindow = createGridWindow(AD_Window_ID);
+	        GridWindow gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 	        GridTab gridTab = gridWindow.getTab(0); 
 	        gridTab.getTableModel().setImportingMode(true, getTrxName());
 	        gridTab.setQuery(MQuery.getNoRecordQuery(gridTab.getTableName(), true));
@@ -1472,7 +1497,7 @@ public class GridTabTest extends AbstractTestCase {
     
     @Test
     void testHasChangedCurrentTabAndParents() {
-    	var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);		
+    	var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);		
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MBPartner.Table_Name);
@@ -1584,7 +1609,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	void testGetMaxQueryRecords() {
 		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		assertTrue(gridWindow.getTabCount() > 0, "Tab Count is Zero. AD_Window_ID=" + AD_Window_ID);
 
 		GridTab gTab = gridWindow.getTab(0);
@@ -1596,7 +1621,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	void testIsQueryRequire() {
 		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		assertTrue(gridWindow.getTabCount() > 0, "Tab Count is Zero. AD_Window_ID=" + AD_Window_ID);
 
 		GridTab gTab = gridWindow.getTab(0);
@@ -1636,7 +1661,7 @@ public class GridTabTest extends AbstractTestCase {
 		MLabelAssignment labelAssignment = new MLabelAssignment(ctx, 0, null);
 		MLabel label = new MLabel(ctx, 0, null);
 		try(attachment) {			
-			var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+			var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 			GridTab gt = gridWindow.getTab(0);
 			
 			//navigate to record
@@ -1704,7 +1729,7 @@ public class GridTabTest extends AbstractTestCase {
 
 	@Test
 	void testIsSingleRow() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		GridTab gTab = gridWindow.getTab(0);
 		assertTrue(gTab.isSingleRow(), "Business Partner main tab should be single-row");
 
@@ -1720,7 +1745,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testIsAlwaysUpdateable() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		GridTab gTab = gridWindow.getTab(0);
 		// Payment Rule is always updateable
 		assertTrue(gTab.isAlwaysUpdateField(), "Business Partner main tab has always updateable fields");
@@ -1731,7 +1756,7 @@ public class GridTabTest extends AbstractTestCase {
 		MTestUU test = new MTestUU(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
 		test.setName("Test UU " + System.currentTimeMillis());
 		test.saveEx();
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST_UU);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MTestUU.Table_Name);
@@ -1745,7 +1770,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testToString() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST_UU);
 		GridTab gTab = gridWindow.getTab(0);
 		String toString = gTab.toString();
 		assertNotNull(toString, "toString should not be null");
@@ -1756,18 +1781,18 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testCanHaveAttachments() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		GridTab gTab = gridWindow.getTab(0);
 		assertTrue(gTab.canHaveAttachment(), "Test tab should support attachments");
 		
-		gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST_UU);
 		gTab = gridWindow.getTab(0);
 		assertTrue(gTab.canHaveAttachment(), "Test UU tab should support attachments");
 	}
 	
 	@Test
     void testHasTemplate() {
-        var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+        var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
         GridTab gTab = gridWindow.getTab(0);
         // Mock MImportTemplate.getTemplates to return non-empty list
         try (MockedStatic<MImportTemplate> mockedTemplates = mockStatic(MImportTemplate.class, Mockito.CALLS_REAL_METHODS)) {
@@ -1789,7 +1814,7 @@ public class GridTabTest extends AbstractTestCase {
 		Env.setContext(Env.getCtx(), prefKey, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
 		Env.setContext(Env.getCtx(), "IsSOTrx", true);
 		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
 		gTab.query(false, 0, 0);
@@ -1836,7 +1861,7 @@ public class GridTabTest extends AbstractTestCase {
 	@Test
 	void test0IsNull() {
 		int AD_Window_ID = SystemIDs.WINDOW_TEST;
-		var gridWindow = createGridWindow(AD_Window_ID);
+		var gridWindow = GridWindowTest.createGridWindow(AD_Window_ID);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.setQuery(MQuery.getNoRecordQuery(MTest.Table_Name, true));
@@ -1854,7 +1879,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testDataStatusEventProperties() {
-		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		var gridWindow = GridWindowTest.createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
 		GridTab gTab = gridWindow.getTab(0);
 		MQuery query = new MQuery(MOrg.Table_Name);
 		query.addRestriction(MOrg.COLUMNNAME_AD_Org_ID, MQuery.EQUAL, DictionaryIDs.AD_Org.HQ.id);
@@ -1872,7 +1897,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testStateChangeListener() {
-		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		var gridWindow = GridWindowTest.createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
 		GridTab gTab = gridWindow.getTab(0);
 		StringBuilder sb = new StringBuilder();
 		gTab.addStateChangeListener((e) -> {
@@ -1888,7 +1913,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testInsertUpdateUU() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST_UU);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST_UU);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
@@ -1916,7 +1941,15 @@ public class GridTabTest extends AbstractTestCase {
 		gTab.setValue(MTestUU.COLUMNNAME_Name, "Test UU3 " + System.currentTimeMillis());
 		assertFalse(gTab.dataSave(true), "Update should fail due to external change");
 		assertNotNull(gTab.getLastDataStatusEvent(), "DataStatusEvent should not be null after external change");
-		assertEquals("CurrentRecordModified", gTab.getLastDataStatusEvent().getAD_Message(), "AD_Message should indicate record modified externally");
+		//Oracle might return SaveErrorDataChanged instead of CurrentRecordModified
+		//This is due to we are using Date data type for the Updated field and precision for Oracle Date data type is up to seconds only
+		String actualMessage = gTab.getLastDataStatusEvent().getAD_Message();
+		if (DB.isOracle()) {
+			assertTrue("CurrentRecordModified".equals(actualMessage)
+				|| "SaveErrorDataChanged".equals(actualMessage), "AD_Message should indicate record modified externally");
+		} else {
+			assertEquals("CurrentRecordModified", actualMessage, "AD_Message should indicate record modified externally");
+		}
 		
 		// refresh and save should work now
 		gTab.dataRefresh(gTab.getCurrentRow(), true);
@@ -1935,7 +1968,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testUpdateWithWrongValueType() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
@@ -1957,7 +1990,7 @@ public class GridTabTest extends AbstractTestCase {
 		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, 0);
 		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, 0);
 		
-		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		var gridWindow = GridWindowTest.createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MOrg.Table_Name);
@@ -1973,7 +2006,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testDataNewCopy() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MBPartner.Table_Name);
@@ -1997,7 +2030,7 @@ public class GridTabTest extends AbstractTestCase {
 		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, 0);
 		Env.setContext(Env.getCtx(), Env.SHOW_TRANSLATION, true);
 		
-		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.MESSAGE.id);
+		var gridWindow = GridWindowTest.createGridWindow(DictionaryIDs.AD_Window.MESSAGE.id);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MMessage.Table_Name);
@@ -2016,7 +2049,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testDeleteProcessedRecord() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.query(false, 0, 3);
@@ -2030,7 +2063,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testRowChangeIndexAfterSort() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
@@ -2054,7 +2087,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testReset() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_PRODUCT);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_PRODUCT);
 		var gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.query(false, 0, 3);
@@ -2065,7 +2098,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testColorColumn() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
@@ -2081,7 +2114,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testSetVFormat() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.setQuery(MQuery.getNoRecordQuery(gTab.getTableName(), true));
@@ -2094,7 +2127,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testRowCountTimeoutEvent() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		StringBuilder eventMessage = new StringBuilder();
@@ -2129,7 +2162,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testBackGroundLoadingEvent() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		StringBuilder eventMessage = new StringBuilder();
@@ -2195,7 +2228,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testLoadRowTimeoutEvent() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		StringBuilder eventMessage = new StringBuilder();
@@ -2233,7 +2266,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testSaveNoChange() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		assertFalse(gTab.getTableModel().isNeedSaveAndMandatoryFill(), "Should return false when table model is not open yet");
 		assertFalse(gTab.dataSave(true), "dataSave should return false when table model is not open yet");
@@ -2246,7 +2279,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testIsCellEditable() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		gTab.query(false, 0, 3);
@@ -2263,7 +2296,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testGetColumnClass() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		gTab.query(false, 0, 3);
@@ -2276,7 +2309,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testDeleteBySQL() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		tableModel.setImportingMode(true, getTrxName());
@@ -2305,7 +2338,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testUpdateSystemRecord() {
-		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
+		var gridWindow = GridWindowTest.createGridWindow(DictionaryIDs.AD_Window.ORGANIZATION.id);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MOrg.Table_Name);
@@ -2321,7 +2354,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testDeleteSystemRecord() {
-		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.ROLE.id);
+		var gridWindow = GridWindowTest.createGridWindow(DictionaryIDs.AD_Window.ROLE.id);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		MQuery query = new MQuery(MRole.Table_Name);
@@ -2336,7 +2369,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testUpdateReadonly() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		GridTab gTab = gridWindow.getTab(0);
 		gTab.getTableModel().setImportingMode(true, getTrxName());
 		gTab.query(false, 0, 0);
@@ -2351,7 +2384,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testDeleteErrorEvent() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		StringBuilder eventMessage = new StringBuilder();
@@ -2377,7 +2410,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testSaveErrorEvent() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		StringBuilder eventMessage = new StringBuilder();
@@ -2405,7 +2438,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testGetErrorFromLogger() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		gTab.getTableModel().setImportingMode(true, getTrxName());
@@ -2428,7 +2461,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testVetoableChangeSupport() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		StringBuilder eventMessage = new StringBuilder();
@@ -2449,7 +2482,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testGetColumnName() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		gTab.query(false, 0, 0);
@@ -2463,7 +2496,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testSort() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		gTab.query(false, 0, 0);
@@ -2503,7 +2536,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testQueryWithContextVariable() {
-		var gridWindow = createGridWindow(DictionaryIDs.AD_Window.USER.id);
+		var gridWindow = GridWindowTest.createGridWindow(DictionaryIDs.AD_Window.USER.id);
 		GridTab gTab = gridWindow.getTab(0);
 		MQuery query = new MQuery(MUser.Table_Name);
 		query.addRestriction(MUser.COLUMNNAME_AD_User_ID, MQuery.EQUAL, "@#AD_User_ID@");
@@ -2520,7 +2553,7 @@ public class GridTabTest extends AbstractTestCase {
 	
 	@Test
 	void testIsRowEditable() {
-		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		var gridWindow = GridWindowTest.createGridWindow(SystemIDs.WINDOW_TEST);
 		var gTab = gridWindow.getTab(0);
 		var tableModel = gTab.getTableModel();
 		tableModel.setImportingMode(true, getTrxName());

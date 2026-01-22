@@ -31,10 +31,10 @@ import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
-import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
+import org.compiere.model.GridTab;
 import org.compiere.model.MAttribute;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableAttribute;
@@ -61,32 +61,42 @@ import org.zkoss.zul.Vbox;
 public class WTableAttribute extends Window implements EventListener<Event>
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -6423631584481652137L;
+	private static final long		serialVersionUID	= -6856735931412639759L;
+	/** Logger */
+	private static final CLogger	log					= CLogger.getCLogger(WTableAttribute.class);
+
+	/** Attribute Editors */
+	private Map<Integer, WEditor>	m_attEditors		= new HashMap<Integer, WEditor>();
+
+	private Rows					rows				= null;
+	private ConfirmPanel			confirmPanel		= new ConfirmPanel(true);
 
 	/** the attribute set selected on the InfoProduct window */
-	private int					p_AD_Table_ID		= 0;
-	private int					p_Record_ID			= 0;
-	protected int				m_WindowNo;
+	private int						p_AD_Table_ID		= 0;
+	private int						p_Record_ID			= 0;
+	private int						m_WindowNo;
+	private int						m_TabNo;
 
 	/**
 	 * Constructor.
-	 * Called from AbstractADWindowContent.onAttributeForm(),
-	 * 
-	 * @param tableID
-	 * @param recordID
+	 * Called from AbstractADWindowContent.onAttributeForm()
+	 *  
+	 * @param selGridTab
 	 */
-	public WTableAttribute(Integer tableID, int recordID)
+	public WTableAttribute(GridTab selGridTab)
 	{
 		super();
-		p_AD_Table_ID = tableID;
-		p_Record_ID = recordID;
+		p_AD_Table_ID = selGridTab.getAD_Table_ID();
+		p_Record_ID = selGridTab.getRecord_ID();
+		m_WindowNo = selGridTab.getWindowNo();
+		m_TabNo = selGridTab.getTabNo();
+
 		setTitle(Msg.getMsg(Env.getCtx(), "TableAttribute"));
 		this.setBorder("normal");
 		this.setMaximizable(false);
 		this.setSizable(false);
-		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 
 		try
 		{
@@ -99,14 +109,6 @@ public class WTableAttribute extends Window implements EventListener<Event>
 		}
 		AEnv.showWindow(this);
 	} // WTableAttribute
-
-	/** Attribute Editors */
-	private Map<Integer, WEditor>	m_attEditors	= new HashMap<Integer, WEditor>();
-	/** Logger */
-	private static final CLogger			log				= CLogger.getCLogger(WTableAttribute.class);
-
-	private Rows							rows			= null;
-	private ConfirmPanel					confirmPanel	= new ConfirmPanel(true);
 
 	/**
 	 * Layout dialog
@@ -211,10 +213,9 @@ public class WTableAttribute extends Window implements EventListener<Event>
 	 */
 	public GridField getGridField(MAttribute attribute)
 	{
-		GridFieldVO vo = GridFieldVO
-						.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
+		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_TabNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
 										Msg.translate(Env.getCtx(), attribute.get_Translation("Name")), attribute.getAD_Reference_ID(),
-										attribute.getAD_Reference_Value_ID(), false, false, null);
+										attribute.getAD_Reference_Value_ID(), false, false, null, null);
 
 		if (attribute.isAttributeValueTypeReference() && DisplayType.isLookup(attribute.getAD_Reference_ID()) && attribute.getAD_Val_Rule_ID() > 0)
 		{
@@ -232,37 +233,29 @@ public class WTableAttribute extends Window implements EventListener<Event>
 
 	public GridField getStringGridField(MAttribute attribute)
 	{
-		GridFieldVO vo = GridFieldVO
-						.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
-										Msg.translate(Env.getCtx(), attribute.get_Translation("Name")), DisplayType.String, 0, false, false, null);
-
+		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_TabNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
+										Msg.translate(Env.getCtx(), attribute.get_Translation("Name")), DisplayType.String, 0, false, false, null, null);
 		return createGridField(attribute, vo);
 	} // getStringGridField
 
 	public GridField getNumberGridField(MAttribute attribute)
 	{
-		GridFieldVO vo = GridFieldVO
-						.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
-										Msg.translate(Env.getCtx(), attribute.get_Translation("Name")), DisplayType.Number, 0, false, false, null);
-
+		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_TabNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
+										Msg.translate(Env.getCtx(), attribute.get_Translation("Name")), DisplayType.Number, 0, false, false, null, null);
 		return createGridField(attribute, vo);
 	} // getNumberGridField
 
 	public GridField getDateGridField(MAttribute attribute)
 	{
-		GridFieldVO vo = GridFieldVO
-						.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
-										Msg.translate(Env.getCtx(), attribute.get_Translation("Name")), DisplayType.Date, 0, false, false, null);
-
+		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_TabNo, AEnv.getADWindowID(m_WindowNo), 0, 0, attribute.getName(),
+										Msg.translate(Env.getCtx(), attribute.get_Translation("Name")), DisplayType.Date, 0, false, false, null, null);
 		return createGridField(attribute, vo);
 	} // getDateGridField
 
 	public GridField getListTypeGridField(MAttribute attribute)
 	{
-		GridFieldVO vo = GridFieldVO
-						.createParameter(Env.getCtx(), m_WindowNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
-										"M_AttributeValue_ID", attribute.getName(), DisplayType.TableDir, 0, false, false, null);
-
+		GridFieldVO vo = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_TabNo, AEnv.getADWindowID(m_WindowNo), 0, 0,
+										"M_AttributeValue_ID", attribute.getName(), DisplayType.TableDir, 0, false, false, null, null);
 		// Validation for List - Attribute Values
 		vo.ValidationCode = "M_AttributeValue.M_Attribute_ID=" + attribute.get_ID();
 		vo.lookupInfo.ValidationCode = vo.ValidationCode;
