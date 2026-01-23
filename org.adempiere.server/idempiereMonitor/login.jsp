@@ -200,7 +200,11 @@
 		<div class="error-message">
 			Your session has expired. Please log in again.
 		</div>
-		<% } %>
+		<% } else if ("locked".equals(error)) { %>
+		<div class="error-message">
+			Too many failed login attempts. Please try again later.
+		</div>
+ 		<% } %>
 		
 		<form method="POST" action="<%= request.getContextPath() %>/idempiereMonitor/login">
 			<input type="hidden" name="csrfToken" value="<%= csrfToken %>">
