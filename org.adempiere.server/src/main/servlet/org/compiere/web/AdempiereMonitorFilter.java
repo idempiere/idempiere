@@ -150,7 +150,7 @@ public class AdempiereMonitorFilter implements Filter
 				String contextPath = req.getContextPath();
 				if (requestURI.equals(contextPath + "/idempiereMonitor/login") || 
 					requestURI.equals(contextPath + "/idempiereMonitor/logout") || 
-					requestURI.equals(contextPath + "/login.jsp")) {
+					requestURI.equals(contextPath + "/idempiereMonitor/login.jsp")) {
 					chain.doFilter(request, response);
 					return;
 				}
@@ -164,7 +164,10 @@ public class AdempiereMonitorFilter implements Filter
 					if (req.getQueryString() != null) {
 						returnUrl += "?" + req.getQueryString();
 					}
-					resp.sendRedirect(req.getContextPath() + "/login.jsp?returnUrl=" + 
+					if ("/idempiereMonitor".equals(returnUrl) || "/idempiereMonitor/".equals(returnUrl))
+						resp.sendRedirect(req.getContextPath() + "/idempiereMonitor/login.jsp");
+					else
+					resp.sendRedirect(req.getContextPath() + "/idempiereMonitor/login.jsp?returnUrl=" + 
 						java.net.URLEncoder.encode(returnUrl, "UTF-8"));
 				}
 			}

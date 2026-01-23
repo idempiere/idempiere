@@ -77,10 +77,10 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String returnUrl = request.getParameter("returnUrl");
 		if (returnUrl != null && !returnUrl.isEmpty()) {
-			response.sendRedirect(request.getContextPath() + "/login.jsp?returnUrl=" + 
+			response.sendRedirect(request.getContextPath() + "/idempiereMonitor/login.jsp?returnUrl=" + 
 					java.net.URLEncoder.encode(returnUrl, "UTF-8"));
 		} else {
-			response.sendRedirect(request.getContextPath() + "/login.jsp");
+			response.sendRedirect(request.getContextPath() + "/idempiereMonitor/login.jsp");
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class LoginServlet extends HttpServlet {
 		// Check rate limiting
 		if (isLockedOut(clientIP)) {
 			log.warning("Login attempt from locked out IP: " + clientIP);
-			response.sendRedirect(request.getContextPath() + "/login.jsp?error=locked");
+			response.sendRedirect(request.getContextPath() + "/idempiereMonitor/login.jsp?error=locked");
 			return;
 		}
 		
@@ -107,7 +107,7 @@ public class LoginServlet extends HttpServlet {
 		if (session == null || csrfToken == null || 
 				!csrfToken.equals(session.getAttribute("CSRF_TOKEN"))) {
 			log.warning("CSRF token validation failed from IP: " + clientIP);
-			response.sendRedirect(request.getContextPath() + "/login.jsp?error=invalid");
+			response.sendRedirect(request.getContextPath() + "/idempiereMonitor/login.jsp?error=invalid");
 			return;
 		}
 		
@@ -123,7 +123,7 @@ public class LoginServlet extends HttpServlet {
 				username.trim().isEmpty() || password.trim().isEmpty()) {
 			log.warning("Empty credentials from IP: " + clientIP);
 			recordFailedAttempt(clientIP);
-			response.sendRedirect(request.getContextPath() + "/login.jsp?error=invalid");
+			response.sendRedirect(request.getContextPath() + "/idempiereMonitor/login.jsp?error=invalid");
 			return;
 		}
 		
@@ -138,7 +138,7 @@ public class LoginServlet extends HttpServlet {
 		if (user == null) {
 			log.warning("Invalid login attempt for user: " + username + " from IP: " + clientIP);
 			recordFailedAttempt(clientIP);
-			response.sendRedirect(request.getContextPath() + "/login.jsp?error=invalid");
+			response.sendRedirect(request.getContextPath() + "/idempiereMonitor/login.jsp?error=invalid");
 			return;
 		}
 		
@@ -146,7 +146,7 @@ public class LoginServlet extends HttpServlet {
 		if (!user.isAdministrator() && !user.hasURLFormAccess("/idempiereMonitor")) {
 			log.warning("User " + username + " attempted to access monitor without permission from IP: " + clientIP);
 			recordFailedAttempt(clientIP);
-			response.sendRedirect(request.getContextPath() + "/login.jsp?error=access");
+			response.sendRedirect(request.getContextPath() + "/idempiereMonitor/login.jsp?error=access");
 			return;
 		}
 		

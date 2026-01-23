@@ -49,6 +49,10 @@
 		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
 		<servlet-class>org.idempiere.web.OAuthCodeCallbackHandlerServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>loginPage</servlet-name>
+		<jsp-file>/idempiereMonitor/login.jsp</jsp-file>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
 		<url-pattern>/oauth2/callback</url-pattern>
@@ -64,6 +68,10 @@
 	<servlet-mapping>
 		<servlet-name>logout</servlet-name>
 		<url-pattern>/idempiereMonitor/logout</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>loginPage</servlet-name>
+		<url-pattern>/idempiereMonitor/login.jsp</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>15</session-timeout>

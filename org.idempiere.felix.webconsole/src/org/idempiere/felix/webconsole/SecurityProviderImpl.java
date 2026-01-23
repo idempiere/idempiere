@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.webconsole.WebConsoleSecurityProvider3;
-import org.compiere.util.CLogger;
 import org.compiere.util.Util;
 import org.idempiere.felix.webconsole.servlet.LoginServlet;
 
@@ -18,9 +17,6 @@ import org.idempiere.felix.webconsole.servlet.LoginServlet;
  */
 public class SecurityProviderImpl implements WebConsoleSecurityProvider3 {
 
-	/**	Logger			*/
-	private final static CLogger	log = CLogger.getCLogger(SecurityProviderImpl.class);
-	
 	/* (non-Javadoc)
 	 * @see org.apache.felix.webconsole.WebConsoleSecurityProvider#authenticate(java.lang.String, java.lang.String)
 	 */
