@@ -1603,7 +1603,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		// compare old and new value of parameter input at prev time
 		for (int parameterIndex = 0; parameterIndex < prevParameterValues.size(); parameterIndex++){
-			Object newValue = prevRefParmeterEditor.get(parameterIndex).getValue();
+			WEditor prevEditor = prevRefParmeterEditor.get(parameterIndex);
+			if (prevEditor == null){
+				continue;
+			}
+			Object newValue = prevEditor.getValue();
 			if (!prevParameterValues.get(parameterIndex).equals(newValue)){
 				return true;
 			}
