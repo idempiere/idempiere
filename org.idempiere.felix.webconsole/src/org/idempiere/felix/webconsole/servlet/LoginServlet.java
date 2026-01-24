@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.util.LogAuthFailure;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -48,9 +49,11 @@ import org.compiere.util.Env;
  * @author iDempiere Community
  */
 public class LoginServlet extends HttpServlet {
-	
-	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9025554430204016472L;
+
 	/** Logger */
 	private static final CLogger log = CLogger.getCLogger(LoginServlet.class);
 	
@@ -68,7 +71,10 @@ public class LoginServlet extends HttpServlet {
 	
 	/** Lockout duration in milliseconds (5 minutes) */
 	private static final long LOCKOUT_DURATION = 5 * 60 * 1000;
-	
+
+	/** Logger for authentication failures */
+	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
+
 	/**
 	 * Handle GET requests - redirect to login page
 	 */
@@ -138,6 +144,7 @@ public class LoginServlet extends HttpServlet {
 		if (user == null) {
 			log.warning("Invalid login attempt for user: " + username + " from IP: " + clientIP);
 			recordFailedAttempt(clientIP);
+			logAuthFailure.log(clientIP, "/osgi", username, "Invalid login attempt");
 			response.sendRedirect(request.getContextPath() + "/login.jsp?error=invalid");
 			return;
 		}
