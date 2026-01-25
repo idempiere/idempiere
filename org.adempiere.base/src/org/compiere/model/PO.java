@@ -121,7 +121,7 @@ public abstract class PO
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2193260381693906628L;
+	private static final long serialVersionUID = -9190914850507787850L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -425,6 +425,8 @@ public abstract class PO
 
 	/** Indices of virtual columns that were already resolved */
 	private Set<Integer> loadedVirtualColumns = new HashSet<>();
+	/* when partial PO is loaded, contains the selected columns */
+	private String[] m_selectedColumns = null;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -1771,12 +1773,55 @@ public abstract class PO
 		return success;
 	}
 
+
+	/**
+	 * Indicates if the PO was partially loaded.
+	 * @return
+	 */
+	public boolean isPartial() {
+		return m_isPartial;
+	}
+
+	/**
+	 * Indicates if the PO was partially loaded.
+	 * @param partial
+	 */
+	public void setPartial(boolean partial) {
+		m_isPartial = partial;
+	}
+
+	/**
+	 * @param selectColumns
+	 */
+	public void setSelectedColumns(String[] selectColumns) {
+		m_selectedColumns = selectColumns;
+	}
+
+	/**
+	 * Indicates if the given column was loaded in case of partial PO load.
+	 * @param columnName
+	 * @return true if the column was loaded or if the PO is not partial
+	 */
+	public boolean isColumnLoaded(String columnName) {
+		if (p_info.isColumnAlwaysLoadedForPartialPO(columnName))
+			return true;
+		if (m_selectedColumns != null && m_selectedColumns.length > 0) {
+			for (String selectedColumn : m_selectedColumns) {
+				if(selectedColumn.equalsIgnoreCase(columnName))
+					return true;
+			}
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Load value for virtual column, only if it wasn't loaded previously.
 	 * @param index Column index (see {@link POInfo#getColumnIndex(String)}).
 	 */
 	private void loadVirtualColumn(int index) {
 		if(!m_createNew && !loadedVirtualColumns.contains(index)) {
+			log.warning("For performance reasons, it is recommended to include virtual columns when loading. Loading virtual column separately: " + p_info.getTableName() + "." + p_info.getColumnName(index));
 			StringBuilder sql = new StringBuilder("SELECT ").append(p_info.getColumnSQL(index))
 				.append(" FROM ").append(p_info.getTableName()).append(" WHERE ")
 				.append(get_WhereClause(true, null));
@@ -5794,6 +5839,9 @@ public abstract class PO
 
 	/** Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
 	private Doc m_doc;
+
+	/* Indicates if the PO was being loaded with partial data */
+	private boolean m_isPartial;
 
 	/**
 	 * Set the accounting document associated to the PO - for use in POST ModelValidator
