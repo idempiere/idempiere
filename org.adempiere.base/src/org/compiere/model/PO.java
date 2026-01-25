@@ -1803,6 +1803,10 @@ public abstract class PO
 	 * @return true if the column was loaded or if the PO is not partial
 	 */
 	public boolean isColumnLoaded(String columnName) {
+		if (!m_isPartial)
+			return true;
+		if (columnName == null)
+			return false;
 		if (p_info.isColumnAlwaysLoadedForPartialPO(columnName))
 			return true;
 		if (m_selectedColumns != null && m_selectedColumns.length > 0) {
