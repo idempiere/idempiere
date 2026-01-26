@@ -733,7 +733,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			PO po = getPO(rs, trxName);
 			po.makeImmutable();
 			po.set_Partial(true);
-			po.set_SelectedColumns(selectColumns);
+			po.set_ColumnLoaded(selectColumns);
 			return po;
 		} finally {
 			partialPOResultSetColumns.remove();

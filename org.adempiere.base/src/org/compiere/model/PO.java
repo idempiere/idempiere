@@ -121,7 +121,7 @@ public abstract class PO
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -9190914850507787850L;
+	private static final long serialVersionUID = -2260670916752225495L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -375,7 +375,7 @@ public abstract class PO
 		this.m_oldValues = copy.m_oldValues != null ? Arrays.copyOf(copy.m_oldValues, copy.m_oldValues.length) : null;		
 		this.s_acctColumns = copy.s_acctColumns != null ? copy.s_acctColumns.stream().collect(Collectors.toCollection(ArrayList::new)) : null;
 		this.m_is_Partial = copy.m_is_Partial;
-		this.m_selectedColumns = copy.m_selectedColumns != null ? Arrays.copyOf(copy.m_selectedColumns, copy.m_selectedColumns.length) : null;
+		this.m_ColumnsLoaded = copy.m_ColumnsLoaded != null ? Arrays.copyOf(copy.m_ColumnsLoaded, copy.m_ColumnsLoaded.length) : null;
 	}
 	
 	/**	Logger							*/
@@ -428,7 +428,7 @@ public abstract class PO
 	/** Indices of virtual columns that were already resolved */
 	private Set<Integer> loadedVirtualColumns = new HashSet<>();
 	/* when partial PO is loaded, contains the selected columns */
-	private String[] m_selectedColumns = null;
+	private String[] m_ColumnsLoaded = null;
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -1664,7 +1664,7 @@ public abstract class PO
 				m_trxName = null;
 		}
 		m_is_Partial = false;
-		m_selectedColumns = null;
+		m_ColumnsLoaded = null;
 		loadComplete(success);
 		return success;
 	}   //  load
@@ -1795,11 +1795,11 @@ public abstract class PO
 	}
 
 	/**
-	 * @param selectColumns
+	 * @param columnsLoaded
 	 */
-	public void set_SelectedColumns(String[] selectColumns) {
-		m_selectedColumns = selectColumns != null
-				? Arrays.copyOf(selectColumns, selectColumns.length)
+	public void set_ColumnLoaded(String[] columnsLoaded) {
+		m_ColumnsLoaded = columnsLoaded != null
+				? Arrays.copyOf(columnsLoaded, columnsLoaded.length)
 						: null;
 	}
 
@@ -1815,8 +1815,8 @@ public abstract class PO
 			return false;
 		if (p_info.isColumnAlwaysLoadedForPartialPO(columnName))
 			return true;
-		if (m_selectedColumns != null && m_selectedColumns.length > 0) {
-			for (String selectedColumn : m_selectedColumns) {
+		if (m_ColumnsLoaded != null && m_ColumnsLoaded.length > 0) {
+			for (String selectedColumn : m_ColumnsLoaded) {
 				if(selectedColumn.equalsIgnoreCase(columnName))
 					return true;
 			}
