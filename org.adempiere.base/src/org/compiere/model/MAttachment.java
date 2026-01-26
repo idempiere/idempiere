@@ -727,7 +727,10 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	 * Delete the associated records in AD_AttachmentFile table
 	 */
 	public void deleteAttachmentFiles() {
-		for (MAttachmentFile af : getAttachmentFiles()) {
+		List<MAttachmentFile> files = new Query(getCtx(), MAttachmentFile.Table_Name, "AD_Attachment_ID=?", get_TrxName())
+				.setParameters(getAD_Attachment_ID())
+				.list();
+		for (MAttachmentFile af : files) {
 			af.deleteEx(true);
 		}
 	}
