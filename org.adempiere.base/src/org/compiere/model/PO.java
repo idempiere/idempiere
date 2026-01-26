@@ -374,6 +374,8 @@ public abstract class PO
 		this.m_newValues = copy.m_newValues != null ? Arrays.copyOf(copy.m_newValues, copy.m_newValues.length) : null;
 		this.m_oldValues = copy.m_oldValues != null ? Arrays.copyOf(copy.m_oldValues, copy.m_oldValues.length) : null;		
 		this.s_acctColumns = copy.s_acctColumns != null ? copy.s_acctColumns.stream().collect(Collectors.toCollection(ArrayList::new)) : null;
+		this.m_is_Partial = copy.m_is_Partial;
+		this.m_selectedColumns = copy.m_selectedColumns != null ? Arrays.copyOf(copy.m_selectedColumns, copy.m_selectedColumns.length) : null;
 	}
 	
 	/**	Logger							*/
@@ -1661,6 +1663,8 @@ public abstract class PO
 			if (is_Immutable())
 				m_trxName = null;
 		}
+		m_is_Partial = false;
+		m_selectedColumns = null;
 		loadComplete(success);
 		return success;
 	}   //  load
@@ -1778,22 +1782,22 @@ public abstract class PO
 	 * Indicates if the PO was partially loaded.
 	 * @return
 	 */
-	public boolean isPartial() {
-		return m_isPartial;
+	public boolean is_Partial() {
+		return m_is_Partial;
 	}
 
 	/**
 	 * Indicates if the PO was partially loaded.
 	 * @param partial
 	 */
-	public void setPartial(boolean partial) {
-		m_isPartial = partial;
+	public void set_Partial(boolean partial) {
+		m_is_Partial = partial;
 	}
 
 	/**
 	 * @param selectColumns
 	 */
-	public void setSelectedColumns(String[] selectColumns) {
+	public void set_SelectedColumns(String[] selectColumns) {
 		m_selectedColumns = selectColumns;
 	}
 
@@ -1802,8 +1806,8 @@ public abstract class PO
 	 * @param columnName
 	 * @return true if the column was loaded or if the PO is not partial
 	 */
-	public boolean isColumnLoaded(String columnName) {
-		if (!m_isPartial)
+	public boolean is_ColumnLoaded(String columnName) {
+		if (!m_is_Partial)
 			return true;
 		if (columnName == null)
 			return false;
@@ -5845,7 +5849,7 @@ public abstract class PO
 	private Doc m_doc;
 
 	/* Indicates if the PO was being loaded with partial data */
-	private boolean m_isPartial;
+	private boolean m_is_Partial;
 
 	/**
 	 * Set the accounting document associated to the PO - for use in POST ModelValidator
