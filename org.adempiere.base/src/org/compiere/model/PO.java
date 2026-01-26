@@ -1798,7 +1798,9 @@ public abstract class PO
 	 * @param selectColumns
 	 */
 	public void set_SelectedColumns(String[] selectColumns) {
-		m_selectedColumns = selectColumns;
+		m_selectedColumns = selectColumns != null
+				? Arrays.copyOf(selectColumns, selectColumns.length)
+						: null;
 	}
 
 	/**
