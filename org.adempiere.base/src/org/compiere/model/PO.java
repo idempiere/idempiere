@@ -1831,7 +1831,7 @@ public abstract class PO
 	 */
 	private void loadVirtualColumn(int index) {
 		if(!m_createNew && !loadedVirtualColumns.contains(index)) {
-			log.warning("For performance reasons, it is recommended to include virtual columns when loading. Loading virtual column separately: " + p_info.getTableName() + "." + p_info.getColumnName(index));
+			log.info("For performance reasons, it could be better to include virtual columns when loading. Loading virtual column separately: " + p_info.getTableName() + "." + p_info.getColumnName(index));
 			StringBuilder sql = new StringBuilder("SELECT ").append(p_info.getColumnSQL(index))
 				.append(" FROM ").append(p_info.getTableName()).append(" WHERE ")
 				.append(get_WhereClause(true, null));
