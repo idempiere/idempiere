@@ -26,8 +26,12 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MProduct;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
  
 /**
  * Create (Generate) Shipment from Invoice
@@ -131,12 +135,35 @@ public class InvoiceCreateInOut extends SvrProcess
 	{
 		BigDecimal qtyMatched = invoiceLine.getMatchedQty();
 		BigDecimal qtyInvoiced = invoiceLine.getQtyInvoiced();
+		BigDecimal qtyEntered = new MOrderLine(getCtx(), invoiceLine.getC_OrderLine_ID(), null).getQtyEntered();
+		MProduct product = MProduct.get(invoiceLine.getM_Product_ID());
+		
+		// Quantity already received in InOut documents that are not completed yet
+		// (Drafted, In Progress, Completed or Closed)
+		 final String sql =
+			        "SELECT COALESCE(SUM(iol.movementqty), 0) " +
+			        "FROM m_inout io " +
+			        "INNER JOIN m_inoutline iol ON io.m_inout_id = iol.m_inout_id " +
+			        "WHERE io.docstatus IN ('DR','IP','CO','CL') " +
+			        "  AND iol.c_orderline_id = ?";
+
+		BigDecimal qtyDraft = DB.getSQLValueBD(get_TrxName(), sql, invoiceLine.getC_OrderLine_ID());
+		if (qtyDraft == null)
+		    qtyDraft = Env.ZERO;
+		
+
+		// Remaining quantity to generate
 		BigDecimal qtyNotMatched = qtyInvoiced.subtract(qtyMatched);
-		// If is fully matched don't create anything
-		if (qtyNotMatched.signum() == 0)
-		{
-			return null;
-		}
+
+		BigDecimal qtyRemaining = qtyEntered.subtract(qtyDraft);
+		
+		if(qtyNotMatched.compareTo(qtyRemaining)>0)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "ReceiptQtyExceedsBalance", new Object[] {invoiceLine.getLine(),product.getName(),qtyRemaining}));
+		
+		// If there is no remaining quantity, do not create a receipt line
+		if (qtyNotMatched.signum() <= 0)
+		    return null;
+		
 		MInOut inout = getCreateHeader(invoice);
 		MInOutLine sLine = new MInOutLine(inout);
 		sLine.setInvoiceLine(invoiceLine, 0,	//	Locator 
