@@ -342,3 +342,7 @@ UPDATE AD_SysConfig SET ConfigurationLevel='C',Description='It specifies the max
 UPDATE AD_Tab SET DisplayLogic='@Title@=laf',Updated=TO_TIMESTAMP('2025-12-25 20:59:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200398
 ;
 
+-- Fix wrong sample attachment
+UPDATE ad_attachment SET title='.' WHERE ad_attachment_id=100
+;
+

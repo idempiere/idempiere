@@ -1345,7 +1345,7 @@ public class POTest extends AbstractTestCase
 		
 		//test pdf attachment
 		MAttachment attachment = new MAttachment(Env.getCtx(), test.get_Table_ID(), test.get_ID(), test.get_UUID(), getTrxName());
-		attachment.setTitle("test pdf");
+		attachment.setTextMsg("test pdf");
 		
 		File pdfFile = File.createTempFile("test", ".pdf");
 		pdfFile.deleteOnExit();
@@ -1374,7 +1374,7 @@ public class POTest extends AbstractTestCase
 		test1.setName("testNonPdfAttachment1");
 		test1.saveEx();
 		MAttachment attachment1 = new MAttachment(Env.getCtx(), test1.get_Table_ID(), test1.get_ID(), test1.get_UUID(), getTrxName());
-		attachment1.setTitle("test non pdf");
+		attachment1.setTextMsg("test non pdf");
 		try (attachment1) {
 			MAttachmentEntry entry2 = new MAttachmentEntry(txtFile.getName(), "dummy txt content".getBytes(), 0);
 			attachment1.addEntry(entry2);
