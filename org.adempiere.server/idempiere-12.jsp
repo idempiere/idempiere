@@ -12,28 +12,28 @@ Author URI: http://www.bmlaurus.com
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="<%=Prop.loadCss()%>">
 	<script type="text/javascript" src="resources/jquery/jquery.js"></script>
-	<title><%=Prop.getProperty(Prop.TITLE) %></title>
+	<title><%=Prop.getPropertyEscaped(Prop.TITLE) %></title>
 </head>
 <body onload="checkWebstoreLinks()">
 	<div id="body" class="body">
 		<div id="toolBar" class="toolBar">
 			<div id="toolBar-title" class="toolBar-title">
 				<div id="credits" style="color:#336699;">
-					<%=Prop.getProperty(Prop.CREDITS_TXT)%>
+					<%=Prop.getPropertyEscaped(Prop.CREDITS_TXT)%>
 				</div>
 				<div class="left_div" id="title">
-					<p><%=Prop.getProperty(Prop.CLIENT_NAME)%></p>
+					<p><%=Prop.getPropertyEscaped(Prop.CLIENT_NAME)%></p>
 				</div>
 			</div>
 			<div id="toolBar-tools" class="toolBar-tools">
-				<a href="<%=Prop.getProperty(Prop.OPTION_LINK)%>"  target="_blank">
-					<img name="img_option" src="<%=Prop.getImage("img_option.png")%>" border="0" title="<%=Prop.getProperty(Prop.OPTION_TEXT)%>"/>
+				<a href="<%=Prop.getPropertyEscaped(Prop.OPTION_LINK)%>"  target="_blank">
+					<img name="img_option" src="<%=Prop.getImage("img_option.png")%>" border="0" title="<%=Prop.getPropertyEscaped(Prop.OPTION_TEXT)%>"/>
 				</a>
-				<a id="felixConsole" href="<%=Prop.getProperty(Prop.FELIX_LINK)%>">
-					<img name="img_felix" src="<%=Prop.getImage("img_felix.png")%>" border="0" title="<%=Prop.getProperty(Prop.FELIX_TEXT)%>"/>
+				<a id="felixConsole" href="<%=Prop.getPropertyEscaped(Prop.FELIX_LINK)%>">
+					<img name="img_felix" src="<%=Prop.getImage("img_felix.png")%>" border="0" title="<%=Prop.getPropertyEscaped(Prop.FELIX_TEXT)%>"/>
 				</a>
-				<a id="ServerManagement" href="<%=Prop.getProperty(Prop.MONITOR_LINK)%>">
-					<img name="img_idempiereMonitor" src="<%=Prop.getImage("img_idempiereMonitor.png")%>" border="0" title="<%=Prop.getProperty(Prop.MONITOR_TEXT)%>"/>
+				<a id="ServerManagement" href="<%=Prop.getPropertyEscaped(Prop.MONITOR_LINK)%>">
+					<img name="img_idempiereMonitor" src="<%=Prop.getImage("img_idempiereMonitor.png")%>" border="0" title="<%=Prop.getPropertyEscaped(Prop.MONITOR_TEXT)%>"/>
 				</a>
 			</div>
 		</div>
@@ -42,51 +42,51 @@ Author URI: http://www.bmlaurus.com
 				<div id="main-docuBtns">
 					<ul>
 						<li id="main-requestBtns-btnLogin">
-							<a href="<%=Prop.getProperty(Prop.WEBUI_LINK)%>" target="_self">
+							<a href="<%=Prop.getPropertyEscaped(Prop.WEBUI_LINK)%>" target="_self">
 								<img name="img_webui" src="<%=Prop.getImage("img_webui.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WEBUI_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.WEBUI_TEXT)%></span>
 							</a>
 						</li>
 						<li id ="main-requestBtns-btnLocSupp">
-							<a href="<%=Prop.getProperty(Prop.SUPPORT_LINK)%>" target="_blank">
+							<a href="<%=Prop.getPropertyEscaped(Prop.SUPPORT_LINK)%>" target="_blank">
 								<img name="img_locsupport" src="<%=Prop.getImage("img_locsupport.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.LOCAL_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.LOCAL_TEXT)%></span>
 							</a>
 						</li>
 						<li id ="main-requestBtns-btnResoc">
-							<a href="<%=Prop.getProperty(Prop.RESOURCE_LINK)%>" target="_blank">
+							<a href="<%=Prop.getPropertyEscaped(Prop.RESOURCE_LINK)%>" target="_blank">
 								<img name="img_resource" src="<%=Prop.getImage("img_resource.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.RESOURCE_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.RESOURCE_TEXT)%></span>
 							</a>
 						</li>																		
 						<li id ="main-docuBtns-btnWiki">
-							<a href="<%=Prop.getProperty(Prop.WIKI_LINK)%>" target="_blank">
+							<a href="<%=Prop.getPropertyEscaped(Prop.WIKI_LINK)%>" target="_blank">
 								<img name="img_wiki" src="<%=Prop.getImage("img_wiki.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WIKI_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.WIKI_TEXT)%></span>
 							</a>
 						</li>
 						<li id ="main-docuBtns-btnForum">
-							<a href="<%=Prop.getProperty(Prop.FORUMS_LINK)%>" target="_blank">
+							<a href="<%=Prop.getPropertyEscaped(Prop.FORUMS_LINK)%>" target="_blank">
 								<img name="img_forum" src="<%=Prop.getImage("img_forum.png")%>" border="0"/>
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.FORUMS_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.FORUMS_TEXT)%></span>
 							</a>
 						</li>
 						<li id ="main-docuBtns-btnSuppReq">
-							<a href="<%=Prop.getProperty(Prop.SUPPORTREQ_LINK)%>" target="_blank">
+							<a href="<%=Prop.getPropertyEscaped(Prop.SUPPORTREQ_LINK)%>" target="_blank">
 								<img name="img_supreq" src="<%=Prop.getImage("img_supreq.png")%>" border="0"/>
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.SUPPORTREQUEST_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.SUPPORTREQUEST_TEXT)%></span>
 							</a>
 						</li>
 						<li id ="main-requestBtns-btnReq">
-							<a href="<%=Prop.getProperty(Prop.WEBSTORE_LINK)%>" target="_blank">
+							<a href="<%=Prop.getPropertyEscaped(Prop.WEBSTORE_LINK)%>" target="_blank">
 								<img name="img_webstore" src="<%=Prop.getImage("img_webstore.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.WEBSTORE_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.WEBSTORE_TEXT)%></span>
 							</a>
 						</li>
 						<li id ="main-requestBtns-btnSendReq">
-							<a href="<%=Prop.getProperty(Prop.SENDREQUEST_LINK)%>" target="_blank">
+							<a href="<%=Prop.getPropertyEscaped(Prop.SENDREQUEST_LINK)%>" target="_blank">
 								<img name="img_sendreq" src="<%=Prop.getImage("img_sendreq.png")%>" border="0" />
-								<span class="main-txt-btn"><%=Prop.getProperty(Prop.SENDREQUEST_TEXT)%></span>
+								<span class="main-txt-btn"><%=Prop.getPropertyEscaped(Prop.SENDREQUEST_TEXT)%></span>
 							</a>
 						</li>
 					</ul>
@@ -98,32 +98,32 @@ Author URI: http://www.bmlaurus.com
 		</div>
 		<div id="foot" class="foot">
 			<div id="socialBar" class="socialBar">
-				<%if(!Prop.getProperty(Prop.SOC_FACEBOOK).equals("") && !Prop.getProperty(Prop.SOC_FACEBOOK).equals("NONE")){%>
-					<a id="facebook" href="<%=Prop.getProperty(Prop.SOC_FACEBOOK)%>" target="_blank">
+				<%if(!Prop.getPropertyEscaped(Prop.SOC_FACEBOOK).equals("") && !Prop.getPropertyEscaped(Prop.SOC_FACEBOOK).equals("NONE")){%>
+					<a id="facebook" href="<%=Prop.getPropertyEscaped(Prop.SOC_FACEBOOK)%>" target="_blank">
 						<img name="img_facebook" src="<%=Prop.getImage("img_facebook.png")%>" border="0"/>
 					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_TWITTER).equals("") && !Prop.getProperty(Prop.SOC_TWITTER).equals("NONE")){%>
-					<a id="twitter" href="<%=Prop.getProperty(Prop.SOC_TWITTER)%>" target="_blank">
+				<%} if(!Prop.getPropertyEscaped(Prop.SOC_TWITTER).equals("") && !Prop.getPropertyEscaped(Prop.SOC_TWITTER).equals("NONE")){%>
+					<a id="twitter" href="<%=Prop.getPropertyEscaped(Prop.SOC_TWITTER)%>" target="_blank">
 						<img name="img_twitter" src="<%=Prop.getImage("img_twitter.png")%>" border="0"/>
 					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_LINKEDIN).equals("") && !Prop.getProperty(Prop.SOC_LINKEDIN).equals("NONE")){%>
-					<a id="linkedin" href="<%=Prop.getProperty(Prop.SOC_LINKEDIN)%>" target="_blank">
+				<%} if(!Prop.getPropertyEscaped(Prop.SOC_LINKEDIN).equals("") && !Prop.getPropertyEscaped(Prop.SOC_LINKEDIN).equals("NONE")){%>
+					<a id="linkedin" href="<%=Prop.getPropertyEscaped(Prop.SOC_LINKEDIN)%>" target="_blank">
 						<img name="img_linkedin" src="<%=Prop.getImage("img_linkedin.png")%>" border="0"/>
 					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_GOOPLUS).equals("") && !Prop.getProperty(Prop.SOC_GOOPLUS).equals("NONE")){%>
-					<a id="google+" href="<%=Prop.getProperty(Prop.SOC_GOOPLUS)%>" target="_blank">
+				<%} if(!Prop.getPropertyEscaped(Prop.SOC_GOOPLUS).equals("") && !Prop.getPropertyEscaped(Prop.SOC_GOOPLUS).equals("NONE")){%>
+					<a id="google+" href="<%=Prop.getPropertyEscaped(Prop.SOC_GOOPLUS)%>" target="_blank">
 						<img name="img_googleplus" src="<%=Prop.getImage("img_googleplus.png")%>" border="0"/>
 					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_5).equals("") && !Prop.getProperty(Prop.SOC_5).equals("NONE")){%>
-					<a id="soc5" href="<%=Prop.getProperty(Prop.SOC_5)%>" target="_blank">
+				<%} if(!Prop.getPropertyEscaped(Prop.SOC_5).equals("") && !Prop.getPropertyEscaped(Prop.SOC_5).equals("NONE")){%>
+					<a id="soc5" href="<%=Prop.getPropertyEscaped(Prop.SOC_5)%>" target="_blank">
 						<img name="img_soc5" src="<%=Prop.getImage("img_soc5.png")%>" border="0"/>
 					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_6).equals("") && !Prop.getProperty(Prop.SOC_6).equals("NONE")){%>
-					<a id="soc6" href="<%=Prop.getProperty(Prop.SOC_6)%>" target="_blank">
+				<%} if(!Prop.getPropertyEscaped(Prop.SOC_6).equals("") && !Prop.getPropertyEscaped(Prop.SOC_6).equals("NONE")){%>
+					<a id="soc6" href="<%=Prop.getPropertyEscaped(Prop.SOC_6)%>" target="_blank">
 						<img name="img_soc6" src="<%=Prop.getImage("img_soc6.png")%>" border="0"/>
 					</a>
-				<%} if(!Prop.getProperty(Prop.SOC_7).equals("") && !Prop.getProperty(Prop.SOC_7).equals("NONE")){%>
-					<a id="soc7" href="<%=Prop.getProperty(Prop.SOC_7)%>" target="_blank">
+				<%} if(!Prop.getPropertyEscaped(Prop.SOC_7).equals("") && !Prop.getPropertyEscaped(Prop.SOC_7).equals("NONE")){%>
+					<a id="soc7" href="<%=Prop.getPropertyEscaped(Prop.SOC_7)%>" target="_blank">
 						<img name="img_soc7" src="<%=Prop.getImage("img_soc7.png")%>" border="0"/>
 					</a>
 				<%}%>
@@ -131,7 +131,7 @@ Author URI: http://www.bmlaurus.com
 			<div id="footercopyright">
 				<p>&copy; Copyright 2013-<%=Prop.getYear()%> iDempiere - All rights reserved</p>
 				<p><a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">iDempiere License is GPLv2</a></p>
-				<%=Prop.getProperty(Prop.COPYRIGHT_TXT)%>
+				<%=Prop.getPropertyEscaped(Prop.COPYRIGHT_TXT)%>
 			</div>
 		</div>
 	</div>	
