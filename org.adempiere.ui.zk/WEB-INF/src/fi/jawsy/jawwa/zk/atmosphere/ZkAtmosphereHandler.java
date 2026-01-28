@@ -139,7 +139,6 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
     private Either<String, Session> getSession(AtmosphereResource resource, HttpServletRequest request) {
     	Session session = WebManager.getSession(resource.getAtmosphereConfig().getServletContext(), request, false);
     	if (session == null) {
-    		log.warn("Could not find session: " + request.getRequestURI());
     		return new Either<String, Session>(SESSION_NOT_FOUND, null);
     	} else {
     		return new Either<String, Session>(null, session);
