@@ -2,9 +2,14 @@
 <%
     Prop.load();
     String homepage = Prop.getProperty(Prop.HOMEPAGE);
-    if (homepage == null || !homepage.matches("^idempiere-\\d+\\.jsp$")) {
-		homepage = "idempiere-13.jsp";
-	}
+    // Validate homepage to prevent path traversal attacks
+    if (homepage == null
+            || !(homepage.endsWith(".jsp") || homepage.endsWith(".html"))
+            || homepage.contains("/")
+            || homepage.contains("\\")
+        ) {
+            homepage = "idempiere-13.jsp";
+        }
 %>
 
 <jsp:include page="<%= homepage %>" />
