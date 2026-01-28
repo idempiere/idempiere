@@ -16,7 +16,10 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.ResultSet;
@@ -39,6 +42,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
@@ -58,7 +62,7 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8555678512288694221L;
+	private static final long serialVersionUID = 8842653136722756898L;
 
 	private static final String ATTACHMENT_URL_PREFIX = "attachment:";
 	
@@ -201,11 +205,15 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	}
 	
 	/** Indicator for no data   */
-	public static final String 	NONE = ".";
+	public static final String 	NONE = TITLE_None;
 	/** Indicator for zip data  */
-	public static final String 	ZIP = "zip";
-	/** Indicator for xml data (store on file system) */
-	public static final String 	XML = "xml";
+	public static final String 	ZIP = TITLE_ListInZIPFile;
+	/** Indicator for xml data (store on file system or external provider by plugin) */
+	public static final String 	XML = TITLE_ListInXML;
+	/** Indicator for list of files in AD_AttachmentFile */
+	public static final String 	LIST_IN_ATTACHMENT_FILE = TITLE_ListInAttachmentFile;
+
+	public static final String MIGRATE_STORAGE_DELETING_OLD_PROVIDER = "MIGRATE_STORAGE_DELETING_OLD_PROVIDER";
 
 	/**	List of Entry Data		*/
 	public ArrayList<MAttachmentEntry> m_items = null;
@@ -455,7 +463,8 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			 item.setIndex(m_items.size());
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(item.toStringX());
-		setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
+		if (getTitle() == null || !getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
 		return retValue || replaced;
 	}	//	addEntry
 
@@ -502,8 +511,11 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			IAttachmentStore prov = provider.getAttachmentStore();
 			if (prov != null)
 			{
-				if(prov.deleteEntry(this,provider,index))
-					return set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
+				if (prov.deleteEntry(this, provider, index)) {
+					if (!getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+						set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
+					return true;
+				}
 				return false;
 			}
 			return false;
@@ -632,6 +644,47 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 		return false;
 	}
 
+	/**
+	 * Override save to handle LOB data when title is ListInAttachmentFile
+	 * When saving the attachment with title as ZIP or XML, it means the list of files are included in the zip file or in the XML file
+	 *  which is managed in the beforeSave and afterSave methods, so no need to handle here.
+	 * When saving as ListInAttachmentFile, before/after Save are not triggered because the Attachment record is not changed,
+	 *  so we need to override and manage the LOB data saving here.
+	 */
+	@Override
+	public boolean save() {
+		String local_trxName = null;
+		boolean success = false;
+		try {
+			if (get_TrxName() == null) {
+				local_trxName = Trx.createTrxName("MAttachmentSave");
+				set_TrxName(local_trxName);
+			}
+			if (   getTitle() != null
+				&& getTitle().equals(MAttachment.TITLE_ListInAttachmentFile)
+				&& !"Y".equals(get_Attribute(MIGRATE_STORAGE_DELETING_OLD_PROVIDER)))
+				if (!saveLOBData(true))		//	save in BinaryData
+					return false;
+			success = super.save();
+			if (success) {
+	    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile)
+	    				&& !"Y".equals(get_Attribute(MIGRATE_STORAGE_DELETING_OLD_PROVIDER)))
+	    			success = saveLOBData(false);
+	        }
+		} finally {
+	        if (local_trxName != null) {
+	        	Trx trx = Trx.get(local_trxName, false);
+	        	if (success)
+	        		trx.commit();
+	        	else
+	        		trx.rollback();
+	        	trx.close();
+	        	set_TrxName(null);
+	        }
+		}
+       	return success;
+	}
+
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
@@ -646,12 +699,16 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			if (po != null)
 				setRecord_UU(po.get_UUID());
 		}
+		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			return true;
 		return saveLOBData(true);		//	save in BinaryData
 	}	//	beforeSave
 
     @Override
     protected boolean afterSave(boolean newRecord, boolean success) {
         if (success) {
+    		if (getTitle() != null && getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+    			return true;
             return saveLOBData(false);
         } else {
             return false;
@@ -662,7 +719,20 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	protected boolean beforeDelete() {
 		if (isReadOnly(true))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
+		deleteAttachmentFiles();
 		return true;
+	}
+
+	/**
+	 * Delete the associated records in AD_AttachmentFile table
+	 */
+	public void deleteAttachmentFiles() {
+		List<MAttachmentFile> files = new Query(getCtx(), MAttachmentFile.Table_Name, "AD_Attachment_ID=?", get_TrxName())
+				.setParameters(getAD_Attachment_ID())
+				.list();
+		for (MAttachmentFile af : files) {
+			af.deleteEx(true);
+		}
 	}
 
 	/**
@@ -975,4 +1045,17 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
             }
         }
     }
+
+	/**
+	 * Get the list of attachment files from AD_AttachmentFile table
+	 * @return
+	 */
+	public List<MAttachmentFile> getAttachmentFiles() {
+		return new Query(getCtx(), MAttachmentFile.Table_Name, "AD_Attachment_ID=?", get_TrxName())
+				.setParameters(getAD_Attachment_ID())
+				.setOrderBy(MAttachmentFile.COLUMNNAME_SeqNo)
+				.setOnlyActiveRecords(true)
+				.list();
+	}
+
 }	//	MAttachment

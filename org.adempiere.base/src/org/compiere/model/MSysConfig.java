@@ -47,7 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4467301251742419106L;
+	private static final long serialVersionUID = -190398481101230092L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -72,6 +72,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
     public static final String APPLICATION_URL = "APPLICATION_URL";
     public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
+    public static final String ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE = "ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE";
     public static final String ATTACH_NOTIFY_2PACK = "ATTACH_NOTIFY_2PACK";
     public static final String AUTO_ASSIGN_ROLE_TO_CREATOR_USER = "AUTO_ASSIGN_ROLE_TO_CREATOR_USER";
     public static final String AUTOMATIC_PACKIN_FOLDERS = "AUTOMATIC_PACKIN_FOLDERS";
