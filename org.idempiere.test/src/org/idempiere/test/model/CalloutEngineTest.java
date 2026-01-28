@@ -39,6 +39,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -141,16 +142,20 @@ public class CalloutEngineTest extends AbstractTestCase {
 
 	@Test
 	public void testRate() {
+		AtomicReference<BigDecimal> divideRate = new AtomicReference<>();
 		when(mField.getColumnName()).thenReturn("MultiplyRate");
 		when(mTab.setValue(eq("DivideRate"), any())).then(invocation -> {
-			BigDecimal rate = invocation.getArgument(1);
-			assertEquals(new BigDecimal("0.5").setScale(2, RoundingMode.HALF_EVEN), 
-				rate.setScale(2, RoundingMode.HALF_EVEN));
+			divideRate.set(invocation.getArgument(1));
+			
 			return null;
 		});
 		BigDecimal rate = new BigDecimal("2.0");
 		String result = engine.rate(ctx, 0, mTab, mField, rate);
 		assertEquals(CalloutEngine.NO_ERROR, result);
+
+		assertNotNull(divideRate.get());
+		assertEquals(new BigDecimal("0.5").setScale(2, RoundingMode.HALF_EVEN), 
+				divideRate.get().setScale(2, RoundingMode.HALF_EVEN));
 	}
 
 	@Test

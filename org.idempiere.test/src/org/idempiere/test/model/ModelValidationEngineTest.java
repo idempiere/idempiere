@@ -144,7 +144,7 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 	@Test
 	public void testFactsValidate() {
 		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
-		MAcctSchema as = new MAcctSchema(Env.getCtx(), 0, null); // Dummy schema, might need real one if validated
+		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
 		List<Fact> facts = new ArrayList<>();
 		
 		engine.addFactsValidate(MOrg.Table_Name, globalValidator);
