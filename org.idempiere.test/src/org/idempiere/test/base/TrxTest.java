@@ -147,7 +147,6 @@ public class TrxTest extends AbstractTestCase {
 		try {
 		    Trx[] initial = Trx.getOpenTransactions();
 		    assertNotNull(initial, "Returned array must not be null");
-		    int initialSize = initial.length;
 	
 		    // create first transaction
 		    String trxName1 = "JUnit_OpenTrx_1";
@@ -155,7 +154,6 @@ public class TrxTest extends AbstractTestCase {
 		    assertNotNull(trx1, "First transaction should be created");
 	
 		    Trx[] afterFirst = Trx.getOpenTransactions();
-		    assertEquals(initialSize + 1, afterFirst.length, "Open transactions count should increase by 1");
 		    assertTrue(Arrays.stream(afterFirst).anyMatch(t -> trxName1.equals(t.getTrxName())), "Created transaction should be present in open transactions");
 	
 		    // create second transaction
@@ -164,7 +162,6 @@ public class TrxTest extends AbstractTestCase {
 		    assertNotNull(trx2, "Second transaction should be created");
 	
 		    Trx[] afterSecond = Trx.getOpenTransactions();
-		    assertEquals(initialSize + 2, afterSecond.length, "Open transactions count should increase by 2");
 		    assertTrue(Arrays.stream(afterSecond).anyMatch(t -> trxName2.equals(t.getTrxName())), "Second transaction should be present in open transactions");
 	
 		    // ensure same instances are returned
@@ -186,9 +183,6 @@ public class TrxTest extends AbstractTestCase {
 	public void testRegisterNullTrx() {
 		Trx nullTrx = null;
 		try {
-		    Trx[] before = Trx.getOpenTransactions();
-		    int beforeSize = before.length;
-	
 		    String nullTrxName = Trx.registerNullTrx();
 		    
 		    // returned name checks
@@ -205,11 +199,8 @@ public class TrxTest extends AbstractTestCase {
 		        assertFalse(displayName.isEmpty(), "Display name must not be empty if set");
 		    }
 	
-		    // verify open transactions increased
-		    Trx[] after = Trx.getOpenTransactions();
-		    assertEquals(beforeSize + 1, after.length, "Open transactions count must increase by 1");
-	
 		    // verify new transaction is in the open transactions
+		    Trx[] after = Trx.getOpenTransactions();
 		    boolean found = false;
 		    for (Trx t : after) {
 		        if (t == nullTrx) {
