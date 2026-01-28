@@ -28,6 +28,7 @@ import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -53,15 +54,28 @@ public class WZoomAcross
 	 *	Constructor
 	 *  @param invoker component to display popup (optional)
 	 *  @param tableName zoom source table (i.e. the table we start from)
+	 *  @param windowID window from which we start the zoom
 	 *  @param query query that specifies the zoom source PO (i.e. the PO we start from)
 	 */
 	public WZoomAcross (Component invoker, String tableName, final int windowID, MQuery query)
 	{
-		this(invoker, new Query(Env.getCtx(), tableName,
-				query.getWhereClause(), null).first(), windowID);
+		this(invoker, tableName, windowID, query.getSQLFilter());
 		
 	}
 
+	/**
+	 * Constructor
+	 * @param invoker
+	 * @param tableName
+	 * @param windowID
+	 * @param sqlFilter
+	 */
+	public WZoomAcross(Component invoker, String tableName, int windowID, SQLFragment sqlFilter) {
+		this(invoker, 
+			new Query(Env.getCtx(), tableName, sqlFilter.sqlClause(), null).setParameters(sqlFilter.parameters()).first(), 
+			windowID);
+	}
+	
 	/**
 	 * show zoom across popup menu
 	 * @param invoker
@@ -71,6 +85,10 @@ public class WZoomAcross
 	public WZoomAcross(Component invoker, PO po, final int windowID) {
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("PO=" + po+", WindowID="+windowID);
+		
+		if (po == null) {
+			throw new IllegalArgumentException("PO is null");
+		}
 		
 		mkZoomTargets(po, windowID);
 				

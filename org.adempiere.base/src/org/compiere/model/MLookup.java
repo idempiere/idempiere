@@ -40,6 +40,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *	An intelligent MutableComboBoxModel, which determines what can be cached.
@@ -778,7 +779,8 @@ public final class MLookup extends Lookup implements Serializable
 		if (m_info.ZoomWindowPO == 0 || query == null)
 			return m_info.ZoomWindow;
 		//	Need to check SO/PO
-		boolean isSOTrx = DB.isSOTrx(m_info.TableName, query.getWhereClause(false), m_info.WindowNo);
+		SQLFragment filter = query.getSQLFilter(false);
+		boolean isSOTrx = DB.isSOTrx(m_info.TableName, filter.sqlClause(), m_info.WindowNo, filter.parameters());
 		//
 		return getZoom(isSOTrx);
 	}	//	getZoom
@@ -1171,6 +1173,10 @@ public final class MLookup extends Lookup implements Serializable
 			boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 			
 			String cacheKey = sql.toString();
+			if (m_info.Parameters != null && !m_info.Parameters.isEmpty())
+			{
+				cacheKey += "|" + m_info.Parameters.toString();
+			}
 			List<KeyNamePair> knpCache =  null;
 			List<ValueNamePair> vnpCache = null;
 			if (isNumber) 
@@ -1230,6 +1236,8 @@ public final class MLookup extends Lookup implements Serializable
 				pstmt = DB.prepareStatement(sqlFirstRows, null);
 				if (! DB.getDatabase().isPagingSupported())
 					pstmt.setMaxRows(MAX_ROWS+1);
+				if (m_info.Parameters != null && !m_info.Parameters.isEmpty())
+					DB.setParameters(pstmt, m_info.Parameters);
 				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
 					pstmt.setQueryTimeout(timeout);

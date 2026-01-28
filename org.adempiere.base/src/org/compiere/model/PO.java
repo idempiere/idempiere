@@ -83,6 +83,9 @@ import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
 /**
  *  Abstract base class for Persistent Object.
  *
@@ -3190,7 +3193,7 @@ public abstract class PO
 							String refUUColumnName = MTable.getUUIDColumnName(refTableName);
 							String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
 									+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
-							sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+							sql.append(PO.buildUUIDSubquery(refTableName, refUUValue));
 						}
 						else
 						{
@@ -3218,7 +3221,7 @@ public abstract class PO
 						String refUUColumnName = MTable.getUUIDColumnName(refTableName);
 						String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
 								+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
-						sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+						sql.append(PO.buildUUIDSubquery(refTableName, refUUValue));
 					}
 				}
 				else if (value instanceof Integer || value instanceof BigDecimal)
@@ -3799,7 +3802,7 @@ public abstract class PO
 								String refUUColumnName = MTable.getUUIDColumnName(refTableName);
 								String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
 										+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
-								sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+								sqlValues.append(PO.buildUUIDSubquery(refTableName, refUUValue));
 							}
 							else
 							{
@@ -3828,7 +3831,7 @@ public abstract class PO
 								String refUUColumnName = MTable.getUUIDColumnName(refTableName);
 								String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
 										+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
-								sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+								sqlValues.append(PO.buildUUIDSubquery(refTableName, refUUValue));
 							}
 							else
 							{
@@ -3854,7 +3857,7 @@ public abstract class PO
 							String refUUColumnName = MTable.getUUIDColumnName(refTable.getTableName());
 							String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
 									+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
-							sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+							sqlValues.append(PO.buildUUIDSubquery(refTableName, refUUValue));
 						}
 					}
 					else if (value instanceof Integer || value instanceof BigDecimal)
@@ -4955,8 +4958,8 @@ public abstract class PO
 		if (uuidColumn != null && uuidFunction)
 			sb.append(",").append(PO.getUUIDColumnName(acctTableName));
 		//	..	SELECT
-		sb.append(") SELECT ").append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-				 ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+		sb.append(") SELECT ").append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
+				 ? PO.buildUUIDSubquery(get_TableName(), get_UUID()) 
 				 : get_ID())
 			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
 			.append(getUpdatedBy()).append(",getDate(),").append(getUpdatedBy());
@@ -4968,7 +4971,7 @@ public abstract class PO
 		sb.append(" FROM ").append(acctBaseTable)
 			.append(" p WHERE p.AD_Client_ID=")
 			.append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-					? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(getAD_Client_ID()).getAD_Client_UU())+")" 
+					? PO.buildUUIDSubquery("AD_Client", MClient.get(getAD_Client_ID()).getAD_Client_UU())
 					: getAD_Client_ID());
 		if (whereClause != null && whereClause.length() > 0)
 			sb.append (" AND ").append(whereClause);
@@ -4976,7 +4979,7 @@ public abstract class PO
 			.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
 			.append(get_TableName()).append("_ID=");
 		if (get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()))
-			sb.append("toRecordId(").append(DB.TO_STRING(get_TableName())).append(",").append(DB.TO_STRING(get_UUID())).append("))");
+			sb.append(PO.buildUUIDSubquery(get_TableName(),get_UUID())).append(")");
 		else
 			sb.append(get_ID()).append(")");
 		//
@@ -5048,7 +5051,7 @@ public abstract class PO
 		sb.append("SELECT t.AD_Client_ID, 0, 'Y', getDate(), "+getUpdatedBy()+", getDate(), "+getUpdatedBy()+","
 				+ "t.AD_Tree_ID, ")
 		  .append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-				  ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				  ? PO.buildUUIDSubquery(get_TableName(),get_UUID()) 
 				  : get_ID())
 		  .append(", 0, 999");
 		if (uuidColumn != null && uuidFunction)
@@ -5058,14 +5061,14 @@ public abstract class PO
 		sb.append("FROM AD_Tree t "
 				+ "WHERE t.AD_Client_ID=")
 		  .append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-				  ? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(getAD_Client_ID()).getAD_Client_UU())+")" 
+				  ? PO.buildUUIDSubquery("AD_Client", MClient.get(getAD_Client_ID()).getAD_Client_UU())
 				  : getAD_Client_ID())
 		  .append(" AND t.IsActive='Y'");
 		//	Account Element Value handling
 		if (C_Element_ID != 0)
 			sb.append(" AND EXISTS (SELECT * FROM C_Element ae WHERE ae.C_Element_ID=")
-			  .append(C_Element_ID > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-					  ? "toRecordId('C_Element',"+DB.TO_STRING(new MElement(getCtx(), C_Element_ID, get_TrxName()).getC_Element_UU())+")" 
+			  .append(C_Element_ID > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
+					  ? PO.buildUUIDSubquery("C_Element", new MElement(getCtx(), C_Element_ID, get_TrxName()).getC_Element_UU())
 					  : C_Element_ID)
 			  .append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
 		else	//	std trees
@@ -5073,13 +5076,13 @@ public abstract class PO
 		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			sb.append(" AND t.AD_Table_ID=")
 			  .append(get_Table_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-					  ? "toRecordId('AD_Table',"+DB.TO_STRING(MTable.get(get_Table_ID()).getAD_Table_UU())+")" 
+					  ? PO.buildUUIDSubquery("AD_Table", MTable.get(get_Table_ID()).getAD_Table_UU())
 					  : get_Table_ID());
 		//	Duplicate Check
 		sb.append(" AND NOT EXISTS (SELECT * FROM " + MTree_Base.getNodeTableName(treeType) + " e "
 				+ "WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=")
 		  .append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-				  ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				  ? PO.buildUUIDSubquery(get_TableName(),get_UUID()) 
 				  : get_ID()).append(")");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0) {
@@ -6512,4 +6515,36 @@ public abstract class PO
 		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", get_TrxName()).setParameters(get_Table_ID(), get_ID()).list();
 	}
 
+	/**
+	 * Create a subquery to get the record ID from a UUID value
+	 * @param tableName
+	 * @param uuidValue
+	 * @return subquery string - (SELECT TableName_ID FROM TableName WHERE TableName_UU = 'uuidValue')
+	 */
+	public static String buildUUIDSubquery(String tableName, String uuidValue) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(tableName), "Table name is required");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(uuidValue), "UUID value is required");
+		
+	    MTable table = MTable.get(Env.getCtx(), tableName);
+	    if (table == null) {
+	    	throw new AdempiereException("Table not found: " + tableName);
+	    }
+
+	    String[] keys = table.getKeyColumns();
+	    if (keys.length != 1) {
+	        throw new AdempiereException(
+	            "Table " + tableName + " has composite or no primary key");
+	    }
+
+	    String uuCol = PO.getUUIDColumnName(tableName);
+	    MColumn uuColumn = table.getColumn(uuCol);
+	    if (uuColumn == null) {
+	        throw new AdempiereException(
+	            "UUID column " + uuCol + " not found in table " + tableName);
+	    }
+
+	    return "(SELECT " + keys[0] +
+	           " FROM " + tableName +
+	           " WHERE " + uuCol + " = " + DB.TO_STRING(uuidValue) + ")";
+	}
 }   //  PO

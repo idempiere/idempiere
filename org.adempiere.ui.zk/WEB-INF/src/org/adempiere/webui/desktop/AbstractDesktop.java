@@ -36,6 +36,7 @@ import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -133,7 +134,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		setPredefinedContextVariables(menu.getPredefinedContextVariables());
 		
 		MQuery query = new MQuery("");
-		query.addRestriction("1=2");
+		query.addRestriction(new SQLFragment("1=2"));
 		query.setRecordCount(0);
 
 		SessionManager.getAppDesktop().openWindow(menu.getAD_Window_ID(), query, new Callback<ADWindow>() {				

@@ -54,6 +54,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -110,7 +111,12 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause, boolean lookup, GridField field)
 	{
-		super(windowNo, tableName, keyColumn, multipleSelection, whereClause, lookup, 0, queryValue);
+		this(queryValue, windowNo, tableName, keyColumn, multipleSelection, lookup, field, (!Util.isEmpty(whereClause)) ? new SQLFragment(whereClause) : null);
+	}
+	
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, boolean lookup, GridField field, SQLFragment sqlFilter)
+	{
+		super(windowNo, tableName, keyColumn, multipleSelection, lookup, 0, queryValue, sqlFilter);
 
 		setGridfield(field);
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
@@ -355,12 +361,12 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			}
 		}
 
-		if (p_whereClause.length() > 0) {
+		if (p_sqlFilter != null && p_sqlFilter.sqlClause().length() > 0) {
 			if(where.length() > 0)
 				where.append(" AND ");
-			where.append(" (").append(p_whereClause).append(")");
+			where.append(" (").append(p_sqlFilter.sqlClause()).append(")");
 		}
-		prepareTable(m_generalLayout, p_tableName, where.toString(), "2");
+		prepareTable(m_generalLayout, p_tableName, "2", new SQLFragment(where.toString(),  p_sqlFilter != null ? p_sqlFilter.parameters() : null));
 		contentPanel.repaint();
 		
 		//	Set & enable Fields
@@ -722,6 +728,11 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	protected void setParameters(PreparedStatement pstmt, boolean forCount) throws SQLException
 	{
 		int index = 1;
+		if (m_sqlFragmentMain.parameters().size() > 0) {
+			for (Object param : m_sqlFragmentMain.parameters()) {
+				pstmt.setObject(index++, param);
+			}
+		}
 		if (txt1.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(txt1));
 		if (txt2.getText().length() > 0)

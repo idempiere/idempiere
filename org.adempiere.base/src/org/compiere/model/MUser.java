@@ -297,7 +297,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	public static String getNameOfUser (int AD_User_ID)
 	{
 		MUser user = get(Env.getCtx(), AD_User_ID);
-		if (user.getAD_User_ID() != AD_User_ID)
+		if (user == null || user.getAD_User_ID() != AD_User_ID)
 			return "?";
 		return user.getName();
 	}	//	getNameOfUser
