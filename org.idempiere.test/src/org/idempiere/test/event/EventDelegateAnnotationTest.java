@@ -35,7 +35,6 @@ import org.adempiere.base.Core;
 import org.adempiere.base.DefaultAnnotationBasedEventManager;
 import org.compiere.model.MAcctSchema;
 import org.adempiere.base.event.annotations.BaseEventHandler;
-import org.adempiere.base.event.annotations.ModelEventHandler;
 import org.compiere.acct.Doc;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
