@@ -24,99 +24,40 @@
  **********************************************************************/
 package org.idempiere.test.event;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.adempiere.base.annotation.EventTopicDelegate;
 import org.adempiere.base.annotation.ModelEventTopic;
-import org.adempiere.base.event.annotations.ModelEventDelegate;
-import org.adempiere.base.event.annotations.po.*;
-import org.compiere.model.MTest;
+import org.adempiere.base.event.FactsEventData;
+import org.adempiere.base.event.annotations.doc.AfterReverseAccrual;
+import org.adempiere.base.event.annotations.doc.BeforeReverseAccrual;
+import org.adempiere.base.event.annotations.doc.FactsValidateDelegate;
+import org.compiere.model.MInvoice;
 import org.osgi.service.event.Event;
 
-/**
- * @author hengsin
- */
 @EventTopicDelegate
-@ModelEventTopic(modelClass = MTest.class)
-public class MTestEventDelegate extends ModelEventDelegate<MTest> {
-	
-	public static java.util.List<String> eventLog = new java.util.ArrayList<>();
+@ModelEventTopic(modelClass = MInvoice.class)
+public class MInvoiceEventDelegate extends FactsValidateDelegate<MInvoice> {
 
-	/**
-	 * @param po
-	 * @param event
-	 */
-	public MTestEventDelegate(MTest po, Event event) {
+	public static List<String> eventLog = new ArrayList<>();
+
+	public MInvoiceEventDelegate(MInvoice po, Event event) {
 		super(po, event);
 	}
 
-	@BeforeChange
-	public void onBeforeChange() {
-		eventLog.add("BeforeChange");
-		String desc = getModel().getDescription();
-		if (desc != null)
-			desc = desc + "MTestEventDelegate";
-		else
-			desc = "MTestEventDelegate";
-		getModel().setDescription(desc);
-	}
-	
-	@BeforeNew
-	public void onBeforeNew() {
-		eventLog.add("BeforeNew");
-		String desc = getModel().getDescription();
-		if (desc != null)
-			desc = desc + "MTestEventDelegate";
-		else
-			desc = "MTestEventDelegate";
-		getModel().setDescription(desc);
-	}
-	
-	@AfterChange
-	public void onAfterChange() {
-		eventLog.add("AfterChange");
-	}
-	
-	@AfterNew
-	public void onAfterNew() {
-		eventLog.add("AfterNew");
-	}
-	
-	@AfterDelete
-	public void onAfterDelete() {
-		eventLog.add("AfterDelete");
-	}
-	
-	@BeforeDelete
-	public void onBeforeDelete() {
-		eventLog.add("BeforeDelete");
-	}
-	
-	@PostCreate
-	public void onPostCreate() {
-		eventLog.add("PostCreate");
-	}
-	
-	@PostDelete
-	public void onPostDelete() {
-		eventLog.add("PostDelete");
-	}
-	
-	@PostUpdate
-	public void onPostUpdate() {
-		eventLog.add("PostUpdate");
-	}
-	
-	@AfterChangeReplication
-	public void onAfterChangeReplication() {
-		eventLog.add("AfterChangeReplication");
+	@BeforeReverseAccrual
+	public void onBeforeReverseAccrual() {
+		eventLog.add("BeforeReverseAccrual");
 	}
 
-	@AfterNewReplication
-	public void onAfterNewReplication() {
-		eventLog.add("AfterNewReplication");
+	@AfterReverseAccrual
+	public void onAfterReverseAccrual() {
+		eventLog.add("AfterReverseAccrual");
 	}
 
-	@BeforeDeleteReplication
-	public void onBeforeDeleteReplication() {
-		eventLog.add("BeforeDeleteReplication");
+	@Override
+	protected void onFactsValidate(FactsEventData data) {
+		eventLog.add("FactsValidate");
 	}
 }
