@@ -2678,7 +2678,7 @@ public class GridField
 	/**
 	 * @return true if this field (m_vo.ColumnName) also exist in parent tab (immediate or indirect)
 	 */
-	private boolean isParentTabField()
+	public boolean isParentTabField()
 	{
 		return isParentTabField(m_vo.ColumnName);
 	}
