@@ -53,12 +53,14 @@ import org.compiere.util.DB;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Comprehensive JUnit 5 tests for {@link Trx}.
  * 
  * @author etantg
  */
+@Isolated
 public class TrxTest extends AbstractTestCase {
 	
 	/**
