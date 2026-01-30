@@ -681,22 +681,6 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 				updateData (COLUMNNAME_C_Activity_ID, getC_Activity_ID());
 			else if (ELEMENTTYPE_BPartner.equals(getElementType()))
 				updateData (COLUMNNAME_C_BPartner_ID, getC_BPartner_ID());
-			else if (ELEMENTTYPE_AttributeSetInstance.equals(getElementType()))
-				updateData (COLUMNNAME_M_AttributeSetInstance_ID, getM_AttributeSetInstance_ID());
-			else if (ELEMENTTYPE_Employee.equals(getElementType()))
-				updateData(COLUMNNAME_C_Employee_ID, getC_Employee_ID());
-			else if (ELEMENTTYPE_Charge.equals(getElementType()))
-				updateData(COLUMNNAME_C_Charge_ID, getC_Charge_ID());
-			else if (ELEMENTTYPE_Department.equals(getElementType()))
-				updateData(COLUMNNAME_C_Department_ID, getC_Department_ID());
-			else if (ELEMENTTYPE_CostCenter.equals(getElementType()))
-				updateData(COLUMNNAME_C_CostCenter_ID, getC_CostCenter_ID());
-			else if (ELEMENTTYPE_Charge.equals(getElementType()))
-				updateData(COLUMNNAME_C_Charge_ID, getC_Charge_ID());
-			else if (ELEMENTTYPE_Asset.equals(getElementType()))
-				updateData(COLUMNNAME_A_Asset_ID, getA_Asset_ID());
-			else if (ELEMENTTYPE_Warehouse.equals(getElementType()))
-				updateData(COLUMNNAME_M_Warehouse_ID, getM_Warehouse_ID());
 			else if (ELEMENTTYPE_Product.equals(getElementType()))
 				updateData (COLUMNNAME_M_Product_ID, getM_Product_ID());
 			else if (ELEMENTTYPE_Project.equals(getElementType()))
