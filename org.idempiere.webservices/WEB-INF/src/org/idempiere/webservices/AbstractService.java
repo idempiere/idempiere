@@ -34,12 +34,11 @@ import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.codec.binary.Base64;
 import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
 import org.compiere.model.Query;
-import org.idempiere.webservices.model.X_WS_WebServiceMethod;
-import org.idempiere.webservices.model.X_WS_WebServiceTypeAccess;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -58,6 +57,8 @@ import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.webservices.fault.IdempiereServiceFault;
 import org.idempiere.webservices.model.MWebService;
 import org.idempiere.webservices.model.MWebServiceType;
+import org.idempiere.webservices.model.X_WS_WebServiceMethod;
+import org.idempiere.webservices.model.X_WS_WebServiceTypeAccess;
 
 
 
@@ -139,8 +140,10 @@ public class AbstractService {
     		Env.setContext(m_cs.getCtx(), Env.AD_USER_ID, user.getAD_User_ID() );
     		Env.setContext(m_cs.getCtx(), Env.AD_USER_NAME, user.getName() );
     		Env.setContext(m_cs.getCtx(), Env.SALESREP_ID, user.getAD_User_ID() );
-    		String userAgent = getHttpServletRequest().getHeader("User-Agent");
-    		Env.setContext(m_cs.getCtx(), "#UserAgent",   userAgent == null ? "Unknown" : userAgent);
+    		if (MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_USER_AGENT, false)) {
+        		String userAgent = getHttpServletRequest().getHeader("User-Agent");
+        		Env.setContext(m_cs.getCtx(), "#UserAgent",   userAgent == null ? "Unknown" : userAgent);
+    		}
     	}
 
 		KeyNamePair[] roles = login.getRoles(loginRequest.getUser(), selectedClient, ROLE_TYPES_WEBSERVICE);
