@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +74,7 @@ public class SessionFingerprintManager {
 		 */
 		private static final long serialVersionUID = 1352639946351252330L;
 
-		private final Map<String, String> componentValues = new HashMap<>();
+		private final Map<String, String> componentValues = new ConcurrentHashMap<>();
 		private final long createdAt;
 		private int sessionId;
 
@@ -268,7 +269,8 @@ public class SessionFingerprintManager {
 					else if (ISessionFingerprintComponent.ACTION_LOG_WARNING.equals(action))
 						log.warning("Session " + sessionId + " fingerprint mismatch: " + mismatch);
 
-					stored.setValue(component.getComponentId(), currentValue);
+					if (!ISessionFingerprintComponent.ACTION_STOP.equals(action))
+						stored.setValue(component.getComponentId(), currentValue);
 				}
 			} catch (Exception e) {
 				log.log(Level.WARNING, "Error validating fingerprint component: " + 

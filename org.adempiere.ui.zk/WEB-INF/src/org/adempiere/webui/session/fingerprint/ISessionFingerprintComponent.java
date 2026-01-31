@@ -114,7 +114,7 @@ public interface ISessionFingerprintComponent {
 	 * Returns one of the ACTION_* constants.
 	 * Typically reads from AD_SysConfig.
 	 * 
-	 * @return the action code (ACTION_NOTHING, ACTION_LOG_WARNING, ACTION_MESSAGE, or ACTION_STOP)
+	 * @return the action code (ACTION_NOTHING, ACTION_LOG_WARNING, ACTION_LOG_SEVERE, or ACTION_STOP)
 	 */
 	String getMismatchAction();
 

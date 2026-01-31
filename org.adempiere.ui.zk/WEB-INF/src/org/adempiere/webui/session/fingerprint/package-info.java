@@ -72,6 +72,5 @@
  *   <li>Register it as an OSGi service</li>
  *   <li>Add AD_SysConfig entries for enable/action configuration</li>
  * </ol>
- * </pre>
  */
 package org.adempiere.webui.session.fingerprint;
