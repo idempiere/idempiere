@@ -556,11 +556,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
      * @param session
      */
 	private void afterLogout(final Session session) {
-		try {
-    		((SessionCtrl)session).onDestroyed();
-    	} catch (Throwable t) {
-    		t.printStackTrace();
-    	}
     	((SessionCtrl)session).invalidateNow();
 	}
     
