@@ -454,7 +454,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		dataStatus.setText(info.toString());
 		//
 		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && !isReconciled.isSelected());
-		bReset.setEnabled(m_noSelected > 0 && isReconciled.isSelected());
+		bReset.setEnabled(m_noSelected > 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && isReconciled.isSelected());
 	}   //  calculateSelection
 	
 	@Override
