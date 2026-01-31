@@ -47,7 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4467301251742419106L;
+	private static final long serialVersionUID = 2660533904444098791L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -285,6 +285,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
     public static final String ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS = "ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS";
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
+	public static final String ZK_SESSION_SAVE_JSESSIONID = "ZK_SESSION_SAVE_JSESSIONID";
+	public static final String ZK_SESSION_SAVE_USER_AGENT = "ZK_SESSION_SAVE_USER_AGENT";
     public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME = "ZK_THEME";
     public static final String ZK_THEME_USE_FONT_ICON_FOR_IMAGE = "ZK_THEME_USE_FONT_ICON_FOR_IMAGE";
