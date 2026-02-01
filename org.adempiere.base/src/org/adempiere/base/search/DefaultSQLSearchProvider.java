@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
@@ -42,6 +43,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSearchDefinition;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -53,6 +55,8 @@ import org.osgi.service.component.annotations.Component;
 @Component(service = ISearchProvider.class, immediate = true)
 public class DefaultSQLSearchProvider implements ISearchProvider {
 
+	private static final CLogger log = CLogger.getCLogger(DefaultSQLSearchProvider.class);
+	
     @Override
     public boolean accept(MSearchDefinition def) {
         return MSearchDefinition.SEARCHTYPE_Table.equals(def.getSearchType())
@@ -246,7 +250,7 @@ public class DefaultSQLSearchProvider implements ISearchProvider {
                 result.setLabel(Msg.getMsg(Env.getCtx(), "Timeout"));
             } else {
                 result.setLabel(Msg.getMsg(Env.getCtx(), "DBExecuteError"));
-                e.printStackTrace();
+                log.log(Level.WARNING, e.getLocalizedMessage(), e);
             }
             list.add(result);
         } finally {

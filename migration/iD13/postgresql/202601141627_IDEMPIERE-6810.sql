@@ -18,6 +18,6 @@ UPDATE AD_Field SET SeqNo=170,Updated=TO_TIMESTAMP('2026-01-14 16:27:15','YYYY-M
 ;
 
 -- Jan 14, 2026, 4:36:53 PM MYT
-UPDATE AD_Field SET Description='SQL query or where clause', Help='SELECT SQL query for Query search type, where clause (without the WHERE keyword) for other search type', DisplayLogic=NULL,Updated=TO_TIMESTAMP('2026-01-14 16:36:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=56710
+UPDATE AD_Field SET Description='SQL query or where clause', Help='SELECT SQL query for Query search type, where clause (without the WHERE keyword) for other search type', DisplayLogic=NULL,Updated=TO_TIMESTAMP('2026-01-14 16:36:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100,IsCentrallyMaintained='N' WHERE AD_Field_ID=56710
 ;
 

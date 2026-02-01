@@ -599,7 +599,7 @@ public class DocumentSearchController implements EventListener<Event> {
 				Style htmlStyle = new Style();
 				htmlStyle.setContent("@scope {\n" + css + "\n}\n");
 				div.appendChild(htmlStyle);
-				layout.appendChild(htmlStyle);
+				layout.appendChild(div);
 			}
 		}
 		

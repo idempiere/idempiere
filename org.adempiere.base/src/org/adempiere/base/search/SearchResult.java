@@ -24,6 +24,7 @@
  **********************************************************************/
 package org.adempiere.base.search;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,7 +38,7 @@ public class SearchResult {
     private String label;
     private String name;
     private Object[] values;
-    private Map<String, Object> valueMap = null;
+    private Map<String, Object> valueMap = new HashMap<>();
     private int AD_Message_ID = 0;
     private int AD_Style_ID = 0;
     private int row = -1;
