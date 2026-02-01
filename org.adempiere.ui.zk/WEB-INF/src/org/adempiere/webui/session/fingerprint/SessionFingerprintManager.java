@@ -264,7 +264,8 @@ public class SessionFingerprintManager {
 
 					result.addMismatch(mismatch);
 
-					if (   ISessionFingerprintComponent.ACTION_LOG_SEVERE.equals(action))
+					if (   ISessionFingerprintComponent.ACTION_LOG_SEVERE.equals(action)
+						|| ISessionFingerprintComponent.ACTION_STOP.equals(action))
 						log.severe("Session " + sessionId + " fingerprint mismatch: " + mismatch);
 					else if (ISessionFingerprintComponent.ACTION_LOG_WARNING.equals(action))
 						log.warning("Session " + sessionId + " fingerprint mismatch: " + mismatch);
