@@ -728,6 +728,11 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	protected void setParameters(PreparedStatement pstmt, boolean forCount) throws SQLException
 	{
 		int index = 1;
+		if (m_sqlFragmentMain.parameters().size() > 0) {
+			for (Object param : m_sqlFragmentMain.parameters()) {
+				pstmt.setObject(index++, param);
+			}
+		}
 		if (txt1.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(txt1));
 		if (txt2.getText().length() > 0)

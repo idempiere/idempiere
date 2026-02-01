@@ -84,12 +84,14 @@ import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.osgi.service.event.Event;
 
 @TestMethodOrder(OrderAnnotation.class)
+@Isolated
 /**
  * 
  * @author hengsin

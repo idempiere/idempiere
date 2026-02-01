@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
@@ -37,6 +38,7 @@ public final class Prop implements Serializable {
 	public static final String	CREDITS_TXT 		=	"Credits";
 	public static final String	COPYRIGHT_TXT 		=	"Copyright";
 	public static final	String CUSTOM_IMAGE_PATH	= "CustomImagePath";
+	public static final	String HOMEPAGE	        	= "Homepage";
 	
 	/**	Customizable Links    */
 	public static final String	WEBUI_LINK 			=	"WebUiLink";
@@ -154,6 +156,8 @@ public final class Prop implements Serializable {
 			s_prop.setProperty(CLIENT_NAME, "iDempiere Server");
 		if(s_prop.getProperty(CREDITS_TXT)==null||s_prop.getProperty(CREDITS_TXT).length()<=0)
 			s_prop.setProperty(CREDITS_TXT, CREDITS);
+		if(s_prop.getProperty(HOMEPAGE)==null||s_prop.getProperty(HOMEPAGE).length()<=0)
+			s_prop.setProperty(HOMEPAGE, "idempiere-13.jsp");
 		//LINKS
 		if(s_prop.getProperty(FELIX_LINK)==null||s_prop.getProperty(FELIX_LINK).length()<=0)
 			s_prop.setProperty(FELIX_LINK, DEF_FELIX_LINK);
@@ -237,6 +241,15 @@ public final class Prop implements Serializable {
 		if (value == null)
 			return "";
 		return value;
+	}
+	
+	public static String getPropertyEscaped(String key) {
+	    String value = getProperty(key);
+	    if (value == null || value.isEmpty()) {
+	        return "";
+	    }
+	    // Escape HTML/XML special characters
+	    return StringEscapeUtils.escapeHtml4(value);
 	}
 	
 	public static String getFileName (boolean tryUserHome)
