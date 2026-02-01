@@ -17,3 +17,7 @@ INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated
 INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200295,0,0,TO_TIMESTAMP('2026-01-31 22:36:31','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2026-01-31 22:36:31','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','ZK_SESSION_FINGERPRINT_CHECK_IP','L','Defines action when IP Address varies -> (N)othing | (W)arning | (L)og Severe | (S)top','D','S','019c15fc-7216-7163-ba18-43efd17ba455')
 ;
 
+-- Feb 1, 2026, 4:15:22 PM CET
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2026-02-01 16:15:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=777
+;
+
