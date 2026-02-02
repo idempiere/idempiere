@@ -186,7 +186,8 @@ public class SessionFingerprintManager {
 			if (component.isEnabled()) {
 				try {
 					String value = component.extractValue(request);
-					fingerprint.setValue(component.getComponentId(), value);
+					if (value != null)
+						fingerprint.setValue(component.getComponentId(), value);
 
 					if (log.isLoggable(Level.FINE)) {
 						log.fine("Fingerprint component " + component.getComponentId() + 
