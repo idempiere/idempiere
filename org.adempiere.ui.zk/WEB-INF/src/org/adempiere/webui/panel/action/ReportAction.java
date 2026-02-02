@@ -366,7 +366,10 @@ public class ReportAction implements EventListener<Event>
 			whereClause.append(")");
 		}
 
-		query.addRestriction(new SQLFragment(whereClause.toString(), params));
+		if (whereClause.length() > 0)
+		{
+			query.addRestriction(new SQLFragment(whereClause.toString(), params));
+		}
 
 		PrintInfo info = new PrintInfo(pf.getName(), pf.getAD_Table_ID(), Record_ID, Record_UU);
 		info.setDescription(query.getInfo());
