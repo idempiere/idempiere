@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 import org.compiere.Adempiere;
+import org.idempiere.ui.zk.DelegatingServerPush;
 import org.idempiere.ui.zk.websocket.WebSocketServerPush;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Session;
@@ -80,15 +81,21 @@ public class DesktopWatchDog {
 			ServerPush spush = ((DesktopCtrl)entry.desktop).getServerPush();
 			if (spush == null) {
 				entry.noMessageCount++;
-			} else if (spush instanceof AtmosphereServerPush) {
-				AtmosphereServerPush asp = (AtmosphereServerPush) spush;
+			} else if (spush instanceof WebSocketServerPush) {
+				var endPoint = WebSocketServerPush.getEndPoint(entry.desktop.getId());
+				if (endPoint == null || !endPoint.getAndResetMessageIndicator())
+					entry.noMessageCount++;
+				else
+					entry.noMessageCount=0;
+			} else if (spush instanceof DelegatingServerPush && ((DelegatingServerPush) spush).getDelegate() instanceof AtmosphereServerPush) {
+				AtmosphereServerPush asp = (AtmosphereServerPush) ((DelegatingServerPush) spush).getDelegate();
 				if (!asp.hasAtmosphereResource())
 					entry.noMessageCount++;
 				else
 					entry.noMessageCount=0;
-			} else if (spush instanceof WebSocketServerPush) {
-				var endPoint = WebSocketServerPush.getEndPoint(entry.desktop.getId());
-				if (endPoint == null || !endPoint.getAndResetMessageIndicator())
+			} else if (spush instanceof AtmosphereServerPush) {
+				AtmosphereServerPush asp = (AtmosphereServerPush) spush;
+				if (!asp.hasAtmosphereResource())
 					entry.noMessageCount++;
 				else
 					entry.noMessageCount=0;
