@@ -239,7 +239,7 @@ public class SystemProperties {
 	}
 
 	/**
-	 * org_idempiere_ui_zk_serverpush = atmosphere|websocket to define the server push implementation to use
+	 * org.idempiere.ui.zk.serverpush = atmosphere|websocket to define the server push implementation to use
 	 * @return
 	 */
 	public static String getZKServerPush() {
