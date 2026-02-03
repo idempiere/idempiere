@@ -121,7 +121,6 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
      */
     private Either<String, AtmosphereServerPush> getServerPush(Desktop desktop) {
         if (desktop instanceof DesktopCtrl) {
-        	System.out.print(".");
         	DesktopCtrl desktopCtrl = (DesktopCtrl) desktop;
         	ServerPush spush = desktopCtrl.getServerPush();
             if (spush == null)

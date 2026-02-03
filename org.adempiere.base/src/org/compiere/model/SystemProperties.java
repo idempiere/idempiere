@@ -62,7 +62,6 @@ public class SystemProperties {
 	private static final String TRACE_NULL_TRX_CONNECTION = "TRACE_NULL_TRX_CONNECTION";
 	private static final String ZK_THEME = MSysConfig.ZK_THEME;
 	private static final String ZkUnitTest = "ZkUnitTest";
-	/** JVM parameter name to select server push implementation */
 
 	/**
 	 * ADEMPIERE_DB_SYSTEM_USER allows to override the default name of the system user for the database

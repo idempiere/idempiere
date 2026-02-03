@@ -143,7 +143,6 @@ public class ServerPushEndPoint {
 					CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 				}
 			} else if (message.startsWith("zkau;")) {
-				setMessageIndicator();
 				String jsonMessage = message.substring(5);
 				JSONParser parser = new JSONParser();
 				JSONObject jsonRequest = (JSONObject) parser.parse(jsonMessage);
@@ -159,6 +158,7 @@ public class ServerPushEndPoint {
 					}
 					return;
 				}
+				setMessageIndicator();
 				
 				StringBuilder fullUrl = new StringBuilder(this.baseUrl)
 		        		.append(uri)

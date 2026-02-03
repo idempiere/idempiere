@@ -59,7 +59,7 @@ public class DelegatingServerPush implements ServerPush {
 	/** Value for Atmosphere server push */
 	public static final String ATMOSPHERE = "atmosphere";
 
-	private volatile ServerPush delegate;
+	private final ServerPush delegate;
 
 	/**
 	 * Default constructor - creates the delegate based on JVM parameter
