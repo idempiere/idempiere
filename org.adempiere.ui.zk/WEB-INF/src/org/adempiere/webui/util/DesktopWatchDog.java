@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 import org.compiere.Adempiere;
+import org.idempiere.ui.zk.websocket.WebSocketServerPush;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WebApp;
@@ -74,19 +75,28 @@ public class DesktopWatchDog {
 				continue;
 			}
 			if (entry.desktop.isServerPushEnabled() == false) {
-				entry.noAtmosphereResourceCount++;
+				entry.noMessageCount++;
 			}
 			ServerPush spush = ((DesktopCtrl)entry.desktop).getServerPush();
 			if (spush == null) {
-				entry.noAtmosphereResourceCount++;
+				entry.noMessageCount++;
 			} else if (spush instanceof AtmosphereServerPush) {
 				AtmosphereServerPush asp = (AtmosphereServerPush) spush;
 				if (!asp.hasAtmosphereResource())
-					entry.noAtmosphereResourceCount++;
+					entry.noMessageCount++;
 				else
-					entry.noAtmosphereResourceCount=0;
-			}			 
-			if (entry.noAtmosphereResourceCount >= 5) {
+					entry.noMessageCount=0;
+			} else if (spush instanceof WebSocketServerPush) {
+				var endPoint = WebSocketServerPush.getEndPoint(entry.desktop.getId());
+				if (endPoint == null || !endPoint.getAndResetMessageIndicator())
+					entry.noMessageCount++;
+				else
+					entry.noMessageCount=0;
+			} else {
+				//unknown ServerPush implementation, just reset noMessageCount
+				entry.noMessageCount=0;
+			}
+			if (entry.noMessageCount >= 5) {
 				//no message from desktop for 5 consecutive run of doMonitoring.
 				//remove desktop from DesktopCache.
 				iterator.remove();
@@ -104,7 +114,7 @@ public class DesktopWatchDog {
 
 	private final static class DesktopEntry {		
 		Desktop desktop;
-		int noAtmosphereResourceCount = 0;
+		int noMessageCount = 0;
 		
 		private DesktopEntry(Desktop desktop) {
 			this.desktop = desktop;
