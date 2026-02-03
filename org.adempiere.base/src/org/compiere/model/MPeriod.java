@@ -731,7 +731,19 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			return false;
 		}
 
-		MAcctSchema as = MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema();
+		MAcctSchema as = null;
+		MAcctSchema[] asList = MAcctSchema.getSchemasByOrg(getCtx(), getAD_Client_ID(), getAD_Org_ID(), get_TrxName());
+		if(asList != null && asList.length > 0) {
+			for(MAcctSchema schema:asList) {
+				as = schema;
+				if(schema.isAutoPeriodControl())
+					break;
+			}
+		}
+		
+		if(as == null)
+			as = MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema();
+
 		if (as != null && as.isAutoPeriodControl())
 		{
 			Timestamp today = TimeUtil.trunc(new Timestamp (System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
