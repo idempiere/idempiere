@@ -127,6 +127,14 @@
 		if (es.length == 0)
 			return false;
 
+		//websocket does not support file upload
+		for (var j = 0; j < es.length; ++j) {
+			var aureq = es[j];
+			if (aureq.file) {
+				return originalSendNow(dt); //fallback to ajax
+			}
+		}
+
 		if (zk.mounting) {
 			zk.afterMount(function () {zAu.sendNow(dt);});
 			return true; //wait
