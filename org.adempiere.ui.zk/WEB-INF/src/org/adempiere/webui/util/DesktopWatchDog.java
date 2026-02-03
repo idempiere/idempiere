@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
 import org.idempiere.ui.zk.DelegatingServerPush;
 import org.idempiere.ui.zk.websocket.WebSocketServerPush;
@@ -100,8 +101,7 @@ public class DesktopWatchDog {
 				else
 					entry.noMessageCount=0;
 			} else {
-				//unknown ServerPush implementation, just reset noMessageCount
-				entry.noMessageCount=0;
+				throw new AdempiereException("Unknown ServerPush implementation: " + spush.getClass().getName());
 			}
 			if (entry.noMessageCount >= 5) {
 				//no message from desktop for 5 consecutive run of doMonitoring.
