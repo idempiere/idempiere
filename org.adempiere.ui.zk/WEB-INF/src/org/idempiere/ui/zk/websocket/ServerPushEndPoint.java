@@ -29,6 +29,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -142,6 +143,7 @@ public class ServerPushEndPoint {
 					CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 				}
 			} else if (message.startsWith("zkau;")) {
+				setMessageIndicator();
 				String jsonMessage = message.substring(5);
 				JSONParser parser = new JSONParser();
 				JSONObject jsonRequest = (JSONObject) parser.parse(jsonMessage);
@@ -231,5 +233,15 @@ public class ServerPushEndPoint {
 				CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 			}
 		}
-	}	
+	}
+
+    private final AtomicBoolean messageIndicator = new AtomicBoolean(false);
+
+    private void setMessageIndicator() {
+		messageIndicator.set(true);
+	}
+
+	public boolean getAndResetMessageIndicator() {
+		return messageIndicator.getAndSet(false);
+	}
 }
