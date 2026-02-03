@@ -781,7 +781,9 @@ public class DocLine
 	
 	// MZ Goodwill
 	/**
-	 *  Get Total Product Costs from Cost Detail or from Current Cost
+	 *  Get Total Product Costs from Cost Detail or Cost History or Current Cost
+	 *  Retrieves the product cost using cost detail when available based on the back-date days configuration
+	 *  and whether the document is in the back-date posting process. 
 	 *  @param as accounting schema
 	 *  @param AD_Org_ID trx org
 	 *	@param zeroCostsOK zero/no costs are OK
@@ -797,11 +799,19 @@ public class DocLine
 			if (cd != null)
 			{
 				BigDecimal amt = cd.getAmt();
-				BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK, cd);
-				if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
-					return amt.signum() > 0 ? pcost.negate() : pcost;
-				else
-					return pcost;
+				if (m_doc.isInBackDatePostingProcess() || as.getBackDateDay() != 0) {
+					BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK, cd);
+					if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
+						return amt.signum() > 0 ? pcost.negate() : pcost;
+					else
+						return pcost;
+				} else {
+					BigDecimal pcost = getProductCosts(as, AD_Org_ID, zeroCostsOK);
+					if (amt.signum() != 0 && pcost.signum() != 0 && amt.signum() != pcost.signum())
+						return amt.negate();
+					else
+						return amt;
+				}
 			}
 		}
 		return getProductCosts(as, AD_Org_ID, zeroCostsOK);

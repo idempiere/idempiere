@@ -664,6 +664,8 @@ public class DocManager {
 			MCostDetail bdcd = bdcds.get(x);
 			MAcctSchema as = new MAcctSchema(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
 			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getBackDateDay());
+			// Do not skip when MAcctSchema.getBackDateDay() == 0, as some documents with the current account date 
+			// still require reposting (e.g. MR reversal and related MatchPOs)
 			if (bdcd.getDateAcct().before(allowedBackDate))
 				bdcds.remove(x);
 		}
@@ -756,6 +758,9 @@ public class DocManager {
 		
 		// re-post all the documents after the back-date transaction
 		List<String> repostedRecordIds = new ArrayList<String>();
+		// skip repost the back-date transaction
+		String previousPostedRecordId = AD_Table_ID + "_" + Record_ID;
+		repostedRecordIds.add(previousPostedRecordId);
 		
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append("SELECT mpo.M_MatchPO_ID, il.C_Invoice_ID, iol.M_InOut_ID, mi.M_MatchInv_ID, invl.M_Inventory_ID, ");
@@ -842,6 +847,7 @@ public class DocManager {
 					String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
 					if (error != null)
 						return error;
+					previousPostedRecordId = tableID + "_" + recordID;
 				}
 								
 				if (tableID == MInvoice.Table_ID) { 
@@ -859,8 +865,11 @@ public class DocManager {
 						}
 						if (mi.getDateAcct().compareTo(cd.getDateAcct()) < 0)
 							continue;
+						if (previousPostedRecordId.equals(MMatchInv.Table_ID + "_" + mi.get_ID()))
+							continue;
 						// NOTE: Do not skip reposting match invoices that have already been reposted
 						String error = DocManager.postDocument(ass, MMatchInv.Table_ID, mi.get_ID(), true, true, true, trxName);
+						previousPostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
 						if (error != null) {
 							if (s_log.isLoggable(Level.INFO))
 								s_log.info("Error Posting TableID=" + MMatchInv.Table_ID + ", RecordID=" + mi.get_ID() + " Error: " + error);
