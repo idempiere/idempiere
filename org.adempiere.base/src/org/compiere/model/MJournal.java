@@ -945,9 +945,10 @@ public class MJournal extends X_GL_Journal implements DocAction
 			return false;
 		}
 
-		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), "SELECT DISTINCT ev.Value FROM C_ElementValue ev, Fact_Acct fa, Fact_Reconciliation fr"
-				+ " WHERE fa.Account_ID = ev.C_ElementValue_ID AND fa.Fact_Acct_ID = fr.Fact_Acct_ID"
-				+ " AND fa.AD_Table_ID = ? AND fa.Record_ID = ?", Table_ID, getGL_Journal_ID());
+		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), "SELECT DISTINCT ev.Value FROM Fact_Acct fa"
+				+ " INNER JOIN C_ElementValue ev ON (fa.Account_ID = ev.C_ElementValue_ID)"
+				+ " INNER JOIN Fact_Reconciliation fr ON (fa.Fact_Acct_ID = fr.Fact_Acct_ID)"
+				+ " WHERE fa.AD_Table_ID = ? AND fa.Record_ID = ?", Table_ID, getGL_Journal_ID());
 		if (list != null && list.size() > 0) {
 			StringBuilder accounts = new StringBuilder();
 
