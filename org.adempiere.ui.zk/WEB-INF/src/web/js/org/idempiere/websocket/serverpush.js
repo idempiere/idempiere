@@ -223,12 +223,16 @@
 		//if (zk.portlet2AjaxURI)
 			//requri = zk.portlet2AjaxURI;
 		//modify to use WebSocket connection for au requests
-		if (content)
-			dt._serverpush.socket.sendAjaxRequest({
+		if (content) {
+			let reqInf =  {
 				sid: zAu.seqId, uri: requri, dt: dt, content: content,
 				implicit: implicit,
 				ignorable: ignorable, tmout: 0, rtags: rtags, forceAjax: forceAjax
-			});
+			}
+			dt._serverpush.socket.sendAjaxRequest(reqInf);
+			if (!reqInf.implicit)
+				zk.startProcessing(zk.procDelay, reqInf.sid); //wait a moment to avoid annoying
+		}
 		return true;
 	  } else {
 		return originalSendNow(dt);
