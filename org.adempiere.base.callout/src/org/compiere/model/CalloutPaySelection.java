@@ -40,41 +40,64 @@ import org.compiere.util.Env;
  */
 public class CalloutPaySelection extends CalloutEngine
 {
+	
 	/**
-	 *	Payment Selection Line - Payment Amount.
-	 *		- called from C_PaySelectionLine.PayAmt
-	 *		- update DifferenceAmt
-	 *  @param ctx context
-	 *  @param WindowNo current Window No
-	 *  @param mTab Grid Tab
-	 *  @param mField Grid Field
-	 *  @param value New Value
-	 *  @return null or error message
+	 * Payment Selection Line - Amounts
+	 * Called from PayAmt, DiscountAmt, WriteOffAmt
+	 * 
+	 * @param ctx context
+	 * @param WindowNo current Window No
+	 * @param mTab Grid Tab
+	 * @param mField Grid Field
+	 * @param value New Value
+	 * @param oldValue Old Value
+	 * @return null or error message
 	 */
-	public String payAmt (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	public String amounts(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
-		if (isCalloutActive() || value == null)
-			return "";
-		//	get invoice info
-		Integer ii = (Integer)mTab.getValue("C_Invoice_ID");
-		if (ii == null)
-			return "";
-		int C_Invoice_ID = ii.intValue();
-		if (C_Invoice_ID == 0)
-			return "";
-		//
-		BigDecimal OpenAmt = (BigDecimal)mTab.getValue("OpenAmt");
-		BigDecimal PayAmt = (BigDecimal)mTab.getValue("PayAmt");
-		BigDecimal DiscountAmt = (BigDecimal)mTab.getValue("DiscountAmt");
-		BigDecimal WriteOffAmt = (BigDecimal)mTab.getValue("WriteOffAmt");
-		BigDecimal DifferenceAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt).subtract(WriteOffAmt);
-		if (log.isLoggable(Level.FINE)) log.fine(" - OpenAmt=" + OpenAmt + " - PayAmt=" + PayAmt
-			+ ", Discount=" + DiscountAmt + ", WriteOff=" + WriteOffAmt + ", Difference=" + DifferenceAmt);
-		
-		mTab.setValue("DifferenceAmt", DifferenceAmt);
+	    if (isCalloutActive())
+	        return "";
+	    
+	    int C_Invoice_ID = Env.getContextAsInt(ctx, WindowNo, "C_Invoice_ID");
+	    if (C_Invoice_ID <= 0)
+	        return "";
 
-		return "";
-	}	//	PaySel_PayAmt
+	    String colName = mField.getColumnName();
+	    
+	    // Get Open Amount from Invoice
+	    BigDecimal OpenAmt = (BigDecimal) mTab.getValue("OpenAmt");
+	    if (OpenAmt == null)
+	        OpenAmt = Env.ZERO;
+	    
+	    // Get Tab Values
+	    BigDecimal PayAmt = (BigDecimal) mTab.getValue("PayAmt");
+	    if (PayAmt == null)
+	        PayAmt = Env.ZERO;
+	    BigDecimal DiscountAmt = (BigDecimal) mTab.getValue("DiscountAmt");
+	    if (DiscountAmt == null)
+	        DiscountAmt = Env.ZERO;
+	    BigDecimal WriteOffAmt = (BigDecimal) mTab.getValue("WriteOffAmt");
+	    if (WriteOffAmt == null)
+	        WriteOffAmt = Env.ZERO;
+	    
+	    if (log.isLoggable(Level.FINE)) 
+	        log.fine("Open=" + OpenAmt + ", Pay=" + PayAmt + ", Discount=" + DiscountAmt + 
+	                 ", WriteOff=" + WriteOffAmt);
+
+	    if (colName.equals("PayAmt")) {
+            WriteOffAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt);
+            mTab.setValue("WriteOffAmt", WriteOffAmt);
+        } else {
+            PayAmt = OpenAmt.subtract(DiscountAmt).subtract(WriteOffAmt);
+            mTab.setValue("PayAmt", PayAmt);
+        }
+        
+        // Calculate DifferenceAmt
+        BigDecimal DifferenceAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt).subtract(WriteOffAmt);
+        mTab.setValue("DifferenceAmt", DifferenceAmt);
+
+	    return "";
+	}
 
 	/**
 	 *	Payment Selection Line - Invoice.
