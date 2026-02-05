@@ -479,6 +479,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
         //
         if (addAccessSQL)
         {
+        	if (sql.toString().endsWith(" WHERE "))
+        		sql.append("null"); // // Note: for legacy compatibility, to avoid warning
             String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
                                                         tableName,
                                                         MRole.SQL_FULLYQUALIFIED,
