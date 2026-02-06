@@ -312,7 +312,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 		{
 			if (dp.indexOf("MM") == -1)
 			{
-				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Error@ @DatePattern@ - No Month (MM or MMM or MMMM)"));
+				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Error@ @DatePattern@ - No Month (MM)"));
 				return false;
 			}
 			if (dp.indexOf("d") == -1)
