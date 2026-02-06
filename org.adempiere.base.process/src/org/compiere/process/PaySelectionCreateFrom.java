@@ -32,6 +32,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.X_C_Order;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -63,6 +64,7 @@ public class PaySelectionCreateFrom extends SvrProcess
 	private boolean		p_OnlyPositive = false;
 	
 	private Timestamp p_DueDate = null;
+	private String p_docTypeIDs = "";
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -93,6 +95,8 @@ public class PaySelectionCreateFrom extends SvrProcess
 				p_DueDate = (Timestamp) para[i].getParameter();
 			else if (name.equals("PositiveBalance"))
 				p_OnlyPositive = "Y".equals(para[i].getParameter());
+			else if (name.equals("C_DocType_ID"))
+				p_docTypeIDs = para[i].getParameterAsCSVInt();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
@@ -220,7 +224,10 @@ public class PaySelectionCreateFrom extends SvrProcess
 			
 			sqlWhere.append(onlyPositiveWhere);
 		}
-	
+
+		if (!Util.isEmpty(p_docTypeIDs))
+			sqlWhere.append(" AND i.C_DocType_ID IN (").append(p_docTypeIDs).append(")");
+
 		sql.append(sqlWhere.toString());
 		//
 		int lines = 0;
