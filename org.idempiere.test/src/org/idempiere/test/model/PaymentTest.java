@@ -169,7 +169,7 @@ public class PaymentTest extends AbstractTestCase {
 			errorMsg = e.getMessage();
 		}
 		assertTrue(errorThrown, "Payment save should fail when BP on payment differs from BP on invoice without proper relation");
-		assertEquals(errorMsg, "Error: Business Partner is different from Invoice - Business Partner");
+		assertEquals("Error: Business Partner is different from Invoice - Business Partner", errorMsg);
 
 		// Step 4: Retrieve the record from MBPRelation object (C_BP_Relation table) with C_BP_Relation_ID=100
 		MBPRelation bpRelation = new MBPRelation(Env.getCtx(), DictionaryIDs.C_BP_Relation.C_AND_W_PAYS_FOR_JOE.id, getTrxName());
@@ -206,7 +206,7 @@ public class PaymentTest extends AbstractTestCase {
 		// Verify the invoice is now paid
 		invoice.load(getTrxName());
 		assertTrue(invoice.isPaid(), "Invoice should be marked as paid");
-		assertEquals(Env.ZERO, invoice.getOpenAmt(), "Invoice open amount should be zero");
+		assertTrue(Env.ZERO.compareTo(invoice.getOpenAmt()) == 0, "Invoice open amount should be zero");
 	}
 
 }
