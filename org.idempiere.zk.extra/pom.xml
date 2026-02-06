@@ -54,11 +54,6 @@
 									<artifactId>iceblue_c</artifactId>
 									<version>${zk.version}</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>com.google.javascript</groupId>
-									<artifactId>closure-compiler</artifactId>
-									<version>v20240317</version>
-								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>
