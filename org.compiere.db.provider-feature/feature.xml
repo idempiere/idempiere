@@ -46,7 +46,7 @@
          unpack="false"/>
 
    <plugin
-         id="wrapped.com.oracle.database.jdbc.ojdbc10"
+         id="wrapped.com.oracle.database.jdbc.ojdbc17"
          download-size="0"
          install-size="0"
          version="0.0.0"

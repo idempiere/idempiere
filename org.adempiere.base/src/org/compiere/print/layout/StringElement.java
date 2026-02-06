@@ -521,6 +521,7 @@ public class StringElement extends PrintElement
 					if (p_maxHeight == 0f || (height + lineHeight) <= p_maxHeight)
 					{
 						yPen = (float)location.y + height + layout.getAscent();
+						xPen = xPos;
 						//	Tab in Text
 						if (tabPos != -1)
 						{
@@ -531,7 +532,15 @@ public class StringElement extends PrintElement
 						}
 						else if ((MPrintFormatItem.FIELDALIGNMENTTYPE_TrailingRight.equals(p_FieldAlignmentType) && layout.isLeftToRight())
 							|| (MPrintFormatItem.FIELDALIGNMENTTYPE_LeadingLeft.equals(p_FieldAlignmentType) && !layout.isLeftToRight()))
+						{
 							xPen += p_maxWidth - layout.getAdvance();
+							// In last line one char x-space is left more
+							if (MPrintFormatItem.FIELDALIGNMENTTYPE_TrailingRight.equals(p_FieldAlignmentType)
+								&& measurer.getPosition() >= iter.getEndIndex())
+							{
+								xPen -= Math.ceil((layout.getAdvance() / layout.getCharacterCount()) / 2);
+							}
+						}
 						else if (MPrintFormatItem.FIELDALIGNMENTTYPE_Center.equals(p_FieldAlignmentType))
 							xPen += (p_maxWidth - layout.getAdvance()) / 2;
 						else if (MPrintFormatItem.FIELDALIGNMENTTYPE_Block.equals(p_FieldAlignmentType) && measurer.getPosition() < iter.getEndIndex())

@@ -36,6 +36,7 @@
     <target.version>17</target.version>
     <maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
+    <jacoco-version>0.8.10</jacoco-version>
 	</properties>
 	
 	<build>
@@ -594,6 +595,20 @@
 					</execution>
 				</executions>
 			</plugin>
+      
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-version}</version>
+        <executions>
+          <execution>
+              <id>prepare-agent-integration</id>
+              <goals>
+                  <goal>prepare-agent-integration</goal>
+              </goals>
+          </execution>
+        </executions>
+      </plugin>
 		</plugins>
 	</build>
 

@@ -41,8 +41,12 @@ import org.compiere.util.Util;
  * Asset Model
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
-@SuppressWarnings("serial")
 public class MAsset extends X_A_Asset {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2767231786593351344L;
+
 	/** ChangeType - Asset Group changed */
 	public static final int CHANGETYPE_setAssetGroup = Table_ID * 100 + 1;
 	
@@ -54,7 +58,7 @@ public class MAsset extends X_A_Asset {
 	 */
 	public static MAsset get (Properties ctx, int A_Asset_ID, String trxName)
 	{
-		return (MAsset)MTable.get(ctx, MAsset.Table_Name).getPO(A_Asset_ID, trxName);
+		return new MAsset(ctx, A_Asset_ID, trxName);
 	}	//	get
 	
 	/**
@@ -134,7 +138,7 @@ public class MAsset extends X_A_Asset {
 		
 		setIsOwned(true);
 		setIsInPosession(true);
-		setA_Asset_CreateDate(inoutLine.getM_InOut().getMovementDate());
+		setA_Asset_CreateDate(inoutLine.getParent().getMovementDate());
 		//Fixed Asset should created in Organization as per the PO, MR, invoice and the asset addition document was recorded in.
 		setAD_Org_ID(invoiceLine.getAD_Org_ID());
 		// Asset Group:
@@ -145,7 +149,7 @@ public class MAsset extends X_A_Asset {
 		}
 		setA_Asset_Group_ID(A_Asset_Group_ID);
 		setHelp(Msg.getMsg(MClient.get(getCtx()).getAD_Language(), "CreatedFromInvoiceLine", 
-				new Object[] {invoiceLine.getC_Invoice().getDocumentNo(), invoiceLine.getLine()}));
+				new Object[] {invoiceLine.getParent().getDocumentNo(), invoiceLine.getLine()}));
 		
 		String name = "";
 		if (inoutLine.getM_Product_ID()>0)
@@ -154,8 +158,8 @@ public class MAsset extends X_A_Asset {
 			setM_Product_ID(inoutLine.getM_Product_ID());
 			setM_AttributeSetInstance_ID(inoutLine.getM_AttributeSetInstance_ID());
 		}
-		MBPartner bp = new MBPartner(getCtx(), invoiceLine.getC_Invoice().getC_BPartner_ID(), null);
-		name += bp.getName()+"-"+invoiceLine.getC_Invoice().getDocumentNo();
+		MBPartner bp = new MBPartner(getCtx(), invoiceLine.getParent().getC_BPartner_ID(), null);
+		name += bp.getName()+"-"+invoiceLine.getParent().getDocumentNo();
 		if (log.isLoggable(Level.FINE)) log.fine("name=" + name);
 		setValue(name);
 		setName(name);
@@ -241,8 +245,9 @@ public class MAsset extends X_A_Asset {
 		setClientOrg(invLine);
 		
 		MProduct product = MProduct.get(getCtx(), invLine.getM_Product_ID());
+		MProductCategory productCategory = MProductCategory.get(getCtx(), product.getM_Product_Category_ID());
 		// Defaults from group:
-		MAssetGroup assetGroup = MAssetGroup.get(invLine.getCtx(), invLine.getM_Product().getM_Product_Category().getA_Asset_Group_ID());
+		MAssetGroup assetGroup = MAssetGroup.get(invLine.getCtx(), productCategory.getA_Asset_Group_ID());
 		if (assetGroup == null)
 			assetGroup = MAssetGroup.get(invLine.getCtx(), product.getA_Asset_Group_ID());
 		setAssetGroup(assetGroup);

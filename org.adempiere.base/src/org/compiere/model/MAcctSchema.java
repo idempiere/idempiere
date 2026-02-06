@@ -47,9 +47,9 @@ import org.idempiere.cache.ImmutablePOSupport;
 public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 2740537819749888011L;
+	private static final long serialVersionUID = -8345280015158127523L;
 
 	/**
 	 *  Get AccountSchema
@@ -493,7 +493,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	 * @deprecated only orgs are now fetched automatically
 	 * @throws IllegalStateException every time when you call it 
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void setOnlyOrgs (Integer[] orgs)
 	{
 		throw new IllegalStateException("The OnlyOrgs are now fetched automatically");
@@ -732,6 +732,12 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 				return false; 
 			}
 		}
+		// Validate that StartDate is not after EndDate
+		if (getStartDate() != null && getEndDate() != null && getStartDate().after(getEndDate()))
+		{
+			log.saveError("Error", Msg.getMsg(getCtx(), "EndDateAfterStartDate"));
+			return false;
+		}
 		return true;
 	}	//	beforeSave
 	
@@ -852,4 +858,12 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 		}
 		return true;
 	}
+
+	/**
+	 * @return
+	 */
+	public MCurrency getCurrency() {
+		return MCurrency.get(getCtx(), getC_Currency_ID());
+	}
+
 }	//	MAcctSchema

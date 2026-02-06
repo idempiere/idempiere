@@ -31,7 +31,7 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20251223L;
 
     /** Standard Constructor */
     public X_AD_Attachment (Properties ctx, int AD_Attachment_ID, String trxName)
@@ -272,11 +272,22 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}
 
+	/** Title AD_Reference_ID=200275 */
+	public static final int TITLE_AD_Reference_ID=200275;
+	/** None = . */
+	public static final String TITLE_None = ".";
+	/** List in Attachment File = laf */
+	public static final String TITLE_ListInAttachmentFile = "laf";
+	/** List in XML = xml */
+	public static final String TITLE_ListInXML = "xml";
+	/** List in ZIP file = zip */
+	public static final String TITLE_ListInZIPFile = "zip";
 	/** Set Title.
 		@param Title Name this entity is referred to as
 	*/
 	public void setTitle (String Title)
 	{
+
 		set_Value (COLUMNNAME_Title, Title);
 	}
 
@@ -293,6 +304,6 @@ public class X_AD_Attachment extends PO implements I_AD_Attachment, I_Persistent
       */
     public KeyNamePair getKeyNamePair()
     {
-        return new KeyNamePair(get_ID(), getTitle());
+        return new KeyNamePair(get_ID(), String.valueOf(getTitle()));
     }
 }

@@ -27,8 +27,7 @@ package org.idempiere.test.event;
 import org.adempiere.base.annotation.EventTopicDelegate;
 import org.adempiere.base.annotation.ModelEventTopic;
 import org.adempiere.base.event.annotations.ModelEventDelegate;
-import org.adempiere.base.event.annotations.po.BeforeChange;
-import org.adempiere.base.event.annotations.po.BeforeNew;
+import org.adempiere.base.event.annotations.po.*;
 import org.compiere.model.MTest;
 import org.osgi.service.event.Event;
 
@@ -38,6 +37,8 @@ import org.osgi.service.event.Event;
 @EventTopicDelegate
 @ModelEventTopic(modelClass = MTest.class)
 public class MTestEventDelegate extends ModelEventDelegate<MTest> {
+	
+	public static java.util.List<String> eventLog = new java.util.ArrayList<>();
 
 	/**
 	 * @param po
@@ -48,13 +49,74 @@ public class MTestEventDelegate extends ModelEventDelegate<MTest> {
 	}
 
 	@BeforeChange
-	@BeforeNew
 	public void onBeforeChange() {
+		eventLog.add("BeforeChange");
 		String desc = getModel().getDescription();
 		if (desc != null)
 			desc = desc + "MTestEventDelegate";
 		else
 			desc = "MTestEventDelegate";
 		getModel().setDescription(desc);
+	}
+	
+	@BeforeNew
+	public void onBeforeNew() {
+		eventLog.add("BeforeNew");
+		String desc = getModel().getDescription();
+		if (desc != null)
+			desc = desc + "MTestEventDelegate";
+		else
+			desc = "MTestEventDelegate";
+		getModel().setDescription(desc);
+	}
+	
+	@AfterChange
+	public void onAfterChange() {
+		eventLog.add("AfterChange");
+	}
+	
+	@AfterNew
+	public void onAfterNew() {
+		eventLog.add("AfterNew");
+	}
+	
+	@AfterDelete
+	public void onAfterDelete() {
+		eventLog.add("AfterDelete");
+	}
+	
+	@BeforeDelete
+	public void onBeforeDelete() {
+		eventLog.add("BeforeDelete");
+	}
+	
+	@PostCreate
+	public void onPostCreate() {
+		eventLog.add("PostCreate");
+	}
+	
+	@PostDelete
+	public void onPostDelete() {
+		eventLog.add("PostDelete");
+	}
+	
+	@PostUpdate
+	public void onPostUpdate() {
+		eventLog.add("PostUpdate");
+	}
+	
+	@AfterChangeReplication
+	public void onAfterChangeReplication() {
+		eventLog.add("AfterChangeReplication");
+	}
+
+	@AfterNewReplication
+	public void onAfterNewReplication() {
+		eventLog.add("AfterNewReplication");
+	}
+
+	@BeforeDeleteReplication
+	public void onBeforeDeleteReplication() {
+		eventLog.add("BeforeDeleteReplication");
 	}
 }

@@ -17,7 +17,6 @@
 package org.compiere.util;
 
 import java.security.Principal;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,8 +31,6 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 
 import org.adempiere.exceptions.DBException;
-import org.compiere.Adempiere;
-import org.compiere.db.CConnection;
 import org.compiere.model.I_M_Warehouse;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
@@ -44,14 +41,12 @@ import org.compiere.model.MMFARegistration;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
-import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserPreference;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
-import org.compiere.model.SystemIDs;
 
 /**
  *	Login Manager
@@ -86,46 +81,6 @@ public class Login
 	public boolean isPasswordExpired() {
 		return isPasswordExpired;
 	}
-
-	/**
-	 *  Test Init - Set Environment for tests
-	 *	@param isClient client session
-	 *	@return Context
-	 */
-	@Deprecated
-	public static Properties initTest (boolean isClient)
-	{
-	//	logger.entering("Env", "initTest");
-		if (!Adempiere.startupEnvironment(true))
-			System.exit (1);
-		//  Test Context
-		Properties ctx = Env.getCtx();
-		Login login = new Login(ctx);
-		KeyNamePair[] roles = login.getRoles(CConnection.get(),
-			"SuperUser", "System", true);
-		//  load role
-		if (roles != null && roles.length > 0)
-		{
-			KeyNamePair[] clients = login.getClients (roles[0]);
-			//  load client
-			if (clients != null && clients.length > 0)
-			{
-				KeyNamePair[] orgs = login.getOrgs(clients[0]);
-				//  load org
-				if (orgs != null && orgs.length > 0)
-				{
-					@SuppressWarnings("unused")
-					KeyNamePair[] whs = login.getWarehouses(orgs[0]);
-					//
-					login.loadPreferences(orgs[0], null, null, null);
-				}
-			}
-		}
-		//
-		Env.setContext(ctx, Env.DATE, "2000-01-01");
-	//	logger.exiting("Env", "initTest");
-		return ctx;
-	}   //  testInit
 
 	/**
 	 *  Java Version Test, only use for client environment
@@ -167,297 +122,6 @@ public class Login
 	private static CLogger log = CLogger.getCLogger(Login.class);
 	/** Context				*/
 	private Properties 		m_ctx = null;
-	
-	/**
-	 *	(Test) Client Login.
-	 *  <p>
-	 *  - Get Connection
-	 *  - Compare User info
-	 *  <p>
-	 *  Sets Context with login info
-	 * @param cc connection
-	 * @param app_user user
-	 * @param app_pwd pwd
-	 * @param force ignore pwd
-	 * @return  Array of Role KeyNamePair or null if error
-	 * The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 * @deprecated
-	 */
-	@Deprecated(since = "2", forRemoval = true)
-	protected KeyNamePair[] getRoles (CConnection cc,
-		String app_user, String app_pwd, boolean force)
-	{
-		//	Establish connection
-		DB.setDBTarget(cc);
-		Env.setContext(m_ctx, "#Host", cc.getAppsHost());
-		Env.setContext(m_ctx, "#Database", cc.getDbName());
-		
-		Connection conn = DB.getConnectionRO(); 
-		if (conn == null)
-		{
-			log.saveError("NoDatabase", "");
-			return null;
-		}
-		try {
-			conn.close();
-		} catch (SQLException e) {
-		}
-		
-		if (app_pwd == null)
-			return null;
-		//
-		return getRoles (app_user, app_pwd, force);
-	}   //  getRoles
-
-	/**
-	 *  (Web) Client Login.
-	 *  <p>
-	 *  Compare User Info
-	 *  <p>
-	 *  Sets Context with login info
-	 *  @param app_user Principal
-	 *  @return role array or null if in error.
-	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use {@link #getRoles(String, KeyNamePair)}
-	 */
-	@Deprecated(since = "2", forRemoval = true)
-	public KeyNamePair[] getRoles (Principal app_user)
-	{
-		if (app_user == null)
-			return null;
-		//  login w/o password as previously authorized
-		return getRoles (app_user.getName(), null, false);
-	}   //  getRoles
-
-	/**
-	 *  Client Login.
-	 *  <p>
-	 *  Compare User Info
-	 *  <p>
-	 *  Sets Context with login info
-	 *  @param app_user user id
-	 *  @param app_pwd password
-	 *  @return role array or null if in error.
-	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use use {@link #getRoles(String, KeyNamePair)}
-	 */
-	@Deprecated(since = "2", forRemoval = true)
-	public KeyNamePair[] getRoles (String app_user, String app_pwd)
-	{
-		return getRoles (app_user, app_pwd, false);
-	}   //  login
-
-	/**
-	 *  Actual DB login procedure.
-	 *  @param app_user user
-	 *  @param app_pwd pwd
-	 *  @param force ignore pwd
-	 *  @return role array or null if in error.
-	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use {@link #getRoles(String, KeyNamePair)}
-	 */
-	@Deprecated(since = "2", forRemoval = true)
-	private KeyNamePair[] getRoles (String app_user, String app_pwd, boolean force)
-	{
-		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
-
-		//long start = System.currentTimeMillis();
-		if (app_user == null)
-		{
-			log.warning("No Apps User");
-			return null;
-		}
-
-		//	Authentication
-		boolean authenticated = false;
-		MSystem system = MSystem.get(m_ctx);
-		if (system == null)
-			throw new IllegalStateException("No System Info");
-
-		if (app_pwd == null || app_pwd.length() == 0)
-		{
-			log.warning("No Apps Password");
-			return null;
-		}
-
-		if (system.isLDAP())
-		{
-			authenticated = system.isLDAP(app_user, app_pwd);
-			if (authenticated) {
-				app_pwd = null;
-			}
-			// if not authenticated, use AD_User as backup - just for non-LDAP users
-		}
-
-		boolean hash_password=MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
-		KeyNamePair[] retValue = null;
-		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
-
-
-		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
-		String userNameCol;
-		if (email_login)
-			userNameCol = "AD_User.EMail";
-		else
-			userNameCol = "COALESCE(AD_User.LDAPUser,AD_User.Name)";
-
-		if(hash_password){
-			// adaxa-pb: try to authenticate using hashed password -- falls back to plain text/encrypted
-			String where = " " + userNameCol + " = ? AND" +
-					" EXISTS (SELECT * FROM AD_User_Roles ur" +
-					"         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)" +
-					"         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y') AND " +
-					" EXISTS (SELECT * FROM AD_Client c" +
-					"         WHERE c.AD_Client_ID=AD_User.AD_Client_ID" +
-					"         AND c.IsActive='Y') AND " +
-					" AD_User.IsActive='Y'";
-
-			// deprecate this method - it cannot cope with same user found on multiple clients
-			// use public KeyNamePair[] getRoles(String app_user, KeyNamePair client) approach instead
-			MUser user = MTable.get(m_ctx, MUser.Table_ID).createQuery( where, null).setParameters(app_user).firstOnly();   // throws error if username collision occurs
-
-			// always do calculation to confuse timing based attacks
-			if ( user == null )
-				user = MUser.get(m_ctx, 0);
-			if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
-				if ( user.authenticateHash(app_pwd) )
-				{
-					authenticated = true;
-				}
-			}
-		} 
-		else{
-			StringBuilder sql = new StringBuilder("SELECT AD_User.AD_User_ID ").append(" FROM AD_User ");
-			sql.append(" WHERE ").append(userNameCol).append("=?");
-			sql.append(" AND AD_User.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE AD_User.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
-
-			PreparedStatement pstmt1=null;
-			ResultSet rs1=null;
-
-			try{
-				pstmt1 = DB.prepareStatement(sql.toString(), null);
-				pstmt1.setString(1, app_user);
-				rs1 = pstmt1.executeQuery(); 
-
-				while(rs1.next()){
-					MUser user = new MUser(m_ctx, rs1.getInt(1), null);
-					if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
-						if (user.getPassword() != null && user.getPassword().equals(app_pwd)) {
-							authenticated=true;
-						}
-					}
-				}
-
-			}catch (Exception ex) {
-				// TODO: handle exception
-				log.log(Level.SEVERE, sql.toString(), ex);
-				log.saveError("DBLogin", ex);
-				retValue = null;
-			}
-			finally
-			{
-				DB.close(rs1, pstmt1);
-				rs1 = null; pstmt1 = null;
-			}
-		}
-
-		if(authenticated){	
-			StringBuilder sql = new StringBuilder("SELECT AD_User.AD_User_ID, r.AD_Role_ID,r.Name")
-			.append(" FROM AD_User ")
-			.append(" INNER JOIN AD_User_Roles ur ON (AD_User.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
-			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
-
-			sql.append("WHERE ").append(userNameCol).append("=?");		//	#1
-
-			sql.append(" AND AD_User.IsActive='Y'").append(" AND EXISTS (SELECT * FROM AD_Client c WHERE AD_User.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')");
-
-			sql.append(" ORDER BY r.Name");
-
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql.toString(), null);
-				pstmt.setString(1, app_user);
-
-				//	execute a query
-				rs = pstmt.executeQuery();
-
-				if (!rs.next())		//	no record found
-					if (force)
-					{
-						Env.setContext(m_ctx, Env.AD_USER_NAME, "SuperUser");
-						Env.setContext(m_ctx, Env.AD_USER_ID, SystemIDs.USER_SUPERUSER);
-						Env.setContext(m_ctx, "#AD_User_Description", "SuperUser Forced Login");
-						Env.setContext(m_ctx, Env.USER_LEVEL, "S  ");  	//	Format 'SCO'
-						Env.setContext(m_ctx, "#User_Client", "0");		//	Format c1, c2, ...
-						Env.setContext(m_ctx, "#User_Org", "0"); 		//	Format o1, o2, ...
-						retValue = new KeyNamePair[] {new KeyNamePair(0, "System Administrator")};
-						return retValue;
-					}
-					else
-					{
-						log.saveError("UserPwdError", app_user, false);
-						return null;
-					}
-
-				Env.setContext(m_ctx, Env.AD_USER_NAME, app_user);
-				Env.setContext(m_ctx, Env.AD_USER_ID, rs.getInt(1));
-				Env.setContext(m_ctx, Env.SALESREP_ID, rs.getInt(1));
-
-				if (Ini.isClient())
-				{
-					if (MSystem.isSwingRememberUserAllowed())
-						Ini.setProperty(Ini.P_UID, app_user);
-					else
-						Ini.setProperty(Ini.P_UID, "");
-					if (Ini.isPropertyBool(Ini.P_STORE_PWD) && MSystem.isSwingRememberPasswordAllowed())
-						Ini.setProperty(Ini.P_PWD, app_pwd);
-				}
-
-				do	//	read all roles
-				{
-					MUser user = new MUser(m_ctx, rs.getInt(1), null);
-					boolean valid = false;
-					if (hash_password) {
-						valid = user.authenticateHash(app_pwd);
-					} else {
-						valid = user.getPassword() != null && user.getPassword().equals(app_pwd);
-					}
-					if (valid) { 
-						int AD_Role_ID = rs.getInt(2);
-						if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
-							Env.setContext(m_ctx, "#SysAdmin", "Y");
-						String Name = rs.getString(3);
-						KeyNamePair p = new KeyNamePair(AD_Role_ID, Name);
-						list.add(p);
-					}
-				}
-				while (rs.next());
-				//
-				retValue = new KeyNamePair[list.size()];
-				list.toArray(retValue);
-				if (log.isLoggable(Level.FINE)) log.fine("User=" + app_user + " - roles #" + retValue.length);
-
-			}
-
-			catch (Exception ex)
-			{
-				log.log(Level.SEVERE, sql.toString(), ex);
-				log.saveError("DBLogin", ex);
-				retValue = null;
-			}
-			//
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-				app_pwd = null;
-			}
-		}
-		//long ms = System.currentTimeMillis () - start;
-		return retValue;
-	}	//	getRoles
 	
 	/**
 	 *  Get Clients (AD_Client).
@@ -1246,7 +910,7 @@ public class Login
 	 * 	Get SSO Principal
 	 *	@return principal
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public Principal getPrincipal()
 	{
 		return null;
@@ -1556,8 +1220,14 @@ public class Login
 				user.setFailedLoginCount(0);
 				user.setDateLastLogin(new Timestamp(now));
 				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
-				if (!user.save())
-					log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
+				migrateUserPasswordIfNeeded(user, app_pwd);
+				user.set_Attribute(MUser.SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED, "Y");
+				try {
+					if (!user.save())
+						log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
+				} finally {
+					user.set_Attribute(MUser.SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED, null);
+				}
 			}
 		}
 		else if (validButLocked)
@@ -1623,6 +1293,21 @@ public class Login
 			Env.setContext(Env.getCtx(), Env.IS_SSO_LOGIN, false);
 		
 		return retValue;
+	}
+
+	private void migrateUserPasswordIfNeeded(MUser user, String app_pwd) {
+		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
+		if (!hash_password || app_pwd == null || app_pwd.isEmpty()) {
+			return;
+		}
+
+		// re-hash password if current hash algo or salt algo is different from the one configured
+		String currentHashAlgo = MSysConfig.getValue(MSysConfig.USER_PASSWORD_HASH_ALGORITHM, Secure.LEGACY_PASSWORD_HASH_ALGORITHM);
+		if (!currentHashAlgo.equals(user.getPasswordHashAlgorithm()) || !SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM.equals(user.getSaltAlgorithm())) {
+			user.setPasswordHashAlgorithm(currentHashAlgo);
+			user.setSaltAlgorithm(SecureEngine.DEFAULT_SECURE_RANDOM_ALGORITHM);
+			user.setPassword(app_pwd);
+		}
 	}
 
 	/**

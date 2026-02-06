@@ -169,7 +169,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 *  @deprecated
 	 *	@return true if processed
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean process()
 	{
 		saveEx();

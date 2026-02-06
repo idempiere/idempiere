@@ -53,6 +53,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -294,19 +295,24 @@ public class ReportAction implements EventListener<Event>
 		MQuery query = new MQuery(gridTab.getTableName());
 		MTable table = MTable.get(gridTab.getAD_Table_ID());
 		StringBuilder whereClause = new StringBuilder("");
+		List<Object> params = new ArrayList<Object>();
 
 		if (currentRowOnly)
 		{
 			Record_ID = gridTab.getRecord_ID();
 			Record_UU = gridTab.getRecord_UU();
 			whereClause.append(gridTab.getTableModel().getWhereClause(gridTab.getCurrentRow()));
-			if (whereClause.length() == 0)
-				whereClause.append(gridTab.getTableModel().getSelectWhereClause());
-
+			if (whereClause.length() == 0) {
+				SQLFragment filter = gridTab.getTableModel().getSQLFilter();
+				whereClause.append(filter.sqlClause());
+				params.addAll(filter.parameters());
+			}
 		}
 		else
 		{
-			whereClause.append(gridTab.getTableModel().getSelectWhereClause());
+			SQLFragment filter = gridTab.getTableModel().getSQLFilter();
+			whereClause.append(filter.sqlClause());
+			params.addAll(filter.parameters());
 			if (pf != null && pf.getJasperProcess_ID() > 0) {
 				if (table.isUUIDKeyTable()) {
 					jasperRecordUUs = new ArrayList<String>();
@@ -326,15 +332,26 @@ public class ReportAction implements EventListener<Event>
 		{
 			if (whereClause.indexOf("@") != -1) //replace variables in context
 			{
-				String context = Env.parseContext(Env.getCtx(), panel.getWindowNo(), whereClause.toString(), false);
+				List<Object> tempParams = new ArrayList<Object>();
+				String context = Env.parseContextForSql(Env.getCtx(), panel.getWindowNo(), whereClause.toString(), false, tempParams);
 				if(context != null && context.trim().length() > 0)
 				{
+					if (params.size() > 0)
+					{
+						if (tempParams.size() > 0)
+							params = Env.mergeParameters(whereClause.toString(), context, params.toArray(), tempParams.toArray());
+					}
+					else
+					{
+						params = tempParams;
+					}
 					whereClause = new StringBuilder(context);
 				}
 				else
 				{
 					log.log(Level.WARNING, "Failed to parse where clause. whereClause= "+whereClause);
 					whereClause = new StringBuilder("1 = 2");
+					params.clear();
 				}
 			}
 		}
@@ -349,7 +366,10 @@ public class ReportAction implements EventListener<Event>
 			whereClause.append(")");
 		}
 
-		query.addRestriction(whereClause.toString());
+		if (whereClause.length() > 0)
+		{
+			query.addRestriction(new SQLFragment(whereClause.toString(), params));
+		}
 
 		PrintInfo info = new PrintInfo(pf.getName(), pf.getAD_Table_ID(), Record_ID, Record_UU);
 		info.setDescription(query.getInfo());
@@ -394,7 +414,7 @@ public class ReportAction implements EventListener<Event>
 		{
 			// It's a default report using the standard printing engine
 			ReportEngine re = new ReportEngine (Env.getCtx(), pf, query, info, null, gridTab.getWindowNo());
-			re.setWhereExtended(gridTab.getWhereExtended());
+			re.setExtendedFilter(gridTab.getExtendedFilter());
 			
 			if (export)
 				export(re);

@@ -191,8 +191,9 @@ public class GridFieldVO implements Serializable, Cloneable
 
 			if (userDef.getAD_FieldGroup_ID() > 0)
 			{
-				vo.FieldGroup = ((X_AD_FieldGroup)userDef.getAD_FieldGroup()).get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
-				vo.FieldGroupType = userDef.getAD_FieldGroup().getFieldGroupType();
+				MFieldGroup fg = new MFieldGroup(userDef.getCtx(), userDef.getAD_FieldGroup_ID(), userDef.get_TrxName());
+				vo.FieldGroup = fg.get_Translation(I_AD_FieldGroup.COLUMNNAME_Name);
+				vo.FieldGroupType = fg.getFieldGroupType();
 			}
 
 			if (userDef.getIsAutocomplete() != null)
@@ -441,8 +442,8 @@ public class GridFieldVO implements Serializable, Cloneable
 				if (userDef.getIsMandatory()!= null)
 					vo.IsMandatory = "Y".equals(userDef.getIsMandatory());
 				if (userDef.getAD_FieldGroup_ID() > 0) {
-					X_AD_FieldGroup fg = new X_AD_FieldGroup(Env.getCtx(), userDef.getAD_FieldGroup_ID(), null);
-					vo.FieldGroup = fg.get_Translation(X_AD_FieldGroup.COLUMNNAME_Name);
+					MFieldGroup fg = new MFieldGroup(userDef.getCtx(), userDef.getAD_FieldGroup_ID(), userDef.get_TrxName());
+					vo.FieldGroup = fg.get_Translation(MFieldGroup.COLUMNNAME_Name);
 					vo.FieldGroupType = fg.getFieldGroupType();
 				}
 			}
@@ -529,26 +530,54 @@ public class GridFieldVO implements Serializable, Cloneable
 	 * @param AD_Reference_Value_ID AD_Reference_Value_ID
 	 * @param IsMandatory  IsMandatory
 	 * @param IsEncrypted IsEncrypted
-	 * @param Placeholder
-	 * @return GridFieldV0
+	 * @param Placeholder Placeholder
+	 * @param EntityType EntityType
+	 * @return GridFieldVO
 	 */
 	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int WindowIDOfPanel, int infoWindowID,
 			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID, 
-			boolean IsMandatory, boolean IsEncrypted, String Placeholder,String EntityType)
+			boolean IsMandatory, boolean IsEncrypted, String Placeholder, String EntityType)
 	{
-		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
+		return GridFieldVO.createParameter(	ctx, WindowNo, 0, WindowIDOfPanel, infoWindowID, AD_Column_ID, ColumnName, Name,
+											AD_Reference_ID, AD_Reference_Value_ID, IsMandatory, IsEncrypted, Placeholder, EntityType);
+	}
+
+	/**
+	 * Create parameter for infoWindow
+	 * 
+	 * @param ctx ctx
+	 * @param WindowNo WindowNo
+	 * @param TabNo TabNo
+	 * @param WindowIDOfPanel
+	 * @param infoWindowID
+	 * @param AD_Column_ID AD_Column_ID
+	 * @param ColumnName ColumnName
+	 * @param Name  Name
+	 * @param AD_Reference_ID AD_Reference_ID
+	 * @param AD_Reference_Value_ID AD_Reference_Value_ID
+	 * @param IsMandatory  IsMandatory
+	 * @param IsEncrypted IsEncrypted
+	 * @param Placeholder Placeholder
+	 * @param EntityType EntityType
+	 * @return GridFieldVO
+	 */
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int TabNo, int WindowIDOfPanel, int infoWindowID,
+   			int AD_Column_ID, String ColumnName, String Name, int AD_Reference_ID, int AD_Reference_Value_ID, 
+   			boolean IsMandatory, boolean IsEncrypted, String Placeholder, String EntityType)
+	{
+		GridFieldVO vo = new GridFieldVO(ctx, WindowNo, TabNo, 0, 0, false);
 		vo.isProcess = true;
 		vo.IsDisplayed = true;
 		vo.IsReadOnly = false;
 		vo.IsUpdateable = true;
 		vo.AD_Table_ID = 0;
-		vo.AD_Column_ID = AD_Column_ID;	//	**
+		vo.AD_Column_ID = AD_Column_ID;
 		vo.ColumnName = ColumnName;
 		vo.Header = Name;
 		vo.displayType = AD_Reference_ID;
 		vo.AD_Reference_Value_ID = AD_Reference_Value_ID;
 		vo.IsMandatory = IsMandatory;
-		vo.IsEncryptedField= IsEncrypted;			
+		vo.IsEncryptedField = IsEncrypted;
 		vo.AD_InfoWindow_ID_Of_Panel = infoWindowID;
 		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
 		vo.Placeholder = Placeholder;

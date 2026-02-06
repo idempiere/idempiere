@@ -561,7 +561,7 @@ public class MTree extends MTree_Base
 			sql = MRole.getDefault(getCtx(), false).addAccessSQL(sql, 
 				sourceTable, MRole.SQL_FULLYQUALIFIED, m_editable);
 		log.fine(sql);
-		m_nodeRowSet = DB.getRowSet (sql);
+		m_nodeRowSet = DB.getRowSet (sql, get_TrxName());
 		m_nodeIdMap = new HashMap<Integer, ArrayList<Integer>>(50);
 		try 
 		{
@@ -820,4 +820,40 @@ public class MTree extends MTree_Base
 		return DB.getSQLValueStringEx(null, sqlTableTree, treeId);
 	}
 
+	/**
+	 * Return the reference table name from the given tree node table name
+	 * @param tableName tree node table name (AD_TreeBar, AD_TreeNodeBP, etc)
+	 * @param treeId AD_Tree_ID (for AD_TreeNode)
+	 * @return reference table name
+	 */
+	public static String getRefTableNameFromTableName(String tableName, int treeId) {
+		String refTableName = null;
+		if ("AD_Tree_Favorite_Node".equalsIgnoreCase(tableName))
+			refTableName = "AD_Tree_Favorite_Node";
+		else if ("AD_TreeBar".equalsIgnoreCase(tableName)
+				|| "AD_TreeNodeMM".equalsIgnoreCase(tableName))
+			refTableName = "AD_Menu";
+		else if ("AD_TreeNodeBP".equalsIgnoreCase(tableName))
+			refTableName = "C_BPartner";
+		else if ("AD_TreeNodeCMC".equalsIgnoreCase(tableName))
+			refTableName = "CM_Container";
+		else if ("AD_TreeNodeCMM".equalsIgnoreCase(tableName))
+			refTableName = "CM_Media";
+		else if ("AD_TreeNodeCMS".equalsIgnoreCase(tableName))
+			refTableName = "CM_CStage";
+		else if ("AD_TreeNodeCMT".equalsIgnoreCase(tableName))
+			refTableName = "CM_Template";
+		else if ("AD_TreeNodePR".equalsIgnoreCase(tableName))
+			refTableName = "M_Product";
+		else if ("AD_TreeNodeU1".equalsIgnoreCase(tableName)
+				|| "AD_TreeNodeU2".equalsIgnoreCase(tableName) 
+				|| "AD_TreeNodeU3".equalsIgnoreCase(tableName)
+				|| "AD_TreeNodeU4".equalsIgnoreCase(tableName))
+			refTableName = "C_ElementValue";
+		else if ("AD_TreeNode".equalsIgnoreCase(tableName))
+		{
+			refTableName = MTree.getRefTableFromTree(treeId);
+		}
+		return refTableName;
+	}
 }   //  MTree

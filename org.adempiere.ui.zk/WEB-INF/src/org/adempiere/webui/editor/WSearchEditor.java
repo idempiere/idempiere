@@ -62,6 +62,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -282,7 +283,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		
 		autoCompleteListener = e -> {
 				if (!e.isChangingBySelectBack()) {
-					listModel.setWhereClause(getWhereClause());
+					listModel.setSQLFilter(getSQLFilter());
 					String s = e.getValue();					
 					getComponent().getCombobox().setModel(listModel.getSubModel(s, maxRows));
 				}
@@ -519,7 +520,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			setTableAndKeyColumn();
 		
 		// process input text with infopanel/infowindow
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getWhereClause());
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getSQLFilter());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
 			if (ip.getFirstRowKey() instanceof Integer)
@@ -737,7 +738,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		 */
 
 		//  Zoom / Validation
-		String whereClause = getWhereClause();
+		SQLFragment whereClause = getSQLFilter();
 
 		if (log.isLoggable(Level.FINE))
 			log.fine(lookup.getColumnName() + ", Zoom=" + lookup.getZoom() + " (" + whereClause + ")");
@@ -848,51 +849,18 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 	}
 
-	/**
-	 * Parse where clause from lookup validation code.
-	 * @return where clause
-	 */
-	private String getWhereClause()
-	{
-		String whereClause = "";
-
-		if (lookup == null)
-			return "";
-
-		if (lookup.getZoomQuery() != null)
-			whereClause = lookup.getZoomQuery().getWhereClause();
-
-		String validation = lookup.getValidation();
-
-		if (validation == null)
-			validation = "";
-
-		if (whereClause.length() == 0)
-			whereClause = validation;
-		else if (validation.length() > 0)
-			whereClause += " AND " + validation;
-
-		if (whereClause.indexOf('@') != -1)
-		{
-			String validated = Env.parseContext(Env.getCtx(), lookup.getWindowNo(), whereClause, false);
-
-			if (validated.length() == 0)
-				log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
-			else
-			{
-				if (log.isLoggable(Level.FINE))
-					log.fine(getColumnName() + " - Parsed: " + validated);
-				return validated;
-			}
-		}
-		return whereClause;
-	}	//	getWhereClause
-
 	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
     }
+
+	private SQLFragment getSQLFilter()
+	{
+		if (lookup == null)
+			return null;
+		return lookup.getSQLFilter();
+	}
 
 	@Override
 	public void valueChange(ValueChangeEvent evt)

@@ -129,7 +129,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public static MColumn get (Properties ctx, String tableName, String columnName)
 	{
 		MTable table = MTable.get(ctx, tableName);
-		return  table.getColumn(columnName);
+		return  table != null ? table.getColumn(columnName) : null;
 	}	//	get
 
 	/**
@@ -143,7 +143,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public static MColumn get (Properties ctx, String tableName, String columnName, String trxName)
 	{
 		MTable table = MTable.get(ctx, tableName, trxName);
-		return table.getColumn(columnName);
+		return table != null ? table.getColumn(columnName) : null;
 	}	//	get
 
 	/**
@@ -753,12 +753,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		// IDEMPIERE-965
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
 			String indexName = MTable.getUUIDIndexName(tableName);
-			String constraintType;
-			if (table.isUUIDKeyTable())
-				constraintType = "PRIMARY KEY";
-			else
-				constraintType = "UNIQUE";
-			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" ").append(constraintType).append(" (").append(getColumnName()).append(")");
+			// when doing packin it is still not known if the table is UUID or not as every column is added one by one
+			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" UNIQUE (").append(getColumnName()).append(")");
 			return msgreturn.toString();
 		}
 		return "";

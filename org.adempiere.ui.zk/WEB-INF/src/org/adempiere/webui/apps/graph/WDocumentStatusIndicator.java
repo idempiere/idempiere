@@ -161,7 +161,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		if (AD_Window_ID > 0)
 		{
 			MQuery query = new MQuery(m_documentStatus.getAD_Table_ID());
-			query.addRestriction(MDocumentStatus.getWhereClause(m_documentStatus));
+			query.addRestriction(MDocumentStatus.getSQLFilter(m_documentStatus));
 			AEnv.zoom(AD_Window_ID, query);
 		}
 		else if ( AD_Form_ID > 0 )

@@ -1,6 +1,6 @@
 <!-- location entries for maven artifacts. append to the end of the generated 
 	org.idempiere.p2.targetplatform.target target platform file -->
-<target name="idempiere-12-maven-locations" sequenceNumber="20250807">
+<target name="idempiere-12-maven-locations" sequenceNumber="20251023">
 <locations>
     <!-- com.google -->
     <location includeSource="true" missingManifest="generate" type="Maven">
@@ -1665,17 +1665,17 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="error" type="Maven">
 		<groupId>com.zaxxer</groupId>
 	    <artifactId>HikariCP</artifactId>
-	    <version>5.1.0</version>
+	    <version>7.0.2</version>
 	</location>
 	<location includeSource="true" missingManifest="error" type="Maven">
 	    <groupId>org.postgresql</groupId>
     	<artifactId>postgresql</artifactId>
-    	<version>42.7.3</version>
+    	<version>42.7.8</version>
     </location>
     <location includeSource="true" missingManifest="generate" type="Maven">
     	<groupId>com.oracle.database.jdbc</groupId>
-		<artifactId>ojdbc10</artifactId>
-		<version>19.21.0.0</version>
+		<artifactId>ojdbc17</artifactId>
+		<version>23.26.0.0.0</version>
 		<type>jar</type>
 	  	<instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}

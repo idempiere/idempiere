@@ -36,6 +36,7 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MTable;
@@ -535,6 +536,8 @@ public class DocManager {
 			return null;
 		
 		// get the cost detail records of the back-date transaction
+		// invoice's account date might not be the same as the cost detail's account date, 
+		// it depends on the matched invoice's account date
 		Timestamp dateAcct = MCostDetail.getDateAcct(AD_Table_ID, Record_ID, trxName);
 		if (dateAcct == null)
 			return null;
@@ -659,7 +662,8 @@ public class DocManager {
 		Timestamp today = TimeUtil.trunc(new Timestamp(System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
 		for (int x = bdcds.size() - 1; x >= 0; x--) {
 			MCostDetail bdcd = bdcds.get(x);
-			Timestamp allowedBackDate = TimeUtil.addDays(today, - bdcd.getC_AcctSchema().getBackDateDay());
+			MAcctSchema as = new MAcctSchema(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
+			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getBackDateDay());
 			if (bdcd.getDateAcct().before(allowedBackDate))
 				bdcds.remove(x);
 		}
@@ -818,16 +822,27 @@ public class DocManager {
 				if (repostedRecordIds.contains(repostedRecordId))
 					continue;
 				repostedRecordIds.add(repostedRecordId);
+				
+				boolean skipPosting = false;
+				if (tableID == MInvoice.Table_ID) {
+					MInvoice i = new MInvoice(Env.getCtx(), recordID, trxName);
+					if (!i.isSOTrx())
+						if (i.getDateAcct().compareTo(cd.getDateAcct()) < 0)
+							skipPosting = true;
+				}
 
 				if (tableID == MMatchInv.Table_ID) {
 					MMatchInv mi = new MMatchInv(Env.getCtx(), recordID, trxName);
-					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + mi.getC_InvoiceLine().getC_Invoice_ID()))
+					MInvoiceLine il = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), trxName);	
+					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + il.getC_Invoice_ID()))
 						continue;
 				}
 				
-				String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
-				if (error != null)
-					return error;
+				if (!skipPosting) {
+					String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
+					if (error != null)
+						return error;
+				}
 								
 				if (tableID == MInvoice.Table_ID) { 
 					MMatchPO mpo = null;
@@ -845,9 +860,12 @@ public class DocManager {
 						if (mi.getDateAcct().compareTo(cd.getDateAcct()) < 0)
 							continue;
 						// NOTE: Do not skip reposting match invoices that have already been reposted
-						error = DocManager.postDocument(ass, MMatchInv.Table_ID, mi.get_ID(), true, true, true, trxName);
-						if (error != null)
+						String error = DocManager.postDocument(ass, MMatchInv.Table_ID, mi.get_ID(), true, true, true, trxName);
+						if (error != null) {
+							if (s_log.isLoggable(Level.INFO))
+								s_log.info("Error Posting TableID=" + MMatchInv.Table_ID + ", RecordID=" + mi.get_ID() + " Error: " + error);
 							return error;
+						}
 					}
 				}
     		}

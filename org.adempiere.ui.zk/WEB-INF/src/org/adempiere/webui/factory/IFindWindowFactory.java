@@ -27,6 +27,7 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.window.FindWindow;
 import org.compiere.model.GridField;
+import org.idempiere.db.util.SQLFragment;
 
 
 public interface IFindWindowFactory
@@ -48,5 +49,23 @@ public interface IFindWindowFactory
 	 */
 	public FindWindow getInstance(int targetWindowNo, int targetTabNo, String title,
             int AD_Table_ID, String tableName, String whereExtended,
+            GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel);
+	
+	/**
+	 * Create new instance
+	 * @param targetWindowNo
+	 * @param targetTabNo
+	 * @param title
+	 * @param AD_Table_ID
+	 * @param tableName
+	 * @param filterExtended
+	 * @param findFields
+	 * @param minRecords
+	 * @param adTabId
+	 * @param windowPanel
+	 * @return
+	 */
+	public FindWindow getInstance(int targetWindowNo, int targetTabNo, String title,
+            int AD_Table_ID, String tableName, SQLFragment filterExtended,
             GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel);
 }

@@ -164,7 +164,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		if ( getM_Product_ID() == getEndProduct_ID()) {
 			if (reversalId <= 0  && isAutoGenerateLot && getM_AttributeSetInstance_ID() == 0)
 			{
-				asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
+				asi = MAttributeSetInstance.generateLot(getCtx(), prod, get_TrxName());
 				setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 			} 
 			Timestamp dateMPolicy = date;
@@ -382,9 +382,11 @@ public class MProductionLine extends X_M_ProductionLine {
 		if (productionParent != null) {
 			return productionParent.getM_Product_ID();
 		} else if (getM_Production_ID() > 0) {
-			return getM_Production().getM_Product_ID();
+			MProduction prod = new MProduction(getCtx(), getM_Production_ID(), get_TrxName());
+			return prod.getM_Product_ID();
 		} else {
-			return getM_ProductionPlan().getM_Product_ID();
+			MProductionPlan plan = new MProductionPlan(getCtx(), getM_ProductionPlan_ID(), get_TrxName());
+			return plan.getM_Product_ID();
 		}
 	}
 
@@ -426,7 +428,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		} 
 		else 
 		{
-			I_M_ProductionPlan plan = getM_ProductionPlan();
+			MProductionPlan plan = new MProductionPlan(getCtx(), getM_ProductionPlan_ID(), get_TrxName());
 			MProduction prod = new MProduction(getCtx(), plan.getM_Production_ID(), get_TrxName());
 			if (newRecord && prod.isProcessed()) {
 				log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Production_ID"));

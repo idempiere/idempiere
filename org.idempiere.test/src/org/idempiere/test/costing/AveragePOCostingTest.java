@@ -1053,7 +1053,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertTrue(mi.isPosted());
 				
 				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
-				doc.setC_BPartner_ID(mi.getC_InvoiceLine().getC_Invoice().getC_BPartner_ID());
+				MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
+				doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
@@ -1984,17 +1985,17 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	}
 	
 	@Test
-	public void testLandedCostWtihNoEstimateForPOAndInvoice() {
-		testLandedCostWtihNoEstimateForPOAndInvoice(true);
-		testLandedCostWtihNoEstimateForPOAndInvoice(false);
+	public void testLandedCostWithNoEstimateForPOAndInvoice() {
+		testLandedCostWithNoEstimateForPOAndInvoice(true);
+		testLandedCostWithNoEstimateForPOAndInvoice(false);
 	}
-	public void testLandedCostWtihNoEstimateForPOAndInvoice(boolean forProduct) {
+	public void testLandedCostWithNoEstimateForPOAndInvoice(boolean forProduct) {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
 		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			MProduct product = new MProduct(Env.getCtx(), 0, null);
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testLandedCostWtihNoEstimateForPOAndInvoice");
 			product.setProductType(MProduct.PRODUCTTYPE_Item);
@@ -6014,6 +6015,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					new FactAcct(landedCostAccount, new BigDecimal("30.00"), 2, false));
 			assertFactAcctEntries(list, expected);
 		} finally {
+			rollback();
 			costElement.deleteEx(true);
 		}
 	}
@@ -6216,6 +6218,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertFactAcctEntries(list, expected);
 			}
 		} finally {
+			rollback();
 			costElement.deleteEx(true);
 		}
 	}
@@ -6452,6 +6455,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertFactAcctEntries(list, expected);
 			}
 		} finally {
+			rollback();
 			costElement.deleteEx(true);
 		}
 	}

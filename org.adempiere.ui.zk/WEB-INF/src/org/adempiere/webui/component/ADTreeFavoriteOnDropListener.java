@@ -391,6 +391,8 @@ public class ADTreeFavoriteOnDropListener implements EventListener<Event>
 				updateTFNParentAndSeqNo(newMParent, newTNode, i);
 			}
 		}
+		
+		tree.setModel(treeModel);
 	} // moveNode
 
 	/**

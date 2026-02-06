@@ -493,7 +493,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		dataStatus.setText(info.toString());
 		//
 		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && !isReconciled.isSelected());
-		bReset.setEnabled(m_noSelected > 0 && isReconciled.isSelected());
+		bReset.setEnabled(m_noSelected > 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && isReconciled.isSelected());
 
 		if (m_selectedAmt.signum() != 0) {
 			cbCreateJournal.setVisible(m_maxAmtToCreateJournal.signum() == 0 || m_selectedAmt.abs().compareTo(m_maxAmtToCreateJournal.abs()) <= 0);

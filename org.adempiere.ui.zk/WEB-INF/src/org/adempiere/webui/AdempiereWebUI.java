@@ -31,7 +31,6 @@ import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
 import org.adempiere.webui.apps.AEnv;
@@ -134,9 +133,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	private Keylistener keyListener;
 
 	private static final CLogger logger = CLogger.getCLogger(AdempiereWebUI.class);
-
-	@Deprecated(forRemoval = true, since = "11")
-	public static final String EXECUTION_CARRYOVER_SESSION_KEY = "execution.carryover";
 
 	/** Session attribute to hold {@link ClientInfo} reference */
 	private static final String CLIENT_INFO = "client.info";
@@ -317,10 +313,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
-        
+
+        String sessionId;
+        if (MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_JSESSIONID, false))
+        	sessionId = httpSess.getId();
+        else
+        	sessionId = "zkwebui";
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
-			Executions.getCurrent().getRemoteHost(), httpSess.getId());
-		if (clientInfo.userAgent != null) {
+			Executions.getCurrent().getRemoteHost(), sessionId);
+		if (clientInfo.userAgent != null && MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_USER_AGENT, false)) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();
 		}
@@ -516,13 +517,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
 		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
 	    String ssoLogoutURL = null;
-	    if (!isAdminLogin && (isSSOLogin && Util.isEmpty(provider)))
+	    if (!isAdminLogin && isSSOLogin)
 		{
 			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider);
 			if (service != null)
 				ssoLogoutURL = service.getLogoutURL();
-			else
-				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "SSOServiceNotFound"));
 		}
 	    
 	    final Session session = logout0();
@@ -562,11 +561,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
      * @param session
      */
 	private void afterLogout(final Session session) {
-		try {
-    		((SessionCtrl)session).onDestroyed();
-    	} catch (Throwable t) {
-    		t.printStackTrace();
-    	}
     	((SessionCtrl)session).invalidateNow();
 	}
     
@@ -822,7 +816,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */	
 	public static String getUploadSetting() {
 		StringBuilder uploadSetting = new StringBuilder("true,native");
-		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
+		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0, Env.getAD_Client_ID(Env.getCtx()));
 		if (size > 0) {
 			uploadSetting.append(",maxsize=").append(size);
 		}

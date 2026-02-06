@@ -29,25 +29,27 @@
 **********************************************************************/
 package org.adempiere.util;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.compiere.model.I_C_Payment;
-import org.compiere.model.MColumn;
+import org.adempiere.base.Core;
+import org.adempiere.base.search.ISearchProvider;
+import org.adempiere.base.search.SearchResult;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSearchDefinition;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Executes search and opens windows for defined transaction codes
@@ -67,12 +69,13 @@ public abstract class AbstractDocumentSearch {
 	public boolean openDocumentsByDocumentNo(String searchString) {
 		windowOpened = false;
 		StringBuilder msglog = new StringBuilder();
-				
-		msglog.append("Search started with String: ").append(searchString);
-		if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 
-		// Check if / how many transaction-codes are used
-		if (! Util.isEmpty(searchString)) {
+		msglog.append("Search started with String: ").append(searchString);
+		if (log.isLoggable(Level.FINE))
+			log.fine(msglog.toString());
+
+		// Check if / transaction-codes are used
+		if (!Util.isEmpty(searchString)) {
 			String[] codes = searchString.trim().replace("  ", " ").split(" ");
 
 			List<String> codeList = new ArrayList<String>();
@@ -103,15 +106,17 @@ public abstract class AbstractDocumentSearch {
 			// Start the search for every single code
 			if (codeList.size() > 0) {
 				for (int i = 0; i < codeList.size(); i++) {
-						msglog = new StringBuilder("Search with Transaction: '");
-						msglog.append(codeList.get(i)).append("' for: '")
-							  .append(search.toString()).append("'");								
-					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
+					msglog = new StringBuilder("Search with Transaction: '");
+					msglog.append(codeList.get(i)).append("' for: '")
+							.append(search.toString()).append("'");
+					if (log.isLoggable(Level.FINE))
+						log.fine(msglog.toString());
 					getID(codeList.get(i), search.toString());
 				}
 			} else {
 				msglog = new StringBuilder("Search without Transaction: ").append(search.toString());
-				if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
+				if (log.isLoggable(Level.FINE))
+					log.fine(msglog.toString());
 				getID(null, search.toString());
 			}
 		} else {
@@ -127,146 +132,73 @@ public abstract class AbstractDocumentSearch {
 	 * @param searchString
 	 */
 	private void getID(String transactionCode, String searchString) {
-
-		ResultSet rsSO = null;
-		ResultSet rsPO = null;
-		PreparedStatement pstmtSO = null;
-		PreparedStatement pstmtPO = null;
-		StringBuilder sqlSO = null;
-		StringBuilder sqlPO = null;
-		StringBuilder msglog = null;
-		
-
 		final Properties ctx = Env.getCtx();
 		final MRole role = MRole.get(ctx, Env.getAD_Role_ID(ctx), Env.getAD_User_ID(ctx), true);
 
 		try {
+			List<ISearchProvider> providers = Core.getSearchProviders();
+			Map<String, Vector<Integer>> resultsMap = new HashMap<>();
+
+			int pageSize = MSysConfig.getIntValue(
+					MSysConfig.MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER, 3, Env.getAD_Client_ID(Env.getCtx()));
+
 			for (MSearchDefinition msd : MSearchDefinition.getForCode(transactionCode)) {
+				boolean foundResults = false;
+				for (ISearchProvider provider : providers) {
+					if (provider.accept(msd)) {
+						List<SearchResult> results = provider.search(msd, searchString, pageSize, 0);
+						if (results != null && !results.isEmpty()) {
+							for (SearchResult result : results) {
+								if (result.getRecordId() < 0)
+									continue;
 
-				MTable table = new MTable(Env.getCtx(), msd.getAD_Table_ID(), null);
-				// SearchDefinition with a given table and column
-				if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_TABLE)) {
-					MColumn column = MColumn.get(Env.getCtx(), msd.getAD_Column_ID());
-					sqlSO = new StringBuilder("SELECT ").append(table.getTableName()).append("_ID FROM ").append(table.getTableName())
-							.append(" ");
-					// search for an Integer
-					if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
-						sqlSO.append("WHERE ").append(column.getColumnName()).append("=?");
-						// search for a String
-					} else {
-						sqlSO.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
-					}
-					sqlSO.append(Env.parseContext(Env.getCtx(), -1, " AND AD_Client_ID=@#AD_Client_ID@", false, true));
-
-					if (msd.getPO_Window_ID() != 0) {
-						sqlPO = new StringBuilder(sqlSO.toString());
-						String columntrx = "IsSOTrx";
-						if (I_C_Payment.Table_Name.equals(table.getTableName())) {
-							columntrx = "IsReceipt";
-						}
-						sqlPO.append(" AND ").append(columntrx).append("='N'");
-						sqlSO.append(" AND ").append(columntrx).append("='Y'");
-						pstmtPO = DB.prepareStatement(sqlPO.toString(), null);
-					}
-					pstmtSO = DB.prepareStatement(sqlSO.toString(), null);
-					// search for a Integer
-					if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
-						pstmtSO.setInt(1, Integer.valueOf(searchString.replaceAll("\\D", "")));
-						if (pstmtPO != null) {
-							pstmtPO.setInt(1, Integer.valueOf(searchString.replaceAll("\\D", "")));
-						}
-						// search for a String
-					} else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
-						if (searchString.endsWith("%"))
-							pstmtSO.setString(1, searchString);
-						else
-							pstmtSO.setString(1, searchString+"%");
-						if (pstmtPO != null) {
-							if (searchString.endsWith("%"))
-								pstmtPO.setString(1, searchString);
-							else
-								pstmtPO.setString(1, searchString+"%");
-						}
-					}
-					// SearchDefinition with a special query
-				} else if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_QUERY)) {
-					sqlSO = new StringBuilder().append(Env.parseContext(Env.getCtx(), -1, msd.getQuery(), false, true));
-					pstmtSO = DB.prepareStatement(sqlSO.toString(), null);
-					// count '?' in statement
-					int count = 1;
-					for (char c : sqlSO.toString().toCharArray()) {
-						if (c == '?') {
-							count++;
-						}
-					}
-					for (int i = 1; i < count; i++) {
-						if (msd.getDataType().equals(MSearchDefinition.DATATYPE_INTEGER)) {
-							pstmtSO.setInt(i, Integer.valueOf(searchString.replaceAll("\\D", "")));
-						} else if (msd.getDataType().equals(MSearchDefinition.DATATYPE_STRING)) {
-							if (searchString.endsWith("%"))
-								pstmtSO.setString(i, searchString);
-							else
-								pstmtSO.setString(i, searchString+"%");
+								if (role.getWindowAccess(result.getWindowId()) != null) {
+									foundResults = true;
+									String key = result.getWindowId() + "|" + result.getTableName();
+									Vector<Integer> ids = resultsMap.get(key);
+									if (ids == null) {
+										ids = new Vector<>();
+										resultsMap.put(key, ids);
+									}
+									if (!ids.contains(result.getRecordId()))
+										ids.add(result.getRecordId());
+								}
+							}
+							break;
 						}
 					}
 				}
-				if (pstmtSO != null) {
-					msglog = new StringBuilder("SQL Sales: ").append(sqlSO.toString());
-					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
-					rsSO = pstmtSO.executeQuery();
-					Vector<Integer> idSO = new Vector<Integer>();
-					while (rsSO.next()) {
-						idSO.add(Integer.valueOf(rsSO.getInt(1)));
-					}
+
+				if (!foundResults && (searchString == null || searchString.trim().length() == 0)) {
 					if (role.getWindowAccess(msd.getAD_Window_ID()) != null) {
-						msglog = new StringBuilder("Open Window: ").append(msd.getAD_Window_ID()).append(" / Table: ")
-									.append(table.getTableName()).append(" / Number of Results: ").append(idSO.size());
-						if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
-
-						if (idSO.size() == 0 && (searchString == null || searchString.trim().length() == 0)) {
-							// No search string - open the window with new record
-							idSO.add(Integer.valueOf(0));
+						MTable table = new MTable(Env.getCtx(), msd.getAD_Table_ID(), null);
+						String key = msd.getAD_Window_ID() + "|" + table.getTableName();
+						Vector<Integer> ids = resultsMap.get(key);
+						if (ids == null) {
+							ids = new Vector<>();
+							resultsMap.put(key, ids);
 						}
+						if (!ids.contains(0))
+							ids.add(0);
+					}
+				}
+			}
 
-						openWindow(idSO, table.getTableName(), msd.getAD_Window_ID());
-					} else {
-						log.warning("Role is not allowed to view this window");
-					}
+			for (Map.Entry<String, Vector<Integer>> entry : resultsMap.entrySet()) {
+				String[] parts = entry.getKey().split("\\|");
+				int windowId = Integer.parseInt(parts[0]);
+				String tableName = parts[1];
+				Vector<Integer> ids = entry.getValue();
+
+				if (log.isLoggable(Level.FINE)) {
+					log.fine("Open Window: " + windowId + " / Table: " + tableName + " / Number of Results: "
+							+ ids.size());
 				}
-				if (pstmtPO != null) {
-					msglog = new StringBuilder("SQL Purchase: ").append(sqlPO);
-					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
-					rsPO = pstmtPO.executeQuery();
-					Vector<Integer> idPO = new Vector<Integer>();
-					while (rsPO.next()) {
-						idPO.add(Integer.valueOf(rsPO.getInt(1)));
-					}
-					if (role.getWindowAccess(msd.getPO_Window_ID()) != null) {
-						msglog = new StringBuilder("Open Window: ").append(msd.getPO_Window_ID()).append(" / Table: ")
-								.append(table.getTableName()).append(" / Number of Results: ").append(idPO.size());						
-						if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
-						openWindow(idPO, table.getTableName(), msd.getPO_Window_ID());
-					} else {
-						log.warning("Role is not allowed to view this window");
-					}
-				}
-				DB.close(rsSO, pstmtSO);
-				DB.close(rsPO, pstmtPO);
-				pstmtSO = null;
-				pstmtPO = null;
-				rsSO = null;
-				rsPO = null;
+				openWindow(ids, tableName, windowId);
 			}
 		} catch (Exception e) {
 			log.severe(e.toString());
 			e.printStackTrace();
-		} finally {
-			DB.close(rsSO, pstmtSO);
-			DB.close(rsPO, pstmtPO);
-			rsSO = null;
-			rsPO = null;
-			pstmtSO = null;
-			pstmtPO = null;
 		}
 	}
 
@@ -274,7 +206,7 @@ public abstract class AbstractDocumentSearch {
 	 * opens window with the given documents
 	 *
 	 * @param ids
-	 *            - document id's
+	 *                  - document id's
 	 * @param tableName
 	 * @param windowId
 	 */
@@ -283,17 +215,20 @@ public abstract class AbstractDocumentSearch {
 			return;
 		}
 		StringBuilder whereString = new StringBuilder(" ").append(tableName).append("_ID");
+		List<Object> params = new ArrayList<Object>();
 		// create query string
 		if (ids.size() == 1) {
 			if (ids.get(0).intValue() == 0) {
 				whereString = null;
 			} else {
-				whereString.append("=").append(ids.get(0).intValue());
+				whereString.append("=?");
+				params.add(ids.get(0).intValue());
 			}
 		} else {
 			whereString.append(" IN (");
 			for (int i = 0; i < ids.size(); i++) {
-				whereString.append(ids.get(i).intValue());
+				whereString.append("?");
+				params.add(ids.get(i).intValue());
 				if (i < ids.size() - 1) {
 					whereString.append(",");
 				} else {
@@ -305,11 +240,11 @@ public abstract class AbstractDocumentSearch {
 		final MQuery query = new MQuery(tableName);
 		if (whereString != null) {
 			if (log.isLoggable(Level.FINE)) log.fine(whereString.toString());
-			query.addRestriction(whereString.toString());
+			query.addRestriction(new SQLFragment(whereString.toString(), params));
 		}
 		final boolean ok = openWindow(windowId, query);
 		if (!ok) {
-			StringBuilder msglog = new StringBuilder("Unable to open window: ").append(whereString.toString());			
+			StringBuilder msglog = new StringBuilder("Unable to open window: ").append(whereString.toString());
 			log.severe(msglog.toString());
 		}
 		if (!windowOpened && ok)

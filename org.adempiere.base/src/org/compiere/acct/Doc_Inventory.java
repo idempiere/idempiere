@@ -36,7 +36,9 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
 import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -108,6 +110,33 @@ public class Doc_Inventory extends Doc
 	 */
 	private DocLine[] loadLines(MInventory inventory)
 	{		
+		MDocType dt = MDocType.get(inventory.getCtx(), inventory.getC_DocType_ID());
+		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(dt.getDocSubTypeInv())) {
+			MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
+			MAcctSchema as = client.getAcctSchema();
+			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(inventory.getCtx(), client.get_ID());
+			if (as.getC_Currency_ID() != inventory.getC_Currency_ID()) {
+				for (MAcctSchema a : ass) {
+					if (a.getC_Currency_ID() == inventory.getC_Currency_ID()) 
+						as = a ; 
+				}
+			}
+			if (getAcctSchema().get_ID() == as.get_ID()) {
+				MInventoryLine[] lines = inventory.getLines(false);
+				for (MInventoryLine line : lines) {
+					BigDecimal currentCostPrice = line.getCurrentCostPriceForCostAdjustment();
+					if (currentCostPrice != null) {
+						if (currentCostPrice.compareTo(line.getCurrentCostPrice()) != 0) {
+							line.setCurrentCostPrice(currentCostPrice);
+							line.saveEx(inventory.get_TrxName());
+							if (s_log.isLoggable(Level.INFO))
+								s_log.info("CurrentCostPrice updated to " + line.getCurrentCostPrice());
+						}
+					}
+				}
+			}
+		}
+		
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 		MInventoryLine[] lines = inventory.getLines(false);
 		for (int i = 0; i < lines.length; i++)
@@ -136,9 +165,9 @@ public class Doc_Inventory extends Doc
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
 			else if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
 				amtDiff = line.getNewCostPrice().subtract(line.getCurrentCostPrice());
-			//	nothing to post
-			if (qtyDiff.signum() == 0 && amtDiff.signum() == 0)
-				continue;
+			//	don't skip, nothing to post but there might be changes in the costing
+//			if (qtyDiff.signum() == 0 && amtDiff.signum() == 0)
+//				continue;
 			//
 			DocLine docLine = new DocLine (line, this);
 			docLine.setQty (qtyDiff, false);		// -5 => -5
@@ -239,7 +268,7 @@ public class Doc_Inventory extends Doc
 				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 					orgId = 0;
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
-				MCostDetail cd = MCostDetail.getInventory(as, product.getM_Product_ID(), asiId, get_ID(), ce.getM_CostElement_ID(), getTrxName());
+				MCostDetail cd = MCostDetail.getInventory(as, product.getM_Product_ID(), asiId, line.get_ID(), ce.getM_CostElement_ID(), getTrxName());
 				ICostInfo cost = MCost.getCostInfo(product, asiId, as, 
 						orgId, ce.getM_CostElement_ID(), 
 						getDateAcct(), cd, getTrxName());
@@ -289,8 +318,24 @@ public class Doc_Inventory extends Doc
 					}					
 					if (costs == null || costs.signum() == 0)
 					{
-						p_Error = "No Costs for " + line.getProduct().getName();
-						return null;
+						if (product.isStocked())
+						{
+							//ok if we have purchased zero cost item from vendor before
+							int count = DB.getSQLValue(null, "SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)", 
+									product.getM_Product_ID());
+							if (count > 0)
+							{
+								costs = BigDecimal.ZERO;
+							}
+							else
+							{
+								p_Error = Msg.getMsg(getCtx(), "No Costs for") + " " + line.getProduct().getName();
+								log.log(Level.WARNING, p_Error);
+								return null;
+							}
+						}
+						else	//	ignore service
+							continue;
 					}
 				}
 				else
