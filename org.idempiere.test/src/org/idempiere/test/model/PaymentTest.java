@@ -31,8 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.compiere.model.MBPRelation;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.MProduct;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
@@ -112,4 +116,97 @@ public class PaymentTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
 	}
+
+	/**
+	 * Test proxy payment feature - a business partner can pay for another business partner's invoice
+	 * when the BP Relation IsPayFrom flag is enabled
+	 */
+	@Test
+	public void testProxyPayment()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+		// Step 1: Generate an invoice for Joe Block and complete it
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoice.setC_DocTypeTarget_ID(MInvoice.DOCBASETYPE_ARInvoice);
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setM_PriceList_ID(DictionaryIDs.M_PriceList.STANDARD.id);
+		invoice.saveEx();
+
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id));
+		invoiceLine.setQty(new BigDecimal("2"));
+		invoiceLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Error completing invoice: " + info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice should be completed");
+
+		// Step 2: Create a payment for that invoice where the business partner is C&W Construction
+		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		payment.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);
+		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		payment.setC_DocType_ID(true); // Receipt
+		payment.setDateTrx(today);
+		payment.setDateAcct(today);
+		payment.setPayAmt(invoice.getGrandTotal());
+
+		// Step 3: Expected - the payment cannot be saved, must throw an error indicating that the business partner is different
+		boolean errorThrown = false;
+		String errorMsg = null;
+		try {
+			payment.saveEx();
+		} catch (Exception e) {
+			errorThrown = true;
+			errorMsg = e.getMessage();
+		}
+		assertTrue(errorThrown, "Payment save should fail when BP on payment differs from BP on invoice without proper relation");
+		assertEquals(errorMsg, "Error: Business Partner is different from Invoice - Business Partner");
+
+		// Step 4: Retrieve the record from MBPRelation object (C_BP_Relation table) with C_BP_Relation_ID=100
+		MBPRelation bpRelation = new MBPRelation(Env.getCtx(), DictionaryIDs.C_BP_Relation.C_AND_W_PAYS_FOR_JOE.id, getTrxName());
+		assertTrue(bpRelation.getC_BP_Relation_ID() > 0, "BP Relation with ID 100 should exist");
+
+		// Step 5: Set the flag IsPayFrom to true
+		bpRelation.setIsPayFrom(true);
+
+		// Step 6: Save the record
+		bpRelation.saveEx();
+		assertTrue(bpRelation.isPayFrom(), "IsPayFrom flag should be true");
+
+		// Step 7: Try to save again the payment - this time the save must succeed
+		MPayment payment2 = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment2.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		payment2.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		payment2.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);
+		payment2.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		payment2.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		payment2.setC_DocType_ID(true); // Receipt
+		payment2.setDateTrx(today);
+		payment2.setDateAcct(today);
+		payment2.setPayAmt(invoice.getGrandTotal());
+		payment2.saveEx();
+
+		assertTrue(payment2.getC_Payment_ID() > 0, "Payment should be saved successfully after enabling IsPayFrom");
+
+		// Step 8: Complete the payment
+		info = MWorkflow.runDocumentActionWorkflow(payment2, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Error completing payment: " + info.getSummary());
+		payment2.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, payment2.getDocStatus(), "Payment should be completed");
+
+		// Verify the invoice is now paid
+		invoice.load(getTrxName());
+		assertTrue(invoice.isPaid(), "Invoice should be marked as paid");
+		assertEquals(Env.ZERO, invoice.getOpenAmt(), "Invoice open amount should be zero");
+	}
+
 }
