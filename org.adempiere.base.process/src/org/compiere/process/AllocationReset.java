@@ -27,8 +27,10 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *	Reset (delete) Allocations	
@@ -113,6 +115,10 @@ public class AllocationReset extends SvrProcess
 		{
 			try {
 				MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
+				
+				String err = testIfDeleteable(hdr);
+				if (!Util.isEmpty(err))
+					return "@Error@ " + err;
 				if (delete(hdr))
 					count++;
 				else
@@ -157,6 +163,11 @@ public class AllocationReset extends SvrProcess
 				.scroll()) {
 			while (pors.hasNext()) {
 				MAllocationHdr hdr = pors.next();
+
+				String err = testIfDeleteable(hdr);
+				if (!Util.isEmpty(err))
+					return "@Error@ " + err;
+
 				if (delete(hdr))
 					count++;
 			}
@@ -166,10 +177,16 @@ public class AllocationReset extends SvrProcess
 		return msgreturn.toString();
 	}	//	doIt
 
-	
-	private boolean delete(MAllocationHdr hdr)
+	protected String testIfDeleteable(MAllocationHdr hdr) {
+
+		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM Fact_Reconciliation WHERE Fact_Acct_ID IN (SELECT Fact_Acct_ID FROM Fact_Acct WHERE AD_Table_ID = ? AND Record_ID = ?)", MAllocationHdr.Table_ID, hdr.getC_AllocationHdr_ID()) == 1)
+			return Msg.getMsg(getCtx(), "AllocationDeletionFailedReconciliation", new Object[] {hdr.getDocumentNo()});
+
+		return "";
+	}
+
+	protected boolean delete(MAllocationHdr hdr)
 	{
-	//	m_trx.start();
 		boolean success = false;
 		if (hdr.delete(true, m_trx.getTrxName()))
 		{
