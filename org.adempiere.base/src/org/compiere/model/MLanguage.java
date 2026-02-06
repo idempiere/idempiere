@@ -310,7 +310,7 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 		String dp = getDatePattern();
 		if (is_ValueChanged("DatePattern") && dp != null && dp.length() > 0)
 		{
-			if (dp.indexOf("MM") == -1 && dp.indexOf("MMM") == -1 && dp.indexOf("MMMM") == -1)
+			if (dp.indexOf("MM") == -1)
 			{
 				log.saveError("Error", Msg.parseTranslation(getCtx(), "@Error@ @DatePattern@ - No Month (MM or MMM or MMMM)"));
 				return false;
