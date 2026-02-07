@@ -12,6 +12,7 @@ Author URI: https://zuhriutama.com
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=Prop.getPropertyEscaped(Prop.TITLE) %></title>
+    <link rel="icon" href="<%=Prop.getImage("favicon.ico")%>" type="image/x-icon">
     <link href="/resources/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="<%=Prop.loadCss()%>">
 </head>
@@ -46,7 +47,7 @@ Author URI: https://zuhriutama.com
             <div class="row">
                 <div class="col-12 text-center">
                     <a href="<%=Prop.getPropertyEscaped(Prop.WEBUI_LINK)%>" target="_self" class="btn bg-button p-4 rounded-3 d-flex flex-column justify-content-center align-items-center main-button">
-                        <img src="<%=Prop.getImage("idempiere-logo.svg")%>" alt="iDempiere" style="min-height: 300px;" class="d-none d-md-block">
+                        <img src="<%=Prop.getImage("idempiere-logo.png")%>" alt="iDempiere" style="min-height: 300px;" class="d-none d-md-block">
                         <img src="<%=Prop.getImage("idempiere-square.png")%>" alt="iDempiere" class="d-block d-md-none img-fluid">
                         <span class="fs-1 fs-md-2 mt-2"><%=Prop.getPropertyEscaped(Prop.WEBUI_TEXT)%></span>
                     </a>
