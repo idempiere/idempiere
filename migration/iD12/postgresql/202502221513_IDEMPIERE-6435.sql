@@ -13,14 +13,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ALTER TABLE PA_DocumentStatus ADD COLUMN IsHideWhenZero CHAR(1) DEFAULT 'N' CHECK (IsHideWhenZero IN ('Y','N')) NOT NULL
 ;
 
--- Feb 22, 2025, 3:19:46 PM CET
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217044,0,'Category',200216,'Category',40,'N','N','N','N','N',0,'N',10,0,0,'Y',TO_TIMESTAMP('2025-02-22 15:19:46','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-22 15:19:46','YYYY-MM-DD HH24:MI:SS'),100,52017,'Y','N','D','N','N','N','Y','cbe124d5-1d2f-48d9-a2ba-8030e0fded1b','Y',0,'N','N','N','N')
-;
-
--- Feb 22, 2025, 3:19:48 PM CET
-ALTER TABLE PA_DocumentStatus ADD COLUMN Category VARCHAR(40) DEFAULT NULL 
-;
-
 -- Feb 22, 2025, 3:21:47 PM CET
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217045,0,'Comment/Help','Comment or Hint','The Help field contains a hint, comment or help about the use of this item.',200216,'Help',4000,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_TIMESTAMP('2025-02-22 15:21:46','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-22 15:21:46','YYYY-MM-DD HH24:MI:SS'),100,326,'Y','N','D','N','N','N','Y','540f48bd-b92a-4e45-a794-cbb9c70f2395','Y',0,'N','N','N','N')
 ;
@@ -77,20 +69,12 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (208706,'Hide when Zero','Hide when the Value is Zero',200222,217043,'Y',1,200,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-22 15:30:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-22 15:30:54','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','b4dbf3d2-bd77-4e52-96ea-669123b3cf72','Y',200,2,2)
 ;
 
--- Feb 22, 2025, 3:30:54 PM CET
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208707,'Category',200222,217044,'Y',40,210,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-22 15:30:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-22 15:30:54','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','6ab2b018-7273-49e9-8c2e-c8a2eda31228','Y',210,2)
-;
-
 -- Feb 22, 2025, 3:30:55 PM CET
 INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (208708,'Print Color for Name when Zero',200222,217047,'Y',10,220,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-02-22 15:30:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-02-22 15:30:54','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','40bad390-418c-4587-8076-3b5738c3d2df','Y',220,2)
 ;
 
 -- Feb 22, 2025, 3:32:20 PM CET
 UPDATE AD_Field SET SeqNo=70,Updated=TO_TIMESTAMP('2025-02-22 15:32:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204406
-;
-
--- Feb 22, 2025, 3:32:20 PM CET
-UPDATE AD_Field SET IsDisplayed='Y', SeqNo=80, XPosition=4,Updated=TO_TIMESTAMP('2025-02-22 15:32:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208707
 ;
 
 -- Feb 22, 2025, 3:32:20 PM CET
@@ -162,10 +146,6 @@ UPDATE AD_Field SET SeqNo=90,Updated=TO_TIMESTAMP('2025-02-22 15:32:41','YYYY-MM
 ;
 
 -- Feb 23, 2025, 1:10:51 PM CET
-UPDATE AD_Field SET IsDisplayed='Y', SeqNo=70, XPosition=4,Updated=TO_TIMESTAMP('2025-02-23 13:10:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208707
-;
-
--- Feb 23, 2025, 1:10:51 PM CET
 UPDATE AD_Field SET SeqNo=80,Updated=TO_TIMESTAMP('2025-02-23 13:10:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204406
 ;
 
@@ -179,5 +159,157 @@ UPDATE AD_Field SET IsDisplayed='Y', SeqNo=140, XPosition=4,Updated=TO_TIMESTAMP
 
 -- Feb 23, 2025, 1:45:39 PM CET
 UPDATE AD_Field SET IsDisplayed='Y', DisplayLogic='@IsHideWhenZero@=N', SeqNo=150, XPosition=1,Updated=TO_TIMESTAMP('2025-02-23 13:45:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208708
+;
+
+-- Feb 7, 2026, 3:12:20 PM CET
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217375,0,'Field Group','Logical grouping of fields','The Field Group indicates the logical group that this field belongs to (History, Amounts, Quantities)',200216,'AD_FieldGroup_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2026-02-07 15:12:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-07 15:12:20','YYYY-MM-DD HH24:MI:SS'),100,1500,'Y','N','D','N','N','N','Y','019c3872-4ca2-71f8-9598-8deb3442535e','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 7, 2026, 3:12:23 PM CET
+UPDATE AD_Column SET FKConstraintName='ADFieldGroup_PADocumentStatus', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-02-07 15:12:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217375
+;
+
+-- Feb 7, 2026, 3:12:23 PM CET
+ALTER TABLE PA_DocumentStatus ADD COLUMN AD_FieldGroup_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 7, 2026, 3:12:23 PM CET
+ALTER TABLE PA_DocumentStatus ADD CONSTRAINT ADFieldGroup_PADocumentStatus FOREIGN KEY (AD_FieldGroup_ID) REFERENCES ad_fieldgroup(ad_fieldgroup_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 7, 2026, 3:12:33 PM CET
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217376,0,'Process','Process or Report','The Process field identifies a unique Process or Report in the system.',200216,'AD_Process_ID',22,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2026-02-07 15:12:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-07 15:12:33','YYYY-MM-DD HH24:MI:SS'),100,117,'Y','N','D','N','N','N','Y','019c3872-7ebc-7c84-b2af-287ad9ea8aaa','Y',0,'N','N','N','N','N')
+;
+
+-- Feb 7, 2026, 3:12:36 PM CET
+UPDATE AD_Column SET FKConstraintName='ADProcess_PADocumentStatus', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-02-07 15:12:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217376
+;
+
+-- Feb 7, 2026, 3:12:36 PM CET
+ALTER TABLE PA_DocumentStatus ADD COLUMN AD_Process_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 7, 2026, 3:12:36 PM CET
+ALTER TABLE PA_DocumentStatus ADD CONSTRAINT ADProcess_PADocumentStatus FOREIGN KEY (AD_Process_ID) REFERENCES ad_process(ad_process_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 7, 2026, 3:12:56 PM CET
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217377,0,'Info Window','Info and search/select Window','The Info window is used to search and select records as well as display information relevant to the selection.',200216,'AD_InfoWindow_ID',10,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2026-02-07 15:12:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-07 15:12:56','YYYY-MM-DD HH24:MI:SS'),100,3068,'Y','N','D','N','N','N','Y','019c3872-d897-7a5c-9f25-a34d9f9283da','Y',0,'N','N','C','N','N')
+;
+
+-- Feb 7, 2026, 3:12:59 PM CET
+UPDATE AD_Column SET FKConstraintName='ADInfoWindow_PADocumentStatus', FKConstraintType='C',Updated=TO_TIMESTAMP('2026-02-07 15:12:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217377
+;
+
+-- Feb 7, 2026, 3:12:59 PM CET
+ALTER TABLE PA_DocumentStatus ADD COLUMN AD_InfoWindow_ID NUMERIC(10) DEFAULT NULL 
+;
+
+-- Feb 7, 2026, 3:12:59 PM CET
+ALTER TABLE PA_DocumentStatus ADD CONSTRAINT ADInfoWindow_PADocumentStatus FOREIGN KEY (AD_InfoWindow_ID) REFERENCES ad_infowindow(ad_infowindow_id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Feb 7, 2026, 3:13:47 PM CET
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209000,'Field Group','Logical grouping of fields','The Field Group indicates the logical group that this field belongs to (History, Amounts, Quantities)',200222,217375,'Y',22,210,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-02-07 15:13:46','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-07 15:13:46','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019c3873-9e4c-7fb5-8ef5-5c041268291e','Y',230,2)
+;
+
+-- Feb 7, 2026, 3:13:47 PM CET
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209001,'Process','Process or Report','The Process field identifies a unique Process or Report in the system.',200222,217376,'Y',22,220,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-02-07 15:13:47','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-07 15:13:47','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019c3873-9f65-73c3-a1d0-42cf194e8aee','Y',240,2)
+;
+
+-- Feb 7, 2026, 3:13:47 PM CET
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209002,'Info Window','Info and search/select Window','The Info window is used to search and select records as well as display information relevant to the selection.',200222,217377,'Y',10,230,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-02-07 15:13:47','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-07 15:13:47','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019c3873-a087-74fe-b12e-f9a1b1e5a092','Y',250,2)
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, XPosition=1,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208705
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=90, XPosition=5,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204416
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET SeqNo=100,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204407
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=160, XPosition=5,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208706
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET SeqNo=170,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204412
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204413
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204414
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET SeqNo=200,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204415
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=210, XPosition=1,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209001
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=220, XPosition=4,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209002
+;
+
+-- Feb 7, 2026, 3:17:48 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=230, XPosition=1,Updated=TO_TIMESTAMP('2026-02-07 15:17:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209000
+;
+
+-- Feb 7, 2026, 3:18:34 PM CET
+UPDATE AD_Field SET SeqNo=70, SeqNoGrid=70,Updated=TO_TIMESTAMP('2026-02-07 15:18:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209000
+;
+
+-- Feb 7, 2026, 5:13:07 PM CET
+UPDATE AD_Column SET DefaultValue='NULL',Updated=TO_TIMESTAMP('2026-02-07 17:13:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217377
+;
+
+-- Feb 7, 2026, 5:16:46 PM CET
+UPDATE AD_Column SET DefaultValue='@SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,@AD_Client_ID@)',Updated=TO_TIMESTAMP('2026-02-07 17:16:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212996
+;
+
+-- Feb 7, 2026, 5:19:27 PM CET
+UPDATE AD_Field SET DisplayLogic='@AD_Process_ID:0@=0 & @AD_Form_ID:0@=0 & @AD_InfoWindow_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:19:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204414
+;
+
+-- Feb 7, 2026, 5:20:16 PM CET
+UPDATE AD_Field SET DisplayLogic='@AD_Window_ID:0@=0 & @AD_Form_ID:0@=0 & @AD_InfoWindow_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:20:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204415
+;
+
+-- Feb 7, 2026, 5:20:33 PM CET
+UPDATE AD_Field SET DisplayLogic='@AD_Window_ID:0@=0 & @AD_Form_ID:0@=0 & @AD_InfoWindow_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:20:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209001
+;
+
+-- Feb 7, 2026, 5:20:42 PM CET
+UPDATE AD_Field SET DisplayLogic='@AD_Window_ID:0@=0 & @AD_Process_ID:0@=0 & @AD_InfoWindow_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:20:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204415
+;
+
+-- Feb 7, 2026, 5:21:05 PM CET
+UPDATE AD_Field SET DisplayLogic='@AD_Window_ID:0@=0 & @AD_Form_ID:0@=0 & @AD_Process_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:21:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209002
+;
+
+-- Feb 7, 2026, 5:23:09 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=80, XPosition=5,Updated=TO_TIMESTAMP('2026-02-07 17:23:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204416
+;
+
+-- Feb 7, 2026, 5:23:09 PM CET
+UPDATE AD_Field SET SeqNo=90,Updated=TO_TIMESTAMP('2026-02-07 17:23:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204406
+;
+
+-- Feb 7, 2026, 5:23:09 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=150, XPosition=2,Updated=TO_TIMESTAMP('2026-02-07 17:23:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208706
+;
+
+-- Feb 7, 2026, 5:23:09 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=160, XPosition=4,Updated=TO_TIMESTAMP('2026-02-07 17:23:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208708
 ;
 

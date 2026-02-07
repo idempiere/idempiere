@@ -31,6 +31,7 @@ package org.adempiere.webui.apps.graph;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Label;
+import org.adempiere.webui.component.Messagebox;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Tab.DecorateInfo;
 import org.adempiere.webui.component.Window;
@@ -42,6 +43,7 @@ import org.compiere.model.MForm;
 import org.compiere.model.MQuery;
 import org.compiere.print.MPrintColor;
 import org.compiere.print.MPrintFont;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -110,7 +112,12 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		appendChild(div);
 		nameLabel = new Label();
 		nameLabel.setText(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Name) + ": ");
-		nameLabel.setTooltiptext(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description));
+		StringBuilder tooltip = new StringBuilder();
+		if (m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description) != null)
+			tooltip.append(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description)).append("\n\n");
+		if (m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Help) != null)
+			tooltip.append(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Help));
+		nameLabel.setTooltiptext(tooltip.toString());
 		div.appendChild(nameLabel);
 		statusLabel = new Label();		
 		div.appendChild(statusLabel);
@@ -190,6 +197,8 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	{
 		int AD_Window_ID = m_documentStatus.getAD_Window_ID();
 		int AD_Form_ID = m_documentStatus.getAD_Form_ID();
+		int AD_Process_ID = m_documentStatus.getAD_Process_ID();
+		int AD_InfoWindow_ID = m_documentStatus.getAD_InfoWindow_ID();
 		if (AD_Window_ID > 0)
 		{
 			MQuery query = new MQuery(m_documentStatus.getAD_Table_ID());
@@ -204,7 +213,21 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 			form.setAttribute(Window.DECORATE_INFO, DecorateInfo.get(MForm.get(AD_Form_ID)));
 			SessionManager.getAppDesktop().showWindow(form);
 		}
-		
+		else if (AD_Process_ID > 0)
+		{
+			SessionManager.getAppDesktop().openProcessDialog(AD_Process_ID,
+					"Y".equals(DB.getSQLValueStringEx(null, "SELECT IsSOTrx FROM AD_Menu WHERE AD_Process_ID=?", AD_Process_ID)));
+		}
+		else if (AD_InfoWindow_ID > 0)
+		{
+			SessionManager.getAppDesktop().openInfo(AD_InfoWindow_ID);
+		} else {
+			Messagebox.showDialog(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Help),
+					m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description),
+					Messagebox.OK,
+					Messagebox.INFORMATION);
+		}
+
 	}
 
 	/**

@@ -129,6 +129,35 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
     }
 
 	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());
+	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID Logical grouping of fields
+	*/
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1)
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
@@ -152,6 +181,64 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public int getAD_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
+
+	/** Set Info Window.
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
+	{
+		if (AD_InfoWindow_ID < 1)
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
+	}
+
+	/** Get Info Window.
+		@return Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
+
+	/** Set Process.
+		@param AD_Process_ID Process or Report
+	*/
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1)
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -300,21 +387,6 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Category.
-		@param Category Category
-	*/
-	public void setCategory (String Category)
-	{
-		set_Value (COLUMNNAME_Category, Category);
-	}
-
-	/** Get Category.
-		@return Category	  */
-	public String getCategory()
-	{
-		return (String)get_Value(COLUMNNAME_Category);
 	}
 
 	/** Set Description.
