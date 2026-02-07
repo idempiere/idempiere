@@ -175,9 +175,10 @@ public class OrderBatchProcess extends SvrProcess
 			addLog(0, null, null, order.getDocumentNo() + ": OK");
 			return true;
 		} else {
-			log.warning("Order Process Failed: " + order + " - " + order.getProcessMsg());
-			throw new IllegalStateException("Order Process Failed: " + order + " - " + order.getProcessMsg());
-			
+			String errorMsg = "Error: " + order.getDocumentNo() + ": " + order.getProcessMsg();
+			log.warning(errorMsg);
+			addBufferLog(order.getC_Order_ID(), null, null, errorMsg, MOrder.Table_ID, order.getC_Order_ID());
+			return false;			
 		}
 	}	//	process
 	
