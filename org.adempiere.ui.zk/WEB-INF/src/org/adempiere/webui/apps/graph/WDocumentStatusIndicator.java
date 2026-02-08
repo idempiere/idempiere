@@ -153,30 +153,28 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	 * @param isNameLabel
 	 */
 	private void decorate(Label label, int printFontId, int printColorId, int printColorZeroId, boolean isNameLabel) {
-		String colorStyle = "";
-		if (printColorZeroId > 0 && statusCount == 0) {
-			MPrintColor printColor = MPrintColor.get(Env.getCtx(), printColorZeroId);
-			String color = ZkCssHelper.createHexColorString(printColor.getColor());
-			colorStyle = "color:#"+color+";";
-		} else if (printColorId > 0) {
-			MPrintColor printColor = MPrintColor.get(Env.getCtx(), printColorId);
-			String color = ZkCssHelper.createHexColorString(printColor.getColor());
-			colorStyle = "color:#"+color+";";
-		}
-		String fontStyle = "";
+		MPrintColor printColor = MPrintColor.get(Env.getCtx(), (printColorZeroId > 0 && statusCount == 0) ? printColorZeroId : printColorId);
+		String color = ZkCssHelper.createHexColorString(printColor.getColor());
+		StringBuilder colorStyle = new StringBuilder("color:#").append(color).append(";");
+		StringBuilder fontStyle = new StringBuilder();
 		if (printFontId > 0) {
 			MPrintFont printFont = MPrintFont.get(printFontId);
 			String family = printFont.getFont().getFamily();
 			boolean bold = printFont.getFont().isBold();
 			boolean italic = printFont.getFont().isItalic();
 			int pointSize = printFont.getFont().getSize();
-			fontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
+			fontStyle.append("font-family:'").append(family)
+				.append("';font-weight:").append(bold ? "bold" : "normal")
+				.append(";font-style:").append(italic ? "italic" : "normal")
+				.append(";font-size:").append(pointSize).append("pt;");
 			if (!isNameLabel) {
 				int margin = pointSize;
-				fontStyle += "margin-top:"+margin+"pt;"+"margin-bottom:"+margin+"pt;";
+				fontStyle.append("margin-top:").append(margin).append("pt;")
+					.append("margin-bottom:").append(margin).append("pt;");
 			}
 		}
-		label.setStyle(colorStyle+fontStyle);
+		StringBuilder style = new StringBuilder().append(colorStyle).append(fontStyle);
+		label.setStyle(style.toString());
 	}
 
 	@Override

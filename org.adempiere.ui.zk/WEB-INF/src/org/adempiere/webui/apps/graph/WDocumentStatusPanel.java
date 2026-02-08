@@ -154,6 +154,8 @@ public class WDocumentStatusPanel extends Panel {
 			boolean newVisible = (indicator.getStatusCount() != 0 || !indicator.getDocumentStatus().isHideWhenZero());
 			if (isVisible != newVisible) {
 				indicator.setVisible(newVisible);
+				if (indicator.getParent() instanceof Row)
+					indicator.getParent().setVisible(newVisible);
 			}
 			if (newVisible && indicator.getDocumentStatus().getName_PrintColorZero_ID() > 0)
 				indicator.decorateNameLabel();
@@ -171,7 +173,7 @@ public class WDocumentStatusPanel extends Panel {
 					visibleGroups.add(group);
 			}
 		}
-		if (groups.size() > 0) {
+		if (!groups.isEmpty()) {
 			for (Group group : groups) {
 				if (visibleGroups.contains(group))
 					group.setVisible(true);
