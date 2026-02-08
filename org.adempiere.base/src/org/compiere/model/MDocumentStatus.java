@@ -315,7 +315,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	protected boolean beforeSave(boolean newRecord) {
 		if (newRecord) {
 			if (getSeqNo() <= 0) {
-				int seqNo = DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(Max(SeqNo),0)+10 FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,?)", getAD_Client_ID());
+				int seqNo = DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(SeqNo),0)+10 FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,?)", getAD_Client_ID());
 				setSeqNo(seqNo);
 			}
 		}

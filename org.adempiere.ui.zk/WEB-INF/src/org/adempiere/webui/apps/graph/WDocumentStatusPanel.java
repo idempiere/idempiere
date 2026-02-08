@@ -43,6 +43,7 @@ import org.compiere.model.MDocumentStatus;
 import org.compiere.model.MFieldGroup;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
@@ -179,8 +180,14 @@ public class WDocumentStatusPanel extends Panel {
 			}
 		}
 		// hide the Activities dashboard if all indicators are hidden, otherwise show it
-		if (getParent() != null && getParent().getParent() != null && getParent().getParent().getParent() != null)
-			getParent().getParent().getParent().setVisible(isPanelVisible);
+		Component parent = getParent();
+		while (parent != null) {
+			if (parent instanceof org.zkoss.zul.Panel) {
+				parent.setVisible(isPanelVisible);
+				break;
+			}
+			parent = parent.getParent();
+		}
 		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
 		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, lastRefreshCount);
 		queue.publish(event);		

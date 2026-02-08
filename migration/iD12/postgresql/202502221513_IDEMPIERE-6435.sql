@@ -281,10 +281,6 @@ UPDATE AD_Column SET DefaultValue='@SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS Defa
 UPDATE AD_Field SET DisplayLogic='@AD_Process_ID:0@=0 & @AD_Form_ID:0@=0 & @AD_InfoWindow_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:19:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204414
 ;
 
--- Feb 7, 2026, 5:20:16 PM CET
-UPDATE AD_Field SET DisplayLogic='@AD_Window_ID:0@=0 & @AD_Form_ID:0@=0 & @AD_InfoWindow_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:20:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204415
-;
-
 -- Feb 7, 2026, 5:20:33 PM CET
 UPDATE AD_Field SET DisplayLogic='@AD_Window_ID:0@=0 & @AD_Form_ID:0@=0 & @AD_InfoWindow_ID:0@=0',Updated=TO_TIMESTAMP('2026-02-07 17:20:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209001
 ;

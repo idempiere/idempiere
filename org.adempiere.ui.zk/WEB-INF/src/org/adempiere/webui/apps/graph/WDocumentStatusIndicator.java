@@ -114,36 +114,18 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		nameLabel.setText(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Name) + ": ");
 		StringBuilder tooltip = new StringBuilder();
 		if (m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description) != null)
-			tooltip.append(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description)).append("\n\n");
-		if (m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Help) != null)
+			tooltip.append(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Description));
+		if (m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Help) != null) {
+			if (tooltip.length() > 0)
+				tooltip.append("\n\n");
 			tooltip.append(m_documentStatus.get_Translation(MDocumentStatus.COLUMNNAME_Help));
+		}
 		nameLabel.setTooltiptext(tooltip.toString());
 		div.appendChild(nameLabel);
 		statusLabel = new Label();		
 		div.appendChild(statusLabel);
 		decorateNameLabel();
 		decorateStatusLabel();
-
-		String numberColorStyle = "";
-		int Number_PrintColor_ID = m_documentStatus.getNumber_PrintColor_ID();
-		if (Number_PrintColor_ID > 0) {
-			MPrintColor printColor = MPrintColor.get(Env.getCtx(), Number_PrintColor_ID);
-			String color = ZkCssHelper.createHexColorString(printColor.getColor());
-			numberColorStyle = "color:#"+color+";";
-		}
-		String numberFontStyle = "";
-		int Number_PrintFont_ID = m_documentStatus.getNumber_PrintFont_ID();
-		if (Number_PrintFont_ID > 0) {
-			MPrintFont printFont = MPrintFont.get(Number_PrintFont_ID);
-			String family = printFont.getFont().getFamily();
-			boolean bold = printFont.getFont().isBold();
-			boolean italic = printFont.getFont().isItalic();
-			int pointSize = printFont.getFont().getSize();
-			numberFontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt;";
-			int margin = pointSize;
-			numberFontStyle += "margin-top:"+margin+"pt;"+"margin-bottom:"+margin+"pt;";
-		}
-		statusLabel.setStyle(numberColorStyle+numberFontStyle);
 
 		this.addEventListener(Events.ON_CLICK, this);
 	}
@@ -152,14 +134,14 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	 * Set font and color for Name Label
 	 */
 	public void decorateNameLabel() {
-		decorate(nameLabel, m_documentStatus.getName_PrintFont_ID(), m_documentStatus.getName_PrintColor_ID(), m_documentStatus.getName_PrintColorZero_ID());
+		decorate(nameLabel, m_documentStatus.getName_PrintFont_ID(), m_documentStatus.getName_PrintColor_ID(), m_documentStatus.getName_PrintColorZero_ID(), true);
 	}
 
 	/**
 	 * Set font and color for Status label (number)
 	 */
 	public void decorateStatusLabel() {
-		decorate(statusLabel, m_documentStatus.getNumber_PrintFont_ID(), m_documentStatus.getNumber_PrintColor_ID(), 0);
+		decorate(statusLabel, m_documentStatus.getNumber_PrintFont_ID(), m_documentStatus.getNumber_PrintColor_ID(), 0, false);
 	}
 
 	/**
@@ -168,8 +150,9 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	 * @param printFontId
 	 * @param printColorId
 	 * @param printColorZeroId
+	 * @param isNameLabel
 	 */
-	private void decorate(Label label, int printFontId, int printColorId, int printColorZeroId) {
+	private void decorate(Label label, int printFontId, int printColorId, int printColorZeroId, boolean isNameLabel) {
 		String colorStyle = "";
 		if (printColorZeroId > 0 && statusCount == 0) {
 			MPrintColor printColor = MPrintColor.get(Env.getCtx(), printColorZeroId);
@@ -180,16 +163,20 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 			String color = ZkCssHelper.createHexColorString(printColor.getColor());
 			colorStyle = "color:#"+color+";";
 		}
-		String nameFontStyle = "";
+		String fontStyle = "";
 		if (printFontId > 0) {
 			MPrintFont printFont = MPrintFont.get(printFontId);
 			String family = printFont.getFont().getFamily();
 			boolean bold = printFont.getFont().isBold();
 			boolean italic = printFont.getFont().isItalic();
 			int pointSize = printFont.getFont().getSize();
-			nameFontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
+			fontStyle = "font-family:'"+family+"';font-weight:"+(bold ? "bold" : "normal")+";font-style:"+(italic ? "italic" : "normal")+";font-size:"+pointSize+"pt";
+			if (!isNameLabel) {
+				int margin = pointSize;
+				fontStyle += "margin-top:"+margin+"pt;"+"margin-bottom:"+margin+"pt;";
+			}
 		}
-		label.setStyle(colorStyle+nameFontStyle);
+		label.setStyle(colorStyle+fontStyle);
 	}
 
 	@Override
