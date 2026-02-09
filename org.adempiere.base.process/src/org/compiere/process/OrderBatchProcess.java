@@ -158,17 +158,17 @@ public class OrderBatchProcess extends SvrProcess
 	
 	/**
 	 * 	Process Order
-	 *	@param order order
+	 *	@param C_Order_ID order ID
 	 *	@return true if ok
 	 */
 	private boolean process (int C_Order_ID)
 	{
 		String trxName = Trx.createTrxName("OrderBatch_");
 		Trx trx = Trx.get(trxName, true);
-		MOrder orderToProcess = new MOrder(getCtx(), C_Order_ID, trxName);
 		boolean success = false;
 		try
 		{
+			MOrder orderToProcess = new MOrder(getCtx(), C_Order_ID, trxName);
 			orderToProcess.setDocAction(p_DocAction);
 			if (orderToProcess.processIt(p_DocAction))
 			{
