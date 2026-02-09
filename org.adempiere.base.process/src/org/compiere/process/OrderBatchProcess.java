@@ -26,6 +26,7 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MProcessPara;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
+import org.compiere.util.Trx;
 
 
 /**
@@ -164,8 +165,8 @@ public class OrderBatchProcess extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info(order.toString());
 		//
-		String trxName = org.compiere.util.Trx.createTrxName("OrderBatch_");
-		org.compiere.util.Trx trx = org.compiere.util.Trx.get(trxName, true);
+		String trxName = Trx.createTrxName("OrderBatch_");
+		Trx trx = Trx.get(trxName, true);
 		MOrder orderToProcess = new MOrder(getCtx(), order.getC_Order_ID(), trxName);
 		boolean success = false;
 		try
@@ -181,17 +182,26 @@ public class OrderBatchProcess extends SvrProcess
 				String errorMsg = "Error: " + orderToProcess.getDocumentNo() + ": " + orderToProcess.getProcessMsg();
 				log.warning(errorMsg);
 				addLog(orderToProcess.getC_Order_ID(), null, null, errorMsg, MOrder.Table_ID, orderToProcess.getC_Order_ID());
-				trx.rollback();
 			}
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "Failed to process order: " + orderToProcess.getDocumentNo(), e);
-			trx.rollback();
 			addLog(orderToProcess.getC_Order_ID(), null, null, "Error: " + orderToProcess.getDocumentNo() + ": " + e.getMessage(), MOrder.Table_ID, orderToProcess.getC_Order_ID());
 		}
 		finally
 		{
+			if (!success)
+			{
+				try
+				{
+					trx.rollback();
+				}
+				catch (Exception e)
+				{
+					log.log(Level.SEVERE, "Failed to rollback transaction for order: " + orderToProcess.getDocumentNo(), e);
+				}
+			}
 			trx.close();
 		}
 		return success;
