@@ -24,3 +24,20 @@ UPDATE AD_Column SET IsUpdateable='Y',Updated=TO_TIMESTAMP('2026-02-05 18:04:25'
 UPDATE AD_Column SET IsUpdateable='Y',Updated=TO_TIMESTAMP('2026-02-05 18:04:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=212955
 ;
 
+-- Feb 9, 2026, 2:03:16 PM CET
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutPaySelection.amounts', IsUpdateable='Y',Updated=TO_TIMESTAMP('2026-02-09 14:03:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=6221
+;
+
+-- Feb 9, 2026, 2:04:30 PM CET
+UPDATE AD_Field SET Name='Over/Under Payment', Description='Over-Payment (unallocated) or Under-Payment (partial payment) Amount', Help='Overpayments (negative) are unallocated amounts and allow you to receive money for more than the particular invoice. 
+Underpayments (positive) is a partial payment for the invoice. You do not write off the unpaid amount.', IsCentrallyMaintained='N',Updated=TO_TIMESTAMP('2026-02-09 14:04:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4939
+;
+
+-- Feb 9, 2026, 2:06:36 PM CET
+UPDATE AD_Field SET IsReadOnly='N',Updated=TO_TIMESTAMP('2026-02-09 14:06:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=4939
+;
+
+-- Feb 9, 2026, 3:18:59 PM CET
+UPDATE AD_Column SET DefaultValue='@SQL=SELECT getDate() FROM Dual', SeqNoSelection=10,Updated=TO_TIMESTAMP('2026-02-09 15:18:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=5617
+;
+

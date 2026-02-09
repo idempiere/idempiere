@@ -43,7 +43,7 @@ public class CalloutPaySelection extends CalloutEngine
 	
 	/**
 	 * Payment Selection Line - Amounts
-	 * Called from PayAmt, DiscountAmt, WriteOffAmt
+	 * Called from PayAmt, DiscountAmt, WriteOffAmt, DifferenceAmt
 	 * 
 	 * @param ctx context
 	 * @param WindowNo current Window No
@@ -78,22 +78,26 @@ public class CalloutPaySelection extends CalloutEngine
 	    BigDecimal WriteOffAmt = (BigDecimal) mTab.getValue("WriteOffAmt");
 	    if (WriteOffAmt == null)
 	        WriteOffAmt = Env.ZERO;
-	    
+	    BigDecimal OverUnderAmt = (BigDecimal)mTab.getValue ("DifferenceAmt");
+		if (OverUnderAmt == null)
+			OverUnderAmt = Env.ZERO;
+
 	    if (log.isLoggable(Level.FINE)) 
 	        log.fine("Open=" + OpenAmt + ", Pay=" + PayAmt + ", Discount=" + DiscountAmt + 
 	                 ", WriteOff=" + WriteOffAmt);
 
 	    if (colName.equals("PayAmt")) {
-            WriteOffAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt);
-            mTab.setValue("WriteOffAmt", WriteOffAmt);
+			OverUnderAmt = OpenAmt.subtract (PayAmt).subtract(DiscountAmt).subtract (WriteOffAmt);
+			if (OverUnderAmt.signum() > 0) { // no discount because is not paid in full
+				DiscountAmt = Env.ZERO;
+				mTab.setValue ("DiscountAmt", DiscountAmt);
+				OverUnderAmt = OpenAmt.subtract (PayAmt).subtract(DiscountAmt).subtract (WriteOffAmt);
+			}
+			mTab.setValue ("DifferenceAmt", OverUnderAmt);
         } else {
-            PayAmt = OpenAmt.subtract(DiscountAmt).subtract(WriteOffAmt);
-            mTab.setValue("PayAmt", PayAmt);
+			PayAmt = OpenAmt.subtract (DiscountAmt).subtract(WriteOffAmt).subtract (OverUnderAmt);
+			mTab.setValue ("PayAmt", PayAmt);
         }
-        
-        // Calculate DifferenceAmt
-        BigDecimal DifferenceAmt = OpenAmt.subtract(PayAmt).subtract(DiscountAmt).subtract(WriteOffAmt);
-        mTab.setValue("DifferenceAmt", DifferenceAmt);
 
 	    return "";
 	}
@@ -164,6 +168,7 @@ public class CalloutPaySelection extends CalloutEngine
 		mTab.setValue("OpenAmt", OpenAmt);
 		mTab.setValue("PayAmt", OpenAmt.subtract(DiscountAmt));
 		mTab.setValue("DiscountAmt", DiscountAmt);
+		mTab.setValue("WriteOffAmt", Env.ZERO);
 		mTab.setValue("DifferenceAmt", Env.ZERO);
 		mTab.setValue("IsSOTrx", IsSOTrx);
 		return "";
