@@ -129,6 +129,8 @@ public class WAllocation extends Allocation
 	private WTableDirEditor currencyPick = null;
 	/** Multi currency parameter */
 	private Checkbox multiCurrency = new Checkbox();
+	/** Same BP parameter */
+	private Checkbox sameBP = new Checkbox();
 	private Label chargeLabel = new Label();
 	private Label dateLabel = new Label();
 	/** Document date parameter */
@@ -230,6 +232,9 @@ public class WAllocation extends Allocation
 		currencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		multiCurrency.setText(Msg.getMsg(Env.getCtx(), "MultiCurrency"));
 		multiCurrency.addActionListener(this);
+		sameBP.setText(Msg.getMsg(Env.getCtx(), "SameBPartner"));
+		sameBP.setSelected(true);
+		sameBP.addActionListener(this);
 		allocCurrencyLabel.setText(".");		
 		organizationLabel.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		
@@ -363,7 +368,8 @@ public class WAllocation extends Allocation
 			cbox.setPack("end");
 		cbox.appendChild(multiCurrency);
 		cbox.appendChild(autoWriteOff);
-		row.appendCellChild(cbox, 2);		
+		cbox.appendChild(sameBP);
+		row.appendCellChild(cbox, 3);		
 		if (noOfColumn < 6)		
 			LayoutUtils.compactTo(parameterLayout, noOfColumn);
 		else
@@ -557,7 +563,7 @@ public class WAllocation extends Allocation
 	public void onEvent(Event e)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("");
-		if (e.getTarget().equals(multiCurrency))
+		if (e.getTarget().equals(multiCurrency) || e.getTarget().equals(sameBP))
 			loadBPartner();
 		//	Allocate
 		else if (e.getTarget().equals(allocateButton))
@@ -712,8 +718,8 @@ public class WAllocation extends Allocation
 		setPaymentColumnClass(paymentTable, multiCurrency.isSelected());
 		//
 
-		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), (String)null);
-		columnNames = getInvoiceColumnNames(multiCurrency.isSelected());
+		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), sameBP.isSelected(), (String)null);
+		columnNames = getInvoiceColumnNames(multiCurrency.isSelected(), sameBP.isSelected());
 		
 		invoiceTable.clear();
 		
@@ -724,7 +730,7 @@ public class WAllocation extends Allocation
 		ListModelTable modelI = new ListModelTable(data);
 		modelI.addTableModelListener(this);
 		invoiceTable.setData(modelI, columnNames);
-		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected());
+		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected(), sameBP.isSelected());
 		//
 		
 		//  Calculate Totals
