@@ -157,7 +157,7 @@ public class AllocationReset extends SvrProcess
 			.append(" INNER JOIN C_PeriodControl pc ON (p.C_Period_ID=pc.C_Period_ID AND pc.DocBaseType='CMA') ")
 			.append("WHERE C_AllocationHdr.DateAcct BETWEEN p.StartDate AND p.EndDate)");
 
-		try (POResultSet<MAllocationHdr> pors = new Query(getCtx(), MAllocationHdr.Table_Name, where.toString(), get_TrxName())
+		try (POResultSet<MAllocationHdr> pors = new Query(getCtx(), MAllocationHdr.Table_Name, where.toString(), m_trx.getTrxName())
 				.setClient_ID()
 				.setParameters(params)
 				.scroll()) {
@@ -171,6 +171,8 @@ public class AllocationReset extends SvrProcess
 				if (delete(hdr))
 					count++;
 			}
+		} finally {
+			m_trx.close();
 		}
 
 		StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
@@ -179,7 +181,7 @@ public class AllocationReset extends SvrProcess
 
 	protected String testIfDeleteable(MAllocationHdr hdr) {
 
-		if (DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM Fact_Reconciliation WHERE Fact_Acct_ID IN (SELECT Fact_Acct_ID FROM Fact_Acct WHERE AD_Table_ID = ? AND Record_ID = ?)", MAllocationHdr.Table_ID, hdr.getC_AllocationHdr_ID()) == 1)
+		if (DB.getSQLValueEx(m_trx.getTrxName(), "SELECT 1 FROM Fact_Reconciliation WHERE Fact_Acct_ID IN (SELECT Fact_Acct_ID FROM Fact_Acct WHERE AD_Table_ID = ? AND Record_ID = ?)", MAllocationHdr.Table_ID, hdr.getC_AllocationHdr_ID()) == 1)
 			return Msg.getMsg(getCtx(), "AllocationDeletionFailedReconciliation", new Object[] {hdr.getDocumentNo()});
 
 		return "";
