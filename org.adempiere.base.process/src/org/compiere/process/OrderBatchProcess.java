@@ -140,7 +140,7 @@ public class OrderBatchProcess extends SvrProcess
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				if (process(new MOrder(getCtx(),rs, null)))
+				if (process(rs.getInt("C_Order_ID")))
 					counter++;
 				else
 					errCounter++;
@@ -161,13 +161,11 @@ public class OrderBatchProcess extends SvrProcess
 	 *	@param order order
 	 *	@return true if ok
 	 */
-	private boolean process (MOrder order)
+	private boolean process (int C_Order_ID)
 	{
-		if (log.isLoggable(Level.INFO)) log.info(order.toString());
-		//
 		String trxName = Trx.createTrxName("OrderBatch_");
 		Trx trx = Trx.get(trxName, true);
-		MOrder orderToProcess = new MOrder(getCtx(), order.getC_Order_ID(), trxName);
+		MOrder orderToProcess = new MOrder(getCtx(), C_Order_ID, trxName);
 		boolean success = false;
 		try
 		{
