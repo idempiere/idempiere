@@ -1,4 +1,4 @@
--- IDEMPIERE-6841 - https://idempiere.atlassian.net/browse/IDEMPIERE-6841
+-- IDEMPIERE-6841 - Add Fields to Select Document Types to improve the Bank Transfer Window
 SELECT register_migration_script('202602091047_IDEMPIERE-6841.sql') FROM dual;
 
 -- Feb 9, 2026, 10:47:31 AM BRT
