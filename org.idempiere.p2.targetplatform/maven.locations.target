@@ -1411,12 +1411,6 @@ Export-Package:        *;version="${version}";-noimport:=true
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
-      <artifactId>jetty-ee8-websocket-javax-server</artifactId>
-      <version>12.0.25</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-javax-client</artifactId>
       <version>12.0.25</version>
       <type>jar</type>
