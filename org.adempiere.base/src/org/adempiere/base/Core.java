@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.search.ISearchProvider;
-
 import javax.crypto.SecretKey;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -37,6 +35,7 @@ import javax.script.ScriptException;
 
 import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.markdown.IMarkdownRenderer;
+import org.adempiere.base.search.ISearchProvider;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.IAddressValidation;
@@ -63,9 +62,11 @@ import org.compiere.model.PO;
 import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
 import org.compiere.model.StandardTaxProvider;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DefaultKeyStore;
 import org.compiere.util.Env;
 import org.compiere.util.PaymentExport;
@@ -283,6 +284,7 @@ public class Core {
 	}
 
 	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;
+	private static boolean s_legacyKeyWarningLogged = false;
 	
 	/**
 	 * 
@@ -305,8 +307,16 @@ public class Core {
 				//test key store service is working
 				SecretKey key = service.getKey(0);
 				if (key != null) {
-					if (key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM))
-						s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
+					if (!s_legacyKeyWarningLogged) {
+						if (key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM)) {
+							s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
+							// Postpone SysConfig update until DB is connected
+							updateLegacyKeyWarningSysConfig(true);
+						} else {
+							updateLegacyKeyWarningSysConfig(false);
+						}
+					}
+					s_legacyKeyWarningLogged = true;
 					keystoreService = service;
 					s_keystoreServiceReference = refHolder;
 					break;
@@ -322,6 +332,44 @@ public class Core {
 		return keystoreService;
 	}
 	
+	/**
+	 * Update SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig.
+	 * This method will be called asynchronously to avoid issues when DB is not yet connected.
+	 */
+	private static void updateLegacyKeyWarningSysConfig(boolean legacyKeyDetected) {
+		// Run in a separate thread to avoid blocking and to retry until DB is connected
+		Thread thread = new Thread(() -> {
+			int retries = 0;
+			int maxRetries = 10;
+			while (retries < maxRetries) {
+				try {Thread.sleep(2000);} catch (InterruptedException e) {}
+				if (DB.isConnected()) {
+					String warn = MSysConfig.getValue(MSysConfig.SECURITY_DASHBOARD_LEGACY_KEY_WARNING, "Y");
+					if ("D".equals(warn))
+						break; // warning disabled by sysadmin, do not override
+					if ("Y".equals(warn) && legacyKeyDetected)
+						break; // warning already enabled and legacy key still detected, no update needed
+					if ("N".equals(warn) && !legacyKeyDetected)
+						break; // warning already negated and no legacy key detected, no update needed
+
+					MSysConfig conf = new MSysConfig(Env.getCtx(), SystemIDs.SYSCONFIG_SECURITY_DASHBOARD_LEGACY_KEY_WARNING, null);
+					conf.setValue(legacyKeyDetected ? "Y" : "N");
+					conf.saveEx();
+
+					if (s_log.isLoggable(Level.INFO))
+						s_log.info("Updated SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig");
+					break;
+				}
+				retries++;
+			}
+			if (retries >= maxRetries) {
+				s_log.warning("Could not update SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig after " + maxRetries + " retries");
+			}
+		}, "LegacyKeyWarning-SysConfig-Updater");
+		thread.setDaemon(true);
+		thread.start();
+	}
+
 	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IPaymentProcessorFactory", 100, false);
 	
 	/**
