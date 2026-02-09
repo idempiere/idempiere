@@ -133,21 +133,17 @@ public class OrderBatchProcess extends SvrProcess
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, p_C_DocTypeTarget_ID);
 			pstmt.setString(2, p_DocStatus);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				if (process(new MOrder(getCtx(),rs, get_TrxName())))
+				if (process(new MOrder(getCtx(),rs, null)))
 					counter++;
 				else
 					errCounter++;
 			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql.toString(), e);
 		}
 		finally
 		{
@@ -168,17 +164,35 @@ public class OrderBatchProcess extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info(order.toString());
 		//
-		order.setDocAction(p_DocAction);
-		if (order.processIt(p_DocAction))
+		String trxName = org.compiere.util.Trx.createTrxName("OrderBatch_");
+		org.compiere.util.Trx trx = org.compiere.util.Trx.get(trxName, true);
+		MOrder orderToProcess = new MOrder(getCtx(), order.getC_Order_ID(), trxName);
+		try
 		{
-			order.saveEx();
-			addLog(0, null, null, order.getDocumentNo() + ": OK");
-			return true;
-		} else {
-			String errorMsg = "Error: " + order.getDocumentNo() + ": " + order.getProcessMsg();
-			log.warning(errorMsg);
-			addBufferLog(order.getC_Order_ID(), null, null, errorMsg, MOrder.Table_ID, order.getC_Order_ID());
-			return false;			
+			orderToProcess.setDocAction(p_DocAction);
+			if (orderToProcess.processIt(p_DocAction))
+			{
+				orderToProcess.saveEx();
+				trx.commit();
+				trx.close();
+				addLog(0, null, null, orderToProcess.getDocumentNo() + ": OK");
+				return true;
+			} else {
+				String errorMsg = "Error: " + orderToProcess.getDocumentNo() + ": " + orderToProcess.getProcessMsg();
+				log.warning(errorMsg);
+				addLog(orderToProcess.getC_Order_ID(), null, null, errorMsg, MOrder.Table_ID, orderToProcess.getC_Order_ID());
+				trx.rollback();
+				trx.close();
+				return false;			
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "Failed to process order: " + orderToProcess.getDocumentNo(), e);
+			trx.rollback();
+			trx.close();
+			addLog(orderToProcess.getC_Order_ID(), null, null, "Error: " + orderToProcess.getDocumentNo() + ": " + e.getMessage(), MOrder.Table_ID, orderToProcess.getC_Order_ID());
+			return false;
 		}
 	}	//	process
 	
