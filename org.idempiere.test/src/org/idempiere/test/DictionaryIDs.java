@@ -185,6 +185,28 @@ public final class DictionaryIDs {
 		}
 	}
 
+	public enum C_BP_Group {
+		STANDARD_CUSTOMERS(103),
+		VENDORS(104),
+		STAFF(105);
+
+		public final int id;
+
+		private C_BP_Group(int id) {
+			this.id = id;
+		}
+	}
+
+	public enum C_BP_Relation {
+		C_AND_W_PAYS_FOR_JOE(100);
+
+		public final int id;
+
+		private C_BP_Relation(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_Calendar {
 		GARDENWORLD_CALENDAR(102);
 		

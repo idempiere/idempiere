@@ -782,22 +782,28 @@ public class MPayment extends X_C_Payment
 		}
 		
 		// Validate C_BPartner_ID same as C_BPartner_ID from order and invoice
-		if (getC_BPartner_ID() != 0 && (getC_Invoice_ID() != 0 || getC_Order_ID() != 0)) {
-			if (getC_Invoice_ID() != 0) {
-				MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-				if (inv.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPInvoice"));
-					return false;
+		if (   is_new()
+			|| is_ValueChanged("C_BPartner_ID")
+			|| is_ValueChanged("C_Invoice_ID")
+			|| is_ValueChanged("C_Order_ID")) {
+			if (getC_BPartner_ID() != 0 && (getC_Invoice_ID() != 0 || getC_Order_ID() != 0)) {
+				if (getC_Invoice_ID() != 0) {
+					MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+					if (!isPayBPAllowed(inv.getC_BPartner_ID())) {
+						log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPInvoice"));
+						return false;
+					}
 				}
-			}
-			if (getC_Order_ID() != 0) {
-				MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
-				if (ord.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPOrder"));
-					return false;
+				if (getC_Order_ID() != 0) {
+					MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+					if (!isPayBPAllowed(ord.getC_BPartner_ID())) {
+						log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPOrder"));
+						return false;
+					}
 				}
 			}
 		}
+
 		// Encrypt credit card number and cvv
 		if (isProcessed())
 		{
@@ -897,6 +903,19 @@ public class MPayment extends X_C_Payment
 		
 		return true;
 	}	//	beforeSave
+
+	/**
+	 * Validates if the BP is allowed to pay as owner of the document or as a proxy in BP Relationship
+	 * @param c_BPartner_ID
+	 * @return
+	 */
+	private boolean isPayBPAllowed(int bpId) {
+		if (bpId == getC_BPartner_ID()) // same BP of the document
+			return true;
+		if (MBPRelation.canPay(getCtx(), getC_BPartner_ID(), bpId, get_TrxName())) // can pay as a proxy in BP relationship
+			return true;
+		return false;
+	}
 
 	@Override
 	protected boolean beforeDelete() {
@@ -2337,7 +2356,7 @@ public class MPayment extends X_C_Payment
 			else
 				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
 					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
-			aLine.setDocInfo(pa.getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
+			aLine.setDocInfo(getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
 			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
 			if (!aLine.save(get_TrxName()))
 				log.warning("P.Allocations - line not saved");
