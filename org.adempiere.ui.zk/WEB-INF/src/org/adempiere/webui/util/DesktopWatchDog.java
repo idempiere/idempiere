@@ -81,30 +81,31 @@ public class DesktopWatchDog {
 			}
 			if (entry.desktop.isServerPushEnabled() == false) {
 				entry.noMessageCount++;
-			}
-			ServerPush spush = ((DesktopCtrl)entry.desktop).getServerPush();
-			if (spush == null) {
-				entry.noMessageCount++;
 			} else {
-				if (spush instanceof DelegatingServerPush)
-					spush = ((DelegatingServerPush) spush).getDelegate();
-				if (spush instanceof WebSocketServerPush) {
-					var endPoint = WebSocketServerPush.getEndPoint(entry.desktop.getId());
-					if (endPoint == null || !endPoint.getAndResetMessageIndicator())
-						entry.noMessageCount++;
-					else
-						entry.noMessageCount=0;
-				} else if (spush instanceof AtmosphereServerPush) {
-					AtmosphereServerPush asp = (AtmosphereServerPush) spush;
-					if (!asp.hasAtmosphereResource())
-						entry.noMessageCount++;
-					else
-						entry.noMessageCount=0;
-				} else {
-					// Unknown implementation - log warning and increment counter for eventual cleanup
-					if (entry.noMessageCount == 0 || (entry.noMessageCount == 1 && entry.desktop.isServerPushEnabled()))
-						log.warning("Unknown ServerPush implementation: " + spush.getClass().getName());
+				ServerPush spush = ((DesktopCtrl)entry.desktop).getServerPush();
+				if (spush == null) {
 					entry.noMessageCount++;
+				} else {
+					if (spush instanceof DelegatingServerPush)
+						spush = ((DelegatingServerPush) spush).getDelegate();
+					if (spush instanceof WebSocketServerPush) {
+						var endPoint = WebSocketServerPush.getEndPoint(entry.desktop.getId());
+						if (endPoint == null || !endPoint.getAndResetMessageIndicator())
+							entry.noMessageCount++;
+						else
+							entry.noMessageCount=0;
+					} else if (spush instanceof AtmosphereServerPush) {
+						AtmosphereServerPush asp = (AtmosphereServerPush) spush;
+						if (!asp.hasAtmosphereResource())
+							entry.noMessageCount++;
+						else
+							entry.noMessageCount=0;
+					} else {
+						// Unknown implementation - log warning and increment counter for eventual cleanup
+						if (entry.noMessageCount == 0 || (entry.noMessageCount == 1 && entry.desktop.isServerPushEnabled()))
+							log.warning("Unknown ServerPush implementation: " + spush.getClass().getName());
+						entry.noMessageCount++;
+					}
 				}
 			}
 			if (entry.noMessageCount >= 5) {

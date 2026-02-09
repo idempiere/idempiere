@@ -58,7 +58,7 @@
 			  let requri = zk.ajaxURI(null, {desktop: dt, au: true});
 			  let content = zAu.encode(0, evtObj, dt);
 			  let ajaxReqInf = {
-			          sid: zAu.seqId, uri: requri, dt: dt, content: content,
+			          sid: zAu.seqId, uri: requri, dt: dt.id, content: content,
 			          implicit: true,
 			          ignorable: true, tmout: 0, rtags: evtObj.rtags, forceAjax: false
 			  };
@@ -225,7 +225,7 @@
 		//modify to use WebSocket connection for au requests
 		if (content) {
 			let reqInf =  {
-				sid: zAu.seqId, uri: requri, dt: dt, content: content,
+				sid: zAu.seqId, uri: requri, dt: dt.id, content: content,
 				implicit: implicit,
 				ignorable: ignorable, tmout: 0, rtags: rtags, forceAjax: forceAjax
 			}

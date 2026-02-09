@@ -28,11 +28,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -77,6 +78,7 @@ public class ServerPushEndPoint {
 	private String dtid;
 	private HttpSession httpSession;
 	private String baseUrl;
+	private Map<String, List<String>> requestHeaders;
 
 	private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -110,7 +112,7 @@ public class ServerPushEndPoint {
 
 	            // Map ws -> http and wss -> https
 	            String scheme = "wss".equalsIgnoreCase(requestUri.getScheme()) || "https".equalsIgnoreCase(requestUri.getScheme()) ? "https" : "http";
-	            String host = requestUri.getHost();
+	            String host = "localhost";
 	            int port = requestUri.getPort();
 
 	            // Construct the base URL, handling default ports
@@ -119,7 +121,15 @@ public class ServerPushEndPoint {
 	            if (port != -1 && !((scheme.equals("http") && port == 80) || (scheme.equals("https") && port == 443))) {
 	                urlBuilder.append(":").append(port);
 	            }
-	            this.baseUrl = urlBuilder.toString();	            
+	            this.baseUrl = urlBuilder.toString();
+	            this.requestHeaders = handshakeRequest.getHeaders();
+	            if (!this.requestHeaders.containsKey("X-Forwarded-For")) {
+	            	Object ipAttr = config.getUserProperties().get(WebSocketServerPush.WS_CLIENT_IP);
+	            	if (ipAttr != null) {
+	            		String clientIp = ipAttr.toString();
+	            		this.requestHeaders.put("X-Forwarded-For", List.of(clientIp));
+	            	}
+	            }
 	        }
 		}
 	}
@@ -179,6 +189,7 @@ public class ServerPushEndPoint {
 					try {
 						session.getBasicRemote().sendText("Error: Session invalidated");
 					} catch (IOException ioe) {
+						CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", ioe);
 					}
 					return;
 				}
@@ -191,7 +202,20 @@ public class ServerPushEndPoint {
 				        HttpPost httpPost = new HttpPost(fullUrl.toString());
 				        httpPost.setHeader("Content-Type", "application/json");
 				        httpPost.setHeader("ZK-SID", sid);
+				        httpPost.setHeader("Pragma", "no-cache");
+				        httpPost.setHeader("Cache-Control", "no-cache");
 				        httpPost.setHeader("Cookie", jsessionidCookie);
+				        requestHeaders.forEach((key, values) -> {
+				        	// Forward selected headers
+				        	if ("User-Agent".equalsIgnoreCase(key) || "Accept-Language".equalsIgnoreCase(key) 
+				        		|| "Accept-Encoding".equalsIgnoreCase(key)
+				        		|| "Host".equalsIgnoreCase(key) || key.startsWith("X-")
+				        		|| "Origin".equalsIgnoreCase(key)) {
+				        		for (String value : values) {
+				        			httpPost.addHeader(key, value);
+				        		}
+				        	}
+				        });
 				        httpPost.setConfig(org.apache.hc.client5.http.config.RequestConfig.custom()
 				            .setResponseTimeout(Timeout.ofSeconds(30))
 				            .build());
@@ -226,6 +250,7 @@ public class ServerPushEndPoint {
 									try {
 										session.getBasicRemote().sendText("Error: No response from /zkau");
 									} catch (IOException e) {
+										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
 									}
 								}
 					        } catch (Throwable e) {
