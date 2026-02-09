@@ -1,4 +1,4 @@
--- IDEMPIERE-6841
+-- IDEMPIERE-6841 - https://idempiere.atlassian.net/browse/IDEMPIERE-6841
 SELECT register_migration_script('202602091047_IDEMPIERE-6841.sql') FROM dual;
 
 -- Feb 9, 2026, 10:47:31 AM BRT
@@ -113,3 +113,34 @@ UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2026-02-09 10:59:01','YYYY-M
 UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2026-02-09 10:59:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205690
 ;
 
+-- Feb 9, 2026, 2:03:39 PM BRT
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2026-02-09 14:03:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_UU='019c42af-1c74-76d5-ba06-4ff66f53c244'
+;
+
+-- Feb 9, 2026, 2:03:44 PM BRT
+INSERT INTO t_alter_column values('c_banktransfer','From_DocType_ID','NUMERIC(10)',null,'NULL')
+;
+
+-- Feb 9, 2026, 2:03:44 PM BRT
+INSERT INTO t_alter_column values('c_banktransfer','From_DocType_ID',null,'NULL',null)
+;
+
+-- Feb 9, 2026, 2:04:15 PM BRT
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2026-02-09 14:04:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_UU='019c42b0-61a6-7bdd-bca1-c11370894204'
+;
+
+-- Feb 9, 2026, 2:04:20 PM BRT
+INSERT INTO t_alter_column values('c_banktransfer','To_DocType_ID','NUMERIC(10)',null,'NULL')
+;
+
+-- Feb 9, 2026, 2:04:20 PM BRT
+INSERT INTO t_alter_column values('c_banktransfer','To_DocType_ID',null,'NULL',null)
+;
+
+-- Feb 9, 2026, 2:05:21 PM BRT
+UPDATE AD_Field SET SeqNo=140, MandatoryLogic='1=1',Updated=TO_TIMESTAMP('2026-02-09 14:05:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_UU='019c42b2-4106-72fe-a6ad-5f25c00da636'
+;
+
+-- Feb 9, 2026, 2:05:21 PM BRT
+UPDATE AD_Field SET SeqNo=250, MandatoryLogic='1=1',Updated=TO_TIMESTAMP('2026-02-09 14:05:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_UU='019c42b2-41d4-7c59-b266-472990769e5d'
+;
