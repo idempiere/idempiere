@@ -167,6 +167,7 @@ public class OrderBatchProcess extends SvrProcess
 		String trxName = org.compiere.util.Trx.createTrxName("OrderBatch_");
 		org.compiere.util.Trx trx = org.compiere.util.Trx.get(trxName, true);
 		MOrder orderToProcess = new MOrder(getCtx(), order.getC_Order_ID(), trxName);
+		boolean success = false;
 		try
 		{
 			orderToProcess.setDocAction(p_DocAction);
@@ -174,26 +175,26 @@ public class OrderBatchProcess extends SvrProcess
 			{
 				orderToProcess.saveEx();
 				trx.commit();
-				trx.close();
 				addLog(0, null, null, orderToProcess.getDocumentNo() + ": OK");
-				return true;
+				success = true;
 			} else {
 				String errorMsg = "Error: " + orderToProcess.getDocumentNo() + ": " + orderToProcess.getProcessMsg();
 				log.warning(errorMsg);
 				addLog(orderToProcess.getC_Order_ID(), null, null, errorMsg, MOrder.Table_ID, orderToProcess.getC_Order_ID());
 				trx.rollback();
-				trx.close();
-				return false;			
 			}
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "Failed to process order: " + orderToProcess.getDocumentNo(), e);
 			trx.rollback();
-			trx.close();
 			addLog(orderToProcess.getC_Order_ID(), null, null, "Error: " + orderToProcess.getDocumentNo() + ": " + e.getMessage(), MOrder.Table_ID, orderToProcess.getC_Order_ID());
-			return false;
 		}
+		finally
+		{
+			trx.close();
+		}
+		return success;
 	}	//	process
 	
 }	//	OrderBatchProcess
