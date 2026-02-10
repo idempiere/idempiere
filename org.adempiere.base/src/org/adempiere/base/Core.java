@@ -342,7 +342,7 @@ public class Core {
 			int retries = 0;
 			int maxRetries = 10;
 			while (retries < maxRetries) {
-				try {Thread.sleep(2000);} catch (InterruptedException e) {Thread.currentThread().interrupt();}
+				try {Thread.sleep(2000);} catch (InterruptedException e) {}
 				if (DB.isConnected()) {
 					String warn = MSysConfig.getValue(MSysConfig.SECURITY_DASHBOARD_LEGACY_KEY_WARNING, "Y");
 					if ("D".equals(warn))
