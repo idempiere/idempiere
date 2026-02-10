@@ -664,6 +664,8 @@ public class DocManager {
 			MCostDetail bdcd = bdcds.get(x);
 			MAcctSchema as = new MAcctSchema(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
 			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getBackDateDay());
+			// Do not skip when MAcctSchema.getBackDateDay() == 0, as some documents with the current account date 
+			// still require reposting (e.g. MR reversal and related MatchPOs)
 			if (bdcd.getDateAcct().before(allowedBackDate))
 				bdcds.remove(x);
 		}
@@ -756,6 +758,9 @@ public class DocManager {
 		
 		// re-post all the documents after the back-date transaction
 		List<String> repostedRecordIds = new ArrayList<String>();
+		// skip repost the back-date transaction
+		String lastPostedRecordId = AD_Table_ID + "_" + Record_ID;
+		repostedRecordIds.add(lastPostedRecordId);
 		
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append("SELECT mpo.M_MatchPO_ID, il.C_Invoice_ID, iol.M_InOut_ID, mi.M_MatchInv_ID, invl.M_Inventory_ID, ");
@@ -834,7 +839,7 @@ public class DocManager {
 				if (tableID == MMatchInv.Table_ID) {
 					MMatchInv mi = new MMatchInv(Env.getCtx(), recordID, trxName);
 					MInvoiceLine il = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), trxName);	
-					if (repostedRecordId.contains(MInvoice.Table_ID + "_" + il.getC_Invoice_ID()))
+					if (repostedRecordIds.contains(MInvoice.Table_ID + "_" + il.getC_Invoice_ID()))
 						continue;
 				}
 				
@@ -842,6 +847,7 @@ public class DocManager {
 					String error = DocManager.postDocument(ass, tableID, recordID, true, true, true, trxName);
 					if (error != null)
 						return error;
+					lastPostedRecordId = tableID + "_" + recordID;
 				}
 								
 				if (tableID == MInvoice.Table_ID) { 
@@ -859,6 +865,8 @@ public class DocManager {
 						}
 						if (mi.getDateAcct().compareTo(cd.getDateAcct()) < 0)
 							continue;
+						if (lastPostedRecordId.equals(MMatchInv.Table_ID + "_" + mi.get_ID()))
+							continue;
 						// NOTE: Do not skip reposting match invoices that have already been reposted
 						String error = DocManager.postDocument(ass, MMatchInv.Table_ID, mi.get_ID(), true, true, true, trxName);
 						if (error != null) {
@@ -866,6 +874,7 @@ public class DocManager {
 								s_log.info("Error Posting TableID=" + MMatchInv.Table_ID + ", RecordID=" + mi.get_ID() + " Error: " + error);
 							return error;
 						}
+						lastPostedRecordId = MMatchInv.Table_ID + "_" + mi.get_ID();
 					}
 				}
     		}
