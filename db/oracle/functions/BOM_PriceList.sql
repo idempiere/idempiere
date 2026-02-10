@@ -20,6 +20,8 @@ RETURN NUMBER
 AS
 	v_Price			NUMBER;
 	v_ProductPrice	NUMBER;
+	v_RecordExists BOOLEAN;
+	v_IsBOMPriceOverride CHAR(1);
 	--	Get BOM Product info
 	CURSOR CUR_BOM IS
 		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM
@@ -31,20 +33,41 @@ AS
 		  AND b.IsActive='Y';
 	--
 BEGIN
-	--	Try to get price from pricelist directly
-	SELECT	COALESCE (SUM(PriceList), 0)
-	INTO	v_Price
-   	FROM	M_PRODUCTPRICE
-	WHERE   IsActive='Y' AND M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
+	--	Try to get price from pricelist directly and check configuration
+	SELECT	
+		SUM(pp.PriceList),
+		COUNT(*) > 0,
+		p.IsBOMPriceOverride
+	INTO	
+		v_Price,
+		v_RecordExists,
+		v_IsBOMPriceOverride
+	FROM	M_ProductPrice pp
+	INNER JOIN M_Product p ON pp.M_Product_ID = p.M_Product_ID
+	WHERE pp.IsActive='Y' 
+		AND pp.M_PriceList_Version_ID=PriceList_Version_ID 
+		AND pp.M_Product_ID=Product_ID
+	GROUP BY p.IsBOMPriceOverride;
 --	DBMS_OUTPUT.PUT_LINE('Price=' || Price);
 
-	--	No Price - Check if BOM
-	IF (v_Price = 0) THEN
+	-- Set defaults if null
+	v_RecordExists := COALESCE(v_RecordExists, 'N');
+	v_IsBOMPriceOverride := COALESCE(v_IsBOMPriceOverride, 'Y');
+
+	--	Determine if BOM calculation is needed
+	--	Calculate BOM when:
+	--	  1. No record exists, OR
+	--	  2. Record exists with 0 price AND IsBOMPriceOverride = 'Y' (backward compatible - calculate from components)
+	IF (NOT v_RecordExists OR (v_RecordExists AND COALESCE(v_Price, 0) = 0 AND v_IsBOMPriceOverride = 'Y')) THEN
+		v_Price := 0;
 		FOR bom IN CUR_BOM LOOP
 			v_ProductPrice := Bompricelist (bom.M_ProductBOM_ID, PriceList_Version_ID);
 			v_Price := v_Price + (bom.BOMQty * v_ProductPrice);
 		--	DBMS_OUTPUT.PUT_LINE('Qry=' || bom.BOMQty || ' @ ' || v_ProductPrice || ', Price=' || v_Price);
 		END LOOP;	--	BOM
+	ELSE
+		-- Record exists and either price > 0 OR (price = 0 AND IsBOMPriceOverride = 'N')
+		v_Price := COALESCE(v_Price, 0);
 	END IF;
 	--
 	RETURN v_Price;
