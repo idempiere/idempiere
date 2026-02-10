@@ -362,9 +362,9 @@ public class AllocationAuto extends SvrProcess
 					{
 						BigDecimal invoiceAmt = invoice.getOpenAmt(true, null);
 						BigDecimal overUnder = line.getOpenAmt().subtract(line.getPayAmt())
-							.subtract(line.getDiscountAmt()).subtract(line.getWriteOffAmt()).subtract(line.getDifferenceAmt());
+							.subtract(line.getDiscountAmt()).subtract(line.getWriteOffAmt());
 						invoiceAmt = invoiceAmt.subtract(line.getDiscountAmt()).subtract(line.getWriteOffAmt())
-							.subtract(line.getDifferenceAmt()).subtract(overUnder);
+							.subtract(overUnder);
 						if (!invoice.isSOTrx())
 							invoiceAmt = invoiceAmt.negate();
 						if (log.isLoggable(Level.FINE)) log.fine(invoice + ", Invoice=" + invoiceAmt);
