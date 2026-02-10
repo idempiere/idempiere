@@ -169,16 +169,6 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 			setTo_C_Charge_ID(getFrom_C_Charge_ID());
 		}
 		
-		if(getFrom_DocType_ID() <= 0) {
-			log.saveError("FillMandatory", Msg.getElement(getCtx(), "From_DocType_ID"));
-			return false;
-		}
-		
-		if(getTo_DocType_ID() <= 0) {
-			log.saveError("FillMandatory", Msg.getElement(getCtx(), "To_DocType_ID"));
-			return false;
-		}
-		
 		return true;
 	}
 	
@@ -265,7 +255,11 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankFrom.setC_Currency_ID(getFrom_C_Currency_ID());
 		paymentBankFrom.setPayAmt(getFrom_Amt());
 		paymentBankFrom.setOverUnderAmt(Env.ZERO);
-		paymentBankFrom.setC_DocType_ID(getFrom_DocType_ID());
+		if(getFrom_DocType_ID() > 0) {
+			paymentBankFrom.setC_DocType_ID(getFrom_DocType_ID());
+		}else {
+			paymentBankFrom.setC_DocType_ID(false);
+		}
 		paymentBankFrom.setC_Charge_ID(getFrom_C_Charge_ID());
 		if (as.getC_Currency_ID() != getFrom_C_Currency_ID()) {
 			paymentBankFrom.setC_ConversionType_ID(getC_ConversionType_ID());
@@ -295,7 +289,11 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankTo.setC_Currency_ID(getTo_C_Currency_ID());
 		paymentBankTo.setPayAmt(getTo_Amt());
 		paymentBankTo.setOverUnderAmt(Env.ZERO);
-		paymentBankTo.setC_DocType_ID(getTo_DocType_ID());
+		if(getTo_DocType_ID() > 0) {
+			paymentBankTo.setC_DocType_ID(getTo_DocType_ID());
+		}else {
+			paymentBankTo.setC_DocType_ID(true);
+		}
 		paymentBankTo.setC_Charge_ID(getTo_C_Charge_ID());
 		if (as.getC_Currency_ID() != getTo_C_Currency_ID()) {
 			paymentBankTo.setC_ConversionType_ID(getC_ConversionType_ID());

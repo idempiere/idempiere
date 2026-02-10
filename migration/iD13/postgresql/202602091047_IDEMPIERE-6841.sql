@@ -137,10 +137,3 @@ INSERT INTO t_alter_column values('c_banktransfer','To_DocType_ID','NUMERIC(10)'
 INSERT INTO t_alter_column values('c_banktransfer','To_DocType_ID',null,'NULL',null)
 ;
 
--- Feb 9, 2026, 2:05:21 PM BRT
-UPDATE AD_Field SET SeqNo=140, MandatoryLogic='1=1',Updated=TO_TIMESTAMP('2026-02-09 14:05:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_UU='019c42b2-4106-72fe-a6ad-5f25c00da636'
-;
-
--- Feb 9, 2026, 2:05:21 PM BRT
-UPDATE AD_Field SET SeqNo=250, MandatoryLogic='1=1',Updated=TO_TIMESTAMP('2026-02-09 14:05:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_UU='019c42b2-41d4-7c59-b266-472990769e5d'
-;
