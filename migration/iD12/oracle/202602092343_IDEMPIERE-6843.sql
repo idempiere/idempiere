@@ -9,7 +9,7 @@ INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated
 ;
 
 -- Feb 10, 2026, 12:27:11 AM CET
-INSERT INTO AD_FieldGroup (AD_FieldGroup_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,EntityType,FieldGroupType,IsCollapsedByDefault,AD_FieldGroup_UU) VALUES (200033,0,0,'Y',TO_TIMESTAMP('2026-02-10 00:27:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-10 00:27:11','YYYY-MM-DD HH24:MI:SS'),100,'Security','D','C','N','019c3887-b33a-73b3-a1fa-22bdd5821890')
+INSERT INTO AD_FieldGroup (AD_FieldGroup_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,EntityType,FieldGroupType,IsCollapsedByDefault,AD_FieldGroup_UU) VALUES (200033,0,0,'Y',TO_TIMESTAMP('2026-02-10 00:27:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-10 00:27:11','YYYY-MM-DD HH24:MI:SS'),100,'Security Checklist','D','C','N','019c3887-b33a-73b3-a1fa-22bdd5821890')
 ;
 
 -- Feb 10, 2026, 12:27:11 AM CET
@@ -44,7 +44,7 @@ INSERT INTO PA_DocumentStatusAccess (PA_DocumentStatusAccess_ID,AD_Client_ID,AD_
 ;
 
 -- Feb 10, 2026, 12:27:13 AM CET
-INSERT INTO PA_DocumentStatus (PA_DocumentStatus_ID,AD_Client_ID,AD_Org_ID,AD_Role_ID,AD_User_ID,Created,CreatedBy,Updated,UpdatedBy,Name,Description,IsActive,SeqNo,Name_PrintColor_ID,Number_PrintColor_ID,AD_Table_ID,WhereClause,AD_Window_ID,PA_DocumentStatus_UU,EntityType,IsHideWhenZero,Help,Name_PrintColorZero_ID,AD_FieldGroup_ID) VALUES (200009,0,0,0,100,TO_TIMESTAMP('2026-02-10 00:27:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-10 00:27:13','YYYY-MM-DD HH24:MI:SS'),100,'Password Rules','Password rules are not configured','Y',30,102,102,112,'AD_Client_ID=0 AND AD_PasswordRule_ID IS NULL',109,'019c3ee7-bce4-752a-bedb-1a4ea2e9b933','D','Y','Password rules are recomended to enforce users to choose a good password, consider configuring a password rule and assigning it to Tenant',103,200033)
+INSERT INTO PA_DocumentStatus (PA_DocumentStatus_ID,AD_Client_ID,AD_Org_ID,AD_Role_ID,AD_User_ID,Created,CreatedBy,Updated,UpdatedBy,Name,Description,IsActive,SeqNo,Name_PrintColor_ID,Number_PrintColor_ID,AD_Table_ID,WhereClause,AD_Window_ID,PA_DocumentStatus_UU,EntityType,IsHideWhenZero,Help,Name_PrintColorZero_ID,AD_FieldGroup_ID) VALUES (200009,0,0,0,100,TO_TIMESTAMP('2026-02-10 00:27:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-02-10 00:27:13','YYYY-MM-DD HH24:MI:SS'),100,'Password Rules','Password rules are not configured','Y',30,102,102,112,'AD_Client_ID=0 AND AD_PasswordRule_ID IS NULL',109,'019c3ee7-bce4-752a-bedb-1a4ea2e9b933','D','Y','Password rules are recommended to enforce users to choose a good password, consider configuring a password rule and assigning it to Tenant',103,200033)
 ;
 
 -- Feb 10, 2026, 12:27:13 AM CET
@@ -119,5 +119,64 @@ You can use AES or another supported algorithm and change mySecurePassword for a
 
 -- Feb 10, 2026, 12:27:17 AM CET
 INSERT INTO PA_DocumentStatusAccess (PA_DocumentStatusAccess_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive,Updated,UpdatedBy,PA_DocumentStatusAccess_UU,AD_Role_ID,PA_DocumentStatus_ID) VALUES (200009,0,0,TO_TIMESTAMP('2026-02-10 00:27:17','YYYY-MM-DD HH24:MI:SS'),100,'Y',TO_TIMESTAMP('2026-02-10 00:27:17','YYYY-MM-DD HH24:MI:SS'),100,'019c44b7-745c-7646-9b0e-fcd52d7c8d47',0,200015)
+;
+
+-- Feb 10, 2026, 11:58:34 AM CET
+UPDATE PA_DocumentStatus SET Description='Users with default passwords have been found', AD_Form_ID=NULL, Help='To prevent unauthorized access, locate the affected users within the tenant and assign them strong, unique passwords.', AD_Process_ID=NULL, AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 11:58:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200007
+;
+
+-- Feb 10, 2026, 12:02:22 PM CET
+UPDATE PA_DocumentStatus SET Name='Passwords are not hashed', Description='Password hashing is not enabled', AD_Window_ID=NULL, AD_Form_ID=NULL, Help='Storing passwords in plain text or using reversible encryption is insecure. We recommend running the ''Convert password to hashes'' process to implement a one-way hashing algorithm instead.', AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 12:02:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200006
+;
+
+-- Feb 10, 2026, 12:03:58 PM CET
+UPDATE PA_DocumentStatus SET Name='No password policy', Description='No password policy is configured', AD_Form_ID=NULL, Help='We recommend setting up password rules to ensure that users create strong and secure passwords. Once configured, make sure that the policy is assigned to the relevant tenant.', AD_Process_ID=NULL, AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 12:03:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200009
+;
+
+-- Feb 10, 2026, 12:05:04 PM CET
+UPDATE PA_DocumentStatus SET Description='Users without Multifactor Authentication', AD_Form_ID=NULL, AD_Process_ID=NULL, AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 12:05:04','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200010
+;
+
+-- Feb 10, 2026, 12:05:47 PM CET
+UPDATE PA_DocumentStatus SET Name='No User Locking', Description='User locking is not configured', AD_Form_ID=NULL, Help='Consider configuring a user locking mechanism.', AD_Process_ID=NULL, AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 12:05:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200013
+;
+
+-- Feb 10, 2026, 12:07:31 PM CET
+UPDATE PA_DocumentStatus SET AD_Form_ID=NULL, Help='When System Status remains in Evaluation some critical information may be disclosed on the login page.
+Consider changing the System Status to ''Implementation'' or ''Production'' and also setting the SysConfig values for:
+APPLICATION_MAIN_VERSION_SHOWN
+APPLICATION_DATABASE_VERSION_SHOWN
+APPLICATION_IMPLEMENTATION_VENDOR_SHOWN
+APPLICATION_JVM_VERSION_SHOWN
+APPLICATION_OS_INFO_SHOWN
+APPLICATION_HOST_SHOWN', AD_Process_ID=NULL, AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 12:07:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200008
+;
+
+-- Feb 10, 2026, 12:09:45 PM CET
+UPDATE PA_DocumentStatus SET Name='Default Root Folder Browser', Description='The SysConfig ZK_ROOT_FOLDER_BROWSER has not been configured', Help='The System Configurator specifies the base directory for ''Folder'' fields and parameters. It currently defaults to IDEMPIERE_HOME. For enhanced security and to prevent unauthorized access to sensitive system files, such as logs or plugin binaries, we recommend setting a more restricted directory.',Updated=TO_TIMESTAMP('2026-02-10 12:09:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200011
+;
+
+-- Feb 10, 2026, 12:11:27 PM CET
+UPDATE PA_DocumentStatus SET AD_Form_ID=NULL, Help='Be careful about which advanced roles you assign to which users.  Consider advanced roles as SuperUser; they have access to all security vulnerabilities.  You must also consider the SuperUser role as having access to the operating system user that was used to install iDempiere on the server.  In other words, advanced roles provide access to iDempiere features that can easily be exploited to gain access to SuperUser in the application, the database as a DBA and the operating system as the user running the iDempiere server.', AD_Process_ID=NULL, AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 12:11:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200012
+;
+
+-- Feb 10, 2026, 12:13:43 PM CET
+UPDATE PA_DocumentStatus SET Help='Legacy key algorithm DES encryption detected – migration to a stronger algorithm is recommended.
+
+<br><br>
+<b>WARNING!</b> Before changing the algorithm, please note that if you already have encrypted data in your database, changing the key will render all the encrypted information unreadable. First, decrypt all encrypted columns, then apply the new encryption key and re-encrypt the columns.
+
+<br>
+This can be done simply by adding the file ''idempiere-ks.properties'' to your ''IDEMPIERE_HOME'' folder with the following content:
+<pre>
+algorithm=AES
+password=mySecurePassword
+</pre>
+
+You can use AES or another supported algorithm and replace ''mySecurePassword'' with a password of your choice.  Please save this password carefully, as if you lose it, you will also lose access to all your encrypted data.',Updated=TO_TIMESTAMP('2026-02-10 12:13:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200015
+;
+
+-- Feb 10, 2026, 12:14:38 PM CET
+UPDATE PA_DocumentStatus SET Name='Unencrypted sensitive data', Help='We have detected columns containing sensitive data that lack encryption. Make sure that all fields storing passwords, credit card numbers or other sensitive business data are properly encrypted.',Updated=TO_TIMESTAMP('2026-02-10 12:14:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200014
 ;
 
