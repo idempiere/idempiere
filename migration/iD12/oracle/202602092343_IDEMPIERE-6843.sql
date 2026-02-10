@@ -180,3 +180,59 @@ You can use AES or another supported algorithm and replace ''mySecurePassword'' 
 UPDATE PA_DocumentStatus SET Name='Unencrypted sensitive data', Help='We have detected columns containing sensitive data that lack encryption. Make sure that all fields storing passwords, credit card numbers or other sensitive business data are properly encrypted.',Updated=TO_TIMESTAMP('2026-02-10 12:14:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200014
 ;
 
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=110, AD_FieldGroup_ID=NULL, XPosition=1,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200096
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=120,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3813
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=130,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5887
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=140,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200594
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=150,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200595
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=160,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5161
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=170,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5162
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5163
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5164
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=200,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=12098
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=210,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11024
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=220,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=54238
+;
+
+-- Feb 10, 2026, 12:20:12 PM CET
+UPDATE AD_Field SET SeqNo=230,Updated=TO_TIMESTAMP('2026-02-10 12:20:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=54680
+;
+
+-- Feb 10, 2026, 12:20:46 PM CET
+UPDATE PA_DocumentStatus SET AD_Form_ID=NULL, Help='We recommend setting up password rules to ensure that users create strong and secure passwords. Once configured, make sure that the policy is assigned to the System tenant.', AD_Process_ID=NULL, AD_InfoWindow_ID=NULL,Updated=TO_TIMESTAMP('2026-02-10 12:20:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200009
+;
+
