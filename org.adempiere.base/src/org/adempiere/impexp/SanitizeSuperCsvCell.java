@@ -48,8 +48,7 @@ public class SanitizeSuperCsvCell extends CellProcessorAdaptor {
 
 	@Override
 	public <T> T execute(Object value, CsvContext context) {
-		if (   value != null
-			&& value instanceof String
+		if (   value instanceof String
 			&& MSysConfig.getBooleanValue(MSysConfig.CSV_EXPORT_SANITIZATION, true, Env.getAD_Client_ID(Env.getCtx())))
 			return next.execute(Util.sanitizeCsvValue(value.toString()), context);
 		return next.execute(value, context);
