@@ -17,12 +17,13 @@ import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.acct.Doc;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+
 
 /**
  * Default {@link IDocFactory} implementation from core.<br/>
@@ -35,7 +36,7 @@ public class DefaultDocumentFactory implements IDocFactory {
 	private final static CLogger s_log = CLogger.getCLogger(DefaultDocumentFactory.class);
 
 	@Override
-	public Doc getDocument(MAcctSchema as, int AD_Table_ID, ResultSet rs,
+	public Doc getDocument(IAcctSchemaInfo as, int AD_Table_ID, ResultSet rs,
 			String trxName) {
 		Doc doc = null;
 
@@ -95,7 +96,7 @@ public class DefaultDocumentFactory implements IDocFactory {
 		try
 		{
 			Class<?> cClass = Class.forName(className);
-			Constructor<?> cnstr = cClass.getConstructor(new Class[] {MAcctSchema.class, ResultSet.class, String.class});
+			Constructor<?> cnstr = cClass.getConstructor(new Class[] {IAcctSchemaInfo.class, ResultSet.class, String.class});
 			doc = (Doc) cnstr.newInstance(as, rs, trxName);
 		}
 		catch (Exception e)

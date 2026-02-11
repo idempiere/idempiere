@@ -5,7 +5,7 @@ package org.compiere.acct;
 
 import java.math.BigDecimal;
 
-import org.compiere.model.MAccount;
+import org.adempiere.base.acct.info.IAccountInfo;
 
 /**
  * Helper methods for Fact and FactLine
@@ -46,7 +46,7 @@ public final class FactUtil
 	public static FactLine[] createSimpleOperation (
 		Fact fact,
 		DocLine docLine, 
-		MAccount account_DR, MAccount account_CR,
+		IAccountInfo account_DR, IAccountInfo account_CR,
 		int C_Currency_ID, BigDecimal amt, boolean signSensitive)
 	{
 		FactLine[] lines = new FactLine[2];

@@ -32,6 +32,8 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
@@ -2742,7 +2744,7 @@ public class MOrder extends X_C_Order implements DocAction
 		MRequisitionLine.unlinkC_Order_ID(getCtx(), get_ID(), get_TrxName());
 		
 		/* globalqss - 2317928 - Reactivating/Voiding order must reset posted */
-		MFactAcct.deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
+		AcctInfoServices.getFactAcctInfoService().deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
 		setPosted(false);
 		
 		// After Void
@@ -3078,7 +3080,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		/* globalqss - 2317928 - Reactivating/Voiding order must reset posted */
-		MFactAcct.deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
+		AcctInfoServices.getFactAcctInfoService().deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
 		setPosted(false);
 		
 		// After reActivate
@@ -3149,10 +3151,10 @@ public class MOrder extends X_C_Order implements DocAction
 	protected String deleteMatchPOCostDetail(MOrderLine line)
 	{
 		// Get Account Schemas to delete MCostDetail
-		MAcctSchema[] acctschemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaInfo[] acctschemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for(int asn = 0; asn < acctschemas.length; asn++)
 		{
-			MAcctSchema as = acctschemas[asn];
+			IAcctSchemaInfo as = acctschemas[asn];
 			
 			if (as.isSkipOrg(getAD_Org_ID()))
 			{
@@ -3165,7 +3167,7 @@ public class MOrder extends X_C_Order implements DocAction
 			if (mPO.length == 0)
 			{
 				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", 
-						line.getC_OrderLine_ID(), 0, as.get_ID(), get_TrxName());
+						line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), get_TrxName());
 				for (MCostDetail cd : cds)
 				{
 					cd.setProcessed(false);

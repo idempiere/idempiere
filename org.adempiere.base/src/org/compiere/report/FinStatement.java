@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.report;
 
+import static org.compiere.model.SystemIDs.PRINTFORMAT_STATEMENTOFACCOUNT;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,12 +26,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchemaElement;
-import org.compiere.model.MElementValue;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
+import org.adempiere.base.acct.info.IElementValueInfo;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
-
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -112,7 +113,7 @@ public class FinStatement extends SvrProcess
 	/**	Parameter Where Clause			*/
 	private StringBuffer		m_parameterWhere = new StringBuffer();
 	/**	Account							*/ 
-	private MElementValue 		m_acct = null;
+	private IElementValueInfo 		m_acct = null;
 	
 	/**	Start Time						*/
 	private long 				m_start = System.currentTimeMillis();
@@ -194,27 +195,27 @@ public class FinStatement extends SvrProcess
 		//	Optional Account_ID
 		if (p_Account_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Account, p_Account_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Account, p_Account_ID));
 		//	Optional Org
 		if (p_AD_Org_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Organization, p_AD_Org_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Organization, p_AD_Org_ID));
 		//	Optional BPartner
 		if (p_C_BPartner_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_BPartner, p_C_BPartner_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_BPartner, p_C_BPartner_ID));
 		//	Optional Product
 		if (p_M_Product_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Product, p_M_Product_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Product, p_M_Product_ID));
 		//	Optional Project
 		if (p_C_Project_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Project, p_C_Project_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Project, p_C_Project_ID));
 		//	Optional Activity
 		if (p_C_Activity_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Activity, p_C_Activity_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Activity, p_C_Activity_ID));
 		//	Optional Campaign
 		if (p_C_Campaign_ID != 0)
 			m_parameterWhere.append(" AND C_Campaign_ID=").append(p_C_Campaign_ID);
@@ -223,15 +224,15 @@ public class FinStatement extends SvrProcess
 		//	Optional Sales Region
 		if (p_C_SalesRegion_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_SalesRegion, p_C_SalesRegion_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_SalesRegion, p_C_SalesRegion_ID));
 		//	Optional User1_ID
 		if (p_User1_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserElementList1, p_User1_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1, p_User1_ID));
 		//  Optional User2_ID
 		if (p_User2_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserElementList2, p_User2_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2, p_User2_ID));
 		//	Optional UserElement1_ID
 		if (p_UserElement1_ID != 0)
 			m_parameterWhere.append(" AND UserElement1_ID=").append(p_UserElement1_ID);
@@ -363,7 +364,7 @@ public class FinStatement extends SvrProcess
 		//	Start Beginning of Year
 		if (p_Account_ID > 0)
 		{
-			m_acct = new MElementValue (getCtx(), p_Account_ID, get_TrxName());
+			m_acct = AcctInfoServices.getElementValueInfoService().create(getCtx(), p_Account_ID, get_TrxName());
 			if (!m_acct.isBalanceSheet())
 			{
 				MPeriod first = MPeriod.getFirstInYear (getCtx(), p_DateAcct_From, p_AD_Org_ID);

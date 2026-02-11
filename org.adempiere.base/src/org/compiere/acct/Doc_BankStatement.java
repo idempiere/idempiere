@@ -21,8 +21,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
@@ -54,7 +54,7 @@ public class Doc_BankStatement extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_BankStatement (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_BankStatement (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, MBankStatement.class, rs, null, trxName);
 	}	//	Doc_Bank
@@ -157,7 +157,7 @@ public class Doc_BankStatement extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
@@ -177,11 +177,11 @@ public class Doc_BankStatement extends Doc
 			// If both accounts BankAsset and BankInTransit are equal
 			// then remove the posting
 
-			MAccount acct_bank_asset =  getAccount(Doc.ACCTTYPE_BankAsset, as);
-			MAccount acct_bank_in_transit = getAccount(Doc.ACCTTYPE_BankInTransit, as);
+			IAccountInfo acct_bank_asset =  getAccount(Doc.ACCTTYPE_BankAsset, as);
+			IAccountInfo acct_bank_in_transit = getAccount(Doc.ACCTTYPE_BankInTransit, as);
 
 			// don't validate interorg on banks for this - normally banks are balanced by orgs
-			if ((!as.isPostIfClearingEqual()) && acct_bank_asset.equals(acct_bank_in_transit)) {
+			if ((!as.getRecord().isPostIfClearingEqual()) && acct_bank_asset.equals(acct_bank_in_transit)) {
 				// Not using clearing accounts
 				// just post the difference (if any)
 
@@ -191,9 +191,9 @@ public class Doc_BankStatement extends Doc
 					//  BankAsset       DR      CR  (Statement minus Payment)
 					fl = fact.createLine(line, acct_bank_asset, line.getC_Currency_ID(), amt_stmt_minus_trx);
 					if (fl != null && AD_Org_ID != 0)
-						fl.setAD_Org_ID(AD_Org_ID);
+						fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 					if (fl != null && C_BPartner_ID != 0)
-						fl.setC_BPartner_ID(C_BPartner_ID);
+						fl.getFactAcctInfo().getRecord().setC_BPartner_ID(C_BPartner_ID);
 
 				}
 
@@ -204,9 +204,9 @@ public class Doc_BankStatement extends Doc
 				//  BankAsset       DR      CR  (Statement)
 				fl = fact.createLine(line, acct_bank_asset, line.getC_Currency_ID(), line.getStmtAmt());
 				if (fl != null && AD_Org_ID != 0)
-					fl.setAD_Org_ID(AD_Org_ID);
+					fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 				if (fl != null && C_BPartner_ID != 0)
-					fl.setC_BPartner_ID(C_BPartner_ID);
+					fl.getFactAcctInfo().getRecord().setC_BPartner_ID(C_BPartner_ID);
 
 				// BankInTransit DR CR (Payment)
 				MBankStatementLine statementLine = (MBankStatementLine) line.getPO();
@@ -226,14 +226,14 @@ public class Doc_BankStatement extends Doc
 								payment.getC_Currency_ID(),
 								payment.isReceipt() ? payment.getPayAmt().negate() : payment.getPayAmt());
 						// line id
-						fl.setLine_ID(statementLine.get_ID());
+						fl.getFactAcctInfo().getRecord().setLine_ID(statementLine.get_ID());
 						if (fl != null) {
 							if (C_BPartner_ID != 0)
-								fl.setC_BPartner_ID(C_BPartner_ID);
+								fl.getFactAcctInfo().getRecord().setC_BPartner_ID(C_BPartner_ID);
 							if (AD_Org_ID != 0)
-								fl.setAD_Org_ID(AD_Org_ID);
+								fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 							else
-								fl.setAD_Org_ID(docDepositLine.getAD_Org_ID(true)); // from payment
+								fl.getFactAcctInfo().getRecord().setAD_Org_ID(docDepositLine.getAD_Org_ID(true)); // from payment
 						}
 					}
 				} else {
@@ -241,11 +241,11 @@ public class Doc_BankStatement extends Doc
 
 					if (fl != null) {
 						if (C_BPartner_ID != 0)
-							fl.setC_BPartner_ID(C_BPartner_ID);
+							fl.getFactAcctInfo().getRecord().setC_BPartner_ID(C_BPartner_ID);
 						if (AD_Org_ID != 0)
-							fl.setAD_Org_ID(AD_Org_ID);
+							fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 						else
-							fl.setAD_Org_ID(line.getAD_Org_ID(true)); // from payment
+							fl.getFactAcctInfo().getRecord().setAD_Org_ID(line.getAD_Org_ID(true)); // from payment
 					}
 				}
 
@@ -263,7 +263,7 @@ public class Doc_BankStatement extends Doc
 						line.getC_Currency_ID(), line.getChargeAmt().negate(), null);
 			}
 			if (fl != null && C_BPartner_ID != 0)
-				fl.setC_BPartner_ID(C_BPartner_ID);
+				fl.getFactAcctInfo().getRecord().setC_BPartner_ID(C_BPartner_ID);
 
 			//  Interest        DR      CR  (Interest)
 			if (line.getInterestAmt().signum() < 0)
@@ -275,7 +275,7 @@ public class Doc_BankStatement extends Doc
 					getAccount(Doc.ACCTTYPE_InterestRev, as), getAccount(Doc.ACCTTYPE_InterestRev, as),
 					line.getC_Currency_ID(), line.getInterestAmt().negate());
 			if (fl != null && C_BPartner_ID != 0)
-				fl.setC_BPartner_ID(C_BPartner_ID);
+				fl.getFactAcctInfo().getRecord().setC_BPartner_ID(C_BPartner_ID);
 
 		}
 		//

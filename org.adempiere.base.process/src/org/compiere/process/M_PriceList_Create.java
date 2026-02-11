@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MDiscountSchema;
 import org.compiere.model.MDiscountSchemaLine;
@@ -405,7 +405,7 @@ public class M_PriceList_Create extends SvrProcess {
 		else if (MDiscountSchemaLine.LIST_BASE_FixedPrice.equals(base))
 			calc = fix;
 		else if (MDiscountSchemaLine.LIST_BASE_ProductCost.equals(base)) {
-			MAcctSchema as = MClientInfo.get(getCtx(), m_plv.getAD_Client_ID()).getMAcctSchema1();
+			IAcctSchemaInfo as = MClientInfo.get(getCtx(), m_plv.getAD_Client_ID()).getMAcctSchema1();
 			ProductCost m_productCost = new ProductCost(getCtx(), M_Product_ID, 0, get_TrxName());
 			m_productCost.setQty(BigDecimal.ONE);
 			BigDecimal costs = m_productCost.getProductCosts(as, m_plv.getAD_Org_ID(), null, 0, false);	

@@ -21,8 +21,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MCharge;
 import org.compiere.model.MClientInfo;
@@ -47,7 +47,7 @@ public class Doc_Payment extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Payment (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_Payment (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, MPayment.class, rs, null, trxName);
 	}	//	Doc_Payment
@@ -106,7 +106,7 @@ public class Doc_Payment extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
@@ -125,9 +125,9 @@ public class Doc_Payment extends Doc
 			FactLine fl = fact.createLine(null, getAccount(Doc.ACCTTYPE_BankInTransit, as),
 				getC_Currency_ID(), getAmount(), null);
 			if (fl != null && AD_Org_ID != 0)
-				fl.setAD_Org_ID(AD_Org_ID);
+				fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 			//
-			MAccount acct = null;
+			IAccountInfo acct = null;
 			if (getC_Charge_ID() != 0)
 				acct = MCharge.getAccount(getC_Charge_ID(), as);
 			else if (m_Prepayment)
@@ -138,12 +138,12 @@ public class Doc_Payment extends Doc
 				getC_Currency_ID(), null, getAmount());
 			if (fl != null && AD_Org_ID != 0
 				&& getC_Charge_ID() == 0)		//	don't overwrite charge
-				fl.setAD_Org_ID(AD_Org_ID);
+				fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 		}
 		//  APP
 		else if (getDocumentType().equals(DOCTYPE_APPayment))
 		{
-			MAccount acct = null;
+			IAccountInfo acct = null;
 			if (getC_Charge_ID() != 0)
 				acct = MCharge.getAccount(getC_Charge_ID(), as);
 			else if (m_Prepayment)
@@ -154,13 +154,13 @@ public class Doc_Payment extends Doc
 				getC_Currency_ID(), getAmount(), null);
 			if (fl != null && AD_Org_ID != 0
 				&& getC_Charge_ID() == 0)		//	don't overwrite charge
-				fl.setAD_Org_ID(AD_Org_ID);
+				fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 
 			//	Asset
 			fl = fact.createLine(null, getAccount(Doc.ACCTTYPE_BankInTransit, as),
 				getC_Currency_ID(), null, getAmount());
 			if (fl != null && AD_Org_ID != 0)
-				fl.setAD_Org_ID(AD_Org_ID);
+				fl.getFactAcctInfo().getRecord().setAD_Org_ID(AD_Org_ID);
 		}
 		else
 		{
@@ -189,12 +189,12 @@ public class Doc_Payment extends Doc
 
 	@Override
 	public BigDecimal getCurrencyRate() {
-		if (getC_Currency_ID() == getAcctSchema().getC_Currency_ID())
+		if (getC_Currency_ID() == getAcctSchema().getRecord().getC_Currency_ID())
 			return null;
 		
 		MPayment pay = (MPayment)getPO();
 		int baseCurrencyId = MClientInfo.get(getCtx(), pay.getAD_Client_ID()).getC_Currency_ID();
-		if (baseCurrencyId != getAcctSchema().getC_Currency_ID())
+		if (baseCurrencyId != getAcctSchema().getRecord().getC_Currency_ID())
 			return null;
 		
 		if (pay.isOverrideCurrencyRate()) {
@@ -205,11 +205,11 @@ public class Doc_Payment extends Doc
 	}	
 	
 	@Override
-	public boolean isConvertible (MAcctSchema acctSchema) {
+	public boolean isConvertible (IAcctSchemaInfo acctSchema) {
 		MPayment pay = (MPayment)getPO();
-		if (pay.getC_Currency_ID() != acctSchema.getC_Currency_ID()) {
+		if (pay.getC_Currency_ID() != acctSchema.getRecord().getC_Currency_ID()) {
 			int baseCurrencyId = MClientInfo.get(getCtx(), pay.getAD_Client_ID()).getC_Currency_ID();
-			if (baseCurrencyId == acctSchema.getC_Currency_ID() && pay.isOverrideCurrencyRate()) {
+			if (baseCurrencyId == acctSchema.getRecord().getC_Currency_ID() && pay.isOverrideCurrencyRate()) {
 				return true;
 			}
 		}

@@ -33,6 +33,8 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.util.IProcessUI;
@@ -831,8 +833,8 @@ public class MPayment extends X_C_Payment
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-			MAcctSchema as = MAcctSchema.get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
-			if (as.getC_Currency_ID() != getC_Currency_ID())
+			IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			if (as.getRecord().getC_Currency_ID() != getC_Currency_ID())
 			{
 				if (isOverrideCurrencyRate())
 				{
@@ -847,7 +849,7 @@ public class MPayment extends X_C_Payment
 						return false;
 					}
 					BigDecimal converted = getPayAmt().multiply(getCurrencyRate());
-					int stdPrecision = MCurrency.getStdPrecision(getCtx(), as.getC_Currency_ID());
+					int stdPrecision = MCurrency.getStdPrecision(getCtx(), as.getRecord().getC_Currency_ID());
 					if (converted.scale() > stdPrecision)
 						converted = converted.setScale(stdPrecision, RoundingMode.HALF_UP);
 					setConvertedAmt(converted);
@@ -2939,7 +2941,7 @@ public class MPayment extends X_C_Payment
 			return false;
 		}
 
-		MFactAcct.deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
+		AcctInfoServices.getFactAcctInfoService().deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
 		setPosted(false);
 		setDocAction(DOCACTION_Complete);
 		setProcessed(false);

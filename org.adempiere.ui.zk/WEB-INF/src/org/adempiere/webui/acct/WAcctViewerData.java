@@ -34,10 +34,11 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IFactAcctConstants;
+import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.webui.component.Listbox;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaElement;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MJournal;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefList;
@@ -68,10 +69,10 @@ public class WAcctViewerData
 	public int AD_Client_ID;
 	
 	/** All Accounting Schemas for client		*/
-	public MAcctSchema[] ASchemas = null;
+	public IAcctSchemaInfo[] ASchemas = null;
 	
 	/** Selected Accounting Schema	*/
-	public MAcctSchema ASchema = null;
+	public IAcctSchemaInfo ASchema = null;
 
 	//  Selection Info
 	
@@ -174,7 +175,7 @@ public class WAcctViewerData
 		
 		AD_Table_ID = ad_Table_ID;
 
-		ASchemas = MAcctSchema.getClientAcctSchema(ctx, AD_Client_ID);
+		ASchemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(ctx, AD_Client_ID);
 		ASchema = ASchemas[0];
 	} // AcctViewerData
 	
@@ -203,8 +204,8 @@ public class WAcctViewerData
 			MJournal journal = new MJournal(Env.getCtx(), Record_ID, null);
 			
 			if (journal.getGL_Journal_ID() == Record_ID) {
-				ASchemas = new MAcctSchema[1];
-				ASchemas[0] = MAcctSchema.get(Env.getCtx(), journal.getC_AcctSchema_ID());
+				ASchemas = new IAcctSchemaInfo[1];
+				ASchemas[0] = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), journal.getC_AcctSchema_ID());
 				ASchema = ASchemas[0];
 			}
 		}
@@ -218,7 +219,7 @@ public class WAcctViewerData
 	{
 		for (int i = 0; i < ASchemas.length; i++)
 		{
-			KeyNamePair key = new KeyNamePair(ASchemas[i].getC_AcctSchema_ID(), ASchemas[i].getName());
+			KeyNamePair key = new KeyNamePair(ASchemas[i].getRecord().getC_AcctSchema_ID(), ASchemas[i].getRecord().getName());
 			cb.appendItem(key.getName(), key);
 		}
 	} // fillAcctSchema
@@ -593,7 +594,7 @@ public class WAcctViewerData
 		if (PostingType == null || PostingType.length() == 0)
 			rm.addColumn(new RColumn(ctx, "PostingType", DisplayType.List, // teo_sarca, [ 1664208 ]
 					RModel.TABLE_ALIAS+".PostingType",
-					MFactAcct.POSTINGTYPE_AD_Reference_ID,
+					IFactAcctConstants.POSTINGTYPE_AD_Reference_ID,
 					null));
 		return rm;
 	} // createRModel
@@ -631,14 +632,14 @@ public class WAcctViewerData
 
 		//  Add Account Segments
 		
-		MAcctSchemaElement[] elements = ASchema.getAcctSchemaElements();
+		IAcctSchemaElementInfo[] elements = ASchema.getAcctSchemaElementsInfo();
 		
 		for (int i = 0; i < elements.length; i++)
 		{
 			if (m_leadingColumns == 0 && columns.contains("AD_Org_ID") && columns.contains("Account_ID"))
 				m_leadingColumns = columns.size();
 
-			MAcctSchemaElement ase = elements[i];
+			IAcctSchemaElementInfo ase = elements[i];
 			String columnName = ase.getColumnName();
 			
 			if (columnName.startsWith("UserElement"))

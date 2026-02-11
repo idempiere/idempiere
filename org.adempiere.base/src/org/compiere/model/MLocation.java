@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -780,7 +781,7 @@ public class MLocation extends X_C_Location implements Comparator<Object>, Immut
 			StringBuilder msgup = new StringBuilder(
 					"(C_LocFrom_ID=").append(getC_Location_ID()) 
 					.append(" OR C_LocTo_ID=").append(getC_Location_ID()).append(")");
-			MAccount.updateValueDescription(getCtx(), msgup.toString(), get_TrxName());
+			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), msgup.toString(), get_TrxName());
 		}	
 		
 		// Update BP_Location name IDEMPIERE 417

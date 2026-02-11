@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MClient;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
@@ -113,7 +113,7 @@ public class ProjectIssueTest extends AbstractTestCase
 
 		ProductCost prodCost = new ProductCost(ctx, projIssue.getM_Product_ID(), 0, trxName);
 		prodCost.setQty(Env.ONE);
-		MAcctSchema as = MClient.get(ctx).getAcctSchema();
+		IAcctSchemaInfo as = MClient.get(ctx).getAcctSchema();
 		BigDecimal cost = prodCost.getProductCosts(as, DictionaryIDs.AD_Org.HQ.id, null, 0, false);
 
 		assertTrue(proj.getProjectBalanceAmt().compareTo(cost) == 0, "Project Issue Amount is not added in project balance");

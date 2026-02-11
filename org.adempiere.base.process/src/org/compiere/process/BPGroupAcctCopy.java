@@ -19,7 +19,8 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MProcessPara;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
@@ -70,8 +71,8 @@ public class BPGroupAcctCopy extends SvrProcess
 		if (log.isLoggable(Level.INFO)) log.info("C_AcctSchema_ID=" + p_C_AcctSchema_ID);
 		if (p_C_AcctSchema_ID == 0)
 			throw new AdempiereSystemError("C_AcctSchema_ID=0");
-		MAcctSchema as = MAcctSchema.get(getCtx(), p_C_AcctSchema_ID);
-		if (as.get_ID() == 0)
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID);
+		if (as.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("Not Found - C_AcctSchema_ID=" + p_C_AcctSchema_ID);
 		//
 		String sql = null;

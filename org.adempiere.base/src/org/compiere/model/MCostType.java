@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.util.Msg;
 
 /**
@@ -89,13 +91,13 @@ public class MCostType extends X_M_CostType
 	protected boolean beforeDelete ()
 	{
 		// Disallow delete if cost type is use by accounting schema
-		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for (int i = 0; i < ass.length; i++)
 		{
-			if (ass[i].getM_CostType_ID() == getM_CostType_ID())
+			if (ass[i].getRecord().getM_CostType_ID() == getM_CostType_ID())
 			{
 				log.saveError("CannotDelete", Msg.getElement(getCtx(), "C_AcctSchema_ID")
-					+ " - " + ass[i].getName());
+					+ " - " + ass[i].getRecord().getName());
 				return false;
 			}
 		}

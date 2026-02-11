@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -146,7 +147,7 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 			update_Tree(MTree_Base.TREETYPE_SalesRegion);
 		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
-			MAccount.updateValueDescription(getCtx(), "C_SalesRegion_ID=" + getC_SalesRegion_ID(), get_TrxName());
+			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), "C_SalesRegion_ID=" + getC_SalesRegion_ID(), get_TrxName());
 
 		return true;
 	}	//	afterSave

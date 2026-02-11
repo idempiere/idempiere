@@ -21,6 +21,6 @@
  **********************************************************************/
 
 /**
- * Provide classes for posting of accounting document to the fact table ({@link org.compiere.model.MFactAcct}.
+ * Provide classes for posting of accounting document to the fact table ({@link org.idempiere.acct.model.I_Fact_Acct}.
  */
 package org.compiere.acct;

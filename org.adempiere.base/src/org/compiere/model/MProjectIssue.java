@@ -23,6 +23,9 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -476,7 +479,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		// Complete                    ..  CO
 		if (AD_Table_ID == get_Table_ID() && docStatus.equals(DocumentEngine.STATUS_Completed)) {
 			boolean periodOpen = MPeriod.isOpen(Env.getCtx(), getMovementDate(), MDocType.DOCBASETYPE_ProjectIssue, getAD_Org_ID());
-			boolean isBackDateTrxAllowed = MAcctSchema.isBackDateTrxAllowed(Env.getCtx(), getMovementDate(), get_TrxName());
+			boolean isBackDateTrxAllowed = AcctInfoServices.getAcctSchemaInfoService().isBackDateTrxAllowed(Env.getCtx(), getMovementDate(), get_TrxName());
 			if (periodOpen && isBackDateTrxAllowed) {
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 			}
@@ -493,12 +496,12 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
 	{
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		MAcctSchema as = info.getMAcctSchema1();
-		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
-				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+		IAcctSchemaInfo as = info.getMAcctSchema1();
+		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getRecord().getCostingMethod()) 
+				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getRecord().getCostingMethod()))
 			return true;
 		
-		if (as.getBackDateDay() == 0)
+		if (as.getRecord().getBackDateDay() == 0)
 			return true;
 		
 		Timestamp dateAcct = reversalDate != null ? reversalDate : getMovementDate();
@@ -515,17 +518,17 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		int AD_Org_ID = getAD_Org_ID();
 		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
 
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getRecord().getCostingLevel()))
 		{
 			AD_Org_ID = 0;
 			M_AttributeSetInstance_ID = 0;
 		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getRecord().getCostingLevel()))
 			M_AttributeSetInstance_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getRecord().getCostingLevel()))
 			AD_Org_ID = 0;
 		
-		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
+		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getRecord().getCostingMethod(), AD_Org_ID);
 		
 		int M_CostDetail_ID = 0;
 		int C_ProjectIssue_ID = getC_ProjectIssue_ID();
@@ -538,14 +541,14 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			M_CostDetail_ID = cd.getM_CostDetail_ID();
 		else {
 			MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
-					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+					as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 					M_AttributeSetInstance_ID, dateAcct, get_TrxName());
 			if (history != null)
 				M_CostDetail_ID = history.getM_CostDetail_ID();
 		}
 		
 		if (M_CostDetail_ID > 0) {
-			MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+			MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getRecord().getC_AcctSchema_ID(), 
 					getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
 		}
 		return true;
@@ -560,7 +563,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	private BigDecimal updateBalanceAmt()
 	{
 		BigDecimal cost = null;
-		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		if (getM_InOutLine_ID() > 0)
 		{
@@ -574,7 +577,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		else
 		{
- 			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
+ 			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getRecord().getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
 									false, get_TrxName());
 		}
 		if (cost != null)

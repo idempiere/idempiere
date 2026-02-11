@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -870,7 +873,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		
 		//	Value/Name change, update Combination and Description of C_ValidCombination records
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
-			MAccount.updateValueDescription(getCtx(), "M_Product_ID=" + getM_Product_ID(), get_TrxName());
+			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), "M_Product_ID=" + getM_Product_ID(), get_TrxName());
 		
 		//	Name/Description Change, update Asset
 		if (!newRecord && (is_ValueChanged("Name") || is_ValueChanged("Description")))
@@ -1027,11 +1030,11 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 */
 	public boolean isASIMandatoryFor(String mandatoryType, boolean isSOTrx) {
 		//	If CostingLevel is BatchLot ASI is always mandatory - check all client acct schemas
-		MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
-		for (MAcctSchema as : mass)
+		IAcctSchemaInfo[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
+		for (IAcctSchemaInfo as : mass)
 		{
 			String cl = getCostingLevel(as);
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(cl)) {
+			if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(cl)) {
 				return true;
 			}
 		}
@@ -1061,13 +1064,13 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param as accounting schema
 	 * @return product costing level (X_C_AcctSchema.COSTINGLEVEL_*)
 	 */
-	public String getCostingLevel(MAcctSchema as)
+	public String getCostingLevel(IAcctSchemaInfo as)
 	{
-		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.get_ID(), get_TrxName());
+		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.getPO().get_ID(), get_TrxName());
 		String costingLevel = pca.getCostingLevel();
 		if (costingLevel == null)
 		{
-			costingLevel = as.getCostingLevel();
+			costingLevel = as.getRecord().getCostingLevel();
 		}
 		return costingLevel;
 	}
@@ -1077,13 +1080,13 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param as accounting schema
 	 * @return product costing method (X_C_AcctSchema.COSTINGMETHOD_*)
 	 */
-	public String getCostingMethod(MAcctSchema as)
+	public String getCostingMethod(IAcctSchemaInfo as)
 	{
-		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.get_ID(), get_TrxName());
+		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.getPO().get_ID(), get_TrxName());
 		String costingMethod = pca.getCostingMethod();
 		if (costingMethod == null)
 		{
-			costingMethod = as.getCostingMethod();
+			costingMethod = as.getRecord().getCostingMethod();
 		}
 		return costingMethod;
 	}
@@ -1094,7 +1097,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param M_ASI_ID
 	 * @return MCost or null
 	 */
-	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID)
+	public MCost getCostingRecord(IAcctSchemaInfo as, int AD_Org_ID, int M_ASI_ID)
 	{
 		return getCostingRecord(as, AD_Org_ID, M_ASI_ID, getCostingMethod(as));
 	}
@@ -1106,17 +1109,17 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param costingMethod
 	 * @return MCost or null
 	 */
-	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
+	public MCost getCostingRecord(IAcctSchemaInfo as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
 		String costingLevel = getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(costingLevel))
 		{
 			AD_Org_ID = 0;
 			M_ASI_ID = 0;
 		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(costingLevel))
 			M_ASI_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel))
 		{
 			AD_Org_ID = 0;
 			if (M_ASI_ID == 0)
@@ -1138,17 +1141,17 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param dateAcct
 	 * @return ICostInfo or null
 	 */
-	public ICostInfo getCostInfo(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
+	public ICostInfo getCostInfo(IAcctSchemaInfo as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
 	{		
 		String costingLevel = getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(costingLevel))
 		{
 			AD_Org_ID = 0;
 			M_ASI_ID = 0;
 		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(costingLevel))
 			M_ASI_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel))
 		{
 			AD_Org_ID = 0;
 			if (M_ASI_ID == 0)
@@ -1159,7 +1162,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			return null;
 		}
 		return MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
-				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, dateAcct, null, get_TrxName());
+				as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, dateAcct, null, get_TrxName());
 	}
 	
 	@Override

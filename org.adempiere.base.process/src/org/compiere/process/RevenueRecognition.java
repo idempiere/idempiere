@@ -20,11 +20,12 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IGLCategoryInfo;
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionType;
 import org.compiere.model.MDocType;
-import org.compiere.model.MGLCategory;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MJournal;
@@ -85,9 +86,9 @@ public class RevenueRecognition extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		MAcctSchema[] schemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaInfo[] schemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		
-		for (MAcctSchema schema : schemas)
+		for (IAcctSchemaInfo schema : schemas)
 		{
 			createGLJournal(schema);
 			
@@ -101,11 +102,11 @@ public class RevenueRecognition extends SvrProcess
 	 * 	Create GL Journal
 	 * 	@return document info
 	 */
-	private void createGLJournal(MAcctSchema as)
+	private void createGLJournal(IAcctSchemaInfo as)
 	{
 		//
 		MDocType docType = MDocType.get(getCtx(), p_C_DocType_ID);
-		MGLCategory cat = MGLCategory.get(getCtx(), docType.getGL_Category_ID());
+		IGLCategoryInfo cat = AcctInfoServices.getGlCategoryInfoService().get(getCtx(), docType.getGL_Category_ID());
 		//
 		
 		MJournal journal = null;
@@ -123,7 +124,7 @@ public class RevenueRecognition extends SvrProcess
 				
 		Query query = new Query(getCtx(), MRevenueRecognitionRun.Table_Name, 
 				where, get_TrxName());
-		query.setParameters(p_Date, as.getC_AcctSchema_ID(), p_C_RevenueRecognition_ID, p_C_RevenueRecognition_ID);
+		query.setParameters(p_Date, as.getRecord().getC_AcctSchema_ID(), p_C_RevenueRecognition_ID, p_C_RevenueRecognition_ID);
 		query.setOrderBy("C_RevenueRecognition_Run_ID");
 		List<MRevenueRecognitionRun> list = query.list();
 		
@@ -144,14 +145,14 @@ public class RevenueRecognition extends SvrProcess
 				if (journal.getC_Period_ID() == 0) {
 					throw new AdempiereException("@PeriodNotFound@");
 				}
-				journal.setC_Currency_ID(as.getC_Currency_ID());
-				journal.setC_AcctSchema_ID (as.getC_AcctSchema_ID());
-				journal.setC_Currency_ID(as.getC_Currency_ID());
+				journal.setC_Currency_ID(as.getRecord().getC_Currency_ID());
+				journal.setC_AcctSchema_ID (as.getRecord().getC_AcctSchema_ID());
+				journal.setC_Currency_ID(as.getRecord().getC_Currency_ID());
 				journal.setC_ConversionType_ID(MConversionType.getDefault(getAD_Client_ID()));
 				MOrg org = MOrg.get(getCtx(), run.getAD_Org_ID());
 				journal.setAD_Org_ID(run.getAD_Org_ID());
 				journal.setDescription (getName() + " - " + org.getName());
-				journal.setGL_Category_ID (cat.getGL_Category_ID());
+				journal.setGL_Category_ID (cat.getRecord().getGL_Category_ID());
 				journal.saveEx();
 				cntDocs++;
 				addBufferLog(journal.getGL_Journal_ID(), journal.getDateAcct(), null, docType.getName() + " " + journal.getDocumentNo(), MJournal.Table_ID, journal.getGL_Journal_ID());

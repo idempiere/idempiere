@@ -24,7 +24,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalBatch;
 import org.compiere.model.MJournalLine;
@@ -772,16 +773,16 @@ public class ImportGLJournal extends SvrProcess
 				//	Set/Get Account Combination
 				if (imp.getC_ValidCombination_ID() == 0)
 				{
-					MAccount acct = MAccount.get(getCtx(), imp.getAD_Client_ID(), imp.getAD_Org_ID(), 
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(getCtx(), imp.getAD_Client_ID(), imp.getAD_Org_ID(), 
 						imp.getC_AcctSchema_ID(), imp.getAccount_ID(), 0,
 						imp.getM_Product_ID(), imp.getC_BPartner_ID(), imp.getAD_OrgTrx_ID(),
 						imp.getC_LocFrom_ID(), imp.getC_LocTo_ID(), imp.getC_SalesRegion_ID(),
 						imp.getC_Project_ID(), imp.getC_Campaign_ID(), imp.getC_Activity_ID(),
 						imp.getUser1_ID(), imp.getUser2_ID(), 0, 0,
 						get_TrxName());
-					if (acct != null && acct.get_ID() == 0)
-						acct.saveEx();
-					if (acct == null || acct.get_ID() == 0)
+					if (acct != null && acct.getPO().get_ID() == 0)
+						acct.getPO().saveEx();
+					if (acct == null || acct.getPO().get_ID() == 0)
 					{
 						imp.setI_ErrorMsg("ERROR creating Account");
 						imp.setI_IsImported(false);
@@ -790,8 +791,8 @@ public class ImportGLJournal extends SvrProcess
 					}
 					else
 					{
-						line.setC_ValidCombination_ID(acct.get_ID());
-						imp.setC_ValidCombination_ID(acct.get_ID());
+						line.setC_ValidCombination_ID(acct.getPO().get_ID());
+						imp.setC_ValidCombination_ID(acct.getPO().get_ID());
 					}
 				}
 				else

@@ -21,12 +21,13 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaDefault;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.info.IGLCategoryInfo;
 import org.compiere.model.MDocType;
-import org.compiere.model.MFactAcct;
-import org.compiere.model.MGLCategory;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalLine;
@@ -232,13 +233,13 @@ public class InvoiceNGL extends SvrProcess
 			return " - No Records found";
 		
 		//
-		MAcctSchema as = MAcctSchema.get(getCtx(), p_C_AcctSchema_ID);
-		MAcctSchemaDefault asDefaultAccts = MAcctSchemaDefault.get(getCtx(), p_C_AcctSchema_ID);
-		MGLCategory cat = MGLCategory.getDefaultSystem(getCtx());
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID);
+		IAcctSchemaDefaultInfo asDefaultAccts = AcctInfoServices.getAcctSchemaDefaultInfoService().get(getCtx(), p_C_AcctSchema_ID);
+		IGLCategoryInfo cat = AcctInfoServices.getGlCategoryInfoService().getDefaultSystem(getCtx());
 		if (cat == null)
 		{
 			MDocType docType = MDocType.get(getCtx(), p_C_DocTypeReval_ID);
-			cat = MGLCategory.get(getCtx(), docType.getGL_Category_ID());
+			cat = AcctInfoServices.getGlCategoryInfoService().get(getCtx(), docType.getGL_Category_ID());
 		}
 		//
 		MJournal journal = new MJournal (getCtx(), 0, get_TrxName());
@@ -246,10 +247,10 @@ public class InvoiceNGL extends SvrProcess
 		journal.setPostingType(MJournal.POSTINGTYPE_Actual);
 		journal.setDateDoc(p_DateReval);
 		journal.setDateAcct(p_DateReval); // sets the period too
-		journal.setC_Currency_ID(as.getC_Currency_ID());
-		journal.setC_AcctSchema_ID (as.getC_AcctSchema_ID());
+		journal.setC_Currency_ID(as.getRecord().getC_Currency_ID());
+		journal.setC_AcctSchema_ID (as.getRecord().getC_AcctSchema_ID());
 		journal.setC_ConversionType_ID(p_C_ConversionTypeReval_ID);
-		journal.setGL_Category_ID (cat.getGL_Category_ID());
+		journal.setGL_Category_ID (cat.getRecord().getGL_Category_ID());
 		journal.setDescription(getName()); // updated below
 		if (!journal.save())
 			return " - Could not create Journal";
@@ -264,7 +265,7 @@ public class InvoiceNGL extends SvrProcess
 			if (gl.getAmtRevalDrDiff().signum() == 0 && gl.getAmtRevalCrDiff().signum() == 0)
 				continue;
 			MInvoice invoice = new MInvoice(getCtx(), gl.getC_Invoice_ID(), null);
-			if (invoice.getC_Currency_ID() == as.getC_Currency_ID())
+			if (invoice.getC_Currency_ID() == as.getRecord().getC_Currency_ID())
 				continue;
 			//
 			if (AD_Org_ID == 0)		//	invoice org id
@@ -291,8 +292,8 @@ public class InvoiceNGL extends SvrProcess
 			line.setLine((i+1) * 10);
 			line.setDescription(invoice.getSummary());
 			//
-			MFactAcct fa = new MFactAcct (getCtx(), gl.getFact_Acct_ID(), null);
-			MAccount acct = MAccount.get(fa);
+			IFactAcctInfo fa = AcctInfoServices.getFactAcctInfoService().create(getCtx(), gl.getFact_Acct_ID(), null);
+			IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(fa);
 			line.setC_ValidCombination_ID(acct);
 			BigDecimal dr = gl.getAmtRevalDrDiff();
 			BigDecimal cr = gl.getAmtRevalCrDiff();
@@ -351,7 +352,7 @@ public class InvoiceNGL extends SvrProcess
 	 *	@param AD_Org_ID org
 	 *	@param lineNo base line no
 	 */
-	private void createBalancing (MAcctSchemaDefault asDefaultAccts, MJournal journal, 
+	private void createBalancing (IAcctSchemaDefaultInfo asDefaultAccts, MJournal journal, 
 		BigDecimal gainTotal, BigDecimal lossTotal, int AD_Org_ID, int lineNo)
 	{
 		if (journal == null)
@@ -361,16 +362,16 @@ public class InvoiceNGL extends SvrProcess
 		{
 			MJournalLine line = new MJournalLine(journal);
 			line.setLine(lineNo+1);
-			MAccount base = MAccount.get(getCtx(), asDefaultAccts.getUnrealizedGain_Acct());
-			MAccount acct = MAccount.get(getCtx(), asDefaultAccts.getAD_Client_ID(), AD_Org_ID, 
-				asDefaultAccts.getC_AcctSchema_ID(), base.getAccount_ID(), base.getC_SubAcct_ID(),
-				base.getM_Product_ID(), base.getC_BPartner_ID(), base.getAD_OrgTrx_ID(), 
-				base.getC_LocFrom_ID(), base.getC_LocTo_ID(), base.getC_SalesRegion_ID(), 
-				base.getC_Project_ID(), base.getC_Campaign_ID(), base.getC_Activity_ID(),
-				base.getUser1_ID(), base.getUser2_ID(), base.getUserElement1_ID(), base.getUserElement2_ID(),
+			IAccountInfo base = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getRecord().getUnrealizedGain_Acct());
+			IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getRecord().getAD_Client_ID(), AD_Org_ID, 
+				asDefaultAccts.getRecord().getC_AcctSchema_ID(), base.getRecord().getAccount_ID(), base.getRecord().getC_SubAcct_ID(),
+				base.getRecord().getM_Product_ID(), base.getRecord().getC_BPartner_ID(), base.getRecord().getAD_OrgTrx_ID(), 
+				base.getRecord().getC_LocFrom_ID(), base.getRecord().getC_LocTo_ID(), base.getRecord().getC_SalesRegion_ID(), 
+				base.getRecord().getC_Project_ID(), base.getRecord().getC_Campaign_ID(), base.getRecord().getC_Activity_ID(),
+				base.getRecord().getUser1_ID(), base.getRecord().getUser2_ID(), base.getRecord().getUserElement1_ID(), base.getRecord().getUserElement2_ID(),
 				get_TrxName());
 			line.setDescription(Msg.getElement(getCtx(), "UnrealizedGain_Acct"));
-			line.setC_ValidCombination_ID(acct.getC_ValidCombination_ID());
+			line.setC_ValidCombination_ID(acct.getRecord().getC_ValidCombination_ID());
 			line.setAmtSourceCr (gainTotal);
 			line.setAmtAcctCr (gainTotal);
 			line.saveEx();
@@ -380,16 +381,16 @@ public class InvoiceNGL extends SvrProcess
 		{
 			MJournalLine line = new MJournalLine(journal);
 			line.setLine(lineNo+2);
-			MAccount base = MAccount.get(getCtx(), asDefaultAccts.getUnrealizedLoss_Acct());
-			MAccount acct = MAccount.get(getCtx(), asDefaultAccts.getAD_Client_ID(), AD_Org_ID, 
-				asDefaultAccts.getC_AcctSchema_ID(), base.getAccount_ID(), base.getC_SubAcct_ID(),
-				base.getM_Product_ID(), base.getC_BPartner_ID(), base.getAD_OrgTrx_ID(), 
-				base.getC_LocFrom_ID(), base.getC_LocTo_ID(), base.getC_SalesRegion_ID(), 
-				base.getC_Project_ID(), base.getC_Campaign_ID(), base.getC_Activity_ID(),
-				base.getUser1_ID(), base.getUser2_ID(), base.getUserElement1_ID(), base.getUserElement2_ID(),
+			IAccountInfo base = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getRecord().getUnrealizedLoss_Acct());
+			IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getRecord().getAD_Client_ID(), AD_Org_ID, 
+				asDefaultAccts.getRecord().getC_AcctSchema_ID(), base.getRecord().getAccount_ID(), base.getRecord().getC_SubAcct_ID(),
+				base.getRecord().getM_Product_ID(), base.getRecord().getC_BPartner_ID(), base.getRecord().getAD_OrgTrx_ID(), 
+				base.getRecord().getC_LocFrom_ID(), base.getRecord().getC_LocTo_ID(), base.getRecord().getC_SalesRegion_ID(), 
+				base.getRecord().getC_Project_ID(), base.getRecord().getC_Campaign_ID(), base.getRecord().getC_Activity_ID(),
+				base.getRecord().getUser1_ID(), base.getRecord().getUser2_ID(), base.getRecord().getUserElement1_ID(), base.getRecord().getUserElement2_ID(),
 				get_TrxName());
 			line.setDescription(Msg.getElement(getCtx(), "UnrealizedLoss_Acct"));
-			line.setC_ValidCombination_ID(acct.getC_ValidCombination_ID());
+			line.setC_ValidCombination_ID(acct.getRecord().getC_ValidCombination_ID());
 			line.setAmtSourceDr (lossTotal);
 			line.setAmtAcctDr (lossTotal);
 			line.saveEx();

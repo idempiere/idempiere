@@ -4,10 +4,11 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.I_C_Project;
 import org.compiere.model.I_C_Project_Acct;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAssetAcct;
 import org.compiere.model.MAssetAddition;
 import org.compiere.model.MCharge;
@@ -31,7 +32,7 @@ public class Doc_AssetAddition extends Doc
 	 * @param rs
 	 * @param trxName
 	 */
-	public Doc_AssetAddition (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_AssetAddition (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super(as, MAssetAddition.class, rs, MDocType.DOCBASETYPE_GLDocument, trxName);
 	}
@@ -57,7 +58,7 @@ public class Doc_AssetAddition extends Doc
 	 * @return facts
 	 */
 	@Override
-	public ArrayList<Fact> createFacts(MAcctSchema as)
+	public ArrayList<Fact> createFacts(IAcctSchemaInfo as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -82,11 +83,11 @@ public class Doc_AssetAddition extends Doc
 		final int invoiceProject_ID = getInvoiceProject_ID();
 		if (invoiceBP_ID > 0)
 		{
-			fls[1].setC_BPartner_ID(invoiceBP_ID);
+			fls[1].getFactAcctInfo().getRecord().setC_BPartner_ID(invoiceBP_ID);
 		}
 		if (invoiceProject_ID >0)
 		{
-			 fls[1].setC_Project_ID(invoiceProject_ID);
+			 fls[1].getFactAcctInfo().getRecord().setC_Project_ID(invoiceProject_ID);
 		}
 		//
 		return facts;
@@ -104,11 +105,11 @@ public class Doc_AssetAddition extends Doc
 	 * @param as
 	 * @return account for credit side (project, charge or expense)
 	 */
-	private MAccount getP_Asset_Acct(MAcctSchema as)
+	private IAccountInfo getP_Asset_Acct(IAcctSchemaInfo as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		// Source Account
-		MAccount pAssetAcct = null;
+		IAccountInfo pAssetAcct = null;
 		if (MAssetAddition.A_SOURCETYPE_Project.equals(assetAdd.getA_SourceType()))
 		{
 			MProject prj = new MProject(getCtx(), assetAdd.getC_Project_ID(), getTrxName());
@@ -140,7 +141,7 @@ public class Doc_AssetAddition extends Doc
 	 * @param as
 	 * @return expense account
 	 */
-	public MAccount getP_Expense_Acct(int M_Product_ID, MAcctSchema as)
+	public IAccountInfo getP_Expense_Acct(int M_Product_ID, IAcctSchemaInfo as)
 	{
 		ProductCost pc = new ProductCost(getCtx(), M_Product_ID, 0, null);
 		return pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
@@ -151,7 +152,7 @@ public class Doc_AssetAddition extends Doc
 	 * @param as
 	 * @return project wip or asset account
 	 */
-	private MAccount getProjectAcct(I_C_Project prj, MAcctSchema as)
+	private IAccountInfo getProjectAcct(I_C_Project prj, IAcctSchemaInfo as)
 	{
 		// TODO: keep in sync with org.compiere.acct.Doc_ProjectIssue.createFacts(MAcctSchema) logic
 		String projectCategory = prj.getProjectCategory();
@@ -164,21 +165,21 @@ public class Doc_AssetAddition extends Doc
 					+ " WHERE "+I_C_Project_Acct.COLUMNNAME_C_Project_ID+"=?"
 						+" AND "+I_C_Project_Acct.COLUMNNAME_C_AcctSchema_ID+"=?"
 						;
-		int acct_id = DB.getSQLValueEx(getTrxName(), sql, prj.getC_Project_ID(), as.get_ID());	
-		return MAccount.get(getCtx(), acct_id);
+		int acct_id = DB.getSQLValueEx(getTrxName(), sql, prj.getC_Project_ID(), as.getPO().get_ID());	
+		return AcctInfoServices.getAccountInfoService().get(getCtx(), acct_id);
 	}
 
 	/**
 	 * @param as
 	 * @return asset account
 	 */
-	private MAccount getA_Asset_Acct(MAcctSchema as)
+	private IAccountInfo getA_Asset_Acct(IAcctSchemaInfo as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		int acct_id = MAssetAcct
-				.forA_Asset_ID(getCtx(), as.get_ID(), assetAdd.getA_Asset_ID(), assetAdd.getPostingType(), assetAdd.getDateAcct(), assetAdd.get_TrxName())
+				.forA_Asset_ID(getCtx(), as.getPO().get_ID(), assetAdd.getA_Asset_ID(), assetAdd.getPostingType(), assetAdd.getDateAcct(), assetAdd.get_TrxName())
 				.getA_Asset_Acct();
-		return MAccount.get(getCtx(), acct_id);
+		return AcctInfoServices.getAccountInfoService().get(getCtx(), acct_id);
 	}
 
 	/**

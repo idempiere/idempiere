@@ -37,10 +37,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.LogRecord;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IFactAcctInfo;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MBPartner;
@@ -49,7 +51,6 @@ import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MPayment;
@@ -451,32 +452,31 @@ public class AllocationTest extends AbstractTestCase {
 			MAllocationHdr allocation = allocations[0];
 			postDocument(allocation);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			for (MAcctSchema as : ass) {
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (IAcctSchemaInfo as : ass) {
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 				
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
 				doc.setC_BankAccount_ID(ba.getC_BankAccount_ID());
-				MAccount acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
-				MAccount acctLoss = MAccount.get(as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
+				IAccountInfo acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
+				IAccountInfo acctLoss = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedLoss_Acct());
 				BigDecimal ucAmtAcctDr = new BigDecimal(30000);
 				BigDecimal ucAmtAcctCr = new BigDecimal(31000);
 				BigDecimal lossAmtAcct = new BigDecimal(1000);
 				
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
-				for (MFactAcct fa : factAccts) {
-					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
-						if (fa.getAmtAcctDr().signum() > 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
-						else if (fa.getAmtAcctDr().signum() < 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctCr.negate()) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctCr.negate().toPlainString());						
-						else if (fa.getAmtAcctCr().signum() > 0)
-							assertTrue(fa.getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());													
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocation.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				for (IFactAcctInfo fa : factAccts) {
+					if (acctUC.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+						if (fa.getRecord().getAmtAcctDr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
+						else if (fa.getRecord().getAmtAcctDr().signum() < 0)
+							assertTrue(fa.getRecord().getAmtAcctDr().compareTo(ucAmtAcctCr.negate()) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctCr.negate().toPlainString());						
+						else if (fa.getRecord().getAmtAcctCr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getRecord().getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());													
 					}
-					else if (acctLoss.getAccount_ID() == fa.getAccount_ID())
-						assertTrue(fa.getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
+					else if (acctLoss.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID())
+						assertTrue(fa.getRecord().getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
 				}
 			}			
 		}
@@ -590,27 +590,26 @@ public class AllocationTest extends AbstractTestCase {
 			MAllocationHdr allocation = allocations[0];
 			postDocument(allocation);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			for (MAcctSchema as : ass) {
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (IAcctSchemaInfo as : ass) {
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 				
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
 				doc.setC_BPartner_ID(invoice.getC_BPartner_ID());
 				
-				MAccount acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+				IAccountInfo acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
 				BigDecimal tradeAmtAcct = new BigDecimal(2.13).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
 				
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
-				for (MFactAcct fa : factAccts) {
-					if (acctLiability.getAccount_ID() == fa.getAccount_ID()) {
-						if (fa.getAmtAcctDr().signum() > 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(tradeAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + tradeAmtAcct.toPlainString());						
-						else if (fa.getAmtAcctDr().signum() < 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(tradeAmtAcct.negate()) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + tradeAmtAcct.negate().toPlainString());						
-						else if (fa.getAmtAcctCr().signum() > 0)
-							assertTrue(fa.getAmtAcctCr().compareTo(tradeAmtAcct) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + tradeAmtAcct.toPlainString());													
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocation.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				for (IFactAcctInfo fa : factAccts) {
+					if (acctLiability.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+						if (fa.getRecord().getAmtAcctDr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctDr().compareTo(tradeAmtAcct) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + tradeAmtAcct.toPlainString());						
+						else if (fa.getRecord().getAmtAcctDr().signum() < 0)
+							assertTrue(fa.getRecord().getAmtAcctDr().compareTo(tradeAmtAcct.negate()) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + tradeAmtAcct.negate().toPlainString());						
+						else if (fa.getRecord().getAmtAcctCr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctCr().compareTo(tradeAmtAcct) == 0, fa.getRecord().getAmtAcctCr().toPlainString() + "!=" + tradeAmtAcct.toPlainString());													
 					}				
 				}
 			}
@@ -684,32 +683,31 @@ public class AllocationTest extends AbstractTestCase {
 			MAllocationHdr allocation = allocations[0];
 			postDocument(allocation);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			for (MAcctSchema as : ass) {
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (IAcctSchemaInfo as : ass) {
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 				
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
 				doc.setC_BankAccount_ID(ba.getC_BankAccount_ID());
-				MAccount acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
-				MAccount acctLoss = MAccount.get(as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
+				IAccountInfo acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
+				IAccountInfo acctLoss = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedLoss_Acct());
 				BigDecimal ucAmtAcctDr = new BigDecimal(30000);
 				BigDecimal ucAmtAcctCr = new BigDecimal(31000);
 				BigDecimal lossAmtAcct = new BigDecimal(1000);
 				
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
-				for (MFactAcct fa : factAccts) {
-					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
-						if (fa.getAmtAcctDr().signum() > 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
-						else if (fa.getAmtAcctDr().signum() < 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctCr.negate()) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctCr.negate().toPlainString());						
-						else if (fa.getAmtAcctCr().signum() > 0)
-							assertTrue(fa.getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());													
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocation.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				for (IFactAcctInfo fa : factAccts) {
+					if (acctUC.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+						if (fa.getRecord().getAmtAcctDr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());						
+						else if (fa.getRecord().getAmtAcctDr().signum() < 0)
+							assertTrue(fa.getRecord().getAmtAcctDr().compareTo(ucAmtAcctCr.negate()) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctCr.negate().toPlainString());						
+						else if (fa.getRecord().getAmtAcctCr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getRecord().getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());													
 					}
-					else if (acctLoss.getAccount_ID() == fa.getAccount_ID())
-						assertTrue(fa.getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
+					else if (acctLoss.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID())
+						assertTrue(fa.getRecord().getAmtAcctDr().compareTo(lossAmtAcct) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + lossAmtAcct.toPlainString());
 				}
 			}
 		}
@@ -843,11 +841,11 @@ public class AllocationTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, alloc.get_ID(), getTrxName());
@@ -864,14 +862,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 21610 Tax due						|		  0.11	|		  0.00
 				// 78100_Bad Debts Write-off			|		  0.00	|		  0.11
 				// --------------------------------------------------------------------
-				MAccount acctUC = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_UnallocatedCash_Acct(), getTrxName());
-				MAccount acctDEP = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Exp_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
+				IAccountInfo acctUC = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_UnallocatedCash_Acct(), getTrxName());
+				IAccountInfo acctDEP = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Exp_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctART = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getC_Receivable_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Due_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts  = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctUC, new BigDecimal("102.00"), 2, true),
 						new FactAcct(acctDEP, new BigDecimal("2.00"), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, false),
 						new FactAcct(acctWO, new BigDecimal("2.00"), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
@@ -945,11 +942,11 @@ public class AllocationTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, alloc.get_ID(), getTrxName());
@@ -966,14 +963,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 78100_Bad Debts Write-off			|		   0.11	|		   0.00
 				// 21610 Tax due						|		   0.00	|		   0.11
 				// --------------------------------------------------------------------
-				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
-				MAccount acctDEP = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Exp_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
+				IAccountInfo acctPS = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_PaymentSelect_Acct(), getTrxName());
+				IAccountInfo acctDEP = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Exp_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctART = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getC_Receivable_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Due_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list(); 
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPS, new BigDecimal("-102.00"), 2, true),
 						new FactAcct(acctDEP, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, true),
 						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
@@ -1047,11 +1043,11 @@ public class AllocationTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, alloc.get_ID(), getTrxName());
@@ -1068,14 +1064,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 78100_Bad Debts Write-off					  0,11			  0,00
 				// 12610_Tax credit A/R							  0,00			  0,11
 				// --------------------------------------------------------------------
-				MAccount acctPT = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
-				MAccount acctDRE = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Rev_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
+				IAccountInfo acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getV_Liability_Acct(), getTrxName());
+				IAccountInfo acctDRE = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Rev_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctPS = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_PaymentSelect_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Credit_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00"), 2, true),
 						new FactAcct(acctDRE, new BigDecimal("2.00"), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, true),
 						new FactAcct(acctWO, new BigDecimal("2.00"), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
@@ -1149,11 +1144,11 @@ public class AllocationTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, alloc.get_ID(), getTrxName());
@@ -1170,14 +1165,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 78100_Bad Debts Write-off				  	   0,00			   0,11
 				// 12610_Tax credit A/R							   0,11			   0,00
 				// --------------------------------------------------------------------
-				MAccount acctPT = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
-				MAccount acctDRE = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Rev_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctUC = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_UnallocatedCash_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
+				IAccountInfo acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getV_Liability_Acct(), getTrxName());
+				IAccountInfo acctDRE = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Rev_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctUC = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_UnallocatedCash_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Credit_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00").negate(), 2, true),
 						new FactAcct(acctDRE, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, false),
 						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
@@ -1251,11 +1245,11 @@ public class AllocationTest extends AbstractTestCase {
 
 			MAllocationHdr[] allocationa = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocationa[0].get_ID(), getTrxName());
@@ -1272,14 +1266,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 21610 Tax due						|		  0.11	|		  0.00
 				// 78100_Bad Debts Write-off			|		  0.00	|		  0.11
 				// --------------------------------------------------------------------
-				MAccount acctUC = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_UnallocatedCash_Acct(), getTrxName());
-				MAccount acctDEP = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Exp_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
+				IAccountInfo acctUC = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_UnallocatedCash_Acct(), getTrxName());
+				IAccountInfo acctDEP = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Exp_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctART = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getC_Receivable_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Due_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctUC, new BigDecimal("102.00"), 2, true),
 						new FactAcct(acctDEP, new BigDecimal("2.00"), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, false),
 						new FactAcct(acctWO, new BigDecimal("2.00"), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
@@ -1354,11 +1347,11 @@ public class AllocationTest extends AbstractTestCase {
 
 			MAllocationHdr[] allocationa = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocationa[0].get_ID(), getTrxName());
@@ -1375,14 +1368,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 78100_Bad Debts Write-off			|		   0.11	|		   0.00
 				// 21610 Tax due						|		   0.00	|		   0.11
 				// --------------------------------------------------------------------
-				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_UnallocatedCash_Acct(), getTrxName());
-				MAccount acctDEP = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Exp_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctART = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getC_Receivable_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
+				IAccountInfo acctPS = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_UnallocatedCash_Acct(), getTrxName());
+				IAccountInfo acctDEP = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Exp_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctART = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getC_Receivable_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Due_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPS, new BigDecimal("102.00").negate(), 2, true),
 						new FactAcct(acctDEP, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctDEP, new BigDecimal("0.11"), 2, true),
 						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
@@ -1457,11 +1449,11 @@ public class AllocationTest extends AbstractTestCase {
 
 			MAllocationHdr[] allocationa = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocationa[0].get_ID(), getTrxName());
@@ -1478,14 +1470,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 78100_Bad Debts Write-off					  0,11			  0,00
 				// 12610_Tax credit A/R							  0,00			  0,11
 				// --------------------------------------------------------------------
-				MAccount acctPT = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
-				MAccount acctDRE = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Rev_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctPS = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
+				IAccountInfo acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getV_Liability_Acct(), getTrxName());
+				IAccountInfo acctDRE = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Rev_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctPS = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_PaymentSelect_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Credit_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00"), 2, true),
 						new FactAcct(acctDRE, new BigDecimal("2.00"), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, true),
 						new FactAcct(acctWO, new BigDecimal("2.00"), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, true),
@@ -1560,11 +1551,11 @@ public class AllocationTest extends AbstractTestCase {
 
 			MAllocationHdr[] allocationa = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocationa[0].get_ID(), getTrxName());
@@ -1581,14 +1572,13 @@ public class AllocationTest extends AbstractTestCase {
 				// 78100_Bad Debts Write-off				  	   0,00			   0,11
 				// 12610_Tax credit A/R							   0,11			   0,00
 				// --------------------------------------------------------------------
-				MAccount acctPT = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
-				MAccount acctDRE = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Rev_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctUC = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getB_PaymentSelect_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
+				IAccountInfo acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getV_Liability_Acct(), getTrxName());
+				IAccountInfo acctDRE = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Rev_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctUC = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getB_PaymentSelect_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Credit_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocationa[0].get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00").negate(), 2, true),
 						new FactAcct(acctDRE, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, false),
 						new FactAcct(acctWO, new BigDecimal("2.00").negate(), 2, false), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
@@ -1666,11 +1656,11 @@ public class AllocationTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, alloc.get_ID(), getTrxName());
@@ -1688,13 +1678,12 @@ public class AllocationTest extends AbstractTestCase {
 				// 12110_Accounts Receivable - Trade	|		  0.00	|		-102.00
 				// --------------------------------------------------------------------
 				doc.setC_BPartner_ID(bpartner.getC_BPartner_ID());
-				MAccount acctDRE = doc.getAccount(Doc.ACCTTYPE_DiscountExp, as);
-				MAccount acctWO = doc.getAccount(Doc.ACCTTYPE_WriteOff, as);
-				MAccount acctART = doc.getAccount(Doc.ACCTTYPE_C_Receivable, as);
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Due_Acct(), getTrxName());
+				IAccountInfo acctDRE = doc.getAccount(Doc.ACCTTYPE_DiscountExp, as);
+				IAccountInfo acctWO = doc.getAccount(Doc.ACCTTYPE_WriteOff, as);
+				IAccountInfo acctART = doc.getAccount(Doc.ACCTTYPE_C_Receivable, as);
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Due_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctDRE, new BigDecimal("2.00"), 2, true), 
 						new FactAcct(acctDRE, new BigDecimal("0.11"), 2, false),
 						new FactAcct(acctWO, new BigDecimal("2.00"), 2, true), new FactAcct(acctWO, new BigDecimal("0.11"), 2, false),
@@ -1774,11 +1763,11 @@ public class AllocationTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, alloc.get_ID(), getTrxName());
@@ -1795,13 +1784,12 @@ public class AllocationTest extends AbstractTestCase {
 				// 12610_Tax credit A/R							  0,00			  0,11
 				// 21100_Accounts Payable Trade					-102,00			  0,00
 				// --------------------------------------------------------------------
-				MAccount acctPT = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
-				MAccount acctDRE = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getPayDiscount_Rev_Acct(), getTrxName());
-				MAccount acctWO = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getWriteOff_Acct(), getTrxName());
-				MAccount acctTD = new MAccount(Env.getCtx(), as.getAcctSchemaDefault().getT_Credit_Acct(), getTrxName());
+				IAccountInfo acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getV_Liability_Acct(), getTrxName());
+				IAccountInfo acctDRE = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getPayDiscount_Rev_Acct(), getTrxName());
+				IAccountInfo acctWO = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getWriteOff_Acct(), getTrxName());
+				IAccountInfo acctTD = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getT_Credit_Acct(), getTrxName());
 
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, new BigDecimal("106.00"), 2, true),
 						new FactAcct(acctPT, new BigDecimal("-102.00"), 2, true),
 						new FactAcct(acctDRE, new BigDecimal("2.00"), 2, false), new FactAcct(acctDRE, new BigDecimal("0.11"), 2, true),
@@ -1920,18 +1908,17 @@ public class AllocationTest extends AbstractTestCase {
 			MAllocationHdr allocation = allocations[0];
 			postDocument(allocation);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			for (MAcctSchema as : ass) {
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (IAcctSchemaInfo as : ass) {
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 				
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
 				doc.setC_BankAccount_ID(ba.getC_BankAccount_ID());
-				MAccount acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
+				IAccountInfo acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
 				BigDecimal ucAmtAcctDr = new BigDecimal(370.88).setScale(2, RoundingMode.HALF_UP);
 				
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocation.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctUC, ucAmtAcctDr, 2, true));
 				assertFactAcctEntries(factAccts, expected);
 			}
@@ -1983,24 +1970,23 @@ public class AllocationTest extends AbstractTestCase {
 			allocation = allocations[0];
 			postDocument(allocation);
 			
-			for (MAcctSchema as : ass) {
-				if (as.getC_Currency_ID() != usd.getC_Currency_ID())
+			for (IAcctSchemaInfo as : ass) {
+				if (as.getRecord().getC_Currency_ID() != usd.getC_Currency_ID())
 					continue;
 				
 				Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocation.get_ID(), getTrxName());
 				doc.setC_BankAccount_ID(ba.getC_BankAccount_ID());
-				MAccount acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
+				IAccountInfo acctUC = doc.getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
 				BigDecimal ucAmtAcctDr = new BigDecimal(175.67).setScale(2, RoundingMode.HALF_UP);
 				BigDecimal ucAmtAcctCr = new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP);
 				
-				Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocation.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
-				for (MFactAcct fa : factAccts) {
-					if (acctUC.getAccount_ID() == fa.getAccount_ID()) {
-						if (fa.getAmtAcctDr().signum() > 0)
-							assertTrue(fa.getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());		
-						else if (fa.getAmtAcctCr().signum() > 0)
-							assertTrue(fa.getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocation.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				for (IFactAcctInfo fa : factAccts) {
+					if (acctUC.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+						if (fa.getRecord().getAmtAcctDr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctDr().compareTo(ucAmtAcctDr) == 0, fa.getRecord().getAmtAcctDr().toPlainString() + "!=" + ucAmtAcctDr.toPlainString());		
+						else if (fa.getRecord().getAmtAcctCr().signum() > 0)
+							assertTrue(fa.getRecord().getAmtAcctCr().compareTo(ucAmtAcctCr) == 0, fa.getRecord().getAmtAcctCr().toPlainString() + "!=" + ucAmtAcctCr.toPlainString());
 					}
 				}
 			}

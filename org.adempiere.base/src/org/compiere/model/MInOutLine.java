@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.exceptions.WarehouseLocatorConflictException;
@@ -996,7 +997,7 @@ public class MInOutLine extends X_M_InOutLine
 	 * @param  as Account Schema
 	 * @return    Unit PO Cost
 	 */
-	public BigDecimal getPOCost(MAcctSchema as, BigDecimal lineQty)
+	public BigDecimal getPOCost(IAcctSchemaInfo as, BigDecimal lineQty)
 	{
 		BigDecimal retValue = null;
 		//	Uses PO Date
@@ -1009,10 +1010,10 @@ public class MInOutLine extends X_M_InOutLine
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, as.get_TrxName());
-			pstmt.setInt(1, as.getC_Currency_ID());
-			pstmt.setInt(2, as.getAD_Client_ID());
-			pstmt.setInt(3, as.getAD_Org_ID());
+			pstmt = DB.prepareStatement(sql, as.getPO().get_TrxName());
+			pstmt.setInt(1, as.getRecord().getC_Currency_ID());
+			pstmt.setInt(2, as.getRecord().getAD_Client_ID());
+			pstmt.setInt(3, as.getRecord().getAD_Org_ID());
 			pstmt.setInt(4, getM_InOutLine_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())

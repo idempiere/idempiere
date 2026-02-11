@@ -38,7 +38,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MCostElement;
@@ -244,7 +244,7 @@ public class ProductionTest extends AbstractTestCase {
 									.setParameters(category.get_ID())
 									.list();
 		for (MProductCategoryAcct categoryAcct : categoryAccts) {
-			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.setCostingMethod(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting);
 			categoryAcct.saveEx();
 		}
 		
@@ -358,7 +358,7 @@ public class ProductionTest extends AbstractTestCase {
 									.setParameters(category.get_ID())
 									.list();
 		for (MProductCategoryAcct categoryAcct : categoryAccts) {
-			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.setCostingMethod(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting);
 			categoryAcct.saveEx();
 		}
 		
@@ -465,7 +465,7 @@ public class ProductionTest extends AbstractTestCase {
 									.setParameters(category.get_ID())
 									.list();
 		for (MProductCategoryAcct categoryAcct : categoryAccts) {
-			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.setCostingMethod(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting);
 			categoryAcct.saveEx();
 		}
 		

@@ -23,6 +23,7 @@ package org.compiere.model;
 
 import java.util.List;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.acct.Fact;
 
 /**
@@ -41,5 +42,5 @@ public interface FactsValidator {
 	 * @return error message or null - 
      * if not null, the document will be marked as Invalid.
 	 */
-	public String factsValidate(MAcctSchema schema, List<Fact> facts, PO po);
+	public String factsValidate(IAcctSchemaInfo schema, List<Fact> facts, PO po);
 }
