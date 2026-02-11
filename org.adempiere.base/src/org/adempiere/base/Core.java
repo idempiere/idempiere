@@ -44,6 +44,7 @@ import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
 import org.adempiere.util.DefaultReservationTracerFactory;
 import org.adempiere.util.IReservationTracerFactory;
+import org.compiere.Adempiere;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.Callout;
@@ -61,6 +62,8 @@ import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
@@ -308,12 +311,19 @@ public class Core {
 				SecretKey key = service.getKey(0);
 				if (key != null) {
 					if (!s_legacyKeyWarningLogged) {
-						if (key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM)) {
+						final boolean legacyKeyDetected = key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM);
+						if (legacyKeyDetected)
 							s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
-							// Postpone SysConfig update until DB is connected
-							updateLegacyKeyWarningSysConfig(true);
+						if (DB.isConnected()) {
+							updateLegacyKeyWarningSysConfig(legacyKeyDetected);
 						} else {
-							updateLegacyKeyWarningSysConfig(false);
+							Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {
+								@Override
+								public void stateChange(ServerStateChangeEvent event) {
+									if (event.getEventType() == ServerStateChangeEvent.SERVER_START) 
+										updateLegacyKeyWarningSysConfig(legacyKeyDetected);
+								}
+							});
 						}
 					}
 					s_legacyKeyWarningLogged = true;
@@ -338,36 +348,20 @@ public class Core {
 	 */
 	private static void updateLegacyKeyWarningSysConfig(boolean legacyKeyDetected) {
 		// Run in a separate thread to avoid blocking and to retry until DB is connected
-		Thread thread = new Thread(() -> {
-			int retries = 0;
-			int maxRetries = 10;
-			while (retries < maxRetries) {
-				try {Thread.sleep(2000);} catch (InterruptedException e) {}
-				if (DB.isConnected()) {
-					String warn = MSysConfig.getValue(MSysConfig.SECURITY_DASHBOARD_LEGACY_KEY_WARNING, "Y");
-					if ("D".equals(warn))
-						break; // warning disabled by sysadmin, do not override
-					if ("Y".equals(warn) && legacyKeyDetected)
-						break; // warning already enabled and legacy key still detected, no update needed
-					if ("N".equals(warn) && !legacyKeyDetected)
-						break; // warning already negated and no legacy key detected, no update needed
+		String warn = MSysConfig.getValue(MSysConfig.SECURITY_DASHBOARD_LEGACY_KEY_WARNING, "Y");
+		if ("D".equals(warn))
+			return; // warning disabled by sysadmin, do not override
+		if ("Y".equals(warn) && legacyKeyDetected)
+			return; // warning already enabled and legacy key still detected, no update needed
+		if ("N".equals(warn) && !legacyKeyDetected)
+			return; // warning already negated and no legacy key detected, no update needed
 
-					MSysConfig conf = new MSysConfig(Env.getCtx(), SystemIDs.SYSCONFIG_SECURITY_DASHBOARD_LEGACY_KEY_WARNING, null);
-					conf.setValue(legacyKeyDetected ? "Y" : "N");
-					conf.saveEx();
+		MSysConfig conf = new MSysConfig(Env.getCtx(), SystemIDs.SYSCONFIG_SECURITY_DASHBOARD_LEGACY_KEY_WARNING, null);
+		conf.setValue(legacyKeyDetected ? "Y" : "N");
+		conf.saveEx();
 
-					if (s_log.isLoggable(Level.INFO))
-						s_log.info("Updated SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig");
-					break;
-				}
-				retries++;
-			}
-			if (retries >= maxRetries) {
-				s_log.warning("Could not update SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig after " + maxRetries + " retries");
-			}
-		}, "LegacyKeyWarning-SysConfig-Updater");
-		thread.setDaemon(true);
-		thread.start();
+		if (s_log.isLoggable(Level.INFO))
+			s_log.info("Updated SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig");
 	}
 
 	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IPaymentProcessorFactory", 100, false);
