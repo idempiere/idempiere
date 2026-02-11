@@ -21,7 +21,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MMovement;
 import org.compiere.model.MMovementLine;
@@ -53,7 +54,7 @@ public class Doc_Movement extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Movement (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_Movement (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, MMovement.class, rs, DOCTYPE_MatMovement, trxName);
 	}   //  Doc_Movement
@@ -125,11 +126,11 @@ public class Doc_Movement extends Doc
 	 *  @return Fact
 	 */	
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
-		setC_Currency_ID(as.getC_Currency_ID());
+		setC_Currency_ID(as.getRecord().getC_Currency_ID());
 
 		//  Line pointers
 		FactLine dr = null;
@@ -144,7 +145,7 @@ public class Doc_Movement extends Doc
 			{
 				MProduct product = (MProduct) line.getProduct();
 				String costingLevel = product.getCostingLevel(as);
-				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel) )
+				if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel) )
 				{
 					if (line.getM_AttributeSetInstance_ID() == 0 ) 
 					{
@@ -189,13 +190,13 @@ public class Doc_Movement extends Doc
 			//  ** Inventory       DR      CR
 			dr = fact.createLine(line,
 				line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-				as.getC_Currency_ID(), costs.negate());		//	from (-) CR
+				as.getRecord().getC_Currency_ID(), costs.negate());		//	from (-) CR
 			if (dr == null)
 				continue;
 			dr.setM_Locator_ID(line.getM_Locator_ID());
-			dr.setM_AttributeSetInstance_ID(line.getM_AttributeSetInstance_ID());
-			dr.setM_Warehouse_ID(getM_Warehouse_ID());
-			dr.setQty(line.getQty().negate());	//	outgoing
+			dr.getFactAcctInfo().getRecord().setM_AttributeSetInstance_ID(line.getM_AttributeSetInstance_ID());
+			dr.getFactAcctInfo().getRecord().setM_Warehouse_ID(getM_Warehouse_ID());
+			dr.getFactAcctInfo().getRecord().setQty(line.getQty().negate());	//	outgoing
 			if (isReversal(line))
 			{
 				//	Set AmtAcctDr from Original Movement
@@ -210,13 +211,13 @@ public class Doc_Movement extends Doc
 			//  ** InventoryTo     DR      CR
 			cr = fact.createLine(line,
 				line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-				as.getC_Currency_ID(), costs);			//	to (+) DR
+				as.getRecord().getC_Currency_ID(), costs);			//	to (+) DR
 			if (cr == null)
 				continue;
 			cr.setM_Locator_ID(line.getM_LocatorTo_ID());
-			cr.setM_AttributeSetInstance_ID(line.getM_AttributeSetInstanceTo_ID());
-			cr.setM_Warehouse_ID(getM_WarehouseTo_ID());
-			cr.setQty(line.getQty());
+			cr.getFactAcctInfo().getRecord().setM_AttributeSetInstance_ID(line.getM_AttributeSetInstanceTo_ID());
+			cr.getFactAcctInfo().getRecord().setM_Warehouse_ID(getM_WarehouseTo_ID());
+			cr.getFactAcctInfo().getRecord().setQty(line.getQty());
 			if (isReversal(line))
 			{
 				//	Set AmtAcctCr from Original Movement
@@ -233,7 +234,7 @@ public class Doc_Movement extends Doc
 			if (dr.getAD_Org_ID() != cr.getAD_Org_ID())
 			{
 				String costingLevel = line.getProduct().getCostingLevel(as);
-				if (!MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+				if (!IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(costingLevel))
 					continue;
 				//
 				String description = line.getDescription();

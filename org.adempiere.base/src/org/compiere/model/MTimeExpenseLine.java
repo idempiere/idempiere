@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -321,7 +322,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 * @param  as Account Schema
 	 * @return    Unit Labor Cost
 	 */
-	public BigDecimal getLaborCost(MAcctSchema as)
+	public BigDecimal getLaborCost(IAcctSchemaInfo as)
 	{
 		// Todor Lulov 30.01.2008
 		BigDecimal retValue = Env.ZERO;
@@ -333,7 +334,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, as.get_TrxName());
+			pstmt = DB.prepareStatement (sql, as.getPO().get_TrxName());
 			pstmt.setInt(1, getS_TimeExpenseLine_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())

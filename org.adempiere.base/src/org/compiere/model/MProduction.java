@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -231,7 +233,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			if (this.getProcessedOn().signum() == 0) {
 				setMovementDate(TimeUtil.getDay(0));
 				MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
-				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -600,7 +602,7 @@ public class MProduction extends X_M_Production implements DocAction {
 
 		//	Std Period open?
 		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
-		MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 
 		if ( getIsCreated().equals("N") )
 		{
@@ -688,7 +690,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		MProduct product = MProduct.get(getCtx(), M_Product_ID, get_TrxName());
 		String costingMethod=product.getCostingMethod(MClient.get(getCtx()).getAcctSchema());
 		// will not work if non-standard costing is used
-		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+		if (IAcctSchemaConstants.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{	
 			String sql = "SELECT ABS(((cc.currentcostprice-(SELECT SUM(c.currentcostprice*bom.qtybom)"
 					+ " FROM m_cost c"
@@ -787,7 +789,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			
 			try
 			{
-				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 			}
 			catch (BackDateTrxNotAllowedException e)
 			{
@@ -869,7 +871,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			setC_OrderLine_ID(0);
 
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
-		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
+		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
 		MProduction reversal = null;
 		reversal = copyFrom (reversalDate);
 

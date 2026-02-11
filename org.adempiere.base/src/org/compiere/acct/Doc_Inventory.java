@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.ICostInfo;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost;
@@ -67,7 +69,7 @@ public class Doc_Inventory extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Inventory (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_Inventory (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, MInventory.class, rs, DOCTYPE_MatInventory, trxName);
 	}   //  Doc_Inventory
@@ -91,7 +93,7 @@ public class Doc_Inventory extends Doc
 		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv))
 		{
 			if (inventory.getC_Currency_ID() == 0)
-				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getC_Currency_ID()); 
+				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getRecord().getC_Currency_ID()); 
 		} else 
 		{
 			setC_Currency_ID (NO_CURRENCY);	
@@ -113,15 +115,15 @@ public class Doc_Inventory extends Doc
 		MDocType dt = MDocType.get(inventory.getCtx(), inventory.getC_DocType_ID());
 		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(dt.getDocSubTypeInv())) {
 			MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
-			MAcctSchema as = client.getAcctSchema();
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(inventory.getCtx(), client.get_ID());
-			if (as.getC_Currency_ID() != inventory.getC_Currency_ID()) {
-				for (MAcctSchema a : ass) {
-					if (a.getC_Currency_ID() == inventory.getC_Currency_ID()) 
+			IAcctSchemaInfo as = client.getAcctSchema();
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(inventory.getCtx(), client.get_ID());
+			if (as.getRecord().getC_Currency_ID() != inventory.getC_Currency_ID()) {
+				for (IAcctSchemaInfo a : ass) {
+					if (a.getRecord().getC_Currency_ID() == inventory.getC_Currency_ID()) 
 						as = a ; 
 				}
 			}
-			if (getAcctSchema().get_ID() == as.get_ID()) {
+			if (getAcctSchema().getRecord().getC_AcctSchema_ID() == as.getRecord().getC_AcctSchema_ID()) {
 				MInventoryLine[] lines = inventory.getLines(false);
 				for (MInventoryLine line : lines) {
 					BigDecimal currentCostPrice = line.getCurrentCostPriceForCostAdjustment();
@@ -209,13 +211,13 @@ public class Doc_Inventory extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 
 		if (!MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv))
-			setC_Currency_ID(as.getC_Currency_ID());
+			setC_Currency_ID(as.getRecord().getC_Currency_ID());
 
 		//  Line pointers
 		FactLine dr = null;
@@ -258,14 +260,14 @@ public class Doc_Inventory extends Doc
 				product = line.getProduct();
 				int orgId = line.getAD_Org_ID();
 				int asiId = line.getM_AttributeSetInstance_ID();
-				if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+				if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(costingLevel))
 				{
 					orgId = 0;
 					asiId = 0;
 				}
-				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+				else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(costingLevel))
 					asiId = 0;
-				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+				else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel))
 					orgId = 0;
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
 				MCostDetail cd = MCostDetail.getInventory(as, product.getM_Product_ID(), asiId, line.get_ID(), ce.getM_CostElement_ID(), getTrxName());
@@ -281,7 +283,7 @@ public class Doc_Inventory extends Doc
 				if (!isReversal(line))
 				{
 					product = line.getProduct();
-					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+					if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 					{
 						if (line.getM_AttributeSetInstance_ID() == 0 ) 
 						{
@@ -347,7 +349,7 @@ public class Doc_Inventory extends Doc
 			
 			if (doPosting)
 			{		
-				int C_Currency_ID = getC_Currency_ID() > 0 ? getC_Currency_ID() : as.getC_Currency_ID();
+				int C_Currency_ID = getC_Currency_ID() > 0 ? getC_Currency_ID() : as.getRecord().getC_Currency_ID();
 				//  Inventory       DR      CR
 				dr = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
@@ -370,7 +372,7 @@ public class Doc_Inventory extends Doc
 		
 					//  InventoryDiff   DR      CR
 					//	or Charge
-					MAccount invDiff = null;
+					IAccountInfo invDiff = null;
 					if (isReversal(line)
 							&& line.getC_Charge_ID() != 0) {
 						invDiff = line.getChargeAccount(as, costs);
@@ -394,9 +396,9 @@ public class Doc_Inventory extends Doc
 					if (cr != null)
 					{
 						cr.setM_Locator_ID(line.getM_Locator_ID());
-						cr.setQty(line.getQty().negate());
+						cr.getFactAcctInfo().getRecord().setQty(line.getQty().negate());
 						if (line.getC_Charge_ID() != 0)	//	explicit overwrite for charge
-							cr.setAD_Org_ID(line.getAD_Org_ID());
+							cr.getFactAcctInfo().getRecord().setAD_Org_ID(line.getAD_Org_ID());
 			
 						if (isReversal(line))
 						{
@@ -416,13 +418,13 @@ public class Doc_Inventory extends Doc
 			{
 				product = line.getProduct();
 				BigDecimal costDetailAmt = costAdjustment ? adjustmentDiff : costs;
-				if (costAdjustment && getC_Currency_ID() > 0 && getC_Currency_ID() != as.getC_Currency_ID()) 
+				if (costAdjustment && getC_Currency_ID() > 0 && getC_Currency_ID() != as.getRecord().getC_Currency_ID()) 
 				{
 					costDetailAmt = MConversionRate.convert (getCtx(),
-							costDetailAmt, getC_Currency_ID(), as.getC_Currency_ID(),
+							costDetailAmt, getC_Currency_ID(), as.getRecord().getC_Currency_ID(),
 							getDateAcct(), 0, getAD_Client_ID(), getAD_Org_ID(), true);
 				}
-				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+				if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 				{
 					if (line.getM_AttributeSetInstance_ID() == 0 ) 
 					{

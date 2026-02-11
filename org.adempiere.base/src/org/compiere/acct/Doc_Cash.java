@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MCash;
 import org.compiere.model.MCashBook;
 import org.compiere.model.MCashLine;
@@ -44,7 +44,7 @@ public class Doc_Cash extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Cash (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_Cash (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super(as, MCash.class, rs, DOCTYPE_CashJournal, trxName);
 	}	//	Doc_Cash
@@ -148,7 +148,7 @@ public class Doc_Cash extends Doc
 	 *  @return Facts
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//  Need to have CashBook
 		if (getC_CashBook_ID() == 0)

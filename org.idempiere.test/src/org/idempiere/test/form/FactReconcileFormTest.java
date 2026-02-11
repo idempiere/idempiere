@@ -35,15 +35,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IFactAcctInfo;
 import org.compiere.apps.form.FactReconcile;
 import org.compiere.minigrid.MiniTableImpl;
+import org.compiere.model.I_Fact_Reconciliation;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MClientInfo;
-import org.compiere.model.MFactAcct;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MPayment;
-import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -85,8 +85,9 @@ public class FactReconcileFormTest extends AbstractTestCase {
 			assertTrue(Util.isEmpty(error, true), error);
 		}
 		
-		Query query = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID=? AND Record_ID=? AND Account_ID=? AND C_AcctSchema_ID=?", getTrxName());
-		MFactAcct paymentFact = query.setParameters(MPayment.Table_ID, payment.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID()).first();
+		IFactAcctInfo paymentFact = AcctInfoServices.getFactAcctInfoService().first(
+				MPayment.Table_ID, payment.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, 
+				MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID(), getTrxName());
 		assertNotNull(paymentFact, "Faild to retrieve MFactAcct checking in transfer record for payment");
 		
 		MBankStatement stmt = new MBankStatement(Env.getCtx(), 0, getTrxName());
@@ -110,7 +111,9 @@ public class FactReconcileFormTest extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), stmt.getAD_Client_ID(), MBankStatement.Table_ID, stmt.get_ID(), true, getTrxName());
 			assertTrue(Util.isEmpty(error, true), error);
 		}
-		MFactAcct statementFact = query.setParameters(MBankStatement.Table_ID, stmt.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID()).first();
+		IFactAcctInfo statementFact = AcctInfoServices.getFactAcctInfoService().first(
+				MBankStatement.Table_ID, stmt.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, 
+				MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID(), getTrxName());
 		assertNotNull(statementFact, "Faild to retrieve MFactAcct checking in transfer record for bank statement");
 		
 		FactReconcileImpl fri = new FactReconcileImpl();
@@ -131,7 +134,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		assertTrue(fri.miniTable.getRowCount() >= 2, "Failed to load not reconciled fact account records");		
 		for(int i = 0; i < fri.miniTable.getRowCount(); i++) {
 			KeyNamePair knp = (KeyNamePair) fri.miniTable.getValueAt(i, fri.getIdColumnIndex());
-			if (knp.getKey() == paymentFact.get_ID() || knp.getKey() == statementFact.get_ID()) {
+			if (knp.getKey() == paymentFact.getPO().get_ID() || knp.getKey() == statementFact.getPO().get_ID()) {
 				fri.miniTable.setValueAt(Boolean.TRUE, i, fri.getSelectedColumnIndex());
 			}
 		}		
@@ -141,14 +144,14 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		assertEquals(2, fri.getSelectedCount(), "Failed to locate not reconciled payment and bank statement fact records in mini table");		
 		List<Integer> generated = new ArrayList<>();
 		fri.generate(fri.miniTable, generated);
-		assertEquals(2, generated.size(), "Failed to generate " + MFactReconciliation.Table_Name + " records");
+		assertEquals(2, generated.size(), "Failed to generate " + I_Fact_Reconciliation.Table_Name + " records");
 		
 		//reload not reconciled fact records after generate
 		fri.setParameters(payment.getC_BPartner_ID(), payment.getDateAcct(), checkingInTransfer, false);
 		fri.loadData();
 		for(int i = 0; i < fri.miniTable.getRowCount(); i++) {
 			KeyNamePair knp = (KeyNamePair) fri.miniTable.getValueAt(i, fri.getIdColumnIndex());
-			if (knp.getKey() == paymentFact.get_ID() || knp.getKey() == statementFact.get_ID()) {
+			if (knp.getKey() == paymentFact.getPO().get_ID() || knp.getKey() == statementFact.getPO().get_ID()) {
 				fri.miniTable.setValueAt(Boolean.TRUE, i, fri.getSelectedColumnIndex());
 			}
 		}
@@ -161,7 +164,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		fri.loadData();
 		for(int i = 0; i < fri.miniTable.getRowCount(); i++) {
 			KeyNamePair knp = (KeyNamePair) fri.miniTable.getValueAt(i, fri.getIdColumnIndex());
-			if (knp.getKey() == paymentFact.get_ID() || knp.getKey() == statementFact.get_ID()) {
+			if (knp.getKey() == paymentFact.getPO().get_ID() || knp.getKey() == statementFact.getPO().get_ID()) {
 				fri.miniTable.setValueAt(Boolean.TRUE, i, fri.getSelectedColumnIndex());
 			}
 		}		
@@ -170,7 +173,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		//select and reset
 		List<Integer> reseted = new ArrayList<>();
 		fri.reset(fri.miniTable, reseted);
-		assertEquals(2, reseted.size(), "Failed to reset " + MFactReconciliation.Table_Name + " records");
+		assertEquals(2, reseted.size(), "Failed to reset " + I_Fact_Reconciliation.Table_Name + " records");
 		
 		//reload not reconciled fact records after reset
 		fri.setParameters(payment.getC_BPartner_ID(), payment.getDateAcct(), checkingInTransfer, false);
@@ -178,7 +181,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		assertTrue(fri.miniTable.getRowCount() >= 2, "Failed to load fact account records");		
 		for(int i = 0; i < fri.miniTable.getRowCount(); i++) {
 			KeyNamePair knp = (KeyNamePair) fri.miniTable.getValueAt(i, fri.getIdColumnIndex());
-			if (knp.getKey() == paymentFact.get_ID() || knp.getKey() == statementFact.get_ID()) {
+			if (knp.getKey() == paymentFact.getPO().get_ID() || knp.getKey() == statementFact.getPO().get_ID()) {
 				fri.miniTable.setValueAt(Boolean.TRUE, i, fri.getSelectedColumnIndex());
 			}
 		}

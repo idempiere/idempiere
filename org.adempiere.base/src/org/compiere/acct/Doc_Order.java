@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MOrder;
@@ -53,7 +53,7 @@ public class Doc_Order extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Order (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_Order (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, MOrder.class, rs, null, trxName);
 	}	//	Doc_Order
@@ -333,7 +333,7 @@ public class Doc_Order extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		//  Purchase Order
@@ -355,12 +355,12 @@ public class Doc_Order extends Doc
 					total = total.add(cost);
 
 					//	Account
-					MAccount expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+					IAccountInfo expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 					fl = fact.createLine (line, expense,
 						getC_Currency_ID(), cost, null);
 				}
 				//	Offset
-				MAccount offset = getAccount(ACCTTYPE_CommitmentOffset, as);
+				IAccountInfo offset = getAccount(ACCTTYPE_CommitmentOffset, as);
 				if (offset == null)
 				{
 					p_Error = "@NotFound@ @CommitmentOffset_Acct@";
@@ -387,14 +387,14 @@ public class Doc_Order extends Doc
 					total = total.add(cost);
 
 					//	Account
-					MAccount expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+					IAccountInfo expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 					fl = fact.createLine (line, expense,
 						getC_Currency_ID(), null, cost);
 				}
 				//	Offset
 				if (m_requisitions.length > 0)
 				{
-					MAccount offset = getAccount(ACCTTYPE_CommitmentOffset, as);
+					IAccountInfo offset = getAccount(ACCTTYPE_CommitmentOffset, as);
 					if (offset == null)
 					{
 						p_Error = "@NotFound@ @CommitmentOffset_Acct@";
@@ -425,12 +425,12 @@ public class Doc_Order extends Doc
 					total = total.add(cost);
 
 					//	Account
-					MAccount revenue = line.getAccount(ProductCost.ACCTTYPE_P_Revenue, as);
+					IAccountInfo revenue = line.getAccount(ProductCost.ACCTTYPE_P_Revenue, as);
 					fl = fact.createLine (line, revenue,
 						getC_Currency_ID(), null, cost);
 				}
 				//	Offset
-				MAccount offset = getAccount(ACCTTYPE_CommitmentOffsetSales, as);
+				IAccountInfo offset = getAccount(ACCTTYPE_CommitmentOffsetSales, as);
 				if (offset == null)
 				{
 					p_Error = "@NotFound@ @CommitmentOffsetSales_Acct@";
@@ -451,10 +451,10 @@ public class Doc_Order extends Doc
 	 * 	Update ProductPO PriceLastPO
 	 *	@param as accounting schema
 	 */
-	private void updateProductPO(MAcctSchema as)
+	private void updateProductPO(IAcctSchemaInfo as)
 	{
-		MClientInfo ci = MClientInfo.get(getCtx(), as.getAD_Client_ID());
-		if (ci.getC_AcctSchema1_ID() != as.getC_AcctSchema_ID())
+		MClientInfo ci = MClientInfo.get(getCtx(), as.getRecord().getAD_Client_ID());
+		if (ci.getC_AcctSchema1_ID() != as.getRecord().getC_AcctSchema_ID())
 			return;
 
 		StringBuilder sql = new StringBuilder (
@@ -586,7 +586,7 @@ public class Doc_Order extends Doc
 	 *	@param multiplier 1 for accrual
 	 *	@return Fact
 	 */
-	protected static Fact getCommitmentRelease(MAcctSchema as, Doc doc,
+	protected static Fact getCommitmentRelease(IAcctSchemaInfo as, Doc doc,
 		BigDecimal Qty, int C_InvoiceLine_ID, BigDecimal multiplier)
 	{
 		Fact fact = new Fact(doc, as, Fact.POST_Commitment);
@@ -612,12 +612,12 @@ public class Doc_Order extends Doc
 			total = total.add(cost);
 
 			//	Account
-			MAccount expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+			IAccountInfo expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 			fl = fact.createLine (line, expense,
 				C_Currency_ID, null, cost);
 		}
 		//	Offset
-		MAccount offset = doc.getAccount(ACCTTYPE_CommitmentOffset, as);
+		IAccountInfo offset = doc.getAccount(ACCTTYPE_CommitmentOffset, as);
 		if (offset == null)
 		{
 			doc.p_Error = "@NotFound@ @CommitmentOffset_Acct@";
@@ -727,7 +727,7 @@ public class Doc_Order extends Doc
 	 *	@param multiplier 1 for accrual
 	 *	@return Fact
 	 */
-	public static Fact getCommitmentSalesRelease(MAcctSchema as, Doc doc,
+	public static Fact getCommitmentSalesRelease(IAcctSchemaInfo as, Doc doc,
 		BigDecimal Qty, int M_InOutLine_ID, BigDecimal multiplier)
 	{
 		Fact fact = new Fact(doc, as, Fact.POST_Commitment);
@@ -753,12 +753,12 @@ public class Doc_Order extends Doc
 			total = total.add(cost);
 
 			//	Account
-			MAccount revenue = line.getAccount(ProductCost.ACCTTYPE_P_Revenue, as);
+			IAccountInfo revenue = line.getAccount(ProductCost.ACCTTYPE_P_Revenue, as);
 			fl = fact.createLine (line, revenue,
 				C_Currency_ID, cost, null);
 		}
 		//	Offset
-		MAccount offset = doc.getAccount(ACCTTYPE_CommitmentOffsetSales, as);
+		IAccountInfo offset = doc.getAccount(ACCTTYPE_CommitmentOffsetSales, as);
 		if (offset == null)
 		{
 			doc.p_Error = "@NotFound@ @CommitmentOffsetSales_Acct@";

@@ -24,9 +24,9 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchemaElement;
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
+import org.adempiere.base.acct.constants.IFactAcctConstants;
 import org.compiere.model.MCurrency;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderPaySchedule;
@@ -97,9 +97,9 @@ public class CashFlow  extends SvrProcess {
 		log.info("Calculating initial balance");
 		/* initial balance */
 		StringBuilder sqlIni = new StringBuilder ("SELECT SUM(acctBalance(Account_ID,AmtAcctDr,AmtAcctCr)) FROM Fact_Acct WHERE DateAcct<=");
-		sqlIni.append(DB.TO_DATE(p_dateFrom)).append(" AND PostingType='").append(MFactAcct.POSTINGTYPE_Actual).append("' AND ");
+		sqlIni.append(DB.TO_DATE(p_dateFrom)).append(" AND PostingType='").append(IFactAcctConstants.POSTINGTYPE_Actual).append("' AND ");
 		// initial balance - the balance of selected account on selected schema on default hierarchy
-		String whereClause = MReportTree.getWhereClause(getCtx(), 0, MAcctSchemaElement.ELEMENTTYPE_Account, p_C_ElementValue_ID);
+		String whereClause = MReportTree.getWhereClause(getCtx(), 0, IAcctSchemaElementConstants.ELEMENTTYPE_Account, p_C_ElementValue_ID);
 		sqlIni.append(whereClause);
 		
 		BigDecimal initialBalance = DB.getSQLValueBD(get_TrxName(), sqlIni.toString(), new Object[] {});

@@ -25,7 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
@@ -54,7 +55,7 @@ public class Doc_Production extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Production (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_Production (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, X_M_Production.class, rs, null, trxName);
 	}   //  Doc_Production
@@ -201,11 +202,11 @@ public class Doc_Production extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
-		setC_Currency_ID (as.getC_Currency_ID());
+		setC_Currency_ID (as.getRecord().getC_Currency_ID());
 
 		//  Line pointer
 		FactLine fl = null;
@@ -224,7 +225,7 @@ public class Doc_Production extends Doc
 			String CostingLevel = product.getCostingLevel(as);
 			String costingMethod = product.getCostingMethod(as);
 
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel) ) 
+			if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(CostingLevel) ) 
 			{
 				if (line.getM_AttributeSetInstance_ID() == 0 && (mas!=null && mas.length> 0 )) 
 				{
@@ -300,7 +301,7 @@ public class Doc_Production extends Doc
 					if (!line0.isProductionBOM()) {
 						MProduct product0 = new MProduct(getCtx(), bomProLine.getM_Product_ID(), getTrxName());
 						String CostingLevel0 = product0.getCostingLevel(as);
-						if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel0) )
+						if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(CostingLevel0) )
 						{
 							if (bomProLine.getM_AttributeSetInstance_ID() == 0 ) 
 							{
@@ -380,20 +381,20 @@ public class Doc_Production extends Doc
 					bomCost = bomCost.multiply(factor);
 				}
 				
-				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
+				if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(CostingLevel))
 				{
 					//post roll-up  
 					fl = fact.createLine(line, 
 							line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-							as.getC_Currency_ID(), bomCost.negate().setScale(stdPrecision, RoundingMode.HALF_UP));
+							as.getRecord().getC_Currency_ID(), bomCost.negate().setScale(stdPrecision, RoundingMode.HALF_UP));
 					if (fl == null) 
 					{ 
 						p_Error = "Couldn't post roll-up " + line.getLine() + " - " + line; 
 						return null; 
 					}
-					fl.setQty(qtyProduced);				
+					fl.getFactAcctInfo().getRecord().setQty(qtyProduced);				
 				} 
-				else if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+				else if (IAcctSchemaConstants.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 				{					
 					BigDecimal variance = costs.subtract(bomCost.negate()).setScale(stdPrecision, RoundingMode.HALF_UP);
 					// only post variance if it's not zero 
@@ -402,36 +403,36 @@ public class Doc_Production extends Doc
 						//post variance 
 						fl = fact.createLine(line, 
 								line.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as),
-								as.getC_Currency_ID(), variance.negate()); 
+								as.getRecord().getC_Currency_ID(), variance.negate()); 
 						if (fl == null) 
 						{ 
 							p_Error = "Couldn't post variance " + line.getLine() + " - " + line; 
 							return null; 
 						}
-						fl.setQty(Env.ZERO);
+						fl.getFactAcctInfo().getRecord().setQty(Env.ZERO);
 					}
 				}
 			}
 			// end MZ
 
 			//  Inventory       DR      CR
-			if (!(line.isProductionBOM() && MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel)))
+			if (!(line.isProductionBOM() && IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(CostingLevel)))
 			{
 				BigDecimal factLineAmt = costs;
-				if (line.isProductionBOM() && !(MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
+				if (line.isProductionBOM() && !(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
 				{
 					factLineAmt = bomCost.negate();
 				}
 				fl = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getC_Currency_ID(), factLineAmt.setScale(stdPrecision, RoundingMode.HALF_UP));
+					as.getRecord().getC_Currency_ID(), factLineAmt.setScale(stdPrecision, RoundingMode.HALF_UP));
 				if (fl == null)
 				{
 					p_Error = "No Costs for Line " + line.getLine() + " - " + line;
 					return null;
 				}
 				fl.setM_Locator_ID(line.getM_Locator_ID());
-				fl.setQty(line.getQty());
+				fl.getFactAcctInfo().getRecord().setQty(line.getQty());
 			}
 
 			//	Cost Detail
@@ -440,7 +441,7 @@ public class Doc_Production extends Doc
 				description = "";
 			if (line.isProductionBOM())
 				description += "(*)";
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel)) 
+			if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(CostingLevel)) 
 			{
 				if (line.isProductionBOM())
 				{
@@ -510,7 +511,7 @@ public class Doc_Production extends Doc
 			} 
 			else
 			{		
-				if (line.isProductionBOM() && !(MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
+				if (line.isProductionBOM() && !(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
 				{
 					int Ref_CostDetail_ID = 0;
 					if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())

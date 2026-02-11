@@ -19,9 +19,10 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.process.UUIDGenerator;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaDefault;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductCategoryAcct;
@@ -85,11 +86,11 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			+ ", CopyOverwriteAcct=" + p_CopyOverwriteAcct);
 		if (p_C_AcctSchema_ID == 0)
 			throw new AdempiereSystemError("C_AcctSchema_ID=0");
-		MAcctSchema as = MAcctSchema.get(getCtx(), p_C_AcctSchema_ID);
-		if (as.get_ID() == 0)
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID);
+		if (as.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("Not Found - C_AcctSchema_ID=" + p_C_AcctSchema_ID);
-		MAcctSchemaDefault acct = MAcctSchemaDefault.get (getCtx(), p_C_AcctSchema_ID);
-		if (acct == null || acct.get_ID() == 0)
+		IAcctSchemaDefaultInfo acct = AcctInfoServices.getAcctSchemaDefaultInfoService().get (getCtx(), p_C_AcctSchema_ID);
+		if (acct == null || acct.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("Default Not Found - C_AcctSchema_ID=" + p_C_AcctSchema_ID);
 		
 		StringBuilder sql = null;
@@ -102,19 +103,19 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE M_Product_Category_Acct pa ")
-				.append("SET P_Revenue_Acct=").append(acct.getP_Revenue_Acct())
-				.append(", P_Expense_Acct=").append(acct.getP_Expense_Acct())
-				.append(", P_CostAdjustment_Acct=").append(acct.getP_CostAdjustment_Acct())
-				.append(", P_InventoryClearing_Acct=").append(acct.getP_InventoryClearing_Acct())
-				.append(", P_Asset_Acct=").append(acct.getP_Asset_Acct())
-				.append(", P_COGS_Acct=").append(acct.getP_COGS_Acct())
-				.append(", P_PurchasePriceVariance_Acct=").append(acct.getP_PurchasePriceVariance_Acct())
-				.append(", P_InvoicePriceVariance_Acct=").append(acct.getP_InvoicePriceVariance_Acct())
-				.append(", P_AverageCostVariance_Acct=").append(acct.getP_AverageCostVariance_Acct())
-				.append(", P_TradeDiscountRec_Acct=").append(acct.getP_TradeDiscountRec_Acct())
-				.append(", P_TradeDiscountGrant_Acct=").append(acct.getP_TradeDiscountGrant_Acct())
-				.append(", P_RateVariance_Acct=").append(acct.getP_RateVariance_Acct())
-				.append(", P_LandedCostClearing_Acct=").append(acct.getP_LandedCostClearing_Acct())
+				.append("SET P_Revenue_Acct=").append(acct.getRecord().getP_Revenue_Acct())
+				.append(", P_Expense_Acct=").append(acct.getRecord().getP_Expense_Acct())
+				.append(", P_CostAdjustment_Acct=").append(acct.getRecord().getP_CostAdjustment_Acct())
+				.append(", P_InventoryClearing_Acct=").append(acct.getRecord().getP_InventoryClearing_Acct())
+				.append(", P_Asset_Acct=").append(acct.getRecord().getP_Asset_Acct())
+				.append(", P_COGS_Acct=").append(acct.getRecord().getP_COGS_Acct())
+				.append(", P_PurchasePriceVariance_Acct=").append(acct.getRecord().getP_PurchasePriceVariance_Acct())
+				.append(", P_InvoicePriceVariance_Acct=").append(acct.getRecord().getP_InvoicePriceVariance_Acct())
+				.append(", P_AverageCostVariance_Acct=").append(acct.getRecord().getP_AverageCostVariance_Acct())
+				.append(", P_TradeDiscountRec_Acct=").append(acct.getRecord().getP_TradeDiscountRec_Acct())
+				.append(", P_TradeDiscountGrant_Acct=").append(acct.getRecord().getP_TradeDiscountGrant_Acct())
+				.append(", P_RateVariance_Acct=").append(acct.getRecord().getP_RateVariance_Acct())
+				.append(", P_LandedCostClearing_Acct=").append(acct.getRecord().getP_LandedCostClearing_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE pa.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM M_Product_Category p ")
@@ -186,19 +187,19 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_BP_Group_Acct a ")
-				.append("SET C_Receivable_Acct=").append(acct.getC_Receivable_Acct());
-			if (acct.getC_Receivable_Services_Acct() > 0)
-				sql.append(", C_Receivable_Services_Acct=").append(acct.getC_Receivable_Services_Acct());
-			sql.append(", C_Prepayment_Acct=").append(acct.getC_Prepayment_Acct())
-				.append(", V_Liability_Acct=").append(acct.getV_Liability_Acct());
-			if (acct.getV_Liability_Services_Acct() > 0)
-				sql.append(", V_Liability_Services_Acct=").append(acct.getV_Liability_Services_Acct());
-			sql.append(", V_Prepayment_Acct=").append(acct.getV_Prepayment_Acct())
-				.append(", PayDiscount_Exp_Acct=").append(acct.getPayDiscount_Exp_Acct())
-				.append(", PayDiscount_Rev_Acct=").append(acct.getPayDiscount_Rev_Acct())
-				.append(", WriteOff_Acct=").append(acct.getWriteOff_Acct())
-				.append(", NotInvoicedReceipts_Acct=").append(acct.getNotInvoicedReceipts_Acct())
-				.append(", UnEarnedRevenue_Acct=").append(acct.getUnEarnedRevenue_Acct())
+				.append("SET C_Receivable_Acct=").append(acct.getRecord().getC_Receivable_Acct());
+			if (acct.getRecord().getC_Receivable_Services_Acct() > 0)
+				sql.append(", C_Receivable_Services_Acct=").append(acct.getRecord().getC_Receivable_Services_Acct());
+			sql.append(", C_Prepayment_Acct=").append(acct.getRecord().getC_Prepayment_Acct())
+				.append(", V_Liability_Acct=").append(acct.getRecord().getV_Liability_Acct());
+			if (acct.getRecord().getV_Liability_Services_Acct() > 0)
+				sql.append(", V_Liability_Services_Acct=").append(acct.getRecord().getV_Liability_Services_Acct());
+			sql.append(", V_Prepayment_Acct=").append(acct.getRecord().getV_Prepayment_Acct())
+				.append(", PayDiscount_Exp_Acct=").append(acct.getRecord().getPayDiscount_Exp_Acct())
+				.append(", PayDiscount_Rev_Acct=").append(acct.getRecord().getPayDiscount_Rev_Acct())
+				.append(", WriteOff_Acct=").append(acct.getRecord().getWriteOff_Acct())
+				.append(", NotInvoicedReceipts_Acct=").append(acct.getRecord().getNotInvoicedReceipts_Acct())
+				.append(", UnEarnedRevenue_Acct=").append(acct.getRecord().getUnEarnedRevenue_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_BP_Group_Acct x ")
@@ -286,7 +287,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE M_Warehouse_Acct a ")
-				.append("SET W_Differences_Acct=").append(acct.getW_Differences_Acct())
+				.append("SET W_Differences_Acct=").append(acct.getRecord().getW_Differences_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM M_Warehouse_Acct x ")
@@ -322,8 +323,8 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_Project_Acct a ")
-				.append("SET PJ_Asset_Acct=").append(acct.getPJ_Asset_Acct())
-				.append(", PJ_WIP_Acct=").append(acct.getPJ_Asset_Acct())
+				.append("SET PJ_Asset_Acct=").append(acct.getRecord().getPJ_Asset_Acct())
+				.append(", PJ_WIP_Acct=").append(acct.getRecord().getPJ_Asset_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_Project_Acct x ")
@@ -359,9 +360,9 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_Tax_Acct a ")
-				.append("SET T_Due_Acct=").append(acct.getT_Due_Acct())
-				.append(", T_Credit_Acct=").append(acct.getT_Credit_Acct())
-				.append(", T_Expense_Acct=").append(acct.getT_Expense_Acct())
+				.append("SET T_Due_Acct=").append(acct.getRecord().getT_Due_Acct())
+				.append(", T_Credit_Acct=").append(acct.getRecord().getT_Credit_Acct())
+				.append(", T_Expense_Acct=").append(acct.getRecord().getT_Expense_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_Tax_Acct x ")
@@ -397,12 +398,12 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_BankAccount_Acct a ")
-				.append("SET B_InTransit_Acct=").append(acct.getB_InTransit_Acct())
-				.append(", B_Asset_Acct=").append(acct.getB_Asset_Acct())
-				.append(", B_InterestRev_Acct=").append(acct.getB_InterestRev_Acct())
-				.append(", B_InterestExp_Acct=").append(acct.getB_InterestExp_Acct())
-				.append(", B_UnallocatedCash_Acct=").append(acct.getB_UnallocatedCash_Acct())
-				.append(", B_PaymentSelect_Acct=").append(acct.getB_PaymentSelect_Acct())
+				.append("SET B_InTransit_Acct=").append(acct.getRecord().getB_InTransit_Acct())
+				.append(", B_Asset_Acct=").append(acct.getRecord().getB_Asset_Acct())
+				.append(", B_InterestRev_Acct=").append(acct.getRecord().getB_InterestRev_Acct())
+				.append(", B_InterestExp_Acct=").append(acct.getRecord().getB_InterestExp_Acct())
+				.append(", B_UnallocatedCash_Acct=").append(acct.getRecord().getB_UnallocatedCash_Acct())
+				.append(", B_PaymentSelect_Acct=").append(acct.getRecord().getB_PaymentSelect_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_BankAccount_Acct x ")
@@ -439,7 +440,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_Charge_Acct a ")
-				.append("SET Ch_Expense_Acct=").append(acct.getCh_Expense_Acct())
+				.append("SET Ch_Expense_Acct=").append(acct.getRecord().getCh_Expense_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_Charge_Acct x ")
@@ -475,11 +476,11 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 		if (p_CopyOverwriteAcct)
 		{
 			sql = new StringBuilder("UPDATE C_Cashbook_Acct a ")
-				.append("SET CB_Asset_Acct=").append(acct.getCB_Asset_Acct())
-				.append(", CB_Differences_Acct=").append(acct.getCB_Differences_Acct())
-				.append(", CB_CashTransfer_Acct=").append(acct.getCB_CashTransfer_Acct())
-				.append(", CB_Expense_Acct=").append(acct.getCB_Expense_Acct())
-				.append(", CB_Receipt_Acct=").append(acct.getCB_Receipt_Acct())
+				.append("SET CB_Asset_Acct=").append(acct.getRecord().getCB_Asset_Acct())
+				.append(", CB_Differences_Acct=").append(acct.getRecord().getCB_Differences_Acct())
+				.append(", CB_CashTransfer_Acct=").append(acct.getRecord().getCB_CashTransfer_Acct())
+				.append(", CB_Expense_Acct=").append(acct.getRecord().getCB_Expense_Acct())
+				.append(", CB_Receipt_Acct=").append(acct.getRecord().getCB_Receipt_Acct())
 				.append(", Updated=getDate(), UpdatedBy=0 ")
 				.append("WHERE a.C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
 				.append(" AND EXISTS (SELECT * FROM C_Cashbook_Acct x ")

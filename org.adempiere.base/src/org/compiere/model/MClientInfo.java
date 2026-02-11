@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -240,11 +242,11 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_acctSchema = copy.m_acctSchema != null ? new MAcctSchema(ctx, copy.m_acctSchema, trxName) : null;
+		this.m_acctSchema = copy.m_acctSchema != null ? AcctInfoServices.getAcctSchemaInfoService().create(ctx, copy.m_acctSchema, trxName) : null;
 	}
 
 	/**	Account Schema				*/
-	private MAcctSchema 		m_acctSchema = null;
+	private IAcctSchemaInfo 		m_acctSchema = null;
 	/** New Record					*/
 	private boolean				m_createNew = false;
 
@@ -252,13 +254,13 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	 * 	Get primary Acct Schema
 	 *	@return acct schema
 	 */
-	public MAcctSchema getMAcctSchema1()
+	public IAcctSchemaInfo getMAcctSchema1()
 	{
 		if (m_acctSchema == null && getC_AcctSchema1_ID() != 0)
 		{
-			m_acctSchema = new MAcctSchema (getCtx(), getC_AcctSchema1_ID(), get_TrxName());
+			m_acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), getC_AcctSchema1_ID(), get_TrxName());
 			if (is_Immutable())
-				m_acctSchema.markImmutable();
+				AcctInfoServices.getAcctSchemaInfoService().markImmutable(m_acctSchema);
 		}
 		return m_acctSchema;
 	}	//	getMAcctSchema1
@@ -272,7 +274,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 		if (m_acctSchema == null)
 			getMAcctSchema1();
 		if (m_acctSchema != null)
-			return m_acctSchema.getC_Currency_ID();
+			return m_acctSchema.getRecord().getC_Currency_ID();
 		return 0;
 	}	//	getC_Currency_ID
 
@@ -299,7 +301,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 
 		makeImmutable();
 		if (m_acctSchema != null)
-			m_acctSchema.markImmutable();
+			AcctInfoServices.getAcctSchemaInfoService().markImmutable(m_acctSchema);
 		return this;
 	}
 

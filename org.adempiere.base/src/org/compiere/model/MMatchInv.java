@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -349,7 +351,7 @@ public class MMatchInv extends X_M_MatchInv
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_MatchInvoice, getAD_Org_ID());
 			setPosted(false);
-			MFactAcct.deleteEx (Table_ID, get_ID(), get_TrxName());
+			AcctInfoServices.getFactAcctInfoService().deleteEx (Table_ID, get_ID(), get_TrxName());
 		}
 		return true;
 	}	//	beforeDelete
@@ -371,10 +373,10 @@ public class MMatchInv extends X_M_MatchInv
 	protected String deleteMatchInvCostDetail()
 	{
 		// Get Account Schemas to delete MCostDetail
-		MAcctSchema[] acctschemas = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaInfo[] acctschemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for(int asn = 0; asn < acctschemas.length; asn++)
 		{
-			MAcctSchema as = acctschemas[asn];
+			IAcctSchemaInfo as = acctschemas[asn];
 			
 			if (as.isSkipOrg(getAD_Org_ID()))
 			{
@@ -382,7 +384,7 @@ public class MMatchInv extends X_M_MatchInv
 			}
 			
 			MCostDetail cd = MCostDetail.get (getCtx(), "M_MatchInv_ID=?", 
-					getM_MatchInv_ID(), getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), get_TrxName());
+					getM_MatchInv_ID(), getM_AttributeSetInstance_ID(), as.getRecord().getC_AcctSchema_ID(), get_TrxName());
 			if (cd != null)
 			{
 				cd.deleteEx(true);

@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
@@ -66,7 +67,7 @@ public class Doc_InOut extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_InOut (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_InOut (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, MInOut.class, rs, null, trxName);
 	}   //  DocInOut
@@ -182,13 +183,13 @@ public class Doc_InOut extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
-		setC_Currency_ID (as.getC_Currency_ID());
+		setC_Currency_ID (as.getRecord().getC_Currency_ID());
 
 		//  Line pointers
 		FactLine dr = null;
@@ -205,7 +206,7 @@ public class Doc_InOut extends Doc
 				BigDecimal costs = null;
 				if (!isReversal(line))
 				{
-					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+					if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 					{	
 						if (line.getM_AttributeSetInstance_ID() == 0 ) 
 						{
@@ -272,7 +273,7 @@ public class Doc_InOut extends Doc
 				//  CoGS            DR
 				dr = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
-					as.getC_Currency_ID(), costs, null);
+					as.getRecord().getC_Currency_ID(), costs, null);
 				if (dr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
@@ -282,8 +283,8 @@ public class Doc_InOut extends Doc
 				dr.setM_Locator_ID(line.getM_Locator_ID());
 				dr.setLocationFromLocator(line.getM_Locator_ID(), true);    //  from Loc
 				dr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
-				dr.setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
-				dr.setQty(line.getQty().negate());
+				dr.getFactAcctInfo().getRecord().setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
+				dr.getFactAcctInfo().getRecord().setQty(line.getQty().negate());
 				
 				if (isReversal(line))
 				{
@@ -303,7 +304,7 @@ public class Doc_InOut extends Doc
 				//  Inventory               CR
 				cr = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getC_Currency_ID(), null, costs);
+					as.getRecord().getC_Currency_ID(), null, costs);
 				if (cr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
@@ -325,7 +326,7 @@ public class Doc_InOut extends Doc
 					}
 					costs = cr.getAcctBalance(); //get original cost
 				}
-				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+				if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 				{	
 					if (line.getM_AttributeSetInstance_ID() == 0 ) 
 					{
@@ -435,7 +436,7 @@ public class Doc_InOut extends Doc
 			}	//	for all lines
 
 			/** Commitment release										****/
-			if (as.isAccrual() && as.isCreateSOCommitment())
+			if (as.getRecord().isAccrual() && as.isCreateSOCommitment())
 			{
 				for (int i = 0; i < p_lines.length; i++)
 				{
@@ -459,7 +460,7 @@ public class Doc_InOut extends Doc
 				Map<String, BigDecimal> batchLotCostMap = null;
 				if (!isReversal(line)) 
 				{
-					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+					if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 					{	
 						if (line.getM_AttributeSetInstance_ID() == 0 ) 
 						{
@@ -513,7 +514,7 @@ public class Doc_InOut extends Doc
 				//  Inventory               DR
 				dr = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getC_Currency_ID(), costs, null);
+					as.getRecord().getC_Currency_ID(), costs, null);
 				if (dr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
@@ -539,7 +540,7 @@ public class Doc_InOut extends Doc
 					costs = dr.getAcctBalance(); //get original cost
 				}
 				//
-				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+				if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 				{	
 					if (line.getM_AttributeSetInstance_ID() == 0 ) 
 					{
@@ -647,7 +648,7 @@ public class Doc_InOut extends Doc
 				//  CoGS            CR
 				cr = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
-					as.getC_Currency_ID(), null, costs);
+					as.getRecord().getC_Currency_ID(), null, costs);
 				if (cr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
@@ -657,8 +658,8 @@ public class Doc_InOut extends Doc
 				cr.setM_Locator_ID(line.getM_Locator_ID());
 				cr.setLocationFromLocator(line.getM_Locator_ID(), true);    //  from Loc
 				cr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
-				cr.setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
-				cr.setQty(line.getQty().negate());
+				cr.getFactAcctInfo().getRecord().setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
+				cr.getFactAcctInfo().getRecord().setQty(line.getQty().negate());
 				if (isReversal(line))
 				{
 					//	Set AmtAcctCr from Original Shipment/Receipt
@@ -678,7 +679,7 @@ public class Doc_InOut extends Doc
 			for (int i = 0; i < p_lines.length; i++)
 			{
 				// Elaine 2008/06/26
-				int C_Currency_ID = as.getC_Currency_ID();
+				int C_Currency_ID = as.getRecord().getC_Currency_ID();
 				//
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];
 				BigDecimal costs = null;
@@ -703,10 +704,10 @@ public class Doc_InOut extends Doc
 					}
 															
 					//get costing method for product					
-					if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
-						MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod) ||
-						MAcctSchema.COSTINGMETHOD_LastPOPrice.equals(costingMethod)  ||
-						( MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod) &&  MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))))
+					if (IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
+							IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(costingMethod) ||
+							IAcctSchemaConstants.COSTINGMETHOD_LastPOPrice.equals(costingMethod)  ||
+						( IAcctSchemaConstants.COSTINGMETHOD_StandardCosting.equals(costingMethod) &&  IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))))
 					{
 						// Low - check if c_orderline_id is valid
 						if (orderLine != null)
@@ -815,7 +816,7 @@ public class Doc_InOut extends Doc
 				}
 				
 				//  Inventory/Asset			DR
-				MAccount assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				if (product.isService())
 				{
 					//if the line is a Outside Processing then DR WIP
@@ -827,8 +828,8 @@ public class Doc_InOut extends Doc
 				}
 
 				BigDecimal drAsset = costs;
-				if (landedCost.signum() != 0 && (MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod)
-					|| MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod)))
+				if (landedCost.signum() != 0 && (IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(costingMethod)
+					|| IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(costingMethod)))
 				{
 					drAsset = drAsset.add(landedCost);
 				}
@@ -873,7 +874,7 @@ public class Doc_InOut extends Doc
 				cr.setM_Locator_ID(line.getM_Locator_ID());
 				cr.setLocationFromBPartner(getC_BPartner_Location_ID(), true);   //  from Loc
 				cr.setLocationFromLocator(line.getM_Locator_ID(), false);   //  to Loc
-				cr.setQty(line.getQty().negate());
+				cr.getFactAcctInfo().getRecord().setQty(line.getQty().negate());
 				if (isReversal(line))
 				{
 					//	Set AmtAcctCr from Original Shipment/Receipt
@@ -913,7 +914,7 @@ public class Doc_InOut extends Doc
 						cr.setM_Locator_ID(line.getM_Locator_ID());
 						cr.setLocationFromBPartner(getC_BPartner_Location_ID(), true);   //  from Loc
 						cr.setLocationFromLocator(line.getM_Locator_ID(), false);   //  to Loc
-						cr.setQty(line.getQty().negate());
+						cr.getFactAcctInfo().getRecord().setQty(line.getQty().negate());
 					}
 				}
 			}
@@ -923,7 +924,7 @@ public class Doc_InOut extends Doc
 		{
 			for (int i = 0; i < p_lines.length; i++)
 			{
-				int C_Currency_ID = as.getC_Currency_ID();
+				int C_Currency_ID = as.getRecord().getC_Currency_ID();
 				//
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];
 				BigDecimal costs = null;
@@ -996,7 +997,7 @@ public class Doc_InOut extends Doc
 					}
 					else
 					{
-						if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+						if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 						{	
 							if (line.getM_AttributeSetInstance_ID() == 0 ) 
 							{								
@@ -1054,7 +1055,7 @@ public class Doc_InOut extends Doc
 				dr.setM_Locator_ID(line.getM_Locator_ID());
 				dr.setLocationFromBPartner(getC_BPartner_Location_ID(), true);   //  from Loc
 				dr.setLocationFromLocator(line.getM_Locator_ID(), false);   //  to Loc
-				dr.setQty(line.getQty().negate());
+				dr.getFactAcctInfo().getRecord().setQty(line.getQty().negate());
 				if (isReversal(line))
 				{
 					//	Set AmtAcctDr from Original Shipment/Receipt
@@ -1071,7 +1072,7 @@ public class Doc_InOut extends Doc
 				}
 
 				//  Inventory/Asset			CR
-				MAccount assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				if (product.isService())
 					assets = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
@@ -1125,14 +1126,14 @@ public class Doc_InOut extends Doc
 	 * @param reversalLine_ID
 	 * @return MCostDetail.Amt
 	 */
-	private BigDecimal findReversalCostDetailAmt(MAcctSchema as, int M_Product_ID, MInOutLineMA ma, int reversalLine_ID) {
+	private BigDecimal findReversalCostDetailAmt(IAcctSchemaInfo as, int M_Product_ID, MInOutLineMA ma, int reversalLine_ID) {
 		StringBuilder select = new StringBuilder("SELECT ").append(MCostDetail.COLUMNNAME_Amt)
 				.append(" FROM ").append(MCostDetail.Table_Name).append(" WHERE ")
 				.append(MCostDetail.COLUMNNAME_C_AcctSchema_ID).append("=? ")
 				.append("AND ").append(MCostDetail.COLUMNNAME_M_AttributeSetInstance_ID).append("=? ")
 				.append("AND ").append(MCostDetail.COLUMNNAME_M_InOutLine_ID).append("=? ")
 				.append("AND ").append(MCostDetail.COLUMNNAME_M_Product_ID).append("=? ");
-		BigDecimal amt = DB.getSQLValueBDEx(getTrxName(), select.toString(), as.getC_AcctSchema_ID(), ma.getM_AttributeSetInstance_ID(), reversalLine_ID, M_Product_ID);
+		BigDecimal amt = DB.getSQLValueBDEx(getTrxName(), select.toString(), as.getRecord().getC_AcctSchema_ID(), ma.getM_AttributeSetInstance_ID(), reversalLine_ID, M_Product_ID);
 		return amt;
 	}
 
@@ -1151,7 +1152,7 @@ public class Doc_InOut extends Doc
 	 * @param costs
 	 * @return error message or empty string
 	 */
-	private String createVendorRMACostDetail(MAcctSchema as, DocLine line, BigDecimal costs)
+	private String createVendorRMACostDetail(IAcctSchemaInfo as, DocLine line, BigDecimal costs)
 	{		
 		BigDecimal tQty = line.getQty();
 		BigDecimal tAmt = costs;
@@ -1160,7 +1161,7 @@ public class Doc_InOut extends Doc
 			tAmt = tAmt.negate();
 		}
 		MProduct product = line.getProduct();
-		if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
+		if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 		{	
 			if (line.getM_AttributeSetInstance_ID() == 0 ) 
 			{								

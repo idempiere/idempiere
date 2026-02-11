@@ -28,13 +28,14 @@ import java.math.BigDecimal;
 import java.util.Properties;
 
 import org.adempiere.base.IColumnCallout;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.ICostInfo;
 import org.compiere.model.I_M_InventoryLine;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MDocType;
@@ -74,15 +75,15 @@ public class CostAdjustmentLineASI implements IColumnCallout {
 			int C_Currency_ID = inventory.getC_Currency_ID();
 			
 			MClient client = MClient.get(ctx);
-			MAcctSchema as = client.getAcctSchema();
+			IAcctSchemaInfo as = client.getAcctSchema();
 			
-			if (as.getC_Currency_ID() != C_Currency_ID) 
+			if (as.getRecord().getC_Currency_ID() != C_Currency_ID) 
 			{
-				MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, client.get_ID());					
+				IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(ctx, client.get_ID());					
 				for (int i = 0; i < ass.length ; i ++)
 				{
-					MAcctSchema a =  ass[i];
-					if (a.getC_Currency_ID() ==  C_Currency_ID) 
+					IAcctSchemaInfo a =  ass[i];
+					if (a.getRecord().getC_Currency_ID() ==  C_Currency_ID) 
 						as = a ; 
 				}
 			}

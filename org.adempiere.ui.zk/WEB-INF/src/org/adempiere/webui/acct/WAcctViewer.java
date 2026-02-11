@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
+import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
@@ -61,15 +64,13 @@ import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaElement;
+import org.compiere.model.I_C_AcctSchema_Element;
+import org.compiere.model.I_Fact_Acct;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MColumn;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
-import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.report.core.RModel;
 import org.compiere.report.core.RModelExcelExporter;
 import org.compiere.tools.FileUtil;
@@ -867,7 +868,7 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 			return;
 
 		m_data.C_AcctSchema_ID = kp.getKey();
-		m_data.ASchema = MAcctSchema.get(Env.getCtx(), m_data.C_AcctSchema_ID);
+		m_data.ASchema = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), m_data.C_AcctSchema_ID);
 
 		if (log.isLoggable(Level.INFO))
 			log.info(m_data.ASchema.toString());
@@ -889,11 +890,11 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 
 		int selectionIndex = 0;
 
-		MAcctSchemaElement[] elements = m_data.ASchema.getAcctSchemaElements();
+		IAcctSchemaElementInfo[] elements = m_data.ASchema.getAcctSchemaElementsInfo();
 
 		for (int i = 0; i < elements.length && selectionIndex < labels.length; i++)
 		{
-			MAcctSchemaElement ase = elements[i];
+			IAcctSchemaElementInfo ase = elements[i];
 			String columnName = ase.getColumnName();
 			String displayColumnName = ase.getDisplayColumnName();
 
@@ -903,12 +904,12 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 
 			//  Additional Elements
 
-			if (!ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Organization)
-				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_Account)
-				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField1)
-				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField2)
-				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField3)
-				&& !ase.isElementType(X_C_AcctSchema_Element.ELEMENTTYPE_CustomField4))
+			if (!ase.isElementType(IAcctSchemaElementConstants.ELEMENTTYPE_Organization)
+				&& !ase.isElementType(IAcctSchemaElementConstants.ELEMENTTYPE_Account)
+				&& !ase.isElementType(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField1)
+				&& !ase.isElementType(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField2)
+				&& !ase.isElementType(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField3)
+				&& !ase.isElementType(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField4))
 			{
 				labels[selectionIndex].setValue(Msg.translate(Env.getCtx(), displayColumnName));
 				labels[selectionIndex].setVisible(true);
@@ -1249,29 +1250,29 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		if ("Account_ID".equals(keyColumn))
 		{
 			lookupColumn = "C_ElementValue_ID";
-			MAcctSchemaElement ase = m_data.ASchema
-				.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_Account);
+			IAcctSchemaElementInfo ase = m_data.ASchema
+				.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
 
 			if (ase != null)
-				whereClause += " AND C_Element_ID=" + ase.getC_Element_ID();
+				whereClause += " AND C_Element_ID=" + ase.getRecord().getC_Element_ID();
 		}
 		else if ("User1_ID".equals(keyColumn))
 		{
 			lookupColumn = "C_ElementValue_ID";
-			MAcctSchemaElement ase = m_data.ASchema
-				.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElementList1);
+			IAcctSchemaElementInfo ase = m_data.ASchema
+				.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1);
 
 			if (ase != null)
-				whereClause += " AND C_Element_ID=" + ase.getC_Element_ID();
+				whereClause += " AND C_Element_ID=" + ase.getRecord().getC_Element_ID();
 		}
 		else if ("User2_ID".equals(keyColumn))
 		{
 			lookupColumn = "C_ElementValue_ID";
-			MAcctSchemaElement ase = m_data.ASchema
-				.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserElementList2);
+			IAcctSchemaElementInfo ase = m_data.ASchema
+				.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2);
 
 			if (ase != null)
-				whereClause += " AND C_Element_ID=" + ase.getC_Element_ID();
+				whereClause += " AND C_Element_ID=" + ase.getRecord().getC_Element_ID();
 		}
 		else if (keyColumn.equals("AD_OrgTrx_ID"))
 		{
@@ -1279,28 +1280,28 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		}
 		else if (keyColumn.equals("UserElement1_ID")) // KTU
 		{	
-			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn1);
-			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
+			IAcctSchemaElementInfo ase = m_data.ASchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn1);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getRecord().getAD_Column_ID());
 			whereClause = "";
 		}
 		else if (keyColumn.equals("UserElement2_ID")) // KTU
 		{
-			MAcctSchemaElement ase = m_data.ASchema.getAcctSchemaElement(X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn2);
-			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAD_Column_ID());
+			IAcctSchemaElementInfo ase = m_data.ASchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn2);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getRecord().getAD_Column_ID());
 			whereClause = "";
 		}
-		else if (keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Employee_ID))
+		else if (keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_C_Employee_ID))
 		{
 			lookupColumn = "C_BPartner_ID";
 			whereClause = "C_BPartner.IsEmployee='Y'";
 		}
 		// 
-		else if (keyColumn.equals("M_Product_ID") || keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_CostCenter_ID)
-				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Department_ID)
-				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_M_AttributeSetInstance_ID) 
-				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_M_Warehouse_ID)
-				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_A_Asset_ID) 
-				|| keyColumn.equals(X_C_AcctSchema_Element.COLUMNNAME_C_Charge_ID)) {
+		else if (keyColumn.equals("M_Product_ID") || keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_C_CostCenter_ID)
+				|| keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_C_Department_ID)
+				|| keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_M_AttributeSetInstance_ID) 
+				|| keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_M_Warehouse_ID)
+				|| keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_A_Asset_ID) 
+				|| keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_C_Charge_ID)) {
 			whereClause = "";
 		}
 		else if (selDocument.isChecked())
@@ -1420,7 +1421,7 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		if (faint != null) {
 			int fact_acct_ID = faint.intValue();
 
-			AEnv.zoom(MFactAcct.Table_ID, fact_acct_ID);
+			AEnv.zoom(I_Fact_Acct.Table_ID, fact_acct_ID);
 		}
 	}
 

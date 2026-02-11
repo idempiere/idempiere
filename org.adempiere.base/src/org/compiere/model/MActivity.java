@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -174,7 +175,7 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 		//	Value/Name change
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name"))){
 			StringBuilder msguvd = new StringBuilder("C_Activity_ID=").append(getC_Activity_ID());
-			MAccount.updateValueDescription(getCtx(), msguvd.toString(), get_TrxName());
+			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), msguvd.toString(), get_TrxName());
 		}	
 		return true;
 	}	//	afterSave

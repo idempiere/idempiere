@@ -18,6 +18,8 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
 import org.compiere.util.CLogger;
 
 /**
@@ -43,11 +45,11 @@ public class MCurrencyAcct extends X_C_Currency_Acct
 	 *	@param C_Currency_ID currency
 	 *	@return Currency Account or null
 	 */
-	public static MCurrencyAcct get (MAcctSchemaDefault as, int C_Currency_ID)
+	public static MCurrencyAcct get (IAcctSchemaDefaultInfo as, int C_Currency_ID)
 	{
 		final String whereClause = I_C_Currency_Acct.COLUMNNAME_C_AcctSchema_ID+"=? AND "+I_C_Currency_Acct.COLUMNNAME_C_Currency_ID+"=?";	
-		MCurrencyAcct retValue = new Query(as.getCtx(),I_C_Currency_Acct.Table_Name,whereClause,null)
-		.setParameters(as.getC_AcctSchema_ID(),C_Currency_ID)
+		MCurrencyAcct retValue = new Query(as.getPO().getCtx(),I_C_Currency_Acct.Table_Name,whereClause,null)
+		.setParameters(as.getRecord().getC_AcctSchema_ID(),C_Currency_ID)
 		.first();
 		return retValue;
 	}	//	get

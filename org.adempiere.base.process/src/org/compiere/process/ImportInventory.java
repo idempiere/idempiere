@@ -22,11 +22,13 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.ImportValidator;
 import org.adempiere.process.ImportProcess;
 import org.compiere.model.I_C_DocType;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MCost;
@@ -76,7 +78,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 	private boolean			p_UpdateCosting = false;
 	/**	Accounting Schema in which costing to be updated	*/
 	private int				p_C_AcctSchema_ID = 0;
-	MAcctSchema acctSchema 	= null;
+	IAcctSchemaInfo acctSchema 	= null;
 	/**	Cost Type for which costing to be updated		*/
 	private int				p_M_CostType_ID = 0;
 	/**	Cost Element for which costing to be updated	*/
@@ -155,7 +157,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 			if (p_C_DocType_ID <= 0 ) {
 				throw new IllegalArgumentException("Cost Adjustment Document Type required!");
 			}
-			 acctSchema = MAcctSchema.get(getCtx(), p_C_AcctSchema_ID, get_TrxName());
+			 acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID, get_TrxName());
 		}
 		
 		StringBuilder sql = null;
@@ -528,19 +530,19 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 			MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), product.getM_Product_Category_ID(), p_C_AcctSchema_ID, get_TrxName());
 			costingLevel = pca.getCostingLevel();
 			if (costingLevel == null) {
-				costingLevel = acctSchema.getCostingLevel();
+				costingLevel = acctSchema.getRecord().getCostingLevel();
 			}
 
 		}
 
 		int costOrgID = p_AD_OrgTrx_ID;
 		int costASI = line.getM_AttributeSetInstance_ID();
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)){
+		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(costingLevel)){
 			costOrgID = 0;
 			costASI = 0;
-		} else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) { 
+		} else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(costingLevel)) { 
 			costASI = 0;
-		} else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
+		} else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
 			costOrgID = 0;
 		}
 		MCost cost = MCost.get (product, costASI

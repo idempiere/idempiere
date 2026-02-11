@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -152,14 +154,14 @@ public final class MAccountLookup extends Lookup implements Serializable
 		if (ID == C_ValidCombination_ID)	//	already loaded
 			return true;
 		
-		MAccount account = MAccount.get(Env.getCtx(), ID);
+		IAccountInfo account = AcctInfoServices.getAccountInfoService().get(Env.getCtx(), ID);
 		
-		if(account == null || account.getC_ValidCombination_ID() != ID)
+		if(account == null || account.getRecord().getC_ValidCombination_ID() != ID)
 			return false;
 		
-		C_ValidCombination_ID = account.getC_ValidCombination_ID();
-		Combination = account.getCombination();
-		Description = account.getDescription();
+		C_ValidCombination_ID = account.getRecord().getC_ValidCombination_ID();
+		Combination = account.getRecord().getCombination();
+		Description = account.getRecord().getDescription();
 		return true;
 	}	//	load
 
@@ -194,17 +196,12 @@ public final class MAccountLookup extends Lookup implements Serializable
 		final String whereClause = "AD_Client_ID=?";
 		params.add(Env.getAD_Client_ID(m_ctx));
 		
-		List<MAccount> accounts = new Query(Env.getCtx(),I_C_ValidCombination.Table_Name,whereClause,null)
-		.setParameters(params)
-		.setOrderBy(I_C_ValidCombination.COLUMNNAME_Combination)
-		.setOnlyActiveRecords(onlyActive)
-		.list();
-		
-		for(MAccount account :accounts)
+		List<IAccountInfo> accounts = AcctInfoServices.getAccountInfoService().list(whereClause, params, onlyActive);		
+		for(IAccountInfo account :accounts)
 		{
-			StringBuilder msglist = new StringBuilder().append(account.getCombination()).append(" - ") 
-												.append(account.getDescription());
-			list.add (new KeyNamePair(account.getC_ValidCombination_ID(), msglist.toString()));
+			StringBuilder msglist = new StringBuilder().append(account.getRecord().getCombination()).append(" - ") 
+												.append(account.getRecord().getDescription());
+			list.add (new KeyNamePair(account.getRecord().getC_ValidCombination_ID(), msglist.toString()));
 		}
 		//  Sort & return
 		return list;

@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.I_T_Report;
-import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MReportCube;
@@ -181,11 +181,11 @@ public class FinReport extends SvrProcess
 		//	Optional Org
 		if (p_Org_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Organization, p_Org_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Organization, p_Org_ID));
 		//	Optional BPartner
 		if (p_C_BPartner_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_BPartner, p_C_BPartner_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_BPartner, p_C_BPartner_ID));
 		//	Optional Employee
 		if (p_C_Employee_ID != 0)
 			m_parameterWhere.append(" AND C_Employee_ID = ").append(p_C_Employee_ID);
@@ -210,15 +210,15 @@ public class FinReport extends SvrProcess
 		//	Optional Product
 		if (p_M_Product_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Product, p_M_Product_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Product, p_M_Product_ID));
 		//	Optional Project
 		if (p_C_Project_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Project, p_C_Project_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Project, p_C_Project_ID));
 		//	Optional Activity
 		if (p_C_Activity_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_Activity, p_C_Activity_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_Activity, p_C_Activity_ID));
 		//	Optional Campaign
 		if (p_C_Campaign_ID != 0)
 			m_parameterWhere.append(" AND C_Campaign_ID=").append(p_C_Campaign_ID);
@@ -227,15 +227,15 @@ public class FinReport extends SvrProcess
 		//	Optional Sales Region
 		if (p_C_SalesRegion_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_SalesRegion, p_C_SalesRegion_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_SalesRegion, p_C_SalesRegion_ID));
 		//	Optional User1_ID
 		if (p_User1_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserElementList1, p_User1_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1, p_User1_ID));
 		//  Optional User2_ID
 		if (p_User2_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
-				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_UserElementList2, p_User2_ID));
+				p_PA_Hierarchy_ID, IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2, p_User2_ID));
 		//	Optional UserElement1_ID
 		if (p_UserElement1_ID != 0)
 			m_parameterWhere.append(" AND UserElement1_ID=").append(p_UserElement1_ID);
