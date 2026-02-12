@@ -40,6 +40,7 @@ import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
 import org.adempiere.util.DefaultReservationTracerFactory;
 import org.adempiere.util.IReservationTracerFactory;
+import org.compiere.Adempiere;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.Callout;
@@ -54,10 +55,14 @@ import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.StandardTaxProvider;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DefaultKeyStore;
 import org.compiere.util.Env;
 import org.compiere.util.PaymentExport;
@@ -275,6 +280,7 @@ public class Core {
 	}
 
 	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;
+	private static volatile boolean s_legacyKeyWarningLogged = false;
 	
 	/**
 	 * 
@@ -297,8 +303,23 @@ public class Core {
 				//test key store service is working
 				SecretKey key = service.getKey(0);
 				if (key != null) {
-					if (key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM))
-						s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
+					if (!s_legacyKeyWarningLogged) {
+						final boolean legacyKeyDetected = key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM);
+						if (legacyKeyDetected)
+							s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
+						if (DB.isConnected()) {
+							updateLegacyKeyWarningSysConfig(legacyKeyDetected);
+						} else {
+							Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {
+								@Override
+								public void stateChange(ServerStateChangeEvent event) {
+									if (event.getEventType() == ServerStateChangeEvent.SERVER_START) 
+										updateLegacyKeyWarningSysConfig(legacyKeyDetected);
+								}
+							});
+						}
+					}
+					s_legacyKeyWarningLogged = true;
 					keystoreService = service;
 					s_keystoreServiceReference = refHolder;
 					break;
@@ -314,6 +335,28 @@ public class Core {
 		return keystoreService;
 	}
 	
+	/**
+	 * Update SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig.
+	 * This method will be called asynchronously to avoid issues when DB is not yet connected.
+	 */
+	private static void updateLegacyKeyWarningSysConfig(boolean legacyKeyDetected) {
+		// Run in a separate thread to avoid blocking and to retry until DB is connected
+		String warn = MSysConfig.getValue(MSysConfig.SECURITY_DASHBOARD_LEGACY_KEY_WARNING, "Y");
+		if ("D".equals(warn))
+			return; // warning disabled by sysadmin, do not override
+		if ("Y".equals(warn) && legacyKeyDetected)
+			return; // warning already enabled and legacy key still detected, no update needed
+		if ("N".equals(warn) && !legacyKeyDetected)
+			return; // warning already negated and no legacy key detected, no update needed
+
+		MSysConfig conf = new MSysConfig(Env.getCtx(), SystemIDs.SYSCONFIG_SECURITY_DASHBOARD_LEGACY_KEY_WARNING, null);
+		conf.setValue(legacyKeyDetected ? "Y" : "N");
+		conf.saveEx();
+
+		if (s_log.isLoggable(Level.INFO))
+			s_log.info("Updated SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig");
+	}
+
 	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IPaymentProcessorFactory", 100, false);
 	
 	/**

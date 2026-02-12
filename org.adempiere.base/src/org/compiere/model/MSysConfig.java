@@ -197,6 +197,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
 	public static final String REPORT_LOAD_TIMEOUT_IN_SECONDS = "REPORT_LOAD_TIMEOUT_IN_SECONDS";
     public static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
+    public static final String SECURITY_DASHBOARD_LEGACY_KEY_WARNING = "SECURITY_DASHBOARD_LEGACY_KEY_WARNING";
     public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
     public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
     public static final String START_VALUE_BPLOCATION_NAME = "START_VALUE_BPLOCATION_NAME";
