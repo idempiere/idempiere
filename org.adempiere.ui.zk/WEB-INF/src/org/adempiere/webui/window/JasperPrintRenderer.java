@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
+import org.compiere.model.MSysConfig;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -59,8 +61,6 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
-
-import static org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
 
 /**
  * Media renderer for JasperPrint
@@ -266,12 +266,15 @@ public class JasperPrintRenderer {
 				try {
 			        fos = new FileOutputStream(file);
 					JRCsvExporter exporter= new JRCsvExporter();
+					SimpleCsvExporterConfiguration csvConfig = new SimpleCsvExporterConfiguration();
+					csvConfig.setEscapeFormula(MSysConfig.getBooleanValue(MSysConfig.CSV_EXPORT_SANITIZATION, true, Env.getAD_Client_ID(Env.getCtx())));
 					if (!isList){
 						jasperPrintList = new ArrayList<>();
 						jasperPrintList.add(jasperPrint);
 					}
 					exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
 					exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
+					exporter.setConfiguration(csvConfig);
 					exporter.exportReport();
 				} finally {
 					if (fos != null)
@@ -304,6 +307,7 @@ public class JasperPrintRenderer {
 					JRCsvExporter exporter= new JRCsvExporter();
 					SimpleCsvExporterConfiguration csvConfig = new SimpleCsvExporterConfiguration();
 					csvConfig.setFieldDelimiter(";");
+					csvConfig.setEscapeFormula(MSysConfig.getBooleanValue(MSysConfig.CSV_EXPORT_SANITIZATION, true, Env.getAD_Client_ID(Env.getCtx())));
 					if (!isList){
 						jasperPrintList = new ArrayList<>();
 						jasperPrintList.add(jasperPrint);
