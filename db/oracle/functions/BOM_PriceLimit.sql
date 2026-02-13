@@ -68,19 +68,6 @@ BEGIN
     END IF;
 
     RETURN v_Price;
-
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        -- No price record exists, calculate from BOM
-        v_Price := 0;
-        FOR bom IN bom_cur LOOP
-            v_ProductPrice := bomPriceLimit(bom.M_ProductBOM_ID, pricelist_version_id);
-            v_Price := v_Price + (bom.BOMQty * v_ProductPrice);
-        END LOOP;
-        RETURN v_Price;
-        
-    WHEN OTHERS THEN
-        RAISE;
 END bompricelimit;
 /
 
