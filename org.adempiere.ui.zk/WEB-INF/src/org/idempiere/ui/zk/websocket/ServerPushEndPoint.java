@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -56,6 +57,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.Header;
@@ -127,6 +129,8 @@ public class ServerPushEndPoint {
 	            	Object ipAttr = config.getUserProperties().get(WebSocketServerPush.WS_CLIENT_IP);
 	            	if (ipAttr != null) {
 	            		String clientIp = ipAttr.toString();
+	            		// handshakeRequest.getHeaders() might return unmodifiable map
+	            		this.requestHeaders = new HashMap<>(this.requestHeaders);
 	            		this.requestHeaders.put("X-Forwarded-For", List.of(clientIp));
 	            	}
 	            }
@@ -209,7 +213,7 @@ public class ServerPushEndPoint {
 				        	// Forward selected headers
 				        	if ("User-Agent".equalsIgnoreCase(key) || "Accept-Language".equalsIgnoreCase(key) 
 				        		|| "Accept-Encoding".equalsIgnoreCase(key)
-				        		|| "Host".equalsIgnoreCase(key) || key.startsWith("X-")
+				        		|| key.startsWith("X-")
 				        		|| "Origin".equalsIgnoreCase(key)) {
 				        		for (String value : values) {
 				        			httpPost.addHeader(key, value);
@@ -265,18 +269,32 @@ public class ServerPushEndPoint {
 		}
 	}
 
-	private CloseableHttpClient createHttpClient() {
+	// Disable SSL verification and host name verification for internal request
+	private static final SSLContext sslContext = createSSLContext();
+
+	private static SSLContext createSSLContext() {
 		try {
-			// Disable SSL verification and host name verification for internal request
-			SSLContext sslContext = SSLContextBuilder.create()
+			return SSLContextBuilder.create()
 					.loadTrustMaterial(TrustAllStrategy.INSTANCE)
 					.build();
-
+		} catch (Exception e) {
+			CLogger.getCLogger(ServerPushEndPoint.class).log(Level.SEVERE, "Failed to create SSLContext", e);
+			return null;
+		}
+	}
+	
+	private static final SSLConnectionSocketFactory sslSocketFactory = createSSLSocketFactory();
+	private static SSLConnectionSocketFactory createSSLSocketFactory() {
+		return SSLConnectionSocketFactoryBuilder.create()
+				.setSslContext(sslContext)
+				.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+				.build();
+	}
+	
+	private CloseableHttpClient createHttpClient() {
+		try {
 			HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
-					.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
-							.setSslContext(sslContext)
-							.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-							.build())
+					.setSSLSocketFactory(sslSocketFactory)
 					.build();
 
 			return HttpClients.custom()
