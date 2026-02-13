@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
+import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -74,6 +75,38 @@ public class GetBOMFunctionsTest extends AbstractTestCase
 
 		price = DB.getSQLValueBDEx(trxName, "SELECT bompricelimit("+DictionaryIDs.M_Product.PATIOSET.id+","+DictionaryIDs.M_PriceList_Version.STANDARD_2003.id+") FROM Dual");
 		assertTrue(BigDecimal.valueOf(72.0).compareTo(price) == 0, "Unexpected double indirect bompricelimit");
+
+		// IDEMPIERE-6845 - Calculate price if Zero configurable
+		productPrice = new MProductPrice(Env.getCtx(), DictionaryIDs.M_ProductPrice.PATIOCHAIR_STANDARD_2003.id, trxName);
+		productPrice.setIsActive(true);
+		productPrice.saveEx();
+
+		productPrice = new MProductPrice(Env.getCtx(), DictionaryIDs.M_ProductPrice.PATIOSET_STANDARD_2003.id, trxName);
+		productPrice.setPrices(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+		productPrice.setIsActive(true);
+		productPrice.saveEx();
+
+		price = DB.getSQLValueBDEx(trxName, "SELECT bompricestd("+DictionaryIDs.M_Product.PATIOSET.id+","+DictionaryIDs.M_PriceList_Version.STANDARD_2003.id+") FROM Dual");
+		assertTrue(BigDecimal.valueOf(225.0).compareTo(price) == 0, "Unexpected indirect bompricestd");
+
+		price = DB.getSQLValueBDEx(trxName, "SELECT bompricelist("+DictionaryIDs.M_Product.PATIOSET.id+","+DictionaryIDs.M_PriceList_Version.STANDARD_2003.id+") FROM Dual");
+		assertTrue(BigDecimal.valueOf(220.0).compareTo(price) == 0, "Unexpected indirect bompricelist");
+
+		price = DB.getSQLValueBDEx(trxName, "SELECT bompricelimit("+DictionaryIDs.M_Product.PATIOSET.id+","+DictionaryIDs.M_PriceList_Version.STANDARD_2003.id+") FROM Dual");
+		assertTrue(BigDecimal.valueOf(180.0).compareTo(price) == 0, "Unexpected indirect bompricelimit");
+
+		MProduct patioSet = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.PATIOSET.id, trxName);
+		patioSet.setIsBOMPriceOverride(false);
+		patioSet.saveEx();
+
+		price = DB.getSQLValueBDEx(trxName, "SELECT bompricestd("+DictionaryIDs.M_Product.PATIOSET.id+","+DictionaryIDs.M_PriceList_Version.STANDARD_2003.id+") FROM Dual");
+		assertTrue(BigDecimal.ZERO.compareTo(price) == 0, "Unexpected indirect bompricestd");
+
+		price = DB.getSQLValueBDEx(trxName, "SELECT bompricelist("+DictionaryIDs.M_Product.PATIOSET.id+","+DictionaryIDs.M_PriceList_Version.STANDARD_2003.id+") FROM Dual");
+		assertTrue(BigDecimal.ZERO.compareTo(price) == 0, "Unexpected indirect bompricelist");
+
+		price = DB.getSQLValueBDEx(trxName, "SELECT bompricelimit("+DictionaryIDs.M_Product.PATIOSET.id+","+DictionaryIDs.M_PriceList_Version.STANDARD_2003.id+") FROM Dual");
+		assertTrue(BigDecimal.ZERO.compareTo(price) == 0, "Unexpected indirect bompricelimit");
 
 		// Prices of PatioSet in Import 2003 Price List Version
 
