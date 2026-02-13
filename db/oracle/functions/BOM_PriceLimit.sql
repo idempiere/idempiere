@@ -18,35 +18,56 @@ RETURN NUMBER
  *			if not found: 0
  ************************************************************************/
 AS
-	v_Price		NUMBER;
-	v_ProductPrice	NUMBER;
-	--	Get BOM Product info
-	CURSOR CUR_BOM IS
-		SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM
-		FROM M_PRODUCT_BOM b, M_PRODUCT p
-		WHERE b.M_ProductBOM_ID=p.M_Product_ID
-		  AND b.M_Product_ID=Product_ID
-		  AND b.M_ProductBOM_ID != Product_ID
-		  AND (p.IsBOM='N' OR p.IsVerified='Y')
-		  AND b.IsActive='Y';
-	--
-BEGIN
-	--	Try to get price from PriceList directly
-	SELECT	COALESCE (SUM(PriceLimit), 0)
-	INTO	v_Price
-   	FROM	M_PRODUCTPRICE
-	WHERE	IsActive='Y' AND M_PriceList_Version_ID=PriceList_Version_ID AND M_Product_ID=Product_ID;
---	DBMS_OUTPUT.PUT_LINE('Price=' || v_Price);
+    v_Price             NUMBER;
+    v_ProductPrice      NUMBER;
+    v_RecordExists      NUMBER;
+    v_IsBOMPriceOverride CHAR(1);
+    
+    CURSOR bom_cur IS
+        SELECT b.M_ProductBOM_ID, b.BOMQty, p.IsBOM
+        FROM M_Product_BOM b, M_Product p
+        WHERE b.M_ProductBOM_ID = p.M_Product_ID
+        AND b.M_Product_ID = product_id
+        AND b.M_ProductBOM_ID != product_id
+        AND (p.IsBOM = 'N' OR p.IsVerified = 'Y')
+        AND b.IsActive = 'Y';
 
-	--	No Price - Check if BOM
-	IF (v_Price = 0) THEN
-		FOR bom IN CUR_BOM LOOP
-			v_ProductPrice := Bompricelimit (bom.M_ProductBOM_ID, PriceList_Version_ID);
-			v_Price := v_Price + (bom.BOMQty * v_ProductPrice);
-		END LOOP;
-	END IF;
-	--
-	RETURN v_Price;
-END Bompricelimit;
+BEGIN
+    -- Try to get price from priceLimit directly and check configuration
+    SELECT
+        SUM(pp.PriceLimit),
+        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END,
+        MAX(p.IsBOMPriceOverride)
+    INTO
+        v_Price,
+        v_RecordExists,
+        v_IsBOMPriceOverride
+    FROM M_ProductPrice pp
+    INNER JOIN M_Product p ON pp.M_Product_ID = p.M_Product_ID
+    WHERE pp.IsActive = 'Y'
+        AND pp.M_PriceList_Version_ID = pricelist_version_id
+        AND pp.M_Product_ID = product_id;
+
+    -- Set defaults if null
+    v_RecordExists := NVL(v_RecordExists, 0);
+    v_IsBOMPriceOverride := NVL(v_IsBOMPriceOverride, 'Y');
+
+    -- Determine if BOM calculation is needed
+    -- Calculate BOM when:
+    --   1. No record exists, OR
+    --   2. Record exists with 0 price AND IsBOMPriceOverride = 'Y' (backward compatible - calculate from components)
+    IF (v_RecordExists = 0 OR (v_RecordExists = 1 AND NVL(v_Price, 0) = 0 AND v_IsBOMPriceOverride = 'Y')) THEN
+        v_Price := 0;
+        FOR bom IN bom_cur LOOP
+            v_ProductPrice := bomPriceLimit(bom.M_ProductBOM_ID, pricelist_version_id);
+            v_Price := v_Price + (bom.BOMQty * v_ProductPrice);
+        END LOOP;
+    ELSE
+        -- Record exists and either price > 0 OR (price = 0 AND IsBOMPriceOverride = 'N')
+        v_Price := NVL(v_Price, 0);
+    END IF;
+
+    RETURN v_Price;
+END bompricelimit;
 /
 
