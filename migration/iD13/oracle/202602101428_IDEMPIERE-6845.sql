@@ -96,8 +96,9 @@ BEGIN
         AND pp.M_PriceList_Version_ID = pricelist_version_id
         AND pp.M_Product_ID = product_id;
 
-    -- Set default if null
-    v_IsBOMPriceOverride := NVL(v_IsBOMPriceOverride, 'N');
+    -- Set defaults if null
+    v_RecordExists := NVL(v_RecordExists, 0);
+    v_IsBOMPriceOverride := NVL(v_IsBOMPriceOverride, 'Y');
 
     -- Determine if BOM calculation is needed
     -- Calculate BOM when:
@@ -167,8 +168,9 @@ BEGIN
         AND pp.M_PriceList_Version_ID = pricelist_version_id
         AND pp.M_Product_ID = product_id;
 
-    -- Set default if null
-    v_IsBOMPriceOverride := NVL(v_IsBOMPriceOverride, 'N');
+    -- Set defaults if null
+    v_RecordExists := NVL(v_RecordExists, 0);
+    v_IsBOMPriceOverride := NVL(v_IsBOMPriceOverride, 'Y');
 
     -- Determine if BOM calculation is needed
     -- Calculate BOM when:
