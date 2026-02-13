@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
-<target name="idempiere-12" sequenceNumber="20251023">
+<target name="idempiere-12" sequenceNumber="20260213">
   <locations>
 	  <location type="Target" uri="file:${project_loc:/org.idempiere.p2.targetplatform}/base.target"/>
 	  <location type="Target" uri="file:${project_loc:/org.idempiere.p2.targetplatform}/maven.locations.target"/>
