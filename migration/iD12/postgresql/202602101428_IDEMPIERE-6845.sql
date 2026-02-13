@@ -183,7 +183,7 @@ DECLARE
 	bom RECORD;
 
 BEGIN
-	--	Try to get price from PriceList directly
+	--	Try to get price from priceStd directly
 	SELECT
 	    SUM(pp.PriceStd),
 	    CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END,

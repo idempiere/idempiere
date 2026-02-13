@@ -241,7 +241,7 @@ AS
         AND b.IsActive = 'Y';
 
 BEGIN
-    -- Try to get price from PriceList directly and check configuration
+    -- Try to get price from priceStd directly and check configuration
     SELECT
         SUM(pp.PriceStd),
         CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END,
