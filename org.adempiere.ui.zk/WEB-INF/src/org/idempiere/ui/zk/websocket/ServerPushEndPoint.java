@@ -28,12 +28,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
@@ -52,6 +57,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.Header;
@@ -72,10 +78,11 @@ public class ServerPushEndPoint {
 
 	private Session session;
 	private String dtid;
-	@SuppressWarnings("unused")
-	private ServletContext servletContext;
 	private HttpSession httpSession;
 	private String baseUrl;
+	private Map<String, List<String>> requestHeaders;
+
+	private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
 	/**
 	 * default constructor
@@ -96,7 +103,6 @@ public class ServerPushEndPoint {
 		if (!Util.isEmpty(dtid, true) && WebSocketServerPush.isValidDesktopId(dtid)) {			
 			session = sess;
 			this.dtid = dtid;
-			this.servletContext = (ServletContext) config.getUserProperties().get(ServletContext.class.getName());
 			this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
 			WebSocketServerPush.registerEndPoint(dtid, this);
 			
@@ -117,7 +123,17 @@ public class ServerPushEndPoint {
 	            if (port != -1 && !((scheme.equals("http") && port == 80) || (scheme.equals("https") && port == 443))) {
 	                urlBuilder.append(":").append(port);
 	            }
-	            this.baseUrl = urlBuilder.toString();	            
+	            this.baseUrl = urlBuilder.toString();
+	            this.requestHeaders = handshakeRequest.getHeaders();
+	            if (!this.requestHeaders.containsKey("X-Forwarded-For")) {
+	            	Object ipAttr = config.getUserProperties().get(WebSocketServerPush.WS_CLIENT_IP);
+	            	if (ipAttr != null) {
+	            		String clientIp = ipAttr.toString();
+	            		// handshakeRequest.getHeaders() might return unmodifiable map
+	            		this.requestHeaders = new HashMap<>(this.requestHeaders);
+	            		this.requestHeaders.put("X-Forwarded-For", List.of(clientIp));
+	            	}
+	            }
 	        }
 		}
 	}
@@ -127,6 +143,11 @@ public class ServerPushEndPoint {
 		CLogger.getCLogger(getClass()).log(Level.WARNING, throwable.getMessage(), throwable);	
 	}
 
+	// Track the "tail" of the execution chain. Start with a completed future.
+	private CompletableFuture<Void> executionChain = CompletableFuture.completedFuture(null);
+	// Lock to protect the chain update (very short duration)
+	private final Object chainLock = new Object();
+		
 	/**
 	 * Handle ping from client
 	 * @param session
@@ -157,69 +178,132 @@ public class ServerPushEndPoint {
 					}
 					return;
 				}
+				setMessageIndicator();
 				
 				StringBuilder fullUrl = new StringBuilder(this.baseUrl)
 		        		.append(uri)
 		        		.append("?")
 		        		.append(content);
-		        String sessionId = httpSession.getId();
-		        String jsessionidCookie = "JSESSIONID=" + sessionId;
 
+				String sessionId = null;
 		        try {
-			        // Disable SSL verification and host name verification for internal request
-			        SSLContext sslContext = SSLContextBuilder.create()
-			            .loadTrustMaterial(TrustAllStrategy.INSTANCE)
-			            .build();
-	
-			        HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
-			            .setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
-			                .setSslContext(sslContext)
-			                .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-			                .build())
-			            .build();
-	
-			        CloseableHttpClient client = HttpClients.custom()
-			            .setConnectionManager(connectionManager)
-			            .build();
-	
-			        // Create POST request
-			        HttpPost httpPost = new HttpPost(fullUrl.toString());
-			        httpPost.setHeader("Content-Type", "application/json");
-			        httpPost.setHeader("ZK-SID", sid);
-			        httpPost.setHeader("Cookie", jsessionidCookie);
-			        httpPost.setConfig(org.apache.hc.client5.http.config.RequestConfig.custom()
-			            .setResponseTimeout(Timeout.ofSeconds(30))
-			            .build());
-	
-			        // Execute request
-			        try (CloseableHttpResponse response = client.execute(httpPost)) {
-			            String servletResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-			            
-			            // Send servletResponse back to the client
-						if (servletResponse != null && !servletResponse.isEmpty()) {
-							Map<String, String> headersMap = Arrays.stream(response.getHeaders())
-							        .collect(Collectors.toMap(
-							            Header::getName,
-							            Header::getValue,
-							            (existing, replacement) -> existing + ", " + replacement // Handle duplicate headers
-							        ));
-							JSONObject jsonResponse = new JSONObject();
-							jsonResponse.put("headers", headersMap);
-							jsonResponse.put("status", response.getCode());
-							jsonResponse.put("responseText", servletResponse);
-							jsonResponse.put("ajaxReqInf", jsonRequest);
-							session.getBasicRemote().sendText(jsonResponse.toString());
-						} else {
-							session.getBasicRemote().sendText("Error: No response from /zkau");
-						}
+					sessionId = httpSession.getId();
+				} catch (IllegalStateException e) {
+					CLogger.getCLogger(getClass()).log(Level.WARNING, "HTTP Session already invalidated", e);
+					try {
+						session.getBasicRemote().sendText("Error: Session invalidated");
+					} catch (IOException ioe) {
+						CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", ioe);
 					}
-		        } catch (Exception e) {
-		        	CLogger.getCLogger(getClass()).log(Level.WARNING, "Error processing /zkau request", e);
+					return;
+				}
+	
+		        String jsessionidCookie = "JSESSIONID=" + sessionId;
+	
+		        synchronized (chainLock) {
+			        try {
+				        // Create POST request
+				        HttpPost httpPost = new HttpPost(fullUrl.toString());
+				        httpPost.setHeader("Content-Type", "application/json");
+				        httpPost.setHeader("ZK-SID", sid);
+				        httpPost.setHeader("Pragma", "no-cache");
+				        httpPost.setHeader("Cache-Control", "no-cache");
+				        httpPost.setHeader("Cookie", jsessionidCookie);
+				        requestHeaders.forEach((key, values) -> {
+				        	// Forward selected headers
+				        	if ("User-Agent".equalsIgnoreCase(key) || "Accept-Language".equalsIgnoreCase(key) 
+				        		|| "Accept-Encoding".equalsIgnoreCase(key)
+				        		|| key.startsWith("X-")
+				        		|| "Origin".equalsIgnoreCase(key)) {
+				        		for (String value : values) {
+				        			httpPost.addHeader(key, value);
+				        		}
+				        	}
+				        });
+				        httpPost.setConfig(org.apache.hc.client5.http.config.RequestConfig.custom()
+				            .setResponseTimeout(Timeout.ofSeconds(30))
+				            .build());
+		
+				        // Execute request asynchronously
+				        executionChain = executionChain.thenRunAsync(() -> {
+				        	try (var httpClient = createHttpClient(); CloseableHttpResponse response = httpClient.execute(httpPost)) {
+					            String servletResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+					            
+					            // Send servletResponse back to the client
+								if (servletResponse != null && !servletResponse.isEmpty()) {
+									if (response.getCode() >= 400) {
+										CLogger.getCLogger(getClass()).log(Level.WARNING, "Bad Request to /zkau: " + servletResponse);
+									}
+									Map<String, String> headersMap = Arrays.stream(response.getHeaders())
+									        .collect(Collectors.toMap(
+									            Header::getName,
+									            Header::getValue,
+									            (existing, replacement) -> existing + ", " + replacement // Handle duplicate headers
+									        ));
+									JSONObject jsonResponse = new JSONObject();
+									jsonResponse.put("headers", headersMap);
+									jsonResponse.put("status", response.getCode());
+									jsonResponse.put("responseText", servletResponse);
+									jsonResponse.put("ajaxReqInf", jsonRequest);
+									try {
+										session.getBasicRemote().sendText(jsonResponse.toString());
+									} catch (IOException e) {
+										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
+									}
+								} else {
+									try {
+										session.getBasicRemote().sendText("Error: No response from /zkau");
+									} catch (IOException e) {
+										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
+									}
+								}
+					        } catch (Throwable e) {
+					        	CLogger.getCLogger(getClass()).log(Level.WARNING, "Error processing /zkau request", e);
+					        }
+				        }, executorService);
+			        } catch (Throwable e) {
+			        	CLogger.getCLogger(getClass()).log(Level.WARNING, "Error processing /zkau request", e);
+			        }
 		        }
 			}
 		}
 	}
 
+	// Disable SSL verification and host name verification for internal request
+	private static final SSLContext sslContext = createSSLContext();
+
+	private static SSLContext createSSLContext() {
+		try {
+			return SSLContextBuilder.create()
+					.loadTrustMaterial(TrustAllStrategy.INSTANCE)
+					.build();
+		} catch (Exception e) {
+			CLogger.getCLogger(ServerPushEndPoint.class).log(Level.SEVERE, "Failed to create SSLContext", e);
+			return null;
+		}
+	}
+	
+	private static final SSLConnectionSocketFactory sslSocketFactory = createSSLSocketFactory();
+	private static SSLConnectionSocketFactory createSSLSocketFactory() {
+		return SSLConnectionSocketFactoryBuilder.create()
+				.setSslContext(sslContext)
+				.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+				.build();
+	}
+	
+	private CloseableHttpClient createHttpClient() {
+		try {
+			HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+					.setSSLSocketFactory(sslSocketFactory)
+					.build();
+
+			return HttpClients.custom()
+					.setConnectionManager(connectionManager)
+					.build();
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to initialize ServerPushEndPoint HttpClient", e);
+		}
+	}
 	/**
 	 * Message client to send echo event to server
 	 */
@@ -231,5 +315,15 @@ public class ServerPushEndPoint {
 				CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 			}
 		}
-	}	
+	}
+
+    private final AtomicBoolean messageIndicator = new AtomicBoolean(false);
+
+    private void setMessageIndicator() {
+		messageIndicator.set(true);
+	}
+
+	public boolean getAndResetMessageIndicator() {
+		return messageIndicator.getAndSet(false);
+	}
 }

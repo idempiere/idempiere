@@ -31,6 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.au.out.AuScript;
@@ -77,6 +79,8 @@ public class WebSocketServerPush implements ServerPush {
 
     private AbstractComponent dummyTarget;
     
+    protected static final String WS_CLIENT_IP = "ws-client-ip";
+
     private static class OnScheduleEvent extends Event {
 		private static final long serialVersionUID = 1L;
 		
@@ -307,6 +311,21 @@ public class WebSocketServerPush implements ServerPush {
         if (log.isDebugEnabled())
         	log.debug("Starting server push for " + desktop);
         registerEndPoint(desktop.getId(), STUB);
+
+        // Store client IP address in session attribute for later use in EndpointConfigurator
+        var execution = Executions.getCurrent();
+        if (execution != null) {
+        	var request = execution.getNativeRequest();
+        	if (request instanceof HttpServletRequest httpRequest) {
+				var clientIp = httpRequest.getRemoteAddr();
+				if (clientIp != null) {
+					var session = desktop.getSession();
+					if (session != null) {
+						session.setAttribute(WS_CLIENT_IP, clientIp);
+					}
+				}
+			}
+        }
         startServerPushAtClient(desktop);
     }
 

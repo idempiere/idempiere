@@ -58,7 +58,7 @@
 			  let requri = zk.ajaxURI(null, {desktop: dt, au: true});
 			  let content = zAu.encode(0, evtObj, dt);
 			  let ajaxReqInf = {
-			          sid: zAu.seqId, uri: requri, dt: dt, content: content,
+			          sid: zAu.seqId, uri: requri, dt: dt.id, content: content,
 			          implicit: true,
 			          ignorable: true, tmout: 0, rtags: evtObj.rtags, forceAjax: false
 			  };
@@ -126,6 +126,14 @@
 		var es = zAu.getAuRequests(dt);
 		if (es.length == 0)
 			return false;
+
+		//websocket does not support file upload
+		for (var j = 0; j < es.length; ++j) {
+			var aureq = es[j];
+			if (aureq.file) {
+				return originalSendNow(dt); //fallback to ajax
+			}
+		}
 
 		if (zk.mounting) {
 			zk.afterMount(function () {zAu.sendNow(dt);});
@@ -215,12 +223,16 @@
 		//if (zk.portlet2AjaxURI)
 			//requri = zk.portlet2AjaxURI;
 		//modify to use WebSocket connection for au requests
-		if (content)
-			dt._serverpush.socket.sendAjaxRequest({
-				sid: zAu.seqId, uri: requri, dt: dt, content: content,
+		if (content) {
+			let reqInf =  {
+				sid: zAu.seqId, uri: requri, dt: dt.id, content: content,
 				implicit: implicit,
 				ignorable: ignorable, tmout: 0, rtags: rtags, forceAjax: forceAjax
-			});
+			}
+			dt._serverpush.socket.sendAjaxRequest(reqInf);
+			if (!reqInf.implicit)
+				zk.startProcessing(zk.procDelay, reqInf.sid); //wait a moment to avoid annoying
+		}
 		return true;
 	  } else {
 		return originalSendNow(dt);

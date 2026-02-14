@@ -36,6 +36,21 @@ import org.compiere.util.Util;
  */
 public class IPAddressFingerprintComponent implements ISessionFingerprintComponent {
 
+	private final static String IPV6_LOOPBACK = "[0:0:0:0:0:0:0:1]";
+	private final static String IPV4_LOOPBACK = "127.0.0.1";
+
+	@Override
+	public boolean verify(String storedValue, String currentValue) {
+		// with websocket serverpush, there's confusion between IPv4 and IPv6 loopback addresses
+		if (IPV6_LOOPBACK.equals(storedValue) && IPV4_LOOPBACK.equals(currentValue)) {
+			return true;
+		} else if (IPV4_LOOPBACK.equals(storedValue) && IPV6_LOOPBACK.equals(currentValue)) {
+			return true;
+		}
+
+		return ISessionFingerprintComponent.super.verify(storedValue, currentValue);
+	}
+
 	public static final String COMPONENT_ID = "IP";
 	// Default Action is Log Warning session
 	private static final String DEFAULT_MISMATCH_ACTION = ISessionFingerprintComponent.ACTION_LOG_SEVERE;
