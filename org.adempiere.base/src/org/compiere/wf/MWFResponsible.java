@@ -39,7 +39,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
     /**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -5073542640376766737L;
+	private static final long serialVersionUID = -1481560091918341772L;
 
 	/**
 	 * 	Get WF Responsible from Cache (immutable)
@@ -194,7 +194,7 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	 */
 	public boolean isInvoker()
 	{
-		return getAD_User_ID() == 0 && getAD_Role_ID() == 0 && !isManual();
+		return getAD_User_ID() == 0 && getAD_Role_ID() == 0 && !isManual() && !isSupervisor() && !isInitiator();
 	}	//	isInvoker
 	
 	/**
@@ -298,6 +298,26 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 
 		makeImmutable();
 		return this;
+	}
+	
+	/**
+	 * Is Initiator Responsible
+	 * 
+	 * @return true if Initiator
+	 */
+	public boolean isInitiator()
+	{
+		return RESPONSIBLETYPE_Initiator.equals(getResponsibleType());
+	}
+
+	/**
+	 * Is Supervisor Responsible
+	 * 
+	 * @return true if Supevisor
+	 */
+	public boolean isSupervisor()
+	{
+		return RESPONSIBLETYPE_Supervisor.equals(getResponsibleType());
 	}
 
 }	//	MWFResponsible

@@ -53,6 +53,8 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserRoles;
 import org.compiere.model.MWFActivityApprover;
+import org.compiere.model.ModelValidationEngine;
+import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Activity;
@@ -85,9 +87,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7274149891086011624L;
+	private static final long serialVersionUID = 7493991252101308814L;
 
 	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
+	
+	private transient String	m_ErrorMsg	= null;
 	
 	/**
 	 * 	Get Activities for table/record
@@ -443,7 +447,18 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		MWFNode node = getNode();
 		if (node == null)
 			return null;
-		int AD_Column_ID = node.getAD_Column_ID();
+		int AD_Column_ID = 0;
+		
+		// get Approval Column
+		if (node.getApprovalColumn_ID() > 0)
+		{
+			AD_Column_ID = node.getApprovalColumn_ID();
+		}
+		else
+		{
+			AD_Column_ID = node.getAD_Column_ID();
+		}
+		 
 		if (AD_Column_ID == 0)
 			return null;
 		PO po = getPO();
@@ -942,8 +957,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				setWFState(StateEngine.STATE_Terminated);
 				return;
 			}
-			//
-			setWFState(StateEngine.STATE_Running);
+			//For User Task,  Don't change to running, instead state decided at perform work
+			if(!(MWFNode.ACTION_UserTask.equals(m_node.getAction()) && StateEngine.STATE_NotStarted.equals(m_state.getState())))
+					setWFState(StateEngine.STATE_Running);
 
 			if (getNode().get_ID() == 0)
 			{
@@ -1288,6 +1304,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				+ " to " +  value);
 			MColumn column = m_node.getColumn();
 			int dt = column.getAD_Reference_ID();
+			//Set additional variable
+			setVariables(trx);
 			return setVariable (value, dt, null, trx);
 		}	//	SetVariable
 
@@ -1302,6 +1320,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		else if (MWFNode.ACTION_UserChoice.equals(action))
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("UserChoice:AD_Column_ID=" + m_node.getAD_Column_ID());
+			if (log.isLoggable(Level.FINE)) log.fine("UserChoice:ApprovalColumn_ID=" + m_node.getApprovalColumn_ID());
 			//	Approval
 			if (m_node.isUserApproval()
 				&& getPO(trx) instanceof DocAction)
@@ -1366,17 +1385,166 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 					{
 						throw new AdempiereException("Support not implemented for "+resp);
 					}
+					else if (resp.isInitiator())
+					{
+						// assign the Workflow's Initiator
+						setAD_User_ID(m_process.getAD_User_ID());
+					}
+					else if (resp.isSupervisor())
+					{
+						// assign the initiator's supervisor
+						
+						MUser initiator = MUser.get(p_ctx, m_process.getAD_User_ID());
+						int superVisorId = initiator.getSupervisor_ID();
+
+						// if Initiator didn't have Supervisor set then Assign
+						// document's Organization's Supervisor
+						if (superVisorId <= 0)
+						{
+							MOrgInfo orgInfo = MOrgInfo.get(p_ctx, m_process.getAD_Org_ID(), m_process.get_TrxName());
+							superVisorId = orgInfo.getSupervisor_ID();
+						}
+						
+						if (superVisorId > 0)
+						{
+							setAD_User_ID(superVisorId);
+						}
+						else
+						{
+							m_docStatus = DocAction.STATUS_Invalid;
+							throw new AdempiereException(Msg.getMsg(getCtx(), "NoApprover - Set Supervisor on User or Organization"));
+						}
+					}
 					else
 					{
 						throw new AdempiereException("@NotSupported@ "+resp);
 					}
 					// end MZ
 				}
+				//Set Additional Variables
+				setVariables(trx);
 				if (autoApproval
 					&& doc.processIt(DocAction.ACTION_Approve)
 					&& doc.save())
 					return true;	//	done
 			}	//	approval
+			return false;	//	wait for user
+		}
+		/**User Task **/
+		else if (MWFNode.ACTION_UserTask.equals(action))
+		{
+			//when state is Not Started, We should assign task to User by finding responsible
+
+				//Assign if task not started
+				if(StateEngine.STATE_NotStarted.equals(m_state.getState()))
+				{
+					setWFState(StateEngine.STATE_Running);
+
+					if (isInvoker())
+					{
+						// Set Assignee
+						int startAD_User_ID = Env.getAD_User_ID(getCtx());
+                        if (startAD_User_ID == 0 && getPO(trx) instanceof DocAction)
+                        {
+                            DocAction doc = (DocAction) m_po;
+							startAD_User_ID = doc.getDoc_User_ID();
+                        }
+						setAD_User_ID(startAD_User_ID);
+					}
+					else // fixed Approver
+					{
+						MWFResponsible resp = getResponsible();
+						if (resp.isHuman())
+						{
+							setAD_User_ID(resp.getAD_User_ID());
+						}
+						else if (resp.isRole() || resp.isManual())
+						{
+							;
+						}
+						else if (resp.isOrganization())
+						{
+							throw new AdempiereException("Support not implemented for " + resp);
+						}
+						else if (resp.isInitiator())
+						{
+							// assign the Workflow's Initiator
+							setAD_User_ID(m_process.getAD_User_ID());
+						}
+						else if (resp.isSupervisor())
+						{
+							// assign the initiator's supervisor
+
+							MUser initiator = MUser.get(p_ctx, m_process.getAD_User_ID());
+							int superVisorId = initiator.getSupervisor_ID();
+
+							// if Initiator didn't have Supervisor set then Assign
+							// document's Organization's Supervisor
+							if (superVisorId <= 0)
+							{
+								MOrgInfo orgInfo = MOrgInfo.get(p_ctx, m_process.getAD_Org_ID(), m_process.get_TrxName());
+								superVisorId = orgInfo.getSupervisor_ID();
+							}
+
+							if (superVisorId > 0)
+							{
+								setAD_User_ID(superVisorId);
+							}
+							else
+							{
+								m_docStatus = DocAction.STATUS_Invalid;
+								throw new AdempiereException(Msg.getMsg(getCtx(), "NoApprover - Set Supervisor on User or Organization"));
+							}
+						}
+						else
+						{
+							throw new AdempiereException("@NotSupported@ " + resp);
+						}
+						// end MZ
+					}
+					//set additional variable values
+					setVariables(trx);
+					
+					return false; //Suspend workflow
+				}	//	Assignment
+				else {//Completion
+					int sessionAD_User_ID = Env.getAD_User_ID(getCtx());
+					if (isInvoker())
+					{
+						// Set Assignee
+						if (getAD_User_ID()>0 && sessionAD_User_ID == getAD_User_ID())
+							return true;
+					}
+					else // fixed Approver
+					{
+						MWFResponsible resp = getResponsible();
+						if (resp.isHuman() || resp.isManual())
+						{
+							if (getAD_User_ID()>0 && Env.getAD_User_ID(getCtx()) == getAD_User_ID())
+								return true;
+						}
+						else if (resp.isRole())
+						{
+							MUserRoles[] urs = MUserRoles.getOfUser(getCtx(), sessionAD_User_ID);
+							for (int i = 0; i < urs.length; i++)
+							{
+								if(urs[i].getAD_Role_ID() == resp.getAD_Role_ID() && urs[i].isActive())
+								{
+									return true;
+								}
+							}
+						}
+						else if (resp.isOrganization())
+						{
+							throw new AdempiereException("Support not implemented for " + resp);
+						}
+						else
+						{
+							throw new AdempiereException("@NotSupported@ " + resp);
+						}
+				
+				}
+			}
 			return false;	//	wait for user
 		}
 		/******	User Form					******/
@@ -1417,7 +1585,72 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			throw new Exception("Persistent Object not found - AD_Table_ID="
 				+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID());
 		//	Set Value
+		int AD_Column_ID = 0;
+		
+		if (getNode().getApprovalColumn_ID() > 0)
+		{
+			AD_Column_ID = getNode().getApprovalColumn_ID();
+		}
+		else
+		{
+			AD_Column_ID = getNode().getAD_Column_ID();
+		}
+		
+		setVariable(AD_Column_ID, value,displayType,trx);
+		
+		//	Info
+		String msg = getNode().getAttributeName() + "=" + value;
+		if (textMsg != null && textMsg.length() > 0)
+			msg += " - " + textMsg;
+		setTextMsg (msg);
+		m_newValue = value;
+		return true;
+	}	//	setVariable
+
+	/**
+	 * 
+	 * @param trx
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean setVariables(Trx trx) throws Exception
+	{
+		MWFNodeVar nodeVars[] = MWFNodeVar.getNodeVars(getCtx(), getNode().getAD_WF_Node_ID());
+		getPO(trx);
+		if (m_po == null)
+			throw new Exception(
+					"Persistent Object not found - AD_Table_ID=" + getAD_Table_ID() + ", Record_ID=" + getRecord_ID());
+
+		for (MWFNodeVar nodeVar : nodeVars)
+		{
+			if (!Util.isEmpty(nodeVar.getAttributeValue()))
+			{
+				int AD_Column_ID = nodeVar.getAD_Column_ID();
+				MColumn col = MColumn.get(getCtx(), AD_Column_ID);
+				setVariable(AD_Column_ID, nodeVar.getAttributeValue(), col.getAD_Reference_ID(), trx);
+			}
+		}
+		return true;
+	}
+	/**
+	 * 
+	 * @param AD_Column_ID
+	 * @param value
+	 * @param displayType
+	 * @param trx
+	 * @return
+	 * @throws Exception if error
+	 */
+	private boolean setVariable(int AD_Column_ID, String value, int displayType, Trx trx) throws Exception{
+		
+		getPO(trx);
+		if (m_po == null)
+			throw new Exception("Persistent Object not found - AD_Table_ID="
+				+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID());
+		//	Set Value
 		Object dbValue = null;
+		
+		
 		if (value == null)
 			;
 		else if (displayType == DisplayType.YesNo)
@@ -1425,7 +1658,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		else if (DisplayType.isNumeric(displayType))
 			dbValue = new BigDecimal (value);
 		else if (DisplayType.isID(displayType)) {
-			MColumn column = MColumn.get(Env.getCtx(), getNode().getAD_Column_ID());
+			MColumn column =  MColumn.get(Env.getCtx(), AD_Column_ID);
 			String referenceTableName = column.getReferenceTableName();
 			if (referenceTableName != null) {
 				MTable refTable = MTable.get(Env.getCtx(), referenceTableName);
@@ -1456,22 +1689,16 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 		else
 			dbValue = value;
-		if (!m_po.set_ValueOfColumnReturningBoolean(getNode().getAD_Column_ID(), dbValue)) {
+		if (!m_po.set_ValueOfColumnReturningBoolean(AD_Column_ID, dbValue)) {
 			throw new Exception("Persistent Object not updated - AD_Table_ID="
 					+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID()
 					+ " - Value=" + value + " error : " + CLogger.retrieveErrorString("check logs"));
 		}
 		m_po.saveEx();
-		if (dbValue != null && !dbValue.equals(m_po.get_ValueOfColumn(getNode().getAD_Column_ID())))
+		if (dbValue != null && !dbValue.equals(m_po.get_ValueOfColumn(AD_Column_ID)))
 			throw new Exception("Persistent Object not updated - AD_Table_ID="
 				+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID()
-				+ " - Should=" + value + ", Is=" + m_po.get_ValueOfColumn(m_node.getAD_Column_ID()));
-		//	Info
-		String msg = getNode().getAttributeName() + "=" + value;
-		if (textMsg != null && textMsg.length() > 0)
-			msg += " - " + textMsg;
-		setTextMsgBefore (msg);
-		m_newValue = value;
+				+ " - Should=" + value + ", Is=" + m_po.get_ValueOfColumn(AD_Column_ID));
 		return true;
 	}	//	setVariable
 
@@ -1494,13 +1721,21 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		if (!ok)
 			return false;
 
+		// Doc Validation
+		String errorMsg = ModelValidationEngine.get().fireDocValidate(this,
+				ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION);
+		if (errorMsg != null)
+		{
+			throw new AdempiereException(errorMsg);
+		}
+		
 		String newState = StateEngine.STATE_Completed;
 		//	Approval
 		if (getNode().isUserApproval() && getPO(trx) instanceof DocAction)
 		{
 			DocAction doc = (DocAction)m_po;
 			// Not approved
-			if (!"Y".equals(value)) {
+			if (!"Y".equals(value) && DisplayType.YesNo == displayType) {
 				newState = StateEngine.STATE_Aborted;
 				if (!(doc.processIt(DocAction.ACTION_Reject)))
 					setTextMsgBefore("Cannot Reject - Document Status: " + doc.getDocStatus());
@@ -2148,5 +2383,57 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 		return m_process.getProcessMsg();
 	}
+	
+	/**
+	 * If Approval column is Configured on User Task Node then value will be set on that
+	 * column
+	 * 
+	 * @param AD_User_ID
+	 * @param value
+	 * @param displayType
+	 * @param textMsg
+	 * @return true if set
+	 * @throws Exception
+	 */
+	public boolean setUserTask(int AD_User_ID, String value, int displayType, String textMsg) throws Exception
+	{
+		setWFState(StateEngine.STATE_Running);
+		setAD_User_ID(AD_User_ID);
+		Trx trx = (get_TrxName() != null) ? Trx.get(get_TrxName(), false) : null;
+		
+		MWFNode node = getNode();
+		if(node.getAD_Column_ID()>0)
+			setVariable(value, displayType, textMsg, trx);
+		
+		String errorMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION);
+		if (errorMsg != null)
+		{
+			throw new AdempiereException(errorMsg);
+		}
+		else
+			setWFState(StateEngine.STATE_Completed);
+		return true;
+			
+	}
+	
+	public String getM_ErrorMsg()
+	{
+		return m_ErrorMsg;
+	}
+
+	public void setM_ErrorMsg(String m_ErrorMsg)
+	{
+		this.m_ErrorMsg = m_ErrorMsg;
+	}
+
+	/**
+	 * Is this a User Task step?
+	 * @return true if User Task
+	 */
+	public boolean isUserTask()
+	{
+		return getNode().isUserTask();
+	}
+	
 
 }	//	MWFActivity

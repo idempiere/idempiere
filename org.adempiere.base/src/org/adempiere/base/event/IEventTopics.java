@@ -73,6 +73,9 @@ public interface IEventTopics {
 	public static final String DOC_AFTER_POST = DOC_EVENT_PREFIX+"afterPost";
 	public static final String DOC_ALL = DOC_EVENT_PREFIX+"*";
 
+	/** Called when workflow node executed **/
+	public static final String	DOC_BEFORE_WF_NODE				= DOC_EVENT_PREFIX + "WfNodeExecute";
+
 	public static final String AFTER_LOGIN = "adempiere/afterLogin";
 
 	public static final String ACCT_FACTS_VALIDATE = "adempiere/acct/factsValidate";

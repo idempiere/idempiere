@@ -307,6 +307,8 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	public static final int RESPONSIBLETYPE_AD_Reference_ID=304;
 	/** Human = H */
 	public static final String RESPONSIBLETYPE_Human = "H";
+	/** Initiator = I */
+	public static final String RESPONSIBLETYPE_Initiator = "I";
 	/** Manual = M */
 	public static final String RESPONSIBLETYPE_Manual = "M";
 	/** Organization = O */
@@ -315,6 +317,8 @@ public class X_AD_WF_Responsible extends PO implements I_AD_WF_Responsible, I_Pe
 	public static final String RESPONSIBLETYPE_Role = "R";
 	/** System Resource = S */
 	public static final String RESPONSIBLETYPE_SystemResource = "S";
+	/** Supervisor = SV */
+	public static final String RESPONSIBLETYPE_Supervisor = "SV";
 	/** Set Responsible Type.
 		@param ResponsibleType Type of the Responsibility for a workflow
 	*/

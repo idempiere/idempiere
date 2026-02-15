@@ -37,11 +37,13 @@ import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_NextCondition;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_WF_NodeNext;
+import org.compiere.model.X_AD_WF_Node_Var;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNextCondition;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
+import org.compiere.wf.MWFNodeVar;
 import org.compiere.wf.MWorkflow;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -49,6 +51,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class WorkflowElementHandler extends AbstractElementHandler {
 
 	private WorkflowNodeElementHandler nodeHandler = new WorkflowNodeElementHandler();
+	private WorkflowNodeVariableHandler nodeVariableHandler = new WorkflowNodeVariableHandler();
 	private WorkflowNodeNextElementHandler nodeNextHandler = new WorkflowNodeNextElementHandler();
 	private WorkflowNodeNextConditionElementHandler nextConditionHandler = new WorkflowNodeNextConditionElementHandler();
 
@@ -176,6 +179,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			for (MWFNode wn : wns) {
 				int nodeId = wn.getAD_WF_Node_ID();
 				createNode(ctx, document, nodeId);
+				
+				//
+				List<MWFNodeVar> wnvs = new Query(	ctx.ctx, MWFNodeVar.Table_Name, "AD_WF_Node_ID = ? AND AD_Client_ID = ?",
+													getTrxName(ctx)).setParameters(nodeId, Env.getAD_Client_ID(ctx.ctx)).list();
+				for (MWFNodeVar wnv : wnvs)
+				{
+					createNodeVariable(ctx, document, wnv.getAD_WF_Node_Var_ID());
+				}
 
 				List<MWFNodeNext> wnns = new Query(ctx.ctx, MWFNodeNext.Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID=?", getTrxName(ctx))
 						.setParameters(nodeId, Env.getAD_Client_ID(ctx.ctx))
@@ -231,6 +242,13 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		ctx.ctx.remove(X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
 	}
 
+	private void createNodeVariable(PIPOContext ctx, TransformerHandler document, int AD_WF_NodeVariable_ID) throws SAXException
+	{
+		Env.setContext(ctx.ctx, X_AD_WF_Node_Var.COLUMNNAME_AD_WF_Node_Var_ID, AD_WF_NodeVariable_ID);
+		nodeVariableHandler.create(ctx, document);
+		ctx.ctx.remove(X_AD_WF_Node_Var.COLUMNNAME_AD_WF_Node_Var_ID);
+	}
+	
 	private void createWorkflowBinding(PIPOContext ctx, TransformerHandler document, MWorkflow m_Workflow) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Workflow);

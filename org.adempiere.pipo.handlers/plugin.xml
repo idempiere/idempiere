@@ -237,6 +237,10 @@
             id="ScriptJSR223">
       </handler>
       <handler
+            class="org.adempiere.pipo2.handler.WorkflowNodeVariableHandler"
+            id="org.adempiere.pipo2.handler.WorkflowNodeVariableHandler">
+      </handler>
+      <handler
             class="org.adempiere.pipo2.handler.AttributeSetElementHandler"
             id="M_AttributeSet">
       </handler>

@@ -269,6 +269,21 @@ public interface I_AD_WF_Node
 	  */
 	public String getAction();
 
+    /** Column name ApprovalColumn_ID */
+    public static final String COLUMNNAME_ApprovalColumn_ID = "ApprovalColumn_ID";
+
+	/** Set Approval Column.
+	  * Specify the boolean type column which marked on approval
+	  */
+	public void setApprovalColumn_ID (int ApprovalColumn_ID);
+
+	/** Get Approval Column.
+	  * Specify the boolean type column which marked on approval
+	  */
+	public int getApprovalColumn_ID();
+
+	public org.compiere.model.I_AD_Column getApprovalColumn() throws RuntimeException;
+
     /** Column name AttributeName */
     public static final String COLUMNNAME_AttributeName = "AttributeName";
 
