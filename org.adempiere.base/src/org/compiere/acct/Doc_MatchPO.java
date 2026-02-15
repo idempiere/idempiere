@@ -35,6 +35,7 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCostAllocation;
@@ -618,30 +619,91 @@ public class Doc_MatchPO extends Doc
 			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
 			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
 			
-			if (mMatchPO.isReversal()) 
+			if (mMatchPO.isReversal())
 			{
-				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
+				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO.getM_AttributeSetInstance_ID(), tQty);
 				if (!Util.isEmpty(error))
 					return error;
 			}
+			
 			
 			if (tAmt.scale() > as.getCostingPrecision())
 				tAmt = tAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-			// Set Total Amount and Total Quantity from Matched PO 
-			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-					m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
-					tAmt, tQty,			//	Delivered
-					m_oLine.getDescription(), getTrxName()))
-			{
-				return "SaveError";
-			}
 			
-			if (!mMatchPO.isReversal())
+			// IDEMPIERE-6847: Handle Batch/Lot costing with M_InOutLineMA
+			MProduct product = MProduct.get(getCtx(), getM_Product_ID(), getTrxName());
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))
+					&& mMatchPO.getM_AttributeSetInstance_ID() == 0
+					&& m_ioLine != null)
 			{
-				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
-				if (!Util.isEmpty(error))
-					return error;
+				MInOutLineMA[] mas = MInOutLineMA.get(getCtx(), m_ioLine.getM_InOutLine_ID(), getTrxName());
+				if (mas != null && mas.length > 0)
+				{
+					// Create cost details per ASI from M_InOutLineMA
+					for (MInOutLineMA ma : mas)
+					{
+						BigDecimal maQty = isReturnTrx ? ma.getMovementQty().negate() : ma.getMovementQty();
+						BigDecimal maAmt = tAmt.multiply(maQty.abs()).divide(tQty.abs(), 12, RoundingMode.HALF_UP);
+						if (maAmt.scale() > as.getCostingPrecision())
+							maAmt = maAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+						
+						// Create base cost detail
+						if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
+								getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+								m_oLine.getC_OrderLine_ID(), 0,
+								maAmt, maQty,
+								m_oLine.getDescription(), getTrxName()))
+						{
+							return "SaveError";
+						}
+						
+						// Create landed cost adjustments per ASI
+						if (!mMatchPO.isReversal())
+						{
+							String error = createLandedCostAdjustments(as, landedCostMap, ma.getM_AttributeSetInstance_ID(), maQty);
+							if (!Util.isEmpty(error))
+								return error;
+						}
+					}
+				}
+				else
+				{
+					// No M_InOutLineMA records, create single cost detail at ASI=0
+					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
+							getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+							m_oLine.getC_OrderLine_ID(), 0,
+							tAmt, tQty,
+							m_oLine.getDescription(), getTrxName()))
+					{
+						return "SaveError";
+					}
+					
+					if (!mMatchPO.isReversal())
+					{
+						String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO.getM_AttributeSetInstance_ID(), tQty);
+						if (!Util.isEmpty(error))
+							return error;
+					}
+				}
+			}
+			else
+			{
+				// Set Total Amount and Total Quantity from Matched PO
+				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
+						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+						m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
+						tAmt, tQty,			//	Delivered
+						m_oLine.getDescription(), getTrxName()))
+				{
+					return "SaveError";
+				}
+				
+				if (!mMatchPO.isReversal())
+				{
+					String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO.getM_AttributeSetInstance_ID(), tQty);
+					if (!Util.isEmpty(error))
+						return error;
+				}
 			}
 			// end MZ
 		}
@@ -650,7 +712,7 @@ public class Doc_MatchPO extends Doc
 
 
 	private String createLandedCostAdjustments(MAcctSchema as,
-			Map<Integer, BigDecimal> landedCostMap, MMatchPO mMatchPO,
+			Map<Integer, BigDecimal> landedCostMap, int M_AttributeSetInstance_ID,
 			BigDecimal tQty) {
 		for(Integer elementId : landedCostMap.keySet())
 		{
@@ -659,7 +721,7 @@ public class Doc_MatchPO extends Doc
 			if (amt.scale() > as.getCostingPrecision())
 				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+					getM_Product_ID(), M_AttributeSetInstance_ID,
 					m_oLine.getC_OrderLine_ID(), elementId,
 					amt, tQty,			//	Delivered
 					m_oLine.getDescription(), getTrxName()))
