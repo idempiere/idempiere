@@ -141,6 +141,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
@@ -1841,7 +1842,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			toolbar.lock(adTabbox.getSelectedGridTab().isLocked());
 		}
 
-		toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !adTabbox.getSelectedGridTab().isNew());
+		boolean enablePrintButton = false;
+		if (adTabbox.getSelectedTabpanel() instanceof ADTabpanel)
+		{
+			ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+			enablePrintButton = adtab.getToolbarButtons(true).size() > 0;
+		}
+		toolbar.enablePrint((adTabbox.getSelectedGridTab().isPrinted() || enablePrintButton) && !adTabbox.getSelectedGridTab().isNew());
 
 		toolbar.enableQuickForm(adTabbox.getSelectedTabpanel().isEnableQuickFormButton() && !adTabbox.getSelectedGridTab().isReadOnly());
 
@@ -2277,7 +2284,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
 		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow() != null ? getCurrentFindWindow().getAD_UserQuery_ID() : 0);
 
-        toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
+		boolean enablePrintButton = false;
+
+		if (adTabbox.getSelectedTabpanel() instanceof ADTabpanel)
+		{
+			ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+			enablePrintButton = adtab.getToolbarButtons(true).size() > 0;
+		}
+		
+        toolbar.enablePrint((adTabbox.getSelectedGridTab().isPrinted() || enablePrintButton) && !isNewRow);
         toolbar.enableReport(!isNewRow);
         toolbar.enableExport(!isNewRow && !adTabbox.getSelectedGridTab().isSortTab());
         toolbar.enableFileImport(toolbar.isNewEnabled());
@@ -3350,8 +3365,39 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 		};
 		
-		WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_PRINT.getName());
-    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+		ProcessButtonPopup popup = new ProcessButtonPopup();
+		popup.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "processButtonPopup");
+		ADTabpanel adtab = (ADTabpanel) adTabbox.getSelectedTabpanel();
+		List<Button> buttons = adtab.getToolbarButtons(true);
+		if(!buttons.isEmpty())
+		{
+			if(adTabbox.getSelectedGridTab().getAD_Process_ID() > 0)
+			{
+				MProcess process = new MProcess(Env.getCtx(), adTabbox.getSelectedGridTab().getAD_Process_ID(), null );
+				String Name = process.get_Translation(MProcess.COLUMNNAME_Name, Env.getAD_Language(ctx)) + " (" + Msg.translate(Env.getAD_Language(ctx), "default") +")";
+				Button buttonDefaultPrint = new Button(Name);
+				buttonDefaultPrint.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+
+					@Override
+					public void onEvent(Event arg0) throws Exception {
+						WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_PRINT.getName());
+						WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+					}
+				});
+				buttons.add(buttonDefaultPrint);
+			}
+
+			popup.render(buttons);
+
+			if (popup.getChildren().size() > 0) {
+				popup.setPage(this.getComponent().getPage());
+				popup.open(getToolbar().getButton("Print"), "after_start");
+			}
+		}
+		else {
+			WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_PRINT.getName());
+	    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
+		}
     }
     
     /**
