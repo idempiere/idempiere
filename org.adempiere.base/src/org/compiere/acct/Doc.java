@@ -1367,6 +1367,12 @@ public abstract class Doc
 	/** GL Accounts - Commitment Offset	Sales */
 	public static final int     ACCTTYPE_CommitmentOffsetSales = 112;
 
+	// IDEMPIERE-5516
+	/** Account Type - Payment - Unallocated From Bank Acct */
+	public static final int     ACCTTYPE_UnallocatedCash_Bank = 113;
+	/** Account Type - Payment - Selection From Bank Acct */
+	public static final int     ACCTTYPE_PaymentSelect_Bank  = 114;
+
 	/**
 	 *	Get valid combination id by account type and accounting schema
 	 *  @param AcctType see ACCTTYPE_*
@@ -1421,7 +1427,7 @@ public abstract class Doc
 		}
 
 		/** Account Type - Payment  */
-		else if (AcctType == ACCTTYPE_UnallocatedCash)
+		else if (AcctType == ACCTTYPE_UnallocatedCash_Bank)
 		{
 			sql = "SELECT B_UnallocatedCash_Acct FROM C_BankAccount_Acct WHERE C_BankAccount_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BankAccount_ID();
@@ -1431,10 +1437,20 @@ public abstract class Doc
 			sql = "SELECT B_InTransit_Acct FROM C_BankAccount_Acct WHERE C_BankAccount_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BankAccount_ID();
 		}
-		else if (AcctType == ACCTTYPE_PaymentSelect)
+		else if (AcctType == ACCTTYPE_PaymentSelect_Bank)
 		{
 			sql = "SELECT B_PaymentSelect_Acct FROM C_BankAccount_Acct WHERE C_BankAccount_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BankAccount_ID();
+		}
+		else if (AcctType == ACCTTYPE_UnallocatedCash)
+		{
+			sql = "SELECT B_UnallocatedCash_Acct FROM C_BP_Customer_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
+			para_1 = getC_BPartner_ID();
+		}
+		else if (AcctType == ACCTTYPE_PaymentSelect)
+		{
+			sql = "SELECT B_PaymentSelect_Acct FROM C_BP_Vendor_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
+			para_1 = getC_BPartner_ID();
 		}
 
 		/** Account Type - Allocation   */
@@ -1603,7 +1619,15 @@ public abstract class Doc
 	{
 		int C_ValidCombination_ID = getValidCombination_ID(AcctType, as);
 		if (C_ValidCombination_ID == 0)
-			return null;
+		{
+			if (AcctType == ACCTTYPE_UnallocatedCash)
+				C_ValidCombination_ID = getValidCombination_ID(ACCTTYPE_UnallocatedCash_Bank, as);
+			else if (AcctType == ACCTTYPE_PaymentSelect)
+				C_ValidCombination_ID = getValidCombination_ID(ACCTTYPE_PaymentSelect_Bank, as);
+			//
+			if (C_ValidCombination_ID == 0)
+				return null;
+		}
 		//	Return Account
 		MAccount acct = MAccount.get (as.getCtx(), C_ValidCombination_ID);
 		return acct;
