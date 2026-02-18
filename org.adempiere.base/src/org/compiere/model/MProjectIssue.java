@@ -154,6 +154,49 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	}	//	setMandatory
 
 	/**
+	 * Set Mandatory Values
+	 * 
+	 * @param C_Charge_ID Charged
+	 * @param MovementQty qty
+	 */
+	public void setMandatory(int C_Charge_ID, BigDecimal MovementQty)
+	{
+		setC_Charge_ID(C_Charge_ID);
+		setMovementQty(MovementQty);
+	} // setMandatory
+
+	@Override
+	protected boolean beforeSave(boolean newRecord)
+	{
+		if (getC_InvoiceLine_ID() > 0)
+		{
+			MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
+			if (invLine.getC_Charge_ID() <= 0)
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "InvoiceLineNeedsCharge", new Object[] { invLine }));
+				return false;
+			}
+			if (invLine.getC_Project_ID() > 0 && invLine.getC_Project_ID() != getC_Project_ID())
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "ProjectInvoiceLineMismatch", new Object[] { invLine }));
+				return false;
+			}
+			setC_Charge_ID(invLine.getC_Charge_ID());
+		}
+		if (getM_Product_ID() <= 0 && getC_Charge_ID() <= 0)
+		{
+			log.saveError("Error", Msg.getMsg(getCtx(), "ChargeOrProductMandatory") + " [ " + getLine() + " ] ");
+			return false;
+		}
+		if (getM_Product_ID() > 0 && getM_Locator_ID() <= 0)
+		{
+			log.saveError("Error", Msg.getMsg(getCtx(), "LocatorMandatoryProjIssue", new Object[] { getLine() }));
+			return false;
+		}
+		return super.beforeSave(newRecord);
+	}
+
+	/**
 	 * 	Get Parent
 	 *	@return project
 	 */
@@ -183,10 +226,11 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 */
 	private String doComplete() 
 	{
-		if (getM_Product_ID() == 0)
+		if (getM_Product_ID() <= 0 && getC_Charge_ID() <= 0)
 		{
-			log.log(Level.SEVERE, "No Product");
-			return "No Product";
+			String msg = Msg.getMsg(getCtx(), "ChargeOrProductMandatory") + " [ " + getLine() + " ] ";
+			log.severe(msg);
+			return msg;
 		}
 		
 		if (!isReversal())
@@ -198,96 +242,117 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			}
 		}
 
-		MProduct product = MProduct.get (getCtx(), getM_Product_ID());
-
-		//	If not a stocked Item nothing to do
-		if (!product.isStocked())
+		if (getM_Product_ID() > 0)
+		{
+			MProduct product = MProduct.get (getCtx(), getM_Product_ID());
+	
+			//	If not a stocked Item nothing to do
+			if (!product.isStocked())
+			{
+				setProcessed(true);
+				updateBalanceAmt();
+				saveEx();
+				return null;
+			}
+	
+			//	**	Create Material Transactions **
+			MTransaction mTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
+				MTransaction.MOVEMENTTYPE_WorkOrderPlus,
+				getM_Locator_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(),
+				getMovementQty().negate(), getMovementDate(), get_TrxName());
+			mTrx.setC_ProjectIssue_ID(getC_ProjectIssue_ID());
+			//
+			Timestamp dateMPolicy = getMovementDate();
+			
+			if(getM_AttributeSetInstance_ID()>0){
+				Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+				if (t != null)
+					dateMPolicy = t;
+			}
+			
+			boolean ok = true;
+			try
+			{
+				if (getMovementQty().signum() > 0)
+				{
+					String MMPolicy = product.getMMPolicy();
+					Timestamp minGuaranteeDate = getMovementDate();
+					MLocator locator = new MLocator(getCtx(), getM_Locator_ID(), get_TrxName());
+					MProject proj = new MProject(getCtx(), getC_Project_ID(), get_TrxName());
+					int M_Warehouse_ID = getM_Locator_ID() > 0 ? locator.getM_Warehouse_ID() : proj.getM_Warehouse_ID();
+					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), M_Warehouse_ID, getM_Product_ID(), getM_AttributeSetInstance_ID(),
+							minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, getM_Locator_ID(), get_TrxName(), true);
+					BigDecimal qtyToIssue = getMovementQty();
+					for (MStorageOnHand storage: storages)
+					{
+						if (storage.getQtyOnHand().compareTo(qtyToIssue) >= 0)
+						{
+							storage.addQtyOnHand(qtyToIssue.negate());
+							qtyToIssue = BigDecimal.ZERO;
+						}
+						else
+						{
+							qtyToIssue = qtyToIssue.subtract(storage.getQtyOnHand());
+							storage.addQtyOnHand(storage.getQtyOnHand().negate());
+						}
+	
+						if (qtyToIssue.signum() == 0)
+							break;
+					}
+					if (qtyToIssue.signum() > 0)
+					{
+						ok = MStorageOnHand.add(getCtx(), getM_Locator_ID(), 
+								getM_Product_ID(), getM_AttributeSetInstance_ID(),
+								qtyToIssue.negate(),dateMPolicy, get_TrxName());
+					}
+				} 
+				else 
+				{
+					ok = MStorageOnHand.add(getCtx(), getM_Locator_ID(), 
+							getM_Product_ID(), getM_AttributeSetInstance_ID(),
+							getMovementQty().negate(),dateMPolicy, get_TrxName());				
+				}
+			}
+			catch (NegativeInventoryDisallowedException e)
+			{
+				log.severe(e.getMessage());
+				StringBuilder error = new StringBuilder();
+				error.append(Msg.getElement(getCtx(), "Line")).append(" ").append(getLine()).append(": ");
+				error.append(e.getMessage()).append("\n");
+				throw new AdempiereException(error.toString());
+			}
+			
+			if (ok)
+			{
+				if (mTrx.save(get_TrxName()))
+				{
+					setProcessed(true);
+					updateBalanceAmt();
+					saveEx();
+					return null;
+				}
+				else
+				{
+					log.log(Level.SEVERE, "Transaction not saved"); // requires trx !!
+					return "Transaction not saved";
+				}
+			}
+			else
+			{
+				log.log(Level.SEVERE, "Storage not updated");
+				return "Storage not updated";
+			}
+		}
+		else if (getC_Charge_ID() > 0)
 		{
 			setProcessed(true);
 			updateBalanceAmt();
 			saveEx();
 			return null;
 		}
-
-		//	**	Create Material Transactions **
-		MTransaction mTrx = new MTransaction (getCtx(), getAD_Org_ID(), 
-			MTransaction.MOVEMENTTYPE_WorkOrderPlus,
-			getM_Locator_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(),
-			getMovementQty().negate(), getMovementDate(), get_TrxName());
-		mTrx.setC_ProjectIssue_ID(getC_ProjectIssue_ID());
-		//
-		Timestamp dateMPolicy = getMovementDate();
+		saveEx();
 		
-		if(getM_AttributeSetInstance_ID()>0){
-			Timestamp t = MStorageOnHand.getDateMaterialPolicy(getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
-			if (t != null)
-				dateMPolicy = t;
-		}
-		
-		boolean ok = true;
-		try
-		{
-			if (getMovementQty().negate().signum() < 0)
-			{
-				String MMPolicy = product.getMMPolicy();
-				Timestamp minGuaranteeDate = getMovementDate();
-				MLocator locator = new MLocator(getCtx(), getM_Locator_ID(), get_TrxName());
-				MProject proj = new MProject(getCtx(), getC_Project_ID(), get_TrxName());
-				int M_Warehouse_ID = getM_Locator_ID() > 0 ? locator.getM_Warehouse_ID() : proj.getM_Warehouse_ID();
-				MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), M_Warehouse_ID, getM_Product_ID(), getM_AttributeSetInstance_ID(),
-						minGuaranteeDate, MClient.MMPOLICY_FiFo.equals(MMPolicy), true, getM_Locator_ID(), get_TrxName(), true);
-				BigDecimal qtyToIssue = getMovementQty();
-				for (MStorageOnHand storage: storages)
-				{
-					if (storage.getQtyOnHand().compareTo(qtyToIssue) >= 0)
-					{
-						storage.addQtyOnHand(qtyToIssue.negate());
-						qtyToIssue = BigDecimal.ZERO;
-					}
-					else
-					{
-						qtyToIssue = qtyToIssue.subtract(storage.getQtyOnHand());
-						storage.addQtyOnHand(storage.getQtyOnHand().negate());
-					}
-
-					if (qtyToIssue.signum() == 0)
-						break;
-				}
-				if (qtyToIssue.signum() > 0)
-				{
-					ok = MStorageOnHand.add(getCtx(), getM_Locator_ID(), 
-							getM_Product_ID(), getM_AttributeSetInstance_ID(),
-							qtyToIssue.negate(),dateMPolicy, get_TrxName());
-				}
-			} 
-			else 
-			{
-				ok = MStorageOnHand.add(getCtx(), getM_Locator_ID(), 
-						getM_Product_ID(), getM_AttributeSetInstance_ID(),
-						getMovementQty().negate(),dateMPolicy, get_TrxName());				
-			}
-		}
-		catch (NegativeInventoryDisallowedException e)
-		{
-			log.severe(e.getMessage());
-			StringBuilder error = new StringBuilder();
-			error.append(Msg.getElement(getCtx(), "Line")).append(" ").append(getLine()).append(": ");
-			error.append(e.getMessage()).append("\n");
-			throw new AdempiereException(error.toString());
-		}
-		
-		if (ok)
-		{
-			mTrx.saveEx(get_TrxName());
-			updateBalanceAmt();
-		}
-		else
-		{
-			log.log(Level.SEVERE, "Storage not updated");
-			return "Storage not updated";
-		}
-		//
-		return null;		
+		return null;
 	}
 	
 	/**
@@ -308,9 +373,18 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		reversal.set_TrxName(get_TrxName());
 		reversal.setM_Locator_ID(getM_Locator_ID());
 		reversal.setM_Product_ID(getM_Product_ID());
+		reversal.setC_Charge_ID(getC_Charge_ID());
 		reversal.setM_AttributeSetInstance_ID(getM_AttributeSetInstance_ID());
 		reversal.setMovementQty(getMovementQty().negate());
 		reversal.setMovementDate(reversalDate);
+		if (getC_Charge_ID() > 0)
+			reversal.setAmt(getAmt().negate());
+		if (getM_InOutLine_ID() > 0)
+			reversal.setM_InOutLine_ID(getM_InOutLine_ID());
+		else if (getS_TimeExpenseLine_ID() > 0)
+			reversal.setS_TimeExpenseLine_ID(getS_TimeExpenseLine_ID());
+		else if (getC_InvoiceLine_ID() > 0)
+			reversal.setC_InvoiceLine_ID(getC_InvoiceLine_ID());
 		reversal.setDescription("Reversal for Line No " + getLine() + "<"+getC_ProjectIssue_ID()+">");
 		
 		reversal.setReversal_ID(getC_ProjectIssue_ID());
@@ -405,12 +479,18 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 
 	@Override
 	public boolean reverseCorrectIt() {
-		return docActionDelegate.reverseCorrectIt();
+		if (!docActionDelegate.reverseCorrectIt())
+			return false;
+		afterReverseAction();
+		return true;
 	}
 
 	@Override
 	public boolean reverseAccrualIt() {
-		return docActionDelegate.reverseAccrualIt();
+		if (!docActionDelegate.reverseAccrualIt())
+			return false;
+		afterReverseAction();
+		return true;
 	}
 
 	/**
@@ -557,11 +637,11 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 * @param isCreaditAmt true than Reduce Project Balance Amt otherwise Project Balance Amt is Add
 	 *                     cost of Project Issue
 	 */
-	private BigDecimal updateBalanceAmt()
+	private void updateBalanceAmt()
 	{
 		BigDecimal cost = null;
 		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
-		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
+		MProduct product = getM_Product_ID() > 0 ? new MProduct(getCtx(), getM_Product_ID(), get_TrxName()) : null;
 		if (getM_InOutLine_ID() > 0)
 		{
 			MInOutLine inOutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -572,8 +652,23 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			MTimeExpenseLine expenseLine = new MTimeExpenseLine(getCtx(), getS_TimeExpenseLine_ID(), get_TrxName());
 			cost = expenseLine.getLaborCost(as);
 		}
+		else if (getC_InvoiceLine_ID() > 0)
+		{
+			MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
+			MInvoice inv = new MInvoice(getCtx(), invLine.getC_Invoice_ID(), get_TrxName());
+			cost = MDocType.DOCBASETYPE_APCreditMemo.equals((inv.getDocBaseType())) ? invLine.getLineNetAmt().negate() : invLine.getLineNetAmt();
+		}
+		else if (getC_Charge_ID() > 0)
+		{
+			cost = getAmt();
+		}
 		else
 		{
+			if (product == null)
+			{
+				log.warning("No product for cost calculation");
+				return;
+			}
  			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
 									false, get_TrxName());
 		}
@@ -583,7 +678,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			proj.setProjectBalanceAmt(proj.getProjectBalanceAmt().add(cost));
 			proj.saveEx(get_TrxName());
 		}
-		if (getReversal_ID() < 0 && (cost == null || cost.signum() <= 0))
+		if (getReversal_ID() <= 0 && getM_Product_ID() > 0 && (cost == null || cost.signum() <= 0))
 		{
 			MLocator locator = new MLocator(getCtx(), getM_Locator_ID(), get_TrxName());
 			MWarehouse warehouse = new MWarehouse(getCtx(), locator.getM_Warehouse_ID(), get_TrxName());
@@ -591,6 +686,48 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			throw new IllegalArgumentException(	"Product: ("	+ product.getName() + ") is not present at Locator: (" + warehouse.getValue() + ") for ASI: ("
 												+ asi.getDescription() + ")");
 		}
-		return cost;
+		return;
 	} // updateBalanceAmt
+
+	/**
+	 * Delete Project Line related to Project Issue
+	 */
+	private void deleteProjectLine()
+	{
+		if (DB.executeUpdate("DELETE FROM C_ProjectLine WHERE C_ProjectIssue_ID = ?", get_ID(), get_TrxName()) > 0)
+			// "Project Line delete for Project Issue (" + this + ")"
+			log.info(Msg.getMsg(getCtx(), "ProjectLineDelete"));
+	} // deleteProjectLine
+
+	/**
+	 * Filter project issues by matching invoice line and project
+	 *
+	 * @param  invLineID - Invoice Line ID
+	 * @param  trxName   - Trx Name
+	 * @return           {@link MProjectIssue} class {@link PO}
+	 */
+	public static MProjectIssue getInvLineProjectIssue(int invLineID, String trxName)
+	{
+		String whereClause = " C_InvoiceLine_ID = ? AND DocStatus NOT IN ('" + DocAction.STATUS_Reversed + "', '" + DocAction.STATUS_Voided + "') ";
+		Query query = new Query(Env.getCtx(), Table_Name, whereClause, trxName);
+		query.setClient_ID(true);
+		query.setOnlyActiveRecords(true);
+		MProjectIssue issuePrj = query.setParameters(invLineID).first();
+		return issuePrj;
+	} // getInvLineIssue
+
+	/**
+	 * After Reverse process Delete Project Line, Update Project Balance and
+	 * Remove Project reference from Invoice Line
+	 */
+	private void afterReverseAction()
+	{
+		deleteProjectLine();
+		if (getC_InvoiceLine_ID() > 0)
+		{
+			MInvoiceLine invLine = (MInvoiceLine) MTable.get(getCtx(), MInvoiceLine.Table_ID).getPO(getC_InvoiceLine_ID(), get_TrxName());
+			invLine.setC_Project_ID(0);
+			invLine.saveEx(invLine.get_TrxName());
+		}
+	} // afterReverseAction
 }	//	MProjectIssue
